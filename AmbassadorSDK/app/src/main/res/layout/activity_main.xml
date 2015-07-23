@@ -13,7 +13,7 @@
         android:id="@+id/tvWelcomeTitle"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="15dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
         android:id="@+id/tvWelcomeDesc"
         android:layout_below="@+id/tvWelcomeTitle"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp" />
+        android:layout_marginTop="15dp" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -37,19 +37,30 @@
         android:layout_alignParentEnd="true"
         android:text="www.mbsy.co/lsdjfasfd" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="copy"
-        android:id="@+id/btnCopy"
-        android:layout_alignBottom="@+id/etShortURL"
-        android:layout_alignRight="@+id/etShortURL" />
-
     <GridView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/gvSocialGrid"
-        android:layout_centerHorizontal="true"
         android:layout_below="@+id/etShortURL"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:stackFromBottom="false"
+        android:transitionGroup="false"
+        android:columnWidth="80dp"
+        android:numColumns="auto_fit"
+        android:verticalSpacing="10dp"
+        android:gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="30dp" />
+
+    <ImageButton
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:id="@+id/btnCopyPaste"
+        android:layout_alignTop="@+id/etShortURL"
+        android:layout_alignRight="@+id/etShortURL"
+        android:src="@mipmap/copy_paste_icon"
+        android:background="#00ffffff"
+        android:scaleType="fitXY" />
 </RelativeLayout>

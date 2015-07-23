@@ -1,17 +1,42 @@
 package com.example.ambassador.ambassadorsdk;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.GridView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 
 public class MainActivity extends ActionBarActivity {
+    // PUBLIC properties
+    public TextView tvWelcomeTitle, tvWelcomeDesc;
+
+    // PRIVATE properties
+    private Button btnCopyPaste;
+    private EditText etShortUrl;
+    private GridView gvSocialGrid;
+    private RAFParameters rafParams;
+    private final String[] gridTitles = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
+    private final Integer[] gridDrawables = new Integer[]{R.mipmap.facebook_icon, R.mipmap.twitter_icon, R.mipmap.linkedin_icon,
+                                                            R.mipmap.email_icon, R.mipmap.sms_icon};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        gvSocialGrid = (GridView) findViewById(R.id.gvSocialGrid);
+        SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridTitles, gridDrawables);
+        gvSocialGrid.setAdapter(gridAdapter);
+        rafParams = (RAFParameters) getIntent().getSerializableExtra("test");
     }
 
     @Override
@@ -36,3 +61,6 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
+
+
