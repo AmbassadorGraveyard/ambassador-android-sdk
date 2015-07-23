@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 public class Ambassador {
     public static void presentRAF(Context context, RAFParameters rafParameters) {
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, AmbassadorActivity.class);
 
         if (rafParameters == null) {
             rafParameters = new RAFParameters();
@@ -20,5 +20,9 @@ public class Ambassador {
 
         intent.putExtra("test", rafParameters);
         context.startActivity(intent);
+    }
+
+    public static void printSomething() {
+        System.out.println("THIS IS A TEST!!!!!!!!!!!!!!!!!!!!!!***");
     }
 }

@@ -63,4 +63,5 @@
         android:src="@mipmap/copy_paste_icon"
         android:background="#00ffffff"
         android:scaleType="fitXY" />
+
 </RelativeLayout>
