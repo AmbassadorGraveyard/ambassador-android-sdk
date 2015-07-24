@@ -6,11 +6,12 @@ import java.io.Serializable;
  * Created by JakeDunahee on 7/22/15.
  */
 public class RAFParameters implements Serializable {
-    public String toolbarTitle, welcomeTitle, welcomeDescription;
+    public String toolbarTitle, welcomeTitle, welcomeDescription, shareMessage;
 
     public RAFParameters () {
         toolbarTitle = "Refer your friends";
         welcomeTitle = "Spread the word";
         welcomeDescription = "Refer a friend to get a reward";
+        shareMessage = "Check out this awesome company!";
     }
 }
