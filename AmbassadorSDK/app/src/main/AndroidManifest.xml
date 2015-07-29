@@ -24,10 +24,16 @@
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:label="@string/app_name" />
+        <activity
+            android:name=".LinkedInLoginActivity"
+            android:label="LinkedInLogin"/>
 
         <provider android:authorities="com.facebook.app.FacebookContentProvider***REMOVED***"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="943c8f7b02356e57e638d691295686e5325a5ac8" />
     </application>
 
 </manifest>

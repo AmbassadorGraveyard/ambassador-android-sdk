@@ -1,21 +1,28 @@
 package com.example.ambassador.ambassadorsdk;
 
+import android.app.ActionBar;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,10 +32,21 @@ import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
+
+import io.fabric.sdk.android.Fabric;
 import org.w3c.dom.Text;
 
 
 public class AmbassadorActivity extends ActionBarActivity {
+
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+
+    public String linkedInToken;
+
     private TextView tvWelcomeTitle, tvWelcomeDesc;
     private ShareDialog fbDialog;
     private ImageButton btnCopyPaste;
@@ -44,8 +62,10 @@ public class AmbassadorActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
+        final AmbassadorActivity activity = this;
+        initSocialMedias(activity);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        AmbassadorSingleton.getInstance().ambActivity = this;
 
         fbDialog = new ShareDialog(this);
 //        rafParams = (RAFParameters) getIntent().getSerializableExtra("test");
@@ -59,6 +79,8 @@ public class AmbassadorActivity extends ActionBarActivity {
 
         rafParams = new RAFParameters(); // Temp RAFPARAMS while in just framework
         setCustomizedText(rafParams);
+
+        AmbassadorSingleton.getInstance().rafParameters = rafParams;
 
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,10 +101,10 @@ public class AmbassadorActivity extends ActionBarActivity {
                         shareWithFacebook();
                         break;
                     case 1:
-                        System.out.println("Twitter Share");
+                        shareWithTwitter();
                         break;
                     case 2:
-                        System.out.println("Linkedin Share");
+                        presentLinkedInLoginIfNeeded();
                         break;
                     case 3:
                         System.out.println("Email Share");
@@ -135,6 +157,15 @@ public class AmbassadorActivity extends ActionBarActivity {
 
 
     //region SOCAIL MEDIA CALL - FACEBOOK, TWITTER, LINKEDIN
+    public void initSocialMedias(AmbassadorActivity ambassadorActivity) {
+        // TWITTER initialization
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(AmbassadorSingleton.TWITTER_KEY, AmbassadorSingleton.TWITTER_SECRET);
+        Fabric.with(this, new Twitter(authConfig));
+
+        // FACEBOOK initialization
+        FacebookSdk.sdkInitialize(getApplicationContext());
+    }
+
     public void shareWithFacebook() {
         ShareLinkContent content = new ShareLinkContent.Builder()
                 .setContentTitle(rafParams.shareMessage)
@@ -142,6 +173,27 @@ public class AmbassadorActivity extends ActionBarActivity {
                 .build();
 
         fbDialog.show(content);
+    }
+
+    public void shareWithTwitter() {
+        TweetComposer.Builder builder = new TweetComposer.Builder(this)
+                .text("Check out this awesome company! " + etShortUrl.getText().toString());
+
+        builder.show();
+    }
+
+    public void presentLinkedInLoginIfNeeded() {
+//        SharedPreferences prefs = getApplicationContext().getSharedPreferences("com.example.ambassador.ambassadorsdk", Context.MODE_PRIVATE);
+//        linkedInToken = prefs.getString("linkedInToken", null);
+
+        if (AmbassadorSingleton.getInstance().getLinkedInToken() == null) {
+            Intent intent = new Intent(this, LinkedInLoginActivity.class);
+            startActivity(intent);
+        } else {
+            LinkedInPostDialog dialog = new LinkedInPostDialog(this);
+            dialog.setOwnerActivity(this);
+            dialog.show();
+        }
     }
     //endregion
 }

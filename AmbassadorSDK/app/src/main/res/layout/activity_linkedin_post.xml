@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="#00ffffff">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="LinkedIn Post"
+        android:id="@+id/textView"
+        android:layout_alignParentTop="true"
+        android:textSize="20dp"
+        android:textColor="#ff0867ac"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_alignParentEnd="true"
+        android:textStyle="bold" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etMessage"
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true"
+        android:backgroundTint="#ff2c82bb"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:editable="true"
+        android:backgroundTintMode="add" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share"
+        android:id="@+id/btnShare"
+        android:layout_below="@+id/etMessage"
+        android:layout_alignEnd="@+id/etMessage"
+        android:background="#00ffffff"
+        android:textColor="#ff1a71b2" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/btnCancel"
+        android:background="#00ffffff"
+        android:layout_alignTop="@+id/btnShare"
+        android:layout_toStartOf="@+id/btnShare"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="10dp" />
+
+</RelativeLayout>
