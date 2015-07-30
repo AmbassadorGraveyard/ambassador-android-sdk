@@ -30,9 +30,9 @@ public class MainActivity extends ActionBarActivity {
             public void onClick(View v) {
                 RAFParameters parameters = new RAFParameters();
                 parameters.shareMessage = "Check out this company!";
-                parameters.welcomeTitle = "Custom welcome text";
-                parameters.welcomeDescription = "Custom description from params";
-                parameters.toolbarTitle = "RAF";
+                parameters.welcomeTitle = "RAF Params Welcome Title";
+                parameters.welcomeDescription = "RAF Params Welcome Description";
+                parameters.toolbarTitle = "RAF Params Toolbar Title";
                 Ambassador.presentRAF(cxt, parameters);
             }
         });

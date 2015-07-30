@@ -74,7 +74,7 @@ public class AmbassadorActivity extends ActionBarActivity {
         AmbassadorSingleton.getInstance().ambActivity = this;
 
         fbDialog = new ShareDialog(this);
-//        rafParams = (RAFParameters) getIntent().getSerializableExtra("test");
+        rafParams = (RAFParameters) getIntent().getSerializableExtra("test");
 
         // UI Components
         tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
@@ -83,7 +83,7 @@ public class AmbassadorActivity extends ActionBarActivity {
         gvSocialGrid = (GridView) findViewById(R.id.gvSocialGrid);
         btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
 
-        rafParams = new RAFParameters(); // Temp RAFPARAMS while in just framework
+//        rafParams = new RAFParameters(); // Temp RAFPARAMS while in just framework
         setCustomizedText(rafParams);
 
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
