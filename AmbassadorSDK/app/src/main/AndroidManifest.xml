@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ambassador.ambassadorsdk" >
-
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:allowBackup="true"
@@ -25,6 +25,9 @@
         <activity
             android:name=".TwitterLoginActivity"
             android:label="TwitterLogin" />
+        <activity
+            android:name=".ContactSelectorActivity"
+            android:label="Contacts Activity"/>
 
         <provider android:authorities="com.facebook.app.FacebookContentProvider1650562518489293"
             android:name="com.facebook.FacebookContentProvider"
@@ -33,5 +36,4 @@
             android:name="io.fabric.ApiKey"
             android:value="943c8f7b02356e57e638d691295686e5325a5ac8" />
     </application>
-
 </manifest>
