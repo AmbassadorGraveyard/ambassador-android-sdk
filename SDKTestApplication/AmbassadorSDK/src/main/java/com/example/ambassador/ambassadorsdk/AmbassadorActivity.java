@@ -114,10 +114,10 @@ public class AmbassadorActivity extends ActionBarActivity {
                         presentLinkedInLoginIfNeeded();
                         break;
                     case 3:
-                        System.out.println("Email Share");
+                        goToContactsPage(false);
                         break;
                     case 4:
-                        System.out.println("SMS Share");
+                        goToContactsPage(true);
                         break;
                     default:
                         break;
@@ -138,6 +138,12 @@ public class AmbassadorActivity extends ActionBarActivity {
     public void setCustomizedText(RAFParameters params) {
         tvWelcomeTitle.setText(params.welcomeTitle);
         tvWelcomeDesc.setText(params.welcomeDescription);
+    }
+
+    void goToContactsPage(Boolean showPhoneNumbers) {
+        Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
+        contactIntent.putExtra("showPhoneNumbers", showPhoneNumbers);
+        startActivity(contactIntent);
     }
     //endregion
 
