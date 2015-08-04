@@ -136,7 +136,8 @@ public class AmbassadorActivity extends ActionBarActivity {
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            setShortURL();
+            // TEMPORARY - Makes toast upon successfully receiving Augur ID
+            Toast.makeText(getApplicationContext(), "AugurID = " + AmbassadorSingleton.getInstance().getIdentifyObject(), Toast.LENGTH_LONG).show();
         }
     };
 

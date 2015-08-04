@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 /**
  * Created by JakeDunahee on 7/29/15.
  */
-class AmbassadorSingleton {
+public class AmbassadorSingleton {
     // Constants
     public static final String TWITTER_KEY = "HNXVVGWu5wYtXLx1J85nnbfw3";
     public static final String TWITTER_SECRET = "tqpYvovGGGUMw0aqUihb0Ybd2cZRB9uMCTmmCtBFj1sR8c5Rey";
