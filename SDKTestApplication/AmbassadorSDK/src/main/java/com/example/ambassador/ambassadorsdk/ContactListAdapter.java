@@ -57,7 +57,7 @@ public class ContactListAdapter extends BaseAdapter {
         tvName.setText(currentObject.name);
 
         if (shouldShowPhoneNumbers) {
-            tvPhoneOrEmail.setText(currentObject.phoneNumber);
+            tvPhoneOrEmail.setText(currentObject.type + " - " + currentObject.phoneNumber);
         } else {
             tvPhoneOrEmail.setText(currentObject.emailAddress);
         }

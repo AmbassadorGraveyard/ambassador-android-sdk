@@ -28,12 +28,12 @@
         android:layout_marginTop="5dp" />
 
     <ImageView
-        android:layout_width="25dp"
+        android:layout_width="20dp"
         android:layout_height="wrap_content"
         android:id="@+id/ivCheckMark"
         android:src="@mipmap/checkmark"
-        android:layout_marginRight="-25dp"
         android:layout_alignTop="@+id/tvName"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="-20dp" />
 
 </RelativeLayout>

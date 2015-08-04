@@ -8,10 +8,12 @@ public class ContactObject {
     public String name;
     public String phoneNumber;
     public String emailAddress;
+    public String type;
 
     public ContactObject() {
         name = "No name available";
         phoneNumber = "No number available";
         emailAddress = "Email not available";
+        type = "Not available";
     }
 }

@@ -27,7 +27,7 @@
             android:label="TwitterLogin" />
         <activity
             android:name=".ContactSelectorActivity"
-            android:label="Contacts Activity"/>
+            android:label="Contacts Activity" />
 
         <provider android:authorities="com.facebook.app.FacebookContentProvider1650562518489293"
             android:name="com.facebook.FacebookContentProvider"
