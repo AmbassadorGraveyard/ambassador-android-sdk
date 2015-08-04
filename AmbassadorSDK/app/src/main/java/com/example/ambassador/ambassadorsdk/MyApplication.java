@@ -6,7 +6,7 @@ import android.content.Context;
 /**
  * Created by JakeDunahee on 7/31/15.
  */
-class MyApplication extends Application{
+public class MyApplication extends Application{
     private static Context context;
 
     public void onCreate() {

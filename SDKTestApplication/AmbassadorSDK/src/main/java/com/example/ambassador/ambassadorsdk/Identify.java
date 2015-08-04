@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Message;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -17,7 +18,7 @@ import java.util.TimerTask;
 /**
  * Created by JakeDunahee on 7/23/15.
  */
-class Identify {
+public class Identify {
     private Context context;
     private Timer timer;
     private String objectString;
@@ -61,6 +62,7 @@ class Identify {
             super.onPageFinished(view, url);
 
             if (url.startsWith("https://staging.mbsy.co")) {
+                Log.d("AugurCall", "CHECKING FOR AUGUR ID");
                 wvTest.loadUrl("javascript:console.log(JSON.stringify(augur.json))");
             }
         }
@@ -71,13 +73,11 @@ class Identify {
         @Override
         public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
             if (consoleMessage.message().startsWith("{\"consumer\"")) {
-//                SharedPreferences preferences = context.getSharedPreferences("test", Context.MODE_PRIVATE);
-//                preferences.edit().putString("identityObject", consoleMessage.message()).apply();
                 AmbassadorSingleton.getInstance().setIdentifyObject(consoleMessage.message());
-//                objectString = consoleMessage.message();
                 sendIdBroadcast();
                 timer.cancel();
-//                System.out.println("TIMER KILLED!!");
+                Log.d("AugurID", AmbassadorSingleton.getInstance().getIdentifyObject());
+                System.out.println("AUGUR IDENTIFICATION SUCCESS!");
             }
 
             return super.onConsoleMessage(consoleMessage);
