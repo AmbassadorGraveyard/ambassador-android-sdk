@@ -1,13 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:id="@+id/rlMaster">
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lvContacts"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:background="#ffffff"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/rlSendView"
+        android:layout_below="@+id/editText" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send to 20 contacts"
+        android:id="@+id/btnSend"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:background="#3988c9"
+        android:textColor="#ffffff" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/editText"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:hint="Search"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rlSendView"
+        android:background="#ffffff"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/btnSend">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/etShareMessage"
+            android:layout_marginRight="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_alignParentStart="true"
+            android:enabled="false"
+            android:text="Some test text"
+            android:layout_toStartOf="@+id/btnEdit" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnEdit"
+            android:layout_alignTop="@+id/rlSendView"
+            android:layout_alignParentEnd="true"
+            android:background="#00000000"
+            android:src="@mipmap/pencil_edit"
+            android:scaleType="centerInside"
+            android:layout_alignBottom="@+id/rlSendView"
+            android:contentDescription="edit button"
+            android:layout_marginRight="5dp" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
