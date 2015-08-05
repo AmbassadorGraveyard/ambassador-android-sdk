@@ -44,4 +44,5 @@ dependencies {
         transitive = true;
     }
     compile project(':facebook')
+    compile 'com.google.guava:guava:19.0-rc1'
 }

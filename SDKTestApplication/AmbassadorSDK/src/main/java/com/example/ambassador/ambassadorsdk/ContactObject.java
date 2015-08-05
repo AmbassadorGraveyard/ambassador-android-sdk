@@ -16,4 +16,15 @@ public class ContactObject {
         emailAddress = "Email not available";
         type = "Not available";
     }
+
+    public ContactObject(String name, String type, String phoneNumber) {
+        this.name = name;
+        this.type = type;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public ContactObject(String name, String emailAddress) {
+        this.name = name;
+        this.emailAddress = emailAddress;
+    }
 }

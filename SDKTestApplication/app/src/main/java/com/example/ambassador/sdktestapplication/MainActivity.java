@@ -29,7 +29,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 RAFParameters parameters = new RAFParameters();
-                parameters.shareMessage = "Check out this company!";
+                parameters.shareMessage = "Check out this company! mbsy.co/dljfj92?24";
                 parameters.welcomeTitle = "RAF Params Welcome Title";
                 parameters.welcomeDescription = "RAF Params Welcome Description";
                 parameters.toolbarTitle = "RAF Params Toolbar Title";
