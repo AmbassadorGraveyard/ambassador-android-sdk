@@ -1,35 +1,46 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.animation.Animator;
+import android.animation.ValueAnimator;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.internal.view.menu.MenuBuilder;
 import android.support.v7.widget.ActionMenuPresenter;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
@@ -45,12 +56,12 @@ import java.util.Comparator;
  */
 public class ContactSelectorActivity extends AppCompatActivity {
     private ListView lvContacts;
-    private Button btnSend;
+    private Button btnSend, btnDoneSearch;
     private ImageButton btnEdit;
-    private EditText etShareMessage;
+    private EditText etShareMessage, etSearch;
+    private RelativeLayout rlSearch;
+    private LinearLayout llSendView;
     private ArrayList<ContactObject> contactList;
-    private ArrayList<ContactObject> selectedContactList;
-    private int originalSendButtonHeight;
     public Boolean showPhoneNumbers;
 
     @Override
@@ -58,41 +69,41 @@ public class ContactSelectorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
+        // Init UI components
+        lvContacts = (ListView)findViewById(R.id.lvContacts);
+        btnEdit = (ImageButton)findViewById(R.id.btnEdit);
+        btnSend = (Button)findViewById(R.id.btnSend);
+        etShareMessage = (EditText) findViewById(R.id.etShareMessage);
+        rlSearch = (RelativeLayout)findViewById(R.id.rlSearch);
+        etSearch = (EditText) findViewById(R.id.etSearch);
+        btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
+        llSendView = (LinearLayout) findViewById(R.id.llSendView);
+
         setUpToolbar();
 
+        // Finds out whether to show emails or phone numbers
         showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
-
         if (showPhoneNumbers) {
             getContactPhoneList();
         } else {
             getContactEmailList();
         }
 
-        sortContactsAlphabetically();
-
-        selectedContactList = new ArrayList<>();
-
-        lvContacts = (ListView)findViewById(R.id.lvContacts);
-        btnEdit = (ImageButton)findViewById(R.id.btnEdit);
-        btnSend = (Button)findViewById(R.id.btnSend);
-        etShareMessage = (EditText) findViewById(R.id.etShareMessage);
+        // Sets share message to default message from RAF Parameters
         etShareMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
-        updateSendButton(0);
 
-        final ContactListAdapter adapter = new ContactListAdapter(this,
-                contactList, showPhoneNumbers);
-
+        final ContactListAdapter adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
         lvContacts.setAdapter(adapter);
-
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get checkmark image and animates in or out based on its selection state
                 ImageView imageView = (ImageView) view.findViewById(R.id.ivCheckMark);
-                if (adapter.selectedContacts.contains(contactList.get(position))) {
-                    adapter.selectedContacts.remove(contactList.get(position));
+                if (adapter.selectedContacts.contains(adapter.filteredContactList.get(position))) {
+                    adapter.selectedContacts.remove(adapter.filteredContactList.get(position));
                     imageView.animate().setDuration(100).x(view.getWidth()).start();
                 } else {
-                    adapter.selectedContacts.add(contactList.get(position));
+                    adapter.selectedContacts.add(adapter.filteredContactList.get(position));
                     imageView.animate().setDuration(300).setInterpolator(new BounceInterpolator())
                             .x(view.getWidth() - imageView.getWidth() - 15).start();
                 }
@@ -101,17 +112,20 @@ public class ContactSelectorActivity extends AppCompatActivity {
             }
         });
 
-
-
-
-        btnEdit.setOnClickListener(new View.OnClickListener() {
+        etSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                if (etShareMessage.isEnabled() == true) {
-                    doneEditingMessage();
-                } else {
-                    editBtnTapped();
-                }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.filterList((String) etSearch.getText().toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
     }
@@ -119,7 +133,24 @@ public class ContactSelectorActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ambassador_menu, menu);
+        Drawable drawable = menu.findItem(R.id.action_search).getIcon();
+
+        drawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(drawable, Color.DKGRAY);
+        menu.findItem(R.id.action_search).setIcon(drawable);
+
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            displayOrHideSearch(null);
+        } else {
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     void getContactPhoneList() {
@@ -156,6 +187,17 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
             contactList.add(object);
         }
+
+        if (contactList.size() == 0) {
+            ContactObject object1 = new ContactObject("John Doe", "Mobile", "555-555-5555");
+            ContactObject object2 = new ContactObject("Jane Doe", "Mobile", "123-456-7890");
+            ContactObject object3 = new ContactObject("Jim Doe", "Mobile", "098-765-4321");
+            contactList.add(object1);
+            contactList.add(object2);
+            contactList.add(object3);
+        }
+
+        sortContactsAlphabetically();
     }
 
     void getContactEmailList() {
@@ -175,6 +217,17 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
             contactList.add(object);
         }
+
+        if (contactList.size() == 0) {
+            ContactObject object1 = new ContactObject("John Doe", "johndoe@gmail.com");
+            ContactObject object2 = new ContactObject("Jane Doe", "janedoe@gmail.com");
+            ContactObject object3 = new ContactObject("Jim Doe", "jimdoe@gmail.com");
+            contactList.add(object1);
+            contactList.add(object2);
+            contactList.add(object3);
+        }
+
+        sortContactsAlphabetically();
     }
 
     void sortContactsAlphabetically() {
@@ -186,25 +239,80 @@ public class ContactSelectorActivity extends AppCompatActivity {
         });
     }
 
+    public void handleEditButtonTap(View view) {
+        if (etShareMessage.isEnabled() == true) {
+            doneEditingMessage();
+        } else {
+            editBtnTapped();
+        }
+    }
+
     void editBtnTapped() {
         btnEdit.setImageResource(R.mipmap.done_button);
-        originalSendButtonHeight = btnEdit.getHeight();
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)btnSend.getLayoutParams();
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)btnSend.getLayoutParams();
         params.height = 0;
         btnSend.setLayoutParams(params);
         etShareMessage.setEnabled(true);
         etShareMessage.requestFocus();
+        llSendView.invalidate();
         InputMethodManager lManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         lManager.showSoftInput(etShareMessage, 0);
     }
 
     void doneEditingMessage() {
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)btnSend.getLayoutParams();
-        params.height = originalSendButtonHeight;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)btnSend.getLayoutParams();
+        params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
         btnSend.setLayoutParams(params);
 
+        etShareMessage.setSelection(0);
         etShareMessage.setEnabled(false);
         btnEdit.setImageResource(R.mipmap.pencil_edit);
+    }
+
+    public void displayOrHideSearch(View v) {
+        // Float that helps converts dp to pixels based on device
+        final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
+
+        int finalHeight = (rlSearch.getHeight() > 0) ? 0 : (int) (50 * scale + 0.5f);
+
+        ValueAnimator anim = ValueAnimator.ofInt(rlSearch.getMeasuredHeight(), finalHeight);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int val = (Integer) animation.getAnimatedValue();
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlSearch.getLayoutParams();
+                layoutParams.height = val;
+                rlSearch.setLayoutParams(layoutParams);
+            }
+        });
+
+        if (finalHeight != 0) {
+            shrinkSendView(true);
+            etSearch.requestFocus();
+            InputMethodManager lManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            lManager.showSoftInput(etSearch, 0);
+        } else {
+            etSearch.setText("");
+            shrinkSendView(false);
+            etSearch.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+        }
+
+        anim.setDuration(300);
+        anim.start();
+    }
+
+    void shrinkSendView(Boolean shouldShrink) {
+        if (shouldShrink) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)llSendView.getLayoutParams();
+            params.height = 0;
+            llSendView.setLayoutParams(params);
+        } else {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)llSendView.getLayoutParams();
+            params.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+            llSendView.setLayoutParams(params);
+        }
     }
 
     void setUpToolbar() {
@@ -212,13 +320,8 @@ public class ContactSelectorActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         getSupportActionBar().setTitle("Refer your friends");
         toolbar.setTitleTextColor(Color.DKGRAY);
+        toolbar.setBackgroundColor(Color.WHITE);
         toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN);
-        toolbar.setBackgroundColor(Color.parseColor("#FFFFFFFF"));
-//        toolbar.setMenu(new MenuBuilder(this), new ActionMenuPresenter(this));
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            toolbar.setElevation(25);
-        }
     }
 
     void updateSendButton(int numOfContacts) {
@@ -229,6 +332,15 @@ public class ContactSelectorActivity extends AppCompatActivity {
             btnSend.setText("NO CONTACTS SELECTED");
             btnSend.setEnabled(false);
         }
+    }
+
+    public void sendToContacts(View view) {
+        Toast.makeText(getApplicationContext(), "Would send to people", Toast.LENGTH_SHORT);
+        Log.d("test", "SENT");
+    }
+
+    void handleNoContacts() {
+        // TODO: Add functionality to show "No contacts" on top of listview if user has no contacts
     }
 }
 

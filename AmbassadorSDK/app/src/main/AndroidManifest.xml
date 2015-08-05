@@ -7,10 +7,11 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".AmbassadorActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
         </activity>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
@@ -18,16 +19,21 @@
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".LinkedInLoginActivity"
-            android:label="LinkedInLogin"/>
+            android:label="LinkedInLogin"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".TwitterLoginActivity"
-            android:label="TwitterLogin" />
+            android:label="TwitterLogin"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ContactSelectorActivity"
-            android:label="Contacts Activity" />
+            android:label="Contacts Activity"
+            android:windowSoftInputMode="stateAlwaysHidden"
+            android:screenOrientation="portrait"/>
 
         <provider android:authorities="com.facebook.app.FacebookContentProvider1650562518489293"
             android:name="com.facebook.FacebookContentProvider"
