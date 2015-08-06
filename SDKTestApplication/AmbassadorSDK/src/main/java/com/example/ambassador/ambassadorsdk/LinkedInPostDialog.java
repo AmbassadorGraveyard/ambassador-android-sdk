@@ -2,46 +2,22 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 
 /**
  * Created by JakeDunahee on 7/27/15.
@@ -64,9 +40,9 @@ public class LinkedInPostDialog extends Dialog {
         setContentView(R.layout.activity_linkedin_post);
 
         // UI Components
-        btnPost = (Button) findViewById(R.id.btnShare);
+        btnPost = (Button) findViewById(R.id.btnTweet);
         btnCancel = (Button) findViewById(R.id.btnCancel);
-        etMessage = (EditText) findViewById(R.id.etMessage);
+        etMessage = (EditText) findViewById(R.id.etTweetMessage);
 
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
         loader.setVisibility(View.GONE);

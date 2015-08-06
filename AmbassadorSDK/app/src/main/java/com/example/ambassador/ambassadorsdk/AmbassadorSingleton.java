@@ -30,4 +30,24 @@ public class AmbassadorSingleton {
         SharedPreferences prefs = ambActivity.getSharedPreferences("com.example.ambassador.ambassadorsdk", Context.MODE_PRIVATE);
         return prefs.getString("linkedInToken", null);
     }
+
+    public void setTwitterToken(String token) {
+        SharedPreferences prefs = ambActivity.getSharedPreferences("com.example.ambassador.ambassadorsdk", Context.MODE_PRIVATE);
+        prefs.edit().putString("twitterToken", token);
+    }
+
+    public String getTwitterToken() {
+        SharedPreferences prefs = ambActivity.getSharedPreferences("com.example.ambassador.ambassadorsdk", Context.MODE_PRIVATE);
+        return prefs.getString("twitterToken", null);
+    }
+
+    public void setTwitterTokenSecret(String twitterTokenSecret) {
+        SharedPreferences prefs = ambActivity.getSharedPreferences("com.example.ambassador.ambassadorsdk", Context.MODE_PRIVATE);
+        prefs.edit().putString("twitterTokenSecret", twitterTokenSecret);
+    }
+
+    public String getTwitterTokenSecret() {
+        SharedPreferences prefs = ambActivity.getSharedPreferences("com.example.ambassador.ambassadorsdk", Context.MODE_PRIVATE);
+        return prefs.getString("twitterTokenSecret", null);
+    }
 }
