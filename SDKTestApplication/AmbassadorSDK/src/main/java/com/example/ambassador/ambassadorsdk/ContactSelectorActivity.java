@@ -1,35 +1,23 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
-import android.app.ActionBar;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.internal.view.menu.MenuBuilder;
-import android.support.v7.widget.ActionMenuPresenter;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.animation.BounceInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -39,14 +27,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
-
-import com.facebook.internal.CollectionMapper;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -63,6 +45,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
     private LinearLayout llSendView;
     private ArrayList<ContactObject> contactList;
     public Boolean showPhoneNumbers;
+    private InputMethodManager inputManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +61,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
         etSearch = (EditText) findViewById(R.id.etSearch);
         btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         llSendView = (LinearLayout) findViewById(R.id.llSendView);
+        inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         setUpToolbar();
 
@@ -114,9 +98,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -124,17 +106,17 @@ public class ContactSelectorActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) {}
         });
     }
 
+    //region TOOLBAR MENU
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ambassador_menu, menu);
         Drawable drawable = menu.findItem(R.id.action_search).getIcon();
 
+        // Sets search icon to darkgray
         drawable = DrawableCompat.wrap(drawable);
         DrawableCompat.setTint(drawable, Color.DKGRAY);
         menu.findItem(R.id.action_search).setIcon(drawable);
@@ -152,7 +134,10 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+    //endregion
 
+
+    //region CONTACT FUNCTIONS
     void getContactPhoneList() {
         contactList = new ArrayList<>();
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -160,7 +145,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
         while (phones.moveToNext()) {
             ContactObject object = new ContactObject();
-            String id = phones.getString(phones.getColumnIndex(ContactsContract.Contacts._ID));
 
             String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             object.name = name;
@@ -188,6 +172,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
             contactList.add(object);
         }
 
+        // TEMPORARY -- Adds fake contacts if phone has no contacts currently in it
         if (contactList.size() == 0) {
             ContactObject object1 = new ContactObject("John Doe", "Mobile", "555-555-5555");
             ContactObject object2 = new ContactObject("Jane Doe", "Mobile", "123-456-7890");
@@ -207,7 +192,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
         while (emails.moveToNext()) {
             ContactObject object = new ContactObject();
-            String id = emails.getString(emails.getColumnIndex(ContactsContract.Contacts._ID));
 
             String name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             object.name = name;
@@ -218,6 +202,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
             contactList.add(object);
         }
 
+        // TEMPORARY -- Adds fake contacts if phone has no contacts currently in it
         if (contactList.size() == 0) {
             ContactObject object1 = new ContactObject("John Doe", "johndoe@gmail.com");
             ContactObject object2 = new ContactObject("Jane Doe", "janedoe@gmail.com");
@@ -238,7 +223,10 @@ public class ContactSelectorActivity extends AppCompatActivity {
             }
         });
     }
+    //endregion
 
+
+    //region BUTTON FUNCTIONS
     public void handleEditButtonTap(View view) {
         if (etShareMessage.isEnabled() == true) {
             doneEditingMessage();
@@ -249,21 +237,15 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
     void editBtnTapped() {
         btnEdit.setImageResource(R.mipmap.done_button);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)btnSend.getLayoutParams();
-        params.height = 0;
-        btnSend.setLayoutParams(params);
+        btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0));
         etShareMessage.setEnabled(true);
         etShareMessage.requestFocus();
-        llSendView.invalidate();
-        InputMethodManager lManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        lManager.showSoftInput(etShareMessage, 0);
+//        llSendView.invalidate();
+        inputManager.showSoftInput(etShareMessage, 0); // Presents keyboard
     }
 
     void doneEditingMessage() {
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)btnSend.getLayoutParams();
-        params.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        btnSend.setLayoutParams(params);
-
+        btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         etShareMessage.setSelection(0);
         etShareMessage.setEnabled(false);
         btnEdit.setImageResource(R.mipmap.pencil_edit);
@@ -287,22 +269,23 @@ public class ContactSelectorActivity extends AppCompatActivity {
         });
 
         if (finalHeight != 0) {
+            // If SHOWING search
             shrinkSendView(true);
             etSearch.requestFocus();
-            InputMethodManager lManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            lManager.showSoftInput(etSearch, 0);
+            inputManager.showSoftInput(etSearch, 0);
         } else {
+            // If HIDING search
             etSearch.setText("");
             shrinkSendView(false);
             etSearch.clearFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+            inputManager.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
         }
 
         anim.setDuration(300);
         anim.start();
     }
 
+    // Hides the send view while user is searching.  Mainly to make more room to see listview
     void shrinkSendView(Boolean shouldShrink) {
         if (shouldShrink) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)llSendView.getLayoutParams();
@@ -315,6 +298,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
         }
     }
 
+    // Adds and styles toolbar in place of the actionbar
     void setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -335,7 +319,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     public void sendToContacts(View view) {
-        Toast.makeText(getApplicationContext(), "Would send to people", Toast.LENGTH_SHORT);
+        Toast.makeText(this, "Would send to people", Toast.LENGTH_SHORT).show();
         Log.d("test", "SENT");
     }
 
@@ -343,7 +327,3 @@ public class ContactSelectorActivity extends AppCompatActivity {
         // TODO: Add functionality to show "No contacts" on top of listview if user has no contacts
     }
 }
-
-
-
-
