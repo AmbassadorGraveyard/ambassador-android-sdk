@@ -162,10 +162,24 @@ public class AmbassadorActivity extends ActionBarActivity {
     }
 
     public void shareWithTwitter() {
-        TweetComposer.Builder builder = new TweetComposer.Builder(this)
-                .text("Check out this awesome company! " + etShortUrl.getText().toString());
+//        TweetComposer.Builder builder = new TweetComposer.Builder(this)
+//                .text("Check out this awesome company! " + etShortUrl.getText().toString());
+//
+//        builder.show();
 
-        builder.show();
+
+//        String tweetUrl = "https://twitter.com/intent/tweet?text=PUT TEXT HERE &url="
+//                + "https://www.google.com";
+//        Uri uri = Uri.parse(tweetUrl);
+//        startActivity(new Intent(Intent.ACTION_VIEW, uri));
+//        System.out.println(AmbassadorSingleton.getInstance().getTwitterToken(getApplicationContext()));
+        if (AmbassadorSingleton.getInstance().getTwitterToken(getApplicationContext()) != null) {
+            TweetActivity tweetActivity = new TweetActivity(this);
+            tweetActivity.show();
+        } else {
+            Intent i = new Intent(this, TwitterLoginActivity.class);
+            startActivity(i);
+        }
     }
 
     public void presentLinkedInLoginIfNeeded() {
