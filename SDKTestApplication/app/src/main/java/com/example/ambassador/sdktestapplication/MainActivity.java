@@ -10,9 +10,6 @@ import android.widget.Button;
 
 import com.example.ambassador.ambassadorsdk.Ambassador;
 import com.example.ambassador.ambassadorsdk.RAFParameters;
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import io.fabric.sdk.android.Fabric;
 
 
 public class MainActivity extends ActionBarActivity {
