@@ -4,8 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/AmbassadorSDK.iml" filepath="$PROJECT_DIR$/AmbassadorSDK.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/facebook/facebook.iml" filepath="$PROJECT_DIR$/facebook/facebook.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/facebook-android-sdk-4.4.1/facebook-android-sdk-4.4.1.iml" filepath="$PROJECT_DIR$/libs/facebook-android-sdk-4.4.1/facebook-android-sdk-4.4.1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facebook-release/facebook-release.iml" filepath="$PROJECT_DIR$/facebook-release/facebook-release.iml" />
       <module fileurl="file://$PROJECT_DIR$/library/library.iml" filepath="$PROJECT_DIR$/library/library.iml" />
       <module fileurl="file://$PROJECT_DIR$/socialNetworkLib/socialNetworkLib.iml" filepath="$PROJECT_DIR$/socialNetworkLib/socialNetworkLib.iml" />
     </modules>
