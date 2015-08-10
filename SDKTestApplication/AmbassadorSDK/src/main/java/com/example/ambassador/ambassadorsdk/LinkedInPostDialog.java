@@ -2,18 +2,16 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -24,7 +22,7 @@ import java.net.URL;
  */
 public class LinkedInPostDialog extends Dialog {
     Button btnPost, btnCancel;
-    EditText etMessage;
+    CustomEditText etMessage;
     AmbassadorActivity activity;
     ProgressBar loader;
 
@@ -36,17 +34,18 @@ public class LinkedInPostDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.activity_linkedin_post);
 
         // UI Components
         btnPost = (Button) findViewById(R.id.btnTweet);
         btnCancel = (Button) findViewById(R.id.btnCancel);
-        etMessage = (EditText) findViewById(R.id.etTweetMessage);
+        etMessage = (CustomEditText) findViewById(R.id.etTweetMessage);
 
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
         loader.setVisibility(View.GONE);
 
+        etMessage.setEditTextTint(Color.parseColor("#468fc3"));
         etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -69,24 +68,28 @@ public class LinkedInPostDialog extends Dialog {
     }
 
     private void postToLinkedIn() throws IOException {
-        loader.setVisibility(View.VISIBLE);
-        LinkedInPostRequest linkedInPostRequest = new LinkedInPostRequest();
+        if (etMessage.getText().toString().isEmpty()) {
+            Toast.makeText(getOwnerActivity(), "Cannot share blank message", Toast.LENGTH_SHORT).show();
+            etMessage.shakeEditText();
+        } else {
+            loader.setVisibility(View.VISIBLE);
+            LinkedInPostRequest linkedInPostRequest = new LinkedInPostRequest();
 
-        String userMessage = etMessage.getText().toString();
+            String userMessage = etMessage.getText().toString();
 
-        try {
-            // Create JSON post object
-            JSONObject body = new JSONObject("{" +
-                    "\"comment\": \"" + userMessage + "\"," +
-                    "\"visibility\": " + "{ \"code\": \"anyone\" }" +
-                    "}");
-            linkedInPostRequest.object = body;
-        } catch (JSONException e) {
-            e.printStackTrace();
+            try {
+                // Create JSON post object
+                JSONObject body = new JSONObject("{" +
+                        "\"comment\": \"" + userMessage + "\"," +
+                        "\"visibility\": " + "{ \"code\": \"anyone\" }" +
+                        "}");
+                linkedInPostRequest.object = body;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            linkedInPostRequest.execute();
         }
-
-        // Perform post request
-        linkedInPostRequest.execute();
     }
 
     class LinkedInPostRequest extends AsyncTask<Void, Void, Void> {

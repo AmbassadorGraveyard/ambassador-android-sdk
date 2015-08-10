@@ -1,41 +1,28 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.app.ActionBar;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.FacebookActivity;
 import com.facebook.FacebookSdk;
-import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
 import org.w3c.dom.Text;
 
 
-public class AmbassadorActivity extends ActionBarActivity {
+public class AmbassadorActivity extends AppCompatActivity {
 
     // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
 
@@ -44,7 +31,7 @@ public class AmbassadorActivity extends ActionBarActivity {
     private TextView tvWelcomeTitle, tvWelcomeDesc;
     private ShareDialog fbDialog;
     private ImageButton btnCopyPaste;
-    private EditText etShortUrl;
+    private CustomEditText etShortUrl;
     private GridView gvSocialGrid;
     private RAFParameters rafParams;
     private final String[] gridTitles = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
@@ -56,25 +43,24 @@ public class AmbassadorActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
-        final AmbassadorActivity activity = this;
-        initSocialMedias(activity);
+
+        initFacebook(this);
 
         AmbassadorSingleton.getInstance().context = getApplicationContext();
-
-        fbDialog = new ShareDialog(this);
         rafParams = (RAFParameters) getIntent().getSerializableExtra("test");
+        AmbassadorSingleton.getInstance().rafParameters = rafParams;
 
         // UI Components
         tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
         tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
-        etShortUrl = (EditText) findViewById(R.id.etShortURL);
+        etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
         gvSocialGrid = (GridView) findViewById(R.id.gvSocialGrid);
         btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
 
-//        rafParams = new RAFParameters(); // Temp RAFPARAMS while in just framework
+        setUpToolbar();
         setCustomizedText(rafParams);
 
-        AmbassadorSingleton.getInstance().rafParameters = rafParams;
+        etShortUrl.setEditTextTint(Color.DKGRAY);
 
         // Sets up social grid
         SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridTitles, gridDrawables);
@@ -99,7 +85,7 @@ public class AmbassadorActivity extends ActionBarActivity {
                         shareWithTwitter();
                         break;
                     case 2:
-                        presentLinkedInLoginIfNeeded();
+                        shareWithLinkedIn();
                         break;
                     case 3:
                         System.out.println("Email Share");
@@ -115,6 +101,7 @@ public class AmbassadorActivity extends ActionBarActivity {
     }
     //endregion
 
+
     //region HELPER FUNCTIONS
     public void copyShortURLToClipboard() {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
@@ -127,15 +114,23 @@ public class AmbassadorActivity extends ActionBarActivity {
         tvWelcomeTitle.setText(params.welcomeTitle);
         tvWelcomeDesc.setText(params.welcomeDescription);
     }
+
+    void setUpToolbar() {
+        Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
+        toolbar.setBackgroundColor(Color.LTGRAY);
+        toolbar.setTitleTextColor(Color.DKGRAY);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(AmbassadorSingleton.getInstance().rafParameters.toolbarTitle);
+        }
+    }
     //endregion
 
 
-    //region SOCAIL MEDIA CALL - FACEBOOK, TWITTER, LINKEDIN
-    public void initSocialMedias(AmbassadorActivity ambassadorActivity) {
-
-
-        // FACEBOOK initialization
+    //region SOCAIL MEDIA CALLS - FACEBOOK, TWITTER, LINKEDIN
+    public void initFacebook(AmbassadorActivity ambassadorActivity) {
         FacebookSdk.sdkInitialize(getApplicationContext());
+        fbDialog = new ShareDialog(ambassadorActivity);
     }
 
     public void shareWithFacebook() {
@@ -148,17 +143,18 @@ public class AmbassadorActivity extends ActionBarActivity {
     }
 
     public void shareWithTwitter() {
+        // Presents twitter login screen if user has not logged in yet
         if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
-            TweetActivity tweetActivity = new TweetActivity(this);
-            tweetActivity.setOwnerActivity(this);
-            tweetActivity.show();
+            TweetDialog tweetDialog = new TweetDialog(this);
+            tweetDialog.setOwnerActivity(this);
+            tweetDialog.show();
         } else {
             Intent i = new Intent(this, TwitterLoginActivity.class);
             startActivity(i);
         }
     }
 
-    public void presentLinkedInLoginIfNeeded() {
+    public void shareWithLinkedIn() {
         // Presents login screen if user hasn't signed in yet
         if (AmbassadorSingleton.getInstance().getLinkedInToken() == null) {
             Intent intent = new Intent(this, LinkedInLoginActivity.class);
