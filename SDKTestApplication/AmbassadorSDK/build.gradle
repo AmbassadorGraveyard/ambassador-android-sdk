@@ -1,21 +1,10 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
 apply plugin: 'com.android.library'
-apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
     defaultConfig {
-//        applicationId "com.example.ambassador.ambassadorsdk"
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
@@ -31,16 +20,11 @@ android {
 
 repositories {
     mavenCentral()
-    maven { url 'https://maven.fabric.io/public' }
-
-//    flatDir {
-//        dirs 'aar'
-//    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.1'
-    compile project(':facebook-release')
     compile files('/Users/JakeDunahee/Documents/Git/ambassador-android-sdk/AmbassadorSDK/libs/twitter4j-core-4.0.4.jar')
+    compile 'com.facebook.android:facebook-android-sdk:4.4.0'
 }

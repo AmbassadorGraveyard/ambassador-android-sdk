@@ -1,1 +1,1 @@
-include ':app', ':ambassador', ':facebook-release'
+include ':app', 'AmbassadorSDK'

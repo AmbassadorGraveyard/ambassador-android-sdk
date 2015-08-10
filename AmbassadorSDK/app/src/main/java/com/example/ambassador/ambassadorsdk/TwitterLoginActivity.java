@@ -117,13 +117,18 @@ public class TwitterLoginActivity extends ActionBarActivity {
                 accessToken = twitter.getOAuthAccessToken(requestToken, oauth_secret);
                 AmbassadorSingleton.getInstance().setTwitterAccessToken(accessToken.getToken());
                 AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret(accessToken.getTokenSecret());
-                Toast.makeText(getApplicationContext(), "sladkjf", Toast.LENGTH_SHORT).show();
-                finish();
             } catch (twitter4j.TwitterException e) {
                 e.printStackTrace();
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Toast.makeText(getApplicationContext(), "Successfully logged in!", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 }
