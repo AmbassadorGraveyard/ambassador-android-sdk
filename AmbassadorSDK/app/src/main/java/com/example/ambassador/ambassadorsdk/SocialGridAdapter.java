@@ -58,7 +58,7 @@ public class SocialGridAdapter extends BaseAdapter {
 
         gridImage.setImageResource(drawablesArray[position]);
         gridTitle.setText(nameArray[position]);
-        backgroundView.setBackgroundColor(getCorrectBackgroundColor(position));
+        backgroundView.getBackground().setColorFilter(getCorrectBackgroundColor(position), PorterDuff.Mode.SRC_ATOP);
 
         return convertView;
     }

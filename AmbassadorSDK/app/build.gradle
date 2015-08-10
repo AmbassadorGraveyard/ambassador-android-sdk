@@ -27,4 +27,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile files('/Users/JakeDunahee/Documents/Git/ambassador-android-sdk/AmbassadorSDK/libs/twitter4j-core-4.0.4.jar')
     compile 'com.facebook.android:facebook-android-sdk:4.4.0'
+    compile 'com.android.support:support-v4:22.2.1'
 }

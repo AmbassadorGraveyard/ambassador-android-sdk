@@ -1,48 +1,27 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
 
 /**
  * Created by JakeDunahee on 7/29/15.
  */
 
-
-// NOT USED YET!
-public class TwitterLoginActivity extends ActionBarActivity {
+public class TwitterLoginActivity extends AppCompatActivity {
     private WebView wvTwitter;
     private ProgressBar loader;
     private RequestToken requestToken;
@@ -55,10 +34,12 @@ public class TwitterLoginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.twitter_login);
 
+        setUpToolbar();
+
+        // UI Components
         wvTwitter = (WebView)findViewById(R.id.wvSocial);
         loader = (ProgressBar) findViewById(R.id.pbLoader);
 
-        wvTwitter.getSettings().setJavaScriptEnabled(true);
         wvTwitter.setWebViewClient(new CustomBrowser());
 
         twitter = new TwitterFactory().getInstance();
@@ -68,9 +49,25 @@ public class TwitterLoginActivity extends ActionBarActivity {
         task.execute();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish(); // Dismisses activity if back button pressed
+        return super.onOptionsItemSelected(item);
+    }
+
+    void setUpToolbar() {
+        Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setBackgroundColor(Color.parseColor("#62a9ef"));
+        toolbar.setTitleTextColor(Color.WHITE);
+
+        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Log into Twitter"); }
+    }
+
     private class CustomBrowser extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            // Checks for callback url to get the oAuth verifier string for Twitter login
             if (url.startsWith(AmbassadorSingleton.LINKED_IN_CALLBACK_URL)) {
                 loader.setVisibility(View.VISIBLE);
                 wvTwitter.setVisibility(View.INVISIBLE);
@@ -91,6 +88,7 @@ public class TwitterLoginActivity extends ActionBarActivity {
         }
     }
 
+    // Async Task that get OAuth token
     class RequestTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
@@ -110,6 +108,7 @@ public class TwitterLoginActivity extends ActionBarActivity {
         }
     }
 
+    // Async task that get Access token from OAuth credentials
     class AccessTokenRequest extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {

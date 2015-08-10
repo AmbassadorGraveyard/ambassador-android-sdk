@@ -20,7 +20,7 @@
         android:paddingLeft="15dp"
         android:background="#62a9ef" />
 
-    <EditText
+    <com.example.ambassador.ambassadorsdk.CustomEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etTweetMessage"
@@ -30,7 +30,8 @@
         android:editable="true"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp" />
+        android:layout_marginTop="0dp"
+        android:textCursorDrawable="@null"/>
 
     <Button
         style="?android:attr/buttonStyleSmall"

@@ -2,7 +2,14 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+
+    <style name="LinkedInAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:colorControlNormal">#468fc3</item>
+        <item name="android:colorControlActivated">#468fc3</item>
+        <item name="android:colorControlHighlight">#468fc3</item>
     </style>
 
 </resources>

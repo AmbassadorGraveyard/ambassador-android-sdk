@@ -20,7 +20,7 @@ android:shape="rectangle"   >
 <!--</padding>-->
 
 <corners
-    android:radius="11dp"   >
+    android:radius="2dp"   >
 </corners>
 
 </shape>

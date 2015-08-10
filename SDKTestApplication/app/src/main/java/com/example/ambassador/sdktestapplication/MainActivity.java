@@ -33,7 +33,6 @@ public class MainActivity extends ActionBarActivity {
                 Ambassador.presentRAF(cxt, parameters);
             }
         });
-
     }
 
     @Override
