@@ -9,9 +9,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/ambassador" />
+            <option value="$PROJECT_DIR$/AmbassadorSDK" />
             <option value="$PROJECT_DIR$/app" />
-            <option value="$PROJECT_DIR$/facebook-release" />
           </set>
         </option>
       </GradleProjectSettings>

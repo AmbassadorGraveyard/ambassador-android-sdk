@@ -1,1 +1,1 @@
-include ':app', ':facebook-release'
+include ':app'
