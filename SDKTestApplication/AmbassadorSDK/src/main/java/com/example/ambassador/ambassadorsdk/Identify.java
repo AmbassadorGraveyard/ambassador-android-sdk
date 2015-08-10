@@ -9,6 +9,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -32,9 +33,9 @@ public class Identify {
         // Set up webview
         wvTest = new WebView(context);
         wvTest.setWebChromeClient(new MyChromeClient());
-        wvTest.setWebViewClient(new MyBrowser());
+        wvTest.getSettings().setDomStorageEnabled(true); // Helps with console log error
         wvTest.getSettings().setJavaScriptEnabled(true);
-        wvTest.loadUrl("https://staging.mbsy.co/universal/landing/?url=ambassador:ios/&universal_id=abfd1c89-4379-44e2-8361-ee7b87332e32/");
+        wvTest.setWebViewClient(new MyBrowser());
 
         // Start timer and set to run every 3 seconds until it successfully gets augur identity object
         timer = new Timer();
@@ -78,9 +79,10 @@ public class Identify {
                 timer.cancel();
                 Log.d("AugurID", AmbassadorSingleton.getInstance().getIdentifyObject());
                 System.out.println("AUGUR IDENTIFICATION SUCCESS!");
+                return super.onConsoleMessage(consoleMessage);
+            } else {
+                return Boolean.parseBoolean(null);
             }
-
-            return super.onConsoleMessage(consoleMessage);
         }
     }
 

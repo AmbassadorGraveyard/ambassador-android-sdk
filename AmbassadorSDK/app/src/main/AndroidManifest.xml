@@ -23,9 +23,6 @@
         <activity
             android:name=".LinkedInLoginActivity"
             android:label="LinkedInLogin"/>
-        <activity
-            android:name=".TwitterLoginActivity"
-            android:label="TwitterLogin" />
 
         <provider android:authorities="com.facebook.app.FacebookContentProvider1650562518489293"
             android:name="com.facebook.FacebookContentProvider"
