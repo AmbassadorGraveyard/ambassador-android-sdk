@@ -18,7 +18,7 @@ import com.facebook.share.model.ShareLinkContent;
 /**
  * Created by JakeDunahee on 7/22/15.
  */
-public class SocialGridAdapter extends BaseAdapter {
+class SocialGridAdapter extends BaseAdapter {
     private Context context;
     private String[] nameArray;
     private Integer[] drawablesArray;

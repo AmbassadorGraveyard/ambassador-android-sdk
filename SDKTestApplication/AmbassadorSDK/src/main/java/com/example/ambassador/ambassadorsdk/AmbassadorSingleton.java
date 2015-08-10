@@ -15,7 +15,7 @@ public class AmbassadorSingleton {
     public static final String LINKED_IN_CLIENT_SECRET = "lM1FzXJauTSfxdnW";
 
     private  static AmbassadorSingleton mInstance = null;
-    public AmbassadorActivity ambActivity;
+    public Context context;
     public RAFParameters rafParameters;
 
     public static AmbassadorSingleton getInstance() {
@@ -26,8 +26,32 @@ public class AmbassadorSingleton {
         return mInstance;
     }
 
+    public void setLinkedInToken(String token) {
+        SharedPreferences prefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        prefs.edit().putString("linkedInToken", token);
+    }
+
     public String getLinkedInToken() {
-        SharedPreferences prefs = ambActivity.getSharedPreferences("com.example.ambassador.ambassadorsdk", Context.MODE_PRIVATE);
+        SharedPreferences prefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
         return prefs.getString("linkedInToken", null);
+    }
+
+    public void setIdentifyObject(String objectString) {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        preferences.edit().putString("identifyObject", objectString).apply();
+    }
+
+    public String getIdentifyObject() {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        return preferences.getString("identifyObject", "Fetching ShortURL");
+    }
+
+    public void startIdentify() {
+        if (context == null) {
+            context = MyApplication.getAppContext();
+        }
+
+        Identify identify = new Identify(context);
+        identify.getIdentity();
     }
 }
