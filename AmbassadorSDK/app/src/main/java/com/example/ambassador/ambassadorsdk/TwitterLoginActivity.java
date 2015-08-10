@@ -10,7 +10,7 @@ import android.webkit.WebViewClient;
  */
 
 // NOT USED YET!
-public class TwitterLoginActivity extends ActionBarActivity {
+class TwitterLoginActivity extends ActionBarActivity {
     private WebView wvTwitter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

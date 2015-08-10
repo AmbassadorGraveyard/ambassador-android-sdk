@@ -46,7 +46,7 @@ import java.net.URLEncoder;
 /**
  * Created by JakeDunahee on 7/27/15.
  */
-public class LinkedInPostDialog extends Dialog {
+class LinkedInPostDialog extends Dialog {
     Button btnPost, btnCancel;
     EditText etMessage;
     AmbassadorActivity activity;
