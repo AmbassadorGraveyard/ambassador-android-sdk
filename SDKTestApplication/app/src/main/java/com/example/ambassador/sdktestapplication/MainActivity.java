@@ -24,6 +24,8 @@ public class MainActivity extends ActionBarActivity {
 
         final Context cxt = this;
 
+        Ambassador.identify();
+
         btnRAF = (Button)findViewById(R.id.btnShowRAF);
         btnRAF.setOnClickListener(new View.OnClickListener() {
             @Override
