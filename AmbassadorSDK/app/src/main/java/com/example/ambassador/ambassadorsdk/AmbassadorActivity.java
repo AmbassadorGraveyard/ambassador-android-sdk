@@ -1,13 +1,16 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.app.ActionBar;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -71,7 +74,7 @@ public class AmbassadorActivity extends ActionBarActivity {
         final AmbassadorActivity activity = this;
         initSocialMedias(activity);
 
-        AmbassadorSingleton.getInstance().ambActivity = this;
+        AmbassadorSingleton.getInstance().context = getApplicationContext();
 
         fbDialog = new ShareDialog(this);
         rafParams = (RAFParameters) getIntent().getSerializableExtra("test");
@@ -83,10 +86,14 @@ public class AmbassadorActivity extends ActionBarActivity {
         gvSocialGrid = (GridView) findViewById(R.id.gvSocialGrid);
         btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
 
-//        rafParams = new RAFParameters(); // Temp RAFPARAMS while in just framework
         setCustomizedText(rafParams);
 
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
+
+        etShortUrl.setText("mbsy.co/test_shouldhavegotten");
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("augurID"));
 
         // Sets up social grid
         SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridTitles, gridDrawables);
@@ -125,6 +132,20 @@ public class AmbassadorActivity extends ActionBarActivity {
             }
         });
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TEMPORARY - Makes toast upon successfully receiving Augur ID
+            Toast.makeText(getApplicationContext(), "AugurID = " + AmbassadorSingleton.getInstance().getIdentifyObject(), Toast.LENGTH_LONG).show();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
+    }
     //endregion
 
     //region HELPER FUNCTIONS
@@ -144,6 +165,10 @@ public class AmbassadorActivity extends ActionBarActivity {
         Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
         contactIntent.putExtra("showPhoneNumbers", showPhoneNumbers);
         startActivity(contactIntent);
+    }
+
+    public void setShortURL() {
+        etShortUrl.setText("mbsy.co/test_shouldhavegotten");
     }
     //endregion
 

@@ -21,4 +21,8 @@ public class Ambassador {
         intent.putExtra("test", rafParameters);
         context.startActivity(intent);
     }
+
+    public static void identify() {
+        AmbassadorSingleton.getInstance().startIdentify();
+    }
 }

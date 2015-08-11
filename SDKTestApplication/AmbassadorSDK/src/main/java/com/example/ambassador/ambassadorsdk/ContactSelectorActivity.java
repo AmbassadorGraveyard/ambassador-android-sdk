@@ -240,7 +240,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
         btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0));
         etShareMessage.setEnabled(true);
         etShareMessage.requestFocus();
-//        llSendView.invalidate();
         inputManager.showSoftInput(etShareMessage, 0); // Presents keyboard
     }
 
