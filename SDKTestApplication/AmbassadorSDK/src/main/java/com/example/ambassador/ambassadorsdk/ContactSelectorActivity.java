@@ -46,6 +46,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
     private ArrayList<ContactObject> contactList;
     public Boolean showPhoneNumbers;
     private InputMethodManager inputManager;
+    ContactListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
         // Sets share message to default message from RAF Parameters
         etShareMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
 
-        final ContactListAdapter adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
+        adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
         lvContacts.setAdapter(adapter);
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -318,8 +319,8 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     public void sendToContacts(View view) {
-        Toast.makeText(this, "Would send to people", Toast.LENGTH_SHORT).show();
-        Log.d("test", "SENT");
+        BulkShareHelper shareHelper = new BulkShareHelper();
+        shareHelper.bulkSMSShare(adapter.selectedContacts, showPhoneNumbers);
     }
 
     void handleNoContacts() {
