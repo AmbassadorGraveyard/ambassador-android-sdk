@@ -24,11 +24,8 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".LinkedInLoginActivity"
+
             android:label="LinkedInLogin"
-            android:screenOrientation="portrait"/>
-        <activity
-            android:name=".TwitterLoginActivity"
-            android:label="TwitterLogin"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ContactSelectorActivity"
