@@ -1,37 +1,32 @@
 package com.example.ambassador.ambassadorsdk;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.Toast;
 
-import com.google.gson.Gson;
-
-import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by JakeDunahee on 8/11/15.
  */
 public class BulkShareHelper {
-    public ProgressBar loader;
+    public ProgressDialog loader;
+
+    public BulkShareHelper(ProgressDialog loader) {
+        this.loader = loader;
+    }
 
     //region VERIFIERS -- Verify string objects(phone numbers and email addresses) and return ArrayLists
     public static ArrayList<String> verifiedSMS(ArrayList<ContactObject> contactObjects) {
@@ -60,6 +55,7 @@ public class BulkShareHelper {
         return verifiedEmails;
     }
 
+    // Boolean that checks for legit email addressing using regex
     private static Boolean isValidEmail(String emailAddress) {
         final Pattern emailRegex = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
                 Pattern.CASE_INSENSITIVE);
@@ -114,11 +110,12 @@ public class BulkShareHelper {
         return object;
     }
 
+    // Creats an email payload object for bulk sharing
     private static JSONObject payloadObjectForEmail(ArrayList<String> emails) {
         JSONObject object = new JSONObject();
         try {
-            object.put("to_emails", emails);
-            object.put("short_code", "jB78");
+            object.put("to_emails", new JSONArray(emails));
+            object.put("short_code", "jw9j");
             object.put("message", "test email message");
             object.put("subject_line", "test subject line");
         } catch (JSONException e) {
@@ -138,24 +135,47 @@ public class BulkShareHelper {
             emailRequest.contacts = contacts;
             emailRequest.execute();
         }
+    }
 
+    public void setUpConnection(HttpURLConnection connection) {
+        try {
+            connection.setDoInput(true);
+            connection.setDoOutput(true);
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
+            connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Boolean isSuccessfulResponseCode(int statusCode) {
+        return (statusCode >= 200 && statusCode < 300);
+    }
+
+    public void callSuccessful() {
+        loader.hide();
+        loader.getOwnerActivity().finish();
+        Toast.makeText(loader.getOwnerActivity(), "Successfully shared!", Toast.LENGTH_SHORT).show();
+    }
+
+    public void callUnsuccessful() {
+        loader.hide();
+        Toast.makeText(loader.getOwnerActivity(), "Unable to share.  Please try again.", Toast.LENGTH_SHORT).show();
     }
 
     class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
         public ArrayList<ContactObject> contacts;
         public int statusCode;
+
         @Override
         protected Void doInBackground(Void... params) {
             String url = "https://dev-ambassador-api.herokuapp.com/share/sms/";
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+                setUpConnection(connection);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
                 wr.write(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMS(contacts)).toString().getBytes());
@@ -163,20 +183,9 @@ public class BulkShareHelper {
                 wr.close();
 
                 statusCode = connection.getResponseCode();
-
-                // Get and read response from LinkedIN
-                InputStream is = connection.getInputStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                StringBuffer response = new StringBuffer();
-
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                }
-
-                System.out.println(response);
             } catch (IOException ioException) {
                 Log.e("IOException", ioException.toString());
+                callUnsuccessful();
             }
 
             return null;
@@ -185,10 +194,14 @@ public class BulkShareHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
-            shareTrackRequest.contacts = contacts;
-            shareTrackRequest.isSMS = true;
-            shareTrackRequest.execute();
+            if (isSuccessfulResponseCode(statusCode)) {
+                ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
+                shareTrackRequest.contacts = BulkShareHelper.verifiedSMS(contacts);
+                shareTrackRequest.isSMS = true;
+                shareTrackRequest.execute();
+            } else {
+                callUnsuccessful();
+            }
         }
     }
 
@@ -201,12 +214,7 @@ public class BulkShareHelper {
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+                setUpConnection(connection);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
                 wr.write(BulkShareHelper.payloadObjectForEmail(BulkShareHelper.verifiedEmail(contacts)).toString().getBytes());
@@ -214,19 +222,9 @@ public class BulkShareHelper {
                 wr.close();
 
                 statusCode = connection.getResponseCode();
-
-                InputStream is = connection.getInputStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                StringBuffer response = new StringBuffer();
-
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                }
-
-                System.out.println(response);
             } catch (IOException ioException) {
                 Log.e("IOException", ioException.toString());
+                callUnsuccessful();
             }
 
             return null;
@@ -235,47 +233,36 @@ public class BulkShareHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
-            shareTrackRequest.contacts = contacts;
-            shareTrackRequest.isSMS = false;
-            shareTrackRequest.execute();
+            if (isSuccessfulResponseCode(statusCode)) {
+                ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
+                shareTrackRequest.contacts = BulkShareHelper.verifiedEmail(contacts);
+                shareTrackRequest.isSMS = false;
+                shareTrackRequest.execute();
+            } else {
+                callUnsuccessful();
+            }
         }
     }
 
     class ShareTrackRequest extends AsyncTask<Void, Void, Void> {
-        public ArrayList<ContactObject> contacts;
+        public ArrayList<String> contacts;
         public int statusCode;
         public Boolean isSMS;
+
         @Override
         protected Void doInBackground(Void... params) {
             String url = "https://dev-ambassador-api.herokuapp.com/track/share/";
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setDoInput(true);
-                connection.setDoOutput(true);
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+                setUpConnection(connection);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.write(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMS(contacts), isSMS).toString().getBytes());
+                wr.write(BulkShareHelper.contactArray(contacts, isSMS).toString().getBytes());
                 wr.flush();
                 wr.close();
 
                 statusCode = connection.getResponseCode();
-
-                InputStream is = connection.getInputStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                StringBuffer response = new StringBuffer();
-
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                }
-
-                System.out.println(response);
             } catch (IOException ioException) {
                 Log.e("IOException", ioException.toString());
             }
@@ -286,9 +273,8 @@ public class BulkShareHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (loader != null) {
-                loader.setVisibility(View.GONE);
-            }
+            // TODO: Check for fail and store locally to retry when signal is available in order to keep share track
+            callSuccessful();
         }
     }
 }
