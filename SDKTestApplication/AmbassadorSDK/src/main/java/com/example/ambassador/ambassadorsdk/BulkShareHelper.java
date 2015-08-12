@@ -36,7 +36,7 @@ public class BulkShareHelper {
             if (strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7
                     || !verifiedNumbers.contains(strippedNum)) {
                 verifiedNumbers.add(strippedNum);
-                Log.d("phoneNum", strippedNum);
+                Log.d("Contacts", "(" + verifiedNumbers.size() + ") " + strippedNum);
             }
         }
 
@@ -48,7 +48,7 @@ public class BulkShareHelper {
         for (ContactObject contact : contactObjects) {
             if (isValidEmail(contact.emailAddress)) {
                 verifiedEmails.add(contact.emailAddress);
-                Log.d("Emails", "(" +verifiedEmails.size() + ")" + contact.emailAddress);
+                Log.d("Contacts", "(" + verifiedEmails.size() + ") " + contact.emailAddress);
             }
         }
 
@@ -156,6 +156,7 @@ public class BulkShareHelper {
 
     public void callSuccessful() {
         loader.hide();
+        loader.dismiss();
         loader.getOwnerActivity().finish();
         Toast.makeText(loader.getOwnerActivity(), "Successfully shared!", Toast.LENGTH_SHORT).show();
     }
@@ -185,7 +186,6 @@ public class BulkShareHelper {
                 statusCode = connection.getResponseCode();
             } catch (IOException ioException) {
                 Log.e("IOException", ioException.toString());
-                callUnsuccessful();
             }
 
             return null;
@@ -224,7 +224,6 @@ public class BulkShareHelper {
                 statusCode = connection.getResponseCode();
             } catch (IOException ioException) {
                 Log.e("IOException", ioException.toString());
-                callUnsuccessful();
             }
 
             return null;

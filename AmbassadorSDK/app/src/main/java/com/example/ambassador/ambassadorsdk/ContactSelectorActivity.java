@@ -44,6 +44,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
     public Boolean showPhoneNumbers;
     private InputMethodManager inputManager;
     ContactListAdapter adapter;
+    ProgressDialog pd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +107,12 @@ public class ContactSelectorActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pd.dismiss();
     }
 
     //region TOOLBAR MENU
@@ -309,7 +316,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     public void sendToContacts(View view) {
-        ProgressDialog pd = new ProgressDialog(this, android.R.style.Theme_DeviceDefault_Light_Panel);
+        pd = new ProgressDialog(this, android.R.style.Theme_DeviceDefault_Light_Panel);
         pd.setMessage("Sharing");
         pd.setOwnerActivity(this);
         pd.setCanceledOnTouchOutside(false);
