@@ -32,6 +32,7 @@ android {
 repositories {
     mavenCentral()
     maven { url 'https://maven.fabric.io/public' }
+    maven { url 'http://clojars.org/repo' }
 }
 
 dependencies {
@@ -45,4 +46,5 @@ dependencies {
     }
     compile project(':facebook')
     compile 'com.google.guava:guava:19.0-rc1'
+    compile 'com.pusher:pusher-java-client:0.3.3'
 }

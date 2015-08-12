@@ -13,6 +13,9 @@ public class AmbassadorSingleton {
     public static final String LINKED_IN_CALLBACK_URL = "http://localhost:2999";
     public static final String LINKED_IN_CLIENT_ID = "777z4czm3edaef";
     public static final String LINKED_IN_CLIENT_SECRET = "lM1FzXJauTSfxdnW";
+    public static final String PUSHER_APP_ID = "135166";
+    public static final String PUSHER_KEY = "9da095e2c8b827cd3808";
+    public static final String PUSHER_SECRET = "4a0d5e8a412b452a08e5";
     public static final String MBSY_UNIVERSAL_ID = "abfd1c89-4379-44e2-8361-ee7b87332e32";
     public static final String API_KEY = "UniversalToken bdb49d2b9ae24b7b6bc5da122370f3517f98336f"; // TEMP HERE UNTIL AMBASSADOR SETUP CREATED
 

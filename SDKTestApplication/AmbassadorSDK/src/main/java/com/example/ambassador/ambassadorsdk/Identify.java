@@ -13,6 +13,17 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.pusher.client.Pusher;
+import com.pusher.client.channel.Channel;
+import com.pusher.client.channel.ChannelEventListener;
+import com.pusher.client.channel.PrivateChannel;
+import com.pusher.client.connection.ConnectionEventListener;
+import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -78,7 +89,7 @@ public class Identify {
                 sendIdBroadcast();
                 timer.cancel();
                 Log.d("AugurID", AmbassadorSingleton.getInstance().getIdentifyObject());
-                System.out.println("AUGUR IDENTIFICATION SUCCESS!");
+                getAugurID(consoleMessage.message());
                 return super.onConsoleMessage(consoleMessage);
             } else {
                 return Boolean.parseBoolean(null);
@@ -90,5 +101,50 @@ public class Identify {
         // Posts notification to listener once identity is successfully received
         Intent intent = new Intent("augurID");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+    }
+
+    public String getAugurID(String augurString) {
+        try {
+            JSONObject augurObject = new JSONObject(augurString);
+            JSONObject deviceObject = augurObject.getJSONObject("device");
+            String deviceID = deviceObject.getString("ID");
+            System.out.println("created augur object");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return "alksdjf";
+    }
+
+    public  void createPusher(String augurDeviceID) {
+        Pusher pusher = new Pusher(AmbassadorSingleton.PUSHER_KEY);
+        pusher.connect(new ConnectionEventListener() {
+            @Override
+            public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
+                Log.d("Pusher", "State changed to " + connectionStateChange.getCurrentState() + " from " + connectionStateChange.getPreviousState());
+            }
+
+            @Override
+            public void onError(String s, String s1, Exception e) {
+                Log.d("Pusher", "There was a problem connecting to Pusher");
+            }
+        }, ConnectionState.ALL);
+
+        // Subscribing to channel
+        String channelName = "snippet-channel@user=<" + augurDeviceID + ">";
+        PrivateChannel privateChannel = pusher.subscribePrivate(channelName);
+        privateChannel.bind("identify_action", new ChannelEventListener() {
+            @Override
+            public void onSubscriptionSucceeded(String s) {
+
+            }
+
+            @Override
+            public void onEvent(String s, String s1, String s2) {
+                Log.d("Pusher", "String 1 = " + s);
+                Log.d("Pusher", "String 2 = " + s1);
+                Log.d("Pusher", "String 3 = " + s2);
+            }
+        });
     }
 }
