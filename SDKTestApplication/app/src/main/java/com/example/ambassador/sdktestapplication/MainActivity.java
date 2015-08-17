@@ -24,7 +24,7 @@ public class MainActivity extends ActionBarActivity {
 
         final Context cxt = this;
 
-        Ambassador.identify();
+        Ambassador.identify("jake@getambassador.com");
 
         btnRAF = (Button)findViewById(R.id.btnShowRAF);
         btnRAF.setOnClickListener(new View.OnClickListener() {
@@ -35,7 +35,7 @@ public class MainActivity extends ActionBarActivity {
                 parameters.welcomeTitle = "RAF Params Welcome Title";
                 parameters.welcomeDescription = "RAF Params Welcome Description";
                 parameters.toolbarTitle = "RAF Params Toolbar Title";
-                Ambassador.presentRAF(cxt, parameters);
+                Ambassador.presentRAF(cxt, parameters, "");
             }
         });
     }
