@@ -74,8 +74,6 @@ public class AmbassadorActivity extends ActionBarActivity {
         final AmbassadorActivity activity = this;
         initSocialMedias(activity);
 
-        AmbassadorSingleton.getInstance().context = getApplicationContext();
-
         fbDialog = new ShareDialog(this);
         rafParams = (RAFParameters) getIntent().getSerializableExtra("test");
 

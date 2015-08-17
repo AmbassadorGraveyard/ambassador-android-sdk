@@ -109,12 +109,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        pd.dismiss();
-    }
-
     //region TOOLBAR MENU
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
