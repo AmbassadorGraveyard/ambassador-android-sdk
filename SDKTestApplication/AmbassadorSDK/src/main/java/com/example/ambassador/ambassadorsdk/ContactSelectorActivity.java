@@ -73,7 +73,8 @@ public class ContactSelectorActivity extends AppCompatActivity {
         }
 
         // Sets share message to default message from RAF Parameters
-        etShareMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
+        etShareMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage + " " +
+        AmbassadorSingleton.getInstance().getURL());
 
         adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
         lvContacts.setAdapter(adapter);
@@ -310,10 +311,10 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     public void sendToContacts(View view) {
-        pd = new ProgressDialog(this, android.R.style.Theme_DeviceDefault_Light_Panel);
+        pd = new ProgressDialog(this);
         pd.setMessage("Sharing");
         pd.setOwnerActivity(this);
-        pd.setCanceledOnTouchOutside(false);
+        pd.setCancelable(false);
         pd.show();
 
         BulkShareHelper shareHelper = new BulkShareHelper(pd);

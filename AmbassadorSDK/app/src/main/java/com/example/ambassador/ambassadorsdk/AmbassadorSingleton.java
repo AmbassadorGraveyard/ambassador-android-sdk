@@ -3,6 +3,8 @@ package com.example.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.HashMap;
+
 /**
  * Created by JakeDunahee on 7/29/15.
  */
@@ -65,5 +67,25 @@ public class AmbassadorSingleton {
     public String getCampaignID() {
         SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
         return preferences.getString("campaignID", null);
+    }
+
+    public void savePusherInfo(String pusherObject) {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        preferences.edit().putString("pusherObject", pusherObject).apply();
+    }
+
+    public String getPusherInfo() {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        return preferences.getString("pusherObject", null);
+    }
+
+    public void saveURL(String url) {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        preferences.edit().putString("url", url).apply();
+    }
+
+    public String getURL() {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        return preferences.getString("url", null);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.app.ActionBar;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -47,7 +48,16 @@ import com.twitter.sdk.android.core.services.StatusesService;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import io.fabric.sdk.android.Fabric;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
+
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Handler;
 
 
 public class AmbassadorActivity extends ActionBarActivity {
@@ -62,6 +72,9 @@ public class AmbassadorActivity extends ActionBarActivity {
     private EditText etShortUrl;
     private GridView gvSocialGrid;
     private RAFParameters rafParams;
+    private ProgressDialog pd;
+    private Timer networkTimer;
+    private int timerSeconds;
     private final String[] gridTitles = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
     private final Integer[] gridDrawables = new Integer[]{R.mipmap.facebook_icon, R.mipmap.twitter_icon, R.mipmap.linkedin_icon,
                                                             R.mipmap.email_icon, R.mipmap.sms_icon};
@@ -84,14 +97,12 @@ public class AmbassadorActivity extends ActionBarActivity {
         gvSocialGrid = (GridView) findViewById(R.id.gvSocialGrid);
         btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
 
+        getCorrectUrl();
         setCustomizedText(rafParams);
-
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
 
-        etShortUrl.setText("mbsy.co/test_shouldhavegotten");
-
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
-                new IntentFilter("augurID"));
+                new IntentFilter("pusherData"));
 
         // Sets up social grid
         SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridTitles, gridDrawables);
@@ -131,11 +142,25 @@ public class AmbassadorActivity extends ActionBarActivity {
         });
     }
 
+    final android.os.Handler timerHandler = new android.os.Handler();
+
+    private void showNetworkError() {
+        timerHandler.post(myRunnable);
+    }
+
+    final Runnable myRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Toast.makeText(getApplicationContext(), "There seems to be a network error.  Pleas try again.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    };
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        // Executed when Pusher data is recieved, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            // TEMPORARY - Makes toast upon successfully receiving Augur ID
-            Toast.makeText(getApplicationContext(), "AugurID = " + AmbassadorSingleton.getInstance().getIdentifyObject(), Toast.LENGTH_LONG).show();
+            getCorrectUrl();
         }
     };
 
@@ -145,6 +170,7 @@ public class AmbassadorActivity extends ActionBarActivity {
         super.onDestroy();
     }
     //endregion
+
 
     //region HELPER FUNCTIONS
     public void copyShortURLToClipboard() {
@@ -165,8 +191,48 @@ public class AmbassadorActivity extends ActionBarActivity {
         startActivity(contactIntent);
     }
 
-    public void setShortURL() {
-        etShortUrl.setText("mbsy.co/test_shouldhavegotten");
+    // Gets URL from Pusher
+    public void getCorrectUrl() {
+        // First checks to see if Pusher info has already been saved to SharedPreferencs
+        if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
+            if (pd != null) { pd.hide(); } // If loading screen is showing, then we should hide it
+            // Next we check if the shortURL Edittext is empty or if has been set
+            if (etShortUrl.getText().toString().isEmpty()) {
+                try {
+                    // We get a JSON object from the Pusher Info string saved to SharedPreferences
+                    JSONObject pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+                    JSONArray urlArray = pusherData.getJSONArray("urls");
+
+                    // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
+                    for (int i = 0; i < urlArray.length(); i++) {
+                        JSONObject urlObj = urlArray.getJSONObject(i);
+                        int campID = urlObj.getInt("campaign_uid");
+                        if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
+                            etShortUrl.setText(urlObj.getString("url"));
+                            AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            // If the pusher object hasn't been saved to SharedPreferences, we show a loading screen until it has been
+            // Should only happen on first launch
+            pd = new ProgressDialog(this);
+            pd.setMessage("Loading");
+            pd.setOwnerActivity(this);
+            pd.setCancelable(false);
+            pd.show();
+
+            networkTimer = new Timer();
+            networkTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    showNetworkError();
+                }
+            }, 30000);
+        }
     }
     //endregion
 
@@ -210,6 +276,3 @@ public class AmbassadorActivity extends ActionBarActivity {
     }
     //endregion
 }
-
-
-
