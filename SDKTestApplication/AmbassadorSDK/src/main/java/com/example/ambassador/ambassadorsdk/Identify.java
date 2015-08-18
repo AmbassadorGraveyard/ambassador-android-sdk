@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.HandlerThread;
 import android.os.Message;
+import android.support.annotation.IntDef;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.webkit.ConsoleMessage;
@@ -36,11 +38,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.net.URL;
+import java.util.logging.Handler;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -50,19 +54,18 @@ import javax.net.ssl.HttpsURLConnection;
 public class Identify {
     private Context context;
     private Timer timer;
-    private String objectString;
     private String emailAddress;
     private WebView wvTest;
     private JSONObject augurObject;
 
     public Identify(Context context, String emailAddress) {
         this.context = context;
+        this.emailAddress = emailAddress;
     }
 
     public void getIdentity() {
         // Set up webview
         wvTest = new WebView(context);
-//        wvTest.setWebChromeClient(new MyChromeClient());
         wvTest.getSettings().setDomStorageEnabled(true); // Helps with console log error
         wvTest.getSettings().setJavaScriptEnabled(true);
         wvTest.addJavascriptInterface(this, "android");
@@ -73,7 +76,7 @@ public class Identify {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                mHandler.obtainMessage().sendToTarget();
+                reloadWebPage();
             }
         }, 0, 3000);
     }
@@ -82,29 +85,27 @@ public class Identify {
     public void onData(String returnString) {
         if (returnString.startsWith("{\"consumer\"")) {
             AmbassadorSingleton.getInstance().setIdentifyObject(returnString);
-            sendIdBroadcast();
             timer.cancel();
-            objectString = returnString;
-            Log.d("Augur", AmbassadorSingleton.getInstance().getIdentifyObject());
             String deviceID = getAugurID(returnString);
             createPusher(deviceID);
-            wvTest.destroy();
-
-            IdentifyRequest request = new IdentifyRequest();
-            request.execute();
         } else {
             Log.d("Augur", "Augur not yet loaded");
         }
     }
 
-    // Handles timer activity on the main thread to avoid errors caused by webview calls from different thread
-    public android.os.Handler mHandler = new android.os.Handler() {
-        public void handleMessage(Message msg) {
-            if (objectString == null){
-                wvTest.loadUrl("https://staging.mbsy.co/universal/landing/?url=ambassador:ios/&universal_id=abfd1c89-4379-44e2-8361-ee7b87332e32");
-            }
+    final android.os.Handler myHandler = new android.os.Handler();
+
+    private void reloadWebPage() {
+        myHandler.post(myRunnable);
+    }
+
+    final Runnable myRunnable = new Runnable() {
+        @Override
+        public void run() {
+            wvTest.loadUrl("https://staging.mbsy.co/universal/landing/?url=ambassador:ios/&universal_id=abfd1c89-4379-44e2-8361-ee7b87332e32");
         }
     };
+
 
     // Subclass of webViewClent
     public class MyBrowser extends WebViewClient {
@@ -117,11 +118,16 @@ public class Identify {
                 wvTest.loadUrl("javascript:android.onData(JSON.stringify(augur.json))");
             }
         }
+
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            wvTest.stopLoading();
+        }
     }
 
     private void sendIdBroadcast() {
         // Posts notification to listener once identity is successfully received
-        Intent intent = new Intent("augurID");
+        Intent intent = new Intent("pusherData");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
@@ -139,7 +145,7 @@ public class Identify {
         return deviceID;
     }
 
-    public  void createPusher(String augurDeviceID) {
+    public void createPusher(String augurDeviceID) {
         String channelName = "private-snippet-channel@user=" + augurDeviceID;
 
         HttpAuthorizer authorizer = new HttpAuthorizer("https://dev-ambassador-api.herokuapp.com/auth/subscribe/");
@@ -148,7 +154,7 @@ public class Identify {
         headers.put("Authorization", AmbassadorSingleton.API_KEY);
         authorizer.setHeaders(headers);
 
-        HashMap<String, String>queryParams = new HashMap<>();
+        HashMap<String, String> queryParams = new HashMap<>();
         queryParams.put("auth_type", "private");
         queryParams.put("channel", channelName);
 
@@ -173,20 +179,24 @@ public class Identify {
 
         pusher.connect();
 
-        PrivateChannel channel = pusher.subscribePrivate(channelName, new PrivateChannelEventListener() {
+        pusher.subscribePrivate(channelName, new PrivateChannelEventListener() {
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
-                Log.d("Pusher", "failed");
+                Log.d("Pusher", "Failed to subscribe to Pusher because " + message + ". The " +
+                        "exception was " + e);
             }
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-                Log.d("Pusher", "succeeeded");
+                Log.d("Pusher", "Successfully subscribed to " + channelName);
+                IdentifyRequest request = new IdentifyRequest();
+                request.execute();
             }
 
             @Override
             public void onEvent(String channelName, String eventName, String data) {
-                Log.d("Pusher", "event");
+                Log.d("Pusher", "data = " + data);
+                getAndSavePusherInfo(data);
             }
         }, "identify_action");
     }
@@ -196,7 +206,7 @@ public class Identify {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String url = "http://dev-ambassador-api.herokuapp.com/universal/action/identify/?u=abfd1c89-4379-44e2-8361-ee7b87332e32";
+            String url = "http://dev-ambassador-api.herokuapp.com/universal/action/identify/?u=abfd1c89-4379-44e2-8361-ee7b87332e32/";
 
             JSONObject identifyObject = new JSONObject();
 
@@ -228,6 +238,7 @@ public class Identify {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
                 wr.writeBytes(identifyObject.toString());
@@ -239,7 +250,7 @@ public class Identify {
                 InputStream is = connection.getInputStream();
                 BufferedReader rd = new BufferedReader(new InputStreamReader(is));
                 String line;
-                StringBuffer response = new StringBuffer();
+                StringBuilder response = new StringBuilder();
 
                 while ((line = rd.readLine()) != null) {
                     response.append(line);
@@ -251,6 +262,27 @@ public class Identify {
             }
 
             return null;
+        }
+    }
+
+    public void getAndSavePusherInfo(String jsonObject) {
+        JSONObject pusherSave = new JSONObject();
+
+        try {
+            JSONObject pusherObject = new JSONObject(jsonObject);
+            String firstName = pusherObject.getString("first_name");
+            String lastName = pusherObject.getString("last_name");
+            String phoneNumber = pusherObject.getString("phone");
+
+            pusherSave.put("firstName", firstName);
+            pusherSave.put("lastName", lastName);
+            pusherSave.put("phoneNumber", phoneNumber);
+
+            pusherSave.put("urls", pusherObject.getJSONArray("urls"));
+            AmbassadorSingleton.getInstance().savePusherInfo(pusherSave.toString());
+            sendIdBroadcast();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }

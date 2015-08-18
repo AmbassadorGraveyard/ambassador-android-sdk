@@ -47,4 +47,5 @@ dependencies {
     compile project(':facebook')
     compile 'com.google.guava:guava:19.0-rc1'
     compile 'com.pusher:pusher-java-client:0.3.3'
+    compile 'org.slf4j:slf4j-android:1.7.12'
 }

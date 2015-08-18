@@ -18,10 +18,10 @@ public class Ambassador {
             rafParameters = new RAFParameters();
         }
 
+        AmbassadorSingleton.getInstance().setCampaignID(campaignID);
+
         intent.putExtra("test", rafParameters);
         context.startActivity(intent);
-
-        AmbassadorSingleton.getInstance().setCampaignID(campaignID);
     }
 
     public static void identify(String email) {

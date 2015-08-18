@@ -31,11 +31,11 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 RAFParameters parameters = new RAFParameters();
-                parameters.shareMessage = "Check out this company! mbsy.co/dljfj92?24";
+                parameters.shareMessage = "Check out this company!";
                 parameters.welcomeTitle = "RAF Params Welcome Title";
                 parameters.welcomeDescription = "RAF Params Welcome Description";
                 parameters.toolbarTitle = "RAF Params Toolbar Title";
-                Ambassador.presentRAF(cxt, parameters, "");
+                Ambassador.presentRAF(cxt, parameters, "260");
             }
         });
     }
