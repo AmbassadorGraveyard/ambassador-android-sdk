@@ -1,28 +1,20 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,21 +22,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by JakeDunahee on 7/27/15.
  */
-public class LinkedInLoginActivity extends ActionBarActivity {
+
+public class LinkedInLoginActivity extends AppCompatActivity {
     WebView webView;
     ProgressBar loader;
 
@@ -57,10 +42,29 @@ public class LinkedInLoginActivity extends ActionBarActivity {
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
         webView = (WebView)findViewById(R.id.wvSocial);
 
-        webView.getSettings().setJavaScriptEnabled(true);
+        setUpToolbar();
+
         webView.setWebViewClient(new MyBrowser());
         webView.loadUrl("https://www.linkedin.com/uas/oauth2/authorization?" +
-                "response_type=code&client_id=777z4czm3edaef&redirect_uri=http://localhost:2999&state=987654321&scope=r_basicprofile%20w_share");
+                "response_type=code&client_id=777z4czm3edaef" +
+                "&redirect_uri=http://localhost:2999" +
+                "&state=987654321" +
+                "&scope=r_basicprofile%20w_share");
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return super.onOptionsItemSelected(item);
+    }
+
+    void setUpToolbar() {
+        Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setBackgroundColor(Color.parseColor("#468fc3"));
+        toolbar.setTitleTextColor(Color.WHITE);
+
+        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Log into LinkedIn"); }
     }
 
     private class MyBrowser extends WebViewClient {
