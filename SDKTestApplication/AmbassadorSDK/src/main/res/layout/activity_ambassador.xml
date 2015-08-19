@@ -62,7 +62,7 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:id="@+id/btnCopyPaste"
-        android:src="@mipmap/copy_paste_icon"
+        android:src="@drawable/copy_paste_icon"
         android:background="#00ffffff"
         android:scaleType="fitXY"
         android:layout_alignTop="@+id/etShortURL"
