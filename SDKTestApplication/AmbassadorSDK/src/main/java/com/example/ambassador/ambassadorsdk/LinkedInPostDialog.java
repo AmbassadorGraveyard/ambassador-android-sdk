@@ -2,53 +2,27 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URI;
 import java.net.URL;
-import java.net.URLEncoder;
 
 /**
  * Created by JakeDunahee on 7/27/15.
  */
 class LinkedInPostDialog extends Dialog {
     Button btnPost, btnCancel;
-    EditText etMessage;
+    CustomEditText etMessage;
     AmbassadorActivity activity;
     ProgressBar loader;
 
@@ -60,17 +34,18 @@ class LinkedInPostDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.activity_linkedin_post);
 
         // UI Components
-        btnPost = (Button) findViewById(R.id.btnShare);
+        btnPost = (Button) findViewById(R.id.btnTweet);
         btnCancel = (Button) findViewById(R.id.btnCancel);
-        etMessage = (EditText) findViewById(R.id.etMessage);
+        etMessage = (CustomEditText) findViewById(R.id.etTweetMessage);
 
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
         loader.setVisibility(View.GONE);
 
+        etMessage.setEditTextTint(Color.parseColor("#468fc3"));
         etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -93,24 +68,28 @@ class LinkedInPostDialog extends Dialog {
     }
 
     private void postToLinkedIn() throws IOException {
-        loader.setVisibility(View.VISIBLE);
-        LinkedInPostRequest linkedInPostRequest = new LinkedInPostRequest();
+        if (etMessage.getText().toString().isEmpty()) {
+            Toast.makeText(getOwnerActivity(), "Cannot share blank message", Toast.LENGTH_SHORT).show();
+            etMessage.shakeEditText();
+        } else {
+            loader.setVisibility(View.VISIBLE);
+            LinkedInPostRequest linkedInPostRequest = new LinkedInPostRequest();
 
-        String userMessage = etMessage.getText().toString();
+            String userMessage = etMessage.getText().toString();
 
-        try {
-            // Create JSON post object
-            JSONObject body = new JSONObject("{" +
-                    "\"comment\": \"" + userMessage + "\"," +
-                    "\"visibility\": " + "{ \"code\": \"anyone\" }" +
-                    "}");
-            linkedInPostRequest.object = body;
-        } catch (JSONException e) {
-            e.printStackTrace();
+            try {
+                // Create JSON post object
+                JSONObject body = new JSONObject("{" +
+                        "\"comment\": \"" + userMessage + "\"," +
+                        "\"visibility\": " + "{ \"code\": \"anyone\" }" +
+                        "}");
+                linkedInPostRequest.object = body;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            linkedInPostRequest.execute();
         }
-
-        // Perform post request
-        linkedInPostRequest.execute();
     }
 
     class LinkedInPostRequest extends AsyncTask<Void, Void, Void> {
