@@ -204,6 +204,8 @@ public class AmbassadorActivity extends AppCompatActivity {
                         if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
                             etShortUrl.setText(urlObj.getString("url"));
                             AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
+                            AmbassadorSingleton.getInstance().rafParameters.shareMessage =
+                                    rafParams.shareMessage + " " + urlObj.getString("url");
                         }
                     }
                 } catch (JSONException e) {
@@ -250,7 +252,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     public void shareWithFacebook() {
         ShareLinkContent content = new ShareLinkContent.Builder()
                 .setContentTitle(rafParams.shareMessage)
-                .setContentUrl(Uri.parse(etShortUrl.getText().toString()))
+                .setContentUrl(Uri.parse(AmbassadorSingleton.getInstance().getURL()))
                 .build();
 
         fbDialog.show(content);
