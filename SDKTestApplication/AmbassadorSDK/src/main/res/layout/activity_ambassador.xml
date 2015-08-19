@@ -36,7 +36,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:text="www.mbsy.co/lsdjfasfd"
+        android:text="Fetching ShortURL"
         android:editable="false"
         android:clickable="true" />
 

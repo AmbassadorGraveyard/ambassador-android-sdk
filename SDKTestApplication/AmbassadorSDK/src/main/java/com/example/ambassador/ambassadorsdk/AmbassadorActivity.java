@@ -1,10 +1,22 @@
 package com.example.ambassador.ambassadorsdk;
 
+import android.app.ActionBar;
+import android.content.BroadcastReceiver;
+
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
+
 import android.graphics.Color;
 import android.net.Uri;
+
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +26,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 
 import com.facebook.FacebookSdk;
 import com.facebook.share.model.ShareLinkContent;
@@ -58,9 +71,15 @@ public class AmbassadorActivity extends AppCompatActivity {
         btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
 
         setUpToolbar();
+
         setCustomizedText(rafParams);
 
         etShortUrl.setEditTextTint(Color.DKGRAY);
+
+        etShortUrl.setText("mbsy.co/test_shouldhavegotten");
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+                new IntentFilter("augurID"));
 
         // Sets up social grid
         SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridTitles, gridDrawables);
@@ -88,16 +107,30 @@ public class AmbassadorActivity extends AppCompatActivity {
                         shareWithLinkedIn();
                         break;
                     case 3:
-                        System.out.println("Email Share");
+                        goToContactsPage(false);
                         break;
                     case 4:
-                        System.out.println("SMS Share");
+                        goToContactsPage(true);
                         break;
                     default:
                         break;
                 }
             }
         });
+    }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // TEMPORARY - Makes toast upon successfully receiving Augur ID
+            Toast.makeText(getApplicationContext(), "AugurID = " + AmbassadorSingleton.getInstance().getIdentifyObject(), Toast.LENGTH_LONG).show();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        super.onDestroy();
     }
     //endregion
 
@@ -113,6 +146,12 @@ public class AmbassadorActivity extends AppCompatActivity {
     public void setCustomizedText(RAFParameters params) {
         tvWelcomeTitle.setText(params.welcomeTitle);
         tvWelcomeDesc.setText(params.welcomeDescription);
+    }
+
+    void goToContactsPage(Boolean showPhoneNumbers) {
+        Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
+        contactIntent.putExtra("showPhoneNumbers", showPhoneNumbers);
+        startActivity(contactIntent);
     }
 
     void setUpToolbar() {
