@@ -57,7 +57,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
 
-        initFacebook(this);//
+        initFacebook(this);
 
         AmbassadorSingleton.getInstance().context = getApplicationContext();
         rafParams = (RAFParameters) getIntent().getSerializableExtra("test");
