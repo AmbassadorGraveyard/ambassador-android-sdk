@@ -29,6 +29,10 @@
             android:label="LinkedInLogin"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".TwitterLoginActivity"
+            android:label="TwitterLoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ContactSelectorActivity"
             android:label="Contacts Activity"
             android:windowSoftInputMode="stateAlwaysHidden"
@@ -37,8 +41,5 @@
         <provider android:authorities="com.facebook.app.FacebookContentProvider***REMOVED***"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="943c8f7b02356e57e638d691295686e5325a5ac8" />
     </application>
 </manifest>

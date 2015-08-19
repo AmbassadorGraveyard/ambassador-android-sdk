@@ -10,7 +10,8 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/rlBackground"
         android:layout_marginTop="5dp"
-        android:background="#ff34498c">
+        android:background="@drawable/corner_radius_background"
+        android:backgroundTint="#000000">
 
         <ImageView
             android:layout_width="wrap_content"
