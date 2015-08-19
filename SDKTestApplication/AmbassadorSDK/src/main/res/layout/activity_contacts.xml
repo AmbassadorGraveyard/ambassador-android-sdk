@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/rlMaster">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/rlSearch"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true">
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/etSearch"
+            android:hint="Search"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="76dp"
+            android:focusable="true"
+            android:enabled="true"
+            android:layout_toStartOf="@+id/btnDoneSearch"
+            android:layout_alignBottom="@+id/btnDoneSearch" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DONE"
+            android:id="@+id/btnDoneSearch"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:background="#00000000"
+            android:layout_marginRight="5dp"
+            android:textColor="#408cca"
+            android:onClick="displayOrHideSearch" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/llSendView"
+        android:background="#ffffff">
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/etShareMessage"
+                android:layout_weight="2.66"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:editable="true"
+                android:enabled="false"
+                android:selectAllOnFocus="true"
+                android:autoText="false" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnEdit"
+                android:layout_weight="0"
+                android:src="@mipmap/pencil_edit"
+                android:background="#00000000"
+                android:layout_marginRight="5dp"
+                android:onClick="handleEditButtonTap" />
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NO CONTACTS SELECTED"
+            android:id="@+id/btnSend"
+            android:textColor="#ffffff"
+            android:background="#4a93cc"
+            android:enabled="false"
+            android:onClick="sendToContacts"/>
+    </LinearLayout>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvContacts"
+        android:layout_below="@+id/rlSearch"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/llSendView"
+        android:background="#ffffff" />
+
+</RelativeLayout>

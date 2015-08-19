@@ -1,8 +1,9 @@
 package com.example.ambassador.sdktestapplication;
 
 import android.content.Context;
-import android.support.v7.app.ActionBarActivity;
+
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,12 +22,14 @@ public class MainActivity extends ActionBarActivity {
 
         final Context cxt = this;
 
+        Ambassador.identify();
+
         btnRAF = (Button)findViewById(R.id.btnShowRAF);
         btnRAF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 RAFParameters parameters = new RAFParameters();
-                parameters.shareMessage = "Check out this company!";
+                parameters.shareMessage = "Check out this company! mbsy.co/dljfj92?24";
                 parameters.welcomeTitle = "RAF Params Welcome Title";
                 parameters.welcomeDescription = "RAF Params Welcome Description";
                 parameters.toolbarTitle = "RAF Params Toolbar Title";

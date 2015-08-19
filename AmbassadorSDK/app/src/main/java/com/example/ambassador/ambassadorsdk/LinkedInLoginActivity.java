@@ -155,12 +155,11 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                     // Get values from JSON object
                     JSONObject json = new JSONObject(response.toString());
                     String accessToken = json.getString("access_token");
-                    System.out.println(accessToken);
-
                     // Save Access Token to SharedPreferences so user doesn't need to sign in again
-                    SharedPreferences prefs = context.getSharedPreferences(
-                            "com.example.ambassador.ambassadorsdk", Context.MODE_PRIVATE);
-                    prefs.edit().putString("linkedInToken", accessToken).apply();
+//                    SharedPreferences prefs = context.getSharedPreferences(
+//                            "com.example.ambassador.ambassadorsdk", Context.MODE_PRIVATE);
+//                    prefs.edit().putString("linkedInToken", accessToken).apply();
+                    AmbassadorSingleton.getInstance().setLinkedInToken(accessToken);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
