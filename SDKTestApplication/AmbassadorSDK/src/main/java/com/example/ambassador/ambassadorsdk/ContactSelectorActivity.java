@@ -236,7 +236,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     void editBtnTapped() {
-        btnEdit.setImageResource(R.mipmap.done_button);
+        btnEdit.setImageResource(R.drawable.done_button);
         btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0));
         etShareMessage.setEnabled(true);
         etShareMessage.requestFocus();
@@ -247,7 +247,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
         btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         etShareMessage.setSelection(0);
         etShareMessage.setEnabled(false);
-        btnEdit.setImageResource(R.mipmap.pencil_edit);
+        btnEdit.setImageResource(R.drawable.pencil_edit);
     }
 
     public void displayOrHideSearch(View v) {
