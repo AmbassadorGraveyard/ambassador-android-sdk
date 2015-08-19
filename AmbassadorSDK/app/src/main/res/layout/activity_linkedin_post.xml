@@ -5,40 +5,41 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:text="LinkedIn Post"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:textSize="20dp"
-        android:textColor="#ff0867ac"
+        android:textColor="#ffffff"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="20dp"
         android:layout_alignParentEnd="true"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="#468fc3"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp" />
 
-    <EditText
+    <com.example.ambassador.ambassadorsdk.CustomEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etMessage"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
+        android:id="@+id/etTweetMessage"
         android:backgroundTint="#ff2c82bb"
-        android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="10dp"
         android:editable="true"
-        android:backgroundTintMode="add" />
+        android:layout_below="@+id/textView3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:backgroundTintMode="src_atop"
+        android:textCursorDrawable="@null"/>
 
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Share"
-        android:id="@+id/btnShare"
-        android:layout_below="@+id/etMessage"
-        android:layout_alignEnd="@+id/etMessage"
+        android:id="@+id/btnTweet"
+        android:layout_below="@+id/etTweetMessage"
+        android:layout_alignEnd="@+id/etTweetMessage"
         android:background="#00ffffff"
         android:textColor="#ff1a71b2" />
 
@@ -49,10 +50,10 @@
         android:text="Cancel"
         android:id="@+id/btnCancel"
         android:background="#00ffffff"
-        android:layout_alignTop="@+id/btnShare"
-        android:layout_toStartOf="@+id/btnShare"
+        android:layout_alignTop="@+id/btnTweet"
+        android:layout_toStartOf="@+id/btnTweet"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="10dp" />
+        android:layout_marginBottom="5dp" />
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -60,6 +61,32 @@
         android:id="@+id/loadingPanel"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:indeterminate="true" />
+        android:indeterminate="false"
+        android:indeterminateTint="#468fc3"
+        android:indeterminateTintMode="src_in"
+        android:indeterminateOnly="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Message"
+        android:id="@+id/textView3"
+        android:layout_below="@+id/textView"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView2"
+        android:src="@mipmap/linkedin_icon"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_alignBottom="@+id/textView"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="5dp" />
 
 </RelativeLayout>
