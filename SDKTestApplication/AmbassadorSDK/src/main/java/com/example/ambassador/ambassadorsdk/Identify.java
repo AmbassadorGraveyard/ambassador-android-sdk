@@ -84,6 +84,7 @@ public class Identify {
     @JavascriptInterface
     public void onData(String returnString) {
         if (returnString.startsWith("{\"consumer\"")) {
+            Log.d("Augur", "Augur object received!!! Object = " + returnString);
             AmbassadorSingleton.getInstance().setIdentifyObject(returnString);
             timer.cancel();
             String deviceID = getAugurID(returnString);
@@ -114,7 +115,7 @@ public class Identify {
             super.onPageFinished(view, url);
 
             if (url.startsWith("https://staging.mbsy.co")) {
-                Log.d("AugurCall", "CHECKING FOR AUGUR ID");
+                Log.d("AugurCall", "Attempting to get Augur Object");
                 wvTest.loadUrl("javascript:android.onData(JSON.stringify(augur.json))");
             }
         }
@@ -131,13 +132,13 @@ public class Identify {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
+    // Pulls deviceID from Augur Object
     public String getAugurID(String augurString) {
         String deviceID = "null";
         try {
             augurObject = new JSONObject(augurString);
             JSONObject deviceObject = augurObject.getJSONObject("device");
             deviceID = deviceObject.getString("ID");
-            System.out.println("created augur object");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -148,6 +149,7 @@ public class Identify {
     public void createPusher(String augurDeviceID) {
         String channelName = "private-snippet-channel@user=" + augurDeviceID;
 
+        // HttpAuthorizer is used to append headers and extra parameters to the initial Pusher authorization request
         HttpAuthorizer authorizer = new HttpAuthorizer("https://dev-ambassador-api.herokuapp.com/auth/subscribe/");
 
         HashMap<String, String> headers = new HashMap<>();
@@ -157,7 +159,6 @@ public class Identify {
         HashMap<String, String> queryParams = new HashMap<>();
         queryParams.put("auth_type", "private");
         queryParams.put("channel", channelName);
-
         authorizer.setQueryStringParameters(queryParams);
 
         PusherOptions options = new PusherOptions();
@@ -168,7 +169,7 @@ public class Identify {
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
-                Log.d("Pusher", "State changed to " + connectionStateChange.getCurrentState() + " from " + connectionStateChange.getPreviousState());
+                Log.d("Pusher", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
             }
 
             @Override
@@ -256,7 +257,7 @@ public class Identify {
                     response.append(line);
                 }
 
-                Log.d("Identify", response.toString());
+                Log.d("Pusher", response.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -265,6 +266,7 @@ public class Identify {
         }
     }
 
+    // Saves Pusher object to SharedPreferences
     public void getAndSavePusherInfo(String jsonObject) {
         JSONObject pusherSave = new JSONObject();
 
@@ -277,10 +279,10 @@ public class Identify {
             pusherSave.put("firstName", firstName);
             pusherSave.put("lastName", lastName);
             pusherSave.put("phoneNumber", phoneNumber);
-
             pusherSave.put("urls", pusherObject.getJSONArray("urls"));
+
             AmbassadorSingleton.getInstance().savePusherInfo(pusherSave.toString());
-            sendIdBroadcast();
+            sendIdBroadcast(); // Tells MainActivity to update edittext with url
         } catch (JSONException e) {
             e.printStackTrace();
         }
