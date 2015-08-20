@@ -16,8 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.BounceInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -46,6 +45,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
     private ArrayList<ContactObject> contactList;
     public Boolean showPhoneNumbers;
     private InputMethodManager inputManager;
+    private int checkmarkPxXPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +63,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
         llSendView = (LinearLayout) findViewById(R.id.llSendView);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
+        checkmarkPxXPos = getResources().getDimensionPixelSize(R.dimen.contact_select_checkmark_x);
         setUpToolbar();
 
         // Finds out whether to show emails or phone numbers
@@ -81,15 +82,15 @@ public class ContactSelectorActivity extends AppCompatActivity {
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get checkmark image and animates in or out based on its selection state
+                // Get checkmark image and animate in or out based on its selection state
                 ImageView imageView = (ImageView) view.findViewById(R.id.ivCheckMark);
                 if (adapter.selectedContacts.contains(adapter.filteredContactList.get(position))) {
                     adapter.selectedContacts.remove(adapter.filteredContactList.get(position));
                     imageView.animate().setDuration(100).x(view.getWidth()).start();
                 } else {
                     adapter.selectedContacts.add(adapter.filteredContactList.get(position));
-                    imageView.animate().setDuration(300).setInterpolator(new BounceInterpolator())
-                            .x(view.getWidth() - imageView.getWidth() - 15).start();
+                    imageView.animate().setDuration(300).setInterpolator(new OvershootInterpolator())
+                            .x(view.getWidth() - imageView.getWidth() - checkmarkPxXPos).start();
                 }
 
                 updateSendButton(adapter.selectedContacts.size());
@@ -146,12 +147,8 @@ public class ContactSelectorActivity extends AppCompatActivity {
         while (phones.moveToNext()) {
             ContactObject object = new ContactObject();
 
-            String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            object.name = name;
-
-            String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            object.phoneNumber = phoneNumber;
-
+            object.name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            object.phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
             String typeNum = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
 
             switch (Integer.parseInt(typeNum)) {
@@ -193,12 +190,8 @@ public class ContactSelectorActivity extends AppCompatActivity {
         while (emails.moveToNext()) {
             ContactObject object = new ContactObject();
 
-            String name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            object.name = name;
-
-            String emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            object.emailAddress = emailAddress;
-
+            object.name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));;
+            object.emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));;
             contactList.add(object);
         }
 
