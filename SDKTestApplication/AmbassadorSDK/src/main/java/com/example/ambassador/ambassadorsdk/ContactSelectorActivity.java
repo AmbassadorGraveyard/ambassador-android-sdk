@@ -210,6 +210,19 @@ public class ContactSelectorActivity extends AppCompatActivity {
             contactList.add(object1);
             contactList.add(object2);
             contactList.add(object3);
+            contactList.add(new ContactObject("Jim Doe", "jimdoe2@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe44@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe3@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe5@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe6@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe7@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe8@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe9@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe11@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe@g12mail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe221@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdo121e@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jim112121doe@gmail.com"));
         }
 
         sortContactsAlphabetically();
