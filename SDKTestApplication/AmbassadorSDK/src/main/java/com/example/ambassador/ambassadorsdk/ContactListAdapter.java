@@ -25,6 +25,7 @@ public class ContactListAdapter extends BaseAdapter  {
     public ArrayList<ContactObject> contactObjects, filteredContactList, selectedContacts;
     private Boolean shouldShowPhoneNumbers, isFiltering;
     private final Activity context;
+    private final int checkmarkPxXPos;
 
     public ContactListAdapter(Activity context, ArrayList<ContactObject> contactObjects, Boolean showPhoneNumbers) {
         this.context = context;
@@ -33,6 +34,8 @@ public class ContactListAdapter extends BaseAdapter  {
         selectedContacts = new ArrayList<>();
         filteredContactList = (ArrayList<ContactObject>)contactObjects.clone();
         isFiltering = false;
+
+        checkmarkPxXPos = context.getResources().getDimensionPixelSize(R.dimen.contact_select_checkmark_x);
     }
 
     static class ViewHolder {
@@ -83,7 +86,7 @@ public class ContactListAdapter extends BaseAdapter  {
         }
 
         if (selectedContacts.contains(filteredContactList.get(position))) {
-            viewHolder.ivCheckMark.setX(convertView.getWidth() - viewHolder.ivCheckMark.getWidth() - 15);
+            viewHolder.ivCheckMark.setX(convertView.getWidth() - viewHolder.ivCheckMark.getWidth() - checkmarkPxXPos);
         } else {
             viewHolder.ivCheckMark.setX(convertView.getWidth());
         }
