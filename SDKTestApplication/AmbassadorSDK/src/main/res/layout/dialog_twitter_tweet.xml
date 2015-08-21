@@ -11,20 +11,20 @@
         android:text="Twitter Post"
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
-        android:textSize="20dp"
-        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:textStyle="bold"
         android:gravity="center_vertical"
         android:paddingLeft="15dp"
-        android:background="#62a9ef" />
+        android:background="@color/twitter_blue" />
 
     <com.example.ambassador.ambassadorsdk.CustomEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etTweetMessage"
-        android:backgroundTint="#5aa4ee"
+        android:backgroundTint="@color/twitter_blue"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:editable="true"
@@ -42,7 +42,7 @@
         android:layout_below="@+id/etTweetMessage"
         android:layout_alignEnd="@+id/etTweetMessage"
         android:background="#00ffffff"
-        android:textColor="#4a9ced" />
+        android:textColor="@color/twitter_blue" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -63,7 +63,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:indeterminate="true"
-        android:backgroundTint="#84bdf2" />
+        android:backgroundTint="@color/twitter_blue" />
 
     <ImageView
         android:layout_width="wrap_content"

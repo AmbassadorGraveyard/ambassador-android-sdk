@@ -27,6 +27,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.support.v7.widget.Toolbar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -315,6 +319,20 @@ public class ContactSelectorActivity extends AppCompatActivity {
         pd.setOwnerActivity(this);
         pd.setCancelable(false);
         pd.show();
+
+        try {
+            JSONObject pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+            if (pusherData.getString("firstName") != null || pusherData.getString("lastName") == null) {
+                //show dialog to get name
+                ContactNameDialog cnd = new ContactNameDialog(this);
+                cnd.setOwnerActivity(this);
+                cnd.show();
+                return;
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         BulkShareHelper shareHelper = new BulkShareHelper(pd);
         shareHelper.bulkSMSShare(adapter.selectedContacts, showPhoneNumbers);
