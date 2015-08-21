@@ -189,6 +189,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
             if (pd != null) {
                 pd.hide();
+                networkTimer.cancel();
             } // If loading screen is showing, then we should hide it
             // Next we check if the shortURL Edittext is empty or if has been set
             if (etShortUrl.getText().toString().isEmpty()) {
