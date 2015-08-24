@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.ambassador.ambassadorsdk.Ambassador;
+import com.example.ambassador.ambassadorsdk.ConversionParameters;
 import com.example.ambassador.ambassadorsdk.RAFParameters;
 
 
@@ -34,6 +35,15 @@ public class MainActivity extends ActionBarActivity {
                 parameters.welcomeDescription = "RAF Params Welcome Description";
                 parameters.toolbarTitle = "RAF Params Toolbar Title";
                 Ambassador.presentRAF(cxt, parameters, "260");
+
+                ConversionParameters conversionParameters = new ConversionParameters();
+                conversionParameters.mbsy_first_name = "Jake";
+                conversionParameters.mbsy_last_name = "Dunahee";
+                conversionParameters.mbsy_email = "jake@getambassador.com";
+                conversionParameters.mbsy_campaign = 305;
+                conversionParameters.mbsy_revenue = 200;
+
+                Ambassador.registerConversion(conversionParameters);
             }
         });
     }

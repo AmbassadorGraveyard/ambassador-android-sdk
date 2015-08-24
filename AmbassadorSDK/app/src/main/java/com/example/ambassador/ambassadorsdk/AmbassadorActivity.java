@@ -187,10 +187,12 @@ public class AmbassadorActivity extends AppCompatActivity {
     public void getCorrectUrl() {
         // First checks to see if Pusher info has already been saved to SharedPreferencs
         if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
+            // If loading screen is showing, then we should hide it
             if (pd != null) {
                 pd.hide();
                 networkTimer.cancel();
-            } // If loading screen is showing, then we should hide it
+            }
+
             // Next we check if the shortURL Edittext is empty or if has been set
             if (etShortUrl.getText().toString().isEmpty()) {
                 try {
