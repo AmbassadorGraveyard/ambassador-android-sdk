@@ -70,7 +70,7 @@ public class ContactListAdapter extends BaseAdapter  {
         }
 
         if (selectedContacts.contains(filteredContactList.get(position))) {
-            ivCheckMark.setX(convertView.getWidth() - ivCheckMark.getWidth() - 15);
+            ivCheckMark.setX(convertView.getWidth() - ivCheckMark.getWidth() - 25);
         } else {
             ivCheckMark.setX(convertView.getWidth());
         }

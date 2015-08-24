@@ -38,7 +38,7 @@ import java.util.Comparator;
 /**
  * Created by JakeDunahee on 7/31/15.
  */
-public class ContactSelectorActivity extends AppCompatActivity {
+public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener {
     private Button btnSend;
     private ImageButton btnEdit;
     private EditText etShareMessage, etSearch;
@@ -47,6 +47,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
     private ArrayList<ContactObject> contactList;
     public Boolean showPhoneNumbers;
     private InputMethodManager inputManager;
+    private JSONObject pusherData;
     ContactListAdapter adapter;
     ProgressDialog pd;
 
@@ -92,7 +93,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
                 } else {
                     adapter.selectedContacts.add(adapter.filteredContactList.get(position));
                     imageView.animate().setDuration(300).setInterpolator(new BounceInterpolator())
-                            .x(view.getWidth() - imageView.getWidth() - 15).start();
+                            .x(view.getWidth() - imageView.getWidth() - 25).start();
                 }
 
                 updateSendButton(adapter.selectedContacts.size());
@@ -111,6 +112,14 @@ public class ContactSelectorActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+
+        //get and store pusher data
+        try {
+            pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     //region TOOLBAR MENU
@@ -314,25 +323,47 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     public void sendToContacts(View view) {
-        pd = new ProgressDialog(this);
-        pd.setMessage("Sharing");
-        pd.setOwnerActivity(this);
-        pd.setCancelable(false);
-        pd.show();
-
+        //get and store pusher data
         try {
-            JSONObject pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
             if (pusherData.getString("firstName") != null || pusherData.getString("lastName") == null) {
                 //show dialog to get name
                 ContactNameDialog cnd = new ContactNameDialog(this);
-                cnd.setOwnerActivity(this);
                 cnd.show();
                 return;
             }
         }
         catch (JSONException e) {
             e.printStackTrace();
+            return;
         }
+
+        _initiateSend();
+    }
+
+    @Override
+    public void handleNameInput(String name) {
+        String[] names = name.split(" ");
+
+        try {
+            pusherData.put("firstName", names[0]);
+            if (names.length > 1) pusherData.put("lastName", names[1]);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        AmbassadorSingleton.getInstance().savePusherInfo(pusherData.toString());
+        //call api
+        _initiateSend();
+    }
+
+    void _initiateSend() {
+        pd = new ProgressDialog(this);
+        pd.setMessage("Sharing");
+        pd.setOwnerActivity(this);
+        pd.setCancelable(false);
+        pd.show();
 
         BulkShareHelper shareHelper = new BulkShareHelper(pd);
         shareHelper.bulkSMSShare(adapter.selectedContacts, showPhoneNumbers);

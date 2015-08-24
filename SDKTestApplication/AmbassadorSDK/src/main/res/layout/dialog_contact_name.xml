@@ -2,14 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#ffffffff">
+    android:background="@android:color/white">
 
     <TextView
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="One more thing!"
-        android:layout_marginTop="50dp"
+        android:text="@string/get_name_header"
+        android:layout_marginTop="30dp"
         android:textSize="20sp"
         android:textColor="@android:color/black"
         android:gravity="center" />
@@ -19,24 +19,41 @@
         android:layout_below="@id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="We just want to make sure"
-        android:layout_marginTop="50dp"
+        android:text="@string/get_name_explanation"
         android:textSize="20sp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:textColor="@android:color/darker_gray"
-        android:gravity="center" />
+        android:gravity="left" />
 
     <com.example.ambassador.ambassadorsdk.CustomEditText
+        android:id="@+id/etContactName"
         android:layout_below="@id/explanation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etContactName"
         android:hint="FULL NAME"
-        android:backgroundTint="@android:color/darker_gray"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
+        android:textColorHint="@android:color/darker_gray"
+        android:backgroundTint="@color/twitter_blue"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="20dp"
         android:singleLine="true"
         android:layout_centerHorizontal="true"
         android:textCursorDrawable="@null" />
+
+    <Button
+        android:id="@+id/btnSend"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="Continue Sending"
+        android:layout_below="@+id/etContactName"
+        android:layout_alignEnd="@+id/etContactName"
+        android:padding="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="#00ffffff"
+        android:textColor="@color/twitter_blue" />
 
 </RelativeLayout>

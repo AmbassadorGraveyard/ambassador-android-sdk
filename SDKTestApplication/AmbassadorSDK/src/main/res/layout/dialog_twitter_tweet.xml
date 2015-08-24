@@ -27,6 +27,7 @@
         android:backgroundTint="@color/twitter_blue"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
+        android:layout_marginBottom="24dp"
         android:editable="true"
         android:layout_below="@+id/textView2"
         android:layout_centerHorizontal="true"
@@ -36,25 +37,28 @@
     <Button
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
+        android:text="Cancel"
+        android:id="@+id/btnCancel"
+        android:background="#00ffffff"
+        android:padding="8dp"
+        android:layout_alignTop="@+id/btnTweet"
+        android:layout_toStartOf="@+id/btnTweet"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
         android:text="Tweet"
         android:id="@+id/btnTweet"
         android:layout_below="@+id/etTweetMessage"
         android:layout_alignEnd="@+id/etTweetMessage"
         android:background="#00ffffff"
-        android:textColor="@color/twitter_blue" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cancel"
-        android:id="@+id/btnCancel"
-        android:background="#00ffffff"
-        android:layout_alignTop="@+id/btnTweet"
-        android:layout_toStartOf="@+id/btnTweet"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="5dp" />
+        android:textColor="@color/twitter_blue"
+        android:padding="8dp"
+        android:layout_marginBottom="8dp" />
 
     <ProgressBar
         android:layout_width="wrap_content"
