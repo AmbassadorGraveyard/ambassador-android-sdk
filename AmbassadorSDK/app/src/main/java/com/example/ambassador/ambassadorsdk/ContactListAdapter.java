@@ -1,5 +1,6 @@
 package com.example.ambassador.ambassadorsdk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.Image;
@@ -22,16 +23,25 @@ import java.util.logging.Filter;
  */
 public class ContactListAdapter extends BaseAdapter  {
     public ArrayList<ContactObject> contactObjects, filteredContactList, selectedContacts;
-    public LayoutInflater inflater;
-    public Boolean shouldShowPhoneNumbers, isFiltering;
+    private Boolean shouldShowPhoneNumbers, isFiltering;
+    private final Activity context;
+    private final int checkmarkPxXPos;
 
-    public ContactListAdapter(Context context, ArrayList<ContactObject> contactObjects, Boolean showPhoneNumbers) {
+    public ContactListAdapter(Activity context, ArrayList<ContactObject> contactObjects, Boolean showPhoneNumbers) {
+        this.context = context;
         this.contactObjects = contactObjects;
         this.shouldShowPhoneNumbers = showPhoneNumbers;
         selectedContacts = new ArrayList<>();
         filteredContactList = (ArrayList<ContactObject>)contactObjects.clone();
         isFiltering = false;
-        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        checkmarkPxXPos = context.getResources().getDimensionPixelSize(R.dimen.contact_select_checkmark_x);
+    }
+
+    static class ViewHolder {
+        protected TextView tvName;
+        protected TextView tvPhoneOrEmail;
+        protected ImageView ivCheckMark;
     }
 
     @Override
@@ -51,28 +61,34 @@ public class ContactListAdapter extends BaseAdapter  {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder;
+
         if (convertView == null) {
+            LayoutInflater inflater = context.getLayoutInflater();
             convertView = inflater.inflate(R.layout.adapter_contacts, null);
+            viewHolder = new ViewHolder();
+            viewHolder.tvName = (TextView)convertView.findViewById(R.id.tvName);
+            viewHolder.tvPhoneOrEmail = (TextView)convertView.findViewById(R.id.tvNumberOrEmail);
+            viewHolder.ivCheckMark = (ImageView)convertView.findViewById(R.id.ivCheckMark);
+            convertView.setTag(viewHolder);
+        }
+        else {
+            viewHolder = (ViewHolder)convertView.getTag();
         }
 
-        TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
-        TextView tvPhoneOrEmail = (TextView) convertView.findViewById(R.id.tvNumberOrEmail);
-        ImageView ivCheckMark = (ImageView)convertView.findViewById(R.id.ivCheckMark);
-
         ContactObject currentObject = filteredContactList.get(position);
-
-        tvName.setText(currentObject.name);
+        viewHolder.tvName.setText(currentObject.name);
 
         if (shouldShowPhoneNumbers) {
-            tvPhoneOrEmail.setText(currentObject.type + " - " + currentObject.phoneNumber);
+            viewHolder.tvPhoneOrEmail.setText(currentObject.type + " - " + currentObject.phoneNumber);
         } else {
-            tvPhoneOrEmail.setText(currentObject.emailAddress);
+            viewHolder.tvPhoneOrEmail.setText(currentObject.emailAddress);
         }
 
         if (selectedContacts.contains(filteredContactList.get(position))) {
-            ivCheckMark.setX(convertView.getWidth() - ivCheckMark.getWidth() - 15);
+            viewHolder.ivCheckMark.setX(convertView.getWidth() - viewHolder.ivCheckMark.getWidth() - checkmarkPxXPos);
         } else {
-            ivCheckMark.setX(convertView.getWidth());
+            viewHolder.ivCheckMark.setX(convertView.getWidth());
         }
 
         return convertView;
