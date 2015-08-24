@@ -48,8 +48,8 @@ public class AmbassadorActivity extends AppCompatActivity {
     private GridView gvSocialGrid;
     private RAFParameters rafParams;
     private final String[] gridTitles = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
-    private final Integer[] gridDrawables = new Integer[]{R.mipmap.facebook_icon, R.mipmap.twitter_icon, R.mipmap.linkedin_icon,
-                                                            R.mipmap.email_icon, R.mipmap.sms_icon};
+    private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
+                                                            R.drawable.email_icon, R.drawable.sms_icon};
 
     //region LifeCycle
     @Override

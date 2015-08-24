@@ -19,7 +19,7 @@
             android:id="@+id/ivGridImage"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:src="@mipmap/facebook_icon"
+            android:src="@drawable/facebook_icon"
             android:layout_margin="15dp" />
     </RelativeLayout>
 
