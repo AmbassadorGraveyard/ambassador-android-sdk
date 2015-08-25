@@ -3,6 +3,8 @@ package com.example.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.util.HashMap;
+
 /**
  * Created by JakeDunahee on 7/29/15.
  */
@@ -13,6 +15,9 @@ public class AmbassadorSingleton {
     public static final String LINKED_IN_CALLBACK_URL = "http://localhost:2999";
     public static final String LINKED_IN_CLIENT_ID = "***REMOVED***";
     public static final String LINKED_IN_CLIENT_SECRET = "***REMOVED***";
+    public static final String PUSHER_APP_ID = "***REMOVED***";
+    public static final String PUSHER_KEY = "***REMOVED***";
+    public static final String PUSHER_SECRET = "***REMOVED***";
     public static final String MBSY_UNIVERSAL_ID = "***REMOVED***";
     public static final String API_KEY = "UniversalToken ***REMOVED***"; // TEMP HERE UNTIL AMBASSADOR SETUP CREATED
 
@@ -23,9 +28,7 @@ public class AmbassadorSingleton {
     public static AmbassadorSingleton getInstance() {
         if(mInstance == null) {
             mInstance = new AmbassadorSingleton();
-            if (mInstance.context == null) {
-                mInstance.context = MyApplication.getAppContext();
-            }
+            mInstance.context = MyApplication.getAppContext();
         }
 
         return mInstance;
@@ -71,12 +74,38 @@ public class AmbassadorSingleton {
         return preferences.getString("identifyObject", "Fetching ShortURL");
     }
 
-    public void startIdentify() {
-        if (context == null) {
-            context = MyApplication.getAppContext();
-        }
-
-        Identify identify = new Identify(context);
+    public void startIdentify(String email) {
+        Identify identify = new Identify(context, email);
         identify.getIdentity();
+    }
+
+    public void setCampaignID(String campaignID) {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        preferences.edit().putString("campaignID", campaignID).apply();
+    }
+
+    public String getCampaignID() {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        return preferences.getString("campaignID", null);
+    }
+
+    public void savePusherInfo(String pusherObject) {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        preferences.edit().putString("pusherObject", pusherObject).apply();
+    }
+
+    public String getPusherInfo() {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        return preferences.getString("pusherObject", null);
+    }
+
+    public void saveURL(String url) {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        preferences.edit().putString("url", url).apply();
+    }
+
+    public String getURL() {
+        SharedPreferences preferences = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+        return preferences.getString("url", null);
     }
 }

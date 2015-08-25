@@ -47,7 +47,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
     ProgressDialog pd;
     private int checkmarkPxXPos;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,12 +109,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        pd.dismiss();
     }
 
     //region TOOLBAR MENU
@@ -196,7 +189,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
         while (emails.moveToNext()) {
             ContactObject object = new ContactObject();
-
             object.name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             object.emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
@@ -334,10 +326,10 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     public void sendToContacts(View view) {
-        pd = new ProgressDialog(this, android.R.style.Theme_DeviceDefault_Light_Panel);
+        pd = new ProgressDialog(this);
         pd.setMessage("Sharing");
         pd.setOwnerActivity(this);
-        pd.setCanceledOnTouchOutside(false);
+        pd.setCancelable(false);
         pd.show();
 
         BulkShareHelper shareHelper = new BulkShareHelper(pd);

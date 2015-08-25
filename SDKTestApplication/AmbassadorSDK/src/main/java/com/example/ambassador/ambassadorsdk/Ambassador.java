@@ -11,18 +11,20 @@ import java.io.Serializable;
  * Created by JakeDunahee on 7/22/15.
  */
 public class Ambassador {
-    public static void presentRAF(Context context, RAFParameters rafParameters) {
+    public static void presentRAF(Context context, RAFParameters rafParameters, String campaignID) {
         Intent intent = new Intent(context, AmbassadorActivity.class);
 
         if (rafParameters == null) {
             rafParameters = new RAFParameters();
         }
 
+        AmbassadorSingleton.getInstance().setCampaignID(campaignID);
+
         intent.putExtra("test", rafParameters);
         context.startActivity(intent);
     }
 
-    public static void identify() {
-        AmbassadorSingleton.getInstance().startIdentify();
+    public static void identify(String email) {
+        AmbassadorSingleton.getInstance().startIdentify(email);
     }
 }
