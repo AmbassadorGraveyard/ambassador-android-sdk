@@ -29,11 +29,26 @@
         android:gravity="left" />
 
     <com.example.ambassador.ambassadorsdk.CustomEditText
-        android:id="@+id/etContactName"
+        android:id="@+id/etFirstName"
         android:layout_below="@id/explanation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="FULL NAME"
+        android:hint="FIRST NAME"
+        android:textColorHint="@android:color/darker_gray"
+        android:backgroundTint="@color/twitter_blue"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="5dp"
+        android:singleLine="true"
+        android:layout_centerHorizontal="true"
+        android:textCursorDrawable="@null" />
+
+    <com.example.ambassador.ambassadorsdk.CustomEditText
+        android:id="@+id/etLastName"
+        android:layout_below="@id/etFirstName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="LAST NAME"
         android:textColorHint="@android:color/darker_gray"
         android:backgroundTint="@color/twitter_blue"
         android:layout_marginLeft="30dp"
@@ -49,8 +64,8 @@
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:text="Continue Sending"
-        android:layout_below="@+id/etContactName"
-        android:layout_alignEnd="@+id/etContactName"
+        android:layout_below="@+id/etLastName"
+        android:layout_alignEnd="@+id/etLastName"
         android:padding="8dp"
         android:layout_marginBottom="8dp"
         android:background="#00ffffff"

@@ -341,7 +341,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         //get and store pusher data
         try {
             //if user is doing sms and we don't have first or last name, we need to get it with a dialog
-            if (showPhoneNumbers && (pusherData.getString("firstName") != null || pusherData.getString("lastName") == null)) {
+            if (showPhoneNumbers && true || //remove "true ||"
+                !pusherData.has("firstName") || pusherData.getString("firstName") == null
+                ||
+                !pusherData.has("lastName") || pusherData.getString("lastName") == null)
+            {
                 //show dialog to get name
                 ContactNameDialog cnd = new ContactNameDialog(this);
                 cnd.show();
@@ -357,15 +361,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     @Override
-    public void handleNameInput(String name) {
+    public void handleNameInput(String firstName, String lastName) {
         pd.show();
-        String[] names = name.split(" ");
-
         try {
-            firstName = names[0];
-            lastName = names[0];
             pusherData.put("firstName", firstName);
-            if (names.length > 1) pusherData.put("lastName", lastName);
+            pusherData.put("lastName", lastName);
         }
         catch (JSONException e) {
             e.printStackTrace();
