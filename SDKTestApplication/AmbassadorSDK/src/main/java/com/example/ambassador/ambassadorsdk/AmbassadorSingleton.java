@@ -124,7 +124,8 @@ public class AmbassadorSingleton {
         return sharePrefs.getString("apiKey", null);
     }
 
-    public void convertForInstallation() {
+    public void convertForInstallation(ConversionParameters parameters) {
+        AmbassadorSingleton.getInstance().registerConversion(parameters);
         sharePrefs.edit().putBoolean("installConversion", true).apply();
     }
 

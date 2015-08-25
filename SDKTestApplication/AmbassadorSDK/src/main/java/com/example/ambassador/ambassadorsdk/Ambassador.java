@@ -37,7 +37,13 @@ public class Ambassador {
         AmbassadorSingleton.getInstance().startConversionTimer();
     }
 
-    public static void runWithKeyAndInstallConversion() {
+    public static void runWithKeyAndConvertOnInstall(String apiKey, ConversionParameters parameters) {
+        AmbassadorSingleton.getInstance().saveAPIKey(apiKey);
+        AmbassadorSingleton.getInstance().startConversionTimer();
 
+        // Checks boolean from sharedpreferences to see if this the first launch and registers conversion if it is
+        if (AmbassadorSingleton.getInstance().convertedOnInstall() == false) {
+            AmbassadorSingleton.getInstance().convertForInstallation(parameters);
+        }
     }
 }

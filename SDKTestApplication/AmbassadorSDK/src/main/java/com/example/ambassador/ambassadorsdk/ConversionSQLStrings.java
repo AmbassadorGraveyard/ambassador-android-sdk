@@ -8,6 +8,8 @@ import org.w3c.dom.Text;
 /**
  * Created by JakeDunahee on 8/21/15.
  */
+
+// Class with strings to use with SQL database
 final class ConversionSQLStrings {
     public static final String TEXT_TYPE = " TEXT";
     public static final String INT_TYPE = " INTEGER";

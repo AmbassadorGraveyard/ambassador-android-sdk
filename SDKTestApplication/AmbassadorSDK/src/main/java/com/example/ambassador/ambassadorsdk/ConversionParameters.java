@@ -23,6 +23,7 @@ public class ConversionParameters {
     public String mbsy_event_data3;
     public int mbsy_is_approved;
 
+    // Sets up default constructor for parameters
     public ConversionParameters() {
         mbsy_campaign = -1;
         mbsy_email = "";
@@ -44,6 +45,7 @@ public class ConversionParameters {
         mbsy_is_approved = 1;
     }
 
+    // Boolean that checks if the conversion parameters are valid
     public boolean isValid() {
         return mbsy_campaign > -1 && mbsy_email != "" && mbsy_revenue > -1;
     }
