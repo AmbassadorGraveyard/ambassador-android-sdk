@@ -20,6 +20,8 @@ android {
 
 repositories {
     mavenCentral()
+    maven { url 'https://maven.fabric.io/public' }
+    maven { url 'http://clojars.org/repo' }
 }
 
 dependencies {
@@ -30,6 +32,7 @@ dependencies {
     compile 'com.android.support:support-v4:22.2.1'
     compile 'org.twitter4j:twitter4j-core:4.0.4'
     compile 'com.google.guava:guava:19.0-rc1'
+
+    compile 'com.pusher:pusher-java-client:0.3.3'
+    compile 'org.slf4j:slf4j-android:1.7.12'
 }
-
-

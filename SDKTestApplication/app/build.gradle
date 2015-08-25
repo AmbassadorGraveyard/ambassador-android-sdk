@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+    maven { url 'http://clojars.org/repo' }
+}
+
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
