@@ -6,7 +6,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -14,13 +13,11 @@ import android.widget.Toast;
  * Created by CoreyFields on 8/21/15.
  */
 public class ContactNameDialog extends Dialog {
-    private CustomEditText etContactName;
-    private Button btnSend;
-    private ProgressBar loader;
+    private CustomEditText etFirstName, etLastName;
     private ContactNameListener mCallback;
 
     public interface ContactNameListener {
-        void handleNameInput(String name);
+        void handleNameInput(String firstname, String lastname);
     }
 
     public ContactNameDialog(Context context) {
@@ -33,10 +30,11 @@ public class ContactNameDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_contact_name);
 
-        etContactName = (CustomEditText)findViewById(R.id.etContactName);
-        etContactName.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
-        btnSend = (Button)findViewById(R.id.btnSend);
-
+        etFirstName = (CustomEditText)findViewById(R.id.etFirstName);
+        etFirstName.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
+        etLastName = (CustomEditText)findViewById(R.id.etLastName);
+        etLastName.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
+        Button btnSend = (Button)findViewById(R.id.btnSend);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -46,11 +44,14 @@ public class ContactNameDialog extends Dialog {
     }
 
     private void continueSending() {
-        if (etContactName.getText().toString().isEmpty()) {
+        if (etFirstName.getText().toString().isEmpty()) {
             Toast.makeText(getOwnerActivity(), "Hmm, your entry is suspiciously blank", Toast.LENGTH_SHORT).show();
-            etContactName.shakeEditText();
+            etFirstName.shakeEditText();
+        } else if (etLastName.getText().toString().isEmpty()) {
+            Toast.makeText(getOwnerActivity(), "Hmm, your entry is suspiciously blank", Toast.LENGTH_SHORT).show();
+            etLastName.shakeEditText();
         } else {
-            mCallback.handleNameInput(etContactName.getText().toString());
+            mCallback.handleNameInput(etFirstName.getText().toString(), etLastName.getText().toString());
             hide();
         }
     }
