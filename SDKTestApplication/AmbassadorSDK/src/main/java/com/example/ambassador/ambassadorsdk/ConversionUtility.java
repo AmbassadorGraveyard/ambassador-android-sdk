@@ -28,6 +28,7 @@ public class ConversionUtility {
     private SQLiteDatabase db;
     private int dbSize;
 
+
     public ConversionUtility(Context context) {
         this.context = context;
         helper = new ConversionDBHelper(context);
@@ -54,6 +55,7 @@ public class ConversionUtility {
             Log.e("Conversion", ex.toString());
         }
     }
+
 
     public JSONObject createJSONConversion(ConversionParameters parameters) {
         JSONObject conversionObject = new JSONObject();
@@ -129,8 +131,7 @@ public class ConversionUtility {
                 ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA1,
                 ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA2,
                 ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA3,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED
-
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED,
         };
 
         String sortOrder = ConversionSQLStrings.ConversionSQLEntry._ID + " DESC";
