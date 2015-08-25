@@ -153,7 +153,7 @@ public class Identify {
         HttpAuthorizer authorizer = new HttpAuthorizer("https://dev-ambassador-api.herokuapp.com/auth/subscribe/");
 
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("Authorization", AmbassadorSingleton.API_KEY);
+        headers.put("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
         authorizer.setHeaders(headers);
 
         HashMap<String, String> queryParams = new HashMap<>();
@@ -239,7 +239,7 @@ public class Identify {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
                 wr.writeBytes(identifyObject.toString());

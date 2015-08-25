@@ -47,7 +47,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
     ProgressDialog pd;
     private int checkmarkPxXPos;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,7 +189,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
         while (emails.moveToNext()) {
             ContactObject object = new ContactObject();
-
             object.name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             object.emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
