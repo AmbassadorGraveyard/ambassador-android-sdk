@@ -340,7 +340,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     public void sendToContacts(View view) {
         //get and store pusher data
         try {
-            if (pusherData.getString("firstName") != null || pusherData.getString("lastName") == null) {
+            //if user is doing sms and we don't have first or last name, we need to get it with a dialog
+            if (showPhoneNumbers && (pusherData.getString("firstName") != null || pusherData.getString("lastName") == null)) {
                 //show dialog to get name
                 ContactNameDialog cnd = new ContactNameDialog(this);
                 cnd.show();
