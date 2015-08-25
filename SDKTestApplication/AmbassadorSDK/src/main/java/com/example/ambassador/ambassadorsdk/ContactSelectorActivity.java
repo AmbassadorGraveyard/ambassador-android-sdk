@@ -78,6 +78,12 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
         setUpToolbar();
 
+        //setup progress dialog only once
+        pd = new ProgressDialog(this);
+        pd.setMessage("Sharing");
+        pd.setOwnerActivity(this);
+        pd.setCancelable(false);
+
         // Finds out whether to show emails or phone numbers
         showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
         if (showPhoneNumbers) {
@@ -351,6 +357,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     @Override
     public void handleNameInput(String name) {
+        pd.show();
         String[] names = name.split(" ");
 
         try {
@@ -367,26 +374,20 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         //save to shared prefs
         AmbassadorSingleton.getInstance().savePusherInfo(pusherData.toString());
 
-        //call api
+        //call api - on success we'll initiate the bulk share
         UpdateNameRequest unr = new UpdateNameRequest();
         unr.execute();
-
-        //send it
-        //_initiateSend();
     }
 
-    void _initiateSend() {
-        pd = new ProgressDialog(this);
-        pd.setMessage("Sharing");
-        pd.setOwnerActivity(this);
-        pd.setCancelable(false);
-        pd.show();
+    private void _initiateSend() {
+        //this method is called from two places, one of which could already be showing the pd
+        if (!pd.isShowing()) pd.show();
 
         BulkShareHelper shareHelper = new BulkShareHelper(pd);
         shareHelper.bulkSMSShare(adapter.selectedContacts, showPhoneNumbers);
     }
 
-    void handleNoContacts() {
+    private void handleNoContacts() {
         // TODO: Add functionality to show "No contacts" on top of listview if user has no contacts
     }
 
@@ -433,6 +434,12 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            _initiateSend();
         }
     }
 }
