@@ -1,6 +1,7 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.animation.ValueAnimator;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -12,7 +13,6 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +26,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,8 +35,7 @@ import java.util.Comparator;
  * Created by JakeDunahee on 7/31/15.
  */
 public class ContactSelectorActivity extends AppCompatActivity {
-    private ListView lvContacts;
-    private Button btnSend, btnDoneSearch;
+    private Button btnSend;
     private ImageButton btnEdit;
     private EditText etShareMessage, etSearch;
     private RelativeLayout rlSearch;
@@ -45,7 +43,10 @@ public class ContactSelectorActivity extends AppCompatActivity {
     private ArrayList<ContactObject> contactList;
     public Boolean showPhoneNumbers;
     private InputMethodManager inputManager;
+    ContactListAdapter adapter;
+    ProgressDialog pd;
     private int checkmarkPxXPos;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +54,13 @@ public class ContactSelectorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contacts);
 
         // Init UI components
-        lvContacts = (ListView)findViewById(R.id.lvContacts);
+        ListView lvContacts = (ListView)findViewById(R.id.lvContacts);
+        Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
         btnSend = (Button)findViewById(R.id.btnSend);
         etShareMessage = (EditText) findViewById(R.id.etShareMessage);
         rlSearch = (RelativeLayout)findViewById(R.id.rlSearch);
         etSearch = (EditText) findViewById(R.id.etSearch);
-        btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         llSendView = (LinearLayout) findViewById(R.id.llSendView);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -77,7 +78,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
         // Sets share message to default message from RAF Parameters
         etShareMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
 
-        final ContactListAdapter adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
+        adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
         lvContacts.setAdapter(adapter);
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -109,6 +110,12 @@ public class ContactSelectorActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        pd.dismiss();
     }
 
     //region TOOLBAR MENU
@@ -146,9 +153,9 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
         while (phones.moveToNext()) {
             ContactObject object = new ContactObject();
-
             object.name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             object.phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
             String typeNum = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
 
             switch (Integer.parseInt(typeNum)) {
@@ -190,8 +197,9 @@ public class ContactSelectorActivity extends AppCompatActivity {
         while (emails.moveToNext()) {
             ContactObject object = new ContactObject();
 
-            object.name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));;
-            object.emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));;
+            object.name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            object.emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
             contactList.add(object);
         }
 
@@ -234,7 +242,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
     //region BUTTON FUNCTIONS
     public void handleEditButtonTap(View view) {
-        if (etShareMessage.isEnabled() == true) {
+        if (etShareMessage.isEnabled()) {
             doneEditingMessage();
         } else {
             editBtnTapped();
@@ -307,15 +315,17 @@ public class ContactSelectorActivity extends AppCompatActivity {
     void setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        getSupportActionBar().setTitle("Refer your friends");
+        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Refer your friends"); }
         toolbar.setTitleTextColor(Color.DKGRAY);
         toolbar.setBackgroundColor(Color.WHITE);
-        toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN);
+        if (toolbar.getNavigationIcon() != null) {
+            toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN);
+        }
     }
 
     void updateSendButton(int numOfContacts) {
         if (numOfContacts > 0) {
-            if (btnSend.isEnabled() == false) { btnSend.setEnabled(true); }
+            if (!btnSend.isEnabled()) { btnSend.setEnabled(true); }
             btnSend.setText("SEND TO " + numOfContacts + " CONTACTS");
         } else {
             btnSend.setText("NO CONTACTS SELECTED");
@@ -324,8 +334,14 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     public void sendToContacts(View view) {
-        Toast.makeText(this, "Would send to people", Toast.LENGTH_SHORT).show();
-        Log.d("test", "SENT");
+        pd = new ProgressDialog(this, android.R.style.Theme_DeviceDefault_Light_Panel);
+        pd.setMessage("Sharing");
+        pd.setOwnerActivity(this);
+        pd.setCanceledOnTouchOutside(false);
+        pd.show();
+
+        BulkShareHelper shareHelper = new BulkShareHelper(pd);
+        shareHelper.bulkSMSShare(adapter.selectedContacts, showPhoneNumbers);
     }
 
     void handleNoContacts() {

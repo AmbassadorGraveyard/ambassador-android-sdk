@@ -13,6 +13,8 @@ public class AmbassadorSingleton {
     public static final String LINKED_IN_CALLBACK_URL = "http://localhost:2999";
     public static final String LINKED_IN_CLIENT_ID = "***REMOVED***";
     public static final String LINKED_IN_CLIENT_SECRET = "***REMOVED***";
+    public static final String MBSY_UNIVERSAL_ID = "***REMOVED***";
+    public static final String API_KEY = "UniversalToken ***REMOVED***"; // TEMP HERE UNTIL AMBASSADOR SETUP CREATED
 
     private  static AmbassadorSingleton mInstance = null;
     public Context context;
