@@ -275,7 +275,9 @@ public class Identify {
             String firstName = pusherObject.getString("first_name");
             String lastName = pusherObject.getString("last_name");
             String phoneNumber = pusherObject.getString("phone");
+            String email = pusherObject.getString("email");
 
+            pusherSave.put("email", email);
             pusherSave.put("firstName", firstName);
             pusherSave.put("lastName", lastName);
             pusherSave.put("phoneNumber", phoneNumber);
