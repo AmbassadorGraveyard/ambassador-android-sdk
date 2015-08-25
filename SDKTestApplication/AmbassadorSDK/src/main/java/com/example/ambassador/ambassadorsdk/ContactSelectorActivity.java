@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -31,6 +32,13 @@ import android.support.v7.widget.Toolbar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -50,6 +58,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private JSONObject pusherData;
     ContactListAdapter adapter;
     ProgressDialog pd;
+    private String firstName, lastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -345,17 +354,25 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         String[] names = name.split(" ");
 
         try {
-            pusherData.put("firstName", names[0]);
-            if (names.length > 1) pusherData.put("lastName", names[1]);
+            firstName = names[0];
+            lastName = names[0];
+            pusherData.put("firstName", firstName);
+            if (names.length > 1) pusherData.put("lastName", lastName);
         }
         catch (JSONException e) {
             e.printStackTrace();
             return;
         }
 
+        //save to shared prefs
         AmbassadorSingleton.getInstance().savePusherInfo(pusherData.toString());
+
         //call api
-        _initiateSend();
+        UpdateNameRequest unr = new UpdateNameRequest();
+        unr.execute();
+
+        //send it
+        //_initiateSend();
     }
 
     void _initiateSend() {
@@ -371,5 +388,51 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     void handleNoContacts() {
         // TODO: Add functionality to show "No contacts" on top of listview if user has no contacts
+    }
+
+    class UpdateNameRequest extends AsyncTask<Void, Void, Void> {
+        int statusCode;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            String url = "http://dev-ambassador-api.herokuapp.com/universal/action/identify/";
+            JSONObject DataObject = new JSONObject();
+            JSONObject NameObject = new JSONObject();
+
+            try {
+                DataObject.put("email", pusherData.getString("email"));
+                NameObject.put("first_name", firstName);
+                NameObject.put("last_name", lastName);
+                DataObject.put("update_data", NameObject);
+
+                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+                connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
+
+                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+                wr.writeBytes(DataObject.toString());
+                wr.flush();
+                wr.close();
+
+                statusCode = connection.getResponseCode();
+
+                InputStream is = connection.getInputStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                String line;
+                StringBuilder response = new StringBuilder();
+
+                while ((line = rd.readLine()) != null) {
+                    response.append(line);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
     }
 }
