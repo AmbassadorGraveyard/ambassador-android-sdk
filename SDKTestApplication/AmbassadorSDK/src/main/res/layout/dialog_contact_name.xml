@@ -33,7 +33,7 @@
         android:layout_below="@id/explanation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="FIRST NAME"
+        android:hint="First Name"
         android:textColorHint="@android:color/darker_gray"
         android:backgroundTint="@color/twitter_blue"
         android:layout_marginLeft="30dp"
@@ -48,7 +48,7 @@
         android:layout_below="@id/etFirstName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="LAST NAME"
+        android:hint="Last Name"
         android:textColorHint="@android:color/darker_gray"
         android:backgroundTint="@color/twitter_blue"
         android:layout_marginLeft="30dp"
@@ -59,14 +59,30 @@
         android:textCursorDrawable="@null" />
 
     <Button
+        android:id="@+id/btnCancel"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:text="Cancel"
+        android:layout_below="@+id/etLastName"
+        android:layout_toLeftOf="@+id/btnSend"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginRight="8dp"
+        android:background="#00ffffff"
+        android:textColor="@color/twitter_blue" />
+
+    <Button
         android:id="@+id/btnSend"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
-        android:text="Continue Sending"
+        android:text="Continue"
         android:layout_below="@+id/etLastName"
         android:layout_alignEnd="@+id/etLastName"
-        android:padding="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:layout_marginBottom="8dp"
         android:background="#00ffffff"
         android:textColor="@color/twitter_blue" />
