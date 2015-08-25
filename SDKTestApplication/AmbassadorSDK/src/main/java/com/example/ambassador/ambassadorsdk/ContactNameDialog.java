@@ -34,6 +34,14 @@ public class ContactNameDialog extends Dialog {
         etFirstName.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
         etLastName = (CustomEditText)findViewById(R.id.etLastName);
         etLastName.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
+        Button btnCancel = (Button)findViewById(R.id.btnCancel);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hide();
+            }
+        });
+
         Button btnSend = (Button)findViewById(R.id.btnSend);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
