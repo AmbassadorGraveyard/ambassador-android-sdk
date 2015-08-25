@@ -28,7 +28,7 @@ public class ConversionUtility {
     private SQLiteDatabase db;
     private int dbSize;
 
-
+    // Constructors for ConversionUtility
     public ConversionUtility(Context context) {
         this.context = context;
         helper = new ConversionDBHelper(context);
@@ -42,26 +42,34 @@ public class ConversionUtility {
         db = helper.getWritableDatabase();
     }
 
+    // Function used by ambassador Singleton to register a conversion
     public void registerConversion() {
-        try {
-            if (parameters.isValid()) {
-                ConversionRequest request = new ConversionRequest();
-                request.conversionParameters = parameters;
-                request.execute();
-            } else {
-                throw new ConversionParametersException();
+        if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
+            try {
+                if (parameters.isValid()) {
+                    ConversionRequest request = new ConversionRequest();
+                    request.conversionParameters = parameters;
+                    request.execute();
+                } else {
+                    throw new ConversionParametersException();
+                }
+            } catch (ConversionParametersException ex) {
+                Log.e("Conversion", ex.toString());
             }
-        } catch (ConversionParametersException ex) {
-            Log.e("Conversion", ex.toString());
+        } else {
+            ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
+            db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
+            Log.d("Conversion", "Inserted row into table");
         }
     }
 
-
+    // Creates a JSON object from Conversion Params and some Augur data
     public JSONObject createJSONConversion(ConversionParameters parameters) {
         JSONObject conversionObject = new JSONObject();
         JSONObject fp = new JSONObject();
         JSONObject consumerObject = new JSONObject();
         JSONObject deviceObject = new JSONObject();
+        JSONObject fieldObject = new JSONObject();
 
         try {
             JSONObject identity = new JSONObject(AmbassadorSingleton.getInstance().getIdentifyObject());
@@ -77,7 +85,6 @@ public class ConversionUtility {
             e.printStackTrace();
         }
 
-        JSONObject fieldObject = new JSONObject();
         try {
             fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN, parameters.mbsy_campaign);
             fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL, parameters.mbsy_email);
@@ -111,54 +118,58 @@ public class ConversionUtility {
         return conversionObject;
     }
 
+    // Attempts to register conversions stored in database
     public void readAndSaveDatabaseEntries() {
-        String[] projection = {
-                ConversionSQLStrings.ConversionSQLEntry._ID,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_FIRST_NAME,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_LAST_NAME,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL_NEW_AMBASSADOR,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_UID,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM1,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM2,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM3,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_AUTO_CREATE,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_REVENUE,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_DEACTIVATE_NEW_AMBASSADOR,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_TRANSACTION_UID,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_ADD_TO_GROUP_ID,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA1,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA2,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA3,
-                ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED,
-        };
+        if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
+            String[] projection = {
+                    ConversionSQLStrings.ConversionSQLEntry._ID,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_FIRST_NAME,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_LAST_NAME,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL_NEW_AMBASSADOR,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_UID,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM1,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM2,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM3,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_AUTO_CREATE,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_REVENUE,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_DEACTIVATE_NEW_AMBASSADOR,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_TRANSACTION_UID,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_ADD_TO_GROUP_ID,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA1,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA2,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA3,
+                    ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED,
+            };
 
-        String sortOrder = ConversionSQLStrings.ConversionSQLEntry._ID + " DESC";
+            String sortOrder = ConversionSQLStrings.ConversionSQLEntry._ID + " DESC";
 
-        Cursor cursor = db.query(
-                ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME,
-                projection,
-                null,
-                null,
-                null,
-                null,
-                sortOrder);
+            Cursor cursor = db.query(
+                    ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME,
+                    projection,
+                    null,
+                    null,
+                    null,
+                    null,
+                    sortOrder);
 
-        if (cursor.moveToFirst()) {
-            do {
-                ConversionParameters parameters = ConversionDBHelper.createConversionParameterWithCursor(cursor);
-                ConversionRequest request = new ConversionRequest();
-                request.conversionParameters = parameters;
-                request.execute();
+            // If there is anything in the database, cycles through and makes request to register conversions
+            if (cursor.moveToFirst()) {
+                do {
+                    ConversionParameters parameters = ConversionDBHelper.createConversionParameterWithCursor(cursor);
+                    ConversionRequest request = new ConversionRequest();
+                    request.conversionParameters = parameters;
+                    request.execute();
 
-                ConversionDBHelper.deleteRow(db, cursor.getInt(cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry._ID)));
-            } while (cursor.moveToNext());
-        } else {
-            return;
+                    // Deletes row after registering conversion and will resave if failure occurs
+                    ConversionDBHelper.deleteRow(db, cursor.getInt(cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry._ID)));
+                } while (cursor.moveToNext());
+            }
         }
     }
 
+    // Call to register conversion
     private class ConversionRequest extends AsyncTask<Void, Void, Void> {
         public int statusCode;
         public ConversionParameters conversionParameters;
@@ -171,7 +182,7 @@ public class ConversionUtility {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
                 wr.writeBytes(createJSONConversion(conversionParameters).toString());
@@ -201,6 +212,7 @@ public class ConversionUtility {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            // If the response fails, the conversion is stored to a database
             if (statusCode < 200 || statusCode > 299) {
                 ContentValues values = ConversionDBHelper.createValuesFromConversion(conversionParameters);
                 db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
