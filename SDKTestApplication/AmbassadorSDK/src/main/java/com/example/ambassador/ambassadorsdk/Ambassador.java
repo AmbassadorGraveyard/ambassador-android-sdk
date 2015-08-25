@@ -27,4 +27,17 @@ public class Ambassador {
     public static void identify(String email) {
         AmbassadorSingleton.getInstance().startIdentify(email);
     }
+
+    public static void registerConversion(ConversionParameters parameters) {
+        AmbassadorSingleton.getInstance().registerConversion(parameters);
+    }
+
+    public static void runWithKey(String apiKey) {
+        AmbassadorSingleton.getInstance().saveAPIKey(apiKey);
+        AmbassadorSingleton.getInstance().startConversionTimer();
+    }
+
+    public static void runWithKeyAndInstallConversion() {
+
+    }
 }
