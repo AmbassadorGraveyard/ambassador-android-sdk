@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Ambassador SDK</string>
-
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="facebook_app_id">1650562518489293</string>
+    <string name="get_name_header">One more thing!</string>
+    <string name="get_name_explanation">We want to make sure your friends know who they are receiving this referral from. Please enter your first and last name.</string>
 </resources>

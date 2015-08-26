@@ -3,10 +3,12 @@ package com.example.ambassador.ambassadorsdk;
 import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -27,6 +29,17 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.support.v7.widget.Toolbar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,7 +47,7 @@ import java.util.Comparator;
 /**
  * Created by JakeDunahee on 7/31/15.
  */
-public class ContactSelectorActivity extends AppCompatActivity {
+public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener {
     private Button btnSend;
     private ImageButton btnEdit;
     private EditText etShareMessage, etSearch;
@@ -43,6 +56,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
     private ArrayList<ContactObject> contactList;
     public Boolean showPhoneNumbers;
     private InputMethodManager inputManager;
+    private JSONObject pusherData;
     ContactListAdapter adapter;
     ProgressDialog pd;
     private int checkmarkPxXPos;
@@ -65,6 +79,12 @@ public class ContactSelectorActivity extends AppCompatActivity {
 
         checkmarkPxXPos = getResources().getDimensionPixelSize(R.dimen.contact_select_checkmark_x);
         setUpToolbar();
+
+        //setup progress dialog only once
+        pd = new ProgressDialog(this);
+        pd.setMessage("Sharing");
+        pd.setOwnerActivity(this);
+        pd.setCancelable(false);
 
         // Finds out whether to show emails or phone numbers
         showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
@@ -109,6 +129,14 @@ public class ContactSelectorActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+
+        //get and store pusher data
+        try {
+            pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     //region TOOLBAR MENU
@@ -326,17 +354,115 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     public void sendToContacts(View view) {
-        pd = new ProgressDialog(this);
-        pd.setMessage("Sharing");
-        pd.setOwnerActivity(this);
-        pd.setCancelable(false);
+        //get and store pusher data
+        try {
+            //if user is doing sms and we don't have first or last name, we need to get it with a dialog
+            if (showPhoneNumbers && //FOR TESTING INCLUDE THIS -->  true || //remove "true ||" for launch
+                (!pusherData.has("firstName") || pusherData.getString("firstName").equals("null") || pusherData.getString("firstName").isEmpty()
+                ||
+                !pusherData.has("lastName") || pusherData.getString("lastName").equals("null") || pusherData.getString("lastName").isEmpty()))
+            {
+                //show dialog to get name
+                final ContactNameDialog cnd = new ContactNameDialog(this);
+                cnd.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        cnd.showKeyboard();
+                    }
+                });
+                cnd.show();
+                return;
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        _initiateSend();
+    }
+
+    @Override
+    public void handleNameInput(String firstName, String lastName) {
         pd.show();
+        try {
+            pusherData.put("firstName", firstName);
+            pusherData.put("lastName", lastName);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        //save to shared prefs
+        AmbassadorSingleton.getInstance().savePusherInfo(pusherData.toString());
+
+        //call api - on success we'll initiate the bulk share
+        UpdateNameRequest unr = new UpdateNameRequest();
+        unr.execute();
+    }
+
+    private void _initiateSend() {
+        //this method is called from two places, one of which could already be showing the pd
+        if (!pd.isShowing()) pd.show();
 
         BulkShareHelper shareHelper = new BulkShareHelper(pd);
         shareHelper.bulkSMSShare(adapter.selectedContacts, showPhoneNumbers);
     }
 
-    void handleNoContacts() {
+    private void handleNoContacts() {
         // TODO: Add functionality to show "No contacts" on top of listview if user has no contacts
+    }
+
+    class UpdateNameRequest extends AsyncTask<Void, Void, Void> {
+        int statusCode;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            String url = "http://dev-ambassador-api.herokuapp.com/universal/action/identify/";
+            JSONObject DataObject = new JSONObject();
+            JSONObject NameObject = new JSONObject();
+
+            try {
+                DataObject.put("email", pusherData.getString("email"));
+                NameObject.put("first_name", firstName);
+                NameObject.put("last_name", lastName);
+                DataObject.put("update_data", NameObject);
+
+                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+                connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
+
+                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+                wr.writeBytes(DataObject.toString());
+                wr.flush();
+                wr.close();
+
+                statusCode = connection.getResponseCode();
+
+                InputStream is = connection.getInputStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                String line;
+                StringBuilder response = new StringBuilder();
+
+                while ((line = rd.readLine()) != null) {
+                    response.append(line);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            _initiateSend();
+        }
     }
 }

@@ -3,10 +3,12 @@ package com.example.ambassador.ambassadorsdk;
 import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -16,7 +18,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -27,6 +29,17 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.support.v7.widget.Toolbar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,7 +47,7 @@ import java.util.Comparator;
 /**
  * Created by JakeDunahee on 7/31/15.
  */
-public class ContactSelectorActivity extends AppCompatActivity {
+public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener {
     private Button btnSend;
     private ImageButton btnEdit;
     private EditText etShareMessage, etSearch;
@@ -43,9 +56,10 @@ public class ContactSelectorActivity extends AppCompatActivity {
     private ArrayList<ContactObject> contactList;
     public Boolean showPhoneNumbers;
     private InputMethodManager inputManager;
+    private JSONObject pusherData;
     ContactListAdapter adapter;
     ProgressDialog pd;
-    private int checkmarkPxXPos;
+    private String firstName, lastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +77,13 @@ public class ContactSelectorActivity extends AppCompatActivity {
         llSendView = (LinearLayout) findViewById(R.id.llSendView);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        checkmarkPxXPos = getResources().getDimensionPixelSize(R.dimen.contact_select_checkmark_x);
         setUpToolbar();
+
+        //setup progress dialog only once
+        pd = new ProgressDialog(this);
+        pd.setMessage("Sharing");
+        pd.setOwnerActivity(this);
+        pd.setCancelable(false);
 
         // Finds out whether to show emails or phone numbers
         showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
@@ -82,15 +101,15 @@ public class ContactSelectorActivity extends AppCompatActivity {
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get checkmark image and animate in or out based on its selection state
+                // Get checkmark image and animates in or out based on its selection state
                 ImageView imageView = (ImageView) view.findViewById(R.id.ivCheckMark);
                 if (adapter.selectedContacts.contains(adapter.filteredContactList.get(position))) {
                     adapter.selectedContacts.remove(adapter.filteredContactList.get(position));
                     imageView.animate().setDuration(100).x(view.getWidth()).start();
                 } else {
                     adapter.selectedContacts.add(adapter.filteredContactList.get(position));
-                    imageView.animate().setDuration(300).setInterpolator(new OvershootInterpolator())
-                            .x(view.getWidth() - imageView.getWidth() - checkmarkPxXPos).start();
+                    imageView.animate().setDuration(300).setInterpolator(new BounceInterpolator())
+                            .x(view.getWidth() - imageView.getWidth() - 25).start();
                 }
 
                 updateSendButton(adapter.selectedContacts.size());
@@ -109,6 +128,14 @@ public class ContactSelectorActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+
+        //get and store pusher data
+        try {
+            pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     //region TOOLBAR MENU
@@ -191,7 +218,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
             ContactObject object = new ContactObject();
             object.name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             object.emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
             contactList.add(object);
         }
 
@@ -203,19 +229,6 @@ public class ContactSelectorActivity extends AppCompatActivity {
             contactList.add(object1);
             contactList.add(object2);
             contactList.add(object3);
-            contactList.add(new ContactObject("Jim Doe", "jimdoe2@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe44@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe3@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe5@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe6@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe7@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe8@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe9@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe11@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe@g12mail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe221@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdo121e@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jim112121doe@gmail.com"));
         }
 
         sortContactsAlphabetically();
@@ -242,7 +255,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     void editBtnTapped() {
-        btnEdit.setImageResource(R.drawable.done_button);
+        btnEdit.setImageResource(R.mipmap.done_button);
         btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0));
         etShareMessage.setEnabled(true);
         etShareMessage.requestFocus();
@@ -253,7 +266,7 @@ public class ContactSelectorActivity extends AppCompatActivity {
         btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         etShareMessage.setSelection(0);
         etShareMessage.setEnabled(false);
-        btnEdit.setImageResource(R.drawable.pencil_edit);
+        btnEdit.setImageResource(R.mipmap.pencil_edit);
     }
 
     public void displayOrHideSearch(View v) {
@@ -326,17 +339,115 @@ public class ContactSelectorActivity extends AppCompatActivity {
     }
 
     public void sendToContacts(View view) {
-        pd = new ProgressDialog(this);
-        pd.setMessage("Sharing");
-        pd.setOwnerActivity(this);
-        pd.setCancelable(false);
+        //get and store pusher data
+        try {
+            //if user is doing sms and we don't have first or last name, we need to get it with a dialog
+            if (showPhoneNumbers && true || //remove "true ||"
+                !pusherData.has("firstName") || pusherData.getString("firstName") == null
+                ||
+                !pusherData.has("lastName") || pusherData.getString("lastName") == null)
+            {
+                //show dialog to get name
+                final ContactNameDialog cnd = new ContactNameDialog(this);
+                cnd.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        cnd.showKeyboard();
+                    }
+                });
+                cnd.show();
+                return;
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        _initiateSend();
+    }
+
+    @Override
+    public void handleNameInput(String firstName, String lastName) {
         pd.show();
+        try {
+            pusherData.put("firstName", firstName);
+            pusherData.put("lastName", lastName);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        //save to shared prefs
+        AmbassadorSingleton.getInstance().savePusherInfo(pusherData.toString());
+
+        //call api - on success we'll initiate the bulk share
+        UpdateNameRequest unr = new UpdateNameRequest();
+        unr.execute();
+    }
+
+    private void _initiateSend() {
+        //this method is called from two places, one of which could already be showing the pd
+        if (!pd.isShowing()) pd.show();
 
         BulkShareHelper shareHelper = new BulkShareHelper(pd);
         shareHelper.bulkSMSShare(adapter.selectedContacts, showPhoneNumbers);
     }
 
-    void handleNoContacts() {
+    private void handleNoContacts() {
         // TODO: Add functionality to show "No contacts" on top of listview if user has no contacts
+    }
+
+    class UpdateNameRequest extends AsyncTask<Void, Void, Void> {
+        int statusCode;
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            String url = "http://dev-ambassador-api.herokuapp.com/universal/action/identify/";
+            JSONObject DataObject = new JSONObject();
+            JSONObject NameObject = new JSONObject();
+
+            try {
+                DataObject.put("email", pusherData.getString("email"));
+                NameObject.put("first_name", firstName);
+                NameObject.put("last_name", lastName);
+                DataObject.put("update_data", NameObject);
+
+                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+                connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
+
+                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+                wr.writeBytes(DataObject.toString());
+                wr.flush();
+                wr.close();
+
+                statusCode = connection.getResponseCode();
+
+                InputStream is = connection.getInputStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                String line;
+                StringBuilder response = new StringBuilder();
+
+                while ((line = rd.readLine()) != null) {
+                    response.append(line);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            _initiateSend();
+        }
     }
 }
