@@ -244,7 +244,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     //endregion
 
 
-    //region SOCAIL MEDIA CALLS - FACEBOOK, TWITTER, LINKEDIN
+    //region SOCIAL MEDIA CALLS - FACEBOOK, TWITTER, LINKEDIN
     public void initFacebook(AmbassadorActivity ambassadorActivity) {
         FacebookSdk.sdkInitialize(getApplicationContext());
         fbDialog = new ShareDialog(ambassadorActivity);
