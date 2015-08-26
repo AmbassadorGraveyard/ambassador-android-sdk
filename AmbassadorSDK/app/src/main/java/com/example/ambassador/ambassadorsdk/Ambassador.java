@@ -45,7 +45,7 @@ public class Ambassador {
         AmbassadorSingleton.getInstance().startConversionTimer();
 
         // Checks boolean from sharedpreferences to see if this the first launch and registers conversion if it is
-        if (AmbassadorSingleton.getInstance().convertedOnInstall() == false) {
+        if (!AmbassadorSingleton.getInstance().convertedOnInstall()) {
             AmbassadorSingleton.getInstance().convertForInstallation(parameters);
         }
     }
