@@ -342,7 +342,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         //get and store pusher data
         try {
             //if user is doing sms and we don't have first or last name, we need to get it with a dialog
-            if (showPhoneNumbers && true || //remove "true ||"
+            if (showPhoneNumbers && //FOR TESTING INCLUDE THIS -->  true || //remove "true ||" for launch
                 !pusherData.has("firstName") || pusherData.getString("firstName") == null
                 ||
                 !pusherData.has("lastName") || pusherData.getString("lastName") == null)
