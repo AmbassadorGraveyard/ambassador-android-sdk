@@ -18,7 +18,7 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.BounceInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -59,7 +59,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private JSONObject pusherData;
     ContactListAdapter adapter;
     ProgressDialog pd;
-    private String firstName, lastName;
+    private int checkmarkPxXPos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +77,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         llSendView = (LinearLayout) findViewById(R.id.llSendView);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
+        checkmarkPxXPos = getResources().getDimensionPixelSize(R.dimen.contact_select_checkmark_x);
         setUpToolbar();
 
         //setup progress dialog only once
@@ -101,15 +102,15 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get checkmark image and animates in or out based on its selection state
+                // Get checkmark image and animate in or out based on its selection state
                 ImageView imageView = (ImageView) view.findViewById(R.id.ivCheckMark);
                 if (adapter.selectedContacts.contains(adapter.filteredContactList.get(position))) {
                     adapter.selectedContacts.remove(adapter.filteredContactList.get(position));
                     imageView.animate().setDuration(100).x(view.getWidth()).start();
                 } else {
                     adapter.selectedContacts.add(adapter.filteredContactList.get(position));
-                    imageView.animate().setDuration(300).setInterpolator(new BounceInterpolator())
-                            .x(view.getWidth() - imageView.getWidth() - 25).start();
+                    imageView.animate().setDuration(300).setInterpolator(new OvershootInterpolator())
+                            .x(view.getWidth() - imageView.getWidth() - checkmarkPxXPos).start();
                 }
 
                 updateSendButton(adapter.selectedContacts.size());
@@ -218,6 +219,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             ContactObject object = new ContactObject();
             object.name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             object.emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
             contactList.add(object);
         }
 
@@ -229,6 +231,19 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             contactList.add(object1);
             contactList.add(object2);
             contactList.add(object3);
+            contactList.add(new ContactObject("Jim Doe", "jimdoe2@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe44@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe3@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe5@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe6@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe7@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe8@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe9@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe11@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe@g12mail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdoe221@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jimdo121e@gmail.com"));
+            contactList.add(new ContactObject("Jim Doe", "jim112121doe@gmail.com"));
         }
 
         sortContactsAlphabetically();
@@ -255,7 +270,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     void editBtnTapped() {
-        btnEdit.setImageResource(R.mipmap.done_button);
+        btnEdit.setImageResource(R.drawable.done_button);
         btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0));
         etShareMessage.setEnabled(true);
         etShareMessage.requestFocus();
@@ -266,7 +281,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         etShareMessage.setSelection(0);
         etShareMessage.setEnabled(false);
-        btnEdit.setImageResource(R.mipmap.pencil_edit);
+        btnEdit.setImageResource(R.drawable.pencil_edit);
     }
 
     public void displayOrHideSearch(View v) {
@@ -342,10 +357,10 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         //get and store pusher data
         try {
             //if user is doing sms and we don't have first or last name, we need to get it with a dialog
-            if (showPhoneNumbers && true || //remove "true ||"
-                !pusherData.has("firstName") || pusherData.getString("firstName") == null
+            if (showPhoneNumbers && //FOR TESTING INCLUDE THIS -->  true || //remove "true ||" for launch
+                (!pusherData.has("firstName") || pusherData.getString("firstName").equals("null") || pusherData.getString("firstName").isEmpty()
                 ||
-                !pusherData.has("lastName") || pusherData.getString("lastName") == null)
+                !pusherData.has("lastName") || pusherData.getString("lastName").equals("null") || pusherData.getString("lastName").isEmpty()))
             {
                 //show dialog to get name
                 final ContactNameDialog cnd = new ContactNameDialog(this);
@@ -379,7 +394,9 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             return;
         }
 
-        //save to shared prefs
+        //this shouldn't happen because UI enforces entry, but check anyway unless UI validation is removed
+        if (firstName == null || lastName == null) return;
+
         AmbassadorSingleton.getInstance().savePusherInfo(pusherData.toString());
 
         //call api - on success we'll initiate the bulk share
@@ -410,8 +427,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
             try {
                 DataObject.put("email", pusherData.getString("email"));
-                NameObject.put("first_name", firstName);
-                NameObject.put("last_name", lastName);
+                NameObject.put("first_name", pusherData.getString("firstName"));
+                NameObject.put("last_name", pusherData.getString("lastName"));
                 DataObject.put("update_data", NameObject);
 
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
