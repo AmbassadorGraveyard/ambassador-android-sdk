@@ -27,4 +27,23 @@ public class Ambassador {
     public static void identify(String email) {
         AmbassadorSingleton.getInstance().startIdentify(email);
     }
+
+    public static void registerConversion(ConversionParameters parameters) {
+        AmbassadorSingleton.getInstance().registerConversion(parameters);
+    }
+
+    public static void runWithKey(String apiKey) {
+        AmbassadorSingleton.getInstance().saveAPIKey(apiKey);
+        AmbassadorSingleton.getInstance().startConversionTimer();
+    }
+
+    public static void runWithKeyAndConvertOnInstall(String apiKey, ConversionParameters parameters) {
+        AmbassadorSingleton.getInstance().saveAPIKey(apiKey);
+        AmbassadorSingleton.getInstance().startConversionTimer();
+
+        // Checks boolean from sharedpreferences to see if this the first launch and registers conversion if it is
+        if (AmbassadorSingleton.getInstance().convertedOnInstall() == false) {
+            AmbassadorSingleton.getInstance().convertForInstallation(parameters);
+        }
+    }
 }

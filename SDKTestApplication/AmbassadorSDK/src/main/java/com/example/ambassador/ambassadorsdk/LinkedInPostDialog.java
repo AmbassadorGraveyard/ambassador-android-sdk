@@ -58,16 +58,12 @@ class LinkedInPostDialog extends Dialog {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    postToLinkedIn();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                postToLinkedIn();
             }
         });
     }
 
-    private void postToLinkedIn() throws IOException {
+    private void postToLinkedIn() {
         if (etMessage.getText().toString().isEmpty()) {
             Toast.makeText(getOwnerActivity(), "Cannot share blank message", Toast.LENGTH_SHORT).show();
             etMessage.shakeEditText();
