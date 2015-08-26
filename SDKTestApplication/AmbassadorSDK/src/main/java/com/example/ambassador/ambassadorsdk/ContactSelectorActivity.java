@@ -343,7 +343,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         try {
             //if user is doing sms and we don't have first or last name, we need to get it with a dialog
             if (showPhoneNumbers && //FOR TESTING INCLUDE THIS -->  true || //remove "true ||" for launch
-                    (!pusherData.has("firstName") || pusherData.getString("firstName").equals("null") || pusherData.getString("firstName").isEmpty()
+                (!pusherData.has("firstName") || pusherData.getString("firstName").equals("null") || pusherData.getString("firstName").isEmpty()
                 ||
                 !pusherData.has("lastName") || pusherData.getString("lastName").equals("null") || pusherData.getString("lastName").isEmpty()))
             {
