@@ -3,6 +3,7 @@ package com.example.ambassador.ambassadorsdk;
 import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -347,7 +348,13 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                 !pusherData.has("lastName") || pusherData.getString("lastName") == null)
             {
                 //show dialog to get name
-                ContactNameDialog cnd = new ContactNameDialog(this);
+                final ContactNameDialog cnd = new ContactNameDialog(this);
+                cnd.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        cnd.showKeyboard();
+                    }
+                });
                 cnd.show();
                 return;
             }
