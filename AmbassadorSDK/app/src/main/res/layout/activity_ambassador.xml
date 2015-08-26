@@ -32,6 +32,8 @@
         android:id="@+id/etShortURL"
         android:layout_marginTop="35dp"
         android:layout_below="@+id/tvWelcomeDesc"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentRight="true"
