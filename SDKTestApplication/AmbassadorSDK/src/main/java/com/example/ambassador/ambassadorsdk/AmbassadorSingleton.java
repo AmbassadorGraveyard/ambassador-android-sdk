@@ -71,8 +71,7 @@ public class AmbassadorSingleton {
         return sharePrefs.getString("identifyObject", null);
     }
 
-    public void startIdentify(String email) {
-        Identify identify = new Identify(context, email);
+    public void startIdentify(IIdentify identify) {
         identify.getIdentity();
     }
 

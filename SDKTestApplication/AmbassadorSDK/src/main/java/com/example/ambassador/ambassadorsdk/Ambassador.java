@@ -24,8 +24,11 @@ public class Ambassador {
         context.startActivity(intent);
     }
 
-    public static void identify(String email) {
-        AmbassadorSingleton.getInstance().startIdentify(email);
+    public static void identify(String identifier) {
+        Context context = AmbassadorSingleton.getInstance().context;
+
+        IIdentify identify = new IdentifyAugur(context, identifier);
+        AmbassadorSingleton.getInstance().startIdentify(identify);
     }
 
     public static void registerConversion(ConversionParameters parameters) {
@@ -42,7 +45,7 @@ public class Ambassador {
         AmbassadorSingleton.getInstance().startConversionTimer();
 
         // Checks boolean from sharedpreferences to see if this the first launch and registers conversion if it is
-        if (AmbassadorSingleton.getInstance().convertedOnInstall() == false) {
+        if (!AmbassadorSingleton.getInstance().convertedOnInstall()) {
             AmbassadorSingleton.getInstance().convertForInstallation(parameters);
         }
     }

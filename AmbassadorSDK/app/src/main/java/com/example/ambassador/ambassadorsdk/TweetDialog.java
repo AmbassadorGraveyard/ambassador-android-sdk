@@ -25,22 +25,22 @@ import twitter4j.auth.AccessToken;
 
 public class TweetDialog extends Dialog {
     private CustomEditText etTwitterMessage;
-    private Button btnTweet, btnCancel;
     private ProgressBar loader;
 
     public TweetDialog(Context context) {
         super(context);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_twitter_tweet);
 
         // UI Components
         etTwitterMessage = (CustomEditText) findViewById(R.id.etTweetMessage);
-        btnTweet = (Button) findViewById(R.id.btnTweet);
-        btnCancel = (Button) findViewById(R.id.btnCancel);
+        Button btnTweet = (Button) findViewById(R.id.btnTweet);
+        Button btnCancel = (Button) findViewById(R.id.btnCancel);
         loader = (ProgressBar) findViewById(R.id.loadingPanel);
 
         loader.setVisibility(View.GONE);
-        etTwitterMessage.setEditTextTint(Color.parseColor("#62a9ef"));
+        etTwitterMessage.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
         etTwitterMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
 
         btnTweet.setOnClickListener(new View.OnClickListener() {
@@ -58,7 +58,7 @@ public class TweetDialog extends Dialog {
         });
     }
 
-    public void shareTweet() {
+    private void shareTweet() {
         if (etTwitterMessage.getText().toString().isEmpty()) {
             Toast.makeText(getOwnerActivity(), "Cannot share a blank Tweet", Toast.LENGTH_SHORT).show();
             etTwitterMessage.shakeEditText();
@@ -68,12 +68,6 @@ public class TweetDialog extends Dialog {
             tweetRequest.tweetString = etTwitterMessage.getText().toString();
             tweetRequest.execute();
         }
-    }
-
-    private void setEditTextTint() {
-        final Drawable wrappedDrawable = DrawableCompat.wrap(etTwitterMessage.getBackground());
-        DrawableCompat.setTintList(wrappedDrawable, ColorStateList.valueOf(Color.parseColor("#62a9ef")));
-        etTwitterMessage.setBackground(wrappedDrawable);
     }
 
     class TweetRequest extends AsyncTask<Void, Void, Void> {
