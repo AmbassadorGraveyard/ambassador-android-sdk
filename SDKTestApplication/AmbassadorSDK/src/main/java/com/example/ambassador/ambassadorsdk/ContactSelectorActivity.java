@@ -59,7 +59,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private JSONObject pusherData;
     ContactListAdapter adapter;
     ProgressDialog pd;
-    private String firstName, lastName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -379,7 +378,9 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             return;
         }
 
-        //save to shared prefs
+        //this shouldn't happen because UI enforces entry, but check anyway unless UI validation is removed
+        if (firstName == null || lastName == null) return;
+
         AmbassadorSingleton.getInstance().savePusherInfo(pusherData.toString());
 
         //call api - on success we'll initiate the bulk share
@@ -410,8 +411,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
             try {
                 DataObject.put("email", pusherData.getString("email"));
-                NameObject.put("first_name", firstName);
-                NameObject.put("last_name", lastName);
+                NameObject.put("first_name", pusherData.getString("firstName"));
+                NameObject.put("last_name", pusherData.getString("lastName"));
                 DataObject.put("update_data", NameObject);
 
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
