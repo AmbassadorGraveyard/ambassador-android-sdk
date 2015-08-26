@@ -24,7 +24,10 @@ public class Ambassador {
         context.startActivity(intent);
     }
 
-    public static void identify(String email) {
-        AmbassadorSingleton.getInstance().startIdentify(email);
+    public static void identify(String identifier) {
+        Context context = AmbassadorSingleton.getInstance().context;
+
+        IIdentify identify = new IdentifyAugur(context, identifier);
+        AmbassadorSingleton.getInstance().startIdentify(identify);
     }
 }

@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -15,6 +16,7 @@ import android.widget.Toast;
 public class ContactNameDialog extends Dialog {
     private CustomEditText etFirstName, etLastName;
     private ContactNameListener mCallback;
+    private InputMethodManager inputManager;
 
     public interface ContactNameListener {
         void handleNameInput(String firstname, String lastname);
@@ -49,6 +51,19 @@ public class ContactNameDialog extends Dialog {
                 continueSending();
             }
         });
+
+/*
+        etFirstName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.showSoftInput(etFirstName, 0); // Presents keyboard
+                }
+            }
+        }
+*/
     }
 
     private void continueSending() {

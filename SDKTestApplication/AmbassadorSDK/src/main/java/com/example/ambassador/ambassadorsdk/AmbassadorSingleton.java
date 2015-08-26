@@ -74,8 +74,7 @@ public class AmbassadorSingleton {
         return preferences.getString("identifyObject", "Fetching ShortURL");
     }
 
-    public void startIdentify(String email) {
-        Identify identify = new Identify(context, email);
+    public void startIdentify(IIdentify identify) {
         identify.getIdentity();
     }
 
