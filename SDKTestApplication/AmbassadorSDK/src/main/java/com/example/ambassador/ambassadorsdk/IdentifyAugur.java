@@ -51,18 +51,19 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by JakeDunahee on 7/23/15.
  */
-public class Identify {
+public class IdentifyAugur implements IIdentify {
     private Context context;
     private Timer timer;
     private String emailAddress;
     private WebView wvTest;
     private JSONObject augurObject;
 
-    public Identify(Context context, String emailAddress) {
+    public IdentifyAugur(Context context, String emailAddress) {
         this.context = context;
         this.emailAddress = emailAddress;
     }
 
+    @Override
     public void getIdentity() {
         // Set up webview
         wvTest = new WebView(context);
