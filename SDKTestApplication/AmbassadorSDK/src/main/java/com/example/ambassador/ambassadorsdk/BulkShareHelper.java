@@ -144,7 +144,7 @@ public class BulkShareHelper {
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
-            connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+            connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
         } catch (ProtocolException e) {
             e.printStackTrace();
         }
