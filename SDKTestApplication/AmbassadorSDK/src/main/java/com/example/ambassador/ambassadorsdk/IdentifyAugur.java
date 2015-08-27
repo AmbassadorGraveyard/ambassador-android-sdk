@@ -214,6 +214,7 @@ public class IdentifyAugur implements IIdentify {
 
             try {
                 identifyObject.put("email", emailAddress);
+                identifyObject.put("source", "android_sdk_pilot");
                 identifyObject.put("mbsy_source", "");
                 identifyObject.put("mbsy_cookie_code", "");
 
@@ -232,9 +233,12 @@ public class IdentifyAugur implements IIdentify {
                 fingerPrintObject.put("device", deviceObject);
 
                 identifyObject.put("fp", fingerPrintObject);
+                Log.d("Augur", "Identify Object = " + identifyObject.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
