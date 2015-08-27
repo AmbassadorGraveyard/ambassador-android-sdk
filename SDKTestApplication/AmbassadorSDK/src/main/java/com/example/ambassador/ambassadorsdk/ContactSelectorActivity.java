@@ -434,7 +434,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.API_KEY);
+                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
                 connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
