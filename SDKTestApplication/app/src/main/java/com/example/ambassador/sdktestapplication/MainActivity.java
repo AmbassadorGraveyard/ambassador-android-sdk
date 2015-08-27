@@ -15,7 +15,6 @@ import com.example.ambassador.ambassadorsdk.RAFParameters;
 
 
 public class MainActivity extends ActionBarActivity {
-    Button btnRAF;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +25,7 @@ public class MainActivity extends ActionBarActivity {
         Ambassador.runWithKey("UniversalToken ***REMOVED***");
         Ambassador.identify("jake@getambassador.com");
 
-        btnRAF = (Button)findViewById(R.id.btnShowRAF);
+        Button btnRAF = (Button)findViewById(R.id.btnShowRAF);
         btnRAF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
