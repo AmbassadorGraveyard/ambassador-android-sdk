@@ -234,8 +234,11 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     void setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
-        toolbar.setBackgroundColor(Color.LTGRAY);
-        toolbar.setTitleTextColor(Color.DKGRAY);
+
+        if (toolbar != null) {
+            toolbar.setBackgroundColor(Color.LTGRAY);
+            toolbar.setTitleTextColor(Color.DKGRAY);
+        }
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(AmbassadorSingleton.getInstance().rafParameters.toolbarTitle);
