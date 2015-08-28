@@ -1,7 +1,6 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
