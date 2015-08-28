@@ -9,7 +9,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
-
 /**
  * Created by CoreyFields on 8/21/15.
  */

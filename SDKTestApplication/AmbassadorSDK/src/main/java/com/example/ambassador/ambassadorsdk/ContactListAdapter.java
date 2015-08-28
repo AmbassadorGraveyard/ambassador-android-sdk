@@ -1,22 +1,13 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.common.collect.Collections2;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.logging.Filter;
 
 /**
  * Created by JakeDunahee on 7/31/15.
