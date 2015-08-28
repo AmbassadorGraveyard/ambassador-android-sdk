@@ -53,7 +53,7 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class IdentifyAugur implements IIdentify {
     private Context context;
-    private Timer timer;
+    private Timer augurGetTimer, webPageReloadTimer;
     private String emailAddress;
     private WebView wvTest;
     private JSONObject augurObject;
@@ -71,15 +71,9 @@ public class IdentifyAugur implements IIdentify {
         wvTest.getSettings().setJavaScriptEnabled(true);
         wvTest.addJavascriptInterface(this, "android");
         wvTest.setWebViewClient(new MyBrowser());
+        wvTest.loadUrl("https://staging.mbsy.co/universal/landing/?url=ambassador:ios/&universal_id=abfd1c89-4379-44e2-8361-ee7b87332e32");
 
-        // Start timer and set to run every 3 seconds until it successfully gets augur identity object
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                reloadWebPage();
-            }
-        }, 0, 3000);
+        startTimers();
     }
 
     @JavascriptInterface
@@ -87,7 +81,8 @@ public class IdentifyAugur implements IIdentify {
         if (returnString.startsWith("{\"consumer\"")) {
             Log.d("Augur", "Augur object received!!! Object = " + returnString);
             AmbassadorSingleton.getInstance().setIdentifyObject(returnString);
-            timer.cancel();
+            augurGetTimer.cancel();
+            webPageReloadTimer.cancel();
             String deviceID = getAugurID(returnString);
             createPusher(deviceID);
         } else {
@@ -95,18 +90,33 @@ public class IdentifyAugur implements IIdentify {
         }
     }
 
+    //region Timer Functions
     final android.os.Handler myHandler = new android.os.Handler();
 
-    private void reloadWebPage() {
+    private void getAugur() {
         myHandler.post(myRunnable);
+    }
+
+    private void reloadWebPage() {
+        myHandler.post(reloadRunnable);
     }
 
     final Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
+            Log.d("AugurCall", "Attempting to get Augur Object");
+            wvTest.loadUrl("javascript:android.onData(JSON.stringify(augur.json))");
+        }
+    };
+
+    final Runnable reloadRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.d("Augur", "Reloading webView");
             wvTest.loadUrl("https://staging.mbsy.co/universal/landing/?url=ambassador:ios/&universal_id=abfd1c89-4379-44e2-8361-ee7b87332e32");
         }
     };
+    //endregion
 
 
     // Subclass of webViewClent
@@ -114,16 +124,7 @@ public class IdentifyAugur implements IIdentify {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-
-            if (url.startsWith("https://staging.mbsy.co")) {
-                Log.d("AugurCall", "Attempting to get Augur Object");
-                wvTest.loadUrl("javascript:android.onData(JSON.stringify(augur.json))");
-            }
-        }
-
-        @Override
-        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            wvTest.stopLoading();
+            wvTest.loadUrl("javascript:android.onData(JSON.stringify(augur.json))");
         }
     }
 
@@ -293,5 +294,24 @@ public class IdentifyAugur implements IIdentify {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void startTimers() {
+        // Start timer and set to run every 3 seconds until it successfully gets augur identity object
+        augurGetTimer = new Timer();
+        augurGetTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getAugur();
+            }
+        }, 0, 3000);
+
+        webPageReloadTimer = new Timer();
+        webPageReloadTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                reloadWebPage();
+            }
+        }, 12000, 12000);
     }
 }
