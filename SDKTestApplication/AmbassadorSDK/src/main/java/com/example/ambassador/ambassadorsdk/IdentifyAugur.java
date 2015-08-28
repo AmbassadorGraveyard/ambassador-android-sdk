@@ -312,6 +312,6 @@ public class IdentifyAugur implements IIdentify {
             public void run() {
                 reloadWebPage();
             }
-        }, 0, 12000);
+        }, 12000, 12000);
     }
 }
