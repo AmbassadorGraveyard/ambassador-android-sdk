@@ -71,6 +71,7 @@ public class IdentifyAugur implements IIdentify {
         wvTest.getSettings().setJavaScriptEnabled(true);
         wvTest.addJavascriptInterface(this, "android");
         wvTest.setWebViewClient(new MyBrowser());
+        wvTest.loadUrl("https://staging.mbsy.co/universal/landing/?url=ambassador:ios/&universal_id=abfd1c89-4379-44e2-8361-ee7b87332e32");
 
         // Start timer and set to run every 3 seconds until it successfully gets augur identity object
         timer = new Timer();
@@ -104,7 +105,8 @@ public class IdentifyAugur implements IIdentify {
     final Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
-            wvTest.loadUrl("https://staging.mbsy.co/universal/landing/?url=ambassador:ios/&universal_id=abfd1c89-4379-44e2-8361-ee7b87332e32");
+            Log.d("AugurCall", "Attempting to get Augur Object");
+            wvTest.loadUrl("javascript:android.onData(JSON.stringify(augur.json))");
         }
     };
 
