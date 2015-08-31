@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -18,26 +17,18 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -52,12 +43,13 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private RelativeLayout rlSearch;
     private LinearLayout llSendView;
     private ArrayList<ContactObject> contactList;
-    public Boolean showPhoneNumbers;
     private InputMethodManager inputManager;
     private JSONObject pusherData;
-    ContactListAdapter adapter;
-    ProgressDialog pd;
-    private int checkmarkPxXPos;
+    private TextView tvNoContacts;
+    private ContactListAdapter adapter;
+    private ProgressDialog pd;
+    private ContactNameDialog cnd;
+    Boolean showPhoneNumbers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,16 +58,15 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
         // Init UI components
         ListView lvContacts = (ListView)findViewById(R.id.lvContacts);
-        Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
         btnSend = (Button)findViewById(R.id.btnSend);
         etShareMessage = (EditText) findViewById(R.id.etShareMessage);
         rlSearch = (RelativeLayout)findViewById(R.id.rlSearch);
         etSearch = (EditText) findViewById(R.id.etSearch);
         llSendView = (LinearLayout) findViewById(R.id.llSendView);
+        tvNoContacts = (TextView) findViewById(R.id.tvNoContacts);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        checkmarkPxXPos = getResources().getDimensionPixelSize(R.dimen.contact_select_checkmark_x);
         setUpToolbar();
 
         //setup progress dialog only once
@@ -100,17 +91,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get checkmark image and animate in or out based on its selection state
-                ImageView imageView = (ImageView) view.findViewById(R.id.ivCheckMark);
-                if (adapter.selectedContacts.contains(adapter.filteredContactList.get(position))) {
-                    adapter.selectedContacts.remove(adapter.filteredContactList.get(position));
-                    imageView.animate().setDuration(100).x(view.getWidth()).start();
-                } else {
-                    adapter.selectedContacts.add(adapter.filteredContactList.get(position));
-                    imageView.animate().setDuration(300).setInterpolator(new OvershootInterpolator())
-                            .x(view.getWidth() - imageView.getWidth() - checkmarkPxXPos).start();
-                }
-
+                // Get checkmark image and animate in or out based on its selection state and updates arrays
+                adapter.updateArrays(position, view);
                 updateSendButton(adapter.selectedContacts.size());
             }
         });
@@ -121,7 +103,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.filterList((String) etSearch.getText().toString());
+                adapter.filterList(etSearch.getText().toString());
             }
 
             @Override
@@ -135,6 +117,12 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        if (cnd != null) { cnd.dismiss(); }
+        super.onPause();
     }
 
     //region TOOLBAR MENU
@@ -170,41 +158,36 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, null);
 
-        while (phones.moveToNext()) {
-            ContactObject object = new ContactObject();
-            object.name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            object.phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+        if (phones.moveToFirst()) {
+            do {
+                ContactObject object = new ContactObject();
+                object.name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                object.phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-            String typeNum = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                String typeNum = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
 
-            switch (Integer.parseInt(typeNum)) {
-                case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
-                    object.type = "Home";
-                    break;
-                case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-                    object.type = "Mobile";
-                    break;
-                case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
-                    object.type = "Work";
-                    break;
-                default:
-                    object.type = "Other";
-                    break;
-            }
+                switch (Integer.parseInt(typeNum)) {
+                    case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
+                        object.type = "Home";
+                        break;
+                    case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
+                        object.type = "Mobile";
+                        break;
+                    case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
+                        object.type = "Work";
+                        break;
+                    default:
+                        object.type = "Other";
+                        break;
+                }
 
-            contactList.add(object);
+                contactList.add(object);
+            } while (phones.moveToNext());
+        } else {
+            tvNoContacts.setVisibility(View.VISIBLE);
         }
 
-        // TEMPORARY -- Adds fake contacts if phone has no contacts currently in it
-        if (contactList.size() == 0) {
-            ContactObject object1 = new ContactObject("John Doe", "Mobile", "555-555-5555");
-            ContactObject object2 = new ContactObject("Jane Doe", "Mobile", "123-456-7890");
-            ContactObject object3 = new ContactObject("Jim Doe", "Mobile", "098-765-4321");
-            contactList.add(object1);
-            contactList.add(object2);
-            contactList.add(object3);
-        }
-
+        phones.close();
         sortContactsAlphabetically();
     }
 
@@ -213,37 +196,20 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 null, null, null, null);
 
-        while (emails.moveToNext()) {
-            ContactObject object = new ContactObject();
-            object.name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-            object.emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+        if (emails.moveToFirst()) {
+            do  {
+                ContactObject object = new ContactObject();
+                object.name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                object.emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-            contactList.add(object);
+                contactList.add(object);
+            }
+            while (emails.moveToNext());
+        } else {
+            tvNoContacts.setVisibility(View.VISIBLE);
         }
 
-        // TEMPORARY -- Adds fake contacts if phone has no contacts currently in it
-        if (contactList.size() == 0) {
-            ContactObject object1 = new ContactObject("John Doe", "johndoe@gmail.com");
-            ContactObject object2 = new ContactObject("Jane Doe", "janedoe@gmail.com");
-            ContactObject object3 = new ContactObject("Jim Doe", "jimdoe@gmail.com");
-            contactList.add(object1);
-            contactList.add(object2);
-            contactList.add(object3);
-            contactList.add(new ContactObject("Jim Doe", "jimdoe2@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe44@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe3@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe5@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe6@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe7@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe8@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe9@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe11@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe@g12mail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdoe221@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jimdo121e@gmail.com"));
-            contactList.add(new ContactObject("Jim Doe", "jim112121doe@gmail.com"));
-        }
-
+        emails.close();
         sortContactsAlphabetically();
     }
 
@@ -316,8 +282,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         anim.start();
     }
 
-    // Hides the send view while user is searching.  Mainly to make more room to see listview
     void shrinkSendView(Boolean shouldShrink) {
+        // Functionality: Hides the send view while user is searching.  Mainly to make more room to see listview
         if (shouldShrink) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)llSendView.getLayoutParams();
             params.height = 0;
@@ -336,9 +302,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Refer your friends"); }
         toolbar.setTitleTextColor(Color.DKGRAY);
         toolbar.setBackgroundColor(Color.WHITE);
-        if (toolbar.getNavigationIcon() != null) {
-            toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN);
-        }
+        if (toolbar.getNavigationIcon() != null) { toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN); }
     }
 
     void updateSendButton(int numOfContacts) {
@@ -361,7 +325,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                 !pusherData.has("lastName") || pusherData.getString("lastName").equals("null") || pusherData.getString("lastName").isEmpty()))
             {
                 //show dialog to get name
-                final ContactNameDialog cnd = new ContactNameDialog(this);
+                cnd = new ContactNameDialog(this, pd);
                 cnd.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(DialogInterface dialog) {
@@ -370,99 +334,28 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                 });
                 cnd.show();
                 return;
+            } else {
+                _initiateSend();
             }
         }
         catch (JSONException e) {
             e.printStackTrace();
             return;
         }
-
-        _initiateSend();
-    }
-
-    @Override
-    public void handleNameInput(String firstName, String lastName) {
-        pd.show();
-        try {
-            pusherData.put("firstName", firstName);
-            pusherData.put("lastName", lastName);
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        //this shouldn't happen because UI enforces entry, but check anyway unless UI validation is removed
-        if (firstName == null || lastName == null) return;
-
-        AmbassadorSingleton.getInstance().savePusherInfo(pusherData.toString());
-
-        //call api - on success we'll initiate the bulk share
-        UpdateNameRequest unr = new UpdateNameRequest();
-        unr.execute();
     }
 
     private void _initiateSend() {
         //this method is called from two places, one of which could already be showing the pd
         if (!pd.isShowing()) pd.show();
 
-        BulkShareHelper shareHelper = new BulkShareHelper(pd);
-        shareHelper.bulkSMSShare(adapter.selectedContacts, showPhoneNumbers);
+        // Call bulkShareHelper to handle sharing calls
+        BulkShareHelper shareHelper = new BulkShareHelper(pd, etShareMessage.getText().toString());
+        shareHelper.bulkShare(adapter.selectedContacts, showPhoneNumbers);
     }
 
-    private void handleNoContacts() {
-        // TODO: Add functionality to show "No contacts" on top of listview if user has no contacts
-    }
-
-    class UpdateNameRequest extends AsyncTask<Void, Void, Void> {
-        int statusCode;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            String url = "http://dev-ambassador-api.herokuapp.com/universal/action/identify/";
-            JSONObject DataObject = new JSONObject();
-            JSONObject NameObject = new JSONObject();
-
-            try {
-                DataObject.put("email", pusherData.getString("email"));
-                NameObject.put("first_name", pusherData.getString("firstName"));
-                NameObject.put("last_name", pusherData.getString("lastName"));
-                DataObject.put("update_data", NameObject);
-
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
-                connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
-
-                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(DataObject.toString());
-                wr.flush();
-                wr.close();
-
-                statusCode = connection.getResponseCode();
-
-                InputStream is = connection.getInputStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                StringBuilder response = new StringBuilder();
-
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            _initiateSend();
-        }
+    // Interface call from ContactNameDialog
+    @Override
+    public void namesHaveBeenUpdated() {
+        _initiateSend();
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by JakeDunahee on 8/10/15.
  */
-public class CustomEditText extends EditText {
+class CustomEditText extends EditText {
     public CustomEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

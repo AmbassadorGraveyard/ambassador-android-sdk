@@ -21,7 +21,7 @@ public class Ambassador {
     }
 
     public static void identify(String identifier) {
-        Context context = AmbassadorSingleton.getInstance().context;
+        Context context = MyApplication.getAppContext();
 
         IIdentify identify = new IdentifyAugur(context, identifier);
         AmbassadorSingleton.getInstance().startIdentify(identify);
