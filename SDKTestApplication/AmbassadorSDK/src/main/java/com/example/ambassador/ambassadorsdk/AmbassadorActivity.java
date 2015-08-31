@@ -148,7 +148,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     };
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        // Executed when Pusher data is recieved, used to update the shortURL editText if loading screen is present
+        // Executed when Pusher data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
             getCorrectUrl();
@@ -205,8 +205,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                         if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
                             etShortUrl.setText(urlObj.getString("url"));
                             AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
-                            AmbassadorSingleton.getInstance().rafParameters.shareMessage =
-                                    rafParams.shareMessage + " " + urlObj.getString("url");
+                            AmbassadorSingleton.getInstance().rafParameters.shareMessage += " " + urlObj.getString("url");
                         }
                     }
                 } catch (JSONException e) {
