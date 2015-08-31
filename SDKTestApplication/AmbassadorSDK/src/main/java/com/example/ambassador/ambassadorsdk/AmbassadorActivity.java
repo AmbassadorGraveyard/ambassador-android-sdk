@@ -1,6 +1,5 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.app.ActionBar;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 
@@ -13,11 +12,7 @@ import android.graphics.Color;
 import android.net.Uri;
 
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,23 +23,16 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.facebook.FacebookSdk;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import org.w3c.dom.Text;
-
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Handler;
-
 
 public class AmbassadorActivity extends AppCompatActivity {
     private TextView tvWelcomeTitle, tvWelcomeDesc;
@@ -55,7 +43,6 @@ public class AmbassadorActivity extends AppCompatActivity {
     private RAFParameters rafParams;
     private ProgressDialog pd;
     private Timer networkTimer;
-    private int timerSeconds;
     private final String[] gridTitles = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
     private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
                                                             R.drawable.email_icon, R.drawable.sms_icon};
@@ -66,7 +53,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
 
-        initFacebook(this);
+        initFacebook();
 
         AmbassadorSingleton.getInstance().context = getApplicationContext();
 
@@ -82,15 +69,10 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
         getCorrectUrl();
-        setCustomizedText(rafParams);
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
-
         setUpToolbar();
-
         setCustomizedText(rafParams);
-
         etShortUrl.setEditTextTint(Color.DKGRAY);
-
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("pusherData"));
@@ -247,9 +229,9 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
     //region SOCIAL MEDIA CALLS - FACEBOOK, TWITTER, LINKEDIN
-    public void initFacebook(AmbassadorActivity ambassadorActivity) {
+    public void initFacebook() {
         FacebookSdk.sdkInitialize(getApplicationContext());
-        fbDialog = new ShareDialog(ambassadorActivity);
+        fbDialog = new ShareDialog(this);
     }
 
     public void shareWithFacebook() {
