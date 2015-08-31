@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -55,7 +56,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Executed when Pusher data is recieved, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            tryAndSetURL();
+            _tryAndSetURL();
         }
     };
 
@@ -78,13 +79,13 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
         etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
 
-        setCustomizedText(rafParams);
         etShortUrl.setEditTextTint(Color.DKGRAY);
-        tryAndSetURL();
+        _setCustomizedText(rafParams);
+        _tryAndSetURL();
 
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                copyShortURLToClipboard();
+                _copyShortURLToClipboard();
             }
         });
 
@@ -94,7 +95,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         gvSocialGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               respondToGridViewClick(position);
+               _respondToGridViewClick(position);
             }
         });
     }
@@ -102,56 +103,50 @@ public class AmbassadorActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        if (networkTimer != null) { networkTimer.cancel(); }
         super.onDestroy();
     }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        finish();
-    }
-
     // END ACTIVITY OVERRIDE METHODS
 
 
     // ONCLICK METHODS
-    private void copyShortURLToClipboard() {
+    private void _copyShortURLToClipboard() {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("simpleText", etShortUrl.getText().toString());
         clipboard.setPrimaryClip(clip);
         Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 
-    private void respondToGridViewClick(int position) {
+    private void _respondToGridViewClick(int position) {
         // Functionality: Handles items being clicked in the gridview
         switch (position) {
             case 0:
-                shareWithFacebook();
+                _shareWithFacebook();
                 break;
             case 1:
-                shareWithTwitter();
+                _shareWithTwitter();
                 break;
             case 2:
-                shareWithLinkedIn();
+                _shareWithLinkedIn();
                 break;
             case 3:
-                goToContactsPage(false);
+                _goToContactsPage(false);
                 break;
             case 4:
-                goToContactsPage(true);
+                _goToContactsPage(true);
                 break;
             default:
                 break;
         }
     }
 
-    private void goToContactsPage(Boolean showPhoneNumbers) {
+    private void _goToContactsPage(Boolean showPhoneNumbers) {
         Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
         contactIntent.putExtra("showPhoneNumbers", showPhoneNumbers);
         startActivity(contactIntent);
     }
 
-    private void shareWithFacebook() {
+    private void _shareWithFacebook() {
         FacebookSdk.sdkInitialize(getApplicationContext());
         ShareLinkContent content = new ShareLinkContent.Builder()
                 .setContentTitle(rafParams.shareMessage)
@@ -162,7 +157,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         fbDialog.show(content);
     }
 
-    private void shareWithTwitter() {
+    private void _shareWithTwitter() {
         // Presents twitter login screen if user has not logged in yet
         if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
             TweetDialog tweetDialog = new TweetDialog(this);
@@ -174,7 +169,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     }
 
-    private void shareWithLinkedIn() {
+    private void _shareWithLinkedIn() {
         // Presents login screen if user hasn't signed in yet
         if (AmbassadorSingleton.getInstance().getLinkedInToken() == null) {
             Intent intent = new Intent(this, LinkedInLoginActivity.class);
@@ -189,41 +184,47 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
     // UI SETTER METHODS
-    private void tryAndSetURL() {
+    private void _tryAndSetURL() {
         // Functionality: Gets URL from Pusher
         // First checks to see if Pusher info has already been saved to SharedPreferencs
         if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
-            setUrlText();
+            _setUrlText();
         } else {
-            showLoader();
+            _showLoader();
         }
     }
 
-    private void showLoader() {
+    private void _showLoader() {
         // If the pusher object hasn't been saved to SharedPreferences, we show a loading screen until it has been
         // Should only happen on first launch
         pd = new ProgressDialog(this);
         pd.setMessage("Loading");
         pd.setOwnerActivity(this);
-        pd.setCancelable(false);
+        pd.setCanceledOnTouchOutside(false);
+        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
         pd.show();
 
         networkTimer = new Timer();
         networkTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                showNetworkError();
+                _showNetworkError();
             }
         }, 30000);
     }
 
-    private void showNetworkError() {
+    private void _showNetworkError() {
         // Funtionality: After 30 seconds of waiting for data from Pusher/Augur, shows toast to user
         // stating that there is a network error and then dismisses the RAF activity
         timerHandler.post(myRunnable);
     }
 
-    private void setUrlText() {
+    private void _setUrlText() {
         // If loading screen is showing, then we should hide it and cancel the network timer
         if (pd != null) {
             pd.hide();
@@ -244,6 +245,8 @@ public class AmbassadorActivity extends AppCompatActivity {
                     if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
                         etShortUrl.setText(urlObj.getString("url"));
                         AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
+                        AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
+                        AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
                         AmbassadorSingleton.getInstance().rafParameters.shareMessage =
                                 rafParams.shareMessage + " " + urlObj.getString("url");
                     }
@@ -254,13 +257,13 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     }
 
-    private void setCustomizedText(RAFParameters params) {
+    private void _setCustomizedText(RAFParameters params) {
         tvWelcomeTitle.setText(params.welcomeTitle);
         tvWelcomeDesc.setText(params.welcomeDescription);
-        setUpToolbar(params.toolbarTitle);
+        _setUpToolbar(params.toolbarTitle);
     }
 
-    private void setUpToolbar(String toolbarTitle) {
+    private void _setUpToolbar(String toolbarTitle) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
         toolbar.setBackgroundColor(Color.LTGRAY);
         toolbar.setTitleTextColor(Color.DKGRAY);

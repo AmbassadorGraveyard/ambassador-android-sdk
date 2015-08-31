@@ -24,7 +24,7 @@ public class MainActivity extends ActionBarActivity {
         final Context cxt = this;
 
         Ambassador.runWithKey("UniversalToken ***REMOVED***");
-        Ambassador.identify("jake@getambassador.com");
+        Ambassador.identify("anonymous_test_1606@example.com");
 
         btnRAF = (Button)findViewById(R.id.btnShowRAF);
         btnRAF.setOnClickListener(new View.OnClickListener() {

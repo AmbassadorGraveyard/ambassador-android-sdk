@@ -20,7 +20,7 @@ import java.net.URL;
 /**
  * Created by JakeDunahee on 8/21/15.
  */
-public class ConversionUtility {
+class ConversionUtility {
     private Context context;
     private ConversionParameters parameters;
     private ConversionDBHelper helper;
@@ -217,6 +217,13 @@ public class ConversionUtility {
                 db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
                 Log.d("Conversion", "Inserted row into table");
             }
+        }
+    }
+
+    class ConversionParametersException extends Exception {
+        public ConversionParametersException() {
+            super("Conversion parameters must have set values for 'mbsy_revenue," +
+                    "'mbsy_campaign', and 'mbsy_email.");
         }
     }
 }

@@ -8,20 +8,20 @@ import java.util.TimerTask;
 /**
  * Created by JakeDunahee on 7/29/15.
  */
-public class AmbassadorSingleton {
+class AmbassadorSingleton {
     // Constants
-    public static final String TWITTER_KEY = "***REMOVED***";
-    public static final String TWITTER_SECRET = "***REMOVED***";
-    public static final String LINKED_IN_CALLBACK_URL = "http://localhost:2999";
-    public static final String LINKED_IN_CLIENT_ID = "***REMOVED***";
-    public static final String LINKED_IN_CLIENT_SECRET = "***REMOVED***";
-    public static final String PUSHER_APP_ID = "***REMOVED***";
-    public static final String PUSHER_KEY = "***REMOVED***";
-    public static final String PUSHER_SECRET = "***REMOVED***";
-    public static final String MBSY_UNIVERSAL_ID = "***REMOVED***";
+    static final String TWITTER_KEY = "***REMOVED***";
+    static final String TWITTER_SECRET = "***REMOVED***";
+    static final String LINKED_IN_CALLBACK_URL = "http://localhost:2999";
+    static final String LINKED_IN_CLIENT_ID = "***REMOVED***";
+    static final String LINKED_IN_CLIENT_SECRET = "***REMOVED***";
+    static final String PUSHER_APP_ID = "***REMOVED***";
+    static final String PUSHER_KEY = "***REMOVED***";
+    static final String PUSHER_SECRET = "***REMOVED***";
+    static final String MBSY_UNIVERSAL_ID = "***REMOVED***";
 
-    private  static AmbassadorSingleton mInstance = null;
-    public Context context;
+    private static AmbassadorSingleton mInstance = null;
+    private Context context;
     private SharedPreferences sharePrefs;
     public RAFParameters rafParameters;
 
@@ -68,9 +68,16 @@ public class AmbassadorSingleton {
         sharePrefs.edit().putString("apiKey", apiKey).apply();
     }
 
-    void convertForInstallation(ConversionParameters parameters) {
-        AmbassadorSingleton.getInstance().registerConversion(parameters);
-        sharePrefs.edit().putBoolean("installConversion", true).apply();
+    void saveShortCode(String shortCode) {
+        sharePrefs.edit().putString("shortCode", shortCode).apply();
+    }
+
+    void saveUserFullName(String firstName, String lastName) {
+        sharePrefs.edit().putString("fullName", firstName + " " + lastName).apply();
+    }
+
+    void saveEmailSubject(String subjectLine) {
+        sharePrefs.edit().putString("subjectLine", subjectLine).apply();
     }
     // END SHAREDINSTANCE SETTERS
 
@@ -96,11 +103,21 @@ public class AmbassadorSingleton {
 
     String getAPIKey() { return sharePrefs.getString("apiKey", null); }
 
+    String getShortCode() { return sharePrefs.getString("shortCode", null); }
+
+    String getFullName() {
+        return sharePrefs.getString("fullName", null);
+    }
+
+    String getEmailSubjectLine() {
+        return sharePrefs.getString("subjectLine", null);
+    }
+
     Boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
     //END SHAREDINSTANCE GETTERS
 
 
-
+    // AMBASSADOR SDK CALLS
     void registerConversion(ConversionParameters parameters) {
         ConversionUtility conversionUtility = new ConversionUtility(context, parameters);
         conversionUtility.registerConversion();
@@ -109,7 +126,7 @@ public class AmbassadorSingleton {
     void startIdentify(IIdentify identify) {
         identify.getIdentity();
     }
-    
+
     void startConversionTimer() {
         final ConversionUtility utility = new ConversionUtility(context);
         Timer timer = new Timer();
@@ -121,7 +138,9 @@ public class AmbassadorSingleton {
         }, 0, 10000);
     }
 
-
-
-
+    void convertForInstallation(ConversionParameters parameters) {
+        AmbassadorSingleton.getInstance().registerConversion(parameters);
+        sharePrefs.edit().putBoolean("installConversion", true).apply();
+    }
+    // END AMBASSADOR SDK CALLS
 }

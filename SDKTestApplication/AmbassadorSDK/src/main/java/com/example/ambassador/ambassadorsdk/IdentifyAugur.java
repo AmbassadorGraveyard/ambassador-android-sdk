@@ -31,7 +31,7 @@ import java.net.URL;
 /**
  * Created by JakeDunahee on 7/23/15.
  */
-public class IdentifyAugur implements IIdentify {
+class IdentifyAugur implements IIdentify {
     private Context context;
     private Timer augurGetTimer, webPageReloadTimer;
     private String emailAddress;
