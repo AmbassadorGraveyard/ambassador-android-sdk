@@ -290,7 +290,7 @@ public class IdentifyAugur implements IIdentify {
             pusherSave.put("urls", pusherObject.getJSONArray("urls"));
 
             AmbassadorSingleton.getInstance().savePusherInfo(pusherSave.toString());
-            sendIdBroadcast(); // Tells MainActivity to update edittext with url
+            sendIdBroadcast(); // Tells AmbassadorActivity to update edittext with url
         } catch (JSONException e) {
             e.printStackTrace();
         }
