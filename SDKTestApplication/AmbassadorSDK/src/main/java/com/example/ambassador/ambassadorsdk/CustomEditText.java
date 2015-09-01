@@ -16,13 +16,27 @@ import java.util.List;
  * Created by JakeDunahee on 8/10/15.
  */
 class CustomEditText extends EditText {
+    private AnimatorSet set;
+
     public CustomEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
+        _setUpAnimatorSet();
     }
 
     // Animation similiar to Mac wrong password animation
     public void shakeEditText() {
-        AnimatorSet set = new AnimatorSet();
+        set.start();
+    }
+
+    // Sets tint color of EditText for older devices
+    public void setEditTextTint(int color) {
+        final Drawable wrappedDrawable = DrawableCompat.wrap(this.getBackground());
+        DrawableCompat.setTintList(wrappedDrawable, ColorStateList.valueOf(color));
+        this.setBackground(wrappedDrawable);
+    }
+
+    private void _setUpAnimatorSet() {
+        set = new AnimatorSet();
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(this, "translationX", 0, 5);
         ObjectAnimator objectAnimator1 = ObjectAnimator.ofFloat(this, "translationX", 5, -5);
         ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(this, "translationX", -5, 5);
@@ -37,13 +51,5 @@ class CustomEditText extends EditText {
         set.playSequentially(animatorItems);
 
         set.setDuration(80);
-        set.start();
-    }
-
-    // Sets tint color of EditText for older devices
-    public void setEditTextTint(int color) {
-        final Drawable wrappedDrawable = DrawableCompat.wrap(this.getBackground());
-        DrawableCompat.setTintList(wrappedDrawable, ColorStateList.valueOf(color));
-        this.setBackground(wrappedDrawable);
     }
 }
