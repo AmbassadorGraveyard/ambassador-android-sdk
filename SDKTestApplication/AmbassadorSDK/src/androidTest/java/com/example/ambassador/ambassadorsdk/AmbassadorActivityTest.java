@@ -13,13 +13,18 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.pressBack;
+import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.RootMatchers.withDecorView;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.core.Is.is;
 
 @RunWith(AndroidJUnit4.class)
 @MediumTest
@@ -63,6 +68,7 @@ public class AmbassadorActivityTest {
 
         //set a bogus token so we can test share link
         AmbassadorSingleton.getInstance().setTwitterAccessToken("test");
+        AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret("test");
 
         //tap twitter share
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
@@ -82,5 +88,15 @@ public class AmbassadorActivityTest {
 
         //ensure dialog fields not visible now that we've backed out
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+
+        //now try to share
+        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
+        //enter blank text and make sure dialog is still visible
+        onView(withId(R.id.etTweetMessage)).perform(clearText(), closeSoftKeyboard());
+        onView(withId(R.id.btnTweet)).perform(click());
+        onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
+
+        //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+        //onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
     }
 }

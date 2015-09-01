@@ -46,7 +46,7 @@ class TweetDialog extends Dialog {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hide();
+                dismiss();
             }
         });
     }
@@ -69,8 +69,7 @@ class TweetDialog extends Dialog {
 
         @Override
         protected Void doInBackground(Void... params) {
-            AccessToken accessToken = new AccessToken(AmbassadorSingleton.getInstance().getTwitterAccessToken(),
-                    AmbassadorSingleton.getInstance().getTwitterAccessTokenSecret());
+            AccessToken accessToken = new AccessToken(AmbassadorSingleton.getInstance().getTwitterAccessToken(), AmbassadorSingleton.getInstance().getTwitterAccessTokenSecret());
             Twitter twitter = new TwitterFactory().getInstance();
             twitter.setOAuthConsumer(AmbassadorSingleton.TWITTER_KEY, AmbassadorSingleton.TWITTER_SECRET);
             twitter.setOAuthAccessToken(accessToken);
@@ -94,7 +93,6 @@ class TweetDialog extends Dialog {
             // Make sure post was successful and handle it if it wasn't
             if (postStatus < 300 && postStatus > 199) {
                 Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
-                hide();
                 dismiss();
             } else {
                 Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
