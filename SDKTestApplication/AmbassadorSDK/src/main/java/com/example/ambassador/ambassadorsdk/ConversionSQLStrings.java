@@ -1,9 +1,7 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.provider.BaseColumns;
-import android.provider.ContactsContract;
 
-import org.w3c.dom.Text;
 
 /**
  * Created by JakeDunahee on 8/21/15.

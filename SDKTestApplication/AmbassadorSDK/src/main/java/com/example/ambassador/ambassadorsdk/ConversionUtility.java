@@ -6,10 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -18,25 +16,22 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
 /**
  * Created by JakeDunahee on 8/21/15.
  */
-public class ConversionUtility {
-    private Context context;
+class ConversionUtility {
     private ConversionParameters parameters;
     private ConversionDBHelper helper;
     private SQLiteDatabase db;
-    private int dbSize;
 
     // Constructors for ConversionUtility
     public ConversionUtility(Context context) {
-        this.context = context;
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
     }
 
     public ConversionUtility(Context context, ConversionParameters parameters) {
-        this.context = context;
         this.parameters = parameters;
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
@@ -218,6 +213,13 @@ public class ConversionUtility {
                 db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
                 Log.d("Conversion", "Inserted row into table");
             }
+        }
+    }
+
+    class ConversionParametersException extends Exception {
+        public ConversionParametersException() {
+            super("Conversion parameters must have set values for 'mbsy_revenue," +
+                    "'mbsy_campaign', and 'mbsy_email.");
         }
     }
 }
