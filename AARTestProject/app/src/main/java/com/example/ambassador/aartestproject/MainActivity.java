@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.ambassador.ambassadorsdk.Ambassador;
+import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.example.ambassador.ambassadorsdk.AmbassadorActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,8 +18,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Ambassador.runWithKey("UniversalToken ***REMOVED***");
-        Ambassador.identify("jake@getambassador.com");
+        AmbassadorSDK.runWithKey("UniversalToken ***REMOVED***");
+        AmbassadorSDK.identify("jake@getambassador.com");
 
         Button btnRaf = (Button) findViewById(R.id.btnRAF2);
         final Context context = this;
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         btnRaf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Ambassador.presentRAF(context, null, "305");
+                AmbassadorSDK.presentRAF(context, null, "305");
             }
         });
     }
