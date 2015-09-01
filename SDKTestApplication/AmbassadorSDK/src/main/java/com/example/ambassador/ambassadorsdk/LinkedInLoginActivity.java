@@ -1,7 +1,6 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,7 +41,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
         webView = (WebView)findViewById(R.id.wvSocial);
 
-        setUpToolbar();
+        _setUpToolbar();
 
         webView.setWebViewClient(new MyBrowser());
         webView.loadUrl("https://www.linkedin.com/uas/oauth2/authorization?" +
@@ -58,12 +57,11 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    void setUpToolbar() {
+    private void _setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setBackgroundColor(Color.parseColor("#468fc3"));
+        toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.linkedin_blue));
         toolbar.setTitleTextColor(Color.WHITE);
-
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Log into LinkedIn"); }
     }
 
@@ -105,7 +103,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
     }
 
 
-    class RequestTask extends AsyncTask<Void, Void, Void> {
+    private class RequestTask extends AsyncTask<Void, Void, Void> {
         public String currentCode;
         public Context context;
         public String charset = "UTF-8";
@@ -124,6 +122,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                         "&client_secret=" + URLEncoder.encode(AmbassadorSingleton.LINKED_IN_CLIENT_SECRET, charset);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
+                return null;
             }
 
             try {
@@ -145,7 +144,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                 InputStream is = connection.getInputStream();
                 BufferedReader rd = new BufferedReader(new InputStreamReader(is));
                 String line;
-                StringBuffer response = new StringBuffer();
+                StringBuilder response = new StringBuilder();
 
                 while ((line = rd.readLine()) != null) {
                     response.append(line);
@@ -155,10 +154,6 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                     // Get values from JSON object
                     JSONObject json = new JSONObject(response.toString());
                     String accessToken = json.getString("access_token");
-                    // Save Access Token to SharedPreferences so user doesn't need to sign in again
-//                    SharedPreferences prefs = context.getSharedPreferences(
-//                            "com.example.ambassador.ambassadorsdk", Context.MODE_PRIVATE);
-//                    prefs.edit().putString("linkedInToken", accessToken).apply();
                     AmbassadorSingleton.getInstance().setLinkedInToken(accessToken);
                 } catch (JSONException e) {
                     e.printStackTrace();
