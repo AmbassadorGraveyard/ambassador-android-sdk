@@ -4,11 +4,9 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -21,111 +19,18 @@ import java.util.regex.Pattern;
 /**
  * Created by JakeDunahee on 8/11/15.
  */
-public class BulkShareHelper {
-    public ProgressDialog loader;
+class BulkShareHelper {
+    private ProgressDialog loader;
+    private String messageToShare;
 
-    public BulkShareHelper(ProgressDialog loader) {
+    // Constuctor
+    BulkShareHelper(ProgressDialog loader, String messageToShare) {
         this.loader = loader;
+        this.messageToShare = messageToShare;
     }
 
-    //region VERIFIERS -- Verify string objects(phone numbers and email addresses) and return ArrayLists
-    public static ArrayList<String> verifiedSMS(ArrayList<ContactObject> contactObjects) {
-        ArrayList<String> verifiedNumbers = new ArrayList<>();
-        for (ContactObject contact : contactObjects) {
-            String strippedNum = contact.phoneNumber.replaceAll("[^0-9]", "");
-            if (strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7
-                    || !verifiedNumbers.contains(strippedNum)) {
-                verifiedNumbers.add(strippedNum);
-                Log.d("Contacts", "(" + verifiedNumbers.size() + ") " + strippedNum);
-            }
-        }
-
-        return verifiedNumbers;
-    }
-
-    public static ArrayList<String> verifiedEmail(ArrayList<ContactObject> contactObjects) {
-        ArrayList<String> verifiedEmails = new ArrayList<>();
-        for (ContactObject contact : contactObjects) {
-            if (isValidEmail(contact.emailAddress)) {
-                verifiedEmails.add(contact.emailAddress);
-                Log.d("Contacts", "(" + verifiedEmails.size() + ") " + contact.emailAddress);
-            }
-        }
-
-        return verifiedEmails;
-    }
-
-    // Boolean that checks for legit email addressing using regex
-    private static Boolean isValidEmail(String emailAddress) {
-        final Pattern emailRegex = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
-                Pattern.CASE_INSENSITIVE);
-        Matcher matcher = emailRegex.matcher(emailAddress);
-
-        return matcher.find();
-    }
-    //endregion
-
-
-    //region SHARED TRACKING
-    // Creates a jsonArray of jsonobjects created from validated phone numbers and email addresses
-    private static JSONArray contactArray(ArrayList<String> values, Boolean phoneNumbers) {
-        String socialName = (phoneNumbers) ? "sms" : "email";
-        JSONArray objectsList = new JSONArray();
-        for (int i = 0; i < values.size(); i++) {
-            JSONObject newObject = new JSONObject();
-            try {
-                newObject.put("short_code", "jB78");
-                newObject.put("social_name", socialName);
-                if (phoneNumbers) {
-                    newObject.put("recipient_email", "");
-                    newObject.put("recipient_username", values.get(i));
-                } else {
-                    newObject.put("recipient_email", values.get(i));
-                    newObject.put("recipient_username", "");
-                }
-
-                objectsList.put(newObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return objectsList;
-    }
-    //endregion
-
-
-    //region BULK SHARING PAYLOADS
-    // Ceates a json payload for SMS sharing with all the validated numbers included
-    private static JSONObject payloadObjectForSMS(ArrayList<String> numbers) {
-        JSONObject object = new JSONObject();
-        try {
-            object.put("to", numbers);
-            object.put("from", "Jake Dunahee");
-            object.put("message", "test sms message");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return object;
-    }
-
-    // Creats an email payload object for bulk sharing
-    private static JSONObject payloadObjectForEmail(ArrayList<String> emails) {
-        JSONObject object = new JSONObject();
-        try {
-            object.put("to_emails", new JSONArray(emails));
-            object.put("short_code", "jw9j");
-            object.put("message", "test email message");
-            object.put("subject_line", "test subject line");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return object;
-    }
-
-    public void bulkSMSShare(ArrayList<ContactObject> contacts, Boolean phoneNumbers) {
+    void bulkShare(ArrayList<ContactObject> contacts, Boolean phoneNumbers) {
+        // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
             BulkShareSMSRequest smsRequest = new BulkShareSMSRequest();
             smsRequest.contacts = contacts;
@@ -137,7 +42,8 @@ public class BulkShareHelper {
         }
     }
 
-    public void setUpConnection(HttpURLConnection connection) {
+    // REQUEST HELPER METHODS
+    private void _setUpConnection(HttpURLConnection connection) {
         try {
             connection.setDoInput(true);
             connection.setDoOutput(true);
@@ -150,25 +56,120 @@ public class BulkShareHelper {
         }
     }
 
-    public Boolean isSuccessfulResponseCode(int statusCode) {
-        return (statusCode >= 200 && statusCode < 300);
-    }
-
-    public void callSuccessful() {
+    private void _callIsSuccessful() {
         loader.hide();
         loader.dismiss();
         loader.getOwnerActivity().finish();
-        Toast.makeText(loader.getOwnerActivity(), "Successfully shared!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(loader.getOwnerActivity(), "Message successfully shared!", Toast.LENGTH_SHORT).show();
     }
 
-    public void callUnsuccessful() {
+    private void _callIsUnsuccessful() {
         loader.hide();
-        Toast.makeText(loader.getOwnerActivity(), "Unable to share.  Please try again.", Toast.LENGTH_SHORT).show();
+        loader.dismiss();
+        Toast.makeText(loader.getOwnerActivity(), "Unable to share message+.  Please try again.", Toast.LENGTH_SHORT).show();
+    }
+    // END REQUEST HELPER METHODS
+
+
+    // CLASS: Static class that filters arrayLists and creates JSON objects
+    private static class BulkFormatter {
+        // VERIFIER FUNCTIONS
+        private static ArrayList<String> _verifiedSMSList(ArrayList<ContactObject> contactObjects) {
+            ArrayList<String> verifiedNumbers = new ArrayList<>();
+            for (ContactObject contact : contactObjects) {
+                String strippedNum = contact.phoneNumber.replaceAll("[^0-9]", "");
+                if (strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7
+                        || !verifiedNumbers.contains(strippedNum)) {
+                    verifiedNumbers.add(strippedNum);
+                }
+            }
+
+            return verifiedNumbers;
+        }
+
+        private static ArrayList<String> _verifiedEmailList(ArrayList<ContactObject> contactObjects) {
+            ArrayList<String> verifiedEmails = new ArrayList<>();
+            for (ContactObject contact : contactObjects) {
+                if (_isValidEmail(contact.emailAddress)) { verifiedEmails.add(contact.emailAddress); }
+            }
+
+            return verifiedEmails;
+        }
+
+        private static Boolean _isValidEmail(String emailAddress) {
+            // Functionality: Boolean that checks for legit email addressing using regex
+            final Pattern emailRegex = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
+                    Pattern.CASE_INSENSITIVE);
+            Matcher matcher = emailRegex.matcher(emailAddress);
+
+            return matcher.find();
+        }
+        // END VERIFIER FUNCTIONS
+
+
+        // JSON OBJECT MAKER
+        private static JSONArray _contactArray(ArrayList<String> values, Boolean phoneNumbers) {
+            // Functionality: Creates a jsonArray of jsonobjects created from validated phone numbers and email addresses
+            String socialName = (phoneNumbers) ? "sms" : "email";
+            JSONArray objectsList = new JSONArray();
+            for (int i = 0; i < values.size(); i++) {
+                JSONObject newObject = new JSONObject();
+                try {
+                    newObject.put("short_code", AmbassadorSingleton.getInstance().getShortCode());
+                    newObject.put("social_name", socialName);
+
+                    if (phoneNumbers) {
+                        newObject.put("recipient_email", "");
+                        newObject.put("recipient_username", values.get(i));
+                    } else {
+                        newObject.put("recipient_email", values.get(i));
+                        newObject.put("recipient_username", "");
+                    }
+
+                    objectsList.put(newObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return objectsList;
+        }
+
+        private static JSONObject _payloadObjectForSMS(ArrayList<String> numbers, String smsMessage) {
+            // Funcionality: Ceates a json payload for SMS sharing with all the validated numbers included
+            JSONObject object = new JSONObject();
+            try {
+                object.put("to", numbers);
+                object.put("from", AmbassadorSingleton.getInstance().getFullName());
+                object.put("message", smsMessage);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return object;
+        }
+
+        private static JSONObject _payloadObjectForEmail(ArrayList<String> emails, String message) {
+            // Functionality: Creats an email payload object for bulk sharing
+            JSONObject object = new JSONObject();
+            try {
+                object.put("to_emails", new JSONArray(emails));
+                object.put("short_code", AmbassadorSingleton.getInstance().getShortCode());
+                object.put("message", message);
+                object.put("subject_line", AmbassadorSingleton.getInstance().getEmailSubjectLine());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return object;
+        }
+        // END JSON OBJECT MAKER
     }
 
-    class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
-        public ArrayList<ContactObject> contacts;
-        public int statusCode;
+
+    private class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
+        private ArrayList<ContactObject> contacts;
+        private int statusCode;
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -176,10 +177,10 @@ public class BulkShareHelper {
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                setUpConnection(connection);
+                _setUpConnection(connection);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.write(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMS(contacts)).toString().getBytes());
+                wr.write(BulkFormatter._payloadObjectForSMS(BulkFormatter._verifiedSMSList(contacts), messageToShare).toString().getBytes());
                 wr.flush();
                 wr.close();
 
@@ -194,30 +195,30 @@ public class BulkShareHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (isSuccessfulResponseCode(statusCode)) {
+            if (Utilities.isSuccessfulResponseCode(statusCode)) {
                 ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
-                shareTrackRequest.contacts = BulkShareHelper.verifiedSMS(contacts);
+                shareTrackRequest.contacts = BulkFormatter._verifiedSMSList(contacts);
                 shareTrackRequest.isSMS = true;
                 shareTrackRequest.execute();
             } else {
-                callUnsuccessful();
+                _callIsUnsuccessful();
             }
         }
     }
 
-    class BulkShareEmailRequest extends AsyncTask<Void, Void, Void> {
-        public ArrayList<ContactObject> contacts;
-        public int statusCode;
+    private class BulkShareEmailRequest extends AsyncTask<Void, Void, Void> {
+        private ArrayList<ContactObject> contacts;
+        private int statusCode;
         @Override
         protected Void doInBackground(Void... params) {
             String url = "https://dev-ambassador-api.herokuapp.com/share/email/";
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                setUpConnection(connection);
+                _setUpConnection(connection);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.write(BulkShareHelper.payloadObjectForEmail(BulkShareHelper.verifiedEmail(contacts)).toString().getBytes());
+                wr.write(BulkFormatter._payloadObjectForEmail(BulkFormatter._verifiedEmailList(contacts), messageToShare).toString().getBytes());
                 wr.flush();
                 wr.close();
 
@@ -232,21 +233,21 @@ public class BulkShareHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (isSuccessfulResponseCode(statusCode)) {
+            if (Utilities.isSuccessfulResponseCode(statusCode)) {
                 ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
-                shareTrackRequest.contacts = BulkShareHelper.verifiedEmail(contacts);
+                shareTrackRequest.contacts = BulkFormatter._verifiedEmailList(contacts);
                 shareTrackRequest.isSMS = false;
                 shareTrackRequest.execute();
             } else {
-                callUnsuccessful();
+                _callIsUnsuccessful();
             }
         }
     }
 
-    class ShareTrackRequest extends AsyncTask<Void, Void, Void> {
-        public ArrayList<String> contacts;
-        public int statusCode;
-        public Boolean isSMS;
+    private class ShareTrackRequest extends AsyncTask<Void, Void, Void> {
+        private ArrayList<String> contacts;
+        private int statusCode;
+        private Boolean isSMS;
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -254,10 +255,10 @@ public class BulkShareHelper {
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                setUpConnection(connection);
+                _setUpConnection(connection);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.write(BulkShareHelper.contactArray(contacts, isSMS).toString().getBytes());
+                wr.write(BulkFormatter._contactArray(contacts, isSMS).toString().getBytes());
                 wr.flush();
                 wr.close();
 
@@ -273,7 +274,7 @@ public class BulkShareHelper {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             // TODO: Check for fail and store locally to retry when signal is available in order to keep share track
-            callSuccessful();
+            _callIsSuccessful();
         }
     }
 }

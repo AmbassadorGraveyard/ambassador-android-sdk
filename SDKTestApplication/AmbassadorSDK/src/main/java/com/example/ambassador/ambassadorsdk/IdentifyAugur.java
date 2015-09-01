@@ -1,59 +1,39 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.HandlerThread;
-import android.os.Message;
-import android.support.annotation.IntDef;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
-import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
-import com.pusher.client.channel.Channel;
-import com.pusher.client.channel.ChannelEventListener;
-import com.pusher.client.channel.PrivateChannel;
 import com.pusher.client.channel.PrivateChannelEventListener;
 import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
 import com.pusher.client.util.HttpAuthorizer;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.net.URL;
-import java.util.logging.Handler;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by JakeDunahee on 7/23/15.
  */
-public class IdentifyAugur implements IIdentify {
+class IdentifyAugur implements IIdentify {
     private Context context;
-    private Timer timer;
+    private Timer augurGetTimer, webPageReloadTimer;
     private String emailAddress;
     private WebView wvTest;
     private JSONObject augurObject;
@@ -71,15 +51,9 @@ public class IdentifyAugur implements IIdentify {
         wvTest.getSettings().setJavaScriptEnabled(true);
         wvTest.addJavascriptInterface(this, "android");
         wvTest.setWebViewClient(new MyBrowser());
+        wvTest.loadUrl("https://staging.mbsy.co/universal/landing/?url=ambassador:ios/&universal_id=***REMOVED***");
 
-        // Start timer and set to run every 3 seconds until it successfully gets augur identity object
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                reloadWebPage();
-            }
-        }, 0, 3000);
+        _startTimers();
     }
 
     @JavascriptInterface
@@ -87,54 +61,61 @@ public class IdentifyAugur implements IIdentify {
         if (returnString.startsWith("{\"consumer\"")) {
             Log.d("Augur", "Augur object received!!! Object = " + returnString);
             AmbassadorSingleton.getInstance().setIdentifyObject(returnString);
-            timer.cancel();
-            String deviceID = getAugurID(returnString);
-            createPusher(deviceID);
+            augurGetTimer.cancel();
+            webPageReloadTimer.cancel();
+            String deviceID = _getAugurID(returnString);
+            _createPusher(deviceID);
         } else {
             Log.d("Augur", "Augur not yet loaded");
         }
     }
 
+    //region Timer Functions
     final android.os.Handler myHandler = new android.os.Handler();
 
-    private void reloadWebPage() {
+    private void getAugur() {
         myHandler.post(myRunnable);
+    }
+
+    private void reloadWebPage() {
+        myHandler.post(reloadRunnable);
     }
 
     final Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
-            wvTest.loadUrl("https://staging.mbsy.co/universal/landing/?url=ambassador:ios/&universal_id=***REMOVED***");
+            Log.d("AugurCall", "Attempting to get Augur Object");
+            wvTest.loadUrl("javascript:android.onData(JSON.stringify(augur.json))");
         }
     };
 
+    final Runnable reloadRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Log.d("Augur", "Reloading webView");
+            wvTest.loadUrl("https://staging.mbsy.co/universal/landing/?url=ambassador:ios/&universal_id=***REMOVED***");
+        }
+    };
+    //endregion
+
 
     // Subclass of webViewClent
-    public class MyBrowser extends WebViewClient {
+    private class MyBrowser extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-
-            if (url.startsWith("https://staging.mbsy.co")) {
-                Log.d("AugurCall", "Attempting to get Augur Object");
-                wvTest.loadUrl("javascript:android.onData(JSON.stringify(augur.json))");
-            }
-        }
-
-        @Override
-        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            wvTest.stopLoading();
+            wvTest.loadUrl("javascript:android.onData(JSON.stringify(augur.json))");
         }
     }
 
-    private void sendIdBroadcast() {
-        // Posts notification to listener once identity is successfully received
+    private void _sendIdBroadcast() {
+        // Functionality: Posts notification to listener once identity is successfully received
         Intent intent = new Intent("pusherData");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
-    // Pulls deviceID from Augur Object
-    public String getAugurID(String augurString) {
+    private String _getAugurID(String augurString) {
+        // Functionality: Pulls deviceID from Augur Object
         String deviceID = "null";
         try {
             augurObject = new JSONObject(augurString);
@@ -147,7 +128,8 @@ public class IdentifyAugur implements IIdentify {
         return deviceID;
     }
 
-    public void createPusher(String augurDeviceID) {
+    private void _createPusher(String augurDeviceID) {
+        // Functionality: Subcribes to Pusher channel and sets listener for pusher action
         String channelName = "private-snippet-channel@user=" + augurDeviceID;
 
         // HttpAuthorizer is used to append headers and extra parameters to the initial Pusher authorization request
@@ -198,12 +180,56 @@ public class IdentifyAugur implements IIdentify {
             @Override
             public void onEvent(String channelName, String eventName, String data) {
                 Log.d("Pusher", "data = " + data);
-                getAndSavePusherInfo(data);
+                _getAndSavePusherInfo(data);
             }
         }, "identify_action");
     }
 
-    class IdentifyRequest extends AsyncTask<Void, Void, Void> {
+    private void _getAndSavePusherInfo(String jsonObject) {
+        // Functionality: Saves Pusher object to SharedPreferences
+        JSONObject pusherSave = new JSONObject();
+
+        try {
+            JSONObject pusherObject = new JSONObject(jsonObject);
+            String firstName = pusherObject.getString("first_name");
+            String lastName = pusherObject.getString("last_name");
+            String phoneNumber = pusherObject.getString("phone");
+            String email = pusherObject.getString("email");
+
+            pusherSave.put("email", email);
+            pusherSave.put("firstName", firstName);
+            pusherSave.put("lastName", lastName);
+            pusherSave.put("phoneNumber", phoneNumber);
+            pusherSave.put("urls", pusherObject.getJSONArray("urls"));
+
+            AmbassadorSingleton.getInstance().savePusherInfo(pusherSave.toString());
+            _sendIdBroadcast(); // Tells MainActivity to update edittext with url
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void _startTimers() {
+        // Functionality: Starts timer and set to run every 3 seconds until it successfully gets augur identity object
+        augurGetTimer = new Timer();
+        augurGetTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                getAugur();
+            }
+        }, 0, 3000);
+
+        // Reloads webpage every 12 seconds in case user wasnt on network while loading the webpage
+        webPageReloadTimer = new Timer();
+        webPageReloadTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                reloadWebPage();
+            }
+        }, 12000, 12000);
+    }
+
+    private class IdentifyRequest extends AsyncTask<Void, Void, Void> {
         int statusCode;
 
         @Override
@@ -214,11 +240,11 @@ public class IdentifyAugur implements IIdentify {
 
             try {
                 identifyObject.put("email", emailAddress);
+                identifyObject.put("source", "android_sdk_pilot");
                 identifyObject.put("mbsy_source", "");
                 identifyObject.put("mbsy_cookie_code", "");
 
                 JSONObject fingerPrintObject = new JSONObject();
-
                 JSONObject augurConsumer = augurObject.getJSONObject("consumer");
                 JSONObject consumerObject = new JSONObject();
                 consumerObject.put("UID", augurConsumer.getString("UID"));
@@ -232,6 +258,7 @@ public class IdentifyAugur implements IIdentify {
                 fingerPrintObject.put("device", deviceObject);
 
                 identifyObject.put("fp", fingerPrintObject);
+                Log.d("Augur", "Identify Object = " + identifyObject.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -267,27 +294,4 @@ public class IdentifyAugur implements IIdentify {
         }
     }
 
-    // Saves Pusher object to SharedPreferences
-    public void getAndSavePusherInfo(String jsonObject) {
-        JSONObject pusherSave = new JSONObject();
-
-        try {
-            JSONObject pusherObject = new JSONObject(jsonObject);
-            String firstName = pusherObject.getString("first_name");
-            String lastName = pusherObject.getString("last_name");
-            String phoneNumber = pusherObject.getString("phone");
-            String email = pusherObject.getString("email");
-
-            pusherSave.put("email", email);
-            pusherSave.put("firstName", firstName);
-            pusherSave.put("lastName", lastName);
-            pusherSave.put("phoneNumber", phoneNumber);
-            pusherSave.put("urls", pusherObject.getJSONArray("urls"));
-
-            AmbassadorSingleton.getInstance().savePusherInfo(pusherSave.toString());
-            sendIdBroadcast(); // Tells MainActivity to update edittext with url
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
 }
