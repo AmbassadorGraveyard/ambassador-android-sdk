@@ -45,7 +45,7 @@ class SocialGridAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.custom_social_cell, null);
+            convertView = inflater.inflate(R.layout.custom_social_cell, parent, false);
         }
 
         ImageView gridImage = (ImageView) convertView.findViewById(R.id.ivGridImage);
@@ -62,11 +62,11 @@ class SocialGridAdapter extends BaseAdapter {
     private int _getCorrectBackgroundColor(int position) {
         switch (position) {
             case 0:
-                return Color.parseColor("#3b5998");
+                return context.getResources().getColor(R.color.facebook_blue);
             case 1:
-                return Color.parseColor("#55acee");
+                return context.getResources().getColor(R.color.twitter_blue);
             case 2:
-                return Color.parseColor("#0077b5");
+                return context.getResources().getColor(R.color.linkedin_blue);
             default:
                 return Color.WHITE;
         }

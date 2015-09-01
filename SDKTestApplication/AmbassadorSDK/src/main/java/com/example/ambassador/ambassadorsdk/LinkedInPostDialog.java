@@ -2,7 +2,6 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -45,7 +44,7 @@ class LinkedInPostDialog extends Dialog {
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
         loader.setVisibility(View.GONE);
 
-        etMessage.setEditTextTint(Color.parseColor("#468fc3"));
+        etMessage.setEditTextTint(getContext().getResources().getColor(R.color.linkedin_blue));
         etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -58,12 +57,12 @@ class LinkedInPostDialog extends Dialog {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                postToLinkedIn();
+                _postToLinkedIn();
             }
         });
     }
 
-    private void postToLinkedIn() {
+    private void _postToLinkedIn() {
         if (etMessage.getText().toString().isEmpty()) {
             Toast.makeText(getOwnerActivity(), "Cannot share blank message", Toast.LENGTH_SHORT).show();
             etMessage.shakeEditText();
@@ -75,11 +74,10 @@ class LinkedInPostDialog extends Dialog {
 
             try {
                 // Create JSON post object
-                JSONObject body = new JSONObject("{" +
+                linkedInPostRequest.object = new JSONObject("{" +
                         "\"comment\": \"" + userMessage + "\"," +
                         "\"visibility\": " + "{ \"code\": \"anyone\" }" +
                         "}");
-                linkedInPostRequest.object = body;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -88,7 +86,7 @@ class LinkedInPostDialog extends Dialog {
         }
     }
 
-    class LinkedInPostRequest extends AsyncTask<Void, Void, Void> {
+    private class LinkedInPostRequest extends AsyncTask<Void, Void, Void> {
         public JSONObject object;
         public int postStatus;
 
@@ -127,6 +125,7 @@ class LinkedInPostDialog extends Dialog {
             if (postStatus < 300 && postStatus > 199) {
                 Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
                 hide();
+                dismiss();
             } else {
                 Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
             }

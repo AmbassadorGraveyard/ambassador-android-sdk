@@ -6,11 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -19,7 +16,7 @@ import java.util.ArrayList;
 class ContactListAdapter extends BaseAdapter  {
     public ArrayList<ContactObject> selectedContacts;
     private ArrayList<ContactObject> contactObjects, filteredContactList;
-    private Boolean shouldShowPhoneNumbers, isFiltering;
+    private Boolean shouldShowPhoneNumbers;
     private final Activity context;
     private final int checkmarkPxXPos;
 
@@ -28,10 +25,9 @@ class ContactListAdapter extends BaseAdapter  {
         this.contactObjects = contactObjects;
         this.shouldShowPhoneNumbers = showPhoneNumbers;
         selectedContacts = new ArrayList<>();
-        filteredContactList = (ArrayList<ContactObject>)contactObjects.clone();
-        isFiltering = false;
+        filteredContactList = new ArrayList<>(contactObjects);
 
-        checkmarkPxXPos = context.getResources().getDimensionPixelSize(R.dimen.contact_select_checkmark_x);
+        checkmarkPxXPos = Utilities.getPixelSizeForDimension(R.dimen.contact_select_checkmark_x);
     }
 
     static class ViewHolder {
@@ -61,7 +57,7 @@ class ContactListAdapter extends BaseAdapter  {
 
         if (convertView == null) {
             LayoutInflater inflater = context.getLayoutInflater();
-            convertView = inflater.inflate(R.layout.adapter_contacts, null);
+            convertView = inflater.inflate(R.layout.adapter_contacts, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.tvName = (TextView)convertView.findViewById(R.id.tvName);
             viewHolder.tvPhoneOrEmail = (TextView)convertView.findViewById(R.id.tvNumberOrEmail);
@@ -91,7 +87,8 @@ class ContactListAdapter extends BaseAdapter  {
     }
 
     public void filterList(String filterString) {
-        if (filterString != null || filterString != "") {
+        // Functionality: Filters the arrayLists based on search parameters in contactSelector activity
+        if (filterString != null && !filterString.equals("")) {
             filteredContactList.clear();
             for (int i = 0; i < contactObjects.size(); i++) {
                 ContactObject object = contactObjects.get(i);
@@ -106,7 +103,7 @@ class ContactListAdapter extends BaseAdapter  {
 
     private void clearFilter() {
         filteredContactList.clear();
-        filteredContactList = (ArrayList<ContactObject>)contactObjects.clone();
+        filteredContactList = new ArrayList<>(contactObjects);
         notifyDataSetChanged();
     }
 

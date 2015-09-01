@@ -58,6 +58,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
         // Init UI components
         ListView lvContacts = (ListView)findViewById(R.id.lvContacts);
+        Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
         btnSend = (Button)findViewById(R.id.btnSend);
         etShareMessage = (EditText) findViewById(R.id.etShareMessage);
@@ -67,7 +68,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         tvNoContacts = (TextView) findViewById(R.id.tvNoContacts);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        setUpToolbar();
+        _setUpToolbar();
 
         //setup progress dialog only once
         pd = new ProgressDialog(this);
@@ -78,9 +79,9 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         // Finds out whether to show emails or phone numbers
         showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
         if (showPhoneNumbers) {
-            getContactPhoneList();
+            _getContactPhoneList();
         } else {
-            getContactEmailList();
+            _getContactEmailList();
         }
 
         // Sets share message to default message from RAF Parameters
@@ -93,13 +94,35 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // Get checkmark image and animate in or out based on its selection state and updates arrays
                 adapter.updateArrays(position, view);
-                updateSendButton(adapter.selectedContacts.size());
+                _updateSendButton(adapter.selectedContacts.size());
+            }
+        });
+
+        btnSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _sendToContacts();
+            }
+        });
+
+        btnDoneSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _displayOrHideSearch();
+            }
+        });
+
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _handleEditButtonTap();
             }
         });
 
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -107,7 +130,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             }
 
             @Override
-            public void afterTextChanged(Editable s) {}
+            public void afterTextChanged(Editable s) {
+            }
         });
 
         //get and store pusher data
@@ -142,7 +166,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
-            displayOrHideSearch(null);
+            _displayOrHideSearch();
         } else {
             finish();
         }
@@ -153,7 +177,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
 
     //region CONTACT FUNCTIONS
-    void getContactPhoneList() {
+    private void _getContactPhoneList() {
         contactList = new ArrayList<>();
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, null);
@@ -188,10 +212,10 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         phones.close();
-        sortContactsAlphabetically();
+        _sortContactsAlphabetically();
     }
 
-    void getContactEmailList() {
+    private void _getContactEmailList() {
         contactList = new ArrayList<>();
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 null, null, null, null);
@@ -210,10 +234,10 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         emails.close();
-        sortContactsAlphabetically();
+        _sortContactsAlphabetically();
     }
 
-    void sortContactsAlphabetically() {
+    private void _sortContactsAlphabetically() {
         Collections.sort(contactList, new Comparator<ContactObject>() {
             @Override
             public int compare(ContactObject lhs, ContactObject rhs) {
@@ -224,16 +248,16 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     //endregion
 
 
-    //region BUTTON FUNCTIONS
-    public void handleEditButtonTap(View view) {
+    // BUTTON METHODS
+    private void _handleEditButtonTap() {
         if (etShareMessage.isEnabled()) {
-            doneEditingMessage();
+            _doneEditingMessage();
         } else {
-            editBtnTapped();
+            _editBtnTapped();
         }
     }
 
-    void editBtnTapped() {
+    private void _editBtnTapped() {
         btnEdit.setImageResource(R.drawable.done_button);
         btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0));
         etShareMessage.setEnabled(true);
@@ -241,14 +265,14 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         inputManager.showSoftInput(etShareMessage, 0); // Presents keyboard
     }
 
-    void doneEditingMessage() {
+    private void _doneEditingMessage() {
         btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         etShareMessage.setSelection(0);
         etShareMessage.setEnabled(false);
         btnEdit.setImageResource(R.drawable.pencil_edit);
     }
 
-    public void displayOrHideSearch(View v) {
+    private void _displayOrHideSearch() {
         // Float that helps converts dp to pixels based on device
         final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
 
@@ -267,13 +291,13 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
         if (finalHeight != 0) {
             // If SHOWING search
-            shrinkSendView(true);
+            _shrinkSendView(true);
             etSearch.requestFocus();
             inputManager.showSoftInput(etSearch, 0);
         } else {
             // If HIDING search
             etSearch.setText("");
-            shrinkSendView(false);
+            _shrinkSendView(false);
             etSearch.clearFocus();
             inputManager.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
         }
@@ -282,7 +306,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         anim.start();
     }
 
-    void shrinkSendView(Boolean shouldShrink) {
+    private void _shrinkSendView(Boolean shouldShrink) {
         // Functionality: Hides the send view while user is searching.  Mainly to make more room to see listview
         if (shouldShrink) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)llSendView.getLayoutParams();
@@ -294,9 +318,10 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             llSendView.setLayoutParams(params);
         }
     }
+    // END BUTTON METHODS
 
     // Adds and styles toolbar in place of the actionbar
-    void setUpToolbar() {
+    private void _setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Refer your friends"); }
@@ -305,7 +330,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         if (toolbar.getNavigationIcon() != null) { toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN); }
     }
 
-    void updateSendButton(int numOfContacts) {
+    private void _updateSendButton(int numOfContacts) {
         if (numOfContacts > 0) {
             if (!btnSend.isEnabled()) { btnSend.setEnabled(true); }
             btnSend.setText("SEND TO " + numOfContacts + " CONTACTS");
@@ -315,7 +340,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
     }
 
-    public void sendToContacts(View view) {
+    private void _sendToContacts() {
         //get and store pusher data
         try {
             //if user is doing sms and we don't have first or last name, we need to get it with a dialog

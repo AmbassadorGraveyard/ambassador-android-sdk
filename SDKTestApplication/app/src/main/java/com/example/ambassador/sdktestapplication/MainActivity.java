@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.ambassador.ambassadorsdk.Ambassador;
+import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.example.ambassador.ambassadorsdk.ConversionParameters;
 import com.example.ambassador.ambassadorsdk.RAFParameters;
 
@@ -23,8 +23,8 @@ public class MainActivity extends ActionBarActivity {
 
         final Context cxt = this;
 
-        Ambassador.runWithKey("UniversalToken ***REMOVED***");
-        Ambassador.identify("anonymous_test_1606@example.com");
+        AmbassadorSDK.runWithKey("UniversalToken ***REMOVED***");
+        AmbassadorSDK.identify("anonymous_test_1610@example.com");
 
         btnRAF = (Button)findViewById(R.id.btnShowRAF);
         btnRAF.setOnClickListener(new View.OnClickListener() {
@@ -35,7 +35,7 @@ public class MainActivity extends ActionBarActivity {
                 parameters.welcomeTitle = "RAF Params Welcome Title";
                 parameters.welcomeDescription = "RAF Params Welcome Description";
                 parameters.toolbarTitle = "RAF Params Toolbar Title";
-                Ambassador.presentRAF(cxt, parameters, "260");
+                AmbassadorSDK.presentRAF(cxt, parameters, "260");
 
                 ConversionParameters conversionParameters = new ConversionParameters();
                 conversionParameters.mbsy_first_name = "Jake";
@@ -44,7 +44,7 @@ public class MainActivity extends ActionBarActivity {
                 conversionParameters.mbsy_campaign = 305;
                 conversionParameters.mbsy_revenue = 200;
 
-                Ambassador.registerConversion(conversionParameters);
+                AmbassadorSDK.registerConversion(conversionParameters);
             }
         });
     }
