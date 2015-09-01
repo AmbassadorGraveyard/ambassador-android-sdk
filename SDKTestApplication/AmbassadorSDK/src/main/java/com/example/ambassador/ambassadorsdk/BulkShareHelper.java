@@ -30,6 +30,7 @@ class BulkShareHelper {
     }
 
     void bulkShare(ArrayList<ContactObject> contacts, Boolean phoneNumbers) {
+        // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
             BulkShareSMSRequest smsRequest = new BulkShareSMSRequest();
             smsRequest.contacts = contacts;
@@ -41,6 +42,7 @@ class BulkShareHelper {
         }
     }
 
+    // REQUEST HELPER METHODS
     private void _setUpConnection(HttpURLConnection connection) {
         try {
             connection.setDoInput(true);
@@ -66,6 +68,7 @@ class BulkShareHelper {
         loader.dismiss();
         Toast.makeText(loader.getOwnerActivity(), "Unable to share message+.  Please try again.", Toast.LENGTH_SHORT).show();
     }
+    // END REQUEST HELPER METHODS
 
 
     // CLASS: Static class that filters arrayLists and creates JSON objects
@@ -192,7 +195,7 @@ class BulkShareHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (UtilityClass.isSuccessfulResponseCode(statusCode)) {
+            if (Utilities.isSuccessfulResponseCode(statusCode)) {
                 ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
                 shareTrackRequest.contacts = BulkFormatter._verifiedSMSList(contacts);
                 shareTrackRequest.isSMS = true;
@@ -230,7 +233,7 @@ class BulkShareHelper {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (UtilityClass.isSuccessfulResponseCode(statusCode)) {
+            if (Utilities.isSuccessfulResponseCode(statusCode)) {
                 ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
                 shareTrackRequest.contacts = BulkFormatter._verifiedEmailList(contacts);
                 shareTrackRequest.isSMS = false;
@@ -240,7 +243,6 @@ class BulkShareHelper {
             }
         }
     }
-
 
     private class ShareTrackRequest extends AsyncTask<Void, Void, Void> {
         private ArrayList<String> contacts;

@@ -47,6 +47,6 @@ public class ConversionParameters {
 
     // Boolean that checks if the conversion parameters are valid
     boolean isValid() {
-        return mbsy_campaign > -1 && mbsy_email != "" && mbsy_revenue > -1;
+        return mbsy_campaign > -1 && !mbsy_email.equals("") && mbsy_revenue > -1;
     }
 }

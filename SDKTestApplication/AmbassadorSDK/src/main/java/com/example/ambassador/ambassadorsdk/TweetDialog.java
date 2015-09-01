@@ -17,13 +17,12 @@ import twitter4j.auth.AccessToken;
  * Created by JakeDunahee on 8/6/15.
  */
 
-public class TweetDialog extends Dialog {
+class TweetDialog extends Dialog {
     private CustomEditText etTwitterMessage;
     private ProgressBar loader;
 
     public TweetDialog(Context context) {
         super(context);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_twitter_tweet);
 
@@ -40,7 +39,7 @@ public class TweetDialog extends Dialog {
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shareTweet();
+                _shareTweet();
             }
         });
 
@@ -52,7 +51,7 @@ public class TweetDialog extends Dialog {
         });
     }
 
-    private void shareTweet() {
+    private void _shareTweet() {
         if (etTwitterMessage.getText().toString().isEmpty()) {
             Toast.makeText(getOwnerActivity(), "Cannot share a blank Tweet", Toast.LENGTH_SHORT).show();
             etTwitterMessage.shakeEditText();
@@ -64,7 +63,7 @@ public class TweetDialog extends Dialog {
         }
     }
 
-    class TweetRequest extends AsyncTask<Void, Void, Void> {
+    private class TweetRequest extends AsyncTask<Void, Void, Void> {
         public String tweetString;
         public int postStatus;
 
@@ -96,6 +95,7 @@ public class TweetDialog extends Dialog {
             if (postStatus < 300 && postStatus > 199) {
                 Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
                 hide();
+                dismiss();
             } else {
                 Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
             }

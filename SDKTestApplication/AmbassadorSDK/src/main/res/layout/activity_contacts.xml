@@ -23,7 +23,8 @@
             android:focusable="true"
             android:enabled="true"
             android:layout_toStartOf="@+id/btnDoneSearch"
-            android:layout_alignBottom="@+id/btnDoneSearch" />
+            android:layout_alignBottom="@+id/btnDoneSearch"
+            android:singleLine="true" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -78,8 +79,7 @@
                 android:layout_weight="0"
                 android:src="@drawable/pencil_edit"
                 android:background="#00000000"
-                android:layout_marginRight="5dp"
-                android:onClick="handleEditButtonTap" />
+                android:layout_marginRight="5dp" />
 
         </LinearLayout>
 

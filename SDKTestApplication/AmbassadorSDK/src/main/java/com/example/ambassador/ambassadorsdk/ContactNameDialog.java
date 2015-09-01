@@ -144,7 +144,7 @@ class ContactNameDialog extends Dialog {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (UtilityClass.isSuccessfulResponseCode(statusCode)) {
+            if (Utilities.isSuccessfulResponseCode(statusCode)) {
                 mCallback.namesHaveBeenUpdated();
                 AmbassadorSingleton.getInstance().saveUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
                 hide();

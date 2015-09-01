@@ -21,21 +21,17 @@ import java.net.URL;
  * Created by JakeDunahee on 8/21/15.
  */
 class ConversionUtility {
-    private Context context;
     private ConversionParameters parameters;
     private ConversionDBHelper helper;
     private SQLiteDatabase db;
-    private int dbSize;
 
     // Constructors for ConversionUtility
     public ConversionUtility(Context context) {
-        this.context = context;
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
     }
 
     public ConversionUtility(Context context, ConversionParameters parameters) {
-        this.context = context;
         this.parameters = parameters;
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
