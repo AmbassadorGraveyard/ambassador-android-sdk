@@ -1,8 +1,10 @@
 apply plugin: 'com.android.application'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
     maven { url 'http://clojars.org/repo' }
+    flatDir {
+        dirs '/Users/JakeDunahee/Documents/Git/ambassador-android-sdk/SDKTestApplication/AmbassadorSDK/libs'
+    }
 }
 
 android {
