@@ -15,13 +15,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-}
+    }
 }
 
-repositories {
-    mavenCentral()
-    maven { url 'http://clojars.org/repo' }
-}
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
@@ -31,4 +27,15 @@ dependencies {
     compile 'com.pusher:pusher-java-client:0.3.3'
     compile 'org.slf4j:slf4j-android:1.7.12'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
+    compile(name:'augur', ext:'aar')
 }
+
+repositories {
+    mavenCentral()
+    maven { url 'http://clojars.org/repo' }
+
+    flatDir {
+        dirs 'libs'
+    }
+}
+
