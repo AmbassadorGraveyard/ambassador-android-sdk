@@ -70,6 +70,6 @@
         android:layout_alignRight="@+id/etShortURL"
         android:layout_alignEnd="@+id/etShortURL"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp" />
-
+        android:layout_marginRight="5dp"
+        android:onClick="copyShortURLToClipboard" />
 </RelativeLayout>

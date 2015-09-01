@@ -1,29 +1,22 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.Color;
-import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.BaseAdapter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.common.collect.Collections2;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.logging.Filter;
 
 /**
  * Created by JakeDunahee on 7/31/15.
  */
-public class ContactListAdapter extends BaseAdapter  {
-    public ArrayList<ContactObject> contactObjects, filteredContactList, selectedContacts;
-    private Boolean shouldShowPhoneNumbers, isFiltering;
+class ContactListAdapter extends BaseAdapter  {
+    public ArrayList<ContactObject> selectedContacts;
+    private ArrayList<ContactObject> contactObjects, filteredContactList;
+    private Boolean shouldShowPhoneNumbers;
     private final Activity context;
     private final int checkmarkPxXPos;
 
@@ -32,10 +25,9 @@ public class ContactListAdapter extends BaseAdapter  {
         this.contactObjects = contactObjects;
         this.shouldShowPhoneNumbers = showPhoneNumbers;
         selectedContacts = new ArrayList<>();
-        filteredContactList = (ArrayList<ContactObject>)contactObjects.clone();
-        isFiltering = false;
+        filteredContactList = new ArrayList<>(contactObjects);
 
-        checkmarkPxXPos = context.getResources().getDimensionPixelSize(R.dimen.contact_select_checkmark_x);
+        checkmarkPxXPos = Utilities.getPixelSizeForDimension(R.dimen.contact_select_checkmark_x);
     }
 
     static class ViewHolder {
@@ -65,14 +57,13 @@ public class ContactListAdapter extends BaseAdapter  {
 
         if (convertView == null) {
             LayoutInflater inflater = context.getLayoutInflater();
-            convertView = inflater.inflate(R.layout.adapter_contacts, null);
+            convertView = inflater.inflate(R.layout.adapter_contacts, parent, false);
             viewHolder = new ViewHolder();
             viewHolder.tvName = (TextView)convertView.findViewById(R.id.tvName);
             viewHolder.tvPhoneOrEmail = (TextView)convertView.findViewById(R.id.tvNumberOrEmail);
             viewHolder.ivCheckMark = (ImageView)convertView.findViewById(R.id.ivCheckMark);
             convertView.setTag(viewHolder);
-        }
-        else {
+        } else {
             viewHolder = (ViewHolder)convertView.getTag();
         }
 
@@ -85,6 +76,7 @@ public class ContactListAdapter extends BaseAdapter  {
             viewHolder.tvPhoneOrEmail.setText(currentObject.emailAddress);
         }
 
+        // Checks whether the view should be selected or not and correctly positions the checkmark image
         if (selectedContacts.contains(filteredContactList.get(position))) {
             viewHolder.ivCheckMark.setX(convertView.getWidth() - viewHolder.ivCheckMark.getWidth() - checkmarkPxXPos);
         } else {
@@ -95,13 +87,12 @@ public class ContactListAdapter extends BaseAdapter  {
     }
 
     public void filterList(String filterString) {
-        if (filterString != null || filterString != "") {
+        // Functionality: Filters the arrayLists based on search parameters in contactSelector activity
+        if (filterString != null && !filterString.equals("")) {
             filteredContactList.clear();
             for (int i = 0; i < contactObjects.size(); i++) {
                 ContactObject object = contactObjects.get(i);
-                if (object.name.toLowerCase().contains(filterString.toLowerCase())) {
-                    filteredContactList.add(object);
-                }
+                if (object.name.toLowerCase().contains(filterString.toLowerCase())) { filteredContactList.add(object); }
             }
 
             notifyDataSetChanged();
@@ -110,9 +101,22 @@ public class ContactListAdapter extends BaseAdapter  {
         }
     }
 
-    public void clearFilter() {
+    private void clearFilter() {
         filteredContactList.clear();
-        filteredContactList = (ArrayList<ContactObject>)contactObjects.clone();
+        filteredContactList = new ArrayList<>(contactObjects);
         notifyDataSetChanged();
+    }
+
+    public void updateArrays(int position, View view) {
+        // Functionality: Adds and removes contacts to and from the selectedArray and animates checkmark image
+        ImageView imageView = (ImageView) view.findViewById(R.id.ivCheckMark);
+        if (selectedContacts.contains(filteredContactList.get(position))) {
+            selectedContacts.remove(filteredContactList.get(position));
+            imageView.animate().setDuration(100).x(view.getWidth()).start();
+        } else {
+            selectedContacts.add(filteredContactList.get(position));
+            imageView.animate().setDuration(300).setInterpolator(new OvershootInterpolator())
+                    .x(view.getWidth() - imageView.getWidth() - checkmarkPxXPos).start();
+        }
     }
 }

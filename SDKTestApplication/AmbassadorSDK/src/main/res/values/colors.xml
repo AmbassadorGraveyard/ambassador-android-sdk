@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="twitter_blue">#62a9ef</color>
+    <color name="twitter_blue">#55acee</color>
+    <color name="linkedin_blue">#0077b5</color>
+    <color name="facebook_blue">#3b5998</color>
 </resources>
