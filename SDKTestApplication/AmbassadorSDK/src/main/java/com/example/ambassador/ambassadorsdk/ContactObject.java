@@ -4,7 +4,7 @@ package com.example.ambassador.ambassadorsdk;
 /**
  * Created by JakeDunahee on 7/31/15.
  */
-public class ContactObject {
+class ContactObject {
     public String name;
     public String phoneNumber;
     public String emailAddress;

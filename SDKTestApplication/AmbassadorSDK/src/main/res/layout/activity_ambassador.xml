@@ -41,19 +41,6 @@
         android:editable="false"
         android:clickable="true" />
 
-    <ImageButton
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:id="@+id/btnCopyPaste"
-        android:src="@drawable/copy_paste_icon"
-        android:background="#00ffffff"
-        android:scaleType="fitXY"
-        android:layout_alignTop="@+id/etShortURL"
-        android:layout_alignRight="@+id/etShortURL"
-        android:layout_alignEnd="@+id/etShortURL"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp" />
-
     <GridView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -72,4 +59,17 @@
         android:layout_marginTop="30dp"
         android:clickable="true" />
 
+    <ImageButton
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:id="@+id/btnCopyPaste"
+        android:src="@drawable/copy_paste_icon"
+        android:background="#00ffffff"
+        android:scaleType="fitXY"
+        android:layout_alignTop="@+id/etShortURL"
+        android:layout_alignRight="@+id/etShortURL"
+        android:layout_alignEnd="@+id/etShortURL"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:onClick="copyShortURLToClipboard" />
 </RelativeLayout>

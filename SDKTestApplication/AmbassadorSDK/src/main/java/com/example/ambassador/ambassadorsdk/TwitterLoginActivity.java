@@ -20,26 +20,23 @@ import twitter4j.auth.RequestToken;
 /**
  * Created by JakeDunahee on 7/29/15.
  */
-
-
 public class TwitterLoginActivity extends AppCompatActivity {
     private WebView wvTwitter;
     private ProgressBar loader;
     private RequestToken requestToken;
-    private AccessToken accessToken;
     private Twitter twitter;
     private String oauth_secret;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.twitter_login);
+        setContentView(R.layout.activity_webview);
 
-        setUpToolbar();
+        _setUpToolbar();
 
         // UI Components
         wvTwitter = (WebView)findViewById(R.id.wvSocial);
-        loader = (ProgressBar) findViewById(R.id.pbLoader);
+        loader = (ProgressBar) findViewById(R.id.loadingPanel);
 
         wvTwitter.setWebViewClient(new CustomBrowser());
 
@@ -56,10 +53,10 @@ public class TwitterLoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    void setUpToolbar() {
+   private void _setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setBackgroundColor(Color.parseColor("#62a9ef"));
+        toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.twitter_blue));
         toolbar.setTitleTextColor(Color.WHITE);
 
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Log into Twitter"); }
@@ -90,7 +87,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
     }
 
     // Async Task that get OAuth token
-    class RequestTask extends AsyncTask<Void, Void, Void> {
+    private class RequestTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
@@ -110,11 +107,11 @@ public class TwitterLoginActivity extends AppCompatActivity {
     }
 
     // Async task that get Access token from OAuth credentials
-    class AccessTokenRequest extends AsyncTask<Void, Void, Void> {
+    private class AccessTokenRequest extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                accessToken = twitter.getOAuthAccessToken(requestToken, oauth_secret);
+                AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, oauth_secret);
                 AmbassadorSingleton.getInstance().setTwitterAccessToken(accessToken.getToken());
                 AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret(accessToken.getTokenSecret());
             } catch (twitter4j.TwitterException e) {
