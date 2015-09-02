@@ -34,7 +34,7 @@
             android:id="@+id/btnDoneSearch"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:background="#00000000"
+            android:background="@color/transparent"
             android:layout_marginRight="5dp"
             android:textColor="@color/twitter_blue"
             android:onClick="displayOrHideSearch" />
@@ -78,7 +78,7 @@
                 android:id="@+id/btnEdit"
                 android:layout_weight="0"
                 android:src="@drawable/pencil_edit"
-                android:background="#00000000"
+                android:background="@color/transparent"
                 android:layout_marginRight="5dp" />
 
         </LinearLayout>
@@ -88,8 +88,8 @@
             android:layout_height="wrap_content"
             android:text="NO CONTACTS SELECTED"
             android:id="@+id/btnSend"
-            android:textColor="#ffffff"
-            android:background="#4a93cc"
+            android:textColor="@android:color/white"
+            android:background="@color/twitter_blue"
             android:enabled="false"
             android:onClick="sendToContacts"/>
     </LinearLayout>
@@ -101,7 +101,7 @@
         android:layout_below="@+id/rlSearch"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/llSendView"
-        android:background="#ffffff" />
+        android:background="@android:color/white" />
 
     <TextView
         android:layout_width="wrap_content"
