@@ -2,7 +2,7 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.content.Intent;
 import android.support.test.espresso.assertion.ViewAssertions;
-import android.support.test.espresso.intent.rule.IntentsTestRule;
+import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.MediumTest;
@@ -20,7 +20,7 @@ import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
+import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -34,7 +34,6 @@ public class AmbassadorActivityTest {
 
     @Rule
     public ActivityTestRule<AmbassadorActivity> mActivityTestIntentRule = new ActivityTestRule<>(AmbassadorActivity.class, true, false);
-    public IntentsTestRule<AmbassadorActivity> mActivityRule = new IntentsTestRule<>(AmbassadorActivity.class);
 
     @Test
     public void testActivity() {
@@ -69,7 +68,7 @@ public class AmbassadorActivityTest {
         //tap facebook share
         //onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
 
-        //set a token so we can test share link - this is for test embassy twitter account (developers@getambassador.com)
+        //set a token so we can test share link - this is for test embassy twitter account (developers@getambassador.com - https://twitter.com/testmbsy)
         AmbassadorSingleton.getInstance().setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
         AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");
 
@@ -116,16 +115,18 @@ public class AmbassadorActivityTest {
         //testing toast (didn't work)
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
 
-
         pressBack();
 
         //clear the token
         AmbassadorSingleton.getInstance().setTwitterAccessToken(null);
         AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret(null);
-
+        //start recording fired Intents
+        Intents.init();
         //click twitter icon
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
-        intended(toPackage("com.example.ambassador.ambassadorsdk.TwitterLoginActivity"));
+        intended(hasComponent(TwitterLoginActivity.class.getName()));
+        //stop recording Intents
+        Intents.release();
     }
 
     private int _getRandomNumber() {
