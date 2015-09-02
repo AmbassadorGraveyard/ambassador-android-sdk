@@ -40,7 +40,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     private Timer networkTimer;
     private AmbassadorActivity ambassadorActivity;
     private final android.os.Handler timerHandler = new android.os.Handler();
-    private final String[] gridTitles = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
+    private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
     private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
             R.drawable.email_icon, R.drawable.sms_icon};
 
@@ -265,7 +265,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     private void _setUpToolbar(String toolbarTitle) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-        toolbar.setBackgroundColor(Color.LTGRAY);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.twitter_blue));
         toolbar.setTitleTextColor(Color.DKGRAY);
 
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
