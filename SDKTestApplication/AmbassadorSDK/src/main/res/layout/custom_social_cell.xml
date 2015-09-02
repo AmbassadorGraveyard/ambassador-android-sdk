@@ -10,7 +10,7 @@
         android:layout_centerHorizontal="true"
         android:id="@+id/rlBackground"
         android:layout_marginTop="5dp"
-        android:background="@drawable/corner_radius_background"
+        android:background="@android:color/white"
         android:backgroundTint="@android:color/black">
 
         <ImageView
@@ -27,7 +27,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Facebook"
+        android:text="FACEBOOK"
+        android:textSize="11sp"
         android:id="@+id/tvGridTitle"
         android:gravity="center_horizontal"
         android:layout_below="@+id/rlBackground"
