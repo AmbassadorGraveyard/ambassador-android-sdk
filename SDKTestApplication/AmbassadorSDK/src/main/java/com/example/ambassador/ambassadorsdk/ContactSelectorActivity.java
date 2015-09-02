@@ -101,7 +101,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _sendToContacts();
+                sendToContacts(null);
             }
         });
 
@@ -340,7 +340,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
     }
 
-    private void _sendToContacts() {
+    public void sendToContacts(View view) {
         //get and store pusher data
         try {
             //if user is doing sms and we don't have first or last name, we need to get it with a dialog
@@ -358,14 +358,12 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                     }
                 });
                 cnd.show();
-                return;
             } else {
                 _initiateSend();
             }
         }
         catch (JSONException e) {
             e.printStackTrace();
-            return;
         }
     }
 

@@ -64,7 +64,7 @@
         android:layout_height="25dp"
         android:id="@+id/btnCopyPaste"
         android:src="@drawable/copy_paste_icon"
-        android:background="#00ffffff"
+        android:background="@color/transparent"
         android:scaleType="fitXY"
         android:layout_alignTop="@+id/etShortURL"
         android:layout_alignRight="@+id/etShortURL"
