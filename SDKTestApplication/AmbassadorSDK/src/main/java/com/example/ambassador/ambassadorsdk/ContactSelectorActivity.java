@@ -1,6 +1,7 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -341,31 +342,41 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     private void _sendToContacts() {
-        //get and store pusher data
-        try {
-            //if user is doing sms and we don't have first or last name, we need to get it with a dialog
-            if (showPhoneNumbers && //FOR TESTING INCLUDE THIS -->  true || //remove "true ||" for launch
-                (!pusherData.has("firstName") || pusherData.getString("firstName").equals("null") || pusherData.getString("firstName").isEmpty()
-                ||
-                !pusherData.has("lastName") || pusherData.getString("lastName").equals("null") || pusherData.getString("lastName").isEmpty()))
-            {
-                //show dialog to get name
-                cnd = new ContactNameDialog(this, pd);
-                cnd.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialog) {
-                        cnd.showKeyboard();
-                    }
-                });
-                cnd.show();
+        if (Utilities.containsURL(etShareMessage.getText().toString())) {
+            //get and store pusher data
+            try {
+                //if user is doing sms and we don't have first or last name, we need to get it with a dialog
+                if (showPhoneNumbers && //FOR TESTING INCLUDE THIS -->  true || //remove "true ||" for launch
+                        (!pusherData.has("firstName") || pusherData.getString("firstName").equals("null") || pusherData.getString("firstName").isEmpty()
+                                ||
+                                !pusherData.has("lastName") || pusherData.getString("lastName").equals("null") || pusherData.getString("lastName").isEmpty())) {
+                    //show dialog to get name
+                    cnd = new ContactNameDialog(this, pd);
+                    cnd.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialog) {
+                            cnd.showKeyboard();
+                        }
+                    });
+                    cnd.show();
+                    return;
+                } else {
+                    _initiateSend();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
                 return;
-            } else {
-                _initiateSend();
             }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            return;
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle("Hold on!")
+                    .setMessage("Please include your rul in the message: " + AmbassadorSingleton.getInstance().getShortCode())
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    }).show();
         }
     }
 

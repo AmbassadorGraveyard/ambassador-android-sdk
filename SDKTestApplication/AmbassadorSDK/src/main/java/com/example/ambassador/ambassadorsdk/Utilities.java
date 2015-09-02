@@ -14,4 +14,8 @@ class Utilities {
         Context cxt = MyApplication.getAppContext();
         return cxt.getResources().getDimensionPixelSize(dimension);
     }
+
+    public static boolean containsURL(String message) {
+        return message.contains(AmbassadorSingleton.getInstance().getShortCode());
+    }
 }
