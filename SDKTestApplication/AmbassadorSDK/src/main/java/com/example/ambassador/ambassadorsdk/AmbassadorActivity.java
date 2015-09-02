@@ -7,7 +7,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -79,7 +78,6 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
         etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
 
-        etShortUrl.setEditTextTint(Color.DKGRAY);
         _setCustomizedText(rafParams);
         _tryAndSetURL();
 
@@ -88,6 +86,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 _copyShortURLToClipboard();
             }
         });
+        btnCopyPaste.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
         // Sets up social gridView
         SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridTitles, gridDrawables);
@@ -266,7 +265,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     private void _setUpToolbar(String toolbarTitle) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
         toolbar.setBackgroundColor(getResources().getColor(R.color.twitter_blue));
-        toolbar.setTitleTextColor(Color.DKGRAY);
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white ));
 
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
     }
