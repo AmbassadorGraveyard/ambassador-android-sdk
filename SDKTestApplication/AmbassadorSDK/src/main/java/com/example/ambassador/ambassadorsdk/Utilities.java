@@ -1,6 +1,7 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.content.Context;
+import android.content.res.Configuration;
 
 /**
  * Created by JakeDunahee on 8/31/15.
@@ -17,5 +18,15 @@ class Utilities {
 
     public static boolean containsURL(String message) {
         return message.contains(AmbassadorSingleton.getInstance().getShortCode());
+    }
+
+    public static boolean isTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+    public static String deviceType(Context context) {
+        return (Utilities.isTablet(context)) ? "Tablet" : "SmartPhone";
     }
 }
