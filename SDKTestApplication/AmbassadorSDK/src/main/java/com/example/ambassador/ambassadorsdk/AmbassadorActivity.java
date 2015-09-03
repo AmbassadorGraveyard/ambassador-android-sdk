@@ -55,7 +55,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Executed when Pusher data is recieved, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            _tryAndSetURL();
+            if (AmbassadorSingleton.getInstance().getPusherInfo() == null) {
+                _tryAndSetURL();
+            }
         }
     };
 
@@ -235,7 +237,7 @@ public class AmbassadorActivity extends AppCompatActivity {
             JSONObject pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
             JSONArray urlArray = pusherData.getJSONArray("urls");
 
-            // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
+            // Iterates through all the urls in the Pusher object until we find one will a matching campaign ID
             for (int i = 0; i < urlArray.length(); i++) {
                 JSONObject urlObj = urlArray.getJSONObject(i);
                 int campID = urlObj.getInt("campaign_uid");
@@ -244,8 +246,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                     AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
                     AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
                     AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
-                    AmbassadorSingleton.getInstance().rafParameters.shareMessage =
-                            rafParams.shareMessage + " " + urlObj.getString("url");
+                    AmbassadorSingleton.getInstance().rafParameters.shareMessage = rafParams.shareMessage + " " + urlObj.getString("url");
                 }
             }
         } catch (JSONException e) {

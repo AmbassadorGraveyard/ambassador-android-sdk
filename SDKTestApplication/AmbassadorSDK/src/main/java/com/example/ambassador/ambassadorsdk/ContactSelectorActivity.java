@@ -38,7 +38,7 @@ import java.util.Comparator;
  */
 public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener {
     private Button btnSend;
-    private ImageButton btnEdit;
+    private ImageButton btnEdit, btnDone;
     private EditText etShareMessage, etSearch;
     private RelativeLayout rlSearch;
     private LinearLayout llSendView;
@@ -60,6 +60,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         ListView lvContacts = (ListView)findViewById(R.id.lvContacts);
         Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
+        btnDone = (ImageButton)findViewById(R.id.btnDone);
         btnSend = (Button)findViewById(R.id.btnSend);
         etShareMessage = (EditText) findViewById(R.id.etShareMessage);
         rlSearch = (RelativeLayout)findViewById(R.id.rlSearch);
@@ -115,7 +116,15 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _handleEditButtonTap();
+                _editBtnTapped();
+            }
+        });
+        btnEdit.setColorFilter(getResources().getColor(R.color.ultraLightGray));
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _doneEditingMessage();
             }
         });
 
@@ -262,27 +271,21 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
 
     // BUTTON METHODS
-    private void _handleEditButtonTap() {
-        if (etShareMessage.isEnabled()) {
-            _doneEditingMessage();
-        } else {
-            _editBtnTapped();
-        }
-    }
-
     private void _editBtnTapped() {
-        btnEdit.setImageResource(R.drawable.done_button);
-        btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0));
+        btnSend.setEnabled(false);
+        btnEdit.setVisibility(View.GONE);
+        btnDone.setVisibility(View.VISIBLE);
         etShareMessage.setEnabled(true);
         etShareMessage.requestFocus();
+        etShareMessage.setSelection(0);
         inputManager.showSoftInput(etShareMessage, 0); // Presents keyboard
     }
 
     private void _doneEditingMessage() {
-        btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        etShareMessage.setSelection(0);
+        if (adapter.selectedContacts.size() > 0) btnSend.setEnabled(true);
+        btnEdit.setVisibility(View.VISIBLE);
+        btnDone.setVisibility(View.GONE);
         etShareMessage.setEnabled(false);
-        btnEdit.setImageResource(R.drawable.pencil_edit);
     }
 
     private void _displayOrHideSearch() {
@@ -345,8 +348,10 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     private void _updateSendButton(int numOfContacts) {
         if (numOfContacts > 0) {
-            if (!btnSend.isEnabled()) { btnSend.setEnabled(true); }
-            btnSend.setText("SEND TO " + numOfContacts + " CONTACTS");
+            if (!btnSend.isEnabled()) btnSend.setEnabled(true);
+            String btnSendText = "SEND TO " + numOfContacts;
+            btnSendText += (numOfContacts > 1) ? " CONTACTS" : " CONTACT";
+            btnSend.setText(btnSendText);
         } else {
             btnSend.setText("NO CONTACTS SELECTED");
             btnSend.setEnabled(false);

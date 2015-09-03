@@ -7,7 +7,7 @@
         android:layout_height="25dp"
         android:text="Large Text"
         android:textColor="@color/darkGray"
-        android:textSize="17sp"
+        android:textSize="16sp"
         android:id="@+id/tvName"
         android:layout_marginTop="12dp"
         android:layout_marginLeft="10dp"
@@ -20,7 +20,7 @@
         android:textColor="@color/lightGray"
         android:id="@+id/tvNumberOrEmail"
         android:layout_marginLeft="0dp"
-        android:textSize="12sp"
+        android:textSize="11sp"
         android:layout_below="@+id/tvName"
         android:layout_alignStart="@+id/tvName"
         android:layout_marginRight="50dp" />
