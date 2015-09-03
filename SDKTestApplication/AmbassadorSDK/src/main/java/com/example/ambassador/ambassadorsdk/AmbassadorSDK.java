@@ -26,7 +26,7 @@ public class AmbassadorSDK {
         // Functionality: Gets unique information from the device for tracking purposes
         Context context = MyApplication.getAppContext();
 
-        IIdentify identify = new IdentifyAugur(context, identifier);
+        IIdentify identify = new Identify(context, identifier);
         AmbassadorSingleton.getInstance().startIdentify(identify);
     }
 
