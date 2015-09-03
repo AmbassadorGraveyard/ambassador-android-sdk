@@ -1,6 +1,5 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.content.Context;
 
 /**
  * Created by JakeDunahee on 8/31/15.
@@ -11,7 +10,10 @@ class Utilities {
     }
 
     public static int getPixelSizeForDimension(int dimension) {
-        Context cxt = MyApplication.getAppContext();
-        return cxt.getResources().getDimensionPixelSize(dimension);
+        return MyApplication.getAppContext().getResources().getDimensionPixelSize(dimension);
+    }
+
+    public static float getScreenDensity() {
+        return MyApplication.getAppContext().getResources().getDisplayMetrics().density;
     }
 }
