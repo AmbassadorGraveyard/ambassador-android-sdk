@@ -1,7 +1,6 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.animation.ValueAnimator;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -368,33 +367,19 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                 return;
             }
         } else {
-            new AlertDialog.Builder(this)
-                    .setTitle("Hold on!")
-                    .setMessage("Your URL is not included in the message: " + AmbassadorSingleton.getInstance().getURL())
-                    .setPositiveButton("Send anyways", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            _initiateSend();
-                        }
-                    })
-                    .setNegativeButton("Insert URL", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            _insertURLIntoString();
-                            dialog.cancel();
-                        }
-                    }).show();
-        }
-    }
+            Utilities.presentUrlDialog(this, etShareMessage, new Utilities.UrlAlertInterface() {
+                @Override
+                public void sendAnywayTapped(DialogInterface dialogInterface) {
+                    dialogInterface.dismiss();
+                    _initiateSend();
+                }
 
-    private void _insertURLIntoString() {
-        if (etShareMessage.getText().toString().contains("http://")) {
-            etShareMessage.getText().replace(etShareMessage.getText().toString().indexOf("http://"),
-                    etShareMessage.getText().toString().indexOf("http://") +
-                            etShareMessage.getText().toString().substring(etShareMessage.getText().toString().indexOf("http://")).length(), "");
+                @Override
+                public void insertUrlTapped(DialogInterface dialogInterface) {
+                    dialogInterface.dismiss();
+                }
+            });
         }
-
-        etShareMessage.setText(etShareMessage.getText().append(" " + AmbassadorSingleton.getInstance().getURL()));
     }
 
     private void _initiateSend() {
