@@ -30,12 +30,13 @@ class SocialGridAdapter extends BaseAdapter {
         this.drawablesArray = gridImages;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+        //create drawable to use as border around non-filled grid cells
         RectShape rect = new RectShape();
         rectShapeDrawable = new ShapeDrawable(rect);
         Paint paint = rectShapeDrawable.getPaint();
-        paint.setColor(context.getResources().getColor(R.color.twitter_blue));
+        paint.setColor(context.getResources().getColor(R.color.ultraLightGray));
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(5);
+        paint.setStrokeWidth(10);
     }
 
     @Override
