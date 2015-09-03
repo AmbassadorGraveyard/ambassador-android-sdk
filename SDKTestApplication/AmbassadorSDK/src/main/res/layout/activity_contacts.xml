@@ -41,18 +41,24 @@
 
     </RelativeLayout>
 
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvContacts"
+        android:layout_below="@+id/rlSearch"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/llSendView"
+        android:background="@android:color/white" />
+
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:padding="15dp"
         android:id="@+id/llSendView"
         android:background="@android:color/white">
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/darker_gray"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -64,9 +70,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/etShareMessage"
-                android:layout_weight="2.66"
+                android:background="@color/transparent"
+                android:text="Check out this company! www.mbsy.co/jkas4"
+                android:textSize="17sp"
+                android:layout_weight="1"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:layout_gravity="center_vertical"
                 android:editable="true"
                 android:enabled="false"
                 android:selectAllOnFocus="true"
@@ -88,20 +98,12 @@
             android:layout_height="wrap_content"
             android:text="NO CONTACTS SELECTED"
             android:id="@+id/btnSend"
+            android:layout_marginTop="10dp"
             android:textColor="@android:color/white"
             android:background="@color/twitter_blue"
             android:enabled="false"
             android:onClick="sendToContacts"/>
     </LinearLayout>
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/lvContacts"
-        android:layout_below="@+id/rlSearch"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/llSendView"
-        android:background="@android:color/white" />
 
     <TextView
         android:layout_width="wrap_content"
