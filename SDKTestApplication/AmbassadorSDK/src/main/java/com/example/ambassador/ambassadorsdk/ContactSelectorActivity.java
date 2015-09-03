@@ -153,13 +153,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ambassador_menu, menu);
-        Drawable drawable = menu.findItem(R.id.action_search).getIcon();
-
-        // Sets search icon to darkgray
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, Color.DKGRAY);
-        menu.findItem(R.id.action_search).setIcon(drawable);
-
         return true;
     }
 
@@ -179,6 +172,15 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     //region CONTACT FUNCTIONS
     private void _getContactPhoneList() {
         contactList = new ArrayList<>();
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, null);
 
@@ -217,6 +219,17 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     private void _getContactEmailList() {
         contactList = new ArrayList<>();
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 null, null, null, null);
 
@@ -323,11 +336,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     // Adds and styles toolbar in place of the actionbar
     private void _setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        //toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Refer your friends"); }
-        toolbar.setTitleTextColor(Color.DKGRAY);
-        toolbar.setBackgroundColor(Color.WHITE);
-        if (toolbar.getNavigationIcon() != null) { toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN); }
+        toolbar.setBackgroundColor(getResources().getColor(R.color.twitter_blue));
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        //if (toolbar.getNavigationIcon() != null) { toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN); }
     }
 
     private void _updateSendButton(int numOfContacts) {
