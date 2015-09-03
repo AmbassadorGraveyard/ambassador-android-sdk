@@ -370,14 +370,31 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         } else {
             new AlertDialog.Builder(this)
                     .setTitle("Hold on!")
-                    .setMessage("Please include your rul in the message: " + AmbassadorSingleton.getInstance().getShortCode())
-                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    .setMessage("Your URL is not included in the message: " + AmbassadorSingleton.getInstance().getURL())
+                    .setPositiveButton("Send anyways", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+                            _initiateSend();
+                        }
+                    })
+                    .setNegativeButton("Insert URL", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            _insertURLIntoString();
                             dialog.cancel();
                         }
                     }).show();
         }
+    }
+
+    private void _insertURLIntoString() {
+        if (etShareMessage.getText().toString().contains("http://")) {
+            etShareMessage.getText().replace(etShareMessage.getText().toString().indexOf("http://"),
+                    etShareMessage.getText().toString().indexOf("http://") +
+                            etShareMessage.getText().toString().substring(etShareMessage.getText().toString().indexOf("http://")).length(), "");
+        }
+
+        etShareMessage.setText(etShareMessage.getText().append(" " + AmbassadorSingleton.getInstance().getURL()));
     }
 
     private void _initiateSend() {
