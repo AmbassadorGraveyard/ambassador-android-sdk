@@ -230,29 +230,26 @@ public class AmbassadorActivity extends AppCompatActivity {
             networkTimer.cancel();
         }
 
-        // Next we check if the shortURL Edittext is empty or if has been set
-        if (etShortUrl.getText().toString().isEmpty()) {
-            try {
-                // We get a JSON object from the Pusher Info string saved to SharedPreferences
-                JSONObject pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
-                JSONArray urlArray = pusherData.getJSONArray("urls");
+        try {
+            // We get a JSON object from the Pusher Info string saved to SharedPreferences
+            JSONObject pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+            JSONArray urlArray = pusherData.getJSONArray("urls");
 
-                // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
-                for (int i = 0; i < urlArray.length(); i++) {
-                    JSONObject urlObj = urlArray.getJSONObject(i);
-                    int campID = urlObj.getInt("campaign_uid");
-                    if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
-                        etShortUrl.setText(urlObj.getString("url"));
-                        AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
-                        AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
-                        AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
-                        AmbassadorSingleton.getInstance().rafParameters.shareMessage =
-                                rafParams.shareMessage + " " + urlObj.getString("url");
-                    }
+            // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
+            for (int i = 0; i < urlArray.length(); i++) {
+                JSONObject urlObj = urlArray.getJSONObject(i);
+                int campID = urlObj.getInt("campaign_uid");
+                if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
+                    etShortUrl.setText(urlObj.getString("url"));
+                    AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
+                    AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
+                    AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
+                    AmbassadorSingleton.getInstance().rafParameters.shareMessage =
+                            rafParams.shareMessage + " " + urlObj.getString("url");
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
