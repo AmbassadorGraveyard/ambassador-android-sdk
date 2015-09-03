@@ -5,12 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -169,8 +165,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             _displayOrHideSearch();
-        } else {
-            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -290,7 +284,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     private void _displayOrHideSearch() {
         // Float that helps converts dp to pixels based on device
-        final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
+        final float scale = Utilities.getScreenDensity();
 
         int finalHeight = (rlSearch.getHeight() > 0) ? 0 : (int) (50 * scale + 0.5f);
 
