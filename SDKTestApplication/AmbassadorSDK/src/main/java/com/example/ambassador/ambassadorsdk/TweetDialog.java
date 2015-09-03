@@ -2,6 +2,7 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.view.View;
 import android.view.Window;
@@ -39,7 +40,7 @@ class TweetDialog extends Dialog {
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _shareTweet();
+                _btnTweetClicked();
             }
         });
 
@@ -60,6 +61,25 @@ class TweetDialog extends Dialog {
             TweetRequest tweetRequest = new TweetRequest();
             tweetRequest.tweetString = etTwitterMessage.getText().toString();
             tweetRequest.execute();
+        }
+    }
+
+    private void _btnTweetClicked() {
+        if (Utilities.containsURL(etTwitterMessage.getText().toString())) {
+            _shareTweet();
+        } else {
+            Utilities.presentUrlDialog(this.getOwnerActivity(), etTwitterMessage, new Utilities.UrlAlertInterface() {
+                @Override
+                public void sendAnywayTapped(DialogInterface dialogInterface) {
+                    dialogInterface.dismiss();
+                    _shareTweet();
+                }
+
+                @Override
+                public void insertUrlTapped(DialogInterface dialogInterface) {
+                    dialogInterface.dismiss();
+                }
+            });
         }
     }
 
