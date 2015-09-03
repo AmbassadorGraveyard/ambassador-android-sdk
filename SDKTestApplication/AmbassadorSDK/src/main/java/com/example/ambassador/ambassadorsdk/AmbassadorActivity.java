@@ -35,7 +35,7 @@ import java.util.TimerTask;
 public class AmbassadorActivity extends AppCompatActivity {
     private TextView tvWelcomeTitle, tvWelcomeDesc;
     private CustomEditText etShortUrl;
-    private RAFParameters rafParams;
+    private ServiceSelectorPreferences rafParams;
     private ProgressDialog pd;
     private Timer networkTimer;
     private AmbassadorActivity ambassadorActivity;
@@ -68,7 +68,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambassador);
 
         ambassadorActivity = this;
-        rafParams = (RAFParameters) getIntent().getSerializableExtra("test");
+        rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("test");
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
@@ -149,7 +149,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     private void _shareWithFacebook() {
         FacebookSdk.sdkInitialize(getApplicationContext());
         ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentTitle(rafParams.shareMessage)
+                .setContentTitle(rafParams.defaultShareMessage)
                 .setContentUrl(Uri.parse(AmbassadorSingleton.getInstance().getURL()))
                 .build();
 
@@ -247,8 +247,8 @@ public class AmbassadorActivity extends AppCompatActivity {
                         AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
                         AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
                         AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
-                        AmbassadorSingleton.getInstance().rafParameters.shareMessage =
-                                rafParams.shareMessage + " " + urlObj.getString("url");
+                        AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage =
+                                rafParams.defaultShareMessage + " " + urlObj.getString("url");
                     }
                 }
             } catch (JSONException e) {
@@ -257,9 +257,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     }
 
-    private void _setCustomizedText(RAFParameters params) {
-        tvWelcomeTitle.setText(params.welcomeTitle);
-        tvWelcomeDesc.setText(params.welcomeDescription);
+    private void _setCustomizedText(ServiceSelectorPreferences params) {
+        tvWelcomeTitle.setText(params.titleText);
+        tvWelcomeDesc.setText(params.descriptionText);
         _setUpToolbar(params.toolbarTitle);
     }
 
