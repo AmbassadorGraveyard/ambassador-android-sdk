@@ -47,7 +47,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     final private Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
-            Toast.makeText(getApplicationContext(), "There seems to be a network error.  Pleas try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "There seems to be an issue while attempting to load.  Please try again.", Toast.LENGTH_SHORT).show();
             finish();
         }
     };
