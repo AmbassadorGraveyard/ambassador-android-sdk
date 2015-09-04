@@ -222,16 +222,16 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     private void _getContactEmailList() {
         contactList = new ArrayList<>();
+        contactList.add(new ContactObject("John Jones", "corey@getambassador.com"));
         contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Friend One", "corey@getambassador.com"));
+        contactList.add(new ContactObject("John Doe", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Greg Lastname", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Mike Ambassador", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Friend", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Brian Davidson", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Jim Harbaugh", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Ambassador Diplomat", "corey@getambassador.com"));
 
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 null, null, null, null);
