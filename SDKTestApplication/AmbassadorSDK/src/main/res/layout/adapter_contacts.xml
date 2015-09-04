@@ -5,27 +5,25 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="25dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Large Text"
+        android:textColor="@color/darkGray"
+        android:textSize="16sp"
         android:id="@+id/tvName"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="12dp"
         android:layout_marginLeft="10dp"
-        android:textSize="20dp"
         android:layout_marginRight="50dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
+        android:textColor="@color/lightGray"
         android:id="@+id/tvNumberOrEmail"
         android:layout_marginLeft="0dp"
-        android:textSize="15dp"
+        android:textSize="12sp"
         android:layout_below="@+id/tvName"
         android:layout_alignStart="@+id/tvName"
-        android:layout_marginRight="50dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp" />
+        android:layout_marginRight="50dp" />
 
     <ImageView
         android:layout_width="20dp"
