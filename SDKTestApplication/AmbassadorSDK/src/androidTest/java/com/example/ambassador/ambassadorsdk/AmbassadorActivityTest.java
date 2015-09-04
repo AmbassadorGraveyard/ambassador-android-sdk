@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -38,9 +39,12 @@ public class AmbassadorActivityTest {
     @Rule
     public ActivityTestRule<AmbassadorActivity> mActivityTestIntentRule = new ActivityTestRule<>(AmbassadorActivity.class, true, false);
 
+    @Mock
+    private TweetDialog.TweetRequest;
+
     @Before
     public void before() {
-        //TweetDialog.TweetRequest tweetRequest = mock(TweetDialog.TweetRequest.class);
+        TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
     }
 
     @Test
@@ -107,7 +111,6 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate posts
-        TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
         String tweetText = "http://www.tester.com " + _getRandomNumber();
         tweetRequestMock.tweetString = tweetText;
         onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
