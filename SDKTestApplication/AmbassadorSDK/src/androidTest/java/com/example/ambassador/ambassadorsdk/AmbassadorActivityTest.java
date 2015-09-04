@@ -7,6 +7,7 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.MediumTest;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,12 +29,19 @@ import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 
+import static org.mockito.Mockito.*;
+
 @RunWith(AndroidJUnit4.class)
 @MediumTest
 public class AmbassadorActivityTest {
 
     @Rule
     public ActivityTestRule<AmbassadorActivity> mActivityTestIntentRule = new ActivityTestRule<>(AmbassadorActivity.class, true, false);
+
+    @Before
+    public void before() {
+        //TweetDialog.TweetRequest tweetRequest = mock(TweetDialog.TweetRequest.class);
+    }
 
     @Test
     public void testActivity() {
@@ -99,10 +107,14 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate posts
-        onView(withId(R.id.etTweetMessage)).perform(typeText("http://www.tester.com " + _getRandomNumber()), closeSoftKeyboard());
+        TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
+        String tweetText = "http://www.tester.com " + _getRandomNumber();
+        tweetRequestMock.tweetString = tweetText;
+        onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
         onView(withId(R.id.btnTweet)).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
+        verify(tweetRequestMock).execute();
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         //enter blank text and make sure dialog is still visible
@@ -110,6 +122,7 @@ public class AmbassadorActivityTest {
         pressBack();
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
+        //make sure message has been restored
         onView(withId(R.id.etTweetMessage)).check(matches(withText(containsString(parameters.shareMessage))));
 
         //testing toast (didn't work)
