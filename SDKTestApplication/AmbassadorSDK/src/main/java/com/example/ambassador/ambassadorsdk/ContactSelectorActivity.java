@@ -341,31 +341,44 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     private void _sendToContacts() {
-        //get and store pusher data
-        try {
-            //if user is doing sms and we don't have first or last name, we need to get it with a dialog
-            if (showPhoneNumbers && //FOR TESTING INCLUDE THIS -->  true || //remove "true ||" for launch
-                (!pusherData.has("firstName") || pusherData.getString("firstName").equals("null") || pusherData.getString("firstName").isEmpty()
-                ||
-                !pusherData.has("lastName") || pusherData.getString("lastName").equals("null") || pusherData.getString("lastName").isEmpty()))
-            {
-                //show dialog to get name
-                cnd = new ContactNameDialog(this, pd);
-                cnd.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialog) {
-                        cnd.showKeyboard();
-                    }
-                });
-                cnd.show();
+        if (Utilities.containsURL(etShareMessage.getText().toString())) {
+            //get and store pusher data
+            try {
+                //if user is doing sms and we don't have first or last name, we need to get it with a dialog
+                if (showPhoneNumbers && //FOR TESTING INCLUDE THIS -->  true || //remove "true ||" for launch
+                        (!pusherData.has("firstName") || pusherData.getString("firstName").equals("null") || pusherData.getString("firstName").isEmpty()
+                                ||
+                                !pusherData.has("lastName") || pusherData.getString("lastName").equals("null") || pusherData.getString("lastName").isEmpty())) {
+                    //show dialog to get name
+                    cnd = new ContactNameDialog(this, pd);
+                    cnd.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialog) {
+                            cnd.showKeyboard();
+                        }
+                    });
+                    cnd.show();
+                    return;
+                } else {
+                    _initiateSend();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
                 return;
-            } else {
-                _initiateSend();
             }
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-            return;
+        } else {
+            Utilities.presentUrlDialog(this, etShareMessage, new Utilities.UrlAlertInterface() {
+                @Override
+                public void sendAnywayTapped(DialogInterface dialogInterface) {
+                    dialogInterface.dismiss();
+                    _initiateSend();
+                }
+
+                @Override
+                public void insertUrlTapped(DialogInterface dialogInterface) {
+                    dialogInterface.dismiss();
+                }
+            });
         }
     }
 
