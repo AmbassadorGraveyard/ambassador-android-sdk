@@ -17,41 +17,41 @@ _**Note**_: Make sure you're on the latest version of **Android Studio**
 * Download the zip file, unzip it, and leave the **'ambassador'** folder on your
 desktop or another place that you can easily access.
 
- <img src="screenShots/addToDesktop.png" width="600" />
+ <img src="screenshots/addToDesktop.png" width="600" />
 
 * Open your project's stucture by selecting **File -> Project Stucture** in the Menu Bar to bring up a dialog in Android Studio.
 
- <img src="screenShots/projStructureClick.png" width="500" />
+ <img src="screenshots/projStructureClick.png" width="500" />
 
 * Click the **'+'** sign in the top left corner of the dialog.
 
- <img src="screenShots/dialogAddClick.png" width="600" />
+ <img src="screenshots/dialogAddClick.png" width="600" />
 
 * Select the **'Import Gradle Project'** option and click **'Next'**.
 
- <img src="screenShots/importGradle.png" width="600" />
+ <img src="screenshots/importGradle.png" width="600" />
 
 * Tap the **'...'** button and locate the **'ambassador'** folder where you chose to save it.
 
- <img src="screenShots/directoryDotTap.png" width="600" />
+ <img src="screenshots/directoryDotTap.png" width="600" />
 
 * Select the **'ambassador'** folder and click **'OK'**.
 
- <img src="screenShots/chooseAmbassadorFolder.png" width="600" />
+ <img src="screenshots/chooseAmbassadorFolder.png" width="600" />
 
 * Click **'Finish'** and give Android Studio a moment to finish creating the module.
 
- <img src="screenShots/moduleImported.png" width="600" />
+ <img src="screenshots/moduleImported.png" width="600" />
 
 * Once the Ambassador module has been created and added to the project, it should appear in the **Project Structure**.  You can then click the **'OK'** button to dismiss the Project Structure dialog.
 
- <img src="screenShots/moduleInStructure.png" width="600" />
+ <img src="screenshots/moduleInStructure.png" width="600" />
 
 ## Modify your app's Gradle file
 
 * Open your app's **Gradle** file that can be found in the **Project** view.
 
- <img src="screenShots/openAppGradle.png" width="600" />
+ <img src="screenshots/openAppGradle.png" width="600" />
 
 * Add the **repositories** code to your Gradle file with the following code:
 
@@ -61,7 +61,7 @@ desktop or another place that you can easily access.
      flatDir { dirs '../ambassador/libs' }
  }
  ```
- <img src="screenShots/addRepo.png" width="600" />
+ <img src="screenshots/addRepo.png" width="600" />
 
 * Finally, add the **ambassador module** as a dependency to your project by inserting the following code:
 
@@ -69,7 +69,7 @@ desktop or another place that you can easily access.
  compile project(':ambassador')
  ```
 
- <img src="screenShots/addAmbAsDependency.png" width="600" />
+ <img src="screenshots/addAmbAsDependency.png" width="600" />
 
 
  ## Initializing Ambassador
