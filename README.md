@@ -156,6 +156,8 @@ The editable properties and default values are:
 * **descriptionText** - "Refer a friend to get rewards"
 * **defaultShareMessage** - "I'm a fan of this company, check them out!"
 
+**_Note_**: The shortURL will automatically be appended to the defaultShareMessage
+
 ```java
 // STEP ONE: Create a ServiceSelectorPreferences object
 ServiceSelectorPreferences preferences = new ServiceSelectorPreferences();
