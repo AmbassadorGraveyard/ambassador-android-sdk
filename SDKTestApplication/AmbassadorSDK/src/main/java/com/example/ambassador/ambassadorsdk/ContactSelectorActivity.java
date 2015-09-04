@@ -99,7 +99,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendToContacts(null);
+                _sendToContacts();
             }
         });
 
