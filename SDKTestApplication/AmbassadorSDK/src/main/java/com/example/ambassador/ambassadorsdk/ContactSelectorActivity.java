@@ -165,6 +165,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             _displayOrHideSearch();
+        } else {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -333,7 +335,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     // Adds and styles toolbar in place of the actionbar
     private void _setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
-        //toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Refer your friends"); }
         toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
