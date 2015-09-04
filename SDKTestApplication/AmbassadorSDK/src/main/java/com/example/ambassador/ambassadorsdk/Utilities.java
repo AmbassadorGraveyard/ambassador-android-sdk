@@ -80,4 +80,8 @@ class Utilities {
             }
         }
     }
+
+    public static float getScreenDensity() {
+        return MyApplication.getAppContext().getResources().getDisplayMetrics().density;
+    }
 }
