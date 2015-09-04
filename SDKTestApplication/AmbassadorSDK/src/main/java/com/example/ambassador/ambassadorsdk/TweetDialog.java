@@ -35,7 +35,7 @@ class TweetDialog extends Dialog {
 
         loader.setVisibility(View.GONE);
         etTwitterMessage.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
-        etTwitterMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
+        etTwitterMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
 
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override

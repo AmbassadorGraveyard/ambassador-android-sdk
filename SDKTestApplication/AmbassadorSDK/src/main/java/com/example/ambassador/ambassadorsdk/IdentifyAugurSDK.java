@@ -31,7 +31,8 @@ class IdentifyAugurSDK {
                     device.put("type", Utilities.deviceType(MyApplication.getAppContext()));
                     jsonObject.put("device", device);
 
-                    Log.d("Augur", "Augur successfully recieved through SDK call");
+//                    Log.d("Augur", "Augur successfully recieved through SDK call");
+                    Utilities.debugLog("Augur", "Augur successfully recieved through SDK call");
                     AmbassadorSingleton.getInstance().setIdentifyObject(jsonObject.toString());
                     deviceID = Augur.DID;
                     completion.augurComplete();

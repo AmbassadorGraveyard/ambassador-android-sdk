@@ -10,6 +10,8 @@ import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
 import com.pusher.client.util.HttpAuthorizer;
 
+import org.slf4j.helpers.Util;
+
 import java.util.HashMap;
 
 /**
@@ -45,7 +47,8 @@ class IdentifyPusher {
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
-                Log.d("Pusher", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
+//                Log.d("Pusher", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
+                Utilities.debugLog("Pusher", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
             }
 
             @Override
@@ -65,13 +68,15 @@ class IdentifyPusher {
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-                Log.d("Pusher", "Successfully subscribed to " + channelName);
+//                Log.d("Pusher", "Successfully subscribed to " + channelName);
+                Utilities.debugLog("Pusher", "Successfully subscribed to " + channelName);
                 completion.pusherSubscribed();
             }
 
             @Override
             public void onEvent(String channelName, String eventName, String data) {
-                Log.d("Pusher", "data = " + data);
+//                Log.d("Pusher", "data = " + data);
+                Utilities.debugLog("Pusher", "data = " + data);
                 completion.pusherEventTriggered(data);
             }
         }, "identify_action");

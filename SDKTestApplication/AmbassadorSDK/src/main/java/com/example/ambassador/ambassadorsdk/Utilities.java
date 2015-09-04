@@ -3,7 +3,9 @@ package com.example.ambassador.ambassadorsdk;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
+import android.util.Log;
 import android.widget.EditText;
 
 /**
@@ -78,6 +80,12 @@ class Utilities {
                 appendingLink = " " + AmbassadorSingleton.getInstance().getURL();
                 editText.setText(editText.getText().append(appendingLink));
             }
+        }
+    }
+
+    public static void debugLog(String tagString, String logMessage) {
+        if (!AmbassadorSingleton.isReleaseBuild) {
+            Log.d(tagString, logMessage);
         }
     }
 }

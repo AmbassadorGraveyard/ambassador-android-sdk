@@ -8,7 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.ambassador.ambassadorsdk.AmbassadorActivity;
 import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,7 +18,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         AmbassadorSDK.runWithKey("UniversalToken bdb49d2b9ae24b7b6bc5da122370f3517f98336f");
         AmbassadorSDK.identify("jake@getambassador.com");
 

@@ -46,7 +46,7 @@ class LinkedInPostDialog extends Dialog {
         loader.setVisibility(View.GONE);
 
         etMessage.setEditTextTint(getContext().getResources().getColor(R.color.linkedin_blue));
-        etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
+        etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
