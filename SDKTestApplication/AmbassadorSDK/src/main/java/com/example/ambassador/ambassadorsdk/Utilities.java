@@ -41,14 +41,14 @@ class Utilities {
     public static void presentUrlDialog(Context context, final EditText editText, final UrlAlertInterface alertInterface) {
         AlertDialog dialogBuilder = new AlertDialog.Builder(context)
                 .setTitle("Hold on!")
-                .setMessage("Your URL is not included in the message: " + AmbassadorSingleton.getInstance().getURL())
-                .setPositiveButton("Send anyways", new DialogInterface.OnClickListener() {
+                .setMessage("Your Referral Link is not included in the message: " + AmbassadorSingleton.getInstance().getURL())
+                .setPositiveButton("Continue Sending", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         alertInterface.sendAnywayTapped(dialog);
                     }
                 })
-                .setNegativeButton("Insert URL", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Insert Link", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         _insertURLIntoMessage(editText);
@@ -61,12 +61,23 @@ class Utilities {
     }
 
     private static void _insertURLIntoMessage(EditText editText) {
-        if (editText.getText().toString().contains("http://")) {
-            editText.getText().replace(editText.getText().toString().indexOf("http://"),
-                    editText.getText().toString().indexOf("http://") +
-                            editText.getText().toString().substring(editText.getText().toString().indexOf("http://")).length(), "");
-        }
+        String appendingLink = AmbassadorSingleton.getInstance().getURL();
 
-        editText.setText(editText.getText().append(" " + AmbassadorSingleton.getInstance().getURL()));
+        if (editText.getText().toString().contains("http://")) {
+            String sub = editText.getText().toString().substring(editText.getText().toString().indexOf("http://"));
+            String replacementSubstring;
+            if (sub.contains(" ")) {
+                replacementSubstring = sub.substring(0, sub.indexOf(' '));
+            } else {
+                replacementSubstring = sub;
+            }
+
+            editText.setText(editText.getText().toString().replace(replacementSubstring, appendingLink));
+        } else {
+            if (editText.getText().toString().charAt(editText.getText().toString().length() - 1) != ' ') {
+                appendingLink = " " + AmbassadorSingleton.getInstance().getURL();
+                editText.setText(editText.getText().append(appendingLink));
+            }
+        }
     }
 }
