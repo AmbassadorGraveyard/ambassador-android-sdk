@@ -33,27 +33,24 @@
         android:textCursorDrawable="@null"/>
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:text="Share"
         android:id="@+id/btnTweet"
         android:layout_below="@+id/etTweetMessage"
         android:layout_alignEnd="@+id/etTweetMessage"
-        android:background="@color/transparent"
         android:textColor="@color/twitter_blue" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:text="Cancel"
         android:textColor="@color/twitter_blue"
         android:id="@+id/btnCancel"
-        android:background="@color/transparent"
         android:layout_alignTop="@+id/btnTweet"
         android:layout_toStartOf="@+id/btnTweet"
-        android:layout_marginEnd="24dp"
         android:layout_marginBottom="5dp" />
 
     <ProgressBar

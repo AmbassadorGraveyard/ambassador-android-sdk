@@ -34,7 +34,8 @@ import java.util.Comparator;
  */
 public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener {
     private Button btnSend;
-    private ImageButton btnEdit, btnDone;
+    private ImageButton btnEdit;
+    private Button btnDone;
     private EditText etShareMessage, etSearch;
     private RelativeLayout rlSearch;
     private LinearLayout llSendView;
@@ -56,7 +57,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         ListView lvContacts = (ListView)findViewById(R.id.lvContacts);
         Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
-        btnDone = (ImageButton)findViewById(R.id.btnDone);
+        btnDone = (Button)findViewById(R.id.btnDone);
         btnSend = (Button)findViewById(R.id.btnSend);
         etShareMessage = (EditText) findViewById(R.id.etShareMessage);
         rlSearch = (RelativeLayout)findViewById(R.id.rlSearch);

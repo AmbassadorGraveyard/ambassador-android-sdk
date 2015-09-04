@@ -32,10 +32,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="DONE"
+            android:background="?android:attr/selectableItemBackground"
             android:id="@+id/btnDoneSearch"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:background="@color/transparent"
             android:layout_marginRight="5dp"
             android:textColor="@color/twitter_blue" />
 
@@ -83,25 +83,26 @@
                 android:autoText="false" />
 
             <ImageButton
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:id="@+id/btnEdit"
                 android:layout_weight="0"
+                android:padding="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/pencil_edit"
-                android:background="@color/transparent"
                 android:layout_marginRight="5dp" />
 
-            <ImageButton
+            <Button
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:id="@+id/btnDone"
+                android:background="?android:attr/selectableItemBackground"
                 android:layout_weight="0"
-                android:layout_gravity="center_vertical"
                 android:visibility="gone"
-                android:src="@drawable/done_button"
-                android:background="@color/transparent"
-                android:layout_marginRight="5dp" />
+                android:text="DONE"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/twitter_blue" />
 
         </LinearLayout>
 
