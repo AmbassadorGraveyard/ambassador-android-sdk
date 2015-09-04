@@ -262,7 +262,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     private void _setUpToolbar(String toolbarTitle) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.twitter_blue));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white ));
 
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
