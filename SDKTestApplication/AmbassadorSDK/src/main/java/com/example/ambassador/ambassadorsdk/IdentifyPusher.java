@@ -47,13 +47,12 @@ class IdentifyPusher {
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
-//                Log.d("Pusher", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
                 Utilities.debugLog("Pusher", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
             }
 
             @Override
             public void onError(String s, String s1, Exception e) {
-                Log.d("Pusher", "There was a problem connecting to Pusher" + "Exception = " + e);
+                Utilities.debugLog("Pusher", "There was a problem connecting to Pusher" + "Exception = " + e);
             }
         }, ConnectionState.ALL);
 
@@ -62,20 +61,18 @@ class IdentifyPusher {
         pusher.subscribePrivate(channelName, new PrivateChannelEventListener() {
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
-                Log.d("Pusher", "Failed to subscribe to Pusher because " + message + ". The " +
+                Utilities.debugLog("Pusher", "Failed to subscribe to Pusher because " + message + ". The " +
                         "exception was " + e);
             }
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-//                Log.d("Pusher", "Successfully subscribed to " + channelName);
                 Utilities.debugLog("Pusher", "Successfully subscribed to " + channelName);
                 completion.pusherSubscribed();
             }
 
             @Override
             public void onEvent(String channelName, String eventName, String data) {
-//                Log.d("Pusher", "data = " + data);
                 Utilities.debugLog("Pusher", "data = " + data);
                 completion.pusherEventTriggered(data);
             }
