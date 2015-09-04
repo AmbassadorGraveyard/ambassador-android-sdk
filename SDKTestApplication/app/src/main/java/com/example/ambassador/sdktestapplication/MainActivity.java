@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.example.ambassador.ambassadorsdk.ConversionParameters;
-import com.example.ambassador.ambassadorsdk.RAFParameters;
+import com.example.ambassador.ambassadorsdk.ServiceSelectorPreferences;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -29,10 +29,10 @@ public class MainActivity extends AppCompatActivity {
         btnRAF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RAFParameters parameters = new RAFParameters();
-                parameters.shareMessage = "Check out this company!";
-                parameters.welcomeTitle = "RAF Params Welcome Title";
-                parameters.welcomeDescription = "RAF Params Welcome Description";
+                ServiceSelectorPreferences parameters = new ServiceSelectorPreferences();
+                parameters.defaultShareMessage = "Check out this company!";
+                parameters.titleText = "RAF Params Welcome Title";
+                parameters.descriptionText = "RAF Params Welcome Description";
                 parameters.toolbarTitle = "RAF Params Toolbar Title";
                 AmbassadorSDK.presentRAF(cxt, parameters, "260");
 

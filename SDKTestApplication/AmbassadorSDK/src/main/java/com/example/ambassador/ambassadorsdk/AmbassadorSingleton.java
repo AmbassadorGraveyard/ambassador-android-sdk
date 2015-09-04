@@ -23,7 +23,7 @@ class AmbassadorSingleton {
     private static AmbassadorSingleton mInstance = null;
     private Context context;
     private SharedPreferences sharePrefs;
-    public RAFParameters rafParameters;
+    public ServiceSelectorPreferences rafParameters;
 
     static AmbassadorSingleton getInstance() {
         if(mInstance == null) {
