@@ -66,7 +66,7 @@ class BulkShareHelper {
     private void _callIsUnsuccessful() {
         loader.hide();
         loader.dismiss();
-        Toast.makeText(loader.getOwnerActivity(), "Unable to share message+.  Please try again.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(loader.getOwnerActivity(), "Unable to share message. Please try again.", Toast.LENGTH_SHORT).show();
     }
     // END REQUEST HELPER METHODS
 

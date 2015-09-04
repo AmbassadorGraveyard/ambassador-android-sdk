@@ -355,6 +355,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
     }
 
+<<<<<<< HEAD
     private void _sendToContacts() {
         if (Utilities.containsURL(etShareMessage.getText().toString())) {
             //get and store pusher data
@@ -394,6 +395,32 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                     dialogInterface.dismiss();
                 }
             });
+=======
+    public void sendToContacts(View view) {
+        //get and store pusher data
+        try {
+            //if user is doing sms and we don't have first or last name, we need to get it with a dialog
+            if (showPhoneNumbers && //FOR TESTING INCLUDE THIS -->  true || //remove "true ||" for launch
+                (!pusherData.has("firstName") || pusherData.getString("firstName").equals("null") || pusherData.getString("firstName").isEmpty()
+                ||
+                !pusherData.has("lastName") || pusherData.getString("lastName").equals("null") || pusherData.getString("lastName").isEmpty()))
+            {
+                //show dialog to get name
+                cnd = new ContactNameDialog(this, pd);
+                cnd.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialog) {
+                        cnd.showKeyboard();
+                    }
+                });
+                cnd.show();
+            } else {
+                _initiateSend();
+            }
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+>>>>>>> 102101712_update_to_new_designs
         }
     }
 
