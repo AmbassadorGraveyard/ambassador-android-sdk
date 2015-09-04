@@ -175,6 +175,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     //region CONTACT FUNCTIONS
     private void _getContactPhoneList() {
         contactList = new ArrayList<>();
+        /*contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
         contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
         contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
         contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
@@ -182,8 +183,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
         contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
         contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
-        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
-        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));*/
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, null);
 
@@ -222,7 +222,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     private void _getContactEmailList() {
         contactList = new ArrayList<>();
-        contactList.add(new ContactObject("John Jones", "corey@getambassador.com"));
+        /*contactList.add(new ContactObject("John Jones", "corey@getambassador.com"));
         contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
         contactList.add(new ContactObject("Friend One", "corey@getambassador.com"));
         contactList.add(new ContactObject("John Doe", "corey@getambassador.com"));
@@ -231,7 +231,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         contactList.add(new ContactObject("Cool Friend", "corey@getambassador.com"));
         contactList.add(new ContactObject("Brian Davidson", "corey@getambassador.com"));
         contactList.add(new ContactObject("Jim Harbaugh", "corey@getambassador.com"));
-        contactList.add(new ContactObject("Ambassador Diplomat", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Ambassador Diplomat", "corey@getambassador.com"));*/
 
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 null, null, null, null);
@@ -335,7 +335,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
         //toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Refer your friends"); }
-        toolbar.setBackgroundColor(getResources().getColor(R.color.twitter_blue));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         //if (toolbar.getNavigationIcon() != null) { toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN); }
     }
