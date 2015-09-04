@@ -85,7 +85,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         // Sets share message to default message from RAF Parameters
-        etShareMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
+        etShareMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
 
         adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
         lvContacts.setAdapter(adapter);

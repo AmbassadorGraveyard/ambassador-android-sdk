@@ -19,6 +19,7 @@ class AmbassadorSingleton {
     static final String PUSHER_KEY = "***REMOVED***";
     static final String PUSHER_SECRET = "***REMOVED***";
     static final String MBSY_UNIVERSAL_ID = "***REMOVED***";
+    static final Boolean isReleaseBuild = false;
 
     private static AmbassadorSingleton mInstance = null;
     private Context context;
@@ -114,7 +115,7 @@ class AmbassadorSingleton {
     }
 
     Boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
-    //END SHAREDINSTANCE GETTERS
+    // END SHAREDINSTANCE GETTERS
 
 
     // AMBASSADOR SDK CALLS
