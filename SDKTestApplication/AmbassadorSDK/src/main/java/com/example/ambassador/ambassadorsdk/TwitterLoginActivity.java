@@ -55,14 +55,13 @@ public class TwitterLoginActivity extends AppCompatActivity {
 
    private void _setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
-
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
             toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.twitter_blue));
             toolbar.setTitleTextColor(Color.WHITE);
         }
 
-        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Log into Twitter"); }
+        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Log in to Twitter"); }
     }
 
     private class CustomBrowser extends WebViewClient {

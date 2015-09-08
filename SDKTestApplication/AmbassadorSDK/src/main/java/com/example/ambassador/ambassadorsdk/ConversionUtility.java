@@ -54,7 +54,7 @@ class ConversionUtility {
         } else {
             ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
             db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
-            Log.d("Conversion", "Inserted row into table");
+            Utilities.debugLog("Conversion", "Inserted row into table");
         }
     }
 
@@ -195,7 +195,7 @@ class ConversionUtility {
                     response.append(line);
                 }
 
-                Log.d("Conversion", "Conversion successful: " + response.toString());
+                Utilities.debugLog("Conversion", "Conversion successful: " + response.toString());
             } catch (IOException e) {
                 e.printStackTrace();
                 statusCode = 1;
@@ -211,7 +211,7 @@ class ConversionUtility {
             if (statusCode < 200 || statusCode > 299) {
                 ContentValues values = ConversionDBHelper.createValuesFromConversion(conversionParameters);
                 db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
-                Log.d("Conversion", "Inserted row into table");
+                Utilities.debugLog("Conversion", "Inserted row into table");
             }
         }
     }
