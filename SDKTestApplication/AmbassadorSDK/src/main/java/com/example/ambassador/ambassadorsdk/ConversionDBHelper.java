@@ -82,6 +82,6 @@ class ConversionDBHelper extends SQLiteOpenHelper {
         String selection = ConversionSQLStrings.ConversionSQLEntry._ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(rowId) };
         db.delete(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, selection, selectionArgs);
-        Log.d("Conversion", "Removing row " + String.valueOf(rowId) + " with selection: " + selection);
+        Utilities.debugLog("Conversion", "Removing row " + String.valueOf(rowId) + " with selection: " + selection);
     }
 }
