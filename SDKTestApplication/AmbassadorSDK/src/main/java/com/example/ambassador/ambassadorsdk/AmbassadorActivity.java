@@ -38,6 +38,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     private ServiceSelectorPreferences rafParams;
     private ProgressDialog pd;
     private Timer networkTimer;
+    private AmbassadorActivity ambassadorActivity;
     private final android.os.Handler timerHandler = new android.os.Handler();
     private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
     private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
@@ -68,6 +69,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
 
+        ambassadorActivity = this;
         rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("test");
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
@@ -159,7 +161,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 .setContentUrl(Uri.parse(AmbassadorSingleton.getInstance().getURL()))
                 .build();
 
-        ShareDialog fbDialog = new ShareDialog(this);
+        ShareDialog fbDialog = new ShareDialog(ambassadorActivity);
         fbDialog.show(content);
     }
 
@@ -268,11 +270,10 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     private void _setUpToolbar(String toolbarTitle) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-
         if (toolbar != null) {
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
             toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
-            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white ));
+            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         }
 
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }

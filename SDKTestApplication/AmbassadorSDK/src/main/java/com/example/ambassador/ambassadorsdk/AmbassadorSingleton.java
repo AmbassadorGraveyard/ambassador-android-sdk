@@ -19,6 +19,7 @@ class AmbassadorSingleton {
     static final String PUSHER_KEY = "8bd3fe1994164f9b83f6";
     static final String PUSHER_SECRET = "35327adb59c3b567a44a";
     static final String MBSY_UNIVERSAL_ID = "abfd1c89-4379-44e2-8361-ee7b87332e32";
+    static final Boolean isReleaseBuild = false;
 
     private static AmbassadorSingleton mInstance = null;
     private Context context;
@@ -114,7 +115,7 @@ class AmbassadorSingleton {
     }
 
     Boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
-    //END SHAREDINSTANCE GETTERS
+    // END SHAREDINSTANCE GETTERS
 
 
     // AMBASSADOR SDK CALLS

@@ -16,12 +16,11 @@
 #   public *;
 #}
 
--dontskipnonpubliclibraryclasses
--dontobfuscate
--forceprocessing
--optimizationpasses 5
-
--keep class * extends android.app.Activity
+#-dontskipnonpubliclibraryclasses
+#-dontobfuscate
+#-forceprocessing
+#-optimizationpasses 5
+#
 -assumenosideeffects class android.util.Log {
     public static *** d(...);
     public static *** v(...);
