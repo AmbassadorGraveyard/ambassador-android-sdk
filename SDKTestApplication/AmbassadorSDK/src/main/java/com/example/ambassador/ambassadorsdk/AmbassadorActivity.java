@@ -13,6 +13,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -106,6 +107,12 @@ public class AmbassadorActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         if (networkTimer != null) { networkTimer.cancel(); }
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish(); // Dismisses activity if back button pressed
+        return super.onOptionsItemSelected(item);
     }
     // END ACTIVITY OVERRIDE METHODS
 
@@ -263,8 +270,11 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     private void _setUpToolbar(String toolbarTitle) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
-        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white ));
+        if (toolbar != null) {
+            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
+            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        }
 
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
     }
