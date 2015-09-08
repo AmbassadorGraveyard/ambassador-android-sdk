@@ -2,6 +2,7 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.view.View;
 import android.view.Window;
@@ -34,19 +35,19 @@ class TweetDialog extends Dialog {
 
         loader.setVisibility(View.GONE);
         etTwitterMessage.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
-        etTwitterMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
+        etTwitterMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
 
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _shareTweet();
+                _btnTweetClicked();
             }
         });
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                hide();
             }
         });
     }
@@ -63,13 +64,33 @@ class TweetDialog extends Dialog {
         }
     }
 
+    private void _btnTweetClicked() {
+        if (Utilities.containsURL(etTwitterMessage.getText().toString())) {
+            _shareTweet();
+        } else {
+            Utilities.presentUrlDialog(this.getOwnerActivity(), etTwitterMessage, new Utilities.UrlAlertInterface() {
+                @Override
+                public void sendAnywayTapped(DialogInterface dialogInterface) {
+                    dialogInterface.dismiss();
+                    _shareTweet();
+                }
+
+                @Override
+                public void insertUrlTapped(DialogInterface dialogInterface) {
+                    dialogInterface.dismiss();
+                }
+            });
+        }
+    }
+
     class TweetRequest extends AsyncTask<Void, Void, Void> {
         public String tweetString;
         public int postStatus;
 
         @Override
         protected Void doInBackground(Void... params) {
-            AccessToken accessToken = new AccessToken(AmbassadorSingleton.getInstance().getTwitterAccessToken(), AmbassadorSingleton.getInstance().getTwitterAccessTokenSecret());
+            AccessToken accessToken = new AccessToken(AmbassadorSingleton.getInstance().getTwitterAccessToken(),
+                    AmbassadorSingleton.getInstance().getTwitterAccessTokenSecret());
             Twitter twitter = new TwitterFactory().getInstance();
             twitter.setOAuthConsumer(AmbassadorSingleton.TWITTER_KEY, AmbassadorSingleton.TWITTER_SECRET);
             twitter.setOAuthAccessToken(accessToken);
@@ -93,6 +114,7 @@ class TweetDialog extends Dialog {
             // Make sure post was successful and handle it if it wasn't
             if (postStatus < 300 && postStatus > 199) {
                 Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+                hide();
                 dismiss();
             } else {
                 Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
