@@ -83,9 +83,14 @@ class Utilities {
         }
     }
 
+
     public static void debugLog(String tagString, String logMessage) {
         if (!AmbassadorSingleton.isReleaseBuild) {
             Log.d(tagString, logMessage);
         }
+    }
+
+    public static float getScreenDensity() {
+        return MyApplication.getAppContext().getResources().getDisplayMetrics().density;
     }
 }

@@ -62,13 +62,13 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.linkedin_blue));
         toolbar.setTitleTextColor(Color.WHITE);
-        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Log into LinkedIn"); }
+        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Login to LinkedIn"); }
     }
 
     private class MyBrowser extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            // Breaks up url to grab seperate components
+            // Breaks up url to grab separate components
             String[] urlArray = url.split("\\?");
             String callbackURL = urlArray[0];
             String codeErrorString = urlArray[1];
