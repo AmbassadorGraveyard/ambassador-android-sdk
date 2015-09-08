@@ -101,7 +101,7 @@ class Identify implements IIdentify {
                 identifyObject.put("mbsy_source", "");
                 identifyObject.put("mbsy_cookie_code", "");
                 identifyObject.put("fp", augurObject);
-                Log.d("Augur", "Identify Object = " + identifyObject.toString());
+                Utilities.debugLog("Augur", "Identify Object = " + identifyObject.toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -128,7 +128,7 @@ class Identify implements IIdentify {
                     response.append(line);
                 }
 
-                Log.d("Pusher", response.toString());
+                Utilities.debugLog("Pusher", response.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -22,7 +22,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile(name:'augur', ext:'aar')
-    compile(name:'AmbassadorSDK-debug', ext:'aar')
+    compile(name:'AmbassadorSDK-release', ext:'aar')
 
     compile 'org.twitter4j:twitter4j-core:4.0.4'
     compile 'com.google.guava:guava:19.0-rc1'
