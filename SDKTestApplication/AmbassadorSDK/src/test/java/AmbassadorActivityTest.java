@@ -4,7 +4,6 @@ import android.content.ContextWrapper;
 import android.test.InstrumentationTestCase;
 
 import com.example.ambassador.ambassadorsdk.AmbassadorActivity;
-import com.facebook.share.model.ShareLinkContent;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -31,7 +29,7 @@ public class AmbassadorActivityTest extends InstrumentationTestCase {
         AmbassadorActivity a = new AmbassadorActivity();
         //a.initFacebook();
         //assertThat(a.fbDialog, is(not(null)));
-        a.shareWithFacebook();
+        //a.shareWithFacebook();
         assertThat(fbDialog.isShowing(), is(true));
     }
 }
