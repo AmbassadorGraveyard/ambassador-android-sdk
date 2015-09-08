@@ -47,9 +47,9 @@ class ContactNameDialog extends Dialog {
         setContentView(R.layout.dialog_contact_name);
 
         etFirstName = (CustomEditText)findViewById(R.id.etFirstName);
-        etFirstName.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
+        etFirstName.setEditTextTint(context.getResources().getColor(R.color.ambassador_blue));
         etLastName = (CustomEditText)findViewById(R.id.etLastName);
-        etLastName.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
+        etLastName.setEditTextTint(context.getResources().getColor(R.color.ambassador_blue));
         Button btnCancel = (Button)findViewById(R.id.btnCancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override

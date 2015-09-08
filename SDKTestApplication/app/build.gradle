@@ -1,8 +1,10 @@
 apply plugin: 'com.android.application'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
     maven { url 'http://clojars.org/repo' }
+    flatDir {
+        dirs '../AmbassadorSDK/libs'
+    }
 }
 
 android {
@@ -27,6 +29,8 @@ android {
         exclude 'LICENSE.txt'
     }
 }
+
+
 
 dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'

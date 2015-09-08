@@ -16,6 +16,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/etSearch"
             android:hint="Search"
+            android:textSize="16sp"
+            android:background="@color/transparent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_alignParentTop="true"
@@ -27,32 +29,36 @@
             android:singleLine="true" />
 
         <Button
-            style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="DONE"
+            android:background="?android:attr/selectableItemBackground"
             android:id="@+id/btnDoneSearch"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:background="#00000000"
             android:layout_marginRight="5dp"
-            android:textColor="@color/twitter_blue"
-            android:onClick="displayOrHideSearch" />
+            android:textColor="@color/twitter_blue" />
 
     </RelativeLayout>
 
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvContacts"
+        android:layout_below="@+id/rlSearch"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/llSendView"
+        android:background="@android:color/white" />
+
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:padding="15dp"
         android:id="@+id/llSendView"
         android:background="@android:color/white">
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/darker_gray"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -62,24 +68,41 @@
 
             <EditText
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:id="@+id/etShareMessage"
-                android:layout_weight="2.66"
+                android:background="@color/transparent"
+                android:text="Check out this company! www.mbsy.co/jkas4"
+                android:textSize="16sp"
+                android:layout_weight="8"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
+                android:layout_gravity="center_vertical"
                 android:editable="true"
                 android:enabled="false"
                 android:selectAllOnFocus="true"
                 android:autoText="false" />
 
             <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:background="?android:attr/selectableItemBackground"
                 android:id="@+id/btnEdit"
                 android:layout_weight="0"
+                android:padding="10dp"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/pencil_edit"
-                android:background="#00000000"
                 android:layout_marginRight="5dp" />
+
+            <Button
+                android:layout_width="60dp"
+                android:layout_height="40dp"
+                android:id="@+id/btnDone"
+                android:background="?android:attr/selectableItemBackground"
+                android:layout_weight="0"
+                android:visibility="gone"
+                android:text="DONE"
+                android:layout_marginRight="5dp"
+                android:textColor="@color/twitter_blue" />
 
         </LinearLayout>
 
@@ -88,26 +111,19 @@
             android:layout_height="wrap_content"
             android:text="NO CONTACTS SELECTED"
             android:id="@+id/btnSend"
-            android:textColor="#ffffff"
-            android:background="#4a93cc"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/white"
+            android:background="@color/twitter_blue"
             android:enabled="false"
             android:onClick="sendToContacts"/>
     </LinearLayout>
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/lvContacts"
-        android:layout_below="@+id/rlSearch"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/llSendView"
-        android:background="#ffffff" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Contact list empty"
+        android:textColor="@color/darkGray"
         android:id="@+id/tvNoContacts"
         android:layout_below="@+id/rlSearch"
         android:layout_alignBottom="@+id/lvContacts"

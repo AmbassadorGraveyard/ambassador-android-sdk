@@ -2,6 +2,7 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -45,7 +46,7 @@ class LinkedInPostDialog extends Dialog {
         loader.setVisibility(View.GONE);
 
         etMessage.setEditTextTint(getContext().getResources().getColor(R.color.linkedin_blue));
-        etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.shareMessage);
+        etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,7 +58,7 @@ class LinkedInPostDialog extends Dialog {
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _postToLinkedIn();
+                _btnPostClicked();
             }
         });
     }
@@ -83,6 +84,25 @@ class LinkedInPostDialog extends Dialog {
             }
 
             linkedInPostRequest.execute();
+        }
+    }
+
+    private void _btnPostClicked() {
+        if (Utilities.containsURL(etMessage.getText().toString())) {
+            _postToLinkedIn();
+        } else {
+            Utilities.presentUrlDialog(this.getOwnerActivity(), etMessage, new Utilities.UrlAlertInterface() {
+                @Override
+                public void sendAnywayTapped(DialogInterface dialogInterface) {
+                    dialogInterface.dismiss();
+                    _postToLinkedIn();
+                }
+
+                @Override
+                public void insertUrlTapped(DialogInterface dialogInterface) {
+                    dialogInterface.dismiss();
+                }
+            });
         }
     }
 

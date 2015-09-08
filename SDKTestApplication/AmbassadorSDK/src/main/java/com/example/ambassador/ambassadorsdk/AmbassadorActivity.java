@@ -7,13 +7,13 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -35,18 +35,18 @@ import java.util.TimerTask;
 public class AmbassadorActivity extends AppCompatActivity {
     private TextView tvWelcomeTitle, tvWelcomeDesc;
     private CustomEditText etShortUrl;
-    private RAFParameters rafParams;
+    private ServiceSelectorPreferences rafParams;
     private ProgressDialog pd;
     private Timer networkTimer;
     private final android.os.Handler timerHandler = new android.os.Handler();
-    private final String[] gridTitles = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
+    private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
     private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
             R.drawable.email_icon, R.drawable.sms_icon};
 
     final private Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
-            Toast.makeText(getApplicationContext(), "There seems to be a network error.  Pleas try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "There seems to be an issue while attempting to load.  Please try again.", Toast.LENGTH_SHORT).show();
             finish();
         }
     };
@@ -55,7 +55,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Executed when Pusher data is recieved, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            _tryAndSetURL();
+            if (AmbassadorSingleton.getInstance().getPusherInfo() == null) {
+                _tryAndSetURL();
+            }
         }
     };
 
@@ -66,7 +68,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
 
-        rafParams = (RAFParameters) getIntent().getSerializableExtra("test");
+        rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("test");
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
@@ -77,7 +79,6 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
         etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
 
-        etShortUrl.setEditTextTint(Color.DKGRAY);
         _setCustomizedText(rafParams);
         _tryAndSetURL();
 
@@ -86,6 +87,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 _copyShortURLToClipboard();
             }
         });
+        btnCopyPaste.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
         // Sets up social gridView
         SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridTitles, gridDrawables);
@@ -93,7 +95,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         gvSocialGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               _respondToGridViewClick(position);
+                _respondToGridViewClick(position);
             }
         });
     }
@@ -103,6 +105,12 @@ public class AmbassadorActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         if (networkTimer != null) { networkTimer.cancel(); }
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish(); // Dismisses activity if back button pressed
+        return super.onOptionsItemSelected(item);
     }
     // END ACTIVITY OVERRIDE METHODS
 
@@ -147,7 +155,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     private void _shareWithFacebook() {
         FacebookSdk.sdkInitialize(getApplicationContext());
         ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentTitle(rafParams.shareMessage)
+                .setContentTitle(rafParams.defaultShareMessage)
                 .setContentUrl(Uri.parse(AmbassadorSingleton.getInstance().getURL()))
                 .build();
 
@@ -229,35 +237,32 @@ public class AmbassadorActivity extends AppCompatActivity {
             networkTimer.cancel();
         }
 
-        // Next we check if the shortURL Edittext is empty or if has been set
-        if (etShortUrl.getText().toString().isEmpty()) {
-            try {
-                // We get a JSON object from the Pusher Info string saved to SharedPreferences
-                JSONObject pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
-                JSONArray urlArray = pusherData.getJSONArray("urls");
+        try {
+            // We get a JSON object from the Pusher Info string saved to SharedPreferences
+            JSONObject pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+            JSONArray urlArray = pusherData.getJSONArray("urls");
 
-                // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
-                for (int i = 0; i < urlArray.length(); i++) {
-                    JSONObject urlObj = urlArray.getJSONObject(i);
-                    int campID = urlObj.getInt("campaign_uid");
-                    if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
-                        etShortUrl.setText(urlObj.getString("url"));
-                        AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
-                        AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
-                        AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
-                        AmbassadorSingleton.getInstance().rafParameters.shareMessage =
-                                rafParams.shareMessage + " " + urlObj.getString("url");
-                    }
+            // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
+            for (int i = 0; i < urlArray.length(); i++) {
+                JSONObject urlObj = urlArray.getJSONObject(i);
+                int campID = urlObj.getInt("campaign_uid");
+                if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
+                    etShortUrl.setText(urlObj.getString("url"));
+                    AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
+                    AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
+                    AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
+                    AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage =
+                            rafParams.defaultShareMessage + " " + urlObj.getString("url");
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
-    private void _setCustomizedText(RAFParameters params) {
-        tvWelcomeTitle.setText(params.welcomeTitle);
-        tvWelcomeDesc.setText(params.welcomeDescription);
+    private void _setCustomizedText(ServiceSelectorPreferences params) {
+        tvWelcomeTitle.setText(params.titleText);
+        tvWelcomeDesc.setText(params.descriptionText);
         _setUpToolbar(params.toolbarTitle);
     }
 
@@ -265,8 +270,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
 
         if (toolbar != null) {
-            toolbar.setBackgroundColor(Color.LTGRAY);
-            toolbar.setTitleTextColor(Color.DKGRAY);
+            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
+            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white ));
         }
 
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }

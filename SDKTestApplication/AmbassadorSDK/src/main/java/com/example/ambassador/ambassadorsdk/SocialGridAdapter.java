@@ -2,7 +2,10 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +22,21 @@ class SocialGridAdapter extends BaseAdapter {
     private String[] nameArray;
     private Integer[] drawablesArray;
     LayoutInflater inflater;
+    private ShapeDrawable rectShapeDrawable;
 
     public SocialGridAdapter(Context context, String[] gridNames, Integer[] gridImages) {
         this.context = context;
         this.nameArray = gridNames;
         this.drawablesArray = gridImages;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        //create drawable to use as border around non-filled grid cells
+        RectShape rect = new RectShape();
+        rectShapeDrawable = new ShapeDrawable(rect);
+        Paint paint = rectShapeDrawable.getPaint();
+        paint.setColor(context.getResources().getColor(R.color.ultraLightGray));
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(10);
     }
 
     @Override
@@ -55,6 +67,9 @@ class SocialGridAdapter extends BaseAdapter {
         gridImage.setImageResource(drawablesArray[position]);
         gridTitle.setText(nameArray[position]);
         backgroundView.getBackground().setColorFilter(_getCorrectBackgroundColor(position), PorterDuff.Mode.SRC_ATOP);
+        if (position == 3 || position == 4) {
+            backgroundView.setBackground(rectShapeDrawable);
+        }
 
         return convertView;
     }
