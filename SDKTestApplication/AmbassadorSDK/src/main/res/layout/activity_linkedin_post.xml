@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="#00ffffff">
+    android:background="@color/transparent">
 
     <TextView
         android:layout_width="wrap_content"
@@ -10,11 +10,11 @@
         android:id="@+id/textView"
         android:layout_alignParentTop="true"
         android:textSize="20dp"
-        android:textColor="#ffffff"
+        android:textColor="@android:color/white"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:textStyle="bold"
-        android:background="#468fc3"
+        android:background="@color/linkedin_blue"
         android:gravity="center_vertical"
         android:paddingLeft="15dp" />
 
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etTweetMessage"
-        android:backgroundTint="#ff2c82bb"
+        android:backgroundTint="@color/twitter_blue"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:editable="true"
@@ -33,26 +33,24 @@
         android:textCursorDrawable="@null"/>
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:text="Share"
         android:id="@+id/btnTweet"
         android:layout_below="@+id/etTweetMessage"
         android:layout_alignEnd="@+id/etTweetMessage"
-        android:background="#00ffffff"
-        android:textColor="#ff1a71b2" />
+        android:textColor="@color/twitter_blue" />
 
     <Button
-        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:text="Cancel"
+        android:textColor="@color/twitter_blue"
         android:id="@+id/btnCancel"
-        android:background="#00ffffff"
         android:layout_alignTop="@+id/btnTweet"
         android:layout_toStartOf="@+id/btnTweet"
-        android:layout_marginEnd="24dp"
         android:layout_marginBottom="5dp" />
 
     <ProgressBar
@@ -62,7 +60,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:indeterminate="false"
-        android:indeterminateTint="#468fc3"
+        android:indeterminateTint="@color/linkedin_blue"
         android:indeterminateTintMode="src_in"
         android:indeterminateOnly="true" />
 

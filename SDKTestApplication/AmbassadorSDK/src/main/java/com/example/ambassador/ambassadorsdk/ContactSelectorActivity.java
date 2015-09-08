@@ -5,12 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -39,6 +35,7 @@ import java.util.Comparator;
 public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener {
     private Button btnSend;
     private ImageButton btnEdit;
+    private Button btnDone;
     private EditText etShareMessage, etSearch;
     private RelativeLayout rlSearch;
     private LinearLayout llSendView;
@@ -60,6 +57,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         ListView lvContacts = (ListView)findViewById(R.id.lvContacts);
         Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
+        btnDone = (Button)findViewById(R.id.btnDone);
         btnSend = (Button)findViewById(R.id.btnSend);
         etShareMessage = (EditText) findViewById(R.id.etShareMessage);
         rlSearch = (RelativeLayout)findViewById(R.id.rlSearch);
@@ -115,7 +113,15 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         btnEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _handleEditButtonTap();
+                _editBtnTapped();
+            }
+        });
+        btnEdit.setColorFilter(getResources().getColor(R.color.ultraLightGray));
+
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _doneEditingMessage();
             }
         });
 
@@ -153,13 +159,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ambassador_menu, menu);
-        Drawable drawable = menu.findItem(R.id.action_search).getIcon();
-
-        // Sets search icon to darkgray
-        drawable = DrawableCompat.wrap(drawable);
-        DrawableCompat.setTint(drawable, Color.DKGRAY);
-        menu.findItem(R.id.action_search).setIcon(drawable);
-
         return true;
     }
 
@@ -179,6 +178,15 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     //region CONTACT FUNCTIONS
     private void _getContactPhoneList() {
         contactList = new ArrayList<>();
+        /*contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+        contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));*/
         Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null, null, null, null);
 
@@ -217,6 +225,17 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     private void _getContactEmailList() {
         contactList = new ArrayList<>();
+        /*contactList.add(new ContactObject("John Jones", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Friend One", "corey@getambassador.com"));
+        contactList.add(new ContactObject("John Doe", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Greg Lastname", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Mike Ambassador", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Friend", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Brian Davidson", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Jim Harbaugh", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Ambassador Diplomat", "corey@getambassador.com"));*/
+
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 null, null, null, null);
 
@@ -249,32 +268,26 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
 
     // BUTTON METHODS
-    private void _handleEditButtonTap() {
-        if (etShareMessage.isEnabled()) {
-            _doneEditingMessage();
-        } else {
-            _editBtnTapped();
-        }
-    }
-
     private void _editBtnTapped() {
-        btnEdit.setImageResource(R.drawable.done_button);
-        btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0));
+        btnSend.setEnabled(false);
+        btnEdit.setVisibility(View.GONE);
+        btnDone.setVisibility(View.VISIBLE);
         etShareMessage.setEnabled(true);
         etShareMessage.requestFocus();
+        etShareMessage.setSelection(0);
         inputManager.showSoftInput(etShareMessage, 0); // Presents keyboard
     }
 
     private void _doneEditingMessage() {
-        btnSend.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-        etShareMessage.setSelection(0);
+        if (adapter.selectedContacts.size() > 0) btnSend.setEnabled(true);
+        btnEdit.setVisibility(View.VISIBLE);
+        btnDone.setVisibility(View.GONE);
         etShareMessage.setEnabled(false);
-        btnEdit.setImageResource(R.drawable.pencil_edit);
     }
 
     private void _displayOrHideSearch() {
         // Float that helps converts dp to pixels based on device
-        final float scale = getApplicationContext().getResources().getDisplayMetrics().density;
+        final float scale = Utilities.getScreenDensity();
 
         int finalHeight = (rlSearch.getHeight() > 0) ? 0 : (int) (50 * scale + 0.5f);
 
@@ -325,15 +338,17 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
         toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Refer your friends"); }
-        toolbar.setTitleTextColor(Color.DKGRAY);
-        toolbar.setBackgroundColor(Color.WHITE);
-        if (toolbar.getNavigationIcon() != null) { toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN); }
+        toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
+        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        //if (toolbar.getNavigationIcon() != null) { toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN); }
     }
 
     private void _updateSendButton(int numOfContacts) {
         if (numOfContacts > 0) {
-            if (!btnSend.isEnabled()) { btnSend.setEnabled(true); }
-            btnSend.setText("SEND TO " + numOfContacts + " CONTACTS");
+            if (!btnSend.isEnabled()) btnSend.setEnabled(true);
+            String btnSendText = "SEND TO " + numOfContacts;
+            btnSendText += (numOfContacts > 1) ? " CONTACTS" : " CONTACT";
+            btnSend.setText(btnSendText);
         } else {
             btnSend.setText("NO CONTACTS SELECTED");
             btnSend.setEnabled(false);
