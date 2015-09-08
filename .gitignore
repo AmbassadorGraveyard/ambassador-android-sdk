@@ -29,3 +29,6 @@ proguard/
 
 .iml
 SDKTestApplication/.idea/misc.xml
+SDKTestApplication/AmbassadorSDK/AmbassadorSDK.iml
+SDKTestApplication/app/app.iml
+
