@@ -72,9 +72,9 @@ class BulkShareHelper {
 
 
     // CLASS: Static class that filters arrayLists and creates JSON objects
-    private static class BulkFormatter {
+    static class BulkFormatter {
         // VERIFIER FUNCTIONS
-        private static ArrayList<String> _verifiedSMSList(ArrayList<ContactObject> contactObjects) {
+        static ArrayList<String> verifiedSMSList(ArrayList<ContactObject> contactObjects) {
             ArrayList<String> verifiedNumbers = new ArrayList<>();
             for (ContactObject contact : contactObjects) {
                 String strippedNum = contact.phoneNumber.replaceAll("[^0-9]", "");
@@ -180,7 +180,7 @@ class BulkShareHelper {
                 _setUpConnection(connection);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.write(BulkFormatter._payloadObjectForSMS(BulkFormatter._verifiedSMSList(contacts), messageToShare).toString().getBytes());
+                wr.write(BulkFormatter._payloadObjectForSMS(BulkFormatter.verifiedSMSList(contacts), messageToShare).toString().getBytes());
                 wr.flush();
                 wr.close();
 
@@ -197,7 +197,7 @@ class BulkShareHelper {
             super.onPostExecute(aVoid);
             if (Utilities.isSuccessfulResponseCode(statusCode)) {
                 ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
-                shareTrackRequest.contacts = BulkFormatter._verifiedSMSList(contacts);
+                shareTrackRequest.contacts = BulkFormatter.verifiedSMSList(contacts);
                 shareTrackRequest.isSMS = true;
                 shareTrackRequest.execute();
             } else {
