@@ -13,8 +13,6 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.exceptions.base.MockitoException;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
-
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.AdditionalMatchers.gt;
 import static org.mockito.AdditionalMatchers.lt;
@@ -24,7 +22,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 import static org.junit.Assert.*;

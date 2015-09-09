@@ -7,6 +7,8 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.MediumTest;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,24 +29,25 @@ import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 
+
 @RunWith(AndroidJUnit4.class)
 @MediumTest
 public class AmbassadorActivityTest {
+    private ServiceSelectorPreferences parameters;
 
     @Rule
     public ActivityTestRule<AmbassadorActivity> mActivityTestIntentRule = new ActivityTestRule<>(AmbassadorActivity.class, true, false);
 
     /*@Mock
-    private TweetDialog.TweetRequest;
+    private FacebookSdk facebookSdk;
+
+    @Captor
+    ArgumentCaptor<Context> captor;*/
 
     @Before
-    public void before() {
-        TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
-    }*/
-
-    @Test
-    public void testActivity() {
-        ServiceSelectorPreferences parameters = new ServiceSelectorPreferences();
+    public void beforeEachTest() {
+        //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
+        parameters = new ServiceSelectorPreferences();
         parameters.defaultShareMessage = "Check out this company!";
         parameters.titleText = "RAF Params Welcome Title";
         parameters.descriptionText = "RAF Params Welcome Description";
@@ -61,6 +64,42 @@ public class AmbassadorActivityTest {
         intent.putExtra("test", parameters);
         mActivityTestIntentRule.launchActivity(intent);
 
+        //MockitoAnnotations.initMocks(this);
+        //doNothing().when(facebookSdk).sdkInitialize(captor.capture());
+    }
+
+    @After
+    public void afterEachTest() {
+
+    }
+
+    @Test
+    public void testFacebook() {
+        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
+        //onView(withText("You must")).check(matches(isDisplayed()));
+        onView(withId(16908290)).check(matches(isDisplayed()));
+        pressBack();
+
+        //Espresso Web API to test WebViews not ready for prime time - too much trouble getting this to work - will come back
+        //to this later to attempt to enter text into WebView fields to authenticate
+        //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
+    }
+
+    //@Test
+    public void testTwitter() {
+        //clear the token
+        AmbassadorSingleton.getInstance().setTwitterAccessToken(null);
+        AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret(null);
+        //start recording fired Intents
+        Intents.init();
+        //click twitter icon
+        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
+        intended(hasComponent(TwitterLoginActivity.class.getName()));
+        //stop recording Intents
+        Intents.release();
+
+        pressBack();
+
         onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(withText(parameters.titleText)));
@@ -70,10 +109,6 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.etShortURL)).check(matches(withText("http://staging.mbsy.co/jHjl")));
         onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
-
-
-        //tap facebook share
-        //onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
 
         //set a token so we can test share link - this is for test embassy twitter account (developers@getambassador.com - https://twitter.com/testmbsy)
         AmbassadorSingleton.getInstance().setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
@@ -106,13 +141,13 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate posts
-        /*String tweetText = "http://www.tester.com " + _getRandomNumber();
-        tweetRequestMock.tweetString = tweetText;
-        onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
-        onView(withId(R.id.btnTweet)).perform(click());
-        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
-        onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        verify(tweetRequestMock).execute();*/
+        //String tweetText = "http://www.tester.com " + _getRandomNumber();
+        //tweetRequestMock.tweetString = tweetText;
+        //onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
+        //onView(withId(R.id.btnTweet)).perform(click());
+        //onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        //onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
+        //verify(tweetRequestMock).execute();
 
         pressBack();
 
@@ -128,18 +163,7 @@ public class AmbassadorActivityTest {
         //testing toast (didn't work)
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
 
-        pressBack();
-
-        //clear the token
-        AmbassadorSingleton.getInstance().setTwitterAccessToken(null);
-        AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret(null);
-        //start recording fired Intents
-        Intents.init();
-        //click twitter icon
-        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
-        intended(hasComponent(TwitterLoginActivity.class.getName()));
-        //stop recording Intents
-        Intents.release();
+        //pressBack();
     }
 
     private int _getRandomNumber() {
