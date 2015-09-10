@@ -76,7 +76,7 @@ public class AmbassadorActivityTest {
 
     }
 
-    //@Test
+    @Test
     public void testFacebook() {
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
         //onView(withText("You must")).check(matches(isDisplayed()));
