@@ -86,9 +86,10 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                _copyShortURLToClipboard();
+                copyShortURLToClipboard(etShortUrl.getText().toString());
             }
         });
+
         btnCopyPaste.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
         // Sets up social gridView
@@ -97,7 +98,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         gvSocialGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                _respondToGridViewClick(position);
+                respondToGridViewClick(position);
             }
         });
     }
@@ -118,14 +119,15 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
     // ONCLICK METHODS
-    private void _copyShortURLToClipboard() {
+    String copyShortURLToClipboard(String copyText) {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("simpleText", etShortUrl.getText().toString());
+        ClipData clip = ClipData.newPlainText("simpleText", copyText);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
+        return "test";
     }
 
-    private void _respondToGridViewClick(int position) {
+    int respondToGridViewClick(int position) {
         // Functionality: Handles items being clicked in the gridview
         switch (position) {
             case 0:
@@ -138,20 +140,23 @@ public class AmbassadorActivity extends AppCompatActivity {
                 _shareWithLinkedIn();
                 break;
             case 3:
-                _goToContactsPage(false);
+                goToContactsPage(false);
                 break;
             case 4:
-                _goToContactsPage(true);
+                goToContactsPage(true);
                 break;
             default:
                 break;
         }
+
+        return position;
     }
 
-    private void _goToContactsPage(Boolean showPhoneNumbers) {
+    String goToContactsPage(Boolean showPhoneNumbers) {
         Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
         contactIntent.putExtra("showPhoneNumbers", showPhoneNumbers);
         startActivity(contactIntent);
+        return (showPhoneNumbers) ? "phone" : "email";
     }
 
     private void _shareWithFacebook() {
@@ -196,7 +201,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Functionality: Gets URL from Pusher
         // First checks to see if Pusher info has already been saved to SharedPreferencs
         if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
-            setUrlText();
+            setUrlText(AmbassadorSingleton.getInstance().getPusherInfo(), Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID()));
         } else {
             _showLoader();
         }
@@ -232,7 +237,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         timerHandler.post(myRunnable);
     }
 
-    void setUrlText() {
+    void setUrlText(String pusherString, int savedCampaignID) {
         // If loading screen is showing, then we should hide it and cancel the network timer
         if (pd != null) {
             pd.hide();
@@ -241,25 +246,31 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         try {
             // We get a JSON object from the Pusher Info string saved to SharedPreferences
-            JSONObject pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+            JSONObject pusherData = new JSONObject(pusherString);
             JSONArray urlArray = pusherData.getJSONArray("urls");
 
             // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
             for (int i = 0; i < urlArray.length(); i++) {
                 JSONObject urlObj = urlArray.getJSONObject(i);
                 int campID = urlObj.getInt("campaign_uid");
-                if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
-                    etShortUrl.setText(urlObj.getString("url"));
-                    AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
-                    AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
-                    AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
-                    AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage =
-                            rafParams.defaultShareMessage + " " + urlObj.getString("url");
+                if (campID == savedCampaignID) {
+                    saveValuesFromPusher(urlObj.getString("url"),
+                            urlObj.getString("short_code"),
+                            urlObj.getString("subject"));
                 }
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    void saveValuesFromPusher(String url, String shortCode, String subject) {
+        etShortUrl.setText(url);
+        AmbassadorSingleton.getInstance().saveURL(url);
+        AmbassadorSingleton.getInstance().saveShortCode(shortCode);
+        AmbassadorSingleton.getInstance().saveEmailSubject(subject);
+        AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage =
+                rafParams.defaultShareMessage + " " + url;
     }
 
     private void _setCustomizedText(ServiceSelectorPreferences params) {
