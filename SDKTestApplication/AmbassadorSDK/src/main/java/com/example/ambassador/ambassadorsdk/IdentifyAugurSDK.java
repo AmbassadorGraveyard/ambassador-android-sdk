@@ -38,6 +38,7 @@ class IdentifyAugurSDK {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 return true;
             }
         });
