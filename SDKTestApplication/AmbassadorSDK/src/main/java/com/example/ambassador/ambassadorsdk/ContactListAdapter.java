@@ -1,5 +1,7 @@
 package com.example.ambassador.ambassadorsdk;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,14 +111,21 @@ class ContactListAdapter extends BaseAdapter  {
 
     public void updateArrays(int position, View view) {
         // Functionality: Adds and removes contacts to and from the selectedArray and animates checkmark image
-        ImageView imageView = (ImageView) view.findViewById(R.id.ivCheckMark);
+        final ImageView imageView = (ImageView) view.findViewById(R.id.ivCheckMark);
         if (selectedContacts.contains(filteredContactList.get(position))) {
             selectedContacts.remove(filteredContactList.get(position));
-            imageView.animate().setDuration(100).x(view.getWidth()).start();
+            imageView.animate().setDuration(100).x(view.getWidth()).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationCancel(animation);
+                    imageView.setVisibility(View.GONE);
+                }
+            }).start();
         } else {
             selectedContacts.add(filteredContactList.get(position));
+            imageView.setVisibility(View.VISIBLE);
             imageView.animate().setDuration(300).setInterpolator(new OvershootInterpolator())
-                    .x(view.getWidth() - imageView.getWidth() - checkmarkPxXPos).start();
+                    .x(view.getWidth() - imageView.getWidth() - checkmarkPxXPos).setListener(null).start();
         }
     }
 }
