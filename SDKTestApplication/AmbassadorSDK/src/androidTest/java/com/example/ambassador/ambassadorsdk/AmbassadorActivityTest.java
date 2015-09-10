@@ -14,8 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -23,37 +21,36 @@ import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.verify;
 
 
 @RunWith(AndroidJUnit4.class)
 @MediumTest
 public class AmbassadorActivityTest {
     private ServiceSelectorPreferences parameters;
+    //TweetRequest tweetRequestSpy;
 
     @Rule
     public ActivityTestRule<AmbassadorActivity> mActivityTestIntentRule = new ActivityTestRule<>(AmbassadorActivity.class, true, false);
 
     @Mock
+    //TweetDialog tweetDialog;
     TweetDialog.TweetRequest tweetRequestMock;
-
-    /*@Captor
-    ArgumentCaptor<Context> captor;*/
 
     @Before
     public void beforeEachTest() {
-        //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
+        //tweetRequestMock = new TweetRequest();
+        //tweetRequestSpy = spy(tweetRequestMock);
+
         parameters = new ServiceSelectorPreferences();
         parameters.defaultShareMessage = "Check out this company!";
         parameters.titleText = "RAF Params Welcome Title";
@@ -72,12 +69,24 @@ public class AmbassadorActivityTest {
         mActivityTestIntentRule.launchActivity(intent);
 
         MockitoAnnotations.initMocks(this);
-        //doNothing().
+        //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
     }
 
     @After
     public void afterEachTest() {
 
+    }
+
+    //@Test
+    public void testMainLayout() {
+        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvWelcomeTitle)).check(matches(withText(parameters.titleText)));
+        onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvWelcomeDesc)).check(matches(withText(parameters.descriptionText)));
+        onView(withId(R.id.etShortURL)).check(matches(isDisplayed()));
+        onView(withId(R.id.etShortURL)).check(matches(withText("http://staging.mbsy.co/jHjl")));
+        onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
     }
 
     //@Test
@@ -93,6 +102,89 @@ public class AmbassadorActivityTest {
     }
 
     @Test
+    public void testContactsEmail() {
+        //start recording fired Intents
+        Intents.init();
+        //click email icon
+        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(3).perform(click());
+        //check that the Intent fired
+        intended(hasComponent(ContactSelectorActivity.class.getName()));
+        //stop recording Intents
+        Intents.release();
+
+        pressBack();
+
+        //make sure after we backed out that expected views are there
+        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
+
+        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(3).perform(click());
+
+        onView(withId(R.id.rlMaster)).check(matches(isDisplayed()));
+        onView(withId(R.id.rlSearch)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.etSearch)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.btnDoneSearch)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.lvContacts)).check(matches(isDisplayed()));
+        onView(withId(R.id.llSendView)).check(matches(isDisplayed()));
+        onView(withId(R.id.etShareMessage)).check(matches(isDisplayed()));
+        onView(withId(R.id.etShareMessage)).check(matches(withText(containsString("http://staging.mbsy.co/jHjl"))));
+        onView(withId(R.id.btnEdit)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnDone)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.btnSend)).check(matches(not(isEnabled())));
+        onView(withId(R.id.tvNoContacts)).check(matches(not(isDisplayed())));
+
+        //test search bar
+        //COMMENTED OUT - CAN'T GET TOOLBAR TO SHOW UP IN TESTS - RESEARCH THIS
+        /*onView(withId(R.id.action_search)).perform(click());
+        onView(withId(R.id.rlSearch)).check(matches(isDisplayed()));
+        onView(withId(R.id.etSearch)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnDoneSearch)).check(matches(isDisplayed()));
+        onView(withId(R.id.action_search)).perform(click());
+        onView(withId(R.id.rlSearch)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.etSearch)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.btnDoneSearch)).check(matches(not(isDisplayed())));
+
+        //test actually filtering contacts*/
+
+
+        //test to make sure emails (not SMS) are showing
+
+        //nothing should happen when no contacts selected
+        onView(withId(R.id.btnSend)).perform(click());
+        //here test to make sure mock didn't get fired
+        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
+        //onData(is(instanceOf(ContactObject.class))).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
+        //how do we check if checkmark is visible on a certain row
+        onView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnSend)).check(matches(isEnabled()));
+
+        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
+        onView(withId(R.id.ivCheckMark)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.btnSend)).check(matches(not(isEnabled())));
+
+
+        //make sure edit text is disabled
+        //click pencil
+        //check edit text enabled
+        //type some text, get rid of url
+        //make sure something on contacts screen isn't showing
+        //pressback
+
+
+        //test actually sending (mock?)
+    }
+
+    //@Test
+    public void testContactsSMS() {
+
+    }
+
+    //@Test
+    public void testLinkedIn() {
+
+    }
+
+    //@Test
     public void testTwitter() {
         //clear the token
         AmbassadorSingleton.getInstance().setTwitterAccessToken(null);
@@ -108,13 +200,6 @@ public class AmbassadorActivityTest {
         pressBack();
 
         onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvWelcomeTitle)).check(matches(withText(parameters.titleText)));
-        onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvWelcomeDesc)).check(matches(withText(parameters.descriptionText)));
-        onView(withId(R.id.etShortURL)).check(matches(isDisplayed()));
-        onView(withId(R.id.etShortURL)).check(matches(withText("http://staging.mbsy.co/jHjl")));
-        onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         //set a token so we can test share link - this is for test embassy twitter account (developers@getambassador.com - https://twitter.com/testmbsy)
@@ -146,7 +231,6 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.etTweetMessage)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.btnTweet)).perform(click());
 
-
         //onView(withText("INSERT LINK")).perform(click());
         //onView(withId(android.R.id.button2)).perform(click());
         //can't get the programmatically-created AlertDialog to be visible to Espresso with above two lines
@@ -161,27 +245,33 @@ public class AmbassadorActivityTest {
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         //make sure message has been restored
         onView(withId(R.id.etTweetMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
-        //AmbassadorActivity ambassadorActivity = mock(AmbassadorActivity.class);
-        doAnswer(new Answer<Void>() {
+
+        //THE BELOW CODE WORKS, BUT SINCE I COULDN'T GET MOCKING TO WORK ON TWEETREQUEST, IT WILL ACTUALLY SEND TWEETS
+        //THE VERIFY TEST PASSES, BUT IT'S COMMENTED OUT TO AVOID SPAMMING THE TWITTER
+        //WILL REVISIT ONCE WE CAN FIGURE OUT MOCKING TWEETREQUEST
+
+        /*doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 //fakeData = "FakeDataString";
                 return null;
             }
-        }).when(tweetRequestMock).execute();
+        }).when(tweetRequestMock).execute();*/
+        //}).when(tweetRequestSpy).execute();
+
+        //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
+        //doNothing().when(tweetRequestSpy).execute();
+        //doReturn(null).when(tweetRequestMock).execute();
+        //when(tweetRequestMock.execute()).thenReturn(null);
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate postsh
-        //when(tweetRequestMock.execute()).thenReturn(null);
-        //doReturn(null).when(tweetRequestMock).execute();
-
-        String tweetText = "http://www.tester.com " + _getRandomNumber();
+        /*String tweetText = "http://www.tester.com " + _getRandomNumber();
         tweetRequestMock.tweetString = tweetText;
         onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
         onView(withId(R.id.btnTweet)).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        verify(tweetRequestMock).execute();
-
+        verify(tweetRequestMock).execute();*/
 
         //testing toast (didn't work)
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
