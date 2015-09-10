@@ -4,4 +4,5 @@
     <string name="facebook_app_id">1650562518489293</string>
     <string name="get_name_header">One more thing!</string>
     <string name="get_name_explanation">We want to make sure your friends know who they are receiving this referral from. Please enter your first and last name.</string>
+    <string name="missing_url_dialog_message">Your Referral Link is not included in the message:</string>
 </resources>

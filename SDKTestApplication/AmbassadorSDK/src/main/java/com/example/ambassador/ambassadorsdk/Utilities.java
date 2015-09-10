@@ -3,7 +3,6 @@ package com.example.ambassador.ambassadorsdk;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.widget.EditText;
@@ -43,7 +42,7 @@ class Utilities {
     public static void presentUrlDialog(Context context, final EditText editText, final UrlAlertInterface alertInterface) {
         AlertDialog dialogBuilder = new AlertDialog.Builder(context)
                 .setTitle("Hold on!")
-                .setMessage("Your Referral Link is not included in the message: " + AmbassadorSingleton.getInstance().getURL())
+                .setMessage(context.getResources().getString(R.string.missing_url_dialog_message) + " " + AmbassadorSingleton.getInstance().getURL())
                 .setPositiveButton("Continue Sending", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
