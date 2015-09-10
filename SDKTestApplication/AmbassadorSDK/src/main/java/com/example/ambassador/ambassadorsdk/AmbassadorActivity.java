@@ -196,7 +196,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Functionality: Gets URL from Pusher
         // First checks to see if Pusher info has already been saved to SharedPreferencs
         if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
-            _setUrlText();
+            setUrlText();
         } else {
             _showLoader();
         }
@@ -232,7 +232,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         timerHandler.post(myRunnable);
     }
 
-    private void _setUrlText() {
+    void setUrlText() {
         // If loading screen is showing, then we should hide it and cancel the network timer
         if (pd != null) {
             pd.hide();

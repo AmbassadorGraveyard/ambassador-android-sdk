@@ -83,7 +83,7 @@ class TweetDialog extends Dialog {
         }
     }
 
-    class TweetRequest extends AsyncTask<Void, Void, Void> {
+    public class TweetRequest extends AsyncTask<Void, Void, Void> {
         public String tweetString;
         public int postStatus;
 
