@@ -57,7 +57,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (AmbassadorSingleton.getInstance().getPusherInfo() == null) {
-                _tryAndSetURL();
+                tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null);
             }
         }
     };
@@ -82,7 +82,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
 
         _setCustomizedText(rafParams);
-        _tryAndSetURL();
+        tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null);
 
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -119,25 +119,24 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
     // ONCLICK METHODS
-    String copyShortURLToClipboard(String copyText) {
+    void copyShortURLToClipboard(String copyText) {
         ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("simpleText", copyText);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
-        return "test";
     }
 
     int respondToGridViewClick(int position) {
         // Functionality: Handles items being clicked in the gridview
         switch (position) {
             case 0:
-                _shareWithFacebook();
+                shareWithFacebook();
                 break;
             case 1:
-                _shareWithTwitter();
+                shareWithTwitter(AmbassadorSingleton.getInstance().getTwitterAccessToken() != null);
                 break;
             case 2:
-                _shareWithLinkedIn();
+                shareWithLinkedIn(AmbassadorSingleton.getInstance().getLinkedInToken() != null);
                 break;
             case 3:
                 goToContactsPage(false);
@@ -152,14 +151,13 @@ public class AmbassadorActivity extends AppCompatActivity {
         return position;
     }
 
-    String goToContactsPage(Boolean showPhoneNumbers) {
+    void goToContactsPage(Boolean showPhoneNumbers) {
         Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
         contactIntent.putExtra("showPhoneNumbers", showPhoneNumbers);
         startActivity(contactIntent);
-        return (showPhoneNumbers) ? "phone" : "email";
     }
 
-    private void _shareWithFacebook() {
+    void shareWithFacebook() {
         FacebookSdk.sdkInitialize(getApplicationContext());
         ShareLinkContent content = new ShareLinkContent.Builder()
                 .setContentTitle(rafParams.defaultShareMessage)
@@ -170,9 +168,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         fbDialog.show(content);
     }
 
-    private void _shareWithTwitter() {
+    void shareWithTwitter(boolean loggedIn) {
         // Presents twitter login screen if user has not logged in yet
-        if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
+        if (loggedIn) {
             TweetDialog tweetDialog = new TweetDialog(this);
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
@@ -182,32 +180,32 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     }
 
-    private void _shareWithLinkedIn() {
+    void shareWithLinkedIn(boolean loggedIn) {
         // Presents login screen if user hasn't signed in yet
-        if (AmbassadorSingleton.getInstance().getLinkedInToken() == null) {
-            Intent intent = new Intent(this, LinkedInLoginActivity.class);
-            startActivity(intent);
-        } else {
+        if (loggedIn) {
             LinkedInPostDialog dialog = new LinkedInPostDialog(this);
             dialog.setOwnerActivity(this);
             dialog.show();
+        } else {
+            Intent intent = new Intent(this, LinkedInLoginActivity.class);
+            startActivity(intent);
         }
     }
     // END ONCLICK METHODS
 
 
     // UI SETTER METHODS
-    private void _tryAndSetURL() {
+    void tryAndSetURL(boolean pusherAvailable) {
         // Functionality: Gets URL from Pusher
         // First checks to see if Pusher info has already been saved to SharedPreferencs
-        if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
+        if (pusherAvailable) {
             setUrlText(AmbassadorSingleton.getInstance().getPusherInfo(), Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID()));
         } else {
-            _showLoader();
+            showLoader();
         }
     }
 
-    private void _showLoader() {
+    void showLoader() {
         // If the pusher object hasn't been saved to SharedPreferences, we show a loading screen until it has been
         // Should only happen on first launch
         pd = new ProgressDialog(this);
@@ -237,7 +235,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         timerHandler.post(myRunnable);
     }
 
-    void setUrlText(String pusherString, int savedCampaignID) {
+    String setUrlText(String pusherString, int savedCampaignID) {
         // If loading screen is showing, then we should hide it and cancel the network timer
         if (pd != null) {
             pd.hide();
@@ -254,6 +252,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 JSONObject urlObj = urlArray.getJSONObject(i);
                 int campID = urlObj.getInt("campaign_uid");
                 if (campID == savedCampaignID) {
+                    etShortUrl.setText(urlObj.getString("url"));
                     saveValuesFromPusher(urlObj.getString("url"),
                             urlObj.getString("short_code"),
                             urlObj.getString("subject"));
@@ -262,10 +261,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        return etShortUrl.getText().toString();
     }
 
     void saveValuesFromPusher(String url, String shortCode, String subject) {
-        etShortUrl.setText(url);
         AmbassadorSingleton.getInstance().saveURL(url);
         AmbassadorSingleton.getInstance().saveShortCode(shortCode);
         AmbassadorSingleton.getInstance().saveEmailSubject(subject);
