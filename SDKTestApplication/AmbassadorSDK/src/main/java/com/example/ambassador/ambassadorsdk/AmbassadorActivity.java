@@ -57,11 +57,10 @@ public class AmbassadorActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (AmbassadorSingleton.getInstance().getPusherInfo() == null) {
-                tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null);
+                tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null, AmbassadorSingleton.getInstance().getPusherInfo());
             }
         }
     };
-
 
     // ACTIVITY OVERRIDE METHODS
     @Override
@@ -81,12 +80,14 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
         etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
 
-        _setCustomizedText(rafParams);
-        tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null);
+        tvWelcomeTitle.setText(rafParams.titleText);
+        tvWelcomeDesc.setText(rafParams.descriptionText);
+        _setUpToolbar(rafParams.toolbarTitle);
 
+        tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null, AmbassadorSingleton.getInstance().getPusherInfo());
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                copyShortURLToClipboard(etShortUrl.getText().toString());
+                copyShortURLToClipboard(etShortUrl.getText().toString(), getApplicationContext());
             }
         });
 
@@ -119,11 +120,13 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
     // ONCLICK METHODS
-    void copyShortURLToClipboard(String copyText) {
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+    String copyShortURLToClipboard(String copyText, Context context) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("simpleText", copyText);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(getApplicationContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+
+        return clip.toString();
     }
 
     int respondToGridViewClick(int position) {
@@ -133,10 +136,10 @@ public class AmbassadorActivity extends AppCompatActivity {
                 shareWithFacebook();
                 break;
             case 1:
-                shareWithTwitter(AmbassadorSingleton.getInstance().getTwitterAccessToken() != null);
+                shareWithTwitter();
                 break;
             case 2:
-                shareWithLinkedIn(AmbassadorSingleton.getInstance().getLinkedInToken() != null);
+                shareWithLinkedIn();
                 break;
             case 3:
                 goToContactsPage(false);
@@ -145,7 +148,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 goToContactsPage(true);
                 break;
             default:
-                break;
+                return -1;
         }
 
         return position;
@@ -168,9 +171,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         fbDialog.show(content);
     }
 
-    void shareWithTwitter(boolean loggedIn) {
+    void shareWithTwitter() {
         // Presents twitter login screen if user has not logged in yet
-        if (loggedIn) {
+        if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
             TweetDialog tweetDialog = new TweetDialog(this);
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
@@ -180,9 +183,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     }
 
-    void shareWithLinkedIn(boolean loggedIn) {
+    void shareWithLinkedIn() {
         // Presents login screen if user hasn't signed in yet
-        if (loggedIn) {
+        if (AmbassadorSingleton.getInstance().getLinkedInToken() != null) {
             LinkedInPostDialog dialog = new LinkedInPostDialog(this);
             dialog.setOwnerActivity(this);
             dialog.show();
@@ -195,88 +198,64 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
     // UI SETTER METHODS
-    void tryAndSetURL(boolean pusherAvailable) {
+    void tryAndSetURL(boolean pusherAvailable, String pusherString) {
         // Functionality: Gets URL from Pusher
         // First checks to see if Pusher info has already been saved to SharedPreferencs
         if (pusherAvailable) {
-            setUrlText(AmbassadorSingleton.getInstance().getPusherInfo(), Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID()));
+            if (pd != null) {
+                pd.hide();
+                networkTimer.cancel();
+            }
+
+            try {
+                // We get a JSON object from the Pusher Info string saved to SharedPreferences
+                JSONObject pusherData = new JSONObject(pusherString);
+                JSONArray urlArray = pusherData.getJSONArray("urls");
+
+                // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
+                for (int i = 0; i < urlArray.length(); i++) {
+                    JSONObject urlObj = urlArray.getJSONObject(i);
+                    int campID = urlObj.getInt("campaign_uid");
+                    if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
+                        etShortUrl.setText(urlObj.getString("url"));
+                        AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
+                        AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
+                        AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
+                        AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage =
+                                rafParams.defaultShareMessage + " " + urlObj.getString("url");
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else {
-            showLoader();
+            pd = new ProgressDialog(this);
+            pd.setMessage("Loading");
+            pd.setOwnerActivity(this);
+            pd.setCanceledOnTouchOutside(false);
+            pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    finish();
+                }
+            });
+
+            pd.show();
+
+            networkTimer = new Timer();
+            networkTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    _showNetworkError();
+                }
+            }, 30000);
         }
-    }
-
-    void showLoader() {
-        // If the pusher object hasn't been saved to SharedPreferences, we show a loading screen until it has been
-        // Should only happen on first launch
-        pd = new ProgressDialog(this);
-        pd.setMessage("Loading");
-        pd.setOwnerActivity(this);
-        pd.setCanceledOnTouchOutside(false);
-        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                finish();
-            }
-        });
-        pd.show();
-
-        networkTimer = new Timer();
-        networkTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                _showNetworkError();
-            }
-        }, 30000);
     }
 
     private void _showNetworkError() {
         // Funtionality: After 30 seconds of waiting for data from Pusher/Augur, shows toast to user
         // stating that there is a network error and then dismisses the RAF activity
         timerHandler.post(myRunnable);
-    }
-
-    String setUrlText(String pusherString, int savedCampaignID) {
-        // If loading screen is showing, then we should hide it and cancel the network timer
-        if (pd != null) {
-            pd.hide();
-            networkTimer.cancel();
-        }
-
-        try {
-            // We get a JSON object from the Pusher Info string saved to SharedPreferences
-            JSONObject pusherData = new JSONObject(pusherString);
-            JSONArray urlArray = pusherData.getJSONArray("urls");
-
-            // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
-            for (int i = 0; i < urlArray.length(); i++) {
-                JSONObject urlObj = urlArray.getJSONObject(i);
-                int campID = urlObj.getInt("campaign_uid");
-                if (campID == savedCampaignID) {
-                    etShortUrl.setText(urlObj.getString("url"));
-                    saveValuesFromPusher(urlObj.getString("url"),
-                            urlObj.getString("short_code"),
-                            urlObj.getString("subject"));
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return etShortUrl.getText().toString();
-    }
-
-    void saveValuesFromPusher(String url, String shortCode, String subject) {
-        AmbassadorSingleton.getInstance().saveURL(url);
-        AmbassadorSingleton.getInstance().saveShortCode(shortCode);
-        AmbassadorSingleton.getInstance().saveEmailSubject(subject);
-        AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage =
-                rafParams.defaultShareMessage + " " + url;
-    }
-
-    private void _setCustomizedText(ServiceSelectorPreferences params) {
-        tvWelcomeTitle.setText(params.titleText);
-        tvWelcomeDesc.setText(params.descriptionText);
-        _setUpToolbar(params.toolbarTitle);
     }
 
     private void _setUpToolbar(String toolbarTitle) {
