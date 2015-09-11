@@ -134,7 +134,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.tvNoContacts)).check(matches(not(isDisplayed())));
 
         //test search bar
-        //COMMENTED OUT - CAN'T GET TOOLBAR TO SHOW UP IN TESTS - RESEARCH THIS
+        //COMMENTED OUT - CAN'T GET TOOLBAR TO SHOW UP IN TESTS - RESEARCH THIS - maybe find some other way to open the textbox
         /*onView(withId(R.id.action_search)).perform(click());
         onView(withId(R.id.rlSearch)).check(matches(isDisplayed()));
         onView(withId(R.id.etSearch)).check(matches(isDisplayed()));
@@ -146,6 +146,7 @@ public class AmbassadorActivityTest {
 
         //test actually filtering contacts*/
 
+        //test by using a mock list of contacts instead of phone contacts - these tests are dependent on there actually being contacts stored on the device
 
         //test to make sure emails (not SMS) are showing
 
@@ -154,24 +155,26 @@ public class AmbassadorActivityTest {
         //here test to make sure mock didn't get fired
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
         //onData(is(instanceOf(ContactObject.class))).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
-        //how do we check if checkmark is visible on a certain row
-        onView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
+        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
         onView(withId(R.id.btnSend)).check(matches(isEnabled()));
 
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
-        onView(withId(R.id.ivCheckMark)).check(matches(not(isDisplayed())));
+        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(not(isDisplayed())));
         onView(withId(R.id.btnSend)).check(matches(not(isEnabled())));
 
 
-        //make sure edit text is disabled
-        //click pencil
-        //check edit text enabled
+        onView(withId(R.id.etShareMessage)).check(matches(not(isEnabled())));
+        onView(withId(R.id.btnEdit)).perform(click());
+        onView(withId(R.id.etShareMessage)).check(matches(isEnabled()));
         //type some text, get rid of url
         //make sure something on contacts screen isn't showing
+        //press done button
         //pressback
 
 
         //test actually sending (mock?)
+
+        //after figuring out how to use mock list of contacts, test deleting one to make sure NO CONTACTS textview is shown
     }
 
     //@Test
