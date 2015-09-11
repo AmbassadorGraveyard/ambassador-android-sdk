@@ -14,4 +14,8 @@ public class ServiceSelectorPreferences implements Serializable {
         descriptionText = "Refer a friend to get a reward";
         defaultShareMessage = "Check out this awesome company!";
     }
+//
+//    public String[] getPreferences() {
+//        return new String[] {toolbarTitle, titleText, descriptionText, defaultShareMessage};
+//    }
 }

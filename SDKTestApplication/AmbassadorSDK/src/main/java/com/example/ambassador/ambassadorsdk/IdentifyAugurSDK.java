@@ -37,10 +37,15 @@ class IdentifyAugurSDK {
                     completion.augurComplete();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    json = e.toString();
                 }
 
                 return true;
             }
         });
+    }
+
+    String getDeviceID() {
+        return deviceID;
     }
 }
