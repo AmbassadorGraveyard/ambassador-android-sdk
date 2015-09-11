@@ -21,6 +21,7 @@ import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -57,8 +58,8 @@ public class AmbassadorActivityTest {
         parameters.descriptionText = "RAF Params Welcome Description";
         parameters.toolbarTitle = "RAF Params Toolbar Title";
 
-        //set Campaign ID
         AmbassadorSingleton.getInstance().setCampaignID("260");
+        AmbassadorSingleton.getInstance().saveAPIKey("UniversalToken ***REMOVED***");
 
         //save pusher data so we don't sit and wait for any unnecessary async tests to come back
         String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"erer\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"},]}";
@@ -113,10 +114,10 @@ public class AmbassadorActivityTest {
         Intents.release();
 
         pressBack();
-
         //make sure after we backed out that expected views are there
         onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
+        onView(withId(R.id.lvContacts)).check(ViewAssertions.doesNotExist());
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(3).perform(click());
 
@@ -162,16 +163,28 @@ public class AmbassadorActivityTest {
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(not(isDisplayed())));
         onView(withId(R.id.btnSend)).check(matches(not(isEnabled())));
 
-
+        //select first contact
+        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
         onView(withId(R.id.etShareMessage)).check(matches(not(isEnabled())));
         onView(withId(R.id.btnEdit)).perform(click());
         onView(withId(R.id.etShareMessage)).check(matches(isEnabled()));
-        //type some text, get rid of url
-        //make sure something on contacts screen isn't showing
-        //press done button
-        //pressback
-
-
+        //nothing should happen when no contacts selected
+        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.btnDone)).perform(click());
+        //share message should not be editable after done button clicked
+        onView(withId(R.id.etShareMessage)).check(matches(not(isEnabled())));
+        onView(withId(R.id.btnEdit)).perform(click());
+        onView(withId(R.id.etShareMessage)).perform(clearText(), closeSoftKeyboard());
+        onView(withId(R.id.etShareMessage)).perform(typeText("test"), closeSoftKeyboard());
+        onView(withId(R.id.btnDone)).perform(click());
+        onView(withId(R.id.btnSend)).perform(click());
+        //dialog "url not entered" should be showing at this point - since I can't check that programmatically-created dialog, just check that underlying views are not present
+        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        pressBack();
+        onView(withId(R.id.btnEdit)).perform(click());
+        onView(withId(R.id.etShareMessage)).perform(typeText("http://staging.mbsy.co/jHjl"), closeSoftKeyboard());
+        onView(withId(R.id.btnDone)).perform(click());
+        onView(withId(R.id.btnSend)).perform(click());
         //test actually sending (mock?)
 
         //after figuring out how to use mock list of contacts, test deleting one to make sure NO CONTACTS textview is shown
