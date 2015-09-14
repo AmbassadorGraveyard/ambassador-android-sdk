@@ -82,7 +82,7 @@ public class AmbassadorActivityTest {
 
     @After
     public void afterEachTest() {
-
+        AmbassadorSingleton.getInstance().savePusherInfo(null);
     }
 
     @Test
