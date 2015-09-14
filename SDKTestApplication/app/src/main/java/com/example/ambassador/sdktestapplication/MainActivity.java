@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
         final Context cxt = this;
 
-        AmbassadorSDK.runWithKey("UniversalToken bdb49d2b9ae24b7b6bc5da122370f3517f98336f");
+        AmbassadorSDK.runWithKeys("SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
         AmbassadorSDK.identify("anonymous_test_1610@example.com");
 
         btnRAF = (Button)findViewById(R.id.btnShowRAF);
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
                 AmbassadorSDK.presentRAF(cxt, parameters, "260");
 
                 ConversionParameters conversionParameters = new ConversionParameters();
-                conversionParameters.mbsy_first_name = "Jake";
+                conversionParameters.mbsy_first_name = null;
                 conversionParameters.mbsy_last_name = "Dunahee";
                 conversionParameters.mbsy_email = "jake@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParamtersException
                 conversionParameters.mbsy_campaign = 305;
