@@ -90,7 +90,8 @@ class Identify implements IIdentify {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String url = "http://dev-ambassador-api.herokuapp.com/universal/action/identify/?u=abfd1c89-4379-44e2-8361-ee7b87332e32/";
+            String url = AmbassadorSingleton.identifyURL() +
+                    AmbassadorSingleton.getInstance().getUniversalID();
 
             JSONObject identifyObject = new JSONObject();
 
@@ -110,7 +111,7 @@ class Identify implements IIdentify {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
+                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
                 wr.writeBytes(identifyObject.toString());

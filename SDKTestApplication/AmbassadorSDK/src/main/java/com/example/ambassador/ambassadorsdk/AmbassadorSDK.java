@@ -35,15 +35,17 @@ public class AmbassadorSDK {
         AmbassadorSingleton.getInstance().registerConversion(parameters);
     }
 
-    public static void runWithKey(String apiKey) {
+    public static void runWithKeys(String universalToken, String universalID) {
         // Functionality: Basically initializes the AmbassadorSDK
-        AmbassadorSingleton.getInstance().saveAPIKey(apiKey);
+        AmbassadorSingleton.getInstance().saveUniversalToken(universalToken);
+        AmbassadorSingleton.getInstance().saveUniversalID(universalID);
         AmbassadorSingleton.getInstance().startConversionTimer();
     }
 
-    public static void runWithKeyAndConvertOnInstall(String apiKey, ConversionParameters parameters) {
+    public static void runWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
         // Functionality: Initializes SDK and converts for the first time running
-        AmbassadorSingleton.getInstance().saveAPIKey(apiKey);
+        AmbassadorSingleton.getInstance().saveUniversalToken(universalToken);
+        AmbassadorSingleton.getInstance().saveUniversalID(universalID);
         AmbassadorSingleton.getInstance().startConversionTimer();
 
         // Checks boolean from sharedpreferences to see if this the first launch and registers conversion if it is
