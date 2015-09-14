@@ -42,7 +42,7 @@ public class AmbassadorSDK {
         AmbassadorSingleton.getInstance().startConversionTimer();
     }
 
-    public static void runWithKeyAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
+    public static void runWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
         // Functionality: Initializes SDK and converts for the first time running
         AmbassadorSingleton.getInstance().saveUniversalToken(universalToken);
         AmbassadorSingleton.getInstance().saveUniversalID(universalID);
