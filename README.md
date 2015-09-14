@@ -76,7 +76,7 @@ desktop or another place that you can easily access.
 
  You will want to run Ambassador in your application as soon as possible.  The ideal place to run would be in the **onCreate()** method of your **MainActivity**.  You will have the option to register a **conversion** the first time the app is launched.  You can read more on **conversions** and setting their parameters in [Conversions](#conversions).  
 
- * _Note_: Your **API key** will be provided to you by Ambassador.
+ * _Note_: Your **Universal Token** and **Universal ID** will be provided to you by Ambassador.
 
   ```java
   @Override
@@ -86,7 +86,7 @@ desktop or another place that you can easily access.
 
           // Use this 'run' method if you DON'T want to
           // register a conversion on the first launch of your app.
-          AmbassadorSDK.runWithKey("your_API_key");
+          AmbassadorSDK.runWithKeys("your_universal_key", "your_universal_ID");
 
           // -- OR --
 
@@ -94,7 +94,7 @@ desktop or another place that you can easily access.
           // then create a ConversionParameters object to pass to the method below
           ConversionParameters parameters = new ConversionParameters();
           // ** Would set the parameter properties here (find out more in 'Conversions' section)
-          AmbassadorSDK.runWithKeyAndConvertOnInstall("your_API_key", parameters);
+          AmbassadorSDK.runWithKeysAndConvertOnInstall("your_universal_key", "your_universal_ID", parameters);
       }
    ```
 
