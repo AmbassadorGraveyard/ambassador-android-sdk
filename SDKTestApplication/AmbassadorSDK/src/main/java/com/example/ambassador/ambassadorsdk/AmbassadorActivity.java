@@ -33,7 +33,6 @@ import java.util.TimerTask;
  * Created by JakeDunahee on 7/22/15.
  */
 public class AmbassadorActivity extends AppCompatActivity {
-    private TextView tvWelcomeTitle, tvWelcomeDesc;
     private CustomEditText etShortUrl;
     private ServiceSelectorPreferences rafParams;
     private ProgressDialog pd;
@@ -43,6 +42,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
     private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
             R.drawable.email_icon, R.drawable.sms_icon};
+    private TweetDialog tweetDialog;
 
     final private Runnable myRunnable = new Runnable() {
         @Override
@@ -76,8 +76,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         // UI Components
         GridView gvSocialGrid = (GridView) findViewById(R.id.gvSocialGrid);
         ImageButton btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
-        tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
-        tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
+        TextView tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
+        TextView tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
         etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
 
         tvWelcomeTitle.setText(rafParams.titleText);
@@ -102,6 +102,10 @@ public class AmbassadorActivity extends AppCompatActivity {
                 respondToGridViewClick(position);
             }
         });
+
+        TweetDialogComponent component = DaggerTweetDialogComponent.builder().tweetDialogModule(new TweetDialogModule(this)).build();
+        tweetDialog = component.provideTweetDialog();
+        tweetDialog.setOwnerActivity(this);
     }
 
     @Override
@@ -174,8 +178,8 @@ public class AmbassadorActivity extends AppCompatActivity {
     void shareWithTwitter() {
         // Presents twitter login screen if user has not logged in yet
         if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
-            TweetDialog tweetDialog = new TweetDialog(this);
-            tweetDialog.setOwnerActivity(this);
+            //TweetDialog tweetDialog = new TweetDialog(this);
+            //tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
         } else {
             Intent i = new Intent(this, TwitterLoginActivity.class);
