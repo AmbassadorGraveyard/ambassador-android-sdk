@@ -357,7 +357,9 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     private void _updateSendButton(int numOfContacts) {
         if (numOfContacts > 0) {
-            if (!btnSend.isEnabled()) btnSend.setEnabled(true);
+            if (!etShareMessage.isEnabled()) {
+                if (!btnSend.isEnabled()) btnSend.setEnabled(true);
+            }
             String btnSendText = "SEND TO " + numOfContacts;
             btnSendText += (numOfContacts > 1) ? " CONTACTS" : " CONTACT";
             btnSend.setText(btnSendText);

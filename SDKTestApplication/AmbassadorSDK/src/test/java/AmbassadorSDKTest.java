@@ -1,4 +1,5 @@
 import android.content.Context;
+import android.content.Intent;
 
 import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.example.ambassador.ambassadorsdk.ServiceSelectorPreferences;
@@ -10,6 +11,7 @@ import org.mockito.BDDMockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.mockito.stubbing.OngoingStubbing;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -34,16 +36,10 @@ public class AmbassadorSDKTest {
     }
 
     @Test
-    public void presentRAFTest() {
+    public void presentRAFTest() throws Exception {
         Context context = mock(Context.class);
-        ServiceSelectorPreferences preferences = mock(ServiceSelectorPreferences.class);
-        String campaignId = "301";
-
-        PowerMockito.doNothing().when(AmbassadorSDK.class);
-
-        AmbassadorSDK.presentRAF(context, preferences, campaignId);
-
-        verify(mockSDK).presentRAF(context, preferences, campaignId);
+        Intent mockIntent = mock(Intent.class);
+        PowerMockito.whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
     }
 
     @Test

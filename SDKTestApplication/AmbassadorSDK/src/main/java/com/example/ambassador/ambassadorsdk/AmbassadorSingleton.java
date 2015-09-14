@@ -80,6 +80,10 @@ class AmbassadorSingleton {
     void saveEmailSubject(String subjectLine) {
         sharePrefs.edit().putString("subjectLine", subjectLine).apply();
     }
+
+    void setRafDefaultMessage(String message) {
+        getInstance().rafParameters.defaultShareMessage = message;
+    }
     // END SHAREDINSTANCE SETTERS
 
 

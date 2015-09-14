@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -57,7 +58,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (AmbassadorSingleton.getInstance().getPusherInfo() == null) {
-                tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null, AmbassadorSingleton.getInstance().getPusherInfo());
+                tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null,
+                        AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage, etShortUrl);
             }
         }
     };
@@ -84,7 +86,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeDesc.setText(rafParams.descriptionText);
         _setUpToolbar(rafParams.toolbarTitle);
 
-        tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null, AmbassadorSingleton.getInstance().getPusherInfo());
+        tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null,
+                AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage, etShortUrl);
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 copyShortURLToClipboard(etShortUrl.getText().toString(), getApplicationContext());
@@ -198,7 +201,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
     // UI SETTER METHODS
-    void tryAndSetURL(boolean pusherAvailable, String pusherString) {
+    void tryAndSetURL(boolean pusherAvailable, String pusherString, String initialShareMessage, EditText shortURLET) {
         // Functionality: Gets URL from Pusher
         // First checks to see if Pusher info has already been saved to SharedPreferencs
         if (pusherAvailable) {
@@ -216,13 +219,13 @@ public class AmbassadorActivity extends AppCompatActivity {
                 for (int i = 0; i < urlArray.length(); i++) {
                     JSONObject urlObj = urlArray.getJSONObject(i);
                     int campID = urlObj.getInt("campaign_uid");
-                    if (campID == Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID())) {
-                        etShortUrl.setText(urlObj.getString("url"));
+                    int myUID = Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID());
+                    if (campID == myUID) {
+                        shortURLET.setText(urlObj.getString("url"));
                         AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
                         AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
                         AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
-                        AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage =
-                                rafParams.defaultShareMessage + " " + urlObj.getString("url");
+                        AmbassadorSingleton.getInstance().setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
                     }
                 }
             } catch (JSONException e) {

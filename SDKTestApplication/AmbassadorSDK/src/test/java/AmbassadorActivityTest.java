@@ -1,10 +1,13 @@
 package com.example.ambassador.ambassadorsdk;
 
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.test.mock.MockContext;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import junit.framework.TestCase;
@@ -34,6 +37,8 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.AdditionalMatchers.lt;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
@@ -51,7 +56,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * Created by JakeDunahee on 9/9/15.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ClipData.class, Toast.class, AmbassadorActivity.class, Integer.class})
+@PrepareForTest({ClipData.class, Toast.class, AmbassadorActivity.class, Integer.class, AmbassadorSingleton.class})
 public class AmbassadorActivityTest extends TestCase {
     @Mock
     private AmbassadorActivity ambassadorActivity;
@@ -152,28 +157,78 @@ public class AmbassadorActivityTest extends TestCase {
 //    }
 
     @Test
-    public void tryAndSetURLTest() throws Exception {
+    public void tryAndSetURLTrueTest() throws Exception {
+        // ARRANGE
         PowerMockito.mockStatic(Integer.class);
+        PowerMockito.mockStatic(AmbassadorSingleton.class);
+        JSONArray mockArray = mock(JSONArray.class);
+        JSONObject mockObject = mock(JSONObject.class);
+        AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
+        EditText mockShortURLET = mock(EditText.class);
         String pusher = "{\"email\":\"jake@getambassador.com\"," +
                 "\"firstName\":\"erer\",\"lastName\":\"ere\"," +
                 "\"phoneNumber\":\"null\"," +
                 "\"urls\":[" +
-                "{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}," +
+                "{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}" +
                 "]}";
 
-        JSONArray mockArray = mock(JSONArray.class);
-
-
-        JSONObject mockObject = mock(JSONObject.class);
-
+        // ACT
         whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
-        whenNew(JSONArray.class).withAnyArguments().thenReturn(mockArray);
-        doReturn(3).when(mockArray).length();
-        doReturn(206).when(mockObject).getInt("campaign_uid");
-        when(Integer.parseInt(anyString())).thenReturn(206);
-//        doReturn(206).when(Integer.parseInt(anyString()));
+        when(mockSingleton.getInstance()).thenReturn(mockSingleton);
+        when(mockSingleton.getCampaignID()).thenReturn("0");
+        doNothing().when(mockSingleton).setRafDefaultMessage(anyString());
+        doNothing().when(mockShortURLET).setText(anyString());
+        doNothing().when(mockSingleton).saveURL(anyString());
+        doNothing().when(mockSingleton).saveShortCode(anyString());
+        doNothing().when(mockSingleton).saveEmailSubject(anyString());
+        when(mockObject.getString(anyString())).thenReturn("String");
+        when(mockObject.getJSONArray("urls")).thenReturn(mockArray);
+        when(mockArray.getJSONObject(anyInt())).thenReturn(mockObject);
+        doReturn(new Integer(3)).when(mockArray).length();
+        doReturn(0).when(mockObject).getInt("campaign_uid");
+        PowerMockito.when(Integer.parseInt(anyString())).thenReturn(new Integer(0));
 
-        ambassadorActivity.tryAndSetURL(true, pusher);
+        // ASSERT
+        ambassadorActivity.tryAndSetURL(true, pusher, "Test message", mockShortURLET);
+        verify(ambassadorActivity).tryAndSetURL(true, pusher, "Test message", mockShortURLET);
+    }
+
+    @Test
+    public void tryAndSetURLFalseTest() throws Exception {
+        ProgressDialog mockDialog = mock(ProgressDialog.class);
+        EditText mockShortURLET = mock(EditText.class);
+        DialogInterface.OnCancelListener mockListener = mock(DialogInterface.OnCancelListener.class);
+        String pusher = "{\"email\":\"jake@getambassador.com\"," +
+                "\"firstName\":\"erer\",\"lastName\":\"ere\"," +
+                "\"phoneNumber\":\"null\"," +
+                "\"urls\":[" +
+                "{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}" +
+                "]}";
+
+        whenNew(ProgressDialog.class).withAnyArguments().thenReturn(mockDialog);
+        doNothing().when(mockDialog).setMessage(anyString());
+        doNothing().when(mockDialog).setOwnerActivity(ambassadorActivity);
+        doNothing().when(mockDialog).setCanceledOnTouchOutside(anyBoolean());
+        doNothing().when(mockDialog).setOnCancelListener(mockListener);
+        doNothing().when(mockDialog).show();
+
+        ambassadorActivity.tryAndSetURL(false, pusher, "Test", mockShortURLET);
+    }
+
+    @Test (expected = JSONException.class)
+    public void tryAndSetURLWithException() throws Exception {
+        EditText mockShortURLET = mock(EditText.class);
+        JSONObject mockObject = mock(JSONObject.class);
+        String pusher = "{\"email\"\"jake@getambassador.com\"," +
+                "\"firstName:\"erer\",\"lastName\":\"ere\"," +
+                "\"phoneNumber\":\"null\"," +
+                "\"urls\":[" +
+                "{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}" +
+                "]}";
+
+        whenNew(JSONObject.class).withArguments(pusher).thenThrow(new JSONException(pusher));
+
+        ambassadorActivity.tryAndSetURL(true, pusher, "Test", mockShortURLET);
     }
 
 //    @Test (expected = MockitoException.class)
