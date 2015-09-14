@@ -35,7 +35,7 @@
         android:layout_below="@+id/tvWelcomeDesc"
         android:layout_marginLeft="10dp"
         android:background="@color/ultraUltraUltraLightGray"
-        android:text="www.somewebsite.com/2da23"
+        android:text="Share Link"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:textSize="12sp"

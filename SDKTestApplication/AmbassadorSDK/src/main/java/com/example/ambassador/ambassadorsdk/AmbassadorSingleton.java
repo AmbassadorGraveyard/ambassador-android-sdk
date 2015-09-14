@@ -18,7 +18,6 @@ class AmbassadorSingleton {
     static final String PUSHER_APP_ID = "***REMOVED***";
     static final String PUSHER_KEY = "***REMOVED***";
     static final String PUSHER_SECRET = "***REMOVED***";
-    static final String MBSY_UNIVERSAL_ID = "***REMOVED***";
     static final Boolean isReleaseBuild = false;
 
     private static AmbassadorSingleton mInstance = null;
@@ -35,6 +34,49 @@ class AmbassadorSingleton {
 
         return mInstance;
     }
+
+    // STATIC VARIABLES
+    static String identifyURL() {
+        if (AmbassadorSingleton.isReleaseBuild) {
+            return "http://api.ambassador.com/universal/action/identify/?u=";
+        } else {
+            return "http://dev-ambassador-api.herokuapp.com/universal/action/identify/?u=";
+        }
+    }
+
+    static String conversionURL() {
+        if (AmbassadorSingleton.isReleaseBuild) {
+            return "https://api.ambassador.com/universal/action/conversion/?u=";
+        } else {
+            return "https://dev-ambassador-api.herokuapp.com/universal/action/conversion/?u=";
+        }
+    }
+
+    static String bulkSMSShareURL() {
+        if (AmbassadorSingleton.isReleaseBuild) {
+            return "https://api.ambassador.com/share/sms/";
+        } else {
+            return "https://dev-ambassador-api.herokuapp.com/share/sms/";
+        }
+    }
+
+    static String bulkEmailShareURL() {
+        if (AmbassadorSingleton.isReleaseBuild) {
+            return "https://api.ambassador.com/share/email/";
+        } else {
+            return "https://dev-ambassador-api.herokuapp.com/share/email/";
+        }
+    }
+
+    static String shareTrackURL() {
+        if (AmbassadorSingleton.isReleaseBuild) {
+            return "https://api.ambassador.com/track/share/";
+        } else {
+            return "https://dev-ambassador-api.herokuapp.com/track/share/";
+        }
+    }
+    // END STATIC VARIABLES
+
 
     // SHAREDINSTANCE SETTERS
     void setLinkedInToken(String token) {
@@ -65,8 +107,12 @@ class AmbassadorSingleton {
         sharePrefs.edit().putString("url", url).apply();
     }
 
-    void saveAPIKey(String apiKey) {
-        sharePrefs.edit().putString("apiKey", apiKey).apply();
+    void saveUniversalToken(String univKey) {
+        sharePrefs.edit().putString("universalToken", univKey).apply();
+    }
+
+    void saveUniversalID(String univID) {
+        sharePrefs.edit().putString("universalID", univID).apply();
     }
 
     void saveShortCode(String shortCode) {
@@ -102,7 +148,11 @@ class AmbassadorSingleton {
         return sharePrefs.getString("url", null);
     }
 
-    String getAPIKey() { return sharePrefs.getString("apiKey", null); }
+    String getUniversalKey() { return sharePrefs.getString("universalToken", null); }
+
+    String getUniversalID() {
+        return sharePrefs.getString("universalID", null);
+    }
 
     String getShortCode() { return sharePrefs.getString("shortCode", null); }
 

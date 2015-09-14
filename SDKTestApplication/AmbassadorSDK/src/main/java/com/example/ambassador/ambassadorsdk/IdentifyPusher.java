@@ -31,7 +31,7 @@ class IdentifyPusher {
         HttpAuthorizer authorizer = new HttpAuthorizer("https://dev-ambassador-api.herokuapp.com/auth/subscribe/");
 
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
+        headers.put("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
         authorizer.setHeaders(headers);
 
         HashMap<String, String> queryParams = new HashMap<>();

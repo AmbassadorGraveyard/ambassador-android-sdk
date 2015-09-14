@@ -49,8 +49,8 @@ class BulkShareHelper {
             connection.setDoOutput(true);
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
-            connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
+//            connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
+            connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
         } catch (ProtocolException e) {
             e.printStackTrace();
         }
@@ -173,7 +173,8 @@ class BulkShareHelper {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String url = "https://dev-ambassador-api.herokuapp.com/share/sms/";
+//            String url = "https://dev-ambassador-api.herokuapp.com/share/sms/";
+            String url = AmbassadorSingleton.bulkSMSShareURL();
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -211,7 +212,8 @@ class BulkShareHelper {
         private int statusCode;
         @Override
         protected Void doInBackground(Void... params) {
-            String url = "https://dev-ambassador-api.herokuapp.com/share/email/";
+//            String url = "https://dev-ambassador-api.herokuapp.com/share/email/";
+            String url = AmbassadorSingleton.bulkEmailShareURL();
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -251,7 +253,8 @@ class BulkShareHelper {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String url = "https://dev-ambassador-api.herokuapp.com/track/share/";
+//            String url = "https://dev-ambassador-api.herokuapp.com/track/share/";
+            String url = AmbassadorSingleton.shareTrackURL();
 
             try {
                 HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
