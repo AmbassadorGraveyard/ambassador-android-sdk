@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
@@ -19,52 +21,113 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
  * Created by JakeDunahee on 9/11/15.
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest (AmbassadorSDK.class)
+@PrepareForTest ({AmbassadorSDK.class, AmbassadorSingleton.class, MyApplication.class})
 public class AmbassadorSDKTest {
-    private final AmbassadorSDK mockSDK = mock(AmbassadorSDK.class);
-    String valueString;
+    Context mockContext = mock(Context.class);
+    AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
 
     @Before
     public void setUp() {
-        PowerMockito.mockStatic(AmbassadorSDK.class);
+        PowerMockito.mockStatic(AmbassadorSingleton.class);
+        when(AmbassadorSingleton.getInstance()).thenReturn(mockSingleton);
     }
 
     @Test
     public void presentRAFTest() throws Exception {
         // ARRANGE
-        PowerMockito.mockStatic(AmbassadorSingleton.class);
-        Context mockContext = mock(Context.class);
         Intent mockIntent = mock(Intent.class);
-        AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
         ServiceSelectorPreferences mockPreferences = mock(ServiceSelectorPreferences.class);
-        PowerMockito.whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
 
         // ACT
-        PowerMockito.whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
-        when(mockIntent.putExtra(anyString(), AmbassadorActivity.class)).thenReturn(mockIntent);
-        when(AmbassadorSingleton.getInstance()).thenReturn(mockSingleton);
+        whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
+        when(mockIntent.putExtra("rafParameters", mockPreferences)).thenReturn(mockIntent);
         PowerMockito.doNothing().when(mockSingleton).setCampaignID(anyString());
         PowerMockito.doNothing().when(mockContext).startActivity(mockIntent);
         AmbassadorSDK.presentRAF(mockContext, mockPreferences, "306");
 
         // ASSERT
+        assertEquals(mockIntent, mockIntent.putExtra("rafParameters", mockPreferences));
         verify(mockContext).startActivity(mockIntent);
     }
 
     @Test
-    public void identifyTest() {
-        String identifier = "jake@getambassador.com";
+    public void identifyTest() throws Exception {
+        // ARRANGE
+        PowerMockito.mockStatic(MyApplication.class);
+        Identify mockIdentify = mock(Identify.class);
+        String identifyString = "jake@testambassador.com";
+
+        // ACT
+        when(MyApplication.getAppContext()).thenReturn(mockContext);
+        whenNew(Identify.class).withAnyArguments().thenReturn(mockIdentify);
+        doNothing().when(mockSingleton).startIdentify(mockIdentify);
+        AmbassadorSDK.identify(identifyString);
+
+        // ASSERT
+        verify(mockSingleton).startIdentify(mockIdentify);
+    }
+
+    @Test
+    public void registerConversionTest() {
+        // ARRANGE
+        ConversionParameters mockParameters = mock(ConversionParameters.class);
+
+        // ACT
+        doNothing().when(mockSingleton).registerConversion(mockParameters);
+        AmbassadorSDK.registerConversion(mockParameters);
+
+        // ASSERT
+        verify(mockSingleton).registerConversion(mockParameters);
+    }
+
+    @Test
+    public void runWithKeysTest() {
+        // ARRANGE
+        String fakeUniversalToken = "SDKToken djjfivklsd-sdf-2rwlkj";
+
+        // ACT
+        doNothing().when(mockSingleton).saveAPIKey(fakeUniversalToken);
+        doNothing().when(mockSingleton).startConversionTimer();
+        AmbassadorSDK.runWithKey(fakeUniversalToken);
+
+        // ASSERT
+        verify(mockSingleton).saveAPIKey(fakeUniversalToken);
+        verify(mockSingleton).startConversionTimer();
+    }
+
+    @Test
+    public void runWithKeysAndConvertOnInstallTest() {
+        // ARRANGE
+        String fakeUniversalToken = "SDKToken sdlksjfl-sd-2-sdfsdf-33";
+        ConversionParameters mockParameters = mock(ConversionParameters.class);
+
+        // ACT
+        doNothing().when(mockSingleton).saveAPIKey(fakeUniversalToken);
+        doNothing().when(mockSingleton).startConversionTimer();
+        when(mockSingleton.convertedOnInstall()).thenReturn(false);
+        doNothing().when(mockSingleton).convertForInstallation(mockParameters);
+        AmbassadorSDK.runWithKeyAndConvertOnInstall(fakeUniversalToken, mockParameters);
+
+        // ASSERT
+        assertEquals(false, mockSingleton.convertedOnInstall());
+        verify(mockSingleton).saveAPIKey(fakeUniversalToken);
+        verify(mockSingleton).startConversionTimer();
+        verify(mockSingleton).convertForInstallation(mockParameters);
     }
 }

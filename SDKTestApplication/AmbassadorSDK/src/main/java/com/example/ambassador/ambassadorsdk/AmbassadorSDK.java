@@ -12,13 +12,11 @@ public class AmbassadorSDK {
         // Users can set up custom text with RAFParameters
         Intent intent = new Intent(context, AmbassadorActivity.class);
 
-        if (rafParameters == null) {
-            rafParameters = new ServiceSelectorPreferences();
-        }
+        if (rafParameters == null) { rafParameters = new ServiceSelectorPreferences(); }
 
         AmbassadorSingleton.getInstance().setCampaignID(campaignID);
 
-        intent.putExtra("test", rafParameters);
+        intent.putExtra("rafParameters", rafParameters);
         context.startActivity(intent);
     }
 
