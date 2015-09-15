@@ -53,7 +53,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     };
 
     final private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        // Executed when Pusher data is recieved, used to update the shortURL editText if loading screen is present
+        // Executed when Pusher data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
             if (AmbassadorSingleton.getInstance().getPusherInfo() == null) {

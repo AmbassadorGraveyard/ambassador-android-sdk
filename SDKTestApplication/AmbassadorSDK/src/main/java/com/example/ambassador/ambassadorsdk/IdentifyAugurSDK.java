@@ -2,7 +2,6 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -31,7 +30,7 @@ class IdentifyAugurSDK {
                     device.put("type", Utilities.deviceType(MyApplication.getAppContext()));
                     jsonObject.put("device", device);
 
-                    Utilities.debugLog("Augur", "Augur successfully recieved through SDK call");
+                    Utilities.debugLog("Augur", "Augur successfully received through SDK call");
                     AmbassadorSingleton.getInstance().setIdentifyObject(jsonObject.toString());
                     deviceID = Augur.DID;
                     completion.augurComplete();

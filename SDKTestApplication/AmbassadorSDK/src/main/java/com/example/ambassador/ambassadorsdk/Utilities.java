@@ -3,7 +3,6 @@ package com.example.ambassador.ambassadorsdk;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ApplicationInfo;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.widget.EditText;
@@ -68,18 +67,15 @@ class Utilities {
         if (editText.getText().toString().contains("http://")) {
             String sub = editText.getText().toString().substring(editText.getText().toString().indexOf("http://"));
             String replacementSubstring;
-            if (sub.contains(" ")) {
-                replacementSubstring = sub.substring(0, sub.indexOf(' '));
-            } else {
-                replacementSubstring = sub;
-            }
-
+            replacementSubstring = (sub.contains(" ")) ? sub.substring(0, sub.indexOf(' ')) : sub;
             editText.setText(editText.getText().toString().replace(replacementSubstring, appendingLink));
-        } else {
-            if (editText.getText().toString().charAt(editText.getText().toString().length() - 1) != ' ') {
-                appendingLink = " " + AmbassadorSingleton.getInstance().getURL();
-                editText.setText(editText.getText().append(appendingLink));
-            }
+
+            return;
+        }
+
+        if (editText.getText().toString().charAt(editText.getText().toString().length() - 1) != ' ') {
+            appendingLink = " " + AmbassadorSingleton.getInstance().getURL();
+            editText.setText(editText.getText().append(appendingLink));
         }
     }
 
