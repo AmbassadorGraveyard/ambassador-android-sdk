@@ -36,6 +36,7 @@ dependencies {
     androidTestCompile 'org.mockito:mockito-core:1.*'
     androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
+    androidTestApt "com.google.dagger:dagger-compiler:2.0"
     //androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2'
     testCompile 'org.powermock:powermock-module-test-mockito-junit4:1.6.2'
     testCompile 'org.powermock:powermock-module-junit4:1.6.2'
@@ -47,6 +48,7 @@ android {
     publishNonDefault true
 
     defaultConfig {
+        multiDexEnabled true
         minSdkVersion 19
         targetSdkVersion 22
         versionCode 1
