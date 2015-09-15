@@ -1,4 +1,5 @@
 # Ambassador Android SDK
+_**Support Level**_: API 16+ (4.1+)
 
 ## Getting Started
 
