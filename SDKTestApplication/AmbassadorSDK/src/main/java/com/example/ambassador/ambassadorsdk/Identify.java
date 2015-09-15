@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
@@ -23,7 +25,8 @@ class Identify implements IIdentify {
     private Context context;
     private String emailAddress;
     private IdentifyPusher pusher;
-    private IdentifyAugurSDK augur;
+    IdentifyAugurSDK augur;
+    private Timer augurTimer;
 
     public Identify(Context context, String emailAddress) {
         this.context = context;
@@ -31,20 +34,27 @@ class Identify implements IIdentify {
         if (pusher == null) {
             pusher = new IdentifyPusher();
             augur = new IdentifyAugurSDK();
+            augurTimer = new Timer();
         }
     }
 
     @Override
     public void getIdentity() {
-        augur.getAugur(new IdentifyAugurSDK.AugurCompletion() {
+        augurTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void augurComplete() {
-                _setUpPusher(augur.deviceID);
+            public void run() {
+                augur.getAugur(new IdentifyAugurSDK.AugurCompletion() {
+                    @Override
+                    public void augurComplete() {
+                        setUpPusher(augur.deviceID);
+                        augurTimer.cancel();
+                    }
+                });
             }
-        });
+        }, 0, 5000);
     }
 
-    private void _setUpPusher(String deviceID) {
+    void setUpPusher(String deviceID) {
         pusher.createPusher(deviceID, new IdentifyPusher.PusherCompletion() {
             @Override
             public void pusherSubscribed() {

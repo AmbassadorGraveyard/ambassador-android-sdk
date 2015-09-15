@@ -19,12 +19,13 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
         <activity android:name="com.facebook.FacebookActivity"
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
-            android:label="@string/app_name"
+            android:label="Ambassador SDK"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".LinkedInLoginActivity"
@@ -41,7 +42,7 @@
             android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait"/>
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider1650562518489293"
+        <provider android:authorities="com.facebook.app.FacebookContentProvider1527118794178815"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
     </application>

@@ -56,9 +56,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Executed when Pusher data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (AmbassadorSingleton.getInstance().getPusherInfo() == null) {
-                _tryAndSetURL();
-            }
+            _tryAndSetURL();
         }
     };
 
@@ -89,6 +87,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 _copyShortURLToClipboard();
             }
         });
+
         btnCopyPaste.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
         // Sets up social gridView
