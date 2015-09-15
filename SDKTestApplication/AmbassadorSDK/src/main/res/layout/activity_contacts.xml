@@ -9,6 +9,7 @@
         android:layout_height="0dp"
         android:id="@+id/rlSearch"
         android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
         <EditText
@@ -21,10 +22,12 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:focusable="true"
             android:enabled="true"
             android:layout_toStartOf="@+id/btnDoneSearch"
+            android:layout_toLeftOf="@+id/btnDoneSearch"
             android:layout_alignBottom="@+id/btnDoneSearch"
             android:singleLine="true" />
 
@@ -36,7 +39,9 @@
             android:id="@+id/btnDoneSearch"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:textColor="@color/twitter_blue" />
 
     </RelativeLayout>
@@ -55,6 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:padding="15dp"
         android:id="@+id/llSendView"
@@ -91,7 +97,8 @@
                 android:padding="10dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/pencil_edit"
-                android:layout_marginRight="5dp" />
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp" />
 
             <Button
                 android:layout_width="60dp"
@@ -102,6 +109,7 @@
                 android:visibility="gone"
                 android:text="DONE"
                 android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
                 android:textColor="@color/twitter_blue" />
 
         </LinearLayout>
@@ -129,7 +137,9 @@
         android:layout_alignBottom="@+id/lvContacts"
         android:gravity="center"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:visibility="gone" />
 
 </RelativeLayout>

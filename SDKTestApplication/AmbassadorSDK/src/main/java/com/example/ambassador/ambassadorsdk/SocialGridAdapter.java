@@ -3,7 +3,6 @@ package com.example.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.view.LayoutInflater;
@@ -36,7 +35,7 @@ class SocialGridAdapter extends BaseAdapter {
         Paint paint = rectShapeDrawable.getPaint();
         paint.setColor(context.getResources().getColor(R.color.ultraLightGray));
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(10);
+        paint.setStrokeWidth(Utilities.getPixelSizeForDimension(R.dimen.grid_cell_outline_width));
     }
 
     @Override
