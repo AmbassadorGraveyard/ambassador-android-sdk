@@ -256,7 +256,6 @@ public class AmbassadorActivityTest {
         AmbassadorSingleton.getInstance().setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
         AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");
 
-        //tap twitter share
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.etTweetMessage)).check(matches(isDisplayed()));
@@ -314,7 +313,7 @@ public class AmbassadorActivityTest {
         //doReturn(null).when(tweetRequestMock).execute();
         //when(tweetRequestMock.execute()).thenReturn(null);
 
-        //type a link with a random number appended to circumvent twitter complaining about duplicate postsh
+        //type a link with a random number appended to circumvent twitter complaining about duplicate post
         /*String tweetText = "http://www.tester.com " + _getRandomNumber();
         tweetRequestMock.tweetString = tweetText;
         onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());

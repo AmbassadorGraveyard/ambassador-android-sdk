@@ -37,7 +37,6 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
 
         loader.setVisibility(View.GONE);
         etTwitterMessage.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
-        etTwitterMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
 
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +48,14 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hide();
+                dismiss();
+            }
+        });
+
+        this.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                etTwitterMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
             }
         });
     }
