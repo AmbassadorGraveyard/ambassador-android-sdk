@@ -35,7 +35,7 @@ class LinkedInPostDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
-        setContentView(R.layout.activity_linkedin_post);
+        setContentView(R.layout.dialog_linkedin_post);
 
         // UI Components
         btnPost = (Button) findViewById(R.id.btnTweet);
