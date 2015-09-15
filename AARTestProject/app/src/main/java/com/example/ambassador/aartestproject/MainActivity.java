@@ -1,14 +1,13 @@
 package com.example.ambassador.aartestproject;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.ambassador.ambassadorsdk.AmbassadorActivity;
 import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
 
 
@@ -18,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AmbassadorSDK.runWithKey("UniversalToken ***REMOVED***");
+        AmbassadorSDK.runWithKeys("SDKToken ***REMOVED***", "***REMOVED***");
         AmbassadorSDK.identify("jake@getambassador.com");
 
         Button btnRaf = (Button) findViewById(R.id.btnRAF2);
