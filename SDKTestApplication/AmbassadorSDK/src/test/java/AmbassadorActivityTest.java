@@ -122,8 +122,6 @@ public class AmbassadorActivityTest extends TestCase {
         // ARRANGE
         Intent mockIntent = mock(Intent.class);
 
-
-
         // ACT
         whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
         when(mockIntent.putExtra("showPhoneNumbers", true)).thenReturn(mockIntent);

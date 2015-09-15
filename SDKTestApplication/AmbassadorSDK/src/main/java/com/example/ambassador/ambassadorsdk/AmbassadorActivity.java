@@ -71,7 +71,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambassador);
 
         ambassadorActivity = this;
-        rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("test");
+        rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("rafParameters");
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 

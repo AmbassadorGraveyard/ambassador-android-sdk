@@ -118,7 +118,7 @@ class AmbassadorSingleton {
         return sharePrefs.getString("subjectLine", null);
     }
 
-    Boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
+    boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
     // END SHAREDINSTANCE GETTERS
 
 
