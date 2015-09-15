@@ -4,4 +4,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="contact_select_checkmark_x">15dp</dimen>
+    <dimen name="grid_cell_outline_width">3dp</dimen>
 </resources>

@@ -25,7 +25,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:textColor="@android:color/darker_gray"
-        android:gravity="left" />
+        android:gravity="start" />
 
     <com.example.ambassador.ambassadorsdk.CustomEditText
         android:id="@+id/etFirstName"
@@ -61,8 +61,10 @@
         android:text="Cancel"
         android:layout_below="@+id/etLastName"
         android:layout_toLeftOf="@+id/btnSend"
+        android:layout_toStartOf="@+id/btnSend"
         android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginEnd="8dp"
         android:textColor="@color/twitter_blue" />
 
     <Button
@@ -73,6 +75,7 @@
         android:text="Continue"
         android:layout_below="@+id/etLastName"
         android:layout_alignEnd="@+id/etLastName"
+        android:layout_alignRight="@+id/etLastName"
         android:layout_marginBottom="8dp"
         android:textColor="@color/twitter_blue" />
 
