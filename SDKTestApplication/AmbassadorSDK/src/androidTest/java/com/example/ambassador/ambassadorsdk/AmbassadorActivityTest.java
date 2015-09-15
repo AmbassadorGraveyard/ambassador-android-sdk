@@ -19,6 +19,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -37,6 +39,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.doAnswer;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -52,7 +55,7 @@ public class AmbassadorActivityTest {
 
     @Mock
     //TweetDialog tweetDialog;
-    TweetDialog.TweetRequest tweetRequestMock;
+    TweetRequest tweetRequestMock;
 
     @Before
     public void beforeEachTest() {
@@ -85,7 +88,7 @@ public class AmbassadorActivityTest {
         AmbassadorSingleton.getInstance().savePusherInfo(null);
     }
 
-    @Test
+    //@Test
     public void testMainLayout() {
         onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
@@ -97,7 +100,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
     }
 
-    @Test
+    //@Test
     public void testFacebook() {
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
         //onView(withText("You must")).check(matches(isDisplayed()));
@@ -109,7 +112,7 @@ public class AmbassadorActivityTest {
         //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
     }
 
-    @Test
+    //@Test
     public void testContactsEmail() {
         //start recording fired Intents
         Intents.init();
@@ -203,7 +206,7 @@ public class AmbassadorActivityTest {
         //TODO: after figuring out how to use mock list of contacts, test deleting one to make sure NO CONTACTS textview is shown
     }
 
-    @Test
+    //@Test
     public void testContactsSMS() {
         //start recording fired Intents
         Intents.init();
@@ -297,13 +300,13 @@ public class AmbassadorActivityTest {
         //THE VERIFY TEST PASSES, BUT IT'S COMMENTED OUT TO AVOID SPAMMING THE TWITTER
         //WILL REVISIT ONCE WE CAN FIGURE OUT MOCKING TWEETREQUEST
 
-        /*doAnswer(new Answer<Void>() {
+        doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 //fakeData = "FakeDataString";
                 return null;
             }
-        }).when(tweetRequestMock).execute();*/
+        }).when(tweetRequestMock).execute();
         //}).when(tweetRequestSpy).execute();
 
         //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
