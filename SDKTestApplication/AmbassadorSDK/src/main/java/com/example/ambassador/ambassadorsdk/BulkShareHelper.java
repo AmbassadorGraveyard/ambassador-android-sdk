@@ -32,9 +32,10 @@ class BulkShareHelper {
     void bulkShare(ArrayList<ContactObject> contacts, Boolean phoneNumbers) {
         // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
-            BulkShareSMSRequest smsRequest = new BulkShareSMSRequest();
-            smsRequest.contacts = contacts;
-            smsRequest.execute();
+//            BulkShareSMSRequest smsRequest = new BulkShareSMSRequest();
+//            smsRequest.contacts = contacts;
+//            smsRequest.messageToShare
+//            smsRequest.execute();
         } else {
             BulkShareEmailRequest emailRequest = new BulkShareEmailRequest();
             emailRequest.contacts = contacts;
@@ -87,16 +88,16 @@ class BulkShareHelper {
             return verifiedNumbers;
         }
 
-        private static ArrayList<String> _verifiedEmailList(ArrayList<ContactObject> contactObjects) {
+        static ArrayList<String> verifiedEmailList(ArrayList<ContactObject> contactObjects) {
             ArrayList<String> verifiedEmails = new ArrayList<>();
             for (ContactObject contact : contactObjects) {
-                if (_isValidEmail(contact.emailAddress)) { verifiedEmails.add(contact.emailAddress); }
+                if (isValidEmail(contact.emailAddress)) { verifiedEmails.add(contact.emailAddress); }
             }
 
             return verifiedEmails;
         }
 
-        private static Boolean _isValidEmail(String emailAddress) {
+        static Boolean isValidEmail(String emailAddress) {
             // Functionality: Boolean that checks for legit email addressing using regex
             final Pattern emailRegex = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$",
                     Pattern.CASE_INSENSITIVE);
@@ -108,7 +109,7 @@ class BulkShareHelper {
 
 
         // JSON OBJECT MAKER
-        private static JSONArray _contactArray(ArrayList<String> values, Boolean phoneNumbers) {
+        static JSONArray contactArray(ArrayList<String> values, Boolean phoneNumbers) {
             // Functionality: Creates a jsonArray of jsonobjects created from validated phone numbers and email addresses
             String socialName = (phoneNumbers) ? "sms" : "email";
             JSONArray objectsList = new JSONArray();
@@ -135,7 +136,7 @@ class BulkShareHelper {
             return objectsList;
         }
 
-        private static JSONObject _payloadObjectForSMS(ArrayList<String> numbers, String smsMessage) {
+        static JSONObject payloadObjectForSMS(ArrayList<String> numbers, String smsMessage) {
             // Funcionality: Ceates a json payload for SMS sharing with all the validated numbers included
             JSONObject object = new JSONObject();
             try {
@@ -149,7 +150,7 @@ class BulkShareHelper {
             return object;
         }
 
-        private static JSONObject _payloadObjectForEmail(ArrayList<String> emails, String message) {
+        static JSONObject payloadObjectForEmail(ArrayList<String> emails, String message) {
             // Functionality: Creats an email payload object for bulk sharing
             JSONObject object = new JSONObject();
             try {
@@ -166,47 +167,47 @@ class BulkShareHelper {
         // END JSON OBJECT MAKER
     }
 
+//
+//    class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
+//        ArrayList<ContactObject> contacts;
+//        private int statusCode;
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//            String url = "https://dev-ambassador-api.herokuapp.com/share/sms/";
+//
+//            try {
+//                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+//                _setUpConnection(connection);
+//
+//                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+//                wr.write(BulkFormatter.payloadObjectForSMS(BulkFormatter.verifiedSMSList(contacts), messageToShare).toString().getBytes());
+//                wr.flush();
+//                wr.close();
+//
+//                statusCode = connection.getResponseCode();
+//            } catch (IOException ioException) {
+//                Log.e("IOException", ioException.toString());
+//            }
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            if (Utilities.isSuccessfulResponseCode(statusCode)) {
+//                ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
+//                shareTrackRequest.contacts = BulkFormatter.verifiedSMSList(contacts);
+//                shareTrackRequest.isSMS = true;
+//                shareTrackRequest.execute();
+//            } else {
+//                _callIsUnsuccessful();
+//            }
+//        }
+//    }
 
-    private class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
-        private ArrayList<ContactObject> contacts;
-        private int statusCode;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            String url = "https://dev-ambassador-api.herokuapp.com/share/sms/";
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                _setUpConnection(connection);
-
-                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.write(BulkFormatter._payloadObjectForSMS(BulkFormatter.verifiedSMSList(contacts), messageToShare).toString().getBytes());
-                wr.flush();
-                wr.close();
-
-                statusCode = connection.getResponseCode();
-            } catch (IOException ioException) {
-                Log.e("IOException", ioException.toString());
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (Utilities.isSuccessfulResponseCode(statusCode)) {
-                ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
-                shareTrackRequest.contacts = BulkFormatter.verifiedSMSList(contacts);
-                shareTrackRequest.isSMS = true;
-                shareTrackRequest.execute();
-            } else {
-                _callIsUnsuccessful();
-            }
-        }
-    }
-
-    private class BulkShareEmailRequest extends AsyncTask<Void, Void, Void> {
+    class BulkShareEmailRequest extends AsyncTask<Void, Void, Void> {
         private ArrayList<ContactObject> contacts;
         private int statusCode;
         @Override
@@ -218,7 +219,7 @@ class BulkShareHelper {
                 _setUpConnection(connection);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.write(BulkFormatter._payloadObjectForEmail(BulkFormatter._verifiedEmailList(contacts), messageToShare).toString().getBytes());
+                wr.write(BulkFormatter.payloadObjectForEmail(BulkFormatter.verifiedEmailList(contacts), messageToShare).toString().getBytes());
                 wr.flush();
                 wr.close();
 
@@ -235,7 +236,7 @@ class BulkShareHelper {
             super.onPostExecute(aVoid);
             if (Utilities.isSuccessfulResponseCode(statusCode)) {
                 ShareTrackRequest shareTrackRequest = new ShareTrackRequest();
-                shareTrackRequest.contacts = BulkFormatter._verifiedEmailList(contacts);
+                shareTrackRequest.contacts = BulkFormatter.verifiedEmailList(contacts);
                 shareTrackRequest.isSMS = false;
                 shareTrackRequest.execute();
             } else {
@@ -244,10 +245,10 @@ class BulkShareHelper {
         }
     }
 
-    private class ShareTrackRequest extends AsyncTask<Void, Void, Void> {
-        private ArrayList<String> contacts;
+    class ShareTrackRequest extends AsyncTask<Void, Void, Void> {
+        ArrayList<String> contacts;
         private int statusCode;
-        private Boolean isSMS;
+        boolean isSMS;
 
         @Override
         protected Void doInBackground(Void... params) {
@@ -258,7 +259,7 @@ class BulkShareHelper {
                 _setUpConnection(connection);
 
                 DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.write(BulkFormatter._contactArray(contacts, isSMS).toString().getBytes());
+                wr.write(BulkFormatter.contactArray(contacts, isSMS).toString().getBytes());
                 wr.flush();
                 wr.close();
 
