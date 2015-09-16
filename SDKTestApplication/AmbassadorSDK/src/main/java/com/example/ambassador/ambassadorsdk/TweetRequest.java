@@ -2,11 +2,14 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.os.AsyncTask;
 
+import javax.inject.Singleton;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 
+@Singleton
 public class TweetRequest extends AsyncTask<Void, Void, Void> {
     public String tweetString;
     public int postStatus;

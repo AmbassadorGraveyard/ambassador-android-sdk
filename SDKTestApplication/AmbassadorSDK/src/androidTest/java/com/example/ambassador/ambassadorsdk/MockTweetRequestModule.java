@@ -13,13 +13,8 @@ import static org.mockito.Mockito.mock;
  */
 @Module
 public class MockTweetRequestModule {
-    //private Context context;
-
-    public MockTweetRequestModule() {
-        //this.context = context;
-    }
-
-    @Provides @Singleton
+    @Provides
+    @Singleton
     TweetRequest provideTweetRequest() {
         return mock(TweetRequest.class);
     }

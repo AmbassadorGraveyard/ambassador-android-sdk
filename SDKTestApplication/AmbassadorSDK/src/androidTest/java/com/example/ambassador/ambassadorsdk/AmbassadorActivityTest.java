@@ -40,9 +40,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -54,12 +51,12 @@ public class AmbassadorActivityTest {
     //TweetRequest tweetRequestSpy;
 
     @Inject
-    TweetRequest tweetRequestMock;
+    TweetRequest tweetRequest;
 
     @Singleton
     @Component(modules = {MockTweetRequestModule.class})
-    public interface TweetRequestComponent {
-        TweetRequest provideMockTweetRequest();
+    public interface TestComponent extends AmbassadorSDKComponent {
+        void inject(TweetDialog tweetDialog);
     }
 
     @Rule
@@ -102,9 +99,12 @@ public class AmbassadorActivityTest {
 
     @Test
     public void testTest() {
-        TweetRequestComponent component = DaggerAmbassadorActivityTest_TweetRequestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
-        tweetRequestMock = component.provideMockTweetRequest();
-        when(tweetRequestMock.testMethod()).thenReturn("mock");
+        AmbassadorSDKComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
+        AmbassadorActivity.setComponent(component);
+        component.inject(this);
+
+        //tweetRequestMock = component.provideMockTweetRequest();
+        //when(tweetRequestMock.testMethod()).thenReturn("mock");
         AmbassadorSingleton.getInstance().setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
         AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");
 
@@ -113,13 +113,13 @@ public class AmbassadorActivityTest {
         //http://stackoverflow.com/questions/18074212/mockito-mock-async-method
         //doNothing().when(tweetRequestMock).execute();
         String tweetText = "http://www.tester.com " + _getRandomNumber();
-        tweetRequestMock.tweetString = tweetText;
+        //tweetRequestMock.tweetString = tweetText;
         onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
         onView(withId(R.id.btnTweet)).perform(click());
         //onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         //onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
         //verify(tweetRequestMock).execute();
-        verify(tweetRequestMock).testMethod();
+        //verify(tweetRequestMock).testMethod();
 
         //now call callback onPostExecute
         //http://stackoverflow.com/questions/13616547/calling-callbacks-with-mockito
@@ -347,7 +347,7 @@ public class AmbassadorActivityTest {
 
         //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
         //doNothing().when(tweetRequestSpy).execute();
-        doNothing().when(tweetRequestMock).execute();
+        //doNothing().when(tweetRequestMock).execute();
         //when(tweetRequestMock.execute()).thenReturn(null);
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post

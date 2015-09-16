@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import javax.inject.Inject;
+
 /**
  * Created by JakeDunahee on 8/6/15.
  */
@@ -16,18 +18,19 @@ import android.widget.Toast;
 class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
     private CustomEditText etTwitterMessage;
     private ProgressBar loader;
-    private TweetRequest tweetRequest;
 
-    //@Inject
+    @Inject
+    TweetRequest tweetRequest;
+
     public TweetDialog(Context context) {
         super(context);
+        AmbassadorActivity.component().inject(this);
 
         //TweetDialogComponent component = DaggerTweetDialogComponent.builder().tweetDialogModule(new TweetDialogModule(this)).build();
         //tweetDialog = component.provideTweetDialog();
-        TweetRequestComponent component = DaggerTweetRequestComponent.builder().tweetRequestModule(new TweetRequestModule()).build();
-        tweetRequest = component.provideTweetRequest();
+        //TweetRequestComponent component = DaggerTweetRequestComponent.builder().tweetRequestModule(new TweetRequestModule()).build();
+        //tweetRequest = component.provideTweetRequest();
         //this.tweetRequest = tweetRequest;
-        tweetRequest.mCallback = this;
 
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_twitter_tweet);
@@ -70,6 +73,7 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
         } else {
             loader.setVisibility(View.VISIBLE);
             //TweetRequest tweetRequest = new TweetRequest();
+            tweetRequest.mCallback = this;
             tweetRequest.tweetString = etTwitterMessage.getText().toString();
             //tweetRequest.execute();
             tweetRequest.testMethod();
