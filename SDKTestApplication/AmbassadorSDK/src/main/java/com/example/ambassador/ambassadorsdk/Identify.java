@@ -64,7 +64,18 @@ class Identify implements IIdentify {
 
             @Override
             public void pusherEventTriggered(String data) {
-                _getAndSavePusherInfo(data);
+                try {
+                    JSONObject pusherObject = new JSONObject(data);
+                    if (pusherObject.has("url")) {
+                        PusherURLRequest pusherURLRequest = new PusherURLRequest(pusherObject.getString("url"));
+                        pusherURLRequest.execute();
+                    } else {
+                        _getAndSavePusherInfo(data);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }
@@ -107,6 +118,8 @@ class Identify implements IIdentify {
 
             try {
                 JSONObject augurObject = new JSONObject(AmbassadorSingleton.getInstance().getIdentifyObject());
+                identifyObject.put("enroll", true);
+                identifyObject.put("campaign_id", AmbassadorSingleton.getInstance().getCampaignID());
                 identifyObject.put("email", emailAddress);
                 identifyObject.put("source", "android_sdk_pilot");
                 identifyObject.put("mbsy_source", "");
@@ -145,6 +158,52 @@ class Identify implements IIdentify {
             }
 
             return null;
+        }
+    }
+
+    class PusherURLRequest extends AsyncTask<Void, Void, Void> {
+        String url;
+        int statusCode;
+        StringBuilder response;
+
+        public PusherURLRequest(String url) {
+            this.url = url;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
+
+                statusCode = connection.getResponseCode();
+
+                InputStream is = (Utilities.isSuccessfulResponseCode(statusCode)) ? connection.getInputStream() : connection.getErrorStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                String line;
+                response = new StringBuilder();
+
+                while ((line = rd.readLine()) != null) {
+                    response.append(line);
+                }
+
+                Utilities.debugLog("Pusher External URL", response.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            if (Utilities.isSuccessfulResponseCode(statusCode)) {
+                Utilities.debugLog("Pusher Save", "Saved pusher object as String = " + response.toString());
+                _getAndSavePusherInfo(response.toString());
+            }
         }
     }
 }

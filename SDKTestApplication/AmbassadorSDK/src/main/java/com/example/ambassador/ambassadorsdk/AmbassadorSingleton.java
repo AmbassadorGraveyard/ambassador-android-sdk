@@ -75,6 +75,14 @@ class AmbassadorSingleton {
             return "https://dev-ambassador-api.herokuapp.com/track/share/";
         }
     }
+
+    static String pusherCallbackURL() {
+        if (AmbassadorSingleton.isReleaseBuild) {
+            return "https://api.ambassador.com/auth/subscribe/";
+        } else {
+            return "https://dev-ambassador-api.herokuapp.com/auth/subscribe/";
+        }
+    }
     // END STATIC VARIABLES
 
 
