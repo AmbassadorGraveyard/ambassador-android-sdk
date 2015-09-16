@@ -26,7 +26,7 @@ public class TweetDialogModule {
 
     @Provides @Singleton
     TweetDialog provideTweetDialog() {
-        return new TweetDialog(provideContext(), new TweetRequest());
+        return new TweetDialog(provideContext());
     }
 
     @Provides @Singleton
