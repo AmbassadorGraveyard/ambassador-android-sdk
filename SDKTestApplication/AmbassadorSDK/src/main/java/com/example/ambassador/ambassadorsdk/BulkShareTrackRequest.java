@@ -6,33 +6,25 @@ import android.util.Log;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by JakeDunahee on 9/15/15.
+ * Created by JakeDunahee on 9/16/15.
  */
-class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
-    ArrayList<ContactObject> contacts;
+class BulkShareTrackRequest extends AsyncTask<Void, Void, Void> {
+    ArrayList<String> contacts;
     private int statusCode;
-    String messageToShare;
-    SMSRequestCompletion completion;
+    boolean isSMS;
 
-    interface SMSRequestCompletion {
-        void smsShareSuccess();
-        void smsShareFailed();
-    }
-
-    public BulkShareSMSRequest(ArrayList<ContactObject> contacts, String messageToShare, SMSRequestCompletion completion) {
-        this.contacts = contacts;
-        this.messageToShare = messageToShare;
-        this.completion = completion;
+    public BulkShareTrackRequest(ArrayList<ContactObject> contacts, boolean isSMS) {
+        this.contacts = BulkShareHelper.verifiedSMSList(contacts);
+        this.isSMS = isSMS;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
-        String url = "https://dev-ambassador-api.herokuapp.com/share/sms/";
+        String url = "https://dev-ambassador-api.herokuapp.com/track/share/";
 
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -44,7 +36,7 @@ class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
             connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
 
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-            wr.write(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts), messageToShare).toString().getBytes());
+            wr.write(BulkShareHelper.contactArray(contacts, isSMS).toString().getBytes());
             wr.flush();
             wr.close();
 
@@ -59,12 +51,12 @@ class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
+        // TODO: Check for fail and store locally to retry when signal is available in order to keep share track
+//        callIsSuccessful();
         if (Utilities.isSuccessfulResponseCode(statusCode)) {
-            completion.smsShareSuccess();
-            BulkShareTrackRequest shareTrackRequest = new BulkShareTrackRequest(contacts, true);
-            shareTrackRequest.execute();
+            Utilities.debugLog("ShareTrack", "Share track SUCCESSFUL!");
         } else {
-            completion.smsShareFailed();
+            Utilities.debugLog("ShareTrack", "Share track FAILURE!");
         }
     }
 }

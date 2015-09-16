@@ -28,6 +28,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -195,27 +196,4 @@ public class AmbassadorActivityTest extends TestCase {
 
         ambassadorActivity.tryAndSetURL(false, pusher, "Test", mockShortURLET);
     }
-
-    @Test (expected = JSONException.class)
-    public void tryAndSetURLWithException() throws Exception {
-        EditText mockShortURLET = mock(EditText.class);
-        JSONObject mockObject = mock(JSONObject.class);
-        String pusher = "{\"email\"\"jake@getambassador.com\"," +
-                "\"firstName:\"erer\",\"lastName\":\"ere\"," +
-                "\"phoneNumber\":\"null\"," +
-                "\"urls\":[" +
-                "{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}" +
-                "]}";
-
-        whenNew(JSONObject.class).withArguments(pusher).thenThrow(new JSONException(pusher));
-
-        ambassadorActivity.tryAndSetURL(true, pusher, "Test", mockShortURLET);
-    }
-
-//    @Test (expected = MockitoException.class)
-//    public void tryAndSetURLWithException() throws JSONException {
-//        doThrow(new JSONException("exceptionString")).when(ambassadorActivity).tryAndSetURL(true);
-//        ambassadorActivity.tryAndSetURL(true);
-//        verify(ambassadorActivity).tryAndSetURL(true);
-//    }
 }
