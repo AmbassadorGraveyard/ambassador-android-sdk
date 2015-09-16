@@ -40,6 +40,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -70,6 +72,9 @@ public class AmbassadorActivityTest {
     public void beforeEachTest() {
         //tweetRequestMock = new TweetRequest();
         //tweetRequestSpy = spy(tweetRequestMock);
+        AmbassadorSDKComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
+        AmbassadorActivity.setComponent(component);
+        component.inject(this);
 
         parameters = new ServiceSelectorPreferences();
         parameters.defaultShareMessage = "Check out this company!";
@@ -99,12 +104,8 @@ public class AmbassadorActivityTest {
 
     @Test
     public void testTest() {
-        AmbassadorSDKComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
-        AmbassadorActivity.setComponent(component);
-        component.inject(this);
-
         //tweetRequestMock = component.provideMockTweetRequest();
-        //when(tweetRequestMock.testMethod()).thenReturn("mock");
+        when(tweetRequest.testMethod()).thenReturn("mock");
         AmbassadorSingleton.getInstance().setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
         AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");
 
@@ -119,7 +120,7 @@ public class AmbassadorActivityTest {
         //onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         //onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
         //verify(tweetRequestMock).execute();
-        //verify(tweetRequestMock).testMethod();
+        verify(tweetRequest).testMethod();
 
         //now call callback onPostExecute
         //http://stackoverflow.com/questions/13616547/calling-callbacks-with-mockito

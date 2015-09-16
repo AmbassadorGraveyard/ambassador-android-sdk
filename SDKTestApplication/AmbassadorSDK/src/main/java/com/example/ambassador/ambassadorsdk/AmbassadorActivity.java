@@ -73,8 +73,8 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     private static AmbassadorSDKComponent component = null;
 
-    public void setComponent(AmbassadorSDKComponent component) {
-        this.component = component;
+    public static void setComponent(AmbassadorSDKComponent thecomponent) {
+        component = thecomponent;
     }
 
     public static AmbassadorSDKComponent component() {
