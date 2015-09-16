@@ -6,25 +6,24 @@ import android.util.Log;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 
 /**
- * Created by JakeDunahee on 9/15/15.
+ * Created by JakeDunahee on 9/16/15.
  */
-class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
-    ArrayList<ContactObject> contacts;
+class BulkShareEmailRequest extends AsyncTask<Void, Void, Void> {
+    private ArrayList<ContactObject> contacts;
     private int statusCode;
     String messageToShare;
-    SMSRequestCompletion completion;
+    EmailRequestCompletion completion;
 
-    interface SMSRequestCompletion {
-        void smsShareSuccess();
-        void smsShareFailed();
+    interface EmailRequestCompletion {
+        void emailShareSucces();
+        void emailShareFailure();
     }
 
-    public BulkShareSMSRequest(ArrayList<ContactObject> contacts, String messageToShare, SMSRequestCompletion completion) {
+    public BulkShareEmailRequest(ArrayList<ContactObject> contacts, String messageToShare, EmailRequestCompletion completion) {
         this.contacts = contacts;
         this.messageToShare = messageToShare;
         this.completion = completion;
@@ -32,7 +31,7 @@ class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        String url = "https://dev-ambassador-api.herokuapp.com/share/sms/";
+        String url = "https://dev-ambassador-api.herokuapp.com/share/email/";
 
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -44,7 +43,7 @@ class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
             connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getAPIKey());
 
             DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-            wr.write(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts), messageToShare).toString().getBytes());
+            wr.write(BulkShareHelper.payloadObjectForEmail(BulkShareHelper.verifiedEmailList(contacts), messageToShare).toString().getBytes());
             wr.flush();
             wr.close();
 
@@ -60,11 +59,11 @@ class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
         if (Utilities.isSuccessfulResponseCode(statusCode)) {
-            completion.smsShareSuccess();
-            BulkShareTrackRequest shareTrackRequest = new BulkShareTrackRequest(contacts, true);
+            completion.emailShareSucces();
+            BulkShareTrackRequest shareTrackRequest = new BulkShareTrackRequest(contacts, false);
             shareTrackRequest.execute();
         } else {
-            completion.smsShareFailed();
+            completion.emailShareFailure();
         }
     }
 }
