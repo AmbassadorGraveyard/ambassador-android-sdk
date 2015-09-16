@@ -29,6 +29,10 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Singleton;
+
+import dagger.Component;
+
 /**
  * Created by JakeDunahee on 7/22/15.
  */
@@ -62,11 +66,30 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     };
 
+    @Singleton
+    @Component(modules=TweetRequestModule.class)
+    public interface ApplicationComponent extends AmbassadorSDKComponent {
+    }
+
+    private static AmbassadorSDKComponent component = null;
+
+    public void setComponent(AmbassadorSDKComponent component) {
+        this.component = component;
+    }
+
+    public static AmbassadorSDKComponent component() {
+        return component;
+    }
+
     // ACTIVITY OVERRIDE METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
+
+        if (component == null) {
+            component = DaggerAmbassadorActivity_ApplicationComponent.builder().tweetRequestModule(new TweetRequestModule()).build();
+        }
 
         ambassadorActivity = this;
         rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("test");
@@ -105,8 +128,8 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         //TweetDialogComponent component = DaggerTweetDialogComponent.builder().tweetDialogModule(new TweetDialogModule(this)).build();
         //tweetDialog = component.provideTweetDialog();
-        tweetDialog = new TweetDialog(this);
-        tweetDialog.setOwnerActivity(this);
+//        tweetDialog = new TweetDialog(this);
+//        tweetDialog.setOwnerActivity(this);
     }
 
     @Override
@@ -181,6 +204,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
             //TweetDialog tweetDialog = new TweetDialog(this);
             //tweetDialog.setOwnerActivity(this);
+            tweetDialog = new TweetDialog(this);
+            tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
         } else {
             Intent i = new Intent(this, TwitterLoginActivity.class);

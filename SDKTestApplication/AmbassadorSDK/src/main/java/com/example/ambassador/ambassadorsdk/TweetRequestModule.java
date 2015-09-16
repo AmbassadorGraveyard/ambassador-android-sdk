@@ -1,6 +1,5 @@
 package com.example.ambassador.ambassadorsdk;
 
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -11,12 +10,8 @@ import dagger.Provides;
  */
 @Module
 public class TweetRequestModule {
-
-    public TweetRequestModule() {
-
-    }
-
-    @Provides @Singleton
+    @Provides
+    @Singleton
     TweetRequest provideTweetRequest() {
         return new TweetRequest();
     }
