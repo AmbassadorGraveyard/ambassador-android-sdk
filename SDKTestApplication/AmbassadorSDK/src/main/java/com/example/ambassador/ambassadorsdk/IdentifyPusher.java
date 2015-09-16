@@ -1,6 +1,5 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.util.Log;
 
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
@@ -9,8 +8,6 @@ import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
 import com.pusher.client.util.HttpAuthorizer;
-
-import org.slf4j.helpers.Util;
 
 import java.util.HashMap;
 
@@ -28,7 +25,7 @@ class IdentifyPusher {
         String channelName = "private-snippet-channel@user=" + augurDeviceID;
 
         // HttpAuthorizer is used to append headers and extra parameters to the initial Pusher authorization request
-        HttpAuthorizer authorizer = new HttpAuthorizer("https://dev-ambassador-api.herokuapp.com/auth/subscribe/");
+        HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorSingleton.pusherCallbackURL());
 
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
