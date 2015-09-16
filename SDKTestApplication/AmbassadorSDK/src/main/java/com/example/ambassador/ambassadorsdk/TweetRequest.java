@@ -16,6 +16,10 @@ public class TweetRequest extends AsyncTask<Void, Void, Void> {
         void processTweetRequest(int postStatus);
     }
 
+    public String testMethod() {
+        return "real";
+    }
+
     @Override
     protected Void doInBackground(Void... params) {
         AccessToken accessToken = new AccessToken(AmbassadorSingleton.getInstance().getTwitterAccessToken(),

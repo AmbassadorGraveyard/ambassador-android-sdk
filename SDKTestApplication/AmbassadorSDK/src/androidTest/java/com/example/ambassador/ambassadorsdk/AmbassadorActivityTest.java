@@ -17,10 +17,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.Component;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -39,7 +40,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -50,12 +53,21 @@ public class AmbassadorActivityTest {
     private static final String SMS_PATTERN = "Mobile (.*)";
     //TweetRequest tweetRequestSpy;
 
+    @Inject
+    TweetRequest tweetRequestMock;
+
+    @Singleton
+    @Component(modules = {MockTweetRequestModule.class})
+    public interface TweetRequestComponent {
+        TweetRequest provideMockTweetRequest();
+    }
+
     @Rule
     public ActivityTestRule<AmbassadorActivity> mActivityTestIntentRule = new ActivityTestRule<>(AmbassadorActivity.class, true, false);
 
-    @Mock
+    //@Mock
     //TweetDialog tweetDialog;
-    TweetRequest tweetRequestMock;
+    //TweetRequest tweetRequestMock;
 
     @Before
     public void beforeEachTest() {
@@ -79,13 +91,39 @@ public class AmbassadorActivityTest {
         intent.putExtra("test", parameters);
         mActivityTestIntentRule.launchActivity(intent);
 
-        MockitoAnnotations.initMocks(this);
+        //MockitoAnnotations.initMocks(this);
         //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
     }
 
     @After
     public void afterEachTest() {
         AmbassadorSingleton.getInstance().savePusherInfo(null);
+    }
+
+    @Test
+    public void testTest() {
+        TweetRequestComponent component = DaggerAmbassadorActivityTest_TweetRequestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
+        tweetRequestMock = component.provideMockTweetRequest();
+        component.provideMockTweetRequest();
+        when(tweetRequestMock.testMethod()).thenReturn("mock");
+        AmbassadorSingleton.getInstance().setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
+        AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");
+
+        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
+
+        //http://stackoverflow.com/questions/18074212/mockito-mock-async-method
+        //doNothing().when(tweetRequestMock).execute();
+        String tweetText = "http://www.tester.com " + _getRandomNumber();
+        tweetRequestMock.tweetString = tweetText;
+        onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
+        onView(withId(R.id.btnTweet)).perform(click());
+        //onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        //onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
+        //verify(tweetRequestMock).execute();
+        verify(tweetRequestMock).testMethod();
+
+        //now call callback onPostExecute
+        //http://stackoverflow.com/questions/13616547/calling-callbacks-with-mockito
     }
 
     //@Test
@@ -229,12 +267,12 @@ public class AmbassadorActivityTest {
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
     }
 
-    @Test
+    //@Test
     public void testLinkedIn() {
 
     }
 
-    @Test
+    //@Test
     public void testTwitter() {
         //clear the token
         AmbassadorSingleton.getInstance().setTwitterAccessToken(null);
@@ -299,18 +337,18 @@ public class AmbassadorActivityTest {
         //THE VERIFY TEST PASSES, BUT IT'S COMMENTED OUT TO AVOID SPAMMING THE TWITTER
         //WILL REVISIT ONCE WE CAN FIGURE OUT MOCKING TWEETREQUEST
 
-        doAnswer(new Answer<Void>() {
+        /*doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
                 //fakeData = "FakeDataString";
                 return null;
             }
-        }).when(tweetRequestMock).execute();
+        }).when(tweetRequestMock).execute();*/
         //}).when(tweetRequestSpy).execute();
 
         //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
         //doNothing().when(tweetRequestSpy).execute();
-        //doReturn(null).when(tweetRequestMock).execute();
+        doNothing().when(tweetRequestMock).execute();
         //when(tweetRequestMock.execute()).thenReturn(null);
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
