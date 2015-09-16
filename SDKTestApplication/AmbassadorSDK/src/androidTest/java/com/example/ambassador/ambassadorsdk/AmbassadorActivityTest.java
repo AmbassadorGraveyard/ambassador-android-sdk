@@ -306,6 +306,18 @@ public class AmbassadorActivityTest {
         }).when(tweetRequestMock).execute();*/
         //}).when(tweetRequestSpy).execute();
 
+
+
+
+//        TweetDialog.TweetRequest mockTweetRequest = mock(TweetDialog.TweetRequest.class);
+//        AsyncTask<Void, Void, Void> mockExecuteTask = mock(AsyncTask.class);
+//        whenNew(TweetDialog.TweetRequest.class).withAnyArguments().thenReturn(mockTweetRequest);
+//        when(mockTweetRequest.execute()).thenReturn(mockExecuteTask);
+
+
+
+
+
         //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
         //doNothing().when(tweetRequestSpy).execute();
         //doReturn(null).when(tweetRequestMock).execute();

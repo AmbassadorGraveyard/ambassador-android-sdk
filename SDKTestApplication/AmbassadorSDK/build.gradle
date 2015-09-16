@@ -42,6 +42,10 @@ android {
     buildToolsVersion "22.0.1"
     publishNonDefault true
 
+    lintOptions {
+        abortOnError false
+    }
+
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 22
