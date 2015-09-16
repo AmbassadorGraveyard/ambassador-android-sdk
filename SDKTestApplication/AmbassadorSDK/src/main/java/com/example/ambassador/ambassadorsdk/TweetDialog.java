@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import javax.inject.Inject;
-
 /**
  * Created by JakeDunahee on 8/6/15.
  */
@@ -20,10 +18,15 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
     private ProgressBar loader;
     private TweetRequest tweetRequest;
 
-    @Inject
-    public TweetDialog(Context context, TweetRequest tweetRequest) {
+    //@Inject
+    public TweetDialog(Context context) {
         super(context);
-        this.tweetRequest = tweetRequest;
+
+        //TweetDialogComponent component = DaggerTweetDialogComponent.builder().tweetDialogModule(new TweetDialogModule(this)).build();
+        //tweetDialog = component.provideTweetDialog();
+        TweetRequestComponent component = DaggerTweetRequestComponent.builder().tweetRequestModule(new TweetRequestModule()).build();
+        tweetRequest = component.provideTweetRequest();
+        //this.tweetRequest = tweetRequest;
         tweetRequest.mCallback = this;
 
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar

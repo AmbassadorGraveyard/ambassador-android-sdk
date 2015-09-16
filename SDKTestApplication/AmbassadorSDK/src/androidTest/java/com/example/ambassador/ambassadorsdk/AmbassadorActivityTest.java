@@ -104,7 +104,6 @@ public class AmbassadorActivityTest {
     public void testTest() {
         TweetRequestComponent component = DaggerAmbassadorActivityTest_TweetRequestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
         tweetRequestMock = component.provideMockTweetRequest();
-        component.provideMockTweetRequest();
         when(tweetRequestMock.testMethod()).thenReturn("mock");
         AmbassadorSingleton.getInstance().setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
         AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");

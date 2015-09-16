@@ -103,8 +103,9 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         });
 
-        TweetDialogComponent component = DaggerTweetDialogComponent.builder().tweetDialogModule(new TweetDialogModule(this)).build();
-        tweetDialog = component.provideTweetDialog();
+        //TweetDialogComponent component = DaggerTweetDialogComponent.builder().tweetDialogModule(new TweetDialogModule(this)).build();
+        //tweetDialog = component.provideTweetDialog();
+        tweetDialog = new TweetDialog(this);
         tweetDialog.setOwnerActivity(this);
     }
 
