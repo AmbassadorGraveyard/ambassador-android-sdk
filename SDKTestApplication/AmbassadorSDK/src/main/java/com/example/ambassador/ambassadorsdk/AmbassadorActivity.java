@@ -180,8 +180,6 @@ public class AmbassadorActivity extends AppCompatActivity {
     void shareWithTwitter() {
         // Presents twitter login screen if user has not logged in yet
         if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
-            //TweetDialog tweetDialog = new TweetDialog(this);
-            //tweetDialog.setOwnerActivity(this);
             tweetDialog = new TweetDialog(this);
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
