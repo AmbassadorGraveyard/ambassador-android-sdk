@@ -24,7 +24,7 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
 
     public TweetDialog(Context context) {
         super(context);
-        AmbassadorActivity.component().inject(this);
+        MyApplication.component().inject(this);
 
         //TweetDialogComponent component = DaggerTweetDialogComponent.builder().tweetDialogModule(new TweetDialogModule(this)).build();
         //tweetDialog = component.provideTweetDialog();
