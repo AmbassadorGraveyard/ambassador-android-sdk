@@ -29,9 +29,6 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.inject.Singleton;
-
-import dagger.Component;
 
 /**
  * Created by JakeDunahee on 7/22/15.
@@ -46,7 +43,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
     private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
             R.drawable.email_icon, R.drawable.sms_icon};
-    private TweetDialog tweetDialog;
+    static TweetDialog tweetDialog;
 
     final private Runnable myRunnable = new Runnable() {
         @Override
@@ -66,30 +63,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     };
 
-    @Singleton
-    @Component(modules=TweetRequestModule.class)
-    public interface ApplicationComponent extends AmbassadorSDKComponent {
-    }
-
-    private static AmbassadorSDKComponent component = null;
-
-    public static void setComponent(AmbassadorSDKComponent thecomponent) {
-        component = thecomponent;
-    }
-
-    public static AmbassadorSDKComponent component() {
-        return component;
-    }
-
     // ACTIVITY OVERRIDE METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
-
-        if (component == null) {
-            component = DaggerAmbassadorActivity_ApplicationComponent.builder().tweetRequestModule(new TweetRequestModule()).build();
-        }
 
         ambassadorActivity = this;
         rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("test");

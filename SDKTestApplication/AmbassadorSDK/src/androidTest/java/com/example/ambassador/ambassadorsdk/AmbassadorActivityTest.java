@@ -1,6 +1,8 @@
 package com.example.ambassador.ambassadorsdk;
 
+import android.app.Instrumentation;
 import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
@@ -72,8 +74,10 @@ public class AmbassadorActivityTest {
     public void beforeEachTest() {
         //tweetRequestMock = new TweetRequest();
         //tweetRequestSpy = spy(tweetRequestMock);
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        MyApplication app = (MyApplication)instrumentation.getTargetContext().getApplicationContext();
         AmbassadorSDKComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
-        AmbassadorActivity.setComponent(component);
+        app.setComponent(component);
         component.inject(this);
 
         parameters = new ServiceSelectorPreferences();
@@ -105,12 +109,12 @@ public class AmbassadorActivityTest {
     @Test
     public void testTest() {
         //tweetRequestMock = component.provideMockTweetRequest();
-        when(tweetRequest.testMethod()).thenReturn("mock");
         AmbassadorSingleton.getInstance().setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
         AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
 
+        when(tweetRequest.testMethod()).thenReturn("mock");
         //http://stackoverflow.com/questions/18074212/mockito-mock-async-method
         //doNothing().when(tweetRequestMock).execute();
         String tweetText = "http://www.tester.com " + _getRandomNumber();
