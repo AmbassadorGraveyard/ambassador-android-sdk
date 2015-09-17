@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         final Context cxt = this;
 
         AmbassadorSDK.runWithKeys("SDKToken ***REMOVED***", "***REMOVED***");
-        AmbassadorSDK.identify("anonymous_test_1610@example.com");
+        AmbassadorSDK.identify("jake@getambassador.com");
 
         btnRAF = (Button)findViewById(R.id.btnShowRAF);
         btnRAF.setOnClickListener(new View.OnClickListener() {
