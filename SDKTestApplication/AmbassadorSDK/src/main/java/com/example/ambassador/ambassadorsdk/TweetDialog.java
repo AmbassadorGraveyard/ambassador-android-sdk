@@ -75,8 +75,8 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
             //TweetRequest tweetRequest = new TweetRequest();
             tweetRequest.mCallback = this;
             tweetRequest.tweetString = etTwitterMessage.getText().toString();
-            //tweetRequest.execute();
-            tweetRequest.testMethod();
+            tweetRequest.execute();
+            //tweetRequest.testMethod();
         }
     }
 

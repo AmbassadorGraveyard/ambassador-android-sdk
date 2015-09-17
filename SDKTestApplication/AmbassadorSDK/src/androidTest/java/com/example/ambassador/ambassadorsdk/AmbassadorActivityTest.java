@@ -60,7 +60,7 @@ public class AmbassadorActivityTest {
     @Singleton
     @Component(modules = {MockTweetRequestModule.class})
     public interface TestComponent extends AmbassadorSDKComponent {
-        void inject(TweetDialog tweetDialog);
+        void inject(AmbassadorActivityTest ambassadorActivityTest);
     }
 
     @Rule
@@ -76,7 +76,7 @@ public class AmbassadorActivityTest {
         //tweetRequestSpy = spy(tweetRequestMock);
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         MyApplication app = (MyApplication)instrumentation.getTargetContext().getApplicationContext();
-        AmbassadorSDKComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
+        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
         app.setComponent(component);
         component.inject(this);
 
@@ -123,8 +123,8 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnTweet)).perform(click());
         //onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         //onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        //verify(tweetRequestMock).execute();
-        verify(tweetRequest).testMethod();
+        verify(tweetRequest).execute();
+        //verify(tweetRequest).testMethod();
 
         //now call callback onPostExecute
         //http://stackoverflow.com/questions/13616547/calling-callbacks-with-mockito
