@@ -31,6 +31,7 @@ import java.net.URLEncoder;
 public class LinkedInLoginActivity extends AppCompatActivity {
     WebView webView;
     ProgressBar loader;
+    boolean webViewSuccess = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         webView = (WebView)findViewById(R.id.wvSocial);
 
         _setUpToolbar();
-
+        loader.setVisibility(View.VISIBLE);
         webView.setWebViewClient(new MyBrowser());
         webView.loadUrl("https://www.linkedin.com/uas/oauth2/authorization?" +
                 "response_type=code&client_id=***REMOVED***" +
@@ -88,7 +89,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                 requestTask.context = getApplicationContext();
                 requestTask.execute();
 
-                finish();
+
             }
 
             view.loadUrl(url);
@@ -98,10 +99,17 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            loader.setVisibility(View.GONE);
+            if (webViewSuccess) {
+                loader.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            view.loadUrl("about:blank");
+            webViewSuccess = false;
         }
     }
-
 
     private class RequestTask extends AsyncTask<Void, Void, Void> {
         public String currentCode;
