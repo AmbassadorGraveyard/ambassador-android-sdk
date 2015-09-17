@@ -42,8 +42,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -52,7 +50,6 @@ public class AmbassadorActivityTest {
     private ServiceSelectorPreferences parameters;
     private static final String EMAIL_PATTERN = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\\b";
     private static final String SMS_PATTERN = "Mobile (.*)";
-    //TweetRequest tweetRequestSpy;
 
     @Inject
     TweetRequest tweetRequest;
@@ -66,14 +63,8 @@ public class AmbassadorActivityTest {
     @Rule
     public ActivityTestRule<AmbassadorActivity> mActivityTestIntentRule = new ActivityTestRule<>(AmbassadorActivity.class, true, false);
 
-    //@Mock
-    //TweetDialog tweetDialog;
-    //TweetRequest tweetRequestMock;
-
     @Before
     public void beforeEachTest() {
-        //tweetRequestMock = new TweetRequest();
-        //tweetRequestSpy = spy(tweetRequestMock);
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         MyApplication app = (MyApplication)instrumentation.getTargetContext().getApplicationContext();
         TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
@@ -96,38 +87,11 @@ public class AmbassadorActivityTest {
         Intent intent = new Intent();
         intent.putExtra("test", parameters);
         mActivityTestIntentRule.launchActivity(intent);
-
-        //MockitoAnnotations.initMocks(this);
-        //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
     }
 
     @After
     public void afterEachTest() {
         AmbassadorSingleton.getInstance().savePusherInfo(null);
-    }
-
-    @Test
-    public void testTest() {
-        //tweetRequestMock = component.provideMockTweetRequest();
-        AmbassadorSingleton.getInstance().setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
-        AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");
-
-        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
-
-        when(tweetRequest.execute()).thenReturn("mock");
-        //http://stackoverflow.com/questions/18074212/mockito-mock-async-method
-        //doNothing().when(tweetRequestMock).execute();
-        String tweetText = "http://www.tester.com " + _getRandomNumber();
-        //tweetRequestMock.tweetString = tweetText;
-        onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
-        onView(withId(R.id.btnTweet)).perform(click());
-        //onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
-        //onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        verify(tweetRequest).execute();
-        //verify(tweetRequest).testMethod();
-
-        //now call callback onPostExecute
-        //http://stackoverflow.com/questions/13616547/calling-callbacks-with-mockito
     }
 
     //@Test
@@ -276,7 +240,7 @@ public class AmbassadorActivityTest {
 
     }
 
-    //@Test
+    @Test
     public void testTwitter() {
         //clear the token
         AmbassadorSingleton.getInstance().setTwitterAccessToken(null);
@@ -337,32 +301,14 @@ public class AmbassadorActivityTest {
         //make sure message has been restored
         onView(withId(R.id.etTweetMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
 
-        //TODO: THE BELOW CODE WORKS, BUT SINCE I COULDN'T GET MOCKING TO WORK ON TWEETREQUEST, IT WILL ACTUALLY SEND TWEETS
-        //THE VERIFY TEST PASSES, BUT IT'S COMMENTED OUT TO AVOID SPAMMING THE TWITTER
-        //WILL REVISIT ONCE WE CAN FIGURE OUT MOCKING TWEETREQUEST
-
-        /*doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                //fakeData = "FakeDataString";
-                return null;
-            }
-        }).when(tweetRequestMock).execute();*/
-        //}).when(tweetRequestSpy).execute();
-
-        //TweetDialog.TweetRequest tweetRequestMock = mock(TweetDialog.TweetRequest.class);
-        //doNothing().when(tweetRequestSpy).execute();
-        //doNothing().when(tweetRequestMock).execute();
-        //when(tweetRequestMock.execute()).thenReturn(null);
-
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
-        /*String tweetText = "http://www.tester.com " + _getRandomNumber();
-        tweetRequestMock.tweetString = tweetText;
+        String tweetText = "http://www.tester.com " + _getRandomNumber();
+        tweetRequest.tweetString = tweetText;
         onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
         onView(withId(R.id.btnTweet)).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        verify(tweetRequestMock).execute();*/
+        //verify(tweetRequest).execute();
 
         //TODO: testing toast (didn't work)
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
