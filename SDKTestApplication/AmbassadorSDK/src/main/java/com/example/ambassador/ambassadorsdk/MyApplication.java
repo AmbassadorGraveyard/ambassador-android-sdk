@@ -32,6 +32,8 @@ public class MyApplication extends Application {
         super.onCreate();
         MyApplication.context = getApplicationContext();
 
+        //testing code sets the component to test version. if app is running normally, component will be null
+        //which will create the application version component
         if (component == null) {
             component = DaggerMyApplication_ApplicationComponent.builder().tweetRequestModule(new TweetRequestModule()).build();
         }

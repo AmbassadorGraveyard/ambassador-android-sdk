@@ -24,13 +24,9 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
 
     public TweetDialog(Context context) {
         super(context);
-        MyApplication.component().inject(this);
 
-        //TweetDialogComponent component = DaggerTweetDialogComponent.builder().tweetDialogModule(new TweetDialogModule(this)).build();
-        //tweetDialog = component.provideTweetDialog();
-        //TweetRequestComponent component = DaggerTweetRequestComponent.builder().tweetRequestModule(new TweetRequestModule()).build();
-        //tweetRequest = component.provideTweetRequest();
-        //this.tweetRequest = tweetRequest;
+        //get injected modules we need
+        MyApplication.component().inject(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_twitter_tweet);
@@ -72,11 +68,9 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
             etTwitterMessage.shakeEditText();
         } else {
             loader.setVisibility(View.VISIBLE);
-            //TweetRequest tweetRequest = new TweetRequest();
             tweetRequest.mCallback = this;
             tweetRequest.tweetString = etTwitterMessage.getText().toString();
             tweetRequest.execute();
-            //tweetRequest.testMethod();
         }
     }
 

@@ -114,7 +114,7 @@ public class AmbassadorActivityTest {
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
 
-        when(tweetRequest.testMethod()).thenReturn("mock");
+        when(tweetRequest.execute()).thenReturn("mock");
         //http://stackoverflow.com/questions/18074212/mockito-mock-async-method
         //doNothing().when(tweetRequestMock).execute();
         String tweetText = "http://www.tester.com " + _getRandomNumber();
