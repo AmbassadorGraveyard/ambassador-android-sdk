@@ -252,8 +252,11 @@ public class AmbassadorActivity extends AppCompatActivity {
                     AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
                     AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
                     AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
-                    AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage =
-                            rafParams.defaultShareMessage + " " + urlObj.getString("url");
+                    if (!AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage.
+                            contains(AmbassadorSingleton.getInstance().getURL())) {
+                        AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage =
+                                rafParams.defaultShareMessage + " " + urlObj.getString("url");
+                    }
                 }
             }
         } catch (JSONException e) {
