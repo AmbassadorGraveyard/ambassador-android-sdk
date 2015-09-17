@@ -104,7 +104,9 @@ public class TwitterLoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            wvTwitter.loadUrl(String.valueOf(Uri.parse(requestToken.getAuthenticationURL())));
+            if (requestToken != null) {
+                wvTwitter.loadUrl(String.valueOf(Uri.parse(requestToken.getAuthenticationURL())));
+            }
         }
     }
 
