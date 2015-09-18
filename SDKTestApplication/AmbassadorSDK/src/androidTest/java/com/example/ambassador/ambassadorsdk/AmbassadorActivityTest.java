@@ -2,7 +2,6 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.app.Instrumentation;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.espresso.intent.Intents;
@@ -43,7 +42,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.mock;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -53,9 +51,11 @@ public class AmbassadorActivityTest {
     private static final String EMAIL_PATTERN = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\\b";
     private static final String SMS_PATTERN = "Mobile (.*)";
 
+    //tell Dagger this code will participate in dependency injection
     @Inject
     TweetRequest tweetRequest;
 
+    //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
     @Singleton
     @Component(modules = {MockTweetRequestModule.class})
     public interface TestComponent extends AmbassadorSDKComponent {
@@ -69,8 +69,12 @@ public class AmbassadorActivityTest {
     public void beforeEachTest() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         MyApplication app = (MyApplication)instrumentation.getTargetContext().getApplicationContext();
+
+        //tell the application which component we want to use (in this case use the the one created above instead of the
+        //application component which is created in the Application (and uses the real tweetRequest)
         TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
         app.setComponent(component);
+        //perform injection
         component.inject(this);
 
         parameters = new ServiceSelectorPreferences();
@@ -96,7 +100,7 @@ public class AmbassadorActivityTest {
         AmbassadorSingleton.getInstance().savePusherInfo(null);
     }
 
-    //@Test
+    @Test
     public void testMainLayout() {
         onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
@@ -108,7 +112,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
     }
 
-    //@Test
+    @Test
     public void testFacebook() {
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
         //onView(withText("You must")).check(matches(isDisplayed()));
@@ -116,11 +120,11 @@ public class AmbassadorActivityTest {
         pressBack();
 
         //TODO: Espresso Web API to test WebViews not ready for prime time - too much trouble getting this to work - will come back
-        //to this later to attempt to enter text into WebView fields to authenticate
+        //TODO: to this later to attempt to enter text into WebView fields to authenticate
         //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
     }
 
-    //@Test
+    @Test
     public void testContactsEmail() {
         //start recording fired Intents
         Intents.init();
@@ -153,7 +157,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.tvNoContacts)).check(matches(not(isDisplayed())));
 
         //TODO: test search bar
-        //COMMENTED OUT - CAN'T GET TOOLBAR TO SHOW UP IN TESTS - RESEARCH THIS - maybe find some other way to open the textbox
+        //TODO: COMMENTED OUT - CAN'T GET TOOLBAR TO SHOW UP IN TESTS - RESEARCH THIS - maybe find some other way to open the textbox
         /*Activity act = mActivityTestIntentRule.getActivity();
         View view = act.findViewById(R.id.action_search);
         onView(withId(R.id.action_search)).perform(click());
@@ -214,7 +218,7 @@ public class AmbassadorActivityTest {
         //TODO: after figuring out how to use mock list of contacts, test deleting one to make sure NO CONTACTS textview is shown
     }
 
-    //@Test
+    @Test
     public void testContactsSMS() {
         //start recording fired Intents
         Intents.init();
@@ -237,7 +241,7 @@ public class AmbassadorActivityTest {
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
     }
 
-    //@Test
+    @Test
     public void testLinkedIn() {
 
     }
@@ -291,8 +295,8 @@ public class AmbassadorActivityTest {
         //onView(withText("INSERT LINK")).perform(click());
         //onView(withId(android.R.id.button2)).perform(click());
         //TODO: can't get the programmatically-created AlertDialog to be visible to Espresso with above two lines
-        //see https://code.google.com/p/android-test-kit/issues/detail?id=60
-        //instead, just make sure the twitter dialog isn't there anymore, then back out
+        //TODO: see https://code.google.com/p/android-test-kit/issues/detail?id=60
+        //TODO: instead, just make sure the twitter dialog isn't there anymore, then back out
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         pressBack();
 
@@ -308,9 +312,15 @@ public class AmbassadorActivityTest {
         tweetRequest.tweetString = tweetText;
         onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
 
-        AsyncTask<Void, Void, Void> mockExecuteTask = mock(AsyncTask.class);
-        //when(tweetRequest.testMethod()).thenReturn("mock");
-        onView(withId(R.id.btnTweet)).perform(click());
+        //TODO: successfully mocked tweetRequest via Dagger, however Mockito is silently failing on mocking AsyncTask.execute(), because
+        //TODO: it can't mock final methods.
+        //TODO: Attempt 1: use Powermock. Failed in importing library via androidTestCompile
+        //TODO: Next attempt is to remove AsyncTask altogether and either roll our own all-encompassing library
+        //TODO: or (preferred) use RxAndroid see: blog.stablekernel.com/replace-asynctask-asynctaskloader-rx-observable-rxjava-android-patterns/
+        //TODO: for a great explanation on why AsyncTask is bad for performance, testability, usability, etc.
+        //AsyncTask<Void, Void, Void> mockExecuteTask = mock(AsyncTask.class);
+        //when(tweetRequest.execute()).thenReturn("mock");
+        //onView(withId(R.id.btnTweet)).perform(click());
         //onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         //onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
         //verify(tweetRequest).execute();
