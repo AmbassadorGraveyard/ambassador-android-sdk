@@ -234,6 +234,15 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         contactList.add(new ContactObject("Cool Friend", "corey@getambassador.com"));
         contactList.add(new ContactObject("Brian Davidson", "corey@getambassador.com"));
         contactList.add(new ContactObject("Jim Harbaugh", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Ambassador Diplomat", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Friend One", "corey@getambassador.com"));
+        contactList.add(new ContactObject("John Doe", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Greg Lastname", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Mike Ambassador", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Cool Friend", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Brian Davidson", "corey@getambassador.com"));
+        contactList.add(new ContactObject("Jim Harbaugh", "corey@getambassador.com"));
         contactList.add(new ContactObject("Ambassador Diplomat", "corey@getambassador.com"));*/
 
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
@@ -336,26 +345,27 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     // Adds and styles toolbar in place of the actionbar
     private void _setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+
+        if (toolbar != null) {
+            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
+            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
+        }
+
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Refer your friends"); }
-        toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
-        toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        //if (toolbar.getNavigationIcon() != null) { toolbar.getNavigationIcon().setColorFilter(Color.DKGRAY, PorterDuff.Mode.SRC_IN); }
     }
 
     private void _updateSendButton(int numOfContacts) {
-        if (numOfContacts > 0) {
-            if (!etShareMessage.isEnabled()) {
-                if (!btnSend.isEnabled()) btnSend.setEnabled(true);
-            }
-
-            String btnSendText = "SEND TO " + numOfContacts;
-            btnSendText += (numOfContacts > 1) ? " CONTACTS" : " CONTACT";
-            btnSend.setText(btnSendText);
-        } else {
+        if (numOfContacts == 0) {
             btnSend.setText("NO CONTACTS SELECTED");
             btnSend.setEnabled(false);
+            return;
         }
+
+        if (!etShareMessage.isEnabled() && !btnSend.isEnabled()) btnSend.setEnabled(true);
+        String btnSendText = "SEND TO " + numOfContacts;
+        btnSendText += (numOfContacts > 1) ? " CONTACTS" : " CONTACT";
+        btnSend.setText(btnSendText);
     }
 
     private void _sendToContacts() {
@@ -376,13 +386,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                         }
                     });
                     cnd.show();
-                    return;
                 } else {
                     _initiateSend();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                return;
             }
         } else {
             Utilities.presentUrlDialog(this, etShareMessage, new Utilities.UrlAlertInterface() {

@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
+    jcenter()
     mavenCentral()
     maven { url 'http://clojars.org/repo' }
     flatDir {
@@ -9,26 +11,67 @@ repositories {
 }
 
 dependencies {
+    //classpath 'com.android.tools.build:gradle:1.1.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'org.twitter4j:twitter4j-core:4.0.4'
     compile 'com.google.guava:guava:19.0-rc1'
     compile 'com.pusher:pusher-java-client:0.3.3'
     compile 'org.slf4j:slf4j-android:1.7.12'
-    compile ('com.facebook.android:facebook-android-sdk:4.5.0')
-    compile(name:'augur', ext:'aar')
+    compile 'com.facebook.android:facebook-android-sdk:4.5.0'
+    compile(name: 'augur', ext: 'aar')
+    compile "com.google.dagger:dagger:2.0"
+    apt "com.google.dagger:dagger-compiler:2.0"
+    provided 'org.glassfish:javax.annotation:10.0-b28'
+
+    //Unit testing dependencies
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'org.powermock:powermock-module-test-mockito-junit4:1.6.2'
+    testCompile 'org.powermock:powermock-module-junit4:1.6.2'
+
+    //Automated UI testing dependencies
+    androidTestCompile 'com.android.support.test:runner:0.3'
+    androidTestCompile 'com.android.support.test:rules:0.3'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2'
+    androidTestCompile 'org.mockito:mockito-core:1.*'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
+    androidTestApt "com.google.dagger:dagger-compiler:2.0"
+    //androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2'
 }
 
 android {
+/*    productFlavors {
+        // Define separate dev and prod product flavors.
+        dev {
+            // dev utilizes minSDKVersion = 21 to allow the Android gradle plugin
+            // to pre-dex each module and produce an APK that can be tested on
+            // Android Lollipop without time consuming dex merging processes.
+            minSdkVersion 21
+        }
+        prod {
+            // The actual minSdkVersion for the application.
+            minSdkVersion 16
+        }
+    }*/
+
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
     publishNonDefault true
 
+    lintOptions {
+        abortOnError false
+    }
+
     defaultConfig {
+        multiDexEnabled true
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -38,12 +81,9 @@ android {
             consumerProguardFiles 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
 }
-
-
-
-
-
-
-
 

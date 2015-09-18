@@ -3,27 +3,31 @@ package com.example.ambassador.ambassadorsdk;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
+
+import javax.inject.Inject;
 
 /**
  * Created by JakeDunahee on 8/6/15.
  */
 
-class TweetDialog extends Dialog {
+class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
     private CustomEditText etTwitterMessage;
     private ProgressBar loader;
 
+    @Inject
+    TweetRequest tweetRequest;
+
     public TweetDialog(Context context) {
         super(context);
+
+        //get injected modules we need
+        MyApplication.component().inject(this);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_twitter_tweet);
 
@@ -35,7 +39,6 @@ class TweetDialog extends Dialog {
 
         loader.setVisibility(View.GONE);
         etTwitterMessage.setEditTextTint(context.getResources().getColor(R.color.twitter_blue));
-        etTwitterMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
 
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +50,14 @@ class TweetDialog extends Dialog {
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hide();
+                dismiss();
+            }
+        });
+
+        this.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                etTwitterMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
             }
         });
     }
@@ -58,7 +68,7 @@ class TweetDialog extends Dialog {
             etTwitterMessage.shakeEditText();
         } else {
             loader.setVisibility(View.VISIBLE);
-            TweetRequest tweetRequest = new TweetRequest();
+            tweetRequest.mCallback = this;
             tweetRequest.tweetString = etTwitterMessage.getText().toString();
             tweetRequest.execute();
         }
@@ -83,42 +93,17 @@ class TweetDialog extends Dialog {
         }
     }
 
-    private class TweetRequest extends AsyncTask<Void, Void, Void> {
-        public String tweetString;
-        public int postStatus;
+    //@Override
+    public void processTweetRequest(int postStatus) {
+        loader.setVisibility(View.GONE);
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            AccessToken accessToken = new AccessToken(AmbassadorSingleton.getInstance().getTwitterAccessToken(),
-                    AmbassadorSingleton.getInstance().getTwitterAccessTokenSecret());
-            Twitter twitter = new TwitterFactory().getInstance();
-            twitter.setOAuthConsumer(AmbassadorSingleton.TWITTER_KEY, AmbassadorSingleton.TWITTER_SECRET);
-            twitter.setOAuthAccessToken(accessToken);
-
-            try {
-                twitter.updateStatus(tweetString);
-                postStatus = 200;
-            } catch (TwitterException e) {
-                e.printStackTrace();
-                postStatus = 400;
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            loader.setVisibility(View.GONE);
-
-            // Make sure post was successful and handle it if it wasn't
-            if (postStatus < 300 && postStatus > 199) {
-                Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
-                hide();
-                dismiss();
-            } else {
-                Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
-            }
+        // Make sure post was successful and handle it if it wasn't
+        if (postStatus < 300 && postStatus > 199) {
+            Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+            hide();
+            dismiss();
+        } else {
+            Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
         }
     }
 }

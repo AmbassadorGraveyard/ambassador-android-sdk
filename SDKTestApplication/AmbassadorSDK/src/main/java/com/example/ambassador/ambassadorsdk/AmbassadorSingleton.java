@@ -134,6 +134,10 @@ class AmbassadorSingleton {
     void saveEmailSubject(String subjectLine) {
         sharePrefs.edit().putString("subjectLine", subjectLine).apply();
     }
+
+    void setRafDefaultMessage(String message) {
+        getInstance().rafParameters.defaultShareMessage = message;
+    }
     // END SHAREDINSTANCE SETTERS
 
 
@@ -172,7 +176,7 @@ class AmbassadorSingleton {
         return sharePrefs.getString("subjectLine", null);
     }
 
-    Boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
+    boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
     // END SHAREDINSTANCE GETTERS
 
 
