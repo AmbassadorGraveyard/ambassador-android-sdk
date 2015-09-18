@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="8dp"
+    android:id="@+id/dialog_twitter_layout"
     android:background="@android:color/white">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:text="Twitter Post"
-        android:id="@+id/twitterHeadline"
+        android:id="@+id/tvHeaderText"
         android:layout_alignParentTop="true"
         android:textSize="20sp"
         android:textColor="@android:color/white"
@@ -22,6 +23,20 @@
         android:paddingLeft="15dp"
         android:background="@color/twitter_blue" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivHeaderImg"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/twitter_icon"
+        android:layout_alignBottom="@+id/tvHeaderText"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp" />
+
     <com.example.ambassador.ambassadorsdk.CustomEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +46,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="24dp"
         android:editable="true"
-        android:layout_below="@+id/twitterPost"
+        android:layout_below="@+id/tvTweet"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp"
         android:textCursorDrawable="@null"/>
@@ -69,27 +84,13 @@
         android:indeterminate="true"
         android:backgroundTint="@color/twitter_blue" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/twitter_icon"
-        android:layout_alignBottom="@+id/twitterHeadline"
-        android:layout_marginRight="5dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Tweet"
-        android:id="@+id/twitterPost"
-        android:layout_below="@+id/imageView"
+        android:id="@+id/tvTweet"
+        android:layout_below="@+id/ivHeaderImg"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="20dp"

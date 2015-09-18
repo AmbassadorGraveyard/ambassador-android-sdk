@@ -17,12 +17,16 @@ android {
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'LICENSE.txt'
     }
 }
 
@@ -31,6 +35,11 @@ android {
 dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile project(':AmbassadorSDK')
+
+    //Automated UI testing (Espresso) dependencies
+    androidTestCompile 'com.android.support.test:runner:0.3'
+    androidTestCompile 'com.android.support.test:rules:0.3'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
 }
 
 
