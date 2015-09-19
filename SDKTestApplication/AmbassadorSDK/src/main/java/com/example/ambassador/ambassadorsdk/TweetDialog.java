@@ -68,9 +68,13 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
             etTwitterMessage.shakeEditText();
         } else {
             loader.setVisibility(View.VISIBLE);
-            tweetRequest.mCallback = this;
+            //TweetRequest tweetRequest2 = new TweetRequest();
             tweetRequest.tweetString = etTwitterMessage.getText().toString();
-            tweetRequest.execute();
+            tweetRequest.mCallback = this;
+            tweetRequest.tweet();
+            //processTweetRequest(200);
+            //tweetRequest.tweetString = etTwitterMessage.getText().toString();
+            //tweetRequest.execute();
         }
     }
 

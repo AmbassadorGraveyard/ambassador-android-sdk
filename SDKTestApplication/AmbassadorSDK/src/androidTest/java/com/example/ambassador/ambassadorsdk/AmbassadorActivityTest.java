@@ -42,6 +42,9 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -313,18 +316,15 @@ public class AmbassadorActivityTest {
         tweetRequest.tweetString = tweetText;
         onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
 
-        //TODO: successfully mocked tweetRequest via Dagger, however Mockito is silently failing on mocking AsyncTask.execute(), because
-        //TODO: it can't mock final methods.
-        //TODO: Attempt 1: use Powermock. Failed in importing library via androidTestCompile
-        //TODO: Next attempt is to remove AsyncTask altogether and either roll our own all-encompassing library
-        //TODO: or (preferred) use RxAndroid see: blog.stablekernel.com/replace-asynctask-asynctaskloader-rx-observable-rxjava-android-patterns/
-        //TODO: for a great explanation on why AsyncTask is bad for performance, testability, usability, etc.
         //AsyncTask<Void, Void, Void> mockExecuteTask = mock(AsyncTask.class);
-        //when(tweetRequest.execute()).thenReturn("mock");
-        //onView(withId(R.id.btnTweet)).perform(click());
-        //onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
-        //onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        //verify(tweetRequest).execute();
+        Runnable run = mock(Runnable.class);
+        //when(tweetRequest.tweet()).thenReturn(run);
+        doNothing().when(tweetRequest).tweet();
+        onView(withId(R.id.btnTweet)).perform(click());
+
+        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        //]]onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
+        verify(tweetRequest).tweet();
 
         //TODO: testing toast (didn't work)
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
