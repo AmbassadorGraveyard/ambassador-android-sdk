@@ -12,7 +12,7 @@ import java.net.URL;
 /**
  * Created by coreyfields on 9/21/15.
  */
-class LinkedInRequest {
+public class LinkedInRequest {
     public AsyncResponse mCallback = null;
     private int postStatus;
 
