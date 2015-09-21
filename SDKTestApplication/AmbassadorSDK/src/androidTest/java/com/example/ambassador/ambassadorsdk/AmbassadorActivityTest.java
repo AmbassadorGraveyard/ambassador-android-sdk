@@ -19,6 +19,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -42,8 +44,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 
 
@@ -316,14 +317,17 @@ public class AmbassadorActivityTest {
         tweetRequest.tweetString = tweetText;
         onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
 
-        //AsyncTask<Void, Void, Void> mockExecuteTask = mock(AsyncTask.class);
-        Runnable run = mock(Runnable.class);
-        //when(tweetRequest.tweet()).thenReturn(run);
-        doNothing().when(tweetRequest).tweet();
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                tweetRequest.mCallback.processTweetRequest(200);
+                return null;
+            }
+        }).when(tweetRequest).tweet();
+
         onView(withId(R.id.btnTweet)).perform(click());
 
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
-        //]]onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
         verify(tweetRequest).tweet();
 
         //TODO: testing toast (didn't work)
