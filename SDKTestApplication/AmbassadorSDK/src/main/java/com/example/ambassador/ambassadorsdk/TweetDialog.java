@@ -69,8 +69,7 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
         } else {
             loader.setVisibility(View.VISIBLE);
             tweetRequest.mCallback = this;
-            tweetRequest.tweetString = etTwitterMessage.getText().toString();
-            tweetRequest.tweet();
+            tweetRequest.tweet(etTwitterMessage.getText().toString());
         }
     }
 
@@ -93,7 +92,6 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
         }
     }
 
-    //@Override
     public void processTweetRequest(int postStatus) {
         loader.setVisibility(View.GONE);
 
