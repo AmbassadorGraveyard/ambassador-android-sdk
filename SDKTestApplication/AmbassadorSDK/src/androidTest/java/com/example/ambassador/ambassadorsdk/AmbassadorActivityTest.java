@@ -120,7 +120,7 @@ public class AmbassadorActivityTest {
 
     @Test
     public void testFacebook() {
-        //TODO:
+        //TODO: remove hardcoded id check, try to get withText working
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
         //onView(withText("You must")).check(matches(isDisplayed()));
         onView(withId(16908290)).check(matches(isDisplayed()));
@@ -265,6 +265,10 @@ public class AmbassadorActivityTest {
         intended(hasComponent(TwitterLoginActivity.class.getName()));
         //stop recording Intents
         Intents.release();
+
+        //TODO: Espresso Web API to test WebViews not ready for prime time - too much trouble getting this to work - will come back
+        //TODO: to this later to attempt to enter text into WebView fields to authenticate
+        //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
 
         pressBack();
 

@@ -188,7 +188,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     void shareWithLinkedIn() {
         // Presents login screen if user hasn't signed in yet
         if (AmbassadorSingleton.getInstance().getLinkedInToken() != null) {
-            LinkedInPostDialog dialog = new LinkedInPostDialog(this);
+            LinkedInDialog dialog = new LinkedInDialog(this);
             dialog.setOwnerActivity(this);
             dialog.show();
         } else {

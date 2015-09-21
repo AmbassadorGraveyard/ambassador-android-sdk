@@ -10,10 +10,9 @@ import twitter4j.auth.AccessToken;
 /**
  * Created by coreyfields on 9/19/15.
  */
-public class TweetRequest {
-    public String tweetString;
-    public int postStatus;
+class TweetRequest {
     public AsyncResponse mCallback = null;
+    private int postStatus;
     final Handler mHandler = new Handler();
 
     public interface AsyncResponse {
@@ -26,7 +25,7 @@ public class TweetRequest {
         }
     };
 
-    public void tweet() {
+    public void tweet(final String tweetString) {
         Thread thread = new Thread(new Runnable(){
             @Override
             public void run() {
