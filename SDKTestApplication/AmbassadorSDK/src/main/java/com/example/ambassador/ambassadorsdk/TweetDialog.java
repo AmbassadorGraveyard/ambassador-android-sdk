@@ -70,7 +70,7 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
             loader.setVisibility(View.VISIBLE);
             tweetRequest.mCallback = this;
             tweetRequest.tweetString = etTwitterMessage.getText().toString();
-            tweetRequest.execute();
+            tweetRequest.tweet();
         }
     }
 
