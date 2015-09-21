@@ -1,5 +1,7 @@
 package com.example.ambassador.ambassadorsdk;
 
+import javax.inject.Singleton;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -9,9 +11,7 @@ import dagger.Provides;
 @Module
 public class TweetRequestModule {
     @Provides
-    //@Singleton
-    //Can't be a singleton because you can't run execute() on the same AsyncTask object more than once
-    //this way we'll get a new one each time it's injected
+    @Singleton
     TweetRequest provideTweetRequest() {
         return new TweetRequest();
     }

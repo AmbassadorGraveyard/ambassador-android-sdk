@@ -19,6 +19,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -42,6 +44,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 
 @RunWith(AndroidJUnit4.class)
@@ -283,6 +289,7 @@ public class AmbassadorActivityTest {
         //onView(withId(R.id.tvTweet)).check(matches(isDisplayed()));
         onView(withText("Twitter Post")).check(matches(isDisplayed()));
         pressBack();
+        verify(tweetRequest, never()).tweet();
 
         //ensure dialog fields not visible now that we've backed out
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
@@ -292,6 +299,7 @@ public class AmbassadorActivityTest {
         //enter blank text and make sure dialog is still visible
         onView(withId(R.id.etTweetMessage)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.btnTweet)).perform(click());
+        verify(tweetRequest, never()).tweet();
 
         //onView(withText("INSERT LINK")).perform(click());
         //onView(withId(android.R.id.button2)).perform(click());
@@ -303,7 +311,9 @@ public class AmbassadorActivityTest {
 
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
         pressBack();
+        verify(tweetRequest, never()).tweet();
 
+        //test sending a successful (mocked) tweet
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         //make sure message has been restored
         onView(withId(R.id.etTweetMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
@@ -313,18 +323,43 @@ public class AmbassadorActivityTest {
         tweetRequest.tweetString = tweetText;
         onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
 
-        //TODO: successfully mocked tweetRequest via Dagger, however Mockito is silently failing on mocking AsyncTask.execute(), because
-        //TODO: it can't mock final methods.
-        //TODO: Attempt 1: use Powermock. Failed in importing library via androidTestCompile
-        //TODO: Next attempt is to remove AsyncTask altogether and either roll our own all-encompassing library
-        //TODO: or (preferred) use RxAndroid see: blog.stablekernel.com/replace-asynctask-asynctaskloader-rx-observable-rxjava-android-patterns/
-        //TODO: for a great explanation on why AsyncTask is bad for performance, testability, usability, etc.
-        //AsyncTask<Void, Void, Void> mockExecuteTask = mock(AsyncTask.class);
-        //when(tweetRequest.execute()).thenReturn("mock");
-        //onView(withId(R.id.btnTweet)).perform(click());
-        //onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
-        //onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        //verify(tweetRequest).execute();
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                tweetRequest.mCallback.processTweetRequest(200);
+                return null;
+            }
+        })
+        .doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                tweetRequest.mCallback.processTweetRequest(400);
+                return null;
+            }
+        })
+        .when(tweetRequest).tweet();
+
+        onView(withId(R.id.btnTweet)).perform(click());
+        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
+
+        //test sending an unsuccessful (mocked) tweet
+        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
+        //make sure message has been restored
+        onView(withId(R.id.etTweetMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
+
+        //type a link with a random number appended to circumvent twitter complaining about duplicate post
+        onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
+
+        onView(withId(R.id.btnTweet)).perform(click());
+        //failure shouldn't dismiss the dialog
+        onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
+        verify(tweetRequest, times(2)).tweet();
+
+        onView(withId(R.id.btnCancel)).perform(click());
+        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         //TODO: testing toast (didn't work)
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
