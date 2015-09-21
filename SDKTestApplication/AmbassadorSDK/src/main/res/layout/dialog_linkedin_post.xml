@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingBottom="8dp"
+    android:id="@+id/dialog_linkedin_layout"
     android:background="@android:color/white">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:text="LinkedIn Post"
-        android:id="@+id/textView"
+        android:id="@+id/tvLinkedInHeaderText"
         android:layout_alignParentTop="true"
-        android:textSize="20dp"
+        android:textSize="20sp"
         android:textColor="@android:color/white"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
@@ -22,43 +23,70 @@
         android:gravity="center_vertical"
         android:paddingLeft="15dp" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivLinkedInHeaderImg"
+        android:src="@drawable/linkedin_icon"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@+id/tvLinkedInHeaderText"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Message"
+        android:id="@+id/tvSend"
+        android:layout_below="@+id/tvLinkedInHeaderText"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginLeft="20dp" />
+
     <com.example.ambassador.ambassadorsdk.CustomEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etTweetMessage"
+        android:id="@+id/etLinkedInMessage"
         android:backgroundTint="@color/twitter_blue"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="24dp"
         android:editable="true"
-        android:layout_below="@+id/textView3"
+        android:layout_below="@+id/tvSend"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp"
-        android:backgroundTintMode="src_atop"
         android:textCursorDrawable="@null"/>
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:background="?android:attr/selectableItemBackground"
-        android:text="Share"
-        android:id="@+id/btnTweet"
-        android:layout_below="@+id/etTweetMessage"
-        android:layout_alignEnd="@+id/etTweetMessage"
-        android:layout_alignRight="@+id/etTweetMessage"
-        android:textColor="@color/twitter_blue" />
+        android:text="Cancel"
+        android:textColor="@color/ambassador_blue"
+        android:id="@+id/btnCancel"
+        android:layout_alignTop="@+id/btnPost"
+        android:layout_toStartOf="@+id/btnPost"
+        android:layout_toLeftOf="@+id/btnPost"
+        android:layout_marginBottom="5dp" />
 
     <Button
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="36dp"
         android:background="?android:attr/selectableItemBackground"
-        android:text="Cancel"
-        android:textColor="@color/twitter_blue"
-        android:id="@+id/btnCancel"
-        android:layout_alignTop="@+id/btnTweet"
-        android:layout_toStartOf="@+id/btnTweet"
-        android:layout_toLeftOf="@+id/btnTweet"
-        android:layout_marginBottom="5dp" />
+        android:text="Share"
+        android:id="@+id/btnPost"
+        android:layout_below="@+id/etLinkedInMessage"
+        android:layout_alignEnd="@+id/etLinkedInMessage"
+        android:layout_alignRight="@+id/etLinkedInMessage"
+        android:textColor="@color/ambassador_blue"
+        android:layout_marginBottom="8dp" />
 
     <ProgressBar
         android:layout_width="wrap_content"
@@ -66,36 +94,7 @@
         android:id="@+id/loadingPanel"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:indeterminate="false"
-        android:indeterminateTint="@color/linkedin_blue"
-        android:indeterminateTintMode="src_in"
-        android:indeterminateOnly="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Message"
-        android:id="@+id/textView3"
-        android:layout_below="@+id/textView"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginLeft="20dp" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView2"
-        android:src="@drawable/linkedin_icon"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:layout_alignBottom="@+id/textView"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginEnd="5dp" />
+        android:indeterminate="true"
+        android:backgroundTint="@color/linkedin_blue" />
 
 </RelativeLayout>

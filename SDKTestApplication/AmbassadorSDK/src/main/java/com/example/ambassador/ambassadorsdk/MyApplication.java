@@ -14,7 +14,7 @@ public class MyApplication extends Application {
     private static Context context;
 
     @Singleton
-    @Component(modules=TweetRequestModule.class)
+    @Component(modules=TweetRequestModule.class, LinkedInRequestModule.class)
     public interface ApplicationComponent extends AmbassadorSDKComponent {
     }
 

@@ -1,9 +1,8 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -13,35 +12,36 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.inject.Inject;
+
 /**
  * Created by JakeDunahee on 7/27/15.
  */
 class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
-    Button btnPost, btnCancel;
     CustomEditText etMessage;
-    AmbassadorActivity activity;
     ProgressBar loader;
 
-    public LinkedInDialog(Activity activity) {
-        super(activity);
-        this.activity = (AmbassadorActivity)activity;
-    }
+    @Inject
+    LinkedInRequest linkedInRequest;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public LinkedInDialog(Context context) {
+        super(context);
+
+        //get injected modules we need
+        MyApplication.component().inject(this);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_linkedin_post);
 
         // UI Components
-        btnPost = (Button) findViewById(R.id.btnTweet);
-        btnCancel = (Button) findViewById(R.id.btnCancel);
-        etMessage = (CustomEditText) findViewById(R.id.etTweetMessage);
+        Button btnPost = (Button) findViewById(R.id.btnPost);
+        Button btnCancel = (Button) findViewById(R.id.btnCancel);
+        etMessage = (CustomEditText) findViewById(R.id.etLinkedInMessage);
 
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
         loader.setVisibility(View.GONE);
 
-        etMessage.setEditTextTint(getContext().getResources().getColor(R.color.linkedin_blue));
+        etMessage.setEditTextTint(context.getResources().getColor(R.color.linkedin_blue));
         etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
