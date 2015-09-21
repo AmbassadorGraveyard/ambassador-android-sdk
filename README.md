@@ -64,13 +64,23 @@ desktop or another place that you can easily access.
  ```
  <img src="screenshots/addRepo.png" width="600" />
 
-* Finally, add the **ambassador module** as a dependency to your project by inserting the following code:
+* Now add the **ambassador module** as a dependency to your project by inserting the following code:
 
  ```java
  compile project(':ambassador')
  ```
-
  <img src="screenshots/addAmbAsDependency.png" width="600" />
+
+* Next, go to your project's top-level Gradle file
+
+ <img src="screenshots/topLevelGradle.png" width="600" />
+
+* Add the following line under the dependencies section
+
+ ```java
+ classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
+ ```
+ <img src="screenshots/daggerDependency.png" width="600" />
 
 
  ## Initializing Ambassador
