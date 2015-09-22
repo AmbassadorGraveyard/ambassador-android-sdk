@@ -5,4 +5,5 @@ package com.example.ambassador.ambassadorsdk;
  */
 public interface AmbassadorSDKComponent {
     void inject(TweetDialog tweetDialog);
+    void inject(LinkedInDialog linkedInDialog);
 }

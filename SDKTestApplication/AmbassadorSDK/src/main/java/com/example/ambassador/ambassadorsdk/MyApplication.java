@@ -14,7 +14,7 @@ public class MyApplication extends Application {
     private static Context context;
 
     @Singleton
-    @Component(modules=TweetRequestModule.class, LinkedInRequestModule.class)
+    @Component(modules=ApplicationModule.class)
     public interface ApplicationComponent extends AmbassadorSDKComponent {
     }
 
@@ -35,7 +35,7 @@ public class MyApplication extends Application {
         //testing code sets the component to test version. if app is running normally, component will be null
         //which will create the application version component
         if (component == null) {
-            component = DaggerMyApplication_ApplicationComponent.builder().tweetRequestModule(new TweetRequestModule()).build();
+            component = DaggerMyApplication_ApplicationComponent.builder().applicationModule(new ApplicationModule()).build();
         }
     }
 

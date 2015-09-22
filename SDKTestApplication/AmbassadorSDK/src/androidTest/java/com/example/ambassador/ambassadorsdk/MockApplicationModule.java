@@ -12,10 +12,16 @@ import static org.mockito.Mockito.mock;
  * Created by coreyfields on 9/14/15.
  */
 @Module
-public class MockTweetRequestModule {
+public class MockApplicationModule {
     @Provides
     @Singleton
     TweetRequest provideTweetRequest() {
         return mock(TweetRequest.class);
+    }
+
+    @Provides
+    @Singleton
+    LinkedInRequest provideLinkedInRequest() {
+        return mock(LinkedInRequest.class);
     }
 }
