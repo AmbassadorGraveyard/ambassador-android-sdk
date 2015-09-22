@@ -14,6 +14,7 @@ import android.widget.TextView;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -61,11 +62,13 @@ public class AmbassadorActivityTest {
     //tell Dagger this code will participate in dependency injection
     @Inject
     TweetRequest tweetRequest;
+
+    @Inject
     LinkedInRequest linkedInRequest;
 
     //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
     @Singleton
-    @Component(modules = {MockTweetRequestModule.class})
+    @Component(modules = {MockApplicationModule.class})
     public interface TestComponent extends AmbassadorSDKComponent {
         void inject(AmbassadorActivityTest ambassadorActivityTest);
     }
@@ -80,7 +83,7 @@ public class AmbassadorActivityTest {
 
         //tell the application which component we want to use - in this case use the the one created above instead of the
         //application component which is created in the Application (and uses the real tweetRequest)
-        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockTweetRequestModule(new MockTweetRequestModule()).build();
+        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockApplicationModule(new MockApplicationModule()).build();
         app.setComponent(component);
         //perform injection
         component.inject(this);
@@ -284,7 +287,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
         pressBack();
-        verify(linkedInRequest, never()).send(anyString());
+        verify(linkedInRequest, never()).send(new JSONObject());
 
         //ensure dialog fields not visible now that we've backed out
         onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
@@ -294,19 +297,19 @@ public class AmbassadorActivityTest {
         //enter blank text and make sure dialog is still visible
         onView(withId(R.id.etLinkedInMessage)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.btnPost)).perform(click());
-        verify(linkedInRequest, never()).send(anyString());
+        verify(linkedInRequest, never()).send(new JSONObject());
 
         //onView(withText("INSERT LINK")).perform(click());
         //onView(withId(android.R.id.button2)).perform(click());
         //TODO: can't get the programmatically-created AlertDialog to be visible to Espresso with above two lines
         //TODO: see https://code.google.com/p/android-test-kit/issues/detail?id=60
-        //TODO: instead, just make sure the twitter dialog isn't there anymore, then back out
+        //TODO: instead, just make sure the linkedin dialog isn't there anymore, then back out
         onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
         pressBack();
 
         onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
         pressBack();
-        verify(linkedInRequest, never()).send(anyString());
+        verify(linkedInRequest, never()).send(new JSONObject());
 
         //test sending a successful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
@@ -323,13 +326,13 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-                .doAnswer(new Answer<Void>() {
-                    public Void answer(InvocationOnMock invocation) {
-                        tweetRequest.mCallback.processTweetRequest(400);
-                        return null;
-                    }
-                })
-                .when(tweetRequest).tweet(anyString());
+        .doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                tweetRequest.mCallback.processTweetRequest(400);
+                return null;
+            }
+        })
+        .when(tweetRequest).tweet(anyString());
 
         onView(withId(R.id.btnTweet)).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
