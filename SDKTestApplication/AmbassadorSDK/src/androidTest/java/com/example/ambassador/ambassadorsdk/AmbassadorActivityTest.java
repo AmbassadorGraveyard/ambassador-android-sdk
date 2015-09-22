@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -46,6 +47,7 @@ import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -113,6 +115,8 @@ public class AmbassadorActivityTest {
 
     @Test
     public void testMainLayout() {
+        //TODO: first test the existence of the loader, then test mocking the response from server to dismiss the loader
+
         onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(withText(parameters.titleText)));
@@ -287,7 +291,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
         pressBack();
-        verify(linkedInRequest, never()).send(new JSONObject());
+        verify(linkedInRequest, never()).send(argThat(new IsJSONObject()));
 
         //ensure dialog fields not visible now that we've backed out
         onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
@@ -297,7 +301,7 @@ public class AmbassadorActivityTest {
         //enter blank text and make sure dialog is still visible
         onView(withId(R.id.etLinkedInMessage)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.btnPost)).perform(click());
-        verify(linkedInRequest, never()).send(new JSONObject());
+        verify(linkedInRequest, never()).send(argThat(new IsJSONObject()));
 
         //onView(withText("INSERT LINK")).perform(click());
         //onView(withId(android.R.id.button2)).perform(click());
@@ -309,7 +313,7 @@ public class AmbassadorActivityTest {
 
         onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
         pressBack();
-        verify(linkedInRequest, never()).send(new JSONObject());
+        verify(linkedInRequest, never()).send(argThat(new IsJSONObject()));
 
         //test sending a successful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
@@ -322,38 +326,37 @@ public class AmbassadorActivityTest {
 
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
-                tweetRequest.mCallback.processTweetRequest(200);
+                linkedInRequest.mCallback.processLinkedInRequest(200);
                 return null;
             }
         })
         .doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
-                tweetRequest.mCallback.processTweetRequest(400);
+                linkedInRequest.mCallback.processLinkedInRequest(400);
                 return null;
             }
         })
-        .when(tweetRequest).tweet(anyString());
+        .when(linkedInRequest).send(argThat(new IsJSONObject()));
 
-        onView(withId(R.id.btnTweet)).perform(click());
-        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.btnPost)).perform(click());
+        onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
 
-        //test sending an unsuccessful (mocked) tweet
-        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
+        //test sending an unsuccessful (mocked) post
+        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
         //make sure message has been restored
         onView(withId(R.id.etLinkedInMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
-
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         onView(withId(R.id.etLinkedInMessage)).perform(typeText(linkedInText), closeSoftKeyboard());
 
-        onView(withId(R.id.btnTweet)).perform(click());
+        onView(withId(R.id.btnPost)).perform(click());
         //failure shouldn't dismiss the dialog
-        onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
-        verify(tweetRequest, times(2)).tweet(anyString());
+        verify(linkedInRequest, times(2)).send(argThat(new IsJSONObject()));
 
         onView(withId(R.id.btnCancel)).perform(click());
-        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
@@ -492,5 +495,11 @@ public class AmbassadorActivityTest {
             public void describeTo(Description description) {
             }
         };
+    }
+
+    private static class IsJSONObject extends ArgumentMatcher<JSONObject> {
+        public boolean matches(Object jsonObject) {
+            return (jsonObject != null); //equivalent to (jsonObject instanceOf JSONObject)
+        }
     }
 }

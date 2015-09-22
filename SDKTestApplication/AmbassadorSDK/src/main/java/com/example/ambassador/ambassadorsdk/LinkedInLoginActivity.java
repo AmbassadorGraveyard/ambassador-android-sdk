@@ -60,9 +60,11 @@ public class LinkedInLoginActivity extends AppCompatActivity {
 
     private void _setUpToolbar() {
         Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.linkedin_blue));
-        toolbar.setTitleTextColor(Color.WHITE);
+        if (toolbar != null) {
+            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+            toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.linkedin_blue));
+            toolbar.setTitleTextColor(Color.WHITE);
+        }
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Login to LinkedIn"); }
     }
 

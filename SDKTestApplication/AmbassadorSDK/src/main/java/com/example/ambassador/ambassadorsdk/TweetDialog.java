@@ -98,7 +98,6 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
         // Make sure post was successful and handle it if it wasn't
         if (postStatus < 300 && postStatus > 199) {
             Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
-            hide();
             dismiss();
         } else {
             Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();

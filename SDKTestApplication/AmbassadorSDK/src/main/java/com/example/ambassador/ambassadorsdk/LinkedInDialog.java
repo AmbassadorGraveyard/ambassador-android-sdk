@@ -34,9 +34,9 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
         setContentView(R.layout.dialog_linkedin_post);
 
         // UI Components
-        Button btnPost = (Button) findViewById(R.id.btnPost);
-        Button btnCancel = (Button) findViewById(R.id.btnCancel);
-        etMessage = (CustomEditText) findViewById(R.id.etLinkedInMessage);
+        Button btnPost = (Button)findViewById(R.id.btnPost);
+        Button btnCancel = (Button)findViewById(R.id.btnCancel);
+        etMessage = (CustomEditText)findViewById(R.id.etLinkedInMessage);
 
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
         loader.setVisibility(View.GONE);
@@ -65,8 +65,6 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
             etMessage.shakeEditText();
         } else {
             loader.setVisibility(View.VISIBLE);
-            LinkedInRequest linkedInRequest = new LinkedInRequest();
-
             String userMessage = etMessage.getText().toString();
 
             try {
@@ -109,7 +107,6 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
         // Make sure post was successful and handle it if it wasn't
         if (postStatus < 300 && postStatus > 199) {
             Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
-            hide();
             dismiss();
         } else {
             Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
