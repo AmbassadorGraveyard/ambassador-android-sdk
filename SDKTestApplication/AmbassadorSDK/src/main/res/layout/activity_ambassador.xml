@@ -10,8 +10,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Spread the word"
+        android:text="Spread the word!"
+        android:textColor="@color/welcomeTitle"
+        android:textSize="@dimen/welcomeTitle"
         android:id="@+id/tvWelcomeTitle"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -20,8 +21,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Refer a friend to get a reward"
+        android:textColor="@color/welcomeDesc"
+        android:textSize="@dimen/welcomeDesc"
         android:id="@+id/tvWelcomeDesc"
         android:layout_below="@+id/tvWelcomeTitle"
         android:layout_centerHorizontal="true"

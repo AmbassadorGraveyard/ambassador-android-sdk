@@ -1,7 +1,8 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +13,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -59,11 +62,22 @@ public class LinkedInLoginActivity extends AppCompatActivity {
     }
 
     private void _setUpToolbar() {
-        Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
-        toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.linkedin_blue));
-        toolbar.setTitleTextColor(Color.WHITE);
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Login to LinkedIn"); }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+        if (toolbar == null) return;
+
+        final Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        if (arrow != null) { //this could happen because of getDrawable deprecation
+            arrow.setColorFilter(getResources().getColor(R.color.toolBarArrowColor), PorterDuff.Mode.SRC_ATOP);
+            toolbar.setNavigationIcon(arrow);
+        }
+        else {
+            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        }
+
+        toolbar.setBackgroundColor(getResources().getColor(R.color.toolBarColor));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolBarText));
     }
 
     private class MyBrowser extends WebViewClient {

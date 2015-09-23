@@ -7,10 +7,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -21,12 +23,15 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.facebook.FacebookSdk;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -261,14 +266,22 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     private void _setUpToolbar(String toolbarTitle) {
+        if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-        if (toolbar != null) {
+        if (toolbar == null) return;
+
+        final Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        if (arrow != null) { //this could happen because of getDrawable deprecation
+            arrow.setColorFilter(getResources().getColor(R.color.toolBarArrowColor), PorterDuff.Mode.SRC_ATOP);
+            toolbar.setNavigationIcon(arrow);
+        }
+        else {
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
-            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         }
 
-        if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
+        toolbar.setBackgroundColor(getResources().getColor(R.color.toolBarColor));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolBarText));
     }
     // END UI SETTER METHODS
 }
