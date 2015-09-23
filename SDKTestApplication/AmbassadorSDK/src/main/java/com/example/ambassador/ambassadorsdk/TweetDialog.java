@@ -10,11 +10,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Created by JakeDunahee on 8/6/15.
  */
 
+@Singleton
 class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
     private CustomEditText etTwitterMessage;
     private ProgressBar loader;
@@ -22,6 +24,7 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
     @Inject
     TweetRequest tweetRequest;
 
+    @Inject
     public TweetDialog(Context context) {
         super(context);
 

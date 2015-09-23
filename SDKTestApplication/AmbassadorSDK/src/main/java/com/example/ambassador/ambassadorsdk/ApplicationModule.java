@@ -1,24 +1,21 @@
 package com.example.ambassador.ambassadorsdk;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
-import dagger.Provides;
 
 /**
  * Created by coreyfields on 9/14/15.
  */
 @Module
 public class ApplicationModule {
-    @Provides
+/*    @Provides
     @Singleton
     TweetRequest provideTweetRequest() {
         return new TweetRequest();
-    }
+    }*/
 
-    @Provides
+/*    @Provides
     @Singleton
     LinkedInRequest provideLinkedInRequest() {
         return new LinkedInRequest();
-    }
+    }*/
 }
