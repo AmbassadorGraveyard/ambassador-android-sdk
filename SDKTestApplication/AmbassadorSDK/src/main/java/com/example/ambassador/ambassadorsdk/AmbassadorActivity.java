@@ -35,7 +35,7 @@ import java.util.TimerTask;
  * Created by JakeDunahee on 7/22/15.
  */
 public class AmbassadorActivity extends AppCompatActivity {
-    private CustomEditText etShortUrl;
+    CustomEditText etShortUrl;
     private ServiceSelectorPreferences rafParams;
     private ProgressDialog pd;
     private Timer networkTimer;
@@ -58,7 +58,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Executed when Pusher data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage, etShortUrl);
+            tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage);
         }
     };
 
@@ -102,29 +102,29 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         });
 
-        pd = new ProgressDialog(this);
-        pd.setMessage("Loading");
-        pd.setOwnerActivity(this);
-        pd.setCanceledOnTouchOutside(false);
-        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialog) {
-                finish();
-            }
-        });
-
-        pd.show();
-
-        networkTimer = new Timer();
-        networkTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                _showNetworkError();
-            }
-        }, 30000);
-
-        Identify identify = new Identify(MyApplication.getAppContext(), AmbassadorSingleton.getInstance().getUserEmail());
-        identify.performIdentifyRequest();
+//        pd = new ProgressDialog(this);
+//        pd.setMessage("Loading");
+//        pd.setOwnerActivity(this);
+//        pd.setCanceledOnTouchOutside(false);
+//        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//            @Override
+//            public void onCancel(DialogInterface dialog) {
+//                finish();
+//            }
+//        });
+//
+//        pd.show();
+//
+//        networkTimer = new Timer();
+//        networkTimer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {
+//                _showNetworkError();
+//            }
+//        }, 30000);
+//
+//        Identify identify = new Identify(MyApplication.getAppContext(), AmbassadorSingleton.getInstance().getUserEmail());
+//        identify.performIdentifyRequest();
     }
 
     @Override
@@ -221,7 +221,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
     // UI SETTER METHODS
-    void tryAndSetURL(String pusherString, String initialShareMessage, EditText shortURLET) {
+    void tryAndSetURL(String pusherString, String initialShareMessage) {
         // Functionality: Gets URL from Pusher
         // First checks to see if Pusher info has already been saved to SharedPreferencs
         if (pd != null) {
@@ -240,7 +240,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 int campID = urlObj.getInt("campaign_uid");
                 int myUID = Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID());
                 if (campID == myUID) {
-                    shortURLET.setText(urlObj.getString("url"));
+                    etShortUrl.setText(urlObj.getString("url"));
                     AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
                     AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
                     AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
