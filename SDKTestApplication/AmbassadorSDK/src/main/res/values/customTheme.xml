@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="welcomeTitle">#ff0000</color>
+    <dimen name="welcomeTitle">9sp</dimen>
+    <color name="welcomeDesc">#fff000</color>
+    <dimen name="welcomeDesc">12sp</dimen>
+    <color name="homeToolBarText">#000000</color>
+    <color name="homeToolBarColor">@color/lightGray</color>
+    <color name="homeToolBarArrowColor">#ff0000</color>
+    <color name="contactsToolBarText">#000000</color>
+    <color name="contactsToolBarColor">@color/lightGray</color>
+    <color name="contactsToolBarArrowColor">#ff0000</color>
+    <color name="twitterToolBarText">#000000</color>
+    <color name="twitterToolBarColor">@color/lightGray</color>
+    <color name="twitterToolBarArrowColor">#ff0000</color>
+    <color name="linkedinToolBarText">#000000</color>
+    <color name="linkedinToolBarColor">@color/lightGray</color>
+    <color name="linkedinToolBarArrowColor">#ff0000</color>
+
+<!--
+    <color name="welcomeTitle">@color/lightGray</color>
+    <dimen name="welcomeTitle">12sp</dimen>
+    <color name="welcomeDesc">@color/lightGray</color>
+    <dimen name="welcomeDesc">11sp</dimen>
+    <color name="homeToolBarText">#000000</color>
+    <color name="homeToolBarColor">@color/lightGray</color>
+    <color name="homeToolBarArrowColor">#ff0000</color>
+    <color name="contactsToolBarText">#000000</color>
+    <color name="contactsToolBarColor">@color/lightGray</color>
+    <color name="contactsToolBarArrowColor">#ff0000</color>
+    <color name="twitterToolBarText">#000000</color>
+    <color name="twitterToolBarColor">@color/lightGray</color>
+    <color name="twitterToolBarArrowColor">#ff0000</color>
+    <color name="linkedinToolBarText">#000000</color>
+    <color name="linkedinToolBarColor">@color/lightGray</color>
+    <color name="linkedinToolBarArrowColor">#ff0000</color>
+-->
+</resources>

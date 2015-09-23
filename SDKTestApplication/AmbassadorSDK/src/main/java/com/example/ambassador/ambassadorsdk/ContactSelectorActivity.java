@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -66,7 +68,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         tvNoContacts = (TextView) findViewById(R.id.tvNoContacts);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        _setUpToolbar();
+        _setUpToolbar(AmbassadorSingleton.getInstance().rafParameters.toolbarTitle);
 
         //setup progress dialog only once
         pd = new ProgressDialog(this);
@@ -343,16 +345,23 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     // END BUTTON METHODS
 
     // Adds and styles toolbar in place of the actionbar
-    private void _setUpToolbar() {
-        Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
+    private void _setUpToolbar(String toolbarTitle) {
+        if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
 
-        if (toolbar != null) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+        if (toolbar == null) return;
+
+        final Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        if (arrow != null) { //this could happen because of getDrawable deprecation
+            arrow.setColorFilter(getResources().getColor(R.color.toolBarArrowColor), PorterDuff.Mode.SRC_ATOP);
+            toolbar.setNavigationIcon(arrow);
+        }
+        else {
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
-            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         }
 
-        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Refer your friends"); }
+        toolbar.setBackgroundColor(getResources().getColor(R.color.toolBarColor));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.toolBarText));
     }
 
     private void _updateSendButton(int numOfContacts) {
