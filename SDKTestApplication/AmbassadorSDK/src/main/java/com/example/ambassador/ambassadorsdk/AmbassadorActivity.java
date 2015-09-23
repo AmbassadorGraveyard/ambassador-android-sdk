@@ -75,9 +75,14 @@ public class AmbassadorActivity extends AppCompatActivity {
     @Inject
     LinkedInDialog linkedInDialog;
 
+    @Inject
+    ShareDialog fbDialog;
+
     @Singleton
     @Component(modules=AmbassadorActivityModule.class)
     public interface ApplicationComponent extends AmbassadorActivityComponent {
+        //dummy component which will not override anything from parent interface
+        //the testing component will provide its own overrides to inject into the tests
     }
 
     // ACTIVITY OVERRIDE METHODS
@@ -85,6 +90,8 @@ public class AmbassadorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         //get injected modules we need
         AmbassadorActivityComponent component = DaggerAmbassadorActivity_ApplicationComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule(this)).build();
@@ -106,8 +113,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeDesc.setText(rafParams.descriptionText);
         _setUpToolbar(rafParams.toolbarTitle);
 
-        tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null,
-                AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage, etShortUrl);
+        tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null, AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage, etShortUrl);
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 copyShortURLToClipboard(etShortUrl.getText().toString(), getApplicationContext());
@@ -184,13 +190,11 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     void shareWithFacebook() {
-        FacebookSdk.sdkInitialize(getApplicationContext());
         ShareLinkContent content = new ShareLinkContent.Builder()
                 .setContentTitle(rafParams.defaultShareMessage)
                 .setContentUrl(Uri.parse(AmbassadorSingleton.getInstance().getURL()))
                 .build();
 
-        ShareDialog fbDialog = new ShareDialog(this);
         fbDialog.show(content);
     }
 
@@ -274,7 +278,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     private void _showNetworkError() {
-        // Funtionality: After 30 seconds of waiting for data from Pusher/Augur, shows toast to user
+        // Functionality: After 30 seconds of waiting for data from Pusher/Augur, shows toast to user
         // stating that there is a network error and then dismisses the RAF activity
         timerHandler.post(myRunnable);
     }
