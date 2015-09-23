@@ -58,8 +58,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Executed when Pusher data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null,
-                    AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage, etShortUrl);
+            tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage, etShortUrl);
         }
     };
 
@@ -85,8 +84,6 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeDesc.setText(rafParams.descriptionText);
         _setUpToolbar(rafParams.toolbarTitle);
 
-        tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null,
-                AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage, etShortUrl);
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 copyShortURLToClipboard(etShortUrl.getText().toString(), getApplicationContext());
@@ -104,6 +101,30 @@ public class AmbassadorActivity extends AppCompatActivity {
                 respondToGridViewClick(position);
             }
         });
+
+        pd = new ProgressDialog(this);
+        pd.setMessage("Loading");
+        pd.setOwnerActivity(this);
+        pd.setCanceledOnTouchOutside(false);
+        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
+
+        pd.show();
+
+        networkTimer = new Timer();
+        networkTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                _showNetworkError();
+            }
+        }, 30000);
+
+        Identify identify = new Identify(MyApplication.getAppContext(), AmbassadorSingleton.getInstance().getUserEmail());
+        identify.performIdentifyRequest();
     }
 
     @Override
@@ -200,57 +221,34 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
     // UI SETTER METHODS
-    void tryAndSetURL(boolean pusherAvailable, String pusherString, String initialShareMessage, EditText shortURLET) {
+    void tryAndSetURL(String pusherString, String initialShareMessage, EditText shortURLET) {
         // Functionality: Gets URL from Pusher
         // First checks to see if Pusher info has already been saved to SharedPreferencs
-        if (pusherAvailable) {
-            if (pd != null) {
-                pd.hide();
-                networkTimer.cancel();
+        if (pd != null) {
+            pd.dismiss();
+            networkTimer.cancel();
+        }
+
+        try {
+            // We get a JSON object from the Pusher Info string saved to SharedPreferences
+            JSONObject pusherData = new JSONObject(pusherString);
+            JSONArray urlArray = pusherData.getJSONArray("urls");
+
+            // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
+            for (int i = 0; i < urlArray.length(); i++) {
+                JSONObject urlObj = urlArray.getJSONObject(i);
+                int campID = urlObj.getInt("campaign_uid");
+                int myUID = Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID());
+                if (campID == myUID) {
+                    shortURLET.setText(urlObj.getString("url"));
+                    AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
+                    AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
+                    AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
+                    AmbassadorSingleton.getInstance().setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
+                }
             }
-
-            try {
-                // We get a JSON object from the Pusher Info string saved to SharedPreferences
-                JSONObject pusherData = new JSONObject(pusherString);
-                JSONArray urlArray = pusherData.getJSONArray("urls");
-
-                // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
-                for (int i = 0; i < urlArray.length(); i++) {
-                    JSONObject urlObj = urlArray.getJSONObject(i);
-                    int campID = urlObj.getInt("campaign_uid");
-                    int myUID = Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID());
-                    if (campID == myUID) {
-                        shortURLET.setText(urlObj.getString("url"));
-                        AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
-                        AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
-                        AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
-                        AmbassadorSingleton.getInstance().setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-            pd = new ProgressDialog(this);
-            pd.setMessage("Loading");
-            pd.setOwnerActivity(this);
-            pd.setCanceledOnTouchOutside(false);
-            pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    finish();
-                }
-            });
-
-            pd.show();
-
-            networkTimer = new Timer();
-            networkTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    _showNetworkError();
-                }
-            }, 30000);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

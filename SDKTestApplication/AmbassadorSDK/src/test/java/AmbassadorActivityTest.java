@@ -116,28 +116,6 @@ public class AmbassadorActivityTest extends TestCase {
         verify(ambassadorActivity).startActivity(mockIntent);
     }
 
-//    @Test
-//    public void facebookShareTest() {
-//        ambassadorActivity.shareWithFacebook();
-//        verify(ambassadorActivity).shareWithFacebook();
-//    }
-
-//    @Test
-//    public void twitterShareTest() {
-//        ambassadorActivity.shareWithTwitter(true);
-//        ambassadorActivity.shareWithTwitter(false);
-//        verify(ambassadorActivity).shareWithTwitter(true);
-//        verify(ambassadorActivity).shareWithTwitter(false);
-//    }
-//
-//    @Test
-//    public void linkedInShareTest() {
-//        ambassadorActivity.shareWithLinkedIn(true);
-//        ambassadorActivity.shareWithLinkedIn(false);
-//        verify(ambassadorActivity).shareWithLinkedIn(true);
-//        verify(ambassadorActivity).shareWithLinkedIn(false);
-//    }
-
     @Test
     public void tryAndSetURLTrueTest() throws Exception {
         // ARRANGE
@@ -171,29 +149,7 @@ public class AmbassadorActivityTest extends TestCase {
         PowerMockito.when(Integer.parseInt(anyString())).thenReturn(new Integer(0));
 
         // ASSERT
-        ambassadorActivity.tryAndSetURL(true, pusher, "Test message", mockShortURLET);
-        verify(ambassadorActivity).tryAndSetURL(true, pusher, "Test message", mockShortURLET);
-    }
-
-    @Test
-    public void tryAndSetURLFalseTest() throws Exception {
-        ProgressDialog mockDialog = mock(ProgressDialog.class);
-        EditText mockShortURLET = mock(EditText.class);
-        DialogInterface.OnCancelListener mockListener = mock(DialogInterface.OnCancelListener.class);
-        String pusher = "{\"email\":\"jake@getambassador.com\"," +
-                "\"firstName\":\"erer\",\"lastName\":\"ere\"," +
-                "\"phoneNumber\":\"null\"," +
-                "\"urls\":[" +
-                "{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}" +
-                "]}";
-
-        whenNew(ProgressDialog.class).withAnyArguments().thenReturn(mockDialog);
-        doNothing().when(mockDialog).setMessage(anyString());
-        doNothing().when(mockDialog).setOwnerActivity(ambassadorActivity);
-        doNothing().when(mockDialog).setCanceledOnTouchOutside(anyBoolean());
-        doNothing().when(mockDialog).setOnCancelListener(mockListener);
-        doNothing().when(mockDialog).show();
-
-        ambassadorActivity.tryAndSetURL(false, pusher, "Test", mockShortURLET);
+        ambassadorActivity.tryAndSetURL(pusher, "Test message", mockShortURLET);
+        verify(ambassadorActivity).tryAndSetURL(pusher, "Test message", mockShortURLET);
     }
 }

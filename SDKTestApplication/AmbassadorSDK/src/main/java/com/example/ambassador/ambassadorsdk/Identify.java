@@ -60,8 +60,7 @@ class Identify implements IIdentify {
         pusher.createPusher(deviceID, new IdentifyPusher.PusherCompletion() {
             @Override
             public void pusherSubscribed() {
-                IdentifyRequest request = new IdentifyRequest();
-                request.execute();
+                performIdentifyRequest();
             }
 
             @Override
@@ -80,6 +79,11 @@ class Identify implements IIdentify {
 
             }
         });
+    }
+
+    void performIdentifyRequest() {
+        IdentifyRequest request = new IdentifyRequest();
+        request.execute();
     }
 
     private void _getAndSavePusherInfo(String jsonObject) {
@@ -108,7 +112,7 @@ class Identify implements IIdentify {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
-    private class IdentifyRequest extends AsyncTask<Void, Void, Void> {
+    class IdentifyRequest extends AsyncTask<Void, Void, Void> {
         int statusCode;
 
         @Override

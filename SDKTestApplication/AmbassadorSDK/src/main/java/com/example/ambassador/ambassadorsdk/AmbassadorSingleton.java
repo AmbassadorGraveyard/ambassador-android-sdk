@@ -38,9 +38,9 @@ class AmbassadorSingleton {
     // STATIC VARIABLES
     static String identifyURL() {
         if (AmbassadorSingleton.isReleaseBuild) {
-            return "http://api.ambassador.com/universal/action/identify/?u=";
+            return "https://api.ambassador.com/universal/action/identify/?u=";
         } else {
-            return "http://dev-ambassador-api.herokuapp.com/universal/action/identify/?u=";
+            return "https://dev-ambassador-api.herokuapp.com/universal/action/identify/?u=";
         }
     }
 
@@ -138,6 +138,10 @@ class AmbassadorSingleton {
     void setRafDefaultMessage(String message) {
         getInstance().rafParameters.defaultShareMessage = message;
     }
+
+    void setUserEmail(String email) {
+        sharePrefs.edit().putString("userEmail", email).apply();
+    }
     // END SHAREDINSTANCE SETTERS
 
 
@@ -174,6 +178,10 @@ class AmbassadorSingleton {
 
     String getEmailSubjectLine() {
         return sharePrefs.getString("subjectLine", null);
+    }
+
+    String getUserEmail() {
+        return sharePrefs.getString("userEmail", null);
     }
 
     boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
