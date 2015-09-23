@@ -43,7 +43,8 @@ dependencies {
 }
 
 android {
-/*    productFlavors {
+/*
+    productFlavors {
         // Define separate dev and prod product flavors.
         dev {
             // dev utilizes minSDKVersion = 21 to allow the Android gradle plugin
