@@ -51,7 +51,6 @@ public class AmbassadorActivity extends AppCompatActivity {
     private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
     private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
             R.drawable.email_icon, R.drawable.sms_icon};
-    //static TweetDialog tweetDialog;
 
     final private Runnable myRunnable = new Runnable() {
         @Override
@@ -73,16 +72,12 @@ public class AmbassadorActivity extends AppCompatActivity {
     @Inject
     TweetDialog tweetDialog;
 
-    //@Inject
-    //Context context;
+    @Inject
+    LinkedInDialog linkedInDialog;
 
     @Singleton
     @Component(modules=AmbassadorActivityModule.class)
-    public interface AmbassadorActivityComponent {
-        void inject(AmbassadorActivity ambassadorActivity);
-        void inject(TweetDialog tweetDialog);
-        void inject(LinkedInDialog linkedInDialog);
-        Context context();
+    public interface ApplicationComponent extends AmbassadorActivityComponent {
     }
 
     // ACTIVITY OVERRIDE METHODS
@@ -92,7 +87,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambassador);
 
         //get injected modules we need
-        AmbassadorActivityComponent component = DaggerAmbassadorActivity_AmbassadorActivityComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule(this)).build();
+        AmbassadorActivityComponent component = DaggerAmbassadorActivity_ApplicationComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule(this)).build();
+        MyApplication.setComponent(component);
         component.inject(this);
 
         rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("rafParameters");
@@ -201,7 +197,6 @@ public class AmbassadorActivity extends AppCompatActivity {
     void shareWithTwitter() {
         // Presents twitter login screen if user has not logged in yet
         if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
-            //tweetDialog = new TweetDialog(this);
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
         } else {
@@ -213,9 +208,8 @@ public class AmbassadorActivity extends AppCompatActivity {
     void shareWithLinkedIn() {
         // Presents login screen if user hasn't signed in yet
         if (AmbassadorSingleton.getInstance().getLinkedInToken() != null) {
-            LinkedInDialog dialog = new LinkedInDialog(this);
-            dialog.setOwnerActivity(this);
-            dialog.show();
+            linkedInDialog.setOwnerActivity(this);
+            linkedInDialog.show();
         } else {
             Intent intent = new Intent(this, LinkedInLoginActivity.class);
             startActivity(intent);
