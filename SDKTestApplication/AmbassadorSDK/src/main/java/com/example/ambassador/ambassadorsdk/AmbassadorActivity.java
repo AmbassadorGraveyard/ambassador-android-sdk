@@ -7,10 +7,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -21,14 +21,22 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.facebook.FacebookSdk;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.Component;
 
 
 /**
@@ -39,12 +47,11 @@ public class AmbassadorActivity extends AppCompatActivity {
     private ServiceSelectorPreferences rafParams;
     private ProgressDialog pd;
     private Timer networkTimer;
-    private AmbassadorActivity ambassadorActivity;
     private final android.os.Handler timerHandler = new android.os.Handler();
     private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
     private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
             R.drawable.email_icon, R.drawable.sms_icon};
-    static TweetDialog tweetDialog;
+    //static TweetDialog tweetDialog;
 
     final private Runnable myRunnable = new Runnable() {
         @Override
@@ -63,13 +70,31 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     };
 
+    @Inject
+    TweetDialog tweetDialog;
+
+    //@Inject
+    //Context context;
+
+    @Singleton
+    @Component(modules=AmbassadorActivityModule.class)
+    public interface AmbassadorActivityComponent {
+        void inject(AmbassadorActivity ambassadorActivity);
+        void inject(TweetDialog tweetDialog);
+        void inject(LinkedInDialog linkedInDialog);
+        Context context();
+    }
+
     // ACTIVITY OVERRIDE METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
 
-        ambassadorActivity = this;
+        //get injected modules we need
+        AmbassadorActivityComponent component = DaggerAmbassadorActivity_AmbassadorActivityComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule(this)).build();
+        component.inject(this);
+
         rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("rafParameters");
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
@@ -169,14 +194,14 @@ public class AmbassadorActivity extends AppCompatActivity {
                 .setContentUrl(Uri.parse(AmbassadorSingleton.getInstance().getURL()))
                 .build();
 
-        ShareDialog fbDialog = new ShareDialog(ambassadorActivity);
+        ShareDialog fbDialog = new ShareDialog(this);
         fbDialog.show(content);
     }
 
     void shareWithTwitter() {
         // Presents twitter login screen if user has not logged in yet
         if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
-            tweetDialog = new TweetDialog(this);
+            //tweetDialog = new TweetDialog(this);
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
         } else {

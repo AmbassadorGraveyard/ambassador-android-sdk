@@ -18,13 +18,13 @@ public class MyApplication extends Application {
     public interface ApplicationComponent extends AmbassadorSDKComponent {
     }
 
-    private static AmbassadorSDKComponent component = null;
+    private static AmbassadorActivity.AmbassadorActivityComponent component = null;
 
-    public void setComponent(AmbassadorSDKComponent comp) {
+    public void setComponent(AmbassadorActivity.AmbassadorActivityComponent comp) {
         component = comp;
     }
 
-    public static AmbassadorSDKComponent component() {
+    public static AmbassadorActivity.AmbassadorActivityComponent component() {
         return component;
     }
 
@@ -35,7 +35,8 @@ public class MyApplication extends Application {
         //testing code sets the component to test version. if app is running normally, component will be null
         //which will create the application version component
         if (component == null) {
-            component = DaggerMyApplication_ApplicationComponent.builder().applicationModule(new ApplicationModule()).build();
+            component = DaggerAmbassadorActivity_AmbassadorActivityComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule(null)).build();
+            //component = DaggerMyApplication_ApplicationComponent.builder().applicationModule(new ApplicationModule()).build();
         }
     }
 
