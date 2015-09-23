@@ -31,6 +31,7 @@ dependencies {
     testCompile 'org.powermock:powermock-module-junit4:1.6.2'
 
     //Automated UI testing dependencies
+    androidTestCompile 'com.facebook.android:facebook-android-sdk:4.5.0'
     androidTestCompile 'com.android.support.test:runner:0.3'
     androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
@@ -56,7 +57,8 @@ android {
             // The actual minSdkVersion for the application.
             minSdkVersion 16
         }
-    }*/
+    }
+*/
 
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
