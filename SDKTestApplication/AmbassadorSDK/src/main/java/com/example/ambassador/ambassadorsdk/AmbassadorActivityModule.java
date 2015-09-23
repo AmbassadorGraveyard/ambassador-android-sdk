@@ -26,7 +26,7 @@ public class AmbassadorActivityModule {
 
     @Provides
     @Singleton
-    //@ForActivity
+    @ForActivity
     Context provideContext() {
         return context;
     }

@@ -24,7 +24,8 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
     @Inject
     LinkedInRequest linkedInRequest;
 
-    public LinkedInDialog(Context context) {
+    @Inject
+    public LinkedInDialog(@ForActivity Context context) {
         super(context);
 
         //get injected modules we need
@@ -42,12 +43,11 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
         loader.setVisibility(View.GONE);
 
         etMessage.setEditTextTint(context.getResources().getColor(R.color.linkedin_blue));
-        etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                hide();
+                dismiss();
             }
         });
 
@@ -55,6 +55,13 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
             @Override
             public void onClick(View v) {
                 _btnPostClicked();
+            }
+        });
+
+        this.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
             }
         });
     }

@@ -25,7 +25,7 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
     TweetRequest tweetRequest;
 
     @Inject
-    public TweetDialog(Context context) {
+    public TweetDialog(@ForActivity Context context) {
         super(context);
 
         //get injected modules we need
