@@ -102,29 +102,29 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         });
 
-//        pd = new ProgressDialog(this);
-//        pd.setMessage("Loading");
-//        pd.setOwnerActivity(this);
-//        pd.setCanceledOnTouchOutside(false);
-//        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
-//            @Override
-//            public void onCancel(DialogInterface dialog) {
-//                finish();
-//            }
-//        });
-//
-//        pd.show();
-//
-//        networkTimer = new Timer();
-//        networkTimer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                _showNetworkError();
-//            }
-//        }, 30000);
-//
-//        Identify identify = new Identify(MyApplication.getAppContext(), AmbassadorSingleton.getInstance().getUserEmail());
-//        identify.performIdentifyRequest();
+        pd = new ProgressDialog(this);
+        pd.setMessage("Loading");
+        pd.setOwnerActivity(this);
+        pd.setCanceledOnTouchOutside(false);
+        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
+
+        pd.show();
+
+        networkTimer = new Timer();
+        networkTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                _showNetworkError();
+            }
+        }, 30000);
+
+        Identify identify = new Identify(MyApplication.getAppContext(), AmbassadorSingleton.getInstance().getUserEmail());
+        identify.performIdentifyRequest();
     }
 
     @Override

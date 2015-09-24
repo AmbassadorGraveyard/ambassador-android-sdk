@@ -73,13 +73,8 @@ public class AmbassadorActivityTest {
 
     @Before
     public void beforeEachTest() {
-        AmbassadorSingleton.getInstance().setUserEmail("jake@getambassador.com");
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         MyApplication app = (MyApplication)instrumentation.getTargetContext().getApplicationContext();
-        AmbassadorSingleton.getInstance().setCampaignID("260");
-        AmbassadorSingleton.getInstance().saveUniversalToken("UniversalToken bdb49d2b9ae24b7b6bc5da122370f3517f98336f");
-        AmbassadorSingleton.getInstance().setIdentifyObject("{\"enroll\":true,\"campaign_id\":\"260\",\"email\":\"jake@getambassador.com\",\"source\":\"android_sdk_pilot\",\"mbsy_source\":\"\",\"mbsy_cookie_code\":\"\",\"fp\":{\"email\":\"jake@getambassador.com\",\"firstName\":\"erer\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http:\\/\\/staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"},null]}}");
-        AmbassadorSingleton.getInstance().saveUniversalID("alksdjflsadjfa;lksdjfasdf");
 
         //tell the application which component we want to use (in this case use the the one created above instead of the
         //application component which is created in the Application (and uses the real tweetRequest)
@@ -89,12 +84,13 @@ public class AmbassadorActivityTest {
         component.inject(this);
 
         parameters = new ServiceSelectorPreferences();
-        parameters.defaultShareMessage = "Check out this company! http://staging.mbsy.co/jHjl";
+        parameters.defaultShareMessage = "Check out this company!";
         parameters.titleText = "RAF Params Welcome Title";
         parameters.descriptionText = "RAF Params Welcome Description";
         parameters.toolbarTitle = "RAF Params Toolbar Title";
 
-
+        AmbassadorSingleton.getInstance().setCampaignID("260");
+        AmbassadorSingleton.getInstance().saveUniversalToken("UniversalToken bdb49d2b9ae24b7b6bc5da122370f3517f98336f");
 
         //save pusher data so we don't sit and wait for any unnecessary async tests to come back
         String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"erer\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"},]}";
@@ -118,11 +114,8 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeDesc)).check(matches(withText(parameters.descriptionText)));
         onView(withId(R.id.etShortURL)).check(matches(isDisplayed()));
-//        onView(withId(R.id.etShortURL)).check(matches(withText("http://staging.mbsy.co/")));
+        onView(withId(R.id.etShortURL)).check(matches(withText("http://staging.mbsy.co/jHjl")));
         onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
-
-
-
     }
 
     @Test
@@ -336,13 +329,13 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-        .doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                tweetRequest.mCallback.processTweetRequest(400);
-                return null;
-            }
-        })
-        .when(tweetRequest).tweet();
+                .doAnswer(new Answer<Void>() {
+                    public Void answer(InvocationOnMock invocation) {
+                        tweetRequest.mCallback.processTweetRequest(400);
+                        return null;
+                    }
+                })
+                .when(tweetRequest).tweet();
 
         onView(withId(R.id.btnTweet)).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
