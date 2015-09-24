@@ -20,16 +20,14 @@ dependencies {
     compile 'org.slf4j:slf4j-android:1.7.12'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
     compile(name: 'augur', ext: 'aar')
-    compile "com.google.dagger:dagger:2.0"
+    compile 'com.google.dagger:dagger:2.0'
     apt "com.google.dagger:dagger-compiler:2.0"
     provided 'org.glassfish:javax.annotation:10.0-b28'
-
     //Unit testing dependencies
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.powermock:powermock-module-test-mockito-junit4:1.6.2'
     testCompile 'org.powermock:powermock-module-junit4:1.6.2'
-
     //Automated UI testing dependencies
     androidTestCompile 'com.android.support.test:runner:0.3'
     androidTestCompile 'com.android.support.test:rules:0.3'
@@ -40,7 +38,10 @@ dependencies {
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
     androidTestApt "com.google.dagger:dagger-compiler:2.0"
     //androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2'
+
 }
+
+
 
 android {
 /*    productFlavors {
@@ -85,5 +86,22 @@ android {
         exclude 'LICENSE.txt'
         exclude 'META-INF/LICENSE.txt'
     }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.0.2'
+    }
+}
+
+apply plugin: 'spoon'
+
+spoon {
+    // for debug output
+    debug = true
 }
 
