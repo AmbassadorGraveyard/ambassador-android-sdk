@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -67,14 +68,9 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
         if (toolbar == null) return;
 
-        final Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        if (arrow != null) { //this could happen because of getDrawable deprecation
-            arrow.setColorFilter(getResources().getColor(R.color.linkedinToolBarArrow), PorterDuff.Mode.SRC_ATOP);
-            toolbar.setNavigationIcon(arrow);
-        }
-        else {
-            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        }
+        final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        arrow.setColorFilter(getResources().getColor(R.color.linkedinToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+        toolbar.setNavigationIcon(arrow);
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.linkedinToolBar));
         toolbar.setTitleTextColor(getResources().getColor(R.color.linkedinToolBarText));
