@@ -4,35 +4,37 @@
     <dimen name="welcomeTitle">9sp</dimen>
     <color name="welcomeDesc">#fff000</color>
     <dimen name="welcomeDesc">12sp</dimen>
-    <color name="homeToolBarText">#000000</color>
     <color name="homeToolBarColor">@color/lightGray</color>
+    <color name="homeToolBarText">#000000</color>
     <color name="homeToolBarArrowColor">#ff0000</color>
-    <color name="contactsToolBarText">#000000</color>
     <color name="contactsToolBarColor">@color/lightGray</color>
+    <color name="contactsToolBarText">#aaa000</color>
     <color name="contactsToolBarArrowColor">#ff0000</color>
-    <color name="twitterToolBarText">#000000</color>
     <color name="twitterToolBarColor">@color/lightGray</color>
+    <color name="twitterToolBarText">#9099</color>
     <color name="twitterToolBarArrowColor">#ff0000</color>
-    <color name="linkedinToolBarText">#000000</color>
-    <color name="linkedinToolBarColor">@color/lightGray</color>
-    <color name="linkedinToolBarArrowColor">#ff0000</color>
+    <color name="linkedinToolBarColor">@color/linkedin_blue</color>
+    <color name="linkedinToolBarText">#555000</color>
+    <color name="linkedinToolBarArrowColor">@color/lightGray</color>
+</resources>
 
 <!--
+<resources>
     <color name="welcomeTitle">@color/lightGray</color>
     <dimen name="welcomeTitle">12sp</dimen>
     <color name="welcomeDesc">@color/lightGray</color>
     <dimen name="welcomeDesc">11sp</dimen>
-    <color name="homeToolBarText">#000000</color>
-    <color name="homeToolBarColor">@color/lightGray</color>
-    <color name="homeToolBarArrowColor">#ff0000</color>
-    <color name="contactsToolBarText">#000000</color>
-    <color name="contactsToolBarColor">@color/lightGray</color>
-    <color name="contactsToolBarArrowColor">#ff0000</color>
-    <color name="twitterToolBarText">#000000</color>
-    <color name="twitterToolBarColor">@color/lightGray</color>
-    <color name="twitterToolBarArrowColor">#ff0000</color>
-    <color name="linkedinToolBarText">#000000</color>
-    <color name="linkedinToolBarColor">@color/lightGray</color>
-    <color name="linkedinToolBarArrowColor">#ff0000</color>
--->
+    <color name="homeToolBarColor">@color/ambassador_blue</color>
+    <color name="homeToolBarText">@android:color/white</color>
+    <color name="homeToolBarArrowColor">@android:color/white</color>
+    <color name="contactsToolBarColor">@color/ambassador_blue</color>
+    <color name="contactsToolBarText">@android:color/white</color>
+    <color name="contactsToolBarArrowColor">@android:color/white</color>
+    <color name="twitterToolBarColor">@color/twitter_blue</color>
+    <color name="twitterToolBarText">@android:color/white</color>
+    <color name="twitterToolBarArrowColor">@android:color/white</color>
+    <color name="linkedinToolBarColor">@color/linkedin_blue</color>
+    <color name="linkedinToolBarText">@android:color/white</color>
+    <color name="linkedinToolBarArrowColor">@android:color/white</color>
 </resources>
+-->
