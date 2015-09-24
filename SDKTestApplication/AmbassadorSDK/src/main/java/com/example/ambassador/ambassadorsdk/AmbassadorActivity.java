@@ -55,7 +55,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     final private Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
-            Toast.makeText(getApplicationContext(), "There seems to be an issue while attempting to load.  Please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "There seems to be an issue while attempting to load. Please try again.", Toast.LENGTH_SHORT).show();
             finish();
         }
     };
@@ -76,7 +76,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambassador);
 
         ambassadorActivity = this;
-        rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("rafParameters");
+        rafParams = new ServiceSelectorPreferences();
+        rafParams.defaultShareMessage = getResources().getString(R.string.RAFdefaultShareMessage);
+        rafParams.titleText = getResources().getString(R.string.RAFtitleText);
+        rafParams.descriptionText = getResources().getString(R.string.RAFdescriptionText);
+        rafParams.toolbarTitle = getResources().getString(R.string.RAFtoolbarTitle);
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
