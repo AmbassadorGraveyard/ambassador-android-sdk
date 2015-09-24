@@ -42,7 +42,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
             android:layout_marginEnd="5dp"
-            android:textColor="@color/twitter_blue" />
+            android:textColor="@color/contactsDoneButtonText" />
 
     </RelativeLayout>
 
@@ -53,7 +53,7 @@
         android:layout_below="@+id/rlSearch"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/llSendView"
-        android:background="@android:color/white" />
+        android:background="@color/contactsListViewBackground" />
 
     <LinearLayout
         android:orientation="vertical"
@@ -64,7 +64,7 @@
         android:layout_alignParentEnd="true"
         android:padding="15dp"
         android:id="@+id/llSendView"
-        android:background="@android:color/white">
+        android:background="@color/contactsSendBackground">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -110,7 +110,7 @@
                 android:text="DONE"
                 android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
-                android:textColor="@color/twitter_blue" />
+                android:textColor="@color/contactsDoneButtonText" />
 
         </LinearLayout>
 
@@ -120,8 +120,8 @@
             android:text="NO CONTACTS SELECTED"
             android:id="@+id/btnSend"
             android:layout_marginTop="10dp"
-            android:textColor="@android:color/white"
-            android:background="@color/twitter_blue"
+            android:textColor="@color/contactsSendButtonText"
+            android:background="@color/contactsSendButton"
             android:enabled="false"
             android:onClick="sendToContacts"/>
     </LinearLayout>

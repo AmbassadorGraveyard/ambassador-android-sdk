@@ -69,14 +69,14 @@ public class LinkedInLoginActivity extends AppCompatActivity {
 
         final Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         if (arrow != null) { //this could happen because of getDrawable deprecation
-            arrow.setColorFilter(getResources().getColor(R.color.linkedinToolBarArrowColor), PorterDuff.Mode.SRC_ATOP);
+            arrow.setColorFilter(getResources().getColor(R.color.linkedinToolBarArrow), PorterDuff.Mode.SRC_ATOP);
             toolbar.setNavigationIcon(arrow);
         }
         else {
             toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         }
 
-        toolbar.setBackgroundColor(getResources().getColor(R.color.linkedinToolBarColor));
+        toolbar.setBackgroundColor(getResources().getColor(R.color.linkedinToolBar));
         toolbar.setTitleTextColor(getResources().getColor(R.color.linkedinToolBarText));
     }
 
