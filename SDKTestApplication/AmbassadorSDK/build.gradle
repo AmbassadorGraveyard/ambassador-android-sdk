@@ -100,15 +100,8 @@ buildscript {
 
 apply plugin: 'spoon'
 
-// This section is optional
 spoon {
     // for debug output
     debug = true
-
-    // To run a single test class
-//    className = 'fully.qualified.TestCase'
-//
-//    // To run a single method in TestCase
-//    methodName = 'testMyApp'
 }
 
