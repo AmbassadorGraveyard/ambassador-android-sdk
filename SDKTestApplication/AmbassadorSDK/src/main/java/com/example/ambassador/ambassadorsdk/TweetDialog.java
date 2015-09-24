@@ -29,7 +29,7 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
         super(context);
 
         //get injected modules we need
-        MyApplication.component().inject(this);
+        MyApplication.getComponent().inject(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_twitter_tweet);

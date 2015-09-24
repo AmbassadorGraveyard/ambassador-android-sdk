@@ -84,14 +84,6 @@ public class AmbassadorActivityTest {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         MyApplication app = (MyApplication)instrumentation.getTargetContext().getApplicationContext();
 
-        //tell the application which component we want to use - in this case use the the one created above instead of the
-        //application component which is created in the Application (and uses the real tweetRequest)
-        Context context = mActivityTestIntentRule.getActivity();
-        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockAmbassadorActivityModule(new MockAmbassadorActivityModule(context)).build();
-        app.setComponent(component);
-        //perform injection
-        component.inject(this);
-
         parameters = new ServiceSelectorPreferences();
         parameters.defaultShareMessage = "Check out this company!";
         parameters.titleText = "RAF Params Welcome Title";
@@ -108,6 +100,14 @@ public class AmbassadorActivityTest {
         Intent intent = new Intent();
         intent.putExtra("rafParameters", parameters);
         mActivityTestIntentRule.launchActivity(intent);
+
+        //tell the application which component we want to use - in this case use the the one created above instead of the
+        //application component which is created in the Application (and uses the real tweetRequest)
+        Context context = mActivityTestIntentRule.getActivity();
+        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockAmbassadorActivityModule(new MockAmbassadorActivityModule(context)).build();
+        app.setComponent(component);
+        //perform injection
+        component.inject(this);
     }
 
     @After
