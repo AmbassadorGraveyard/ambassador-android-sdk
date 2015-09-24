@@ -1,40 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="welcomeTitle">#ff0000</color>
-    <dimen name="welcomeTitle">9sp</dimen>
-    <color name="welcomeDesc">#fff000</color>
-    <dimen name="welcomeDesc">12sp</dimen>
-    <color name="homeToolBarColor">@color/lightGray</color>
+    <color name="homeBackground">#daffa952</color>
+    <color name="homeWelcomeTitle">#ff0000</color>
+    <dimen name="homeWelcomeTitle">9sp</dimen>
+    <color name="homeWelcomeDesc">#fff000</color>
+    <dimen name="homeWelcomeDesc">12sp</dimen>
+    <color name="homeToolBar">@color/lightGray</color>
     <color name="homeToolBarText">#000000</color>
-    <color name="homeToolBarArrowColor">#ff0000</color>
-    <color name="contactsToolBarColor">@color/lightGray</color>
+    <color name="homeToolBarArrow">#ff0000</color>
+    <color name="homeShareTextBar">#ffffff</color>
+    <color name="homeShareText">#000000</color>
+    <dimen name="homeShareText">14sp</dimen>
+    <color name="contactsListViewBackground">#daff2be5</color>
+    <color name="contactsSendBackground">#da1bff8d</color>
+    <color name="contactsToolBar">@color/lightGray</color>
     <color name="contactsToolBarText">#aaa000</color>
-    <color name="contactsToolBarArrowColor">#ff0000</color>
-    <color name="twitterToolBarColor">@color/lightGray</color>
+    <color name="contactsToolBarArrow">#ff0000</color>
+    <color name="contactsSendButton">#daff2be5</color>
+    <color name="contactsSendButtonText">#da1bff8d</color>
+    <color name="contactsDoneButtonText">#da117a16</color>
+    <color name="twitterToolBar">@color/lightGray</color>
     <color name="twitterToolBarText">#9099</color>
-    <color name="twitterToolBarArrowColor">#ff0000</color>
-    <color name="linkedinToolBarColor">@color/linkedin_blue</color>
+    <color name="twitterToolBarArrow">#ff0000</color>
+    <color name="linkedinToolBar">@color/linkedin_blue</color>
     <color name="linkedinToolBarText">#555000</color>
-    <color name="linkedinToolBarArrowColor">@color/lightGray</color>
+    <color name="linkedinToolBarArrow">@color/lightGray</color>
 </resources>
 
 <!--
 <resources>
-    <color name="welcomeTitle">@color/lightGray</color>
-    <dimen name="welcomeTitle">12sp</dimen>
-    <color name="welcomeDesc">@color/lightGray</color>
-    <dimen name="welcomeDesc">11sp</dimen>
-    <color name="homeToolBarColor">@color/ambassador_blue</color>
+    <color name="homeBackground">@android:color/white</color>
+    <color name="homeWelcomeTitle">@color/lightGray</color>
+    <dimen name="homeWelcomeTitle">22sp</dimen>
+    <color name="homeWelcomeDesc">@color/lightGray</color>
+    <dimen name="homeWelcomeDesc">18sp</dimen>
+    <color name="homeToolBar>@color/ambassador_blue</color>
     <color name="homeToolBarText">@android:color/white</color>
-    <color name="homeToolBarArrowColor">@android:color/white</color>
-    <color name="contactsToolBarColor">@color/ambassador_blue</color>
+    <color name="homeToolBarArrow">@android:color/white</color>
+    <color name="homeShareTextBar">@color/ultraUltraUltraLightGray</color>
+    <color name="homeShareText">@color/ultraLightGray</color>
+    <dimen name="homeShareText">12sp</dimen>
+    <color name="contactsListViewBackground">@android:color/white</color>
+    <color name="contactsSendBackground">@android:color/white</color>
+    <color name="contactsToolBar">@color/ambassador_blue</color>
     <color name="contactsToolBarText">@android:color/white</color>
-    <color name="contactsToolBarArrowColor">@android:color/white</color>
-    <color name="twitterToolBarColor">@color/twitter_blue</color>
+    <color name="contactsToolBarArrow">@android:color/white</color>
+    <color name="contactsSendButton">@color/ambassador_blue</color>
+    <color name="contactsSendButtonText">@android:color/white</color>
+    <color name="contactsDoneButtonText">@colors/ambassador_blue</color>
+    <color name="twitterToolBar">@color/twitter_blue</color>
     <color name="twitterToolBarText">@android:color/white</color>
-    <color name="twitterToolBarArrowColor">@android:color/white</color>
-    <color name="linkedinToolBarColor">@color/linkedin_blue</color>
+    <color name="twitterToolBarArrow">@android:color/white</color>
+    <color name="linkedinToolBar">@color/linkedin_blue</color>
     <color name="linkedinToolBarText">@android:color/white</color>
-    <color name="linkedinToolBarArrowColor">@android:color/white</color>
+    <color name="linkedinToolBarArrow">@android:color/white</color>
 </resources>
 -->

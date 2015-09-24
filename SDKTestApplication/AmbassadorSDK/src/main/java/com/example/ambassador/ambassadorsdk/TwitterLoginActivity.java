@@ -63,14 +63,14 @@ public class TwitterLoginActivity extends AppCompatActivity {
 
        final Drawable arrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
        if (arrow != null) { //this could happen because of getDrawable deprecation
-           arrow.setColorFilter(getResources().getColor(R.color.twitterToolBarArrowColor), PorterDuff.Mode.SRC_ATOP);
+           arrow.setColorFilter(getResources().getColor(R.color.twitterToolBarArrow), PorterDuff.Mode.SRC_ATOP);
            toolbar.setNavigationIcon(arrow);
        }
        else {
            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
        }
 
-       toolbar.setBackgroundColor(getResources().getColor(R.color.twitterToolBarColor));
+       toolbar.setBackgroundColor(getResources().getColor(R.color.twitterToolBar));
        toolbar.setTitleTextColor(getResources().getColor(R.color.twitterToolBarText));
     }
 
