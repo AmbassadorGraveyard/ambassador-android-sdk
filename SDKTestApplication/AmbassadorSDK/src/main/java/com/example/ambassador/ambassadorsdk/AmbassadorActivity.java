@@ -94,11 +94,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
 
         //get injected modules we need
-        if (MyApplication.component() == null) {
-            AmbassadorActivityComponent component = DaggerAmbassadorActivity_ApplicationComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule(this)).build();
+        if (MyApplication.getComponent() == null) {
+            ApplicationComponent component = DaggerAmbassadorActivity_ApplicationComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule(this)).build();
             MyApplication.setComponent(component);
         }
-        MyApplication.component().inject(this);
+        MyApplication.getComponent().inject(this);
 
         rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("rafParameters");
         AmbassadorSingleton.getInstance().rafParameters = rafParams;

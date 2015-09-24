@@ -29,7 +29,7 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
         super(context);
 
         //get injected modules we need
-        MyApplication.component().inject(this);
+        MyApplication.getComponent().inject(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_linkedin_post);

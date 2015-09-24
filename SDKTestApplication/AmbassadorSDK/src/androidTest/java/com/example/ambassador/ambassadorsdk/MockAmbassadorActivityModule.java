@@ -40,7 +40,7 @@ public class MockAmbassadorActivityModule {
     @Singleton
     @ForActivity
     Context provideContext() {
-        return MyApplication.getAppContext();
+        return context;
     }
 
     @Provides

@@ -8,15 +8,14 @@ import android.content.Context;
  */
 public class MyApplication extends Application {
     private static Context context;
-
     private static AmbassadorActivityComponent component = null;
+
+    public static AmbassadorActivityComponent getComponent() {
+        return component;
+    }
 
     public static void setComponent(AmbassadorActivityComponent comp) {
         component = comp;
-    }
-
-    public static AmbassadorActivityComponent component() {
-        return component;
     }
 
     public void onCreate() {
