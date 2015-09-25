@@ -11,7 +11,7 @@ ln -s ../../git-hooks/prepare-commit-msg .git/hooks/prepare-commit-msg
 ## Documentation
 ## Installing the SDK
 
-Follow these steps to add the Ambassador SDK in your Android Studio project.
+Follow these steps to add the Ambassador SDK to your Android Studio project.
 
 _**Note**_: Make sure you have the latest version of **Android Studio** installed.
 
@@ -153,11 +153,11 @@ AmbassadorSDK.registerConversion(conversionParameters);
 
 ## Present the 'Refer a Friend' Screen (RAF)
 
-The RAF Screen provides UI components that allows users to share with their contacts to become part of your referral program.
+The RAF Screen provides UI components that allow users to share with their contacts to become part of your referral program.
 
 <img src="screenshots/rafScreenShot.png" width="250" />   <img src="screenshots/contactsPage.png" width="250"/>
 
-To launch the RAF Screen, simply add this line to your application. The parameter 'this' refers to the current context, and the string '877' refers to the campaign ID.
+To launch the RAF Screen, simply add the following line to your application. The parameter _this_ refers to the current context, and the string _877_ refers to the campaign ID.
 
 ```java
 AmbassadorSDK.presentRAF(this, "877");
@@ -174,8 +174,7 @@ btnRaf.setOnClickListener(new View.OnClickListener() {
 });
 ```
 
-#### NOTES
-* **Identify should be called sometime BEFORE attempting to present the RAF Screen.  Identify will need to generate/update the short urls, and therefore should not be placed immediately before any RAF presentation calls.  This will allow the share urls to be generated for your user.  If 'Identify' is not called before, or a non-existing campaign ID is passed, you will get continuous error messages while trying to load the RAF Screen.**
+**Identify should be called BEFORE attempting to present the RAF Screen.  Identify will generate/update the short urls, and therefore should not be placed immediately before any RAF presentation calls.  This will allow the share urls to be generated for your user.  If 'Identify' is not called before, or a non-existing campaign ID is passed, you will get continuous error messages while trying to load the RAF Screen.**
 
 #### Customizing the RAF Screen
 
@@ -183,13 +182,24 @@ Custom messages, colors, and font sizes are set in the file customValues.xml. Op
 
 <img src="screenshots/customValuesLocation.png" />
 
-The file, once open, will consist of various elements with editable properties. The colors can be replaced with any hexadecimal string (ex: #ff0000). The dimen values can be replaced with any font size. The strings can be replaced with any text you wish to show on the RAF Screen.
+The file consists of various elements with editable properties. The colors can be replaced with any hexadecimal string (ex: #ff0000). The dimen values can be replaced with any font size. The strings can be replaced with any text you wish to show on the RAF Screen.
 
-* _Note_: If any values in this file are blank, the RAF will use the default values shipped with the SDK. The strings for the SDK will revert to these:
+<img src="screenshots/customValues.png" />
+
+For instance, if the color 'homeToolBar' is changed:
+
+<img src="screenshots/changeToolBarColor.png" />
+
+The resulting toolbar would display:
+
+<img src="screenshots/appCustomToolBarColor.png" width="250" />
+
+
+_Note_: If any values in this file are blank, the RAF will use the default values shipped with the SDK. The strings for the RAF Screen will revert to these:
 
 * **toolbarTitle** - "Refer your friends"
 * **titleText** - "Spread the word"
 * **descriptionText** - "Refer a friend to get rewards"
 * **defaultShareMessage** - "I'm a fan of this company, check them out!"
 
-**_Note_**: The shortURL will automatically be appended to the defaultShareMessage
+_Note_: The shortURL will automatically be appended to the defaultShareMessage
