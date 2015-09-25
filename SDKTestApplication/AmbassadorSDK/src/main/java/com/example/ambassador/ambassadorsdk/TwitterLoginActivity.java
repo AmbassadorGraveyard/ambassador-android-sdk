@@ -1,9 +1,11 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -12,6 +14,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
@@ -54,14 +57,17 @@ public class TwitterLoginActivity extends AppCompatActivity {
     }
 
    private void _setUpToolbar() {
-        Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
-        if (toolbar != null) {
-            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.twitter_blue));
-            toolbar.setTitleTextColor(Color.WHITE);
-        }
+       if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Log in to Twitter"); }
 
-        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Log in to Twitter"); }
+       Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+       if (toolbar == null) return;
+
+       final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+       arrow.setColorFilter(getResources().getColor(R.color.twitterToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+       toolbar.setNavigationIcon(arrow);
+
+       toolbar.setBackgroundColor(getResources().getColor(R.color.twitterToolBar));
+       toolbar.setTitleTextColor(getResources().getColor(R.color.twitterToolBarText));
     }
 
     private class CustomBrowser extends WebViewClient {

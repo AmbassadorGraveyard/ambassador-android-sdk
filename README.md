@@ -11,9 +11,9 @@ ln -s ../../git-hooks/prepare-commit-msg .git/hooks/prepare-commit-msg
 ## Documentation
 ## Installing the SDK
 
-Follow these steps to add the Ambassador SDK in your Android Studio project
+Follow these steps to add the Ambassador SDK to your Android Studio project.
 
-_**Note**_: Make sure you're on the latest version of **Android Studio**
+_**Note**_: Make sure you have the latest version of **Android Studio** installed.
 
 * Download the zip file, unzip it, and leave the **'ambassador'** folder on your
 desktop or another place that you can easily access.
@@ -85,7 +85,7 @@ desktop or another place that you can easily access.
 
  ## Initializing Ambassador
 
- You will want to run Ambassador in your application as soon as possible.  The ideal place to run would be in the **onCreate()** method of your **MainActivity**.  You will have the option to register a **conversion** the first time the app is launched.  You can read more on **conversions** and setting their parameters in [Conversions](#conversions).  
+ You will want to run Ambassador in your application as early in the application lifecycle as possible.  The ideal place to run would be in the **onCreate()** method of your **MainActivity**.  You will have the option to register a **conversion** the first time the app is launched.  You can read more on **conversions** and setting their parameters in [Conversions](#conversions).
 
  * _Note_: Your **Universal Token** and **Universal ID** will be provided to you by Ambassador.
 
@@ -153,34 +153,53 @@ AmbassadorSDK.registerConversion(conversionParameters);
 
 ## Present the 'Refer a Friend' Screen (RAF)
 
-### ServiceSelectorPreferences
-
-The RAF Screen provides a UI component that allows users to share with their contacts and become part of your referral program.  To allow custom messages and text on the RAF Screen, you can use a **ServiceSelectorPreferences** object to set editable properties of the RAF.
-
-* _Note_: If you leave any properties unset, the RAF will use the default strings shown below.
+The RAF Screen provides UI components that allow users to share with their contacts to become part of your referral program.
 
 <img src="screenshots/rafScreenShot.png" width="250" />   <img src="screenshots/contactsPage.png" width="250"/>
 
-The editable properties and default values are:
+To launch the RAF Screen, simply add the following line to your application. The parameter _this_ refers to the current context, and the string _877_ refers to the campaign ID.
+
+```java
+AmbassadorSDK.presentRAF(this, "877");
+```
+Example usage in a MainActivity:
+```java
+Button btnRaf = (Button) findViewById(R.id.btnRAF);
+final Context context = this;
+btnRaf.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        AmbassadorSDK.presentRAF(context, "305");
+    }
+});
+```
+
+**Identify should be called BEFORE attempting to present the RAF Screen.  Identify will generate/update the short urls, and therefore should not be placed immediately before any RAF presentation calls.  This will allow the share urls to be generated for your user.  If 'Identify' is not called before, or a non-existing campaign ID is passed, you will get continuous error messages while trying to load the RAF Screen.**
+
+#### Customizing the RAF Screen
+
+Custom messages, colors, and font sizes are set in the file customValues.xml. Open this file in the following location in Android Studio:
+
+<img src="screenshots/customValuesLocation.png" />
+
+The file consists of various elements with editable properties. The colors can be replaced with any hexadecimal string (ex: #ff0000). The dimen values can be replaced with any font size. The strings can be replaced with any text you wish to show on the RAF Screen.
+
+<img src="screenshots/customValues.png" />
+
+For instance, if the color 'homeToolBar' is changed:
+
+<img src="screenshots/changeToolBarColor.png" />
+
+The resulting toolbar would display:
+
+<img src="screenshots/appCustomToolBarColor.png" width="250" />
+
+
+_Note_: If any values in this file are blank, the RAF will use the default values shipped with the SDK. The strings for the RAF Screen will revert to these:
+
 * **toolbarTitle** - "Refer your friends"
 * **titleText** - "Spread the word"
 * **descriptionText** - "Refer a friend to get rewards"
 * **defaultShareMessage** - "I'm a fan of this company, check them out!"
 
-**_Note_**: The shortURL will automatically be appended to the defaultShareMessage
-
-```java
-// STEP ONE: Create a ServiceSelectorPreferences object
-ServiceSelectorPreferences preferences = new ServiceSelectorPreferences();
-
-// STEP TWO: (Optional) Set the properties
-preferences.toolbarTitle = "New toolbar title";
-preferences.titleText = "New title text";
-preferences.descriptionText = "New description text";
-preferences.defaultShareMessage = "This message will be shared with everyone!";
-
-// STEP THREE: Present the RAF Screen. Pass the context, preferences, and campaign ID
-AmbassadorSDK.presentRAF(this, preferences, "877");
-```
-#### NOTES
-* **Identify should be called sometime BEFORE attempting to present the RAF Screen.  Identify will need to generate/update the short urls, and therefore should not be placed immediately before any RAF presentation calls.  This will allow the share urls to be generated for your user.  If 'Identify' is not called before, or a non-existing campaign ID is passed, you will get continuous error messages while trying to load the RAF Screen.**
+_Note_: The shortURL will automatically be appended to the defaultShareMessage

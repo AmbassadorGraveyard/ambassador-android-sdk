@@ -7,10 +7,13 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -21,12 +24,15 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.facebook.FacebookSdk;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -49,7 +55,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     final private Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
-            Toast.makeText(getApplicationContext(), "There seems to be an issue while attempting to load.  Please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "There seems to be an issue while attempting to load. Please try again.", Toast.LENGTH_SHORT).show();
             finish();
         }
     };
@@ -69,7 +75,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambassador);
 
         ambassadorActivity = this;
-        rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("rafParameters");
+        rafParams = new ServiceSelectorPreferences();
+        rafParams.defaultShareMessage = getResources().getString(R.string.RAFdefaultShareMessage);
+        rafParams.titleText = getResources().getString(R.string.RAFtitleText);
+        rafParams.descriptionText = getResources().getString(R.string.RAFdescriptionText);
+        rafParams.toolbarTitle = getResources().getString(R.string.RAFtoolbarTitle);
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
@@ -259,14 +269,17 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     private void _setUpToolbar(String toolbarTitle) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-        if (toolbar != null) {
-            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
-            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        }
-
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+        if (toolbar == null) return;
+
+        final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        arrow.setColorFilter(getResources().getColor(R.color.homeToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+        toolbar.setNavigationIcon(arrow);
+
+        toolbar.setBackgroundColor(getResources().getColor(R.color.homeToolBar));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.homeToolBarText));
     }
     // END UI SETTER METHODS
 }
