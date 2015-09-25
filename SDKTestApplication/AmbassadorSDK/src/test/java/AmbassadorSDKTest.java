@@ -56,10 +56,10 @@ public class AmbassadorSDKTest {
 
         // ACT
         whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
-        when(mockIntent.putExtra("rafParameters", mockPreferences)).thenReturn(mockIntent);
+        //when(mockIntent.putExtra("rafParameters", mockPreferences)).thenReturn(mockIntent);
         PowerMockito.doNothing().when(mockSingleton).setCampaignID(anyString());
         PowerMockito.doNothing().when(mockContext).startActivity(mockIntent);
-        AmbassadorSDK.presentRAF(mockContext, mockPreferences, "306");
+        AmbassadorSDK.presentRAF(mockContext, "306");
 
         // ASSERT
         assertEquals(mockIntent, mockIntent.putExtra("rafParameters", mockPreferences));
