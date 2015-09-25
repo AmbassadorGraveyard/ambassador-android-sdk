@@ -1,14 +1,22 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
 
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
+    publishNonDefault true
+
+    lintOptions {
+        abortOnError false
+    }
 
     defaultConfig {
+        multiDexEnabled true
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -16,22 +24,31 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
 }
 
 dependencies {
+    //classpath 'com.android.tools.build:gradle:1.1.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:22.2.1'
-    compile(name:'augur', ext:'aar')
-    compile(name:'AmbassadorSDK-release', ext:'aar')
-
     compile 'org.twitter4j:twitter4j-core:4.0.4'
     compile 'com.google.guava:guava:19.0-rc1'
     compile 'com.pusher:pusher-java-client:0.3.3'
     compile 'org.slf4j:slf4j-android:1.7.12'
-    compile ('com.facebook.android:facebook-android-sdk:4.5.0')
+    compile 'com.facebook.android:facebook-android-sdk:4.5.0'
+    compile(name: 'augur', ext: 'aar')
+    compile(name:'AmbassadorSDK-release', ext:'aar')
+    compile "com.google.dagger:dagger:2.0"
+    apt "com.google.dagger:dagger-compiler:2.0"
+    provided 'org.glassfish:javax.annotation:10.0-b28'
 }
 
 repositories {
+    jcenter()
+    mavenCentral()
     maven { url 'http://clojars.org/repo' }
     flatDir {
         dirs 'libs'

@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         btnRaf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AmbassadorSDK.presentRAF(context, null, "305");
+                AmbassadorSDK.presentRAF(context, "305");
             }
         });
     }

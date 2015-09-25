@@ -5,9 +5,13 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -21,10 +25,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -66,7 +71,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         tvNoContacts = (TextView) findViewById(R.id.tvNoContacts);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        _setUpToolbar();
+        _setUpToolbar(AmbassadorSingleton.getInstance().rafParameters.toolbarTitle);
 
         //setup progress dialog only once
         pd = new ProgressDialog(this);
@@ -159,6 +164,12 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ambassador_menu, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final Drawable searchIcon = ContextCompat.getDrawable(this, R.drawable.abc_ic_search_api_mtrl_alpha);
+        searchIcon.setColorFilter(getResources().getColor(R.color.contactsSearchIcon), PorterDuff.Mode.SRC_ATOP);
+        searchItem.setIcon(searchIcon);
+
         return true;
     }
 
@@ -350,16 +361,18 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     // END BUTTON METHODS
 
     // Adds and styles toolbar in place of the actionbar
-    private void _setUpToolbar() {
-        Toolbar toolbar = (Toolbar)findViewById(R.id.action_bar);
+    private void _setUpToolbar(String toolbarTitle) {
+        if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
 
-        if (toolbar != null) {
-            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
-            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+        if (toolbar == null) return;
 
-        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Refer your friends"); }
+        final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        arrow.setColorFilter(getResources().getColor(R.color.contactsToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+        toolbar.setNavigationIcon(arrow);
+
+        toolbar.setBackgroundColor(getResources().getColor(R.color.contactsToolBar));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.contactsToolBarText));
     }
 
     private void _updateSendButton(int numOfContacts) {
