@@ -20,6 +20,17 @@ desktop or another place that you can easily access.
 
  <img src="screenshots/addToDesktop.png" width="600" />
 
+ * Open your project's top-level Gradle file
+
+  <img src="screenshots/topLevelGradle.png" width="600" />
+
+ * Add the following line under the dependencies section
+
+  ```java
+  classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
+  ```
+  <img src="screenshots/daggerDependency.png" width="600" />
+
 * Open your project's stucture by selecting **File -> Project Stucture** in the Menu Bar to bring up a dialog in Android Studio.
 
  <img src="screenshots/projStructureClick.png" width="500" />
@@ -70,17 +81,6 @@ desktop or another place that you can easily access.
  compile project(':ambassador')
  ```
  <img src="screenshots/addAmbAsDependency.png" width="600" />
-
-* Next, go to your project's top-level Gradle file
-
- <img src="screenshots/topLevelGradle.png" width="600" />
-
-* Add the following line under the dependencies section
-
- ```java
- classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
- ```
- <img src="screenshots/daggerDependency.png" width="600" />
 
 
  ## Initializing Ambassador
@@ -157,10 +157,10 @@ The RAF Screen provides UI components that allow users to share with their conta
 
 <img src="screenshots/rafScreenShot.png" width="250" />   <img src="screenshots/contactsPage.png" width="250"/>
 
-To launch the RAF Screen, simply add the following line to your application. The parameter _this_ refers to the current context, and the string _877_ refers to the campaign ID.
+To launch the RAF Screen, simply add the following line to your application. The parameter _context_ refers to the current context, and the string _877_ refers to the campaign ID.
 
 ```java
-AmbassadorSDK.presentRAF(this, "877");
+AmbassadorSDK.presentRAF(context, "877");
 ```
 Example usage in a MainActivity:
 ```java
