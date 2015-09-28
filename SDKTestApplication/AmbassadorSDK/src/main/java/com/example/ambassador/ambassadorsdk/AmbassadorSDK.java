@@ -7,22 +7,17 @@ import android.content.Intent;
  * Created by JakeDunahee on 7/22/15.
  */
 public class AmbassadorSDK {
-    public static void presentRAF(Context context, ServiceSelectorPreferences rafParameters, String campaignID) {
+    public static void presentRAF(Context context, String campaignID) {
         // Functionality: Present the RAF Screen using an intent from the passed class
-        // Users can set up custom text with RAFParameters
         Intent intent = new Intent(context, AmbassadorActivity.class);
-
-        if (rafParameters == null) { rafParameters = new ServiceSelectorPreferences(); }
-
         AmbassadorSingleton.getInstance().setCampaignID(campaignID);
-
-        intent.putExtra("rafParameters", rafParameters);
         context.startActivity(intent);
     }
 
     public static void identify(String identifier) {
         // Functionality: Gets unique information from the device for tracking purposes
         Context context = MyApplication.getAppContext();
+        AmbassadorSingleton.getInstance().setUserEmail(identifier);
 
         IIdentify identify = new Identify(context, identifier);
         AmbassadorSingleton.getInstance().startIdentify(identify);

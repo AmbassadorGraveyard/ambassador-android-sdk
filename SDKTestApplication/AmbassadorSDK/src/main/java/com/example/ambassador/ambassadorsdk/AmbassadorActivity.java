@@ -8,15 +8,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -42,7 +44,7 @@ import dagger.Component;
  * Created by JakeDunahee on 7/22/15.
  */
 public class AmbassadorActivity extends AppCompatActivity {
-    private CustomEditText etShortUrl;
+    CustomEditText etShortUrl;
     private ServiceSelectorPreferences rafParams;
     private ProgressDialog pd;
     private Timer networkTimer;
@@ -54,7 +56,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     final private Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
-            Toast.makeText(getApplicationContext(), "There seems to be an issue while attempting to load.  Please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "There seems to be an issue while attempting to load. Please try again.", Toast.LENGTH_SHORT).show();
             finish();
         }
     };
@@ -63,8 +65,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Executed when Pusher data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null,
-                    AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage, etShortUrl);
+            tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage);
         }
     };
 
@@ -99,7 +100,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
         MyApplication.getComponent().inject(this);
 
-        rafParams = (ServiceSelectorPreferences) getIntent().getSerializableExtra("rafParameters");
+        rafParams = new ServiceSelectorPreferences();
+        rafParams.defaultShareMessage = getResources().getString(R.string.RAFdefaultShareMessage);
+        rafParams.titleText = getResources().getString(R.string.RAFtitleText);
+        rafParams.descriptionText = getResources().getString(R.string.RAFdescriptionText);
+        rafParams.toolbarTitle = getResources().getString(R.string.RAFtoolbarTitle);
         AmbassadorSingleton.getInstance().rafParameters = rafParams;
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
@@ -114,7 +119,6 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeDesc.setText(rafParams.descriptionText);
         _setUpToolbar(rafParams.toolbarTitle);
 
-        tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo() != null, AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage, etShortUrl);
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 copyShortURLToClipboard(etShortUrl.getText().toString(), getApplicationContext());
@@ -132,6 +136,30 @@ public class AmbassadorActivity extends AppCompatActivity {
                 respondToGridViewClick(position);
             }
         });
+
+        pd = new ProgressDialog(this);
+        pd.setMessage("Loading");
+        pd.setOwnerActivity(this);
+        pd.setCanceledOnTouchOutside(false);
+        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                finish();
+            }
+        });
+
+        pd.show();
+
+        networkTimer = new Timer();
+        networkTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                _showNetworkError();
+            }
+        }, 30000);
+
+        Identify identify = new Identify(MyApplication.getAppContext(), AmbassadorSingleton.getInstance().getUserEmail());
+        identify.performIdentifyRequest();
     }
 
     @Override
@@ -227,57 +255,34 @@ public class AmbassadorActivity extends AppCompatActivity {
 
 
     // UI SETTER METHODS
-    void tryAndSetURL(boolean pusherAvailable, String pusherString, String initialShareMessage, EditText shortURLET) {
+    void tryAndSetURL(String pusherString, String initialShareMessage) {
         // Functionality: Gets URL from Pusher
         // First checks to see if Pusher info has already been saved to SharedPreferencs
-        if (pusherAvailable) {
-            if (pd != null) {
-                pd.hide();
-                networkTimer.cancel();
+        if (pd != null) {
+            pd.dismiss();
+            networkTimer.cancel();
+        }
+
+        try {
+            // We get a JSON object from the Pusher Info string saved to SharedPreferences
+            JSONObject pusherData = new JSONObject(pusherString);
+            JSONArray urlArray = pusherData.getJSONArray("urls");
+
+            // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
+            for (int i = 0; i < urlArray.length(); i++) {
+                JSONObject urlObj = urlArray.getJSONObject(i);
+                int campID = urlObj.getInt("campaign_uid");
+                int myUID = Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID());
+                if (campID == myUID) {
+                    etShortUrl.setText(urlObj.getString("url"));
+                    AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
+                    AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
+                    AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
+                    AmbassadorSingleton.getInstance().setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
+                }
             }
-
-            try {
-                // We get a JSON object from the Pusher Info string saved to SharedPreferences
-                JSONObject pusherData = new JSONObject(pusherString);
-                JSONArray urlArray = pusherData.getJSONArray("urls");
-
-                // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
-                for (int i = 0; i < urlArray.length(); i++) {
-                    JSONObject urlObj = urlArray.getJSONObject(i);
-                    int campID = urlObj.getInt("campaign_uid");
-                    int myUID = Integer.parseInt(AmbassadorSingleton.getInstance().getCampaignID());
-                    if (campID == myUID) {
-                        shortURLET.setText(urlObj.getString("url"));
-                        AmbassadorSingleton.getInstance().saveURL(urlObj.getString("url"));
-                        AmbassadorSingleton.getInstance().saveShortCode(urlObj.getString("short_code"));
-                        AmbassadorSingleton.getInstance().saveEmailSubject(urlObj.getString("subject"));
-                        AmbassadorSingleton.getInstance().setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-            pd = new ProgressDialog(this);
-            pd.setMessage("Loading");
-            pd.setOwnerActivity(this);
-            pd.setCanceledOnTouchOutside(false);
-            pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    finish();
-                }
-            });
-
-            pd.show();
-
-            networkTimer = new Timer();
-            networkTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    _showNetworkError();
-                }
-            }, 30000);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -288,14 +293,17 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     private void _setUpToolbar(String toolbarTitle) {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-        if (toolbar != null) {
-            toolbar.setNavigationIcon(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-            toolbar.setBackgroundColor(getResources().getColor(R.color.ambassador_blue));
-            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        }
-
         if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+        if (toolbar == null) return;
+
+        final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        arrow.setColorFilter(getResources().getColor(R.color.homeToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+        toolbar.setNavigationIcon(arrow);
+
+        toolbar.setBackgroundColor(getResources().getColor(R.color.homeToolBar));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.homeToolBarText));
     }
     // END UI SETTER METHODS
 }

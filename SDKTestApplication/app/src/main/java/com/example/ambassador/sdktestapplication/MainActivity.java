@@ -29,12 +29,7 @@ public class MainActivity extends AppCompatActivity {
         btnRAF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ServiceSelectorPreferences parameters = new ServiceSelectorPreferences();
-                parameters.defaultShareMessage = "Check out this company!";
-                parameters.titleText = "RAF Params Welcome Title";
-                parameters.descriptionText = "RAF Params Welcome Description";
-                parameters.toolbarTitle = "RAF Params Toolbar Title";
-                AmbassadorSDK.presentRAF(cxt, parameters, "260");
+                AmbassadorSDK.presentRAF(cxt, "260");
 
                 ConversionParameters conversionParameters = new ConversionParameters();
                 conversionParameters.mbsy_first_name = null;
