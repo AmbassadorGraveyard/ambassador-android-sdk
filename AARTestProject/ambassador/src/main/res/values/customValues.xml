@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="RAFdefaultShareMessage">Check out this company!</string>
+    <string name="RAFtitleText">RAF Params Welcome Title</string>
+    <string name="RAFdescriptionText">RAF Params Welcome Description</string>
+    <string name="RAFtoolbarTitle">RAF Params Toolbar Title</string>
+    <color name="homeBackground">@android:color/white</color>
+    <color name="homeWelcomeTitle">@color/lightGray</color>
+    <dimen name="homeWelcomeTitle">22sp</dimen>
+    <color name="homeWelcomeDesc">@color/lightGray</color>
+    <dimen name="homeWelcomeDesc">18sp</dimen>
+    <color name="homeToolBar">@color/ambassador_blue</color>
+    <color name="homeToolBarText">@android:color/white</color>
+    <color name="homeToolBarArrow">@android:color/white</color>
+    <color name="homeShareTextBar">@color/ultraUltraUltraLightGray</color>
+    <color name="homeShareText">@color/ultraLightGray</color>
+    <dimen name="homeShareText">12sp</dimen>
+    <color name="contactsListViewBackground">@android:color/white</color>
+    <color name="contactsSendBackground">@android:color/white</color>
+    <color name="contactsToolBar">@color/ambassador_blue</color>
+    <color name="contactsToolBarText">@android:color/white</color>
+    <color name="contactsToolBarArrow">@android:color/white</color>
+    <color name="contactsSendButton">@color/ambassador_blue</color>
+    <color name="contactsSendButtonText">@android:color/white</color>
+    <color name="contactsDoneButtonText">@color/ambassador_blue</color>
+    <color name="contactsSearchBar">@android:color/transparent</color>
+    <color name="contactsSearchIcon">@android:color/white</color>
+    <color name="twitterToolBar">@color/twitter_blue</color>
+    <color name="twitterToolBarText">@android:color/white</color>
+    <color name="twitterToolBarArrow">@android:color/white</color>
+    <color name="linkedinToolBar">@color/linkedin_blue</color>
+    <color name="linkedinToolBarText">@android:color/white</color>
+    <color name="linkedinToolBarArrow">@android:color/white</color>
+</resources>

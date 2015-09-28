@@ -4,14 +4,15 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
-    android:background="@android:color/white"
+    android:background="@color/homeBackground"
     android:id="@+id/rlMainLayout">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Spread the word"
+        android:text="Spread the word!"
+        android:textColor="@color/homeWelcomeTitle"
+        android:textSize="@dimen/homeWelcomeTitle"
         android:id="@+id/tvWelcomeTitle"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -20,8 +21,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Refer a friend to get a reward"
+        android:textColor="@color/homeWelcomeDesc"
+        android:textSize="@dimen/homeWelcomeDesc"
         android:id="@+id/tvWelcomeDesc"
         android:layout_below="@+id/tvWelcomeTitle"
         android:layout_centerHorizontal="true"
@@ -34,12 +36,12 @@
         android:layout_marginTop="35dp"
         android:layout_below="@+id/tvWelcomeDesc"
         android:layout_marginLeft="10dp"
-        android:background="@color/ultraUltraUltraLightGray"
+        android:background="@color/homeShareTextBar"
         android:text="Share Link"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:textSize="12sp"
-        android:textColor="@color/ultraLightGray"
+        android:textSize="@dimen/homeShareText"
+        android:textColor="@color/homeShareText"
         android:layout_marginRight="10dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -78,6 +80,6 @@
         android:layout_alignEnd="@+id/etShortURL"
         android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginTop="8dp"
-        android:onClick="copyShortURLToClipboard" />
+        android:layout_marginTop="8dp" />
+
 </RelativeLayout>
