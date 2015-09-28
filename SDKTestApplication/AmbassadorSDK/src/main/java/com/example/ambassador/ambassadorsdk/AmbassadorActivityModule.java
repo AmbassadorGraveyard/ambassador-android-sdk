@@ -31,6 +31,12 @@ public class AmbassadorActivityModule {
         return new LinkedInRequest();
     }
 
+    @Provides
+    @Singleton
+    IdentifyRequest provideIdentifyRequest() {
+        return new IdentifyRequest();
+    }
+
 /*    @Provides
     @Singleton
     @ForActivity

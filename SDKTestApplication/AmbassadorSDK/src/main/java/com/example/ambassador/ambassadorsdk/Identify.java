@@ -4,13 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.helpers.Util;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,25 +17,33 @@ import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+
 
 /**
  * Created by JakeDunahee on 9/1/15.
  */
 class Identify implements IIdentify {
     private Context context;
-    private String emailAddress;
     private IdentifyPusher pusher;
+    private String identifier;
     IdentifyAugurSDK augur;
     private Timer augurTimer;
 
-    public Identify(Context context, String emailAddress) {
+    @Inject
+    IdentifyRequest identifyRequest;
+
+    public Identify(Context context, String identifier) {
         this.context = context;
-        this.emailAddress = emailAddress;
+        this.identifier = identifier;
         if (pusher == null) {
             pusher = new IdentifyPusher();
             augur = new IdentifyAugurSDK();
             augurTimer = new Timer();
         }
+
+        //get injected modules we need
+        MyApplication.getComponent().inject(this);
     }
 
     @Override
@@ -59,11 +65,6 @@ class Identify implements IIdentify {
     void setUpPusher(String deviceID) {
         pusher.createPusher(deviceID, new IdentifyPusher.PusherCompletion() {
             @Override
-            public void pusherSubscribed() {
-                performIdentifyRequest();
-            }
-
-            @Override
             public void pusherEventTriggered(String data) {
                 try {
                     JSONObject pusherObject = new JSONObject(data);
@@ -82,8 +83,8 @@ class Identify implements IIdentify {
     }
 
     void performIdentifyRequest() {
-        IdentifyRequest request = new IdentifyRequest();
-        request.execute();
+        //IdentifyRequest request = new IdentifyRequest();
+        identifyRequest.send(identifier);
     }
 
     private void _getAndSavePusherInfo(String jsonObject) {
@@ -110,61 +111,6 @@ class Identify implements IIdentify {
         // Functionality: Posts notification to listener once identity is successfully received
         Intent intent = new Intent("pusherData");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-
-    class IdentifyRequest extends AsyncTask<Void, Void, Void> {
-        int statusCode;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            String url = AmbassadorSingleton.identifyURL() +
-                    AmbassadorSingleton.getInstance().getUniversalID();
-
-            JSONObject identifyObject = new JSONObject();
-
-            try {
-                JSONObject augurObject = new JSONObject(AmbassadorSingleton.getInstance().getIdentifyObject());
-                identifyObject.put("enroll", true);
-                identifyObject.put("campaign_id", AmbassadorSingleton.getInstance().getCampaignID());
-                identifyObject.put("email", emailAddress);
-                identifyObject.put("source", "android_sdk_pilot");
-                identifyObject.put("mbsy_source", "");
-                identifyObject.put("mbsy_cookie_code", "");
-                identifyObject.put("fp", augurObject);
-                Utilities.debugLog("Augur", "Identify Object = " + identifyObject.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
-
-                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(identifyObject.toString());
-                wr.flush();
-                wr.close();
-
-                statusCode = connection.getResponseCode();
-
-                InputStream is = (Utilities.isSuccessfulResponseCode(statusCode)) ? connection.getInputStream() : connection.getErrorStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                StringBuilder response = new StringBuilder();
-
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                }
-
-                Utilities.debugLog("Pusher", response.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
     }
 
     class PusherURLRequest extends AsyncTask<Void, Void, Void> {
