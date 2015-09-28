@@ -35,10 +35,6 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.inject.Singleton;
-
-import dagger.Component;
-
 
 /**
  * Created by JakeDunahee on 7/22/15.
@@ -78,13 +74,6 @@ public class AmbassadorActivity extends AppCompatActivity {
     //@Inject
     //ShareDialog fbDialog;
 
-    @Singleton
-    @Component(modules=AmbassadorActivityModule.class)
-    public interface ApplicationComponent extends AmbassadorActivityComponent {
-        //dummy component which will not override anything from parent interface
-        //the testing component will provide its own overrides to inject into the tests
-    }
-
     // ACTIVITY OVERRIDE METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,11 +82,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         FacebookSdk.sdkInitialize(getApplicationContext());
 
-        //get injected modules we need
-        if (MyApplication.getComponent() == null) {
-            ApplicationComponent component = DaggerAmbassadorActivity_ApplicationComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule()).build();
-            MyApplication.setComponent(component);
-        }
+        //tell Dagger to inject dependencies
         MyApplication.getComponent().inject(this);
 
         rafParams = new ServiceSelectorPreferences();

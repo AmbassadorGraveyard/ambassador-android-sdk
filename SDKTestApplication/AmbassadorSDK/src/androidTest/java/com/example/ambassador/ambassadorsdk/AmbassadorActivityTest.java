@@ -7,6 +7,7 @@ import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v4.content.LocalBroadcastManager;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.view.View;
 import android.widget.TextView;
@@ -68,6 +69,9 @@ public class AmbassadorActivityTest {
     @Inject
     LinkedInRequest linkedInRequest;
 
+    @Inject
+    IdentifyRequest identifyRequest;
+
     //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
     @Singleton
     @Component(modules = {MockAmbassadorActivityModule.class})
@@ -81,7 +85,7 @@ public class AmbassadorActivityTest {
     @Before
     public void beforeEachTest() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        MyApplication app = (MyApplication)instrumentation.getTargetContext().getApplicationContext();
+        final MyApplication app = (MyApplication)instrumentation.getTargetContext().getApplicationContext();
 
         parameters = new ServiceSelectorPreferences();
         parameters.defaultShareMessage = "Check out this company!";
@@ -89,6 +93,7 @@ public class AmbassadorActivityTest {
         parameters.descriptionText = "RAF Params Welcome Description";
         parameters.toolbarTitle = "RAF Params Toolbar Title";
 
+        AmbassadorSingleton.getInstance().setUserEmail("jake@getambassador.com");
         AmbassadorSingleton.getInstance().setCampaignID("260");
         AmbassadorSingleton.getInstance().saveUniversalToken("UniversalToken bdb49d2b9ae24b7b6bc5da122370f3517f98336f");
 
@@ -100,12 +105,22 @@ public class AmbassadorActivityTest {
         //perform injection
         component.inject(this);
 
-        //save pusher data so we don't sit and wait for any unnecessary async tests to come back
-        String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"erer\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"},]}";
+        //app workflow is identify-> backend calls pusher and triggers a response which is received by our app and
+        //calls tryAndSetURL. Instead we'll mock the identifyRequest and tell it to effectively bypass pusher and
+        //call tryAndSetURL right away to dismiss the loader
+        final String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"erer\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"},]}";
         AmbassadorSingleton.getInstance().savePusherInfo(pusher);
 
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Intent intent = new Intent("pusherData");
+                LocalBroadcastManager.getInstance(app.getApplicationContext()).sendBroadcast(intent);
+                return null;
+            }
+        })
+        .when(identifyRequest).send(anyString());
+
         Intent intent = new Intent();
-        intent.putExtra("rafParameters", parameters);
         mActivityTestIntentRule.launchActivity(intent);
     }
 

@@ -31,6 +31,12 @@ public class MockAmbassadorActivityModule {
         return mock(LinkedInRequest.class);
     }
 
+    @Provides
+    @Singleton
+    IdentifyRequest provideIdentifyRequest() {
+        return mock(IdentifyRequest.class);
+    }
+
 /*    @Provides
     @Singleton
     @ForActivity

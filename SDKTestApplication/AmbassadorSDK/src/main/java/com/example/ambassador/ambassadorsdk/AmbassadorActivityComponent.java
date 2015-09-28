@@ -7,4 +7,5 @@ public interface AmbassadorActivityComponent {
     void inject(AmbassadorActivity ambassadorActivity);
     void inject(TweetDialog tweetDialog);
     void inject(LinkedInDialog linkedInDialog);
+    void inject(Identify identify);
 }
