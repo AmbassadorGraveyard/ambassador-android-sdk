@@ -1,7 +1,6 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.app.Instrumentation;
-import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.assertion.ViewAssertions;
@@ -93,6 +92,14 @@ public class AmbassadorActivityTest {
         AmbassadorSingleton.getInstance().setCampaignID("260");
         AmbassadorSingleton.getInstance().saveUniversalToken("UniversalToken ***REMOVED***");
 
+        //tell the application which component we want to use - in this case use the the one created above instead of the
+        //application component which is created in the Application (and uses the real tweetRequest)
+        //Context context = mActivityTestIntentRule.getActivity();
+        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockAmbassadorActivityModule(new MockAmbassadorActivityModule()).build();
+        app.setComponent(component);
+        //perform injection
+        component.inject(this);
+
         //save pusher data so we don't sit and wait for any unnecessary async tests to come back
         String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"erer\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"},]}";
         AmbassadorSingleton.getInstance().savePusherInfo(pusher);
@@ -100,14 +107,6 @@ public class AmbassadorActivityTest {
         Intent intent = new Intent();
         intent.putExtra("rafParameters", parameters);
         mActivityTestIntentRule.launchActivity(intent);
-
-        //tell the application which component we want to use - in this case use the the one created above instead of the
-        //application component which is created in the Application (and uses the real tweetRequest)
-        Context context = mActivityTestIntentRule.getActivity();
-        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockAmbassadorActivityModule(new MockAmbassadorActivityModule(context)).build();
-        app.setComponent(component);
-        //perform injection
-        component.inject(this);
     }
 
     @After
@@ -129,7 +128,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
     }
 
-    //@Test
+    @Test
     public void testFacebook() {
         //TODO: remove hardcoded id check, try to get withText working
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
@@ -142,7 +141,7 @@ public class AmbassadorActivityTest {
         //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
     }
 
-    //@Test
+    @Test
     public void testContactsEmail() {
         //start recording fired Intents
         Intents.init();
@@ -236,7 +235,7 @@ public class AmbassadorActivityTest {
         //TODO: after figuring out how to use mock list of contacts, test deleting one to make sure NO CONTACTS textview is shown
     }
 
-    //@Test
+    @Test
     public void testContactsSMS() {
         //start recording fired Intents
         Intents.init();
@@ -259,7 +258,7 @@ public class AmbassadorActivityTest {
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
     }
 
-    //@Test
+    @Test
     public void testLinkedIn() {
         //clear the token
         AmbassadorSingleton.getInstance().setLinkedInToken(null);
@@ -367,7 +366,7 @@ public class AmbassadorActivityTest {
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
-    //@Test
+    @Test
     public void testTwitter() {
         //clear the token
         AmbassadorSingleton.getInstance().setTwitterAccessToken(null);

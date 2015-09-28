@@ -24,8 +24,9 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
     @Inject
     LinkedInRequest linkedInRequest;
 
-    @Inject
-    public LinkedInDialog(@ForActivity Context context) {
+    //@Inject
+    //public LinkedInDialog(@ForActivity Context context) {
+    public LinkedInDialog(Context context) {
         super(context);
 
         //get injected modules we need

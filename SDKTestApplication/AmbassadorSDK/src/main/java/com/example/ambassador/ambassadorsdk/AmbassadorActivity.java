@@ -33,7 +33,6 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -69,14 +68,14 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     };
 
-    @Inject
-    TweetDialog tweetDialog;
+    //@Inject
+    //TweetDialog tweetDialog;
 
-    @Inject
-    LinkedInDialog linkedInDialog;
+    //@Inject
+    //LinkedInDialog linkedInDialog;
 
-    @Inject
-    ShareDialog fbDialog;
+    //@Inject
+    //ShareDialog fbDialog;
 
     @Singleton
     @Component(modules=AmbassadorActivityModule.class)
@@ -95,7 +94,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         //get injected modules we need
         if (MyApplication.getComponent() == null) {
-            ApplicationComponent component = DaggerAmbassadorActivity_ApplicationComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule(this)).build();
+            ApplicationComponent component = DaggerAmbassadorActivity_ApplicationComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule()).build();
             MyApplication.setComponent(component);
         }
         MyApplication.getComponent().inject(this);
@@ -197,12 +196,14 @@ public class AmbassadorActivity extends AppCompatActivity {
                 .setContentUrl(Uri.parse(AmbassadorSingleton.getInstance().getURL()))
                 .build();
 
+        ShareDialog fbDialog = new ShareDialog(this);
         fbDialog.show(content);
     }
 
     void shareWithTwitter() {
         // Presents twitter login screen if user has not logged in yet
         if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
+            TweetDialog tweetDialog = new TweetDialog(this);
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
         } else {
@@ -214,6 +215,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     void shareWithLinkedIn() {
         // Presents login screen if user hasn't signed in yet
         if (AmbassadorSingleton.getInstance().getLinkedInToken() != null) {
+            LinkedInDialog linkedInDialog = new LinkedInDialog(this);
             linkedInDialog.setOwnerActivity(this);
             linkedInDialog.show();
         } else {

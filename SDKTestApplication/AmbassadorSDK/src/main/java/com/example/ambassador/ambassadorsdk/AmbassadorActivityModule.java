@@ -1,10 +1,5 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.app.Activity;
-import android.content.Context;
-
-import com.facebook.share.widget.ShareDialog;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -15,11 +10,13 @@ import dagger.Provides;
  */
 @Module
 public class AmbassadorActivityModule {
-    private final Context context;
+    //private final Context context;
 
+/*
     public AmbassadorActivityModule(Context context) {
         this.context = context;
     }
+*/
 
     @Provides
     @Singleton
@@ -34,7 +31,7 @@ public class AmbassadorActivityModule {
         return new LinkedInRequest();
     }
 
-    @Provides
+/*    @Provides
     @Singleton
     @ForActivity
     Context provideContext() {
@@ -45,5 +42,5 @@ public class AmbassadorActivityModule {
     @Singleton
     ShareDialog provideFbShareDialog() {
         return new ShareDialog((Activity)context);
-    }
+    }*/
 }
