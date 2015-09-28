@@ -1,11 +1,6 @@
 package com.example.ambassador.ambassadorsdk;
 
 
-import android.app.Activity;
-import android.content.Context;
-
-import com.facebook.share.widget.ShareDialog;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -18,11 +13,11 @@ import static org.mockito.Mockito.mock;
  */
 @Module
 public class MockAmbassadorActivityModule {
-    private final Context context;
+/*    private final Context context;
 
     public MockAmbassadorActivityModule(Context context) {
         this.context = context;
-    }
+    }*/
 
     @Provides
     @Singleton
@@ -36,7 +31,7 @@ public class MockAmbassadorActivityModule {
         return mock(LinkedInRequest.class);
     }
 
-    @Provides
+/*    @Provides
     @Singleton
     @ForActivity
     Context provideContext() {
@@ -47,5 +42,5 @@ public class MockAmbassadorActivityModule {
     @Singleton
     ShareDialog provideFbShareDialog() {
         return new ShareDialog((Activity)context);
-    }
+    }*/
 }
