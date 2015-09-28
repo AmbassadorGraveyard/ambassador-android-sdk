@@ -23,7 +23,7 @@ class AmbassadorSingleton {
     private static AmbassadorSingleton mInstance = null;
     private Context context;
     private SharedPreferences sharePrefs;
-    public ServiceSelectorPreferences rafParameters;
+    private ServiceSelectorPreferences rafParameters;
 
     static AmbassadorSingleton getInstance() {
         if(mInstance == null) {
@@ -34,6 +34,8 @@ class AmbassadorSingleton {
 
         return mInstance;
     }
+
+
 
     // STATIC VARIABLES
     static String identifyURL() {
@@ -142,10 +144,20 @@ class AmbassadorSingleton {
     void setUserEmail(String email) {
         sharePrefs.edit().putString("userEmail", email).apply();
     }
+
+    void setRafParameters(String defaultShareMessage, String titleText, String descriptionText, String toolbarTitle) {
+        rafParameters = new ServiceSelectorPreferences();
+        rafParameters.defaultShareMessage = defaultShareMessage;
+        rafParameters.titleText = titleText;
+        rafParameters.descriptionText = descriptionText;
+        rafParameters.toolbarTitle = toolbarTitle;
+    }
     // END SHAREDINSTANCE SETTERS
 
 
     // SHAREDINSTANCE GETTERS
+    ServiceSelectorPreferences getRafParameters() { return rafParameters; }
+
     String getLinkedInToken() { return sharePrefs.getString("linkedInToken", null); }
 
     String getTwitterAccessToken() { return sharePrefs.getString("twitterToken", null); }

@@ -57,7 +57,7 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
         this.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                etTwitterMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
+                etTwitterMessage.setText(AmbassadorSingleton.getInstance().getRafParameters().defaultShareMessage);
             }
         });
     }
