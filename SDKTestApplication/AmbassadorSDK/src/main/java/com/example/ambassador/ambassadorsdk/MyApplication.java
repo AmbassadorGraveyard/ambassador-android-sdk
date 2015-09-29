@@ -12,20 +12,20 @@ import dagger.Component;
  */
 public class MyApplication extends Application {
     private static Context context;
-    private static AmbassadorActivityComponent component = null;
+    private static AmbassadorApplicationComponent component = null;
 
     @Singleton
-    @Component(modules=AmbassadorActivityModule.class)
-    public interface ApplicationComponent extends AmbassadorActivityComponent {
+    @Component(modules=AmbassadorApplicationModule.class)
+    public interface ApplicationComponent extends AmbassadorApplicationComponent {
         //dummy component which will not override anything from parent interface
         //the testing component will provide its own overrides to inject into the tests
     }
 
-    public static AmbassadorActivityComponent getComponent() {
+    public static AmbassadorApplicationComponent getComponent() {
         return component;
     }
 
-    public static void setComponent(AmbassadorActivityComponent comp) {
+    public static void setComponent(AmbassadorApplicationComponent comp) {
         component = comp;
     }
 
@@ -35,7 +35,7 @@ public class MyApplication extends Application {
 
         //get injected modules we need
         if (component == null) {
-            ApplicationComponent component = DaggerMyApplication_ApplicationComponent.builder().ambassadorActivityModule(new AmbassadorActivityModule()).build();
+            ApplicationComponent component = DaggerMyApplication_ApplicationComponent.builder().ambassadorApplicationModule(new AmbassadorApplicationModule()).build();
             MyApplication.setComponent(component);
         }
     }

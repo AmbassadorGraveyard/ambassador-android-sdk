@@ -56,7 +56,7 @@ public class AmbassadorSDKTest {
 
         // ACT
         whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
-        //when(mockIntent.putExtra("rafParameters", mockPreferences)).thenReturn(mockIntent);
+        when(mockIntent.putExtra("rafParameters", mockPreferences)).thenReturn(mockIntent);
         PowerMockito.doNothing().when(mockSingleton).setCampaignID(anyString());
         PowerMockito.doNothing().when(mockContext).startActivity(mockIntent);
         AmbassadorSDK.presentRAF(mockContext, "306");

@@ -75,7 +75,7 @@ public class AmbassadorActivityTest {
     //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
     @Singleton
     @Component(modules = {MockAmbassadorActivityModule.class})
-    public interface TestComponent extends AmbassadorActivityComponent {
+    public interface TestComponent extends AmbassadorApplicationComponent {
         void inject(AmbassadorActivityTest ambassadorActivityTest);
     }
 
