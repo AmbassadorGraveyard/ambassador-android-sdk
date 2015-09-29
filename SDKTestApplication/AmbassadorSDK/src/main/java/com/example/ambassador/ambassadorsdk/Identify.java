@@ -58,11 +58,6 @@ class Identify implements IIdentify {
     void setUpPusher(String deviceID) {
         pusher.createPusher(deviceID, new IdentifyPusher.PusherCompletion() {
             @Override
-            public void pusherSubscribed() {
-                performIdentifyRequest();
-            }
-
-            @Override
             public void pusherEventTriggered(String data) {
                 try {
                     JSONObject pusherObject = new JSONObject(data);
