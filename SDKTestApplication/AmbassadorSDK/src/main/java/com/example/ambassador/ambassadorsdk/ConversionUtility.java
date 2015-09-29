@@ -171,7 +171,7 @@ class ConversionUtility {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String url = "https://dev-ambassador-api.herokuapp.com/universal/action/conversion/?u=" +
+            String url = AmbassadorSingleton.conversionURL() +
                     AmbassadorSingleton.getInstance().getUniversalID();
 
             try {

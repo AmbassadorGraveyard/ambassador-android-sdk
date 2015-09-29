@@ -24,34 +24,34 @@ class BulkShareHelper {
         this.messageToShare = messageToShare;
     }
 
-    void bulkShare(ArrayList<ContactObject> contacts, Boolean phoneNumbers) {
+    void bulkShare(final ArrayList<ContactObject> contacts, Boolean phoneNumbers) {
         // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
-            BulkShareSMSRequest smsRequest = new BulkShareSMSRequest(contacts, messageToShare, new BulkShareSMSRequest.SMSRequestCompletion() {
+            RequestManager.getInstance().bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void smsShareSuccess() {
+                public void onSuccess() {
+                    RequestManager.getInstance().bulkShareTrack(contacts, true);
                     callIsSuccessful();
                 }
 
                 @Override
-                public void smsShareFailed() {
+                public void onFailure() {
                     callIsUnsuccessful();
                 }
             });
-            smsRequest.execute();
         } else {
-            BulkShareEmailRequest emailRequest = new BulkShareEmailRequest(contacts, messageToShare, new BulkShareEmailRequest.EmailRequestCompletion() {
+            RequestManager.getInstance().bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void emailShareSucces() {
+                public void onSuccess() {
+                    RequestManager.getInstance().bulkShareTrack(contacts, false);
                     callIsSuccessful();
                 }
 
                 @Override
-                public void emailShareFailure() {
+                public void onFailure() {
                     callIsUnsuccessful();
                 }
             });
-            emailRequest.execute();
         }
     }
 
