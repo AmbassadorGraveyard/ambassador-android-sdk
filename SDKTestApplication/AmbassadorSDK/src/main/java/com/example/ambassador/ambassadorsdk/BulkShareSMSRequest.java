@@ -31,7 +31,7 @@ class BulkShareSMSRequest extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        String url = "https://dev-ambassador-api.herokuapp.com/share/sms/";
+        String url = AmbassadorSingleton.bulkSMSShareURL();
 
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();

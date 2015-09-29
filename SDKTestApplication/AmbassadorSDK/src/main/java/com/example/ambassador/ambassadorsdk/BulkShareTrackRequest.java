@@ -24,7 +24,7 @@ class BulkShareTrackRequest extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        String url = "https://dev-ambassador-api.herokuapp.com/track/share/";
+        String url = AmbassadorSingleton.shareTrackURL();
 
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
