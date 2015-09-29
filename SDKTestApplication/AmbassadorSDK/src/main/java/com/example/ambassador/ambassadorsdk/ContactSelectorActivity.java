@@ -71,7 +71,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         tvNoContacts = (TextView) findViewById(R.id.tvNoContacts);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        _setUpToolbar(AmbassadorSingleton.getInstance().rafParameters.toolbarTitle);
+        _setUpToolbar(AmbassadorSingleton.getInstance().getRafParameters().toolbarTitle);
 
         //setup progress dialog only once
         pd = new ProgressDialog(this);
@@ -88,7 +88,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         // Sets share message to default message from RAF Parameters
-        etShareMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
+        etShareMessage.setText(AmbassadorSingleton.getInstance().getRafParameters().defaultShareMessage);
 
         adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
         lvContacts.setAdapter(adapter);

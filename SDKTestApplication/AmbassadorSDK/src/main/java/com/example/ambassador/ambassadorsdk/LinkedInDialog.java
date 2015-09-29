@@ -62,7 +62,7 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
         this.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                etMessage.setText(AmbassadorSingleton.getInstance().rafParameters.defaultShareMessage);
+                etMessage.setText(AmbassadorSingleton.getInstance().getRafParameters().defaultShareMessage);
             }
         });
     }
