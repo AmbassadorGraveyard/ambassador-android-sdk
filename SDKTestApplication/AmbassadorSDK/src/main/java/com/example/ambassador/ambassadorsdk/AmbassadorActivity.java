@@ -41,7 +41,6 @@ import java.util.TimerTask;
  */
 public class AmbassadorActivity extends AppCompatActivity {
     CustomEditText etShortUrl;
-    private ServiceSelectorPreferences rafParams;
     private ProgressDialog pd;
     private Timer networkTimer;
     private final android.os.Handler timerHandler = new android.os.Handler();
@@ -61,7 +60,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Executed when Pusher data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo(), rafParams.defaultShareMessage);
+            tryAndSetURL(AmbassadorSingleton.getInstance().getPusherInfo(), AmbassadorSingleton.getInstance().getRafParameters().defaultShareMessage);
         }
     };
 
@@ -85,12 +84,12 @@ public class AmbassadorActivity extends AppCompatActivity {
         //tell Dagger to inject dependencies
         MyApplication.getComponent().inject(this);
 
-        rafParams = new ServiceSelectorPreferences();
-        rafParams.defaultShareMessage = getResources().getString(R.string.RAFdefaultShareMessage);
-        rafParams.titleText = getResources().getString(R.string.RAFtitleText);
-        rafParams.descriptionText = getResources().getString(R.string.RAFdescriptionText);
-        rafParams.toolbarTitle = getResources().getString(R.string.RAFtoolbarTitle);
-        AmbassadorSingleton.getInstance().rafParameters = rafParams;
+        AmbassadorSingleton.getInstance().setRafParameters(
+                getResources().getString(R.string.RAFdefaultShareMessage),
+                getResources().getString(R.string.RAFtitleText),
+                getResources().getString(R.string.RAFdescriptionText),
+                getResources().getString(R.string.RAFtoolbarTitle));
+
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
         // UI Components
@@ -100,9 +99,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         TextView tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
         etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
 
-        tvWelcomeTitle.setText(rafParams.titleText);
-        tvWelcomeDesc.setText(rafParams.descriptionText);
-        _setUpToolbar(rafParams.toolbarTitle);
+        tvWelcomeTitle.setText(AmbassadorSingleton.getInstance().getRafParameters().titleText);
+        tvWelcomeDesc.setText(AmbassadorSingleton.getInstance().getRafParameters().descriptionText);
+        _setUpToolbar(AmbassadorSingleton.getInstance().getRafParameters().toolbarTitle);
 
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -205,7 +204,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     void shareWithFacebook() {
         ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentTitle(rafParams.defaultShareMessage)
+                .setContentTitle(AmbassadorSingleton.getInstance().getRafParameters().defaultShareMessage)
                 .setContentUrl(Uri.parse(AmbassadorSingleton.getInstance().getURL()))
                 .build();
 
