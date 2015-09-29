@@ -10,7 +10,7 @@ import twitter4j.auth.AccessToken;
 /**
  * Created by coreyfields on 9/19/15.
  */
-public class TweetRequest {
+class TweetRequest {
     public String tweetString;
     public int postStatus;
     public AsyncResponse mCallback = null;

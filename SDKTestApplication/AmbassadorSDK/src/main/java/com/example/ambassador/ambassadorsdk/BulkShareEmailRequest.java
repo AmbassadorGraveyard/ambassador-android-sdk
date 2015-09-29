@@ -31,7 +31,7 @@ class BulkShareEmailRequest extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        String url = "https://dev-ambassador-api.herokuapp.com/share/email/";
+        String url = AmbassadorSingleton.bulkEmailShareURL();
 
         try {
             HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();

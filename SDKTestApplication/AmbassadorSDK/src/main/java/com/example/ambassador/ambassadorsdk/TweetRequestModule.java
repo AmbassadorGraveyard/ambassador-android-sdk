@@ -9,7 +9,7 @@ import dagger.Provides;
  * Created by coreyfields on 9/14/15.
  */
 @Module
-public class TweetRequestModule {
+class TweetRequestModule {
     @Provides
     @Singleton
     TweetRequest provideTweetRequest() {
