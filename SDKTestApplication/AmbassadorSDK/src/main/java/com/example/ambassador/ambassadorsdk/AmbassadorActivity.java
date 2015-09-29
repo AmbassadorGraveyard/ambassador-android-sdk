@@ -35,6 +35,8 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+
 
 /**
  * Created by JakeDunahee on 7/22/15.
@@ -64,8 +66,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     };
 
-    //@Inject
-    //TweetDialog tweetDialog;
+    @Inject
+    TweetDialog tweetDialog;
 
     //@Inject
     //LinkedInDialog linkedInDialog;
@@ -82,6 +84,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
 
         //tell Dagger to inject dependencies
+        MyApplication.getAmbModule().setContext(this);
         MyApplication.getComponent().inject(this);
 
         AmbassadorSingleton.getInstance().setRafParameters(
@@ -215,7 +218,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     void shareWithTwitter() {
         // Presents twitter login screen if user has not logged in yet
         if (AmbassadorSingleton.getInstance().getTwitterAccessToken() != null) {
-            TweetDialog tweetDialog = new TweetDialog(this);
+            //TweetDialog tweetDialog = new TweetDialog(this);
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
         } else {

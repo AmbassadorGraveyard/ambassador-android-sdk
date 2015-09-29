@@ -74,7 +74,7 @@ public class AmbassadorActivityTest {
 
     //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
     @Singleton
-    @Component(modules = {MockAmbassadorApplicationModule.class})
+    @Component(modules = {AmbassadorApplicationModule.class})
     public interface TestComponent extends AmbassadorApplicationComponent {
         void inject(AmbassadorActivityTest ambassadorActivityTest);
     }
@@ -100,7 +100,11 @@ public class AmbassadorActivityTest {
         //tell the application which component we want to use - in this case use the the one created above instead of the
         //application component which is created in the Application (and uses the real tweetRequest)
         //Context context = mActivityTestIntentRule.getActivity();
-        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().mockAmbassadorApplicationModule(new MockAmbassadorApplicationModule()).build();
+        //AmbassadorApplicationModule mockAmb = new MockAmbassadorApplicationModule();
+        AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
+        amb.setMockMode(true);
+        app.setAmbModule(amb);
+        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
         app.setComponent(component);
         //perform injection
         component.inject(this);
@@ -126,7 +130,7 @@ public class AmbassadorActivityTest {
 
     @After
     public void afterEachTest() {
-        mActivityTestIntentRule.getActivity().finish();
+        if (mActivityTestIntentRule.getActivity() != null) mActivityTestIntentRule.getActivity().finish();
         AmbassadorSingleton.getInstance().savePusherInfo(null);
     }
 

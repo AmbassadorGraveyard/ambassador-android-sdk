@@ -13,6 +13,7 @@ import dagger.Component;
 public class MyApplication extends Application {
     private static Context context;
     private static AmbassadorApplicationComponent component = null;
+    public static AmbassadorApplicationModule amb;
 
     @Singleton
     @Component(modules=AmbassadorApplicationModule.class)
@@ -29,14 +30,23 @@ public class MyApplication extends Application {
         component = comp;
     }
 
+    public static AmbassadorApplicationModule getAmbModule() {
+        return amb;
+    }
+
+    public static void setAmbModule(AmbassadorApplicationModule ambModule) {
+        amb = ambModule;
+    }
+
     public void onCreate() {
         super.onCreate();
         context = getApplicationContext();
 
         //get injected modules we need
         if (component == null) {
-            ApplicationComponent component = DaggerMyApplication_ApplicationComponent.builder().ambassadorApplicationModule(new AmbassadorApplicationModule()).build();
-            MyApplication.setComponent(component);
+            amb = new AmbassadorApplicationModule();
+            ApplicationComponent component = DaggerMyApplication_ApplicationComponent.builder().ambassadorApplicationModule(amb).build();
+            setComponent(component);
         }
     }
 
