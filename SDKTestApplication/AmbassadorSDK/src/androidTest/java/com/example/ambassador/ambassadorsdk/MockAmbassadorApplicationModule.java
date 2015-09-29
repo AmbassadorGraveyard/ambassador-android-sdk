@@ -12,13 +12,7 @@ import static org.mockito.Mockito.mock;
  * Created by coreyfields on 9/14/15.
  */
 @Module
-public class MockAmbassadorActivityModule {
-/*    private final Context context;
-
-    public MockAmbassadorActivityModule(Context context) {
-        this.context = context;
-    }*/
-
+public class MockAmbassadorApplicationModule {
     @Provides
     @Singleton
     TweetRequest provideTweetRequest() {
@@ -36,17 +30,4 @@ public class MockAmbassadorActivityModule {
     IdentifyRequest provideIdentifyRequest() {
         return mock(IdentifyRequest.class);
     }
-
-/*    @Provides
-    @Singleton
-    @ForActivity
-    Context provideContext() {
-        return context;
-    }
-
-    @Provides
-    @Singleton
-    ShareDialog provideFbShareDialog() {
-        return new ShareDialog((Activity)context);
-    }*/
 }
