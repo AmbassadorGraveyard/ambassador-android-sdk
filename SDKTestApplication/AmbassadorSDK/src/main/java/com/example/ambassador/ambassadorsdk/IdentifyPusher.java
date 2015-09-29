@@ -16,7 +16,6 @@ import java.util.HashMap;
  */
 class IdentifyPusher {
     interface PusherCompletion {
-        void pusherSubscribed();
         void pusherEventTriggered(String data);
     }
 
@@ -65,7 +64,6 @@ class IdentifyPusher {
             @Override
             public void onSubscriptionSucceeded(String channelName) {
                 Utilities.debugLog("Pusher", "Successfully subscribed to " + channelName);
-                completion.pusherSubscribed();
             }
 
             @Override
