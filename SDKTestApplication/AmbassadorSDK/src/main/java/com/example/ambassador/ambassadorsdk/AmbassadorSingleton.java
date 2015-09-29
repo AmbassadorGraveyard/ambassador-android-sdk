@@ -138,7 +138,7 @@ class AmbassadorSingleton {
     }
 
     void setRafDefaultMessage(String message) {
-        getInstance().rafParameters.defaultShareMessage = message;
+        rafParameters.defaultShareMessage = message;
     }
 
     void setUserEmail(String email) {
@@ -222,7 +222,7 @@ class AmbassadorSingleton {
     }
 
     void convertForInstallation(ConversionParameters parameters) {
-        AmbassadorSingleton.getInstance().registerConversion(parameters);
+        registerConversion(parameters);
         sharePrefs.edit().putBoolean("installConversion", true).apply();
     }
     // END AMBASSADOR SDK CALLS

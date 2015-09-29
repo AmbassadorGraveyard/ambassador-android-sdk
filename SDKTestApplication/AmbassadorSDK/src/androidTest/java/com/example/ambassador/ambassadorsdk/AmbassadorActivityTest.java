@@ -329,13 +329,13 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-                .doAnswer(new Answer<Void>() {
-                    public Void answer(InvocationOnMock invocation) {
-                        tweetRequest.mCallback.processTweetRequest(400);
-                        return null;
-                    }
-                })
-                .when(tweetRequest).tweet();
+        .doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                tweetRequest.mCallback.processTweetRequest(400);
+                return null;
+            }
+        })
+        .when(tweetRequest).tweet();
 
         onView(withId(R.id.btnTweet)).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
