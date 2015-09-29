@@ -126,6 +126,7 @@ public class AmbassadorActivityTest {
 
     @After
     public void afterEachTest() {
+        mActivityTestIntentRule.getActivity().finish();
         AmbassadorSingleton.getInstance().savePusherInfo(null);
     }
 
