@@ -15,28 +15,31 @@ import java.util.regex.Pattern;
  * Created by JakeDunahee on 8/11/15.
  */
 class BulkShareHelper {
-    private ProgressDialog loader;
     private String messageToShare;
 
+    interface BulkShareCompletion {
+        void bulkShareSuccess();
+        void bulkShareFailure();
+    }
+
     // Constuctor
-    BulkShareHelper(ProgressDialog loader, String messageToShare) {
-        this.loader = loader;
+    BulkShareHelper(String messageToShare) {
         this.messageToShare = messageToShare;
     }
 
-    void bulkShare(final ArrayList<ContactObject> contacts, Boolean phoneNumbers) {
+    void bulkShare(final ArrayList<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
         // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
             RequestManager.getInstance().bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess() {
                     RequestManager.getInstance().bulkShareTrack(contacts, true);
-                    callIsSuccessful();
+                    completion.bulkShareSuccess();
                 }
 
                 @Override
                 public void onFailure() {
-                    callIsUnsuccessful();
+                    completion.bulkShareFailure();
                 }
             });
         } else {
@@ -44,27 +47,17 @@ class BulkShareHelper {
                 @Override
                 public void onSuccess() {
                     RequestManager.getInstance().bulkShareTrack(contacts, false);
-                    callIsSuccessful();
+                    completion.bulkShareSuccess();
                 }
 
                 @Override
                 public void onFailure() {
-                    callIsUnsuccessful();
+                    completion.bulkShareFailure();
                 }
             });
         }
     }
 
-    void callIsSuccessful() {
-        loader.dismiss();
-        loader.getOwnerActivity().finish();
-        Toast.makeText(loader.getOwnerActivity(), "Message successfully shared!", Toast.LENGTH_SHORT).show();
-    }
-
-    void callIsUnsuccessful() {
-        loader.dismiss();
-        Toast.makeText(loader.getOwnerActivity(), "Unable to share message. Please try again.", Toast.LENGTH_SHORT).show();
-    }
 
     // STATIC HELPER FUNCTIONS
     // VERIFIER FUNCTIONS
