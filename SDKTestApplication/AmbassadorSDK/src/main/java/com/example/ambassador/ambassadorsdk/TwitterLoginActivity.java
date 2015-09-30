@@ -46,8 +46,19 @@ public class TwitterLoginActivity extends AppCompatActivity {
         twitter = new TwitterFactory().getInstance();
         twitter.setOAuthConsumer(AmbassadorSingleton.TWITTER_KEY, AmbassadorSingleton.TWITTER_SECRET);
 
-        RequestTask task = new RequestTask();
-        task.execute();
+        RequestManager.getInstance().twitterLoginRequest(new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess(Object successResponse) {
+                requestToken = (RequestToken)successResponse;
+                String url = requestToken.getAuthenticationURL();
+                wvTwitter.loadUrl(String.valueOf(Uri.parse(requestToken.getAuthenticationURL())));
+            }
+
+            @Override
+            public void onFailure(Object failureResponse) {
+
+            }
+        });
     }
 
     @Override
@@ -74,12 +85,25 @@ public class TwitterLoginActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // Checks for callback url to get the oAuth verifier string for Twitter login
-            if (url.startsWith(AmbassadorSingleton.LINKED_IN_CALLBACK_URL)) {
+            if (url.startsWith(AmbassadorSingleton.CALLBACK_URL)) {
                 loader.setVisibility(View.VISIBLE);
                 wvTwitter.setVisibility(View.INVISIBLE);
                 oauth_secret = url.substring(url.indexOf("oauth_verifier=") + "oauth_verifier=".length(), url.length());
-                AccessTokenRequest atr = new AccessTokenRequest();
-                atr.execute();
+//                AccessTokenRequest atr = new AccessTokenRequest();
+//                atr.execute();
+                RequestManager.getInstance().twitterAccessTokenRequest(oauth_secret, requestToken, new RequestManager.RequestCompletion() {
+                    @Override
+                    public void onSuccess(Object successResponse) {
+                        Toast.makeText(getApplicationContext(), "Successfully logged in!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+
+                    @Override
+                    public void onFailure(Object failureResponse) {
+                        Toast.makeText(getApplicationContext(), "Unable to login!", Toast.LENGTH_SHORT).show();
+//                        finish();
+                    }
+                });
             }
 
             return super.shouldOverrideUrlLoading(view, url);
@@ -95,47 +119,47 @@ public class TwitterLoginActivity extends AppCompatActivity {
     }
 
     // Async Task that get OAuth token
-    private class RequestTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                requestToken = twitter.getOAuthRequestToken("http://localhost:2999");
-            } catch (twitter4j.TwitterException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (requestToken != null) {
-                wvTwitter.loadUrl(String.valueOf(Uri.parse(requestToken.getAuthenticationURL())));
-            }
-        }
-    }
+//    private class RequestTask extends AsyncTask<Void, Void, Void> {
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//            try {
+//                requestToken = twitter.getOAuthRequestToken("http://localhost:2999");
+//            } catch (twitter4j.TwitterException e) {
+//                e.printStackTrace();
+//            }
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            if (requestToken != null) {
+//                wvTwitter.loadUrl(String.valueOf(Uri.parse(requestToken.getAuthenticationURL())));
+//            }
+//        }
+//    }
 
     // Async task that get Access token from OAuth credentials
-    private class AccessTokenRequest extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, oauth_secret);
-                AmbassadorSingleton.getInstance().setTwitterAccessToken(accessToken.getToken());
-                AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret(accessToken.getTokenSecret());
-            } catch (twitter4j.TwitterException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            Toast.makeText(getApplicationContext(), "Successfully logged in!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-    }
+//    private class AccessTokenRequest extends AsyncTask<Void, Void, Void> {
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//            try {
+//                AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, oauth_secret);
+//                AmbassadorSingleton.getInstance().setTwitterAccessToken(accessToken.getToken());
+//                AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret(accessToken.getTokenSecret());
+//            } catch (twitter4j.TwitterException e) {
+//                e.printStackTrace();
+//            }
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            Toast.makeText(getApplicationContext(), "Successfully logged in!", Toast.LENGTH_SHORT).show();
+//            finish();
+//        }
+//    }
 }

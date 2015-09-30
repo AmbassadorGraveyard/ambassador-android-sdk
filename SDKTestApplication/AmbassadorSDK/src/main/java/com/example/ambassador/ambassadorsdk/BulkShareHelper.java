@@ -5,6 +5,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,26 +30,26 @@ class BulkShareHelper {
         if (phoneNumbers) {
             RequestManager.getInstance().bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void onSuccess(String successResponse) {
+                public void onSuccess(Object successResponse) {
                     RequestManager.getInstance().bulkShareTrack(contacts, true);
                     completion.bulkShareSuccess();
                 }
 
                 @Override
-                public void onFailure(String failureResponse) {
+                public void onFailure(Object failureResponse) {
                     completion.bulkShareFailure();
                 }
             });
         } else {
             RequestManager.getInstance().bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void onSuccess(String successReponse) {
+                public void onSuccess(Object successReponse) {
                     RequestManager.getInstance().bulkShareTrack(contacts, false);
                     completion.bulkShareSuccess();
                 }
 
                 @Override
-                public void onFailure(String failureResponse) {
+                public void onFailure(Object failureResponse) {
                     completion.bulkShareFailure();
                 }
             });

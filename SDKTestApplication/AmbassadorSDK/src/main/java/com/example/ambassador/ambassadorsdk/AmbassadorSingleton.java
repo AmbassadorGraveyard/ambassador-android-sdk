@@ -12,7 +12,7 @@ class AmbassadorSingleton {
     // Constants
     static final String TWITTER_KEY = "QmXl03hbQEKSLLiDY4e6vpIjP";
     static final String TWITTER_SECRET = "IfIbOuVbKwPkfJQW0zknChNMBbqhmpkuuK8FJmqkQqBqCGa4dW";
-    static final String LINKED_IN_CALLBACK_URL = "http://localhost:2999";
+    static final String CALLBACK_URL = "http://localhost:2999";
     static final String LINKED_IN_CLIENT_ID = "777z4czm3edaef";
     static final String LINKED_IN_CLIENT_SECRET = "lM1FzXJauTSfxdnW";
     static final String PUSHER_APP_ID = "112803";
