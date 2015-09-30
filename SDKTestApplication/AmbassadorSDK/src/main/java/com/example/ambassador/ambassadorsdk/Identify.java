@@ -2,18 +2,11 @@ package com.example.ambassador.ambassadorsdk;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -69,8 +62,18 @@ class Identify implements IIdentify {
                 try {
                     JSONObject pusherObject = new JSONObject(data);
                     if (pusherObject.has("url")) {
-                        PusherURLRequest pusherURLRequest = new PusherURLRequest(pusherObject.getString("url"));
-                        pusherURLRequest.execute();
+                        RequestManager.getInstance().externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
+                            @Override
+                            public void onSuccess(String successResponse) {
+                                Utilities.debugLog("Pusher External", "Saved pusher object as String = " + successResponse.toString());
+                                _getAndSavePusherInfo(successResponse.toString());
+                            }
+
+                            @Override
+                            public void onFailure(String failureResponse) {
+                                Utilities.debugLog("Pusher External", "FAILED to save pusher object with error: " + failureResponse);
+                            }
+                        });
                     } else {
                         _getAndSavePusherInfo(data);
                     }
@@ -80,11 +83,6 @@ class Identify implements IIdentify {
 
             }
         });
-    }
-
-    void performIdentifyRequest() {
-        //IdentifyRequest request = new IdentifyRequest();
-        identifyRequest.send(identifier);
     }
 
     private void _getAndSavePusherInfo(String jsonObject) {
@@ -111,51 +109,5 @@ class Identify implements IIdentify {
         // Functionality: Posts notification to listener once identity is successfully received
         Intent intent = new Intent("pusherData");
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-
-    class PusherURLRequest extends AsyncTask<Void, Void, Void> {
-        String url;
-        int statusCode;
-        StringBuilder response;
-
-        public PusherURLRequest(String url) {
-            this.url = url;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
-
-                statusCode = connection.getResponseCode();
-
-                InputStream is = (Utilities.isSuccessfulResponseCode(statusCode)) ? connection.getInputStream() : connection.getErrorStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                response = new StringBuilder();
-
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                }
-
-                Utilities.debugLog("Pusher External URL", response.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (Utilities.isSuccessfulResponseCode(statusCode)) {
-                Utilities.debugLog("Pusher Save", "Saved pusher object as String = " + response.toString());
-                _getAndSavePusherInfo(response.toString());
-            }
-        }
     }
 }
