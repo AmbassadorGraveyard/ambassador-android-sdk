@@ -1,8 +1,5 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.app.ProgressDialog;
-import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
