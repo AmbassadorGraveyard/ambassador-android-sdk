@@ -62,8 +62,20 @@ class Identify implements IIdentify {
                 try {
                     JSONObject pusherObject = new JSONObject(data);
                     if (pusherObject.has("url")) {
-                        PusherURLRequest pusherURLRequest = new PusherURLRequest(pusherObject.getString("url"));
-                        pusherURLRequest.execute();
+//                        PusherURLRequest pusherURLRequest = new PusherURLRequest(pusherObject.getString("url"));
+//                        pusherURLRequest.execute();
+                        RequestManager.getInstance().externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
+                            @Override
+                            public void onSuccess(String successResponse) {
+                                Utilities.debugLog("Pusher External", "Saved pusher object as String = " + successResponse.toString());
+                                _getAndSavePusherInfo(successResponse.toString());
+                            }
+
+                            @Override
+                            public void onFailure(String failureResponse) {
+                                Utilities.debugLog("Pusher External", "FAILED to save pusher object with error: " + failureResponse);
+                            }
+                        });
                     } else {
                         _getAndSavePusherInfo(data);
                     }
@@ -73,11 +85,6 @@ class Identify implements IIdentify {
 
             }
         });
-    }
-
-    void performIdentifyRequest() {
-        IdentifyRequest request = new IdentifyRequest();
-        request.execute();
     }
 
     private void _getAndSavePusherInfo(String jsonObject) {
@@ -106,104 +113,4 @@ class Identify implements IIdentify {
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
     }
 
-    class IdentifyRequest extends AsyncTask<Void, Void, Void> {
-        int statusCode;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            String url = AmbassadorSingleton.identifyURL() +
-                    AmbassadorSingleton.getInstance().getUniversalID();
-
-            JSONObject identifyObject = new JSONObject();
-
-            try {
-                JSONObject augurObject = new JSONObject(AmbassadorSingleton.getInstance().getIdentifyObject());
-                identifyObject.put("enroll", true);
-                identifyObject.put("campaign_id", AmbassadorSingleton.getInstance().getCampaignID());
-                identifyObject.put("email", emailAddress);
-                identifyObject.put("source", "android_sdk_pilot");
-                identifyObject.put("mbsy_source", "");
-                identifyObject.put("mbsy_cookie_code", "");
-                identifyObject.put("fp", augurObject);
-                Utilities.debugLog("Augur", "Identify Object = " + identifyObject.toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
-
-                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(identifyObject.toString());
-                wr.flush();
-                wr.close();
-
-                statusCode = connection.getResponseCode();
-
-                InputStream is = (Utilities.isSuccessfulResponseCode(statusCode)) ? connection.getInputStream() : connection.getErrorStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                StringBuilder response = new StringBuilder();
-
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                }
-
-                Utilities.debugLog("Pusher", response.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-    }
-
-    class PusherURLRequest extends AsyncTask<Void, Void, Void> {
-        String url;
-        int statusCode;
-        StringBuilder response;
-
-        public PusherURLRequest(String url) {
-            this.url = url;
-        }
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
-
-                statusCode = connection.getResponseCode();
-
-                InputStream is = (Utilities.isSuccessfulResponseCode(statusCode)) ? connection.getInputStream() : connection.getErrorStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                response = new StringBuilder();
-
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                }
-
-                Utilities.debugLog("Pusher External URL", response.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (Utilities.isSuccessfulResponseCode(statusCode)) {
-                Utilities.debugLog("Pusher Save", "Saved pusher object as String = " + response.toString());
-                _getAndSavePusherInfo(response.toString());
-            }
-        }
-    }
 }
