@@ -75,6 +75,7 @@ class RequestManager {
         return response.toString();
     }
 
+    // region BULK SHARE
     void bulkShareSms(final ArrayList<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
@@ -151,13 +152,47 @@ class RequestManager {
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), isSMS).toString());
+                    if (isSMS) {
+                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), isSMS).toString());
+                    } else {
+                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), isSMS).toString());
+                    }
                     oStream.flush();
                     oStream.close();
 
                     final int responseCode = connection.getResponseCode();
                     String response = getResponse(connection, responseCode);
                     Utilities.debugLog("BulkShare", "BULK SHARE TRACK Response Code = " + responseCode + " and Response = " + response);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+    // endregion BULK SHARE
+
+    void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.conversionURL());
+
+                try {
+                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
+                    oStream.writeBytes(ConversionUtility.createJSONConversion(conversionParameters).toString());
+                    oStream.flush();
+                    oStream.close();
+
+                    final int responseCode = connection.getResponseCode();
+                    String response = getResponse(connection, responseCode);
+                    Utilities.debugLog("Conversion", "REGISTER CONVERSION Response Code = " + responseCode + " and Response = " + response);
+
+                    if (Utilities.isSuccessfulResponseCode(responseCode)) {
+                        completion.onSuccess();
+                    } else {
+                        completion.onFailure();
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

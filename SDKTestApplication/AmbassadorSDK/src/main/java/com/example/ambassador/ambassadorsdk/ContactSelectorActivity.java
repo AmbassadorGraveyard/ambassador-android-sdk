@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -433,8 +434,21 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         if (!pd.isShowing()) pd.show();
 
         // Call bulkShareHelper to handle sharing calls
-        BulkShareHelper shareHelper = new BulkShareHelper(pd, etShareMessage.getText().toString());
-        shareHelper.bulkShare(adapter.selectedContacts, showPhoneNumbers);
+        BulkShareHelper shareHelper = new BulkShareHelper(etShareMessage.getText().toString());
+        shareHelper.bulkShare(adapter.selectedContacts, showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
+            @Override
+            public void bulkShareSuccess() {
+                pd.dismiss();
+                finish();
+                Toast.makeText(getApplicationContext(), "Message successfully shared!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void bulkShareFailure() {
+                pd.dismiss();
+                Toast.makeText(getApplicationContext(), "Unable to share message. Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Interface call from ContactNameDialog

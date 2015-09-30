@@ -42,9 +42,10 @@ class ConversionUtility {
         if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
             try {
                 if (parameters.isValid()) {
-                    ConversionRequest request = new ConversionRequest();
-                    request.conversionParameters = parameters;
-                    request.execute();
+//                    ConversionRequest request = new ConversionRequest();
+//                    request.conversionParameters = parameters;
+//                    request.execute();
+                    makeConversionRequest();
                 } else {
                     throw new ConversionParametersException();
                 }
@@ -59,7 +60,7 @@ class ConversionUtility {
     }
 
     // Creates a JSON object from Conversion Params and some Augur data
-    public JSONObject createJSONConversion(ConversionParameters parameters) {
+    static JSONObject createJSONConversion(ConversionParameters parameters) {
         JSONObject conversionObject = new JSONObject();
         JSONObject fp = new JSONObject();
         JSONObject consumerObject = new JSONObject();
@@ -152,10 +153,11 @@ class ConversionUtility {
             // If there is anything in the database, cycles through and makes request to register conversions
             if (cursor.moveToFirst()) {
                 do {
-                    ConversionParameters parameters = ConversionDBHelper.createConversionParameterWithCursor(cursor);
-                    ConversionRequest request = new ConversionRequest();
-                    request.conversionParameters = parameters;
-                    request.execute();
+                    final ConversionParameters parameters = ConversionDBHelper.createConversionParameterWithCursor(cursor);
+//                    ConversionRequest request = new ConversionRequest();
+//                    request.conversionParameters = parameters;
+//                    request.execute();
+                    makeConversionRequest();
 
                     // Deletes row after registering conversion and will resave if failure occurs
                     ConversionDBHelper.deleteRow(db, cursor.getInt(cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry._ID)));
@@ -164,58 +166,74 @@ class ConversionUtility {
         }
     }
 
-    // Call to register conversion
-    private class ConversionRequest extends AsyncTask<Void, Void, Void> {
-        public int statusCode;
-        public ConversionParameters conversionParameters;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            String url = AmbassadorSingleton.conversionURL() +
-                    AmbassadorSingleton.getInstance().getUniversalID();
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
-
-                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(createJSONConversion(conversionParameters).toString());
-                wr.flush();
-                wr.close();
-
-                statusCode = connection.getResponseCode();
-
-                InputStream is = connection.getInputStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                StringBuffer response = new StringBuffer();
-
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                }
-
-                Utilities.debugLog("Conversion", "Conversion successful: " + response.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-                statusCode = 1;
+    void makeConversionRequest() {
+        RequestManager.getInstance().registerConversionRequest(parameters, new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess() {
+                Utilities.debugLog("Conversion", "Conversion Registered Successfully!");
             }
 
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            // If the response fails, the conversion is stored to a database
-            if (statusCode < 200 || statusCode > 299) {
-                ContentValues values = ConversionDBHelper.createValuesFromConversion(conversionParameters);
+            @Override
+            public void onFailure() {
+                ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
                 db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
                 Utilities.debugLog("Conversion", "Inserted row into table");
             }
-        }
+        });
     }
+
+    // Call to register conversion
+//    private class ConversionRequest extends AsyncTask<Void, Void, Void> {
+//        public int statusCode;
+//        public ConversionParameters conversionParameters;
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//            String url = AmbassadorSingleton.conversionURL() +
+//                    AmbassadorSingleton.getInstance().getUniversalID();
+//
+//            try {
+//                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+//                connection.setRequestMethod("POST");
+//                connection.setRequestProperty("Content-Type", "application/json");
+//                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
+//
+//                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+//                wr.writeBytes(createJSONConversion(conversionParameters).toString());
+//                wr.flush();
+//                wr.close();
+//
+//                statusCode = connection.getResponseCode();
+//
+//                InputStream is = connection.getInputStream();
+//                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+//                String line;
+//                StringBuffer response = new StringBuffer();
+//
+//                while ((line = rd.readLine()) != null) {
+//                    response.append(line);
+//                }
+//
+//                Utilities.debugLog("Conversion", "Conversion successful: " + response.toString());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                statusCode = 1;
+//            }
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            // If the response fails, the conversion is stored to a database
+//            if (statusCode < 200 || statusCode > 299) {
+//                ContentValues values = ConversionDBHelper.createValuesFromConversion(conversionParameters);
+//                db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
+//                Utilities.debugLog("Conversion", "Inserted row into table");
+//            }
+//        }
+//    }
 
     class ConversionParametersException extends Exception {
         public ConversionParametersException() {
