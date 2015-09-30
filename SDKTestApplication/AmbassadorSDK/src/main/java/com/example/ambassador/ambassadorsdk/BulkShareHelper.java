@@ -32,26 +32,26 @@ class BulkShareHelper {
         if (phoneNumbers) {
             RequestManager.getInstance().bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(String successResponse) {
                     RequestManager.getInstance().bulkShareTrack(contacts, true);
                     completion.bulkShareSuccess();
                 }
 
                 @Override
-                public void onFailure() {
+                public void onFailure(String failureResponse) {
                     completion.bulkShareFailure();
                 }
             });
         } else {
             RequestManager.getInstance().bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void onSuccess() {
+                public void onSuccess(String successReponse) {
                     RequestManager.getInstance().bulkShareTrack(contacts, false);
                     completion.bulkShareSuccess();
                 }
 
                 @Override
-                public void onFailure() {
+                public void onFailure(String failureResponse) {
                     completion.bulkShareFailure();
                 }
             });
