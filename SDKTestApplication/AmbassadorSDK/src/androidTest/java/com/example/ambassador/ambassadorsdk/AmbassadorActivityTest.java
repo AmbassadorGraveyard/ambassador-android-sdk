@@ -47,6 +47,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.doAnswer;
@@ -70,7 +72,10 @@ public class AmbassadorActivityTest {
     LinkedInRequest linkedInRequest;
 
     @Inject
-    IdentifyRequest identifyRequest;
+    RequestManager requestManager;
+
+    @Inject
+    BulkShareHelper bulkShareHelper;
 
     //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
     @Singleton
@@ -122,7 +127,7 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-        .when(identifyRequest).send(anyString());
+        .when(requestManager).identifyRequest();
 
         Intent intent = new Intent();
         mActivityTestIntentRule.launchActivity(intent);
@@ -211,7 +216,8 @@ public class AmbassadorActivityTest {
 
         //nothing should happen when no contacts selected
         onView(withId(R.id.btnSend)).perform(click());
-        //TODO: test to make sure mock didn't get fired
+        //make sure mock didn't get got fired
+        verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean());
 
         //test to make sure you're seeing email and not SMS
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(EMAIL_PATTERN)));
@@ -249,8 +255,25 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.etShareMessage)).perform(typeText("http://staging.mbsy.co/jHjl"), closeSoftKeyboard());
         onView(withId(R.id.btnDone)).perform(click());
 
-        //onView(withId(R.id.btnSend)).perform(click());
-        //TODO: test actually sending (mock?)
+/*        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                bulkShareHelper.mCallback.bulkShareFailure("fail");
+                return null;
+            }
+        })
+        .doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                bulkShareHelper.mCallback.bulkShareFailure("success");
+                return null;
+            }
+        })
+        .when(bulkShareHelper).bulkShare(anyString(), captor.capture(), anyBoolean());*/
+
+        onView(withId(R.id.btnSend)).perform(click());
+
+
+        //verify(linkedInRequest, times(2)).send(argThat(new IsJSONObject()));
+
 
         //TODO: after figuring out how to use mock list of contacts, test deleting one to make sure NO CONTACTS textview is shown
     }

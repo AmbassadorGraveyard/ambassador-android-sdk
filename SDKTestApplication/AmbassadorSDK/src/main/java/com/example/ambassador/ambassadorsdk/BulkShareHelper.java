@@ -5,38 +5,34 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Created by JakeDunahee on 8/11/15.
  */
-class BulkShareHelper {
-    private String messageToShare;
-
+public class BulkShareHelper {
     interface BulkShareCompletion {
-        void bulkShareSuccess();
-        void bulkShareFailure();
+        void bulkShareSuccess(String response);
+        void bulkShareFailure(String response);
     }
 
-    // Constuctor
-    BulkShareHelper(String messageToShare) {
-        this.messageToShare = messageToShare;
-    }
+    public BulkShareCompletion mCallback = null;
 
-    void bulkShare(final ArrayList<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
+    void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers) {
         // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
             RequestManager.getInstance().bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(String successResponse) {
                     RequestManager.getInstance().bulkShareTrack(contacts, true);
-                    completion.bulkShareSuccess();
+                    mCallback.bulkShareSuccess(successResponse);
                 }
 
                 @Override
                 public void onFailure(String failureResponse) {
-                    completion.bulkShareFailure();
+                    mCallback.bulkShareFailure(failureResponse);
                 }
             });
         } else {
@@ -44,12 +40,12 @@ class BulkShareHelper {
                 @Override
                 public void onSuccess(String successReponse) {
                     RequestManager.getInstance().bulkShareTrack(contacts, false);
-                    completion.bulkShareSuccess();
+                    mCallback.bulkShareSuccess(successReponse);
                 }
 
                 @Override
                 public void onFailure(String failureResponse) {
-                    completion.bulkShareFailure();
+                    mCallback.bulkShareFailure(failureResponse);
                 }
             });
         }
@@ -58,7 +54,7 @@ class BulkShareHelper {
 
     // STATIC HELPER FUNCTIONS
     // VERIFIER FUNCTIONS
-    static ArrayList<String> verifiedSMSList(ArrayList<ContactObject> contactObjects) {
+    static ArrayList<String> verifiedSMSList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
             String strippedNum = contact.phoneNumber.replaceAll("[^0-9]", "");
@@ -70,7 +66,7 @@ class BulkShareHelper {
         return verifiedNumbers;
     }
 
-    static ArrayList<String> verifiedEmailList(ArrayList<ContactObject> contactObjects) {
+    static ArrayList<String> verifiedEmailList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
             if (BulkShareHelper.isValidEmail(contact.emailAddress)) { verifiedEmails.add(contact.emailAddress); }
@@ -117,7 +113,7 @@ class BulkShareHelper {
         return objectsList;
     }
 
-    static JSONObject payloadObjectForEmail(ArrayList<String> emails, String message) {
+    static JSONObject payloadObjectForEmail(List<String> emails, String message) {
         // Functionality: Creats an email payload object for bulk sharing
         JSONObject object = new JSONObject();
         try {
@@ -132,7 +128,7 @@ class BulkShareHelper {
         return object;
     }
 
-    static JSONObject payloadObjectForSMS(ArrayList<String> numbers, String smsMessage) {
+    static JSONObject payloadObjectForSMS(List<String> numbers, String smsMessage) {
         // Funcionality: Ceates a json payload for SMS sharing with all the validated numbers included
         JSONObject object = new JSONObject();
         try {
