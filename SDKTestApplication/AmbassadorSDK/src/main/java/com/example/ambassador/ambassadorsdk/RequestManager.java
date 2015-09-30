@@ -3,6 +3,9 @@ package com.example.ambassador.ambassadorsdk;
 import android.util.Log;
 import android.os.Handler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,8 +33,8 @@ class RequestManager {
     }
 
     interface RequestCompletion {
-        void onSuccess();
-        void onFailure();
+        void onSuccess(String successResponse);
+        void onFailure(String failureResponse);
     }
 
     HttpURLConnection setUpConnection(String methodType, String url) {
@@ -40,7 +43,7 @@ class RequestManager {
         try {
             connection = (HttpURLConnection) new URL(url).openConnection();
             connection.setDoInput(true);
-            connection.setDoOutput(true);
+            if (methodType.equals("POST")) { connection.setDoOutput(true); }
             connection.setRequestMethod(methodType);
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.getInstance().getUniversalID());
@@ -89,21 +92,22 @@ class RequestManager {
                     oStream.close();
 
                     final int responseCode = connection.getResponseCode();
-                    String response = getResponse(connection, responseCode);
+                    final String response = getResponse(connection, responseCode);
                     Utilities.debugLog("BulkShare", "BULK SHARE SMS Response Code = " + responseCode + " and Response = " + response);
 
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                                completion.onSuccess();
+                                completion.onSuccess(response);
                             } else {
-                                completion.onFailure();
+                                completion.onFailure(response);
                             }
                         }
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
+                    completion.onFailure(e.getMessage());
                 }
             }
         };
@@ -123,21 +127,22 @@ class RequestManager {
                     oStream.close();
 
                     final int responseCode = connection.getResponseCode();
-                    String response = getResponse(connection, responseCode);
+                    final String response = getResponse(connection, responseCode);
                     Utilities.debugLog("BulkShare", "BULK SHARE EMAIL Response Code = " + responseCode + " and Response = " + response);
 
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                                completion.onSuccess();
+                                completion.onSuccess(response);
                             } else {
-                                completion.onFailure();
+                                completion.onFailure(response);
                             }
                         }
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
+                    completion.onFailure(e.getMessage());
                 }
             }
         };
@@ -185,16 +190,90 @@ class RequestManager {
                     oStream.close();
 
                     final int responseCode = connection.getResponseCode();
-                    String response = getResponse(connection, responseCode);
+                    final String response = getResponse(connection, responseCode);
                     Utilities.debugLog("Conversion", "REGISTER CONVERSION Response Code = " + responseCode + " and Response = " + response);
 
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
+                                completion.onSuccess(response);
+                            } else {
+                                completion.onFailure(response);
+                            }
+                        }
+                    });
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    completion.onFailure(e.getMessage());
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    void identifyRequest() {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.identifyURL() + AmbassadorSingleton.getInstance().getUniversalID());
+
+                JSONObject identifyObject = new JSONObject();
+
+                try {
+                    JSONObject augurObject = new JSONObject(AmbassadorSingleton.getInstance().getIdentifyObject());
+                    identifyObject.put("enroll", true);
+                    identifyObject.put("campaign_id", AmbassadorSingleton.getInstance().getCampaignID());
+                    identifyObject.put("email", AmbassadorSingleton.getInstance().getUserEmail());
+                    identifyObject.put("source", "android_sdk_pilot");
+                    identifyObject.put("mbsy_source", "");
+                    identifyObject.put("mbsy_cookie_code", "");
+                    identifyObject.put("fp", augurObject);
+
+                    Utilities.debugLog("Identify", "Identify JSON Object = " + identifyObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
+                    oStream.writeBytes(identifyObject.toString());
+                    oStream.flush();
+                    oStream.close();
+
+                    final int responseCode = connection.getResponseCode();
+                    String response = getResponse(connection, responseCode);
+                    Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Response Code = " + responseCode +
+                                                                " and Response = " + response);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    void externalPusherRequest(final String url, final RequestCompletion completion) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                final HttpURLConnection connection = setUpConnection("GET", url);
+
+                try {
+                    final int responseCode = connection.getResponseCode();
+                    String response = getResponse(connection, responseCode);
+                    Utilities.debugLog("Pusher", "EXTERNAL PUSHER CALL Response Code = " + responseCode +
+                                                                " and Response = " + response);
+
                     if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                        completion.onSuccess();
+                        completion.onSuccess(response);
                     } else {
-                        completion.onFailure();
+                        completion.onFailure(response);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    completion.onFailure(e.getMessage());
                 }
             }
         };
