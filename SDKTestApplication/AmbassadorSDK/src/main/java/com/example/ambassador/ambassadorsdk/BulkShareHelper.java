@@ -1,8 +1,5 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.app.ProgressDialog;
-import android.widget.Toast;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,56 +12,49 @@ import java.util.regex.Pattern;
  * Created by JakeDunahee on 8/11/15.
  */
 class BulkShareHelper {
-    private ProgressDialog loader;
     private String messageToShare;
 
+    interface BulkShareCompletion {
+        void bulkShareSuccess();
+        void bulkShareFailure();
+    }
+
     // Constuctor
-    BulkShareHelper(ProgressDialog loader, String messageToShare) {
-        this.loader = loader;
+    BulkShareHelper(String messageToShare) {
         this.messageToShare = messageToShare;
     }
 
-    void bulkShare(ArrayList<ContactObject> contacts, Boolean phoneNumbers) {
+    void bulkShare(final ArrayList<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
         // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
-            BulkShareSMSRequest smsRequest = new BulkShareSMSRequest(contacts, messageToShare, new BulkShareSMSRequest.SMSRequestCompletion() {
+            RequestManager.getInstance().bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void smsShareSuccess() {
-                    callIsSuccessful();
+                public void onSuccess(String successResponse) {
+                    RequestManager.getInstance().bulkShareTrack(contacts, true);
+                    completion.bulkShareSuccess();
                 }
 
                 @Override
-                public void smsShareFailed() {
-                    callIsUnsuccessful();
+                public void onFailure(String failureResponse) {
+                    completion.bulkShareFailure();
                 }
             });
-            smsRequest.execute();
         } else {
-            BulkShareEmailRequest emailRequest = new BulkShareEmailRequest(contacts, messageToShare, new BulkShareEmailRequest.EmailRequestCompletion() {
+            RequestManager.getInstance().bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void emailShareSucces() {
-                    callIsSuccessful();
+                public void onSuccess(String successReponse) {
+                    RequestManager.getInstance().bulkShareTrack(contacts, false);
+                    completion.bulkShareSuccess();
                 }
 
                 @Override
-                public void emailShareFailure() {
-                    callIsUnsuccessful();
+                public void onFailure(String failureResponse) {
+                    completion.bulkShareFailure();
                 }
             });
-            emailRequest.execute();
         }
     }
 
-    void callIsSuccessful() {
-        loader.dismiss();
-        loader.getOwnerActivity().finish();
-        Toast.makeText(loader.getOwnerActivity(), "Message successfully shared!", Toast.LENGTH_SHORT).show();
-    }
-
-    void callIsUnsuccessful() {
-        loader.dismiss();
-        Toast.makeText(loader.getOwnerActivity(), "Unable to share message. Please try again.", Toast.LENGTH_SHORT).show();
-    }
 
     // STATIC HELPER FUNCTIONS
     // VERIFIER FUNCTIONS

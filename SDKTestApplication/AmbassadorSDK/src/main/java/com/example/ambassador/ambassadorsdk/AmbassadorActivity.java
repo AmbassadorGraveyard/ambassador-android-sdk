@@ -130,8 +130,7 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         }, 30000);
 
-        Identify identify = new Identify(MyApplication.getAppContext(), AmbassadorSingleton.getInstance().getUserEmail());
-        identify.performIdentifyRequest();
+        RequestManager.getInstance().identifyRequest();
     }
 
     @Override
