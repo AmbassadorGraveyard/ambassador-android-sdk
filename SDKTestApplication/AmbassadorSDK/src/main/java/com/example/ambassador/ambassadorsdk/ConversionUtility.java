@@ -163,12 +163,12 @@ class ConversionUtility {
     void makeConversionRequest(final ConversionParameters newParameters) {
         RequestManager.getInstance().registerConversionRequest(newParameters, new RequestManager.RequestCompletion() {
             @Override
-            public void onSuccess(String successResponse) {
+            public void onSuccess(Object successResponse) {
                 Utilities.debugLog("Conversion", "Conversion Registered Successfully!");
             }
 
             @Override
-            public void onFailure(String failureResponse) {
+            public void onFailure(Object failureResponse) {
                 ContentValues values = ConversionDBHelper.createValuesFromConversion(newParameters);
                 db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
                 Utilities.debugLog("Conversion", "Inserted row into table");

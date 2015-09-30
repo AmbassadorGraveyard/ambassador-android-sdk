@@ -30,17 +30,9 @@ public class AmbassadorApplicationModule {
 
     @Provides
     @Singleton
-    TweetRequest provideTweetRequest() {
-        if (mockMode) return mock(TweetRequest.class);
-        return new TweetRequest();
-    }
-
-
-    @Provides
-    @Singleton
-    LinkedInRequest provideLinkedInRequest() {
-        if (mockMode) return mock(LinkedInRequest.class);
-        return new LinkedInRequest();
+    RequestManager provideRequestManager() {
+        if (mockMode) return mock(RequestManager.class);
+        return RequestManager.getInstance();
     }
 
     @Provides

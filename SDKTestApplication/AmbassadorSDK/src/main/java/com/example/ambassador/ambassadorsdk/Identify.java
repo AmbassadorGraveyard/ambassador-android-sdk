@@ -64,13 +64,13 @@ class Identify implements IIdentify {
                     if (pusherObject.has("url")) {
                         RequestManager.getInstance().externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
                             @Override
-                            public void onSuccess(String successResponse) {
+                            public void onSuccess(Object successResponse) {
                                 Utilities.debugLog("Pusher External", "Saved pusher object as String = " + successResponse.toString());
                                 _getAndSavePusherInfo(successResponse.toString());
                             }
 
                             @Override
-                            public void onFailure(String failureResponse) {
+                            public void onFailure(Object failureResponse) {
                                 Utilities.debugLog("Pusher External", "FAILED to save pusher object with error: " + failureResponse);
                             }
                         });
