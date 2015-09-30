@@ -75,6 +75,9 @@ public class AmbassadorActivity extends AppCompatActivity {
     @Inject
     ShareDialog fbDialog;
 
+    @Inject
+    RequestManager requestManager;
+
     // ACTIVITY OVERRIDE METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +148,7 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         }, 30000);
 
-        RequestManager.getInstance().identifyRequest();
+        requestManager.identifyRequest();
     }
 
     @Override

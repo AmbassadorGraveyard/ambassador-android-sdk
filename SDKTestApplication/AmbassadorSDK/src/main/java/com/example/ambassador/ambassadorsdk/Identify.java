@@ -10,8 +10,6 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.inject.Inject;
-
 
 /**
  * Created by JakeDunahee on 9/1/15.
@@ -23,9 +21,6 @@ class Identify implements IIdentify {
     IdentifyAugurSDK augur;
     private Timer augurTimer;
 
-    @Inject
-    IdentifyRequest identifyRequest;
-
     public Identify(Context context, String identifier) {
         this.context = context;
         this.identifier = identifier;
@@ -34,9 +29,6 @@ class Identify implements IIdentify {
             augur = new IdentifyAugurSDK();
             augurTimer = new Timer();
         }
-
-        //get injected modules we need
-        MyApplication.getComponent().inject(this);
     }
 
     @Override

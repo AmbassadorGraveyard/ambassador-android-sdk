@@ -10,19 +10,21 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by JakeDunahee on 7/31/15.
  */
 class ContactListAdapter extends BaseAdapter  {
     public ArrayList<ContactObject> selectedContacts;
-    private ArrayList<ContactObject> contactObjects, filteredContactList;
+    private List<ContactObject> contactObjects, filteredContactList;
     private Boolean shouldShowPhoneNumbers;
     private final Activity context;
     private final int checkmarkPxXPos;
 
-    public ContactListAdapter(Activity context, ArrayList<ContactObject> contactObjects, Boolean showPhoneNumbers) {
+    public ContactListAdapter(Activity context, List<ContactObject> contactObjects, Boolean showPhoneNumbers) {
         this.context = context;
         this.contactObjects = contactObjects;
         this.shouldShowPhoneNumbers = showPhoneNumbers;
