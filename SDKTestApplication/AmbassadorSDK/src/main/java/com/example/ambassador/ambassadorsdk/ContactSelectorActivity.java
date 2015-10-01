@@ -60,6 +60,9 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     @Inject
     BulkShareHelper bulkShareHelper;
 
+    @Inject
+    AmbassadorSingleton AmbassadorSingleton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +82,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         tvNoContacts = (TextView) findViewById(R.id.tvNoContacts);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        _setUpToolbar(AmbassadorSingleton.getInstance().getRafParameters().toolbarTitle);
+        _setUpToolbar(AmbassadorSingleton.getRafParameters().toolbarTitle);
 
         //setup progress dialog only once
         pd = new ProgressDialog(this);
@@ -96,7 +99,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         // Sets share message to default message from RAF Parameters
-        etShareMessage.setText(AmbassadorSingleton.getInstance().getRafParameters().defaultShareMessage);
+        etShareMessage.setText(AmbassadorSingleton.getRafParameters().defaultShareMessage);
 
         adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
         lvContacts.setAdapter(adapter);
@@ -155,7 +158,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
         //get and store pusher data
         try {
-            pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+            pusherData = new JSONObject(AmbassadorSingleton.getPusherInfo());
         }
         catch (JSONException e) {
             e.printStackTrace();
