@@ -1,7 +1,7 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.util.Log;
 import android.os.Handler;
+import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,13 +11,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
+
+import java.util.List;
+
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -28,18 +28,8 @@ import twitter4j.auth.RequestToken;
 /**
  * Created by JakeDunahee on 9/29/15.
  */
-class RequestManager {
-    private static RequestManager mInstance = null;
+public class RequestManager {
     final Handler mHandler = new Handler();
-
-
-    static RequestManager getInstance() {
-        if (mInstance == null) {
-            mInstance = new RequestManager();
-        }
-
-        return mInstance;
-    }
 
     interface RequestCompletion {
         void onSuccess(Object successResponse);
@@ -95,7 +85,7 @@ class RequestManager {
 
 
     // region BULK SHARE
-    void bulkShareSms(final ArrayList<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
+    void bulkShareSms(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -130,7 +120,7 @@ class RequestManager {
         new Thread(runnable).start();
     }
 
-    void bulkShareEmail(final ArrayList<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
+    void bulkShareEmail(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -165,7 +155,7 @@ class RequestManager {
         new Thread(runnable).start();
     }
 
-    void bulkShareTrack(final ArrayList<ContactObject> contacts, final boolean isSMS) {
+    void bulkShareTrack(final List<ContactObject> contacts, final boolean isSMS) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -232,8 +222,9 @@ class RequestManager {
     }
     // endregion CONVERSIONS
 
+
     // region IDENTIFY REQUESTS
-    void identifyRequest() {
+    public void identifyRequest() {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

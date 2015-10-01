@@ -32,14 +32,7 @@ public class AmbassadorApplicationModule {
     @Singleton
     RequestManager provideRequestManager() {
         if (mockMode) return mock(RequestManager.class);
-        return RequestManager.getInstance();
-    }
-
-    @Provides
-    @Singleton
-    IdentifyRequest provideIdentifyRequest() {
-        if (mockMode) return mock(IdentifyRequest.class);
-        return new IdentifyRequest();
+        return new RequestManager();
     }
 
     @Provides
@@ -53,5 +46,12 @@ public class AmbassadorApplicationModule {
     @Singleton
     ShareDialog provideFbShareDialog() {
         return new ShareDialog((Activity)context);
+    }
+
+    @Provides
+    @Singleton
+    BulkShareHelper provideBulkShareHelper() {
+        if (mockMode) return mock(BulkShareHelper.class);
+        return new BulkShareHelper();
     }
 }

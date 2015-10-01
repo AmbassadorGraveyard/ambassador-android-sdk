@@ -1,37 +1,44 @@
 package com.example.ambassador.ambassadorsdk;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.inject.Inject;
+
 /**
  * Created by JakeDunahee on 8/11/15.
  */
-class BulkShareHelper {
+public class BulkShareHelper {
     private String messageToShare;
+
+    @Inject
+    RequestManager requestManager;
 
     interface BulkShareCompletion {
         void bulkShareSuccess();
         void bulkShareFailure();
     }
 
-    // Constuctor
-    BulkShareHelper(String messageToShare) {
-        this.messageToShare = messageToShare;
+    public BulkShareHelper() {
+        MyApplication.getComponent().inject(this);
     }
 
-    void bulkShare(final ArrayList<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
+    public void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
         // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
-            RequestManager.getInstance().bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
+            requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    RequestManager.getInstance().bulkShareTrack(contacts, true);
+                    requestManager.bulkShareTrack(contacts, true);
                     completion.bulkShareSuccess();
                 }
 
@@ -41,10 +48,10 @@ class BulkShareHelper {
                 }
             });
         } else {
-            RequestManager.getInstance().bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
+            requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successReponse) {
-                    RequestManager.getInstance().bulkShareTrack(contacts, false);
+                    requestManager.bulkShareTrack(contacts, false);
                     completion.bulkShareSuccess();
                 }
 
@@ -59,7 +66,7 @@ class BulkShareHelper {
 
     // STATIC HELPER FUNCTIONS
     // VERIFIER FUNCTIONS
-    static ArrayList<String> verifiedSMSList(ArrayList<ContactObject> contactObjects) {
+    static ArrayList<String> verifiedSMSList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
             String strippedNum = contact.phoneNumber.replaceAll("[^0-9]", "");
@@ -71,7 +78,7 @@ class BulkShareHelper {
         return verifiedNumbers;
     }
 
-    static ArrayList<String> verifiedEmailList(ArrayList<ContactObject> contactObjects) {
+    static ArrayList<String> verifiedEmailList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
             if (BulkShareHelper.isValidEmail(contact.emailAddress)) { verifiedEmails.add(contact.emailAddress); }
@@ -91,7 +98,7 @@ class BulkShareHelper {
 
 
     // JSON OBJECT MAKER
-    static JSONArray contactArray(ArrayList<String> values, Boolean phoneNumbers) {
+    static JSONArray contactArray(List<String> values, Boolean phoneNumbers) {
         // Functionality: Creates a jsonArray of jsonobjects created from validated phone numbers and email addresses
         String socialName = (phoneNumbers) ? "sms" : "email";
         JSONArray objectsList = new JSONArray();
@@ -118,7 +125,7 @@ class BulkShareHelper {
         return objectsList;
     }
 
-    static JSONObject payloadObjectForEmail(ArrayList<String> emails, String message) {
+    static JSONObject payloadObjectForEmail(List<String> emails, String message) {
         // Functionality: Creats an email payload object for bulk sharing
         JSONObject object = new JSONObject();
         try {
@@ -133,7 +140,7 @@ class BulkShareHelper {
         return object;
     }
 
-    static JSONObject payloadObjectForSMS(ArrayList<String> numbers, String smsMessage) {
+    static JSONObject payloadObjectForSMS(List<String> numbers, String smsMessage) {
         // Funcionality: Ceates a json payload for SMS sharing with all the validated numbers included
         JSONObject object = new JSONObject();
         try {
