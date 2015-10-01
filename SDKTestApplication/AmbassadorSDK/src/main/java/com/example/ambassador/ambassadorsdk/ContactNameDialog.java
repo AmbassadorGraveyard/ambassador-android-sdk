@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.inject.Inject;
+
 /**
  * Created by CoreyFields on 8/21/15.
  */
@@ -27,6 +29,12 @@ class ContactNameDialog extends Dialog {
     private ContactNameListener mCallback;
     private JSONObject pusherData;
     private ProgressDialog pd;
+
+    @Inject
+    AmbassadorSingleton ambassadorSingleton;
+
+    @Inject
+    RequestManager requestManager;
 
     // Interface
     public interface ContactNameListener {
@@ -41,6 +49,7 @@ class ContactNameDialog extends Dialog {
             setOwnerActivity((Activity) context);
         }
 
+        MyApplication.getComponent().inject(this);
         this.pd = pd;
         mCallback = (ContactNameListener)getOwnerActivity();
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
@@ -86,7 +95,7 @@ class ContactNameDialog extends Dialog {
 
     private void _handleNameInput(String firstName, String lastName) {
         try {
-            pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+            pusherData = new JSONObject(ambassadorSingleton.getPusherInfo());
             pusherData.put("firstName", firstName);
             pusherData.put("lastName", lastName);
         } catch (JSONException e) {
@@ -98,59 +107,25 @@ class ContactNameDialog extends Dialog {
         if (firstName == null || lastName == null) return;
 
         pd.show();
-        AmbassadorSingleton.getInstance().savePusherInfo(pusherData.toString());
+        ambassadorSingleton.savePusherInfo(pusherData.toString());
 
         // Call api - on success we'll initiate the bulk share
-        UpdateNameRequest updateNameRequest = new UpdateNameRequest();
-        updateNameRequest.execute();
-    }
+        try {
+            requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(Object successResponse) {
+                    mCallback.namesHaveBeenUpdated();
+                    ambassadorSingleton.saveUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
+                    hide();
+                }
 
-    private class UpdateNameRequest extends AsyncTask<Void, Void, Void> {
-        int statusCode;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            String url = "http://dev-ambassador-api.herokuapp.com/universal/action/identify/";
-            JSONObject dataObject = new JSONObject();
-            JSONObject nameObject = new JSONObject();
-
-            try {
-                dataObject.put("email", pusherData.getString("email"));
-                nameObject.put("first_name", pusherData.getString("firstName"));
-                nameObject.put("last_name", pusherData.getString("lastName"));
-                dataObject.put("update_data", nameObject);
-
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
-//                connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.MBSY_UNIVERSAL_ID);
-
-                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(dataObject.toString());
-                wr.flush();
-                wr.close();
-
-                statusCode = connection.getResponseCode();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            if (Utilities.isSuccessfulResponseCode(statusCode)) {
-                mCallback.namesHaveBeenUpdated();
-                AmbassadorSingleton.getInstance().saveUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
-                hide();
-            } else {
-                Toast.makeText(getOwnerActivity(), "Unable to update information.  Please try again.", Toast.LENGTH_SHORT).show();
-            }
+                @Override
+                public void onFailure(Object failureResponse) {
+                    Toast.makeText(getOwnerActivity(), "Unable to update information.  Please try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 }

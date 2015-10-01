@@ -19,6 +19,8 @@ import java.net.URLEncoder;
 import java.util.List;
 
 
+import javax.inject.Inject;
+
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
@@ -31,9 +33,16 @@ import twitter4j.auth.RequestToken;
 public class RequestManager {
     final Handler mHandler = new Handler();
 
+    @Inject
+    AmbassadorSingleton ambassadorSingleton;
+
     interface RequestCompletion {
         void onSuccess(Object successResponse);
         void onFailure(Object failureResponse);
+    }
+
+    public RequestManager() {
+        MyApplication.getComponent().inject(this);
     }
 
     // region Helper Setup Functions
@@ -50,8 +59,9 @@ public class RequestManager {
             } else {
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             }
-            connection.setRequestProperty("MBSY_UNIVERSAL_ID", AmbassadorSingleton.getInstance().getUniversalID());
-            connection.setRequestProperty("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
+
+            connection.setRequestProperty("MBSY_UNIVERSAL_ID", ambassadorSingleton.getUniversalID());
+            connection.setRequestProperty("Authorization", ambassadorSingleton.getUniversalKey());
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("IOException", e.toString());
@@ -93,7 +103,7 @@ public class RequestManager {
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts), messageToShare).toString());
+                    oStream.writeBytes(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts), ambassadorSingleton.getFullName(), messageToShare).toString());
                     oStream.flush();
                     oStream.close();
 
@@ -128,7 +138,10 @@ public class RequestManager {
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(BulkShareHelper.payloadObjectForEmail(BulkShareHelper.verifiedEmailList(contacts), messageToShare).toString());
+                    oStream.writeBytes(BulkShareHelper.payloadObjectForEmail(BulkShareHelper.verifiedEmailList(contacts),
+                            ambassadorSingleton.getShortCode(),
+                            ambassadorSingleton.getEmailSubjectLine(),
+                            messageToShare).toString());
                     oStream.flush();
                     oStream.close();
 
@@ -164,9 +177,9 @@ public class RequestManager {
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
                     if (isSMS) {
-                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), isSMS).toString());
+                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), isSMS, ambassadorSingleton.getShortCode()).toString());
                     } else {
-                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), isSMS).toString());
+                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), isSMS, ambassadorSingleton.getShortCode()).toString());
                     }
                     oStream.flush();
                     oStream.close();
@@ -193,7 +206,7 @@ public class RequestManager {
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(ConversionUtility.createJSONConversion(conversionParameters).toString());
+                    oStream.writeBytes(ConversionUtility.createJSONConversion(conversionParameters, ambassadorSingleton.getIdentifyObject()).toString());
                     oStream.flush();
                     oStream.close();
 
@@ -228,15 +241,15 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.identifyURL() + AmbassadorSingleton.getInstance().getUniversalID(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.identifyURL() + ambassadorSingleton.getUniversalID(), true);
 
                 JSONObject identifyObject = new JSONObject();
 
                 try {
-                    JSONObject augurObject = new JSONObject(AmbassadorSingleton.getInstance().getIdentifyObject());
+                    JSONObject augurObject = new JSONObject(ambassadorSingleton.getIdentifyObject());
                     identifyObject.put("enroll", true);
-                    identifyObject.put("campaign_id", AmbassadorSingleton.getInstance().getCampaignID());
-                    identifyObject.put("email", AmbassadorSingleton.getInstance().getUserEmail());
+                    identifyObject.put("campaign_id", ambassadorSingleton.getCampaignID());
+                    identifyObject.put("email", ambassadorSingleton.getUserEmail());
                     identifyObject.put("source", "android_sdk_pilot");
                     identifyObject.put("mbsy_source", "");
                     identifyObject.put("mbsy_cookie_code", "");
@@ -260,6 +273,51 @@ public class RequestManager {
                 } catch (IOException e) {
                     e.printStackTrace();
                     Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Failure due to IOException - " + e.getMessage());
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.identifyURL() + ambassadorSingleton.getUniversalID(), true);
+                JSONObject dataObject = new JSONObject();
+                JSONObject nameObject = new JSONObject();
+
+                try {
+                    dataObject.put("email", email);
+                    nameObject.put("first_name", firstName);
+                    nameObject.put("last_name", lastName);
+                    dataObject.put("update_data", nameObject);
+
+                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
+                    oStream.writeBytes(dataObject.toString());
+                    oStream.flush();
+                    oStream.close();
+
+                    final int responseCode = connection.getResponseCode();
+                    final String response = getResponse(connection, responseCode);
+                    Utilities.debugLog("Identify", "UPDATING INFO IDENTIFY ResponseCode = " + responseCode + " and Response = " + response);
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
+                                completion.onSuccess(response);
+                            } else {
+                                completion.onFailure(response);
+                            }
+                        }
+                    });
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    completion.onFailure("Update call failed with JSONException - " + e.getMessage());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    completion.onFailure("Update call failed with IOException - " + e.getMessage());
                 }
             }
         };
@@ -342,8 +400,8 @@ public class RequestManager {
 
                 try {
                     AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, oauthSecret);
-                    AmbassadorSingleton.getInstance().setTwitterAccessToken(accessToken.getToken());
-                    AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret(accessToken.getTokenSecret());
+                    ambassadorSingleton.setTwitterAccessToken(accessToken.getToken());
+                    ambassadorSingleton.setTwitterAccessTokenSecret(accessToken.getTokenSecret());
                     responseCode = 200;
                 } catch (twitter4j.TwitterException e) {
                     e.printStackTrace();
@@ -371,8 +429,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                AccessToken accessToken = new AccessToken(AmbassadorSingleton.getInstance().getTwitterAccessToken(),
-                        AmbassadorSingleton.getInstance().getTwitterAccessTokenSecret());
+                AccessToken accessToken = new AccessToken(ambassadorSingleton.getTwitterAccessToken(),
+                        ambassadorSingleton.getTwitterAccessTokenSecret());
                 final Twitter twitter = new TwitterFactory().getInstance();
                 twitter.setOAuthConsumer(AmbassadorSingleton.TWITTER_KEY, AmbassadorSingleton.TWITTER_SECRET);
                 twitter.setOAuthAccessToken(accessToken);
@@ -443,7 +501,7 @@ public class RequestManager {
                                 try {
                                     JSONObject json = new JSONObject(response);
                                     String accessToken = json.getString("access_token");
-                                    AmbassadorSingleton.getInstance().setLinkedInToken(accessToken);
+                                    ambassadorSingleton.setLinkedInToken(accessToken);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     completion.onFailure("Failure with JSONException - " + e.getMessage());
@@ -477,7 +535,7 @@ public class RequestManager {
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Host", "api.linkedin.com");
                     connection.setRequestProperty("Content-Type", "application/json");
-                    connection.setRequestProperty("Authorization", "Bearer " + AmbassadorSingleton.getInstance().getLinkedInToken());
+                    connection.setRequestProperty("Authorization", "Bearer " + ambassadorSingleton.getLinkedInToken());
                     connection.setRequestProperty("x-li-format", "json");
 
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());

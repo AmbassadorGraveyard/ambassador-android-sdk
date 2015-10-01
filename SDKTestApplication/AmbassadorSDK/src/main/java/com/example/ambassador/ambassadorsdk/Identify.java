@@ -26,9 +26,15 @@ class Identify implements IIdentify {
     @Inject
     RequestManager requestManager;
 
+    @Inject
+    AmbassadorSingleton ambassadorSingleton;
+
     public Identify(Context context, String identifier) {
         this.context = context;
         this.identifier = identifier;
+
+        MyApplication.getComponent().inject(this);
+
         if (pusher == null) {
             pusher = new IdentifyPusher();
             augur = new IdentifyAugurSDK();
@@ -41,7 +47,7 @@ class Identify implements IIdentify {
         augurTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                augur.getAugur(new IdentifyAugurSDK.AugurCompletion() {
+                augur.getAugur(ambassadorSingleton, new IdentifyAugurSDK.AugurCompletion() {
                     @Override
                     public void augurComplete() {
                         setUpPusher(augur.deviceID);
@@ -53,7 +59,7 @@ class Identify implements IIdentify {
     }
 
     void setUpPusher(String deviceID) {
-        pusher.createPusher(deviceID, new IdentifyPusher.PusherCompletion() {
+        pusher.createPusher(deviceID, ambassadorSingleton.getUniversalKey(), new IdentifyPusher.PusherCompletion() {
             @Override
             public void pusherEventTriggered(String data) {
                 try {
@@ -94,7 +100,7 @@ class Identify implements IIdentify {
             pusherSave.put("phoneNumber", pusherObject.getString("phone"));
             pusherSave.put("urls", pusherObject.getJSONArray("urls"));
 
-            AmbassadorSingleton.getInstance().savePusherInfo(pusherSave.toString());
+            ambassadorSingleton.savePusherInfo(pusherSave.toString());
             _sendIdBroadcast(); // Tells MainActivity to update edittext with url
         } catch (JSONException e) {
             e.printStackTrace();
