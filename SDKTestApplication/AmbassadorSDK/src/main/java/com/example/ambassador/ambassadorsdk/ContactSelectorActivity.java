@@ -60,6 +60,9 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     @Inject
     BulkShareHelper bulkShareHelper;
 
+    @Inject
+    AmbassadorSingleton ambassadorSingleton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +82,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         tvNoContacts = (TextView) findViewById(R.id.tvNoContacts);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        _setUpToolbar(AmbassadorSingleton.getInstance().getRafParameters().toolbarTitle);
+        _setUpToolbar(ambassadorSingleton.getRafParameters().toolbarTitle);
 
         //setup progress dialog only once
         pd = new ProgressDialog(this);
@@ -96,7 +99,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         // Sets share message to default message from RAF Parameters
-        etShareMessage.setText(AmbassadorSingleton.getInstance().getRafParameters().defaultShareMessage);
+        etShareMessage.setText(ambassadorSingleton.getRafParameters().defaultShareMessage);
 
         adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
         lvContacts.setAdapter(adapter);
@@ -155,7 +158,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
         //get and store pusher data
         try {
-            pusherData = new JSONObject(AmbassadorSingleton.getInstance().getPusherInfo());
+            pusherData = new JSONObject(ambassadorSingleton.getPusherInfo());
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -397,7 +400,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     private void _sendToContacts() {
-        if (Utilities.containsURL(etShareMessage.getText().toString())) {
+        if (Utilities.containsURL(etShareMessage.getText().toString(), ambassadorSingleton.getURL())) {
             //get and store pusher data
             try {
                 //if user is doing sms and we don't have first or last name, we need to get it with a dialog
@@ -421,7 +424,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                 e.printStackTrace();
             }
         } else {
-            Utilities.presentUrlDialog(this, etShareMessage, new Utilities.UrlAlertInterface() {
+            Utilities.presentUrlDialog(this, etShareMessage, ambassadorSingleton.getURL(), new Utilities.UrlAlertInterface() {
                 @Override
                 public void sendAnywayTapped(DialogInterface dialogInterface) {
                     dialogInterface.dismiss();
@@ -439,7 +442,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private void _initiateSend() {
         //this method is called from two places, one of which could already be showing the pd
         if (!pd.isShowing()) pd.show();
-//        bulkShareHelper.mCallback = this;
 
         bulkShareHelper.bulkShare(etShareMessage.getText().toString(), adapter.selectedContacts, showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
             @Override
@@ -456,17 +458,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             }
         });
     }
-
-//    public void bulkShareSuccess(String response) {
-//        pd.dismiss();
-//        finish();
-//        Toast.makeText(getApplicationContext(), "Message successfully shared!", Toast.LENGTH_SHORT).show();
-//    }
-//
-//    public void bulkShareFailure(String response) {
-//        pd.dismiss();
-//        Toast.makeText(getApplicationContext(), "Unable to share message. Please try again.", Toast.LENGTH_SHORT).show();
-//    }
 
     // Interface call from ContactNameDialog
     @Override

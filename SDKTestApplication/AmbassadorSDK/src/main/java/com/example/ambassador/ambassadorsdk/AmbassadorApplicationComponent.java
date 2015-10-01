@@ -12,4 +12,8 @@ public interface AmbassadorApplicationComponent {
     void inject(ContactSelectorActivity contactSelectorActivity);
     void inject(BulkShareHelper bulkShareHelper);
     void inject(ConversionUtility conversionUtility);
+    void inject(RequestManager requestManager);
+    void inject(AmbassadorSDK ambassadorSDK);
+    void inject(ContactNameDialog contactNameDialog);
+    void inject(Identify identify);
 }

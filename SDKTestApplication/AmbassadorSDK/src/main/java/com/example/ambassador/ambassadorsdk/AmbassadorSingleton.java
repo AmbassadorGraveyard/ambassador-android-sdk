@@ -20,22 +20,10 @@ public class AmbassadorSingleton {
     static final String PUSHER_SECRET = "***REMOVED***";
     static final Boolean isReleaseBuild = false;
 
-    private static AmbassadorSingleton mInstance = null;
-    private Context context;
-    private SharedPreferences sharePrefs;
+//    private static AmbassadorSingleton mInstance = null;
+    private Context context = MyApplication.getAppContext();
+    private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     private ServiceSelectorPreferences rafParameters;
-
-    static AmbassadorSingleton getInstance() {
-        if(mInstance == null) {
-            mInstance = new AmbassadorSingleton();
-            mInstance.context = MyApplication.getAppContext();
-            mInstance.sharePrefs = mInstance.context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
-        }
-
-        return mInstance;
-    }
-
-
 
     // STATIC VARIABLES
     static String identifyURL() {
