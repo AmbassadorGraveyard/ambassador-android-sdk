@@ -160,7 +160,7 @@ public class AmbassadorSingleton {
 
     public String getPusherInfo() { return sharePrefs.getString("pusherObject", null); }
 
-    String getURL() {
+    public String getURL() {
         return sharePrefs.getString("url", null);
     }
 
