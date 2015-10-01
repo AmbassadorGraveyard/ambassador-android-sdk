@@ -124,9 +124,9 @@ public class AmbassadorActivityTest {
             }
         })
         .when(ambassadorSingleton).setRafDefaultMessage(anyString());
-        //doNothing().when(ambassadorSingleton).setRafDefaultMessage(anyString());
 
         when(ambassadorSingleton.getCampaignID()).thenReturn("260");
+        when(ambassadorSingleton.getURL()).thenReturn("http://staging.mbsy.co/jHjl");
         when(ambassadorSingleton.getPusherInfo()).thenReturn(pusher);
         when(ambassadorSingleton.getRafParameters()).thenReturn(parameters);
 
@@ -162,7 +162,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
     }
 
-    //@Test
+    @Test
     public void testFacebook() {
         //TODO: remove hardcoded id check, try to get withText working
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
@@ -249,6 +249,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.etShareMessage)).check(matches(isEnabled()));
         //nothing should happen when no contacts selected
         onView(withId(R.id.btnSend)).perform(click());
+        verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
         onView(withId(R.id.btnDone)).perform(click());
         //share message should not be editable after done button clicked
         onView(withId(R.id.etShareMessage)).check(matches(not(isEnabled())));
@@ -283,15 +284,15 @@ public class AmbassadorActivityTest {
         .when(bulkShareHelper).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
         onView(withId(R.id.btnSend)).perform(click());
-
-
-        //verify(linkedInRequest, times(2)).send(argThat(new IsJSONObject()));
+        onView(withId(R.id.rlMaster)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnSend)).perform(click());
+        verify(bulkShareHelper, times(2)).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
 
         //TODO: after figuring out how to use mock list of contacts, test deleting one to make sure NO CONTACTS textview is shown
     }
 
-    //@Test
+    @Test
     public void testContactsSMS() {
         //start recording fired Intents
         Intents.init();
@@ -317,7 +318,7 @@ public class AmbassadorActivityTest {
     //@Test
     public void testLinkedIn() {
         //clear the token
-        AmbassadorSingleton.getInstance().setLinkedInToken(null);
+        ambassadorSingleton.setLinkedInToken(null);
         //start recording fired Intents
         Intents.init();
         //click linkedin icon
@@ -336,7 +337,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         //set a token so we can test share link - this is for test account (developers@getambassador.com)
-        AmbassadorSingleton.getInstance().setLinkedInToken("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
+        ambassadorSingleton.setLinkedInToken("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
         onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
@@ -429,8 +430,8 @@ public class AmbassadorActivityTest {
     //@Test
     public void testTwitter() {
         //clear the token
-        AmbassadorSingleton.getInstance().setTwitterAccessToken(null);
-        AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret(null);
+        ambassadorSingleton.setTwitterAccessToken(null);
+        ambassadorSingleton.setTwitterAccessTokenSecret(null);
         //start recording fired Intents
         Intents.init();
         //click twitter icon
@@ -449,8 +450,8 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         //set a token so we can test share link - this is for test embassy twitter account (developers@getambassador.com - https://twitter.com/testmbsy)
-        AmbassadorSingleton.getInstance().setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
-        AmbassadorSingleton.getInstance().setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");
+        ambassadorSingleton.setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
+        ambassadorSingleton.setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
