@@ -25,8 +25,8 @@ class Utilities {
         return cxt.getResources().getDimensionPixelSize(dimension);
     }
 
-    public static boolean containsURL(String message) {
-        return message.contains(AmbassadorSingleton.getInstance().getURL());
+    public static boolean containsURL(String message, String url) {
+        return message.contains(url);
     }
 
     public static boolean isTablet(Context context) {
@@ -39,10 +39,10 @@ class Utilities {
         return (Utilities.isTablet(context)) ? "Tablet" : "SmartPhone";
     }
 
-    public static void presentUrlDialog(Context context, final EditText editText, final UrlAlertInterface alertInterface) {
+    public static void presentUrlDialog(Context context, final EditText editText, final String url, final UrlAlertInterface alertInterface) {
         AlertDialog dialogBuilder = new AlertDialog.Builder(context)
                 .setTitle("Hold on!")
-                .setMessage(context.getResources().getString(R.string.missing_url_dialog_message) + " " + AmbassadorSingleton.getInstance().getURL())
+                .setMessage(context.getResources().getString(R.string.missing_url_dialog_message) + " " + url)
                 .setPositiveButton("Continue Sending", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -52,7 +52,7 @@ class Utilities {
                 .setNegativeButton("Insert Link", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        _insertURLIntoMessage(editText);
+                        _insertURLIntoMessage(editText, url);
                         alertInterface.insertUrlTapped(dialog);
                     }
                 }).show();
@@ -61,8 +61,8 @@ class Utilities {
         dialogBuilder.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(context.getResources().getColor(R.color.twitter_blue));
     }
 
-    private static void _insertURLIntoMessage(EditText editText) {
-        String appendingLink = AmbassadorSingleton.getInstance().getURL();
+    private static void _insertURLIntoMessage(EditText editText, String url) {
+        String appendingLink = url;
 
         if (editText.getText().toString().contains("http://")) {
             String sub = editText.getText().toString().substring(editText.getText().toString().indexOf("http://"));
@@ -74,7 +74,7 @@ class Utilities {
         }
 
         if (editText.getText().toString().charAt(editText.getText().toString().length() - 1) != ' ') {
-            appendingLink = " " + AmbassadorSingleton.getInstance().getURL();
+            appendingLink = " " + url;
             editText.setText(editText.getText().append(appendingLink));
         }
     }

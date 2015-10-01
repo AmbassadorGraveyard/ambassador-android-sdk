@@ -17,7 +17,7 @@ class IdentifyAugurSDK {
         void augurComplete();
     }
 
-    public void getAugur(final AugurCompletion completion) {
+    public void getAugur(final AmbassadorSingleton singleton, final AugurCompletion completion) {
         Augur.getJSON(MyApplication.getAppContext(), "7g1a8dumog40o61y5irl1sscm4nu6g60", new Handler.Callback() {
             @Override
             public boolean handleMessage(final Message msg) {
@@ -31,7 +31,7 @@ class IdentifyAugurSDK {
                     jsonObject.put("device", device);
 
                     Utilities.debugLog("Augur", "Augur successfully received through SDK call");
-                    AmbassadorSingleton.getInstance().setIdentifyObject(jsonObject.toString());
+                    singleton.setIdentifyObject(jsonObject.toString());
                     deviceID = Augur.DID;
                     completion.augurComplete();
                 } catch (Exception e) {
