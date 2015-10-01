@@ -28,6 +28,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import javax.inject.Inject;
+
 /**
  * Created by JakeDunahee on 7/27/15.
  */
@@ -37,10 +39,16 @@ public class LinkedInLoginActivity extends AppCompatActivity {
     ProgressBar loader;
     boolean webViewSuccess = true;
 
+    @Inject
+    RequestManager requestManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
+
+        MyApplication.getAmbModule().setContext(this);
+        MyApplication.getComponent().inject(this);
 
         // UI Components
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
@@ -93,7 +101,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                     code = url.substring(url.indexOf("code=") + "code=".length(), url.length() - 1);
                 }
 
-                RequestManager.getInstance().linkedInLoginRequest(code, new RequestManager.RequestCompletion() {
+                requestManager.linkedInLoginRequest(code, new RequestManager.RequestCompletion() {
                     @Override
                     public void onSuccess(Object successResponse) {
                         Toast.makeText(getApplicationContext(), "Logged in successfully!", Toast.LENGTH_SHORT).show();

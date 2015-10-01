@@ -6,6 +6,10 @@ package com.example.ambassador.ambassadorsdk;
 public interface AmbassadorApplicationComponent {
     void inject(AmbassadorActivity ambassadorActivity);
     void inject(TweetDialog tweetDialog);
+    void inject(TwitterLoginActivity twitterLoginActivity);
     void inject(LinkedInDialog linkedInDialog);
-    void inject(Identify identify);
+    void inject(LinkedInLoginActivity linkedInLoginActivity);
+    void inject(ContactSelectorActivity contactSelectorActivity);
+    void inject(BulkShareHelper bulkShareHelper);
+    void inject(ConversionUtility conversionUtility);
 }

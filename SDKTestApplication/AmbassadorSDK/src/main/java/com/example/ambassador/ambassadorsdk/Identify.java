@@ -24,7 +24,7 @@ class Identify implements IIdentify {
     private Timer augurTimer;
 
     @Inject
-    IdentifyRequest identifyRequest;
+    RequestManager requestManager;
 
     public Identify(Context context, String identifier) {
         this.context = context;
@@ -34,9 +34,6 @@ class Identify implements IIdentify {
             augur = new IdentifyAugurSDK();
             augurTimer = new Timer();
         }
-
-        //get injected modules we need
-        MyApplication.getComponent().inject(this);
     }
 
     @Override
@@ -62,7 +59,7 @@ class Identify implements IIdentify {
                 try {
                     JSONObject pusherObject = new JSONObject(data);
                     if (pusherObject.has("url")) {
-                        RequestManager.getInstance().externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
+                        requestManager.externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
                             @Override
                             public void onSuccess(Object successResponse) {
                                 Utilities.debugLog("Pusher External", "Saved pusher object as String = " + successResponse.toString());
@@ -80,7 +77,6 @@ class Identify implements IIdentify {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         });
     }

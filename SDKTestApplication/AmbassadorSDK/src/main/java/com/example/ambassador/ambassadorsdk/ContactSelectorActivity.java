@@ -34,6 +34,9 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by JakeDunahee on 7/31/15.
@@ -45,7 +48,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private EditText etShareMessage, etSearch;
     private RelativeLayout rlSearch;
     private LinearLayout llSendView;
-    private ArrayList<ContactObject> contactList;
+    private List<ContactObject> contactList;
     private InputMethodManager inputManager;
     private JSONObject pusherData;
     private TextView tvNoContacts;
@@ -54,12 +57,16 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private ContactNameDialog cnd;
     Boolean showPhoneNumbers;
 
+    @Inject
+    BulkShareHelper bulkShareHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
-        // Init UI components
+        MyApplication.getComponent().inject(this);
+
         ListView lvContacts = (ListView)findViewById(R.id.lvContacts);
         Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
@@ -432,10 +439,9 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private void _initiateSend() {
         //this method is called from two places, one of which could already be showing the pd
         if (!pd.isShowing()) pd.show();
+//        bulkShareHelper.mCallback = this;
 
-        // Call bulkShareHelper to handle sharing calls
-        BulkShareHelper shareHelper = new BulkShareHelper(etShareMessage.getText().toString());
-        shareHelper.bulkShare(adapter.selectedContacts, showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
+        bulkShareHelper.bulkShare(etShareMessage.getText().toString(), adapter.selectedContacts, showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
             @Override
             public void bulkShareSuccess() {
                 pd.dismiss();
@@ -450,6 +456,17 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             }
         });
     }
+
+//    public void bulkShareSuccess(String response) {
+//        pd.dismiss();
+//        finish();
+//        Toast.makeText(getApplicationContext(), "Message successfully shared!", Toast.LENGTH_SHORT).show();
+//    }
+//
+//    public void bulkShareFailure(String response) {
+//        pd.dismiss();
+//        Toast.makeText(getApplicationContext(), "Unable to share message. Please try again.", Toast.LENGTH_SHORT).show();
+//    }
 
     // Interface call from ContactNameDialog
     @Override
