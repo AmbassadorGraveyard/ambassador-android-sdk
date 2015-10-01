@@ -47,6 +47,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
@@ -67,12 +68,6 @@ public class AmbassadorActivityTest {
     private static final String SMS_PATTERN = "Mobile (.*)";
 
     //tell Dagger this code will participate in dependency injection
-    @Inject
-    TweetRequest tweetRequest;
-
-    @Inject
-    LinkedInRequest linkedInRequest;
-
     @Inject
     RequestManager requestManager;
 
@@ -115,13 +110,22 @@ public class AmbassadorActivityTest {
         //perform injection
         component.inject(this);
 
-        final String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"},]}";
+        final String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
 
         doNothing().when(ambassadorSingleton).setRafParameters(anyString(), anyString(), anyString(), anyString());
         doNothing().when(ambassadorSingleton).saveURL(anyString());
         doNothing().when(ambassadorSingleton).saveShortCode(anyString());
         doNothing().when(ambassadorSingleton).saveEmailSubject(anyString());
-        doNothing().when(ambassadorSingleton).setRafDefaultMessage(anyString());
+
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                parameters.defaultShareMessage += " http://staging.mbsy.co/jHjl";
+                return null;
+            }
+        })
+        .when(ambassadorSingleton).setRafDefaultMessage(anyString());
+        //doNothing().when(ambassadorSingleton).setRafDefaultMessage(anyString());
+
         when(ambassadorSingleton.getCampaignID()).thenReturn("260");
         when(ambassadorSingleton.getPusherInfo()).thenReturn(pusher);
         when(ambassadorSingleton.getRafParameters()).thenReturn(parameters);
@@ -144,14 +148,10 @@ public class AmbassadorActivityTest {
 
     @After
     public void afterEachTest() {
-        if (mActivityTestIntentRule.getActivity() != null) mActivityTestIntentRule.getActivity().finish();
-        AmbassadorSingleton.getInstance().savePusherInfo(null);
     }
 
-    //@Test
+    @Test
     public void testMainLayout() {
-        //TODO: first test the existence of the loader, then test mocking the response from server to dismiss the loader
-
         onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(withText(parameters.titleText)));
@@ -175,7 +175,7 @@ public class AmbassadorActivityTest {
         //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
     }
 
-    //@Test
+    @Test
     public void testContactsEmail() {
         //start recording fired Intents
         Intents.init();
@@ -226,7 +226,7 @@ public class AmbassadorActivityTest {
         //nothing should happen when no contacts selected
         onView(withId(R.id.btnSend)).perform(click());
         //make sure mock didn't get got fired
-        verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean());
+        verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
         //test to make sure you're seeing email and not SMS
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(EMAIL_PATTERN)));
@@ -264,19 +264,23 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.etShareMessage)).perform(typeText("http://staging.mbsy.co/jHjl"), closeSoftKeyboard());
         onView(withId(R.id.btnDone)).perform(click());
 
-/*        doAnswer(new Answer<Void>() {
+        doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
-                bulkShareHelper.mCallback.bulkShareFailure("fail");
+                Object[] object = invocation.getArguments();
+                BulkShareHelper.BulkShareCompletion completion = (BulkShareHelper.BulkShareCompletion)object[3];
+                completion.bulkShareFailure();
                 return null;
             }
         })
         .doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
-                bulkShareHelper.mCallback.bulkShareFailure("success");
+                Object[] object = invocation.getArguments();
+                BulkShareHelper.BulkShareCompletion completion = (BulkShareHelper.BulkShareCompletion)object[3];
+                completion.bulkShareSuccess();
                 return null;
             }
         })
-        .when(bulkShareHelper).bulkShare(anyString(), captor.capture(), anyBoolean());*/
+        .when(bulkShareHelper).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
         onView(withId(R.id.btnSend)).perform(click());
 
@@ -344,7 +348,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
         pressBack();
-        verify(linkedInRequest, never()).send(argThat(new IsJSONObject()));
+        verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
         //ensure dialog fields not visible now that we've backed out
         onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
@@ -354,7 +358,7 @@ public class AmbassadorActivityTest {
         //enter blank text and make sure dialog is still visible
         onView(withId(R.id.etLinkedInMessage)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.btnPost)).perform(click());
-        verify(linkedInRequest, never()).send(argThat(new IsJSONObject()));
+        verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
         //onView(withText("INSERT LINK")).perform(click());
         //onView(withId(android.R.id.button2)).perform(click());
@@ -366,7 +370,7 @@ public class AmbassadorActivityTest {
 
         onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
         pressBack();
-        verify(linkedInRequest, never()).send(argThat(new IsJSONObject()));
+        verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
         //test sending a successful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
@@ -379,17 +383,21 @@ public class AmbassadorActivityTest {
 
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
-                linkedInRequest.mCallback.processLinkedInRequest(200);
+                Object[] object = invocation.getArguments();
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[3];
+                completion.onSuccess("success");
                 return null;
             }
         })
         .doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
-                linkedInRequest.mCallback.processLinkedInRequest(400);
+                Object[] object = invocation.getArguments();
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[3];
+                completion.onSuccess("fail");
                 return null;
             }
         })
-        .when(linkedInRequest).send(argThat(new IsJSONObject()));
+        .when(requestManager).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnPost)).perform(click());
         onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
@@ -406,7 +414,7 @@ public class AmbassadorActivityTest {
         //failure shouldn't dismiss the dialog
         onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
-        verify(linkedInRequest, times(2)).send(argThat(new IsJSONObject()));
+        verify(requestManager, times(2)).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnCancel)).perform(click());
         onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
@@ -418,7 +426,7 @@ public class AmbassadorActivityTest {
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
-    @Test
+    //@Test
     public void testTwitter() {
         //clear the token
         AmbassadorSingleton.getInstance().setTwitterAccessToken(null);
@@ -454,7 +462,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("Twitter Post")).check(matches(isDisplayed()));
         pressBack();
-        verify(tweetRequest, never()).tweet(anyString());
+        verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
         //ensure dialog fields not visible now that we've backed out
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
@@ -464,7 +472,7 @@ public class AmbassadorActivityTest {
         //enter blank text and make sure dialog is still visible
         onView(withId(R.id.etTweetMessage)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.btnTweet)).perform(click());
-        verify(tweetRequest, never()).tweet(anyString());
+        verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
         //onView(withText("INSERT LINK")).perform(click());
         //onView(withId(android.R.id.button2)).perform(click());
@@ -476,7 +484,7 @@ public class AmbassadorActivityTest {
 
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
         pressBack();
-        verify(tweetRequest, never()).tweet(anyString());
+        verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
         //test sending a successful (mocked) tweet
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
@@ -489,17 +497,21 @@ public class AmbassadorActivityTest {
 
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
-                tweetRequest.mCallback.processTweetRequest(200);
+                Object[] object = invocation.getArguments();
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[3];
+                completion.onSuccess("success");
                 return null;
             }
         })
         .doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
-                tweetRequest.mCallback.processTweetRequest(400);
+                Object[] object = invocation.getArguments();
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[3];
+                completion.onSuccess("success");
                 return null;
             }
         })
-        .when(tweetRequest).tweet(anyString());
+        .when(requestManager).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnTweet)).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
@@ -517,7 +529,7 @@ public class AmbassadorActivityTest {
         //failure shouldn't dismiss the dialog
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
-        verify(tweetRequest, times(2)).tweet(anyString());
+        verify(requestManager, times(2)).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnCancel)).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());

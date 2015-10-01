@@ -367,7 +367,7 @@ public class RequestManager {
 
     }
 
-    void sendTweet(final String tweetString, final RequestCompletion completion) {
+    void postToTwitter(final String tweetString, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

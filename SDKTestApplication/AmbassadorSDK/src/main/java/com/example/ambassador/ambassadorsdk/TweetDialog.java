@@ -71,7 +71,7 @@ class TweetDialog extends Dialog {
             etTwitterMessage.shakeEditText();
         } else {
             loader.setVisibility(View.VISIBLE);
-            requestManager.sendTweet(etTwitterMessage.getText().toString(), new RequestManager.RequestCompletion() {
+            requestManager.postToTwitter(etTwitterMessage.getText().toString(), new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
                     loader.setVisibility(View.GONE);
