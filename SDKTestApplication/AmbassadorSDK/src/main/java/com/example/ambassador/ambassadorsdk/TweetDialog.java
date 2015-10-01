@@ -17,12 +17,12 @@ import javax.inject.Singleton;
  */
 
 @Singleton
-class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
+class TweetDialog extends Dialog {
     private CustomEditText etTwitterMessage;
     private ProgressBar loader;
 
     @Inject
-    TweetRequest tweetRequest;
+    RequestManager requestManager;
 
     @Inject
     public TweetDialog(@ForActivity Context context) {
@@ -71,8 +71,20 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
             etTwitterMessage.shakeEditText();
         } else {
             loader.setVisibility(View.VISIBLE);
-            tweetRequest.mCallback = this;
-            tweetRequest.tweet(etTwitterMessage.getText().toString());
+            requestManager.sendTweet(etTwitterMessage.getText().toString(), new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(Object successResponse) {
+                    loader.setVisibility(View.GONE);
+                    Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+                    dismiss();
+                }
+
+                @Override
+                public void onFailure(Object failureResponse) {
+                    loader.setVisibility(View.GONE);
+                    Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -92,18 +104,6 @@ class TweetDialog extends Dialog implements TweetRequest.AsyncResponse {
                     dialogInterface.dismiss();
                 }
             });
-        }
-    }
-
-    public void processTweetRequest(int postStatus) {
-        loader.setVisibility(View.GONE);
-
-        // Make sure post was successful and handle it if it wasn't
-        if (postStatus < 300 && postStatus > 199) {
-            Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
-            dismiss();
-        } else {
-            Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
         }
     }
 }

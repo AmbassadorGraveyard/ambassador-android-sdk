@@ -12,7 +12,7 @@ public class AmbassadorSingleton {
     // Constants
     static final String TWITTER_KEY = "***REMOVED***";
     static final String TWITTER_SECRET = "***REMOVED***";
-    static final String LINKED_IN_CALLBACK_URL = "http://localhost:2999";
+    static final String CALLBACK_URL = "http://localhost:2999";
     static final String LINKED_IN_CLIENT_ID = "***REMOVED***";
     static final String LINKED_IN_CLIENT_SECRET = "***REMOVED***";
     static final String PUSHER_APP_ID = "***REMOVED***";

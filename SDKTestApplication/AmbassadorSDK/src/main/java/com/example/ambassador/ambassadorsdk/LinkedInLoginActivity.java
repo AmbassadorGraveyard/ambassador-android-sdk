@@ -1,9 +1,7 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,18 +13,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
+import javax.inject.Inject;
 
 /**
  * Created by JakeDunahee on 7/27/15.
@@ -37,10 +24,15 @@ public class LinkedInLoginActivity extends AppCompatActivity {
     ProgressBar loader;
     boolean webViewSuccess = true;
 
+    @Inject
+    RequestManager requestManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
+
+        MyApplication.getComponent().inject(this);
 
         // UI Components
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
@@ -85,7 +77,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
             String codeErrorString = urlArray[1];
 
             // Checks for url to get code for getting Access Token
-            if (callbackURL.startsWith(AmbassadorSingleton.LINKED_IN_CALLBACK_URL) && codeErrorString.startsWith("code")) {
+            if (callbackURL.startsWith(AmbassadorSingleton.CALLBACK_URL) && codeErrorString.startsWith("code")) {
                 String code;
                 if (url.contains("&")) {
                     code = url.substring(url.indexOf("code=") + "code=".length(), url.indexOf("&"));
@@ -93,13 +85,18 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                     code = url.substring(url.indexOf("code=") + "code=".length(), url.length() - 1);
                 }
 
-                // Request task makes call to get OAuth LinkedIn token
-                RequestTask requestTask = new RequestTask();
-                requestTask.currentCode = code;
-                requestTask.context = getApplicationContext();
-                requestTask.execute();
+                requestManager.linkedInLoginRequest(code, new RequestManager.RequestCompletion() {
+                    @Override
+                    public void onSuccess(Object successResponse) {
+                        Toast.makeText(getApplicationContext(), "Logged in successfully!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
 
-
+                    @Override
+                    public void onFailure(Object failureResponse) {
+                        Toast.makeText(getApplicationContext(), "Unable to log in, please try again!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             view.loadUrl(url);
@@ -118,82 +115,6 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             view.loadUrl("about:blank");
             webViewSuccess = false;
-        }
-    }
-
-    private class RequestTask extends AsyncTask<Void, Void, Void> {
-        public String currentCode;
-        public Context context;
-        public String charset = "UTF-8";
-        public int statusCode;
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            String url  = "https://www.linkedin.com/uas/oauth2/accessToken";
-            String urlParams = null;
-
-            // Create params to send for Access Token
-            try {
-                urlParams = "grant_type=authorization_code&code=" + URLEncoder.encode(currentCode, charset) +
-                        "&redirect_uri=" + URLEncoder.encode(AmbassadorSingleton.LINKED_IN_CALLBACK_URL, charset) +
-                        "&client_id=" + URLEncoder.encode(AmbassadorSingleton.LINKED_IN_CLIENT_ID, charset) +
-                        "&client_secret=" + URLEncoder.encode(AmbassadorSingleton.LINKED_IN_CLIENT_SECRET, charset);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-                return null;
-            }
-
-            try {
-                HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                connection.setDoOutput(true);
-                connection.setDoInput(true);
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Host", "www.linkedin.com");
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-                DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-                wr.writeBytes(urlParams);
-                wr.flush();
-                wr.close();
-
-                statusCode = connection.getResponseCode();
-
-                // Get and read response from LinkedIN
-                InputStream is = connection.getInputStream();
-                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                String line;
-                StringBuilder response = new StringBuilder();
-
-                while ((line = rd.readLine()) != null) {
-                    response.append(line);
-                }
-
-                try {
-                    // Get values from JSON object
-                    JSONObject json = new JSONObject(response.toString());
-                    String accessToken = json.getString("access_token");
-                    AmbassadorSingleton.getInstance().setLinkedInToken(accessToken);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-            // Make sure status code is good and dismiss the activity
-            if (statusCode < 300 && statusCode > 199) {
-                Toast.makeText(getApplicationContext(), "Logged in successfully!", Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
-                Toast.makeText(getApplicationContext(), "Unable to log in, please try again!", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 }

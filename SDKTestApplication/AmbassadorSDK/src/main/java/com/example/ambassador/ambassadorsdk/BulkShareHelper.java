@@ -1,51 +1,63 @@
 package com.example.ambassador.ambassadorsdk;
 
+import android.content.Context;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.inject.Inject;
 
 /**
  * Created by JakeDunahee on 8/11/15.
  */
 public class BulkShareHelper {
+    private String messageToShare;
+
+    @Inject
+    RequestManager requestManager;
+
     interface BulkShareCompletion {
-        void bulkShareSuccess(String response);
-        void bulkShareFailure(String response);
+        void bulkShareSuccess();
+        void bulkShareFailure();
     }
 
-    public BulkShareCompletion mCallback = null;
+    public BulkShareHelper() {
+        MyApplication.getComponent().inject(this);
+    }
 
-    void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers) {
+    public void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
         // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
-            RequestManager.getInstance().bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
+            requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void onSuccess(String successResponse) {
-                    RequestManager.getInstance().bulkShareTrack(contacts, true);
-                    mCallback.bulkShareSuccess(successResponse);
+                public void onSuccess(Object successResponse) {
+                    requestManager.bulkShareTrack(contacts, true);
+                    completion.bulkShareSuccess();
                 }
 
                 @Override
-                public void onFailure(String failureResponse) {
-                    mCallback.bulkShareFailure(failureResponse);
+                public void onFailure(Object failureResponse) {
+                    completion.bulkShareFailure();
                 }
             });
         } else {
-            RequestManager.getInstance().bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
+            requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void onSuccess(String successReponse) {
-                    RequestManager.getInstance().bulkShareTrack(contacts, false);
-                    mCallback.bulkShareSuccess(successReponse);
+                public void onSuccess(Object successReponse) {
+                    requestManager.bulkShareTrack(contacts, false);
+                    completion.bulkShareSuccess();
                 }
 
                 @Override
-                public void onFailure(String failureResponse) {
-                    mCallback.bulkShareFailure(failureResponse);
+                public void onFailure(Object failureResponse) {
+                    completion.bulkShareFailure();
                 }
             });
         }
@@ -86,7 +98,7 @@ public class BulkShareHelper {
 
 
     // JSON OBJECT MAKER
-    static JSONArray contactArray(ArrayList<String> values, Boolean phoneNumbers) {
+    static JSONArray contactArray(List<String> values, Boolean phoneNumbers) {
         // Functionality: Creates a jsonArray of jsonobjects created from validated phone numbers and email addresses
         String socialName = (phoneNumbers) ? "sms" : "email";
         JSONArray objectsList = new JSONArray();
