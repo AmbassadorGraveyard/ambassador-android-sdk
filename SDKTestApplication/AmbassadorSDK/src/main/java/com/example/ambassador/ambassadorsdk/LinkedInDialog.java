@@ -17,12 +17,12 @@ import javax.inject.Inject;
 /**
  * Created by JakeDunahee on 7/27/15.
  */
-class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
+class LinkedInDialog extends Dialog  {
     CustomEditText etMessage;
     ProgressBar loader;
 
     @Inject
-    LinkedInRequest linkedInRequest;
+    RequestManager requestManager;
 
     @Inject
     public LinkedInDialog(@ForActivity Context context) {
@@ -81,8 +81,20 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
                         "\"visibility\": " + "{ \"code\": \"anyone\" }" +
                         "}");
 
-                linkedInRequest.mCallback = this;
-                linkedInRequest.send(object);
+                requestManager.postToLinkedIn(object, new RequestManager.RequestCompletion() {
+                    @Override
+                    public void onSuccess(Object successResponse) {
+                        loader.setVisibility(View.GONE);
+                        Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    }
+
+                    @Override
+                    public void onFailure(Object failureResponse) {
+                        loader.setVisibility(View.GONE);
+                        Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -105,18 +117,6 @@ class LinkedInDialog extends Dialog implements LinkedInRequest.AsyncResponse {
                     dialogInterface.dismiss();
                 }
             });
-        }
-    }
-
-    public void processLinkedInRequest(int postStatus) {
-        loader.setVisibility(View.GONE);
-
-        // Make sure post was successful and handle it if it wasn't
-        if (postStatus < 300 && postStatus > 199) {
-            Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
-            dismiss();
-        } else {
-            Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
         }
     }
 }

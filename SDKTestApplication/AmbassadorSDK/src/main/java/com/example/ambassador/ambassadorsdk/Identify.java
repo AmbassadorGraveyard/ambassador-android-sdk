@@ -10,6 +10,8 @@ import org.json.JSONObject;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+
 
 /**
  * Created by JakeDunahee on 9/1/15.
@@ -20,6 +22,9 @@ class Identify implements IIdentify {
     private String identifier;
     IdentifyAugurSDK augur;
     private Timer augurTimer;
+
+    @Inject
+    RequestManager requestManager;
 
     public Identify(Context context, String identifier) {
         this.context = context;
@@ -54,15 +59,15 @@ class Identify implements IIdentify {
                 try {
                     JSONObject pusherObject = new JSONObject(data);
                     if (pusherObject.has("url")) {
-                        RequestManager.getInstance().externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
+                        requestManager.externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
                             @Override
-                            public void onSuccess(String successResponse) {
+                            public void onSuccess(Object successResponse) {
                                 Utilities.debugLog("Pusher External", "Saved pusher object as String = " + successResponse.toString());
                                 _getAndSavePusherInfo(successResponse.toString());
                             }
 
                             @Override
-                            public void onFailure(String failureResponse) {
+                            public void onFailure(Object failureResponse) {
                                 Utilities.debugLog("Pusher External", "FAILED to save pusher object with error: " + failureResponse);
                             }
                         });
@@ -72,7 +77,6 @@ class Identify implements IIdentify {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         });
     }

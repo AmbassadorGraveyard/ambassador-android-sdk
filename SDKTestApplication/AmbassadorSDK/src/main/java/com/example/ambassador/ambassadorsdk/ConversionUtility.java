@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import javax.inject.Inject;
+
 
 /**
  * Created by JakeDunahee on 8/21/15.
@@ -25,16 +27,21 @@ class ConversionUtility {
     private ConversionDBHelper helper;
     private SQLiteDatabase db;
 
+    @Inject
+    RequestManager requestManager;
+
     // Constructors for ConversionUtility
     public ConversionUtility(Context context) {
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
+        MyApplication.getComponent().inject(this);
     }
 
     public ConversionUtility(Context context, ConversionParameters parameters) {
         this.parameters = parameters;
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
+        MyApplication.getComponent().inject(this);
     }
 
     // Function used by ambassador Singleton to register a conversion
@@ -160,15 +167,15 @@ class ConversionUtility {
         }
     }
 
-    void makeConversionRequest(final ConversionParameters newParameters) {
-        RequestManager.getInstance().registerConversionRequest(newParameters, new RequestManager.RequestCompletion() {
+    public void makeConversionRequest(final ConversionParameters newParameters) {
+        requestManager.registerConversionRequest(newParameters, new RequestManager.RequestCompletion() {
             @Override
-            public void onSuccess(String successResponse) {
+            public void onSuccess(Object successResponse) {
                 Utilities.debugLog("Conversion", "Conversion Registered Successfully!");
             }
 
             @Override
-            public void onFailure(String failureResponse) {
+            public void onFailure(Object failureResponse) {
                 ContentValues values = ConversionDBHelper.createValuesFromConversion(newParameters);
                 db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
                 Utilities.debugLog("Conversion", "Inserted row into table");
