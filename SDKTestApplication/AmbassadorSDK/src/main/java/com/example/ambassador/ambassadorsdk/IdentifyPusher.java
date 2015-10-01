@@ -19,7 +19,7 @@ class IdentifyPusher {
         void pusherEventTriggered(String data);
     }
 
-    public void createPusher(String augurDeviceID, final PusherCompletion completion) {
+    public void createPusher(String augurDeviceID, String universalToken, final PusherCompletion completion) {
         // Functionality: Subcribes to Pusher channel and sets listener for pusher action
         String channelName = "private-snippet-channel@user=" + augurDeviceID;
 
@@ -27,7 +27,7 @@ class IdentifyPusher {
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorSingleton.pusherCallbackURL());
 
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("Authorization", AmbassadorSingleton.getInstance().getUniversalKey());
+        headers.put("Authorization", universalToken);
         authorizer.setHeaders(headers);
 
         HashMap<String, String> queryParams = new HashMap<>();

@@ -25,6 +25,9 @@ class TweetDialog extends Dialog {
     RequestManager requestManager;
 
     @Inject
+    AmbassadorSingleton ambassadorSingleton;
+
+    @Inject
     public TweetDialog(@ForActivity Context context) {
         super(context);
 
@@ -60,7 +63,7 @@ class TweetDialog extends Dialog {
         this.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                etTwitterMessage.setText(AmbassadorSingleton.getInstance().getRafParameters().defaultShareMessage);
+                etTwitterMessage.setText(ambassadorSingleton.getRafParameters().defaultShareMessage);
             }
         });
     }
@@ -89,10 +92,10 @@ class TweetDialog extends Dialog {
     }
 
     private void _btnTweetClicked() {
-        if (Utilities.containsURL(etTwitterMessage.getText().toString())) {
+        if (Utilities.containsURL(etTwitterMessage.getText().toString(), ambassadorSingleton.getURL())) {
             _shareTweet();
         } else {
-            Utilities.presentUrlDialog(this.getOwnerActivity(), etTwitterMessage, new Utilities.UrlAlertInterface() {
+            Utilities.presentUrlDialog(this.getOwnerActivity(), etTwitterMessage, ambassadorSingleton.getURL(), new Utilities.UrlAlertInterface() {
                 @Override
                 public void sendAnywayTapped(DialogInterface dialogInterface) {
                     dialogInterface.dismiss();

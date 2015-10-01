@@ -30,6 +30,9 @@ class ConversionUtility {
     @Inject
     RequestManager requestManager;
 
+    @Inject
+    AmbassadorSingleton ambassadorSingleton;
+
     // Constructors for ConversionUtility
     public ConversionUtility(Context context) {
         helper = new ConversionDBHelper(context);
@@ -46,7 +49,7 @@ class ConversionUtility {
 
     // Function used by ambassador Singleton to register a conversion
     public void registerConversion() {
-        if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
+        if (ambassadorSingleton.getPusherInfo() != null) {
             try {
                 if (parameters.isValid()) {
                     makeConversionRequest(parameters);
@@ -64,7 +67,7 @@ class ConversionUtility {
     }
 
     // Creates a JSON object from Conversion Params and some Augur data
-    static JSONObject createJSONConversion(ConversionParameters parameters) {
+    static JSONObject createJSONConversion(ConversionParameters parameters, String identifyObject) {
         JSONObject conversionObject = new JSONObject();
         JSONObject fp = new JSONObject();
         JSONObject consumerObject = new JSONObject();
@@ -72,7 +75,7 @@ class ConversionUtility {
         JSONObject fieldObject = new JSONObject();
 
         try {
-            JSONObject identity = new JSONObject(AmbassadorSingleton.getInstance().getIdentifyObject());
+            JSONObject identity = new JSONObject(identifyObject);
             JSONObject consumer= identity.getJSONObject("consumer");
             JSONObject device = identity.getJSONObject("device");
             consumerObject.put("UID", consumer.getString("UID"));
@@ -120,7 +123,7 @@ class ConversionUtility {
 
     // Attempts to register conversions stored in database
     public void readAndSaveDatabaseEntries() {
-        if (AmbassadorSingleton.getInstance().getPusherInfo() != null) {
+        if (ambassadorSingleton.getPusherInfo() != null) {
             String[] projection = {
                     ConversionSQLStrings.ConversionSQLEntry._ID,
                     ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN,

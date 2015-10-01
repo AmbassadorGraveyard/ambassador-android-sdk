@@ -62,7 +62,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Executed when Pusher data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(AmbassadorSingleton.getPusherInfo(), AmbassadorSingleton.getRafParameters().defaultShareMessage);
+            tryAndSetURL(ambassadorSingleton.getPusherInfo(), ambassadorSingleton.getRafParameters().defaultShareMessage);
         }
     };
 
@@ -79,7 +79,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     RequestManager requestManager;
 
     @Inject
-    AmbassadorSingleton AmbassadorSingleton;
+    AmbassadorSingleton ambassadorSingleton;
 
     // ACTIVITY OVERRIDE METHODS
     @Override
@@ -93,7 +93,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         MyApplication.getAmbModule().setContext(this);
         MyApplication.getComponent().inject(this);
 
-        AmbassadorSingleton.setRafParameters(
+        ambassadorSingleton.setRafParameters(
                 getResources().getString(R.string.RAFdefaultShareMessage),
                 getResources().getString(R.string.RAFtitleText),
                 getResources().getString(R.string.RAFdescriptionText),
@@ -108,9 +108,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         TextView tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
         etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
 
-        tvWelcomeTitle.setText(AmbassadorSingleton.getRafParameters().titleText);
-        tvWelcomeDesc.setText(AmbassadorSingleton.getRafParameters().descriptionText);
-        _setUpToolbar(AmbassadorSingleton.getRafParameters().toolbarTitle);
+        tvWelcomeTitle.setText(ambassadorSingleton.getRafParameters().titleText);
+        tvWelcomeDesc.setText(ambassadorSingleton.getRafParameters().descriptionText);
+        _setUpToolbar(ambassadorSingleton.getRafParameters().toolbarTitle);
 
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -212,8 +212,8 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     void shareWithFacebook() {
         ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentTitle(AmbassadorSingleton.getRafParameters().defaultShareMessage)
-                .setContentUrl(Uri.parse(AmbassadorSingleton.getURL()))
+                .setContentTitle(ambassadorSingleton.getRafParameters().defaultShareMessage)
+                .setContentUrl(Uri.parse(ambassadorSingleton.getURL()))
                 .build();
 
         fbDialog.show(content);
@@ -221,7 +221,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     void shareWithTwitter() {
         // Presents twitter login screen if user has not logged in yet
-        if (AmbassadorSingleton.getTwitterAccessToken() != null) {
+        if (ambassadorSingleton.getTwitterAccessToken() != null) {
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
         } else {
@@ -232,7 +232,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     void shareWithLinkedIn() {
         // Presents login screen if user hasn't signed in yet
-        if (AmbassadorSingleton.getLinkedInToken() != null) {
+        if (ambassadorSingleton.getLinkedInToken() != null) {
             linkedInDialog.setOwnerActivity(this);
             linkedInDialog.show();
         } else {
@@ -261,13 +261,13 @@ public class AmbassadorActivity extends AppCompatActivity {
             for (int i = 0; i < urlArray.length(); i++) {
                 JSONObject urlObj = urlArray.getJSONObject(i);
                 int campID = urlObj.getInt("campaign_uid");
-                int myUID = Integer.parseInt(AmbassadorSingleton.getCampaignID());
+                int myUID = Integer.parseInt(ambassadorSingleton.getCampaignID());
                 if (campID == myUID) {
                     etShortUrl.setText(urlObj.getString("url"));
-                    AmbassadorSingleton.saveURL(urlObj.getString("url"));
-                    AmbassadorSingleton.saveShortCode(urlObj.getString("short_code"));
-                    AmbassadorSingleton.saveEmailSubject(urlObj.getString("subject"));
-                    AmbassadorSingleton.setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
+                    ambassadorSingleton.saveURL(urlObj.getString("url"));
+                    ambassadorSingleton.saveShortCode(urlObj.getString("short_code"));
+                    ambassadorSingleton.saveEmailSubject(urlObj.getString("subject"));
+                    ambassadorSingleton.setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
                 }
             }
         } catch (JSONException e) {

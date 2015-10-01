@@ -25,6 +25,9 @@ class LinkedInDialog extends Dialog  {
     RequestManager requestManager;
 
     @Inject
+    AmbassadorSingleton ambassadorSingleton;
+
+    @Inject
     public LinkedInDialog(@ForActivity Context context) {
         super(context);
 
@@ -61,7 +64,7 @@ class LinkedInDialog extends Dialog  {
         this.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                etMessage.setText(AmbassadorSingleton.getInstance().getRafParameters().defaultShareMessage);
+                etMessage.setText(ambassadorSingleton.getRafParameters().defaultShareMessage);
             }
         });
     }
@@ -102,10 +105,10 @@ class LinkedInDialog extends Dialog  {
     }
 
     private void _btnPostClicked() {
-        if (Utilities.containsURL(etMessage.getText().toString())) {
+        if (Utilities.containsURL(etMessage.getText().toString(), ambassadorSingleton.getURL())) {
             _postToLinkedIn();
         } else {
-            Utilities.presentUrlDialog(this.getOwnerActivity(), etMessage, new Utilities.UrlAlertInterface() {
+            Utilities.presentUrlDialog(this.getOwnerActivity(), etMessage, ambassadorSingleton.getURL(), new Utilities.UrlAlertInterface() {
                 @Override
                 public void sendAnywayTapped(DialogInterface dialogInterface) {
                     dialogInterface.dismiss();

@@ -18,7 +18,6 @@ import javax.inject.Inject;
  * Created by JakeDunahee on 8/11/15.
  */
 public class BulkShareHelper {
-    private String messageToShare;
 
     @Inject
     RequestManager requestManager;
@@ -98,14 +97,14 @@ public class BulkShareHelper {
 
 
     // JSON OBJECT MAKER
-    static JSONArray contactArray(List<String> values, Boolean phoneNumbers) {
+    static JSONArray contactArray(List<String> values, Boolean phoneNumbers, String shortCode) {
         // Functionality: Creates a jsonArray of jsonobjects created from validated phone numbers and email addresses
         String socialName = (phoneNumbers) ? "sms" : "email";
         JSONArray objectsList = new JSONArray();
         for (int i = 0; i < values.size(); i++) {
             JSONObject newObject = new JSONObject();
             try {
-                newObject.put("short_code", AmbassadorSingleton.getInstance().getShortCode());
+                newObject.put("short_code", shortCode);
                 newObject.put("social_name", socialName);
 
                 if (phoneNumbers) {
@@ -125,14 +124,14 @@ public class BulkShareHelper {
         return objectsList;
     }
 
-    static JSONObject payloadObjectForEmail(List<String> emails, String message) {
+    static JSONObject payloadObjectForEmail(List<String> emails, String shortCode, String emailSubject, String message) {
         // Functionality: Creats an email payload object for bulk sharing
         JSONObject object = new JSONObject();
         try {
             object.put("to_emails", new JSONArray(emails));
-            object.put("short_code", AmbassadorSingleton.getInstance().getShortCode());
+            object.put("short_code", shortCode);
             object.put("message", message);
-            object.put("subject_line", AmbassadorSingleton.getInstance().getEmailSubjectLine());
+            object.put("subject_line", emailSubject);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -140,12 +139,12 @@ public class BulkShareHelper {
         return object;
     }
 
-    static JSONObject payloadObjectForSMS(List<String> numbers, String smsMessage) {
+    static JSONObject payloadObjectForSMS(List<String> numbers, String fullName, String smsMessage) {
         // Funcionality: Ceates a json payload for SMS sharing with all the validated numbers included
         JSONObject object = new JSONObject();
         try {
             object.put("to", numbers);
-            object.put("from", AmbassadorSingleton.getInstance().getFullName());
+            object.put("from", fullName);
             object.put("message", smsMessage);
         } catch (JSONException e) {
             e.printStackTrace();
