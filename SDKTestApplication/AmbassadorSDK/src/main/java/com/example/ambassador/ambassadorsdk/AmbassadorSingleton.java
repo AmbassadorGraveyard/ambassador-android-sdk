@@ -8,7 +8,7 @@ import java.util.TimerTask;
 /**
  * Created by JakeDunahee on 7/29/15.
  */
-class AmbassadorSingleton {
+public class AmbassadorSingleton {
     // Constants
     static final String TWITTER_KEY = "QmXl03hbQEKSLLiDY4e6vpIjP";
     static final String TWITTER_SECRET = "IfIbOuVbKwPkfJQW0zknChNMBbqhmpkuuK8FJmqkQqBqCGa4dW";
@@ -113,7 +113,7 @@ class AmbassadorSingleton {
         sharePrefs.edit().putString("pusherObject", pusherObject).apply();
     }
 
-    void saveURL(String url) {
+    public void saveURL(String url) {
         sharePrefs.edit().putString("url", url).apply();
     }
 
@@ -125,7 +125,7 @@ class AmbassadorSingleton {
         sharePrefs.edit().putString("universalID", univID).apply();
     }
 
-    void saveShortCode(String shortCode) {
+    public void saveShortCode(String shortCode) {
         sharePrefs.edit().putString("shortCode", shortCode).apply();
     }
 
@@ -133,11 +133,11 @@ class AmbassadorSingleton {
         sharePrefs.edit().putString("fullName", firstName + " " + lastName).apply();
     }
 
-    void saveEmailSubject(String subjectLine) {
+    public void saveEmailSubject(String subjectLine) {
         sharePrefs.edit().putString("subjectLine", subjectLine).apply();
     }
 
-    void setRafDefaultMessage(String message) {
+    public void setRafDefaultMessage(String message) {
         rafParameters.defaultShareMessage = message;
     }
 
@@ -145,7 +145,7 @@ class AmbassadorSingleton {
         sharePrefs.edit().putString("userEmail", email).apply();
     }
 
-    void setRafParameters(String defaultShareMessage, String titleText, String descriptionText, String toolbarTitle) {
+    public void setRafParameters(String defaultShareMessage, String titleText, String descriptionText, String toolbarTitle) {
         rafParameters = new ServiceSelectorPreferences();
         rafParameters.defaultShareMessage = defaultShareMessage;
         rafParameters.titleText = titleText;
@@ -156,7 +156,7 @@ class AmbassadorSingleton {
 
 
     // SHAREDINSTANCE GETTERS
-    ServiceSelectorPreferences getRafParameters() { return rafParameters; }
+    public ServiceSelectorPreferences getRafParameters() { return rafParameters; }
 
     String getLinkedInToken() { return sharePrefs.getString("linkedInToken", null); }
 
@@ -166,11 +166,11 @@ class AmbassadorSingleton {
 
     String getIdentifyObject() { return sharePrefs.getString("identifyObject", null); }
 
-    String getCampaignID() {
+    public String getCampaignID() {
         return sharePrefs.getString("campaignID", null);
     }
 
-    String getPusherInfo() { return sharePrefs.getString("pusherObject", null); }
+    public String getPusherInfo() { return sharePrefs.getString("pusherObject", null); }
 
     String getURL() {
         return sharePrefs.getString("url", null);

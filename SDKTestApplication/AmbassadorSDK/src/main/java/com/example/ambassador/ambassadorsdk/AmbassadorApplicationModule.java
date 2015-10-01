@@ -69,4 +69,11 @@ public class AmbassadorApplicationModule {
         if (mockMode) return mock(BulkShareHelper.class);
         return new BulkShareHelper();
     }
+
+    @Provides
+    @Singleton
+    AmbassadorSingleton provideAmbassadorSingleton() {
+        if (mockMode) return mock(AmbassadorSingleton.class);
+        return AmbassadorSingleton.getInstance();
+    }
 }
