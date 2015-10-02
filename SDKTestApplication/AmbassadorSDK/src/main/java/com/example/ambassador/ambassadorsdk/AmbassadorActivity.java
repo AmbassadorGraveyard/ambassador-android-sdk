@@ -16,11 +16,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +47,7 @@ import javax.inject.Inject;
 public class AmbassadorActivity extends AppCompatActivity {
     CustomEditText etShortUrl;
     private ProgressDialog pd;
+    private LinearLayout llMainLayout;
     private Timer networkTimer;
     private final android.os.Handler timerHandler = new android.os.Handler();
     private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
@@ -102,6 +106,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
         // UI Components
+        llMainLayout = (LinearLayout) findViewById(R.id.llMainLayout);
         GridView gvSocialGrid = (GridView) findViewById(R.id.gvSocialGrid);
         ImageButton btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
         TextView tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
@@ -111,6 +116,12 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeTitle.setText(ambassadorSingleton.getRafParameters().titleText);
         tvWelcomeDesc.setText(ambassadorSingleton.getRafParameters().descriptionText);
         _setUpToolbar(ambassadorSingleton.getRafParameters().toolbarTitle);
+
+        //CUSTOM IMAGES
+        //first check if an image exists
+        if (getResources().getIdentifier("raf_logo", "drawable", getPackageName()) != 0) {
+            loadCustomImages();
+        }
 
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -202,6 +213,32 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
 
         return position;
+    }
+
+    void loadCustomImages() {
+        //copy image url
+        //constrain images
+        //update documentation: add logo to drawables, must be lowercase, set logo position, position element is ignored when you don't have a logo specified
+        //deal with android sizing
+
+        int pos;
+        try {
+            pos = Integer.parseInt(getString(R.string.RAFLogoPosition));
+        }
+        catch (NumberFormatException e) {
+            pos = 0;
+        }
+
+        if (pos >= 1 && pos <= 5) {
+            ImageView logo = new ImageView(this);
+            logo.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.raf_logo));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            //params.height = 500;
+            //params.width = 500;
+            params.gravity = Gravity.CENTER_HORIZONTAL;
+            logo.setLayoutParams(params);
+            llMainLayout.addView(logo, pos-1);
+        }
     }
 
     void goToContactsPage(Boolean showPhoneNumbers) {
