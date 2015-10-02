@@ -26,7 +26,7 @@ public class MainActivityTest {
     @Test
     public void testPresentRaf() {
         onView(withId(R.id.btnShowRAF)).perform(click());
-        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
         onView(withId(R.id.etShortURL)).check(matches(isDisplayed()));

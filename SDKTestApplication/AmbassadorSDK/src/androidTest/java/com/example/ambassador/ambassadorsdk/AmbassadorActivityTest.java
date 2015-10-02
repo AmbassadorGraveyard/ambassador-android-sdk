@@ -152,7 +152,7 @@ public class AmbassadorActivityTest {
 
     @Test
     public void testMainLayout() {
-        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(withText(parameters.titleText)));
         onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
@@ -188,7 +188,7 @@ public class AmbassadorActivityTest {
 
         pressBack();
         //make sure after we backed out that expected views are there
-        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
         onView(withId(R.id.lvContacts)).check(ViewAssertions.doesNotExist());
 
@@ -305,7 +305,7 @@ public class AmbassadorActivityTest {
 
         pressBack();
         //make sure after we backed out that expected views are there
-        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
         onView(withId(R.id.lvContacts)).check(ViewAssertions.doesNotExist());
 
@@ -319,7 +319,7 @@ public class AmbassadorActivityTest {
     public void testLinkedIn() {
         //TODO: test linkedInLoginActivity (see strategy in testTwitter
 
-        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         when(ambassadorSingleton.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
@@ -405,7 +405,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnCancel)).perform(click());
         onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         //TODO: testing toast (didn't work)
@@ -444,10 +444,10 @@ public class AmbassadorActivityTest {
         //TODO: to this later to attempt to enter text into WebView fields to authenticate
         //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
 
-        //onView(withId(R.id.rlMainLayout)).check(matches(not(isDisplayed())));
+        //onView(withId(R.id.llMainLayout)).check(matches(not(isDisplayed())));
         //pressBack();
 
-        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         when(ambassadorSingleton.getTwitterAccessToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
@@ -534,7 +534,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnCancel)).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         //TODO: testing toast (didn't work)
