@@ -38,6 +38,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 /**
  * Created by JakeDunahee on 7/31/15.
  */
@@ -193,6 +195,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
     //endregion
 
