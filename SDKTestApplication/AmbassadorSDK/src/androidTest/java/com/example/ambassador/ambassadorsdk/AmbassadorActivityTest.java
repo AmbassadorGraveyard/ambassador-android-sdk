@@ -315,29 +315,14 @@ public class AmbassadorActivityTest {
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
     }
 
-    //@Test
+    @Test
     public void testLinkedIn() {
-        //clear the token
-        ambassadorSingleton.setLinkedInToken(null);
-        //start recording fired Intents
-        Intents.init();
-        //click linkedin icon
-        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
-        intended(hasComponent(LinkedInLoginActivity.class.getName()));
-        //stop recording Intents
-        Intents.release();
-
-        //TODO: Espresso Web API to test WebViews not ready for prime time - too much trouble getting this to work - will come back
-        //TODO: to this later to attempt to enter text into WebView fields to authenticate
-        //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
-
-        pressBack();
+        //TODO: test linkedInLoginActivity (see strategy in testTwitter
 
         onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
-        //set a token so we can test share link - this is for test account (developers@getambassador.com)
-        ambassadorSingleton.setLinkedInToken("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
+        when(ambassadorSingleton.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
         onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
@@ -385,7 +370,7 @@ public class AmbassadorActivityTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] object = invocation.getArguments();
-                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[3];
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[1];
                 completion.onSuccess("success");
                 return null;
             }
@@ -393,8 +378,8 @@ public class AmbassadorActivityTest {
         .doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] object = invocation.getArguments();
-                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[3];
-                completion.onSuccess("fail");
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[1];
+                completion.onFailure("fail");
                 return null;
             }
         })
@@ -427,31 +412,45 @@ public class AmbassadorActivityTest {
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
-    //@Test
+    @Test
     public void testTwitter() {
-        //clear the token
-        ambassadorSingleton.setTwitterAccessToken(null);
-        ambassadorSingleton.setTwitterAccessTokenSecret(null);
+        //TODO: finish the test for twitterloginactivity once we can type into webviews, strategy outlined below
+        //mock token as null so login screen gets presented
+        //when(ambassadorSingleton.getTwitterAccessToken()).thenReturn(null);
+
+        //when twitterLoginRequest gets called, return a mock of the request object
+/*        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] object = invocation.getArguments();
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[0];
+                //return a mock of the request object
+                //completion.onSuccess("success");
+                return null;
+            }
+        })
+        .when(requestManager).twitterLoginRequest(any(RequestManager.RequestCompletion.class));*/
+
+        //then, mock the response of requestToken.getAuthenticationUrl() so webview comes up
+
         //start recording fired Intents
-        Intents.init();
+        //Intents.init();
         //click twitter icon
-        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
-        intended(hasComponent(TwitterLoginActivity.class.getName()));
+        //onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
+        //intended(hasComponent(TwitterLoginActivity.class.getName()));
         //stop recording Intents
-        Intents.release();
+        //Intents.release();
 
         //TODO: Espresso Web API to test WebViews not ready for prime time - too much trouble getting this to work - will come back
         //TODO: to this later to attempt to enter text into WebView fields to authenticate
         //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
 
-        pressBack();
+        //onView(withId(R.id.rlMainLayout)).check(matches(not(isDisplayed())));
+        //pressBack();
 
         onView(withId(R.id.rlMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
-        //set a token so we can test share link - this is for test embassy twitter account (developers@getambassador.com - https://twitter.com/testmbsy)
-        ambassadorSingleton.setTwitterAccessToken("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
-        ambassadorSingleton.setTwitterAccessTokenSecret("WUg9QkrVoL3ndW6DwdpQAUvVaRcxhHUB2ED3PoUlfZFek");
+        when(ambassadorSingleton.getTwitterAccessToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
@@ -499,7 +498,7 @@ public class AmbassadorActivityTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] object = invocation.getArguments();
-                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[3];
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[1];
                 completion.onSuccess("success");
                 return null;
             }
@@ -507,8 +506,8 @@ public class AmbassadorActivityTest {
         .doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] object = invocation.getArguments();
-                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[3];
-                completion.onSuccess("success");
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[1];
+                completion.onFailure("fail");
                 return null;
             }
         })
