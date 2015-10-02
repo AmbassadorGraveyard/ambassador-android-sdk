@@ -5,4 +5,5 @@
 
     <dimen name="contact_select_checkmark_x">15dp</dimen>
     <dimen name="grid_cell_outline_width">3dp</dimen>
+    <dimen name="raf_logo_height">150dp</dimen>
 </resources>
