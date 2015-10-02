@@ -352,7 +352,7 @@ public class RequestManager {
     // endregion IDENTIFY REQUESTS
 
     // region TWITTER REQUESTS
-    void twitterLoginRequest(final RequestCompletion completion) {
+    public void twitterLoginRequest(final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -425,7 +425,7 @@ public class RequestManager {
 
     }
 
-    void postToTwitter(final String tweetString, final RequestCompletion completion) {
+    public void postToTwitter(final String tweetString, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -522,7 +522,7 @@ public class RequestManager {
         new Thread(runnable).start();
     }
 
-    void postToLinkedIn(final JSONObject objectToPost, final RequestCompletion completion) {
+    public void postToLinkedIn(final JSONObject objectToPost, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

@@ -146,9 +146,11 @@ public class AmbassadorSingleton {
     // SHAREDINSTANCE GETTERS
     public ServiceSelectorPreferences getRafParameters() { return rafParameters; }
 
-    String getLinkedInToken() { return sharePrefs.getString("linkedInToken", null); }
+    public String getLinkedInToken() { return sharePrefs.getString("linkedInToken", null); }
 
-    String getTwitterAccessToken() { return sharePrefs.getString("twitterToken", null); }
+    public String getTwitterAccessToken() {
+        return sharePrefs.getString("twitterToken", null);
+    }
 
     String getTwitterAccessTokenSecret() { return sharePrefs.getString("twitterTokenSecret", null); }
 
