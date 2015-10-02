@@ -87,7 +87,8 @@
                 android:editable="true"
                 android:enabled="false"
                 android:selectAllOnFocus="true"
-                android:autoText="false" />
+                android:autoText="false"
+                fontPath="@string/contactSendMessageText"/>
 
             <ImageButton
                 android:layout_width="60dp"
