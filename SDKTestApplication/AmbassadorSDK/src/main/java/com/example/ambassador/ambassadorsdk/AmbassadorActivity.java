@@ -37,6 +37,9 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
+import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
+
 
 /**
  * Created by JakeDunahee on 7/22/15.
@@ -86,6 +89,12 @@ public class AmbassadorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
+
+        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
+                        .setDefaultFontPath("fonts/Roboto-RobotoRegular.ttf")
+                        .setFontAttrId(R.attr.fontPath)
+                        .build()
+        );
 
         FacebookSdk.sdkInitialize(getApplicationContext());
 
@@ -166,6 +175,12 @@ public class AmbassadorActivity extends AppCompatActivity {
         finish(); // Dismisses activity if back button pressed
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
+    }
+
     // END ACTIVITY OVERRIDE METHODS
 
 
@@ -293,6 +308,8 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.homeToolBar));
         toolbar.setTitleTextColor(getResources().getColor(R.color.homeToolBarText));
+//        TextView toolbarTextView = (TextView) toolbar.findViewById(R.id.title);
+//        toolbarTextView.setText("tacos");
     }
     // END UI SETTER METHODS
 }
