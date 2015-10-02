@@ -216,11 +216,6 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     void loadCustomImages() {
-        //copy image url
-        //constrain images
-        //update documentation: add logo to drawables, must be lowercase, set logo position, position element is ignored when you don't have a logo specified
-        //deal with android sizing
-
         int pos;
         try {
             pos = Integer.parseInt(getString(R.string.RAFLogoPosition));
@@ -232,9 +227,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         if (pos >= 1 && pos <= 5) {
             ImageView logo = new ImageView(this);
             logo.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.raf_logo));
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            //params.height = 500;
-            //params.width = 500;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height), LinearLayout.LayoutParams.WRAP_CONTENT);
             params.gravity = Gravity.CENTER_HORIZONTAL;
             logo.setLayoutParams(params);
             llMainLayout.addView(logo, pos-1);
