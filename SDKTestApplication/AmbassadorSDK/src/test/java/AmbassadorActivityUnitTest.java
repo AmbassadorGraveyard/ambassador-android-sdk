@@ -51,13 +51,10 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ClipData.class, Toast.class, AmbassadorActivity.class, Integer.class, AmbassadorSingleton.class})
 public class AmbassadorActivityUnitTest extends TestCase {
+    AmbassadorActivity ambassadorActivity = spy(new AmbassadorActivity());
+
     @Inject
     AmbassadorSingleton ambassadorSingleton;
-
-
-    private AmbassadorActivity ambassadorActivity;
-
-    String valueString;
 
     @Singleton
     @Component(modules = {AmbassadorApplicationModule.class})
@@ -68,8 +65,6 @@ public class AmbassadorActivityUnitTest extends TestCase {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-
-        ambassadorActivity = spy(AmbassadorActivity.class);
 
         AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
         amb.setMockMode(true);
