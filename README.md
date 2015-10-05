@@ -215,6 +215,6 @@ To use a custom font, insert the name of your font as `fonts/<your font name.ext
 
 By inserting the **fonts/Action_Man.ttf** value as seen above, you would get the following result:
 
-<img src="screenShots/newFontDemoShot.png" width="250" />
+<img src="screenshots/newFontDemoShot.png" width="250" />
 
 _Note_: By leaving a font value blank or entering a font value incorrectly, **Roboto-RobotoRegular** will be used by default.
