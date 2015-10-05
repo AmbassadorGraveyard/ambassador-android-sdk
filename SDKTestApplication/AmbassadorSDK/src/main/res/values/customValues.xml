@@ -4,7 +4,7 @@
     <string name="RAFtitleText">RAF Params Welcome Title</string>
     <string name="RAFdescriptionText">RAF Params Welcome Description</string>
     <string name="RAFtoolbarTitle">RAF Params Toolbar Title</string>
-    <string name="RAFLogoPosition">2</string>
+    <string name="RAFLogoPosition">0</string>
     <color name="homeBackground">@android:color/white</color>
     <color name="homeWelcomeTitle">@color/lightGray</color>
     <dimen name="homeWelcomeTitle">22sp</dimen>
