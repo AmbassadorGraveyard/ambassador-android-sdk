@@ -1,41 +1,105 @@
-//package com.example.ambassador.ambassadorsdk;
-//import android.app.Activity;
-//import android.app.ProgressDialog;
-//import android.os.AsyncTask;
-//import android.widget.Toast;
-//
-//import org.json.JSONArray;
-//import org.json.JSONException;
-//import org.json.JSONObject;
-//import org.junit.Test;
-//import org.junit.internal.runners.JUnit38ClassRunner;
-//import org.junit.runner.RunWith;
-//import org.mockito.Mockito;
-//import org.mockito.runners.MockitoJUnitRunner;
-//import org.powermock.api.mockito.PowerMockito;
-//import org.powermock.core.classloader.annotations.PrepareForTest;
-//import org.powermock.modules.junit4.PowerMockRunner;
-//
-//import java.util.ArrayList;
-//import static org.junit.Assert.*;
-//import static org.mockito.Matchers.any;
-//import static org.mockito.Matchers.anyString;
-//import static org.mockito.Mockito.doNothing;
-//import static org.mockito.Mockito.mock;
-//import static org.mockito.Mockito.spy;
-//import static org.mockito.Mockito.verify;
-//import static org.mockito.Mockito.when;
-//
-///**
-// * Created by JakeDunahee on 9/9/15.
-// */
-//@RunWith(PowerMockRunner.class)
-//@PrepareForTest({BulkShareHelper.class, BulkShareSMSRequest.class, Toast.class, AmbassadorSingleton.class})
-//public class BulkShareHelperTest {
-//    ProgressDialog mockDialog = mock(ProgressDialog.class);
-//    String mockMessage = "This is a mock message. http://mockURL.co";
-//    BulkShareHelper bulkShareHelper = spy(new BulkShareHelper(mockDialog, mockMessage));
-//
+package com.example.ambassador.ambassadorsdk;
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.internal.runners.JUnit38ClassRunner;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.Component;
+
+import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.refEq;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+/**
+ * Created by JakeDunahee on 9/9/15.
+ */
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({BulkShareHelper.class, Toast.class, AmbassadorSingleton.class, MyApplication.class})
+public class BulkShareHelperUnitTest {
+    BulkShareHelper bulkShareHelper;
+
+    @Inject
+    RequestManager mockRequestManager;
+
+    @Singleton
+    @Component(modules = {AmbassadorApplicationModule.class})
+    public interface TestComponent {
+        void inject(BulkShareHelperUnitTest bulkShareHelperUnitTest);
+    }
+
+    @Before
+    public void setUpMock() {
+        MockitoAnnotations.initMocks(this);
+        AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
+        amb.setMockMode(true);
+
+        TestComponent component = DaggerBulkShareHelperUnitTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
+        component.inject(this);
+
+        PowerMockito.mockStatic(MyApplication.class);
+        AmbassadorApplicationComponent application = mock(AmbassadorApplicationComponent.class);
+        PowerMockito.when(MyApplication.getComponent()).thenReturn(application);
+        doNothing().when(application).inject(any(BulkShareHelper.class));
+
+        bulkShareHelper = spy(new BulkShareHelper());
+        bulkShareHelper.requestManager = mockRequestManager;
+    }
+
+    @Test
+    public void bulkShareSMSTest() {
+        // ARRANGE
+        String mockMessage = "fakeMessage";
+        List mockContacts = mock(List.class);
+        RequestManager.RequestCompletion mockRequestcompletion = mock(RequestManager.RequestCompletion.class);
+        BulkShareHelper.BulkShareCompletion mockShareCompletion = mock(BulkShareHelper.BulkShareCompletion.class);
+
+        // ACT
+        doNothing().when(mockRequestManager).bulkShareSms(mockContacts, mockMessage, mockRequestcompletion);
+        bulkShareHelper.bulkShare(mockMessage, mockContacts, true, mockShareCompletion);
+
+        // ASSERT
+        verify(bulkShareHelper).bulkShare(mockMessage, mockContacts, true, mockShareCompletion);
+        verify(mockRequestManager).bulkShareSms(mockContacts, mockMessage, mockRequestcompletion);
+        doAnswer(new Answer() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                assertEquals("fakeMessage", invocation.getArguments()[2]);
+                return null;
+            }
+        }).when(mockRequestManager).bulkShareSms(anyList(), anyString(), any(RequestManager.RequestCompletion.class));
+    }
+
 //    @Test
 //    public void bulkSMSShareTest() throws Exception {
 //        // ARRANGE
@@ -52,7 +116,7 @@
 //        assertEquals(mockExecuteTask, mockRequest.execute());
 //        verify(bulkShareHelper).bulkShare(mockContacts, true);
 //    }
-//
+
 //    @Test
 //    public void bulkEmailShareTest() throws Exception {
 //        // ARRANGE
@@ -222,4 +286,4 @@
 //        // ASSERT
 //        assertNotNull(mockObject);
 //    }
-//}
+}
