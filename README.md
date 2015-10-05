@@ -194,7 +194,6 @@ The resulting toolbar would display:
 
 <img src="screenshots/appCustomToolBarColor.png" width="250" />
 
-
 _Note_: If any values in this file are blank, the RAF will use the default values shipped with the SDK. The strings for the RAF Screen will revert to these:
 
 * **toolbarTitle** - "Refer your friends"
@@ -203,3 +202,19 @@ _Note_: If any values in this file are blank, the RAF will use the default value
 * **defaultShareMessage** - "I'm a fan of this company, check them out!"
 
 _Note_: The shortURL will automatically be appended to the defaultShareMessage
+
+#### Using Custom Fonts
+
+Any Custom Fonts you want to use in the Ambassador SDK must be in your app's **assets/fonts** folder:
+
+<img src="screenshots/assetsStructure.png" />
+
+To use a custom font, insert the name of your font as `fonts/<your font name.extension>`.  Ex: `fonts/ExampleFont.ttf`:
+
+<img src="screenshots/changedFontValue.png" />
+
+By inserting the **fonts/Action_Man.ttf** value as seen above, you would get the following result:
+
+<img src="screenshots/newFontDemoShot.png" width="250" />
+
+_Note_: By leaving a font value blank or entering a font value incorrectly, **Roboto-RobotoRegular** will be used by default.
