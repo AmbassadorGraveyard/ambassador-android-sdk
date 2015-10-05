@@ -117,11 +117,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeDesc.setText(ambassadorSingleton.getRafParameters().descriptionText);
         _setUpToolbar(ambassadorSingleton.getRafParameters().toolbarTitle);
 
-        //CUSTOM IMAGES
-        //first check if an image exists
-        if (getResources().getIdentifier("raf_logo", "drawable", getPackageName()) != 0) {
-            loadCustomImages();
-        }
+        loadCustomImages();
 
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -216,6 +212,10 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     void loadCustomImages() {
+        //first check if an image exists
+        int drawableId = getResources().getIdentifier("raf_logo", "drawable", getPackageName());
+        if (drawableId == 0) return;
+
         int pos;
         try {
             pos = Integer.parseInt(getString(R.string.RAFLogoPosition));
@@ -226,9 +226,10 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         if (pos >= 1 && pos <= 5) {
             ImageView logo = new ImageView(this);
-            logo.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.raf_logo));
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height), LinearLayout.LayoutParams.WRAP_CONTENT);
+            logo.setImageDrawable(ContextCompat.getDrawable(this, drawableId));
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height));
             params.gravity = Gravity.CENTER_HORIZONTAL;
+            params.topMargin = Utilities.getPixelSizeForDimension(R.dimen.raf_logo_top_margin);
             logo.setLayoutParams(params);
             llMainLayout.addView(logo, pos-1);
         }
