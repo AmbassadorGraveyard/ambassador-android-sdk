@@ -7,13 +7,14 @@
         android:layout_height="25dp"
         android:text="Large Text"
         android:textColor="@color/darkGray"
-        android:textSize="16sp"
+        android:textSize="@dimen/contactsListName"
         android:id="@+id/tvName"
         android:layout_marginTop="12dp"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginRight="50dp"
-        android:layout_marginEnd="50dp" />
+        android:layout_marginEnd="50dp"
+        fontPath="@string/contactsListName"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -23,12 +24,13 @@
         android:id="@+id/tvNumberOrEmail"
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
-        android:textSize="12sp"
+        android:textSize="@dimen/contactsListValue"
         android:layout_below="@+id/tvName"
         android:layout_alignStart="@+id/tvName"
         android:layout_alignLeft="@+id/tvName"
         android:layout_marginRight="50dp"
-        android:layout_marginEnd="50dp" />
+        android:layout_marginEnd="50dp"
+        fontPath="@string/contactsListValue"/>
 
     <ImageView
         android:layout_width="20dp"
