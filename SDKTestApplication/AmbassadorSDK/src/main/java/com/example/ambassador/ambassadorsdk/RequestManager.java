@@ -245,34 +245,36 @@ public class RequestManager {
 
                 JSONObject identifyObject = new JSONObject();
 
-                try {
-                    JSONObject augurObject = new JSONObject(ambassadorSingleton.getIdentifyObject());
-                    identifyObject.put("enroll", true);
-                    identifyObject.put("campaign_id", ambassadorSingleton.getCampaignID());
-                    identifyObject.put("email", ambassadorSingleton.getUserEmail());
-                    identifyObject.put("source", "android_sdk_pilot");
-                    identifyObject.put("mbsy_source", "");
-                    identifyObject.put("mbsy_cookie_code", "");
-                    identifyObject.put("fp", augurObject);
+                if (ambassadorSingleton.getIdentifyObject() != null) {
+                    try {
+                        JSONObject augurObject = new JSONObject(ambassadorSingleton.getIdentifyObject());
+                        identifyObject.put("enroll", true);
+                        identifyObject.put("campaign_id", ambassadorSingleton.getCampaignID());
+                        identifyObject.put("email", ambassadorSingleton.getUserEmail());
+                        identifyObject.put("source", "android_sdk_pilot");
+                        identifyObject.put("mbsy_source", "");
+                        identifyObject.put("mbsy_cookie_code", "");
+                        identifyObject.put("fp", augurObject);
 
-                    Utilities.debugLog("Identify", "Identify JSON Object = " + identifyObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                        Utilities.debugLog("Identify", "Identify JSON Object = " + identifyObject);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                try {
-                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(identifyObject.toString());
-                    oStream.flush();
-                    oStream.close();
+                    try {
+                        DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
+                        oStream.writeBytes(identifyObject.toString());
+                        oStream.flush();
+                        oStream.close();
 
-                    final int responseCode = connection.getResponseCode();
-                    String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Response Code = " + responseCode +
-                            " and Response = " + response);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Failure due to IOException - " + e.getMessage());
+                        final int responseCode = connection.getResponseCode();
+                        String response = getResponse(connection, responseCode);
+                        Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Response Code = " + responseCode +
+                                " and Response = " + response);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Failure due to IOException - " + e.getMessage());
+                    }
                 }
             }
         };

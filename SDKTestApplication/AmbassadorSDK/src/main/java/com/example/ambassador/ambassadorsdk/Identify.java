@@ -35,11 +35,11 @@ class Identify implements IIdentify {
 
         MyApplication.getComponent().inject(this);
 
-        if (pusher == null) {
+//        if (pusher == null) {
             pusher = new IdentifyPusher();
             augur = new IdentifyAugurSDK();
             augurTimer = new Timer();
-        }
+//        }
     }
 
     @Override
