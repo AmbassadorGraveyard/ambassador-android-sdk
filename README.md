@@ -235,7 +235,7 @@ To set the position of the logo, edit the following value in customValues.xml.
 
 <img src="screenshots/rafLogoPosition.png" />
 
-_Note_: The RAFLogoPosition element is ignored when no `raf_logo.png` is present in the drawable folders. Also, set the RAFLogoPosition to 0 to hide the logo.
+_Note_: The RAFLogoPosition element is ignored when no `raf_logo.png` is present in the drawable folders. Set the RAFLogoPosition to 0 to hide the logo.
 
 The following images show the logo in the various positions set in the custom values:
 
