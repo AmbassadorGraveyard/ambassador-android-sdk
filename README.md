@@ -229,4 +229,22 @@ First, rename your image file `raf_logo.png` (must be lowercase). Then place thi
 
 _Note_: To create properly-scaled images for differing device densities, you must create an image for each android density. To read more about this, visit <a href="http://developer.android.com/guide/practices/screens_support.html" target="1">Supporting Multiple Screens</a>. If you choose to do this, place each scaled image in the proper folder (drawable-xhdpi, drawable-xxhdpi, etc.). If you choose not to do this, Android will pull the image from the mdpi folder, however it may not properly scale depending on the density of the target device.
 
-The SDK will constrain your image to no bigger than 30dp (density-independent pixels). This is to prevent images of large height from pushing the content below it down and off the screen. There is no constraint on the width, however the image will not get cut off on either the right or the left.
+The SDK will constrain your image height to 30dp (density-independent pixels). This is to prevent images of large height from pushing the content below it down and off the screen. There is no constraint on the width, however the image will not get cut off on either the right or the left.
+
+To set the position of the logo, edit the following value in customValues.xml.
+
+<img src="screenshots/rafLogoPosition.png" />
+
+_Note_: The RAFLogoPosition element is ignored when no `raf_logo.png` is present in the drawable folders. Also, set the RAFLogoPosition to 0 to hide the logo.
+
+The following images show the logo in the various positions set in the custom values:
+
+<img src="screenshots/rafLogoPosition1.png" />
+
+<img src="screenshots/rafLogoPosition2.png" />
+
+<img src="screenshots/rafLogoPosition3.png" />
+
+<img src="screenshots/rafLogoPosition4.png" />
+
+<img src="screenshots/rafLogoPosition5.png" />
