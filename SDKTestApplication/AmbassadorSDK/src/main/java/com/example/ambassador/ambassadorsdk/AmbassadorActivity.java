@@ -92,6 +92,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_ambassador);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
@@ -103,8 +104,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
 
         //tell Dagger to inject dependencies
-        MyApplication.getAmbModule().setContext(this);
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getAmbModule().setContext(this);
+        ApplicationContext.getComponent().inject(this);
 
         ambassadorSingleton.setRafParameters(
                 getResources().getString(R.string.RAFdefaultShareMessage),

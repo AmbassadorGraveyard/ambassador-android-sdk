@@ -32,7 +32,7 @@ class LinkedInDialog extends Dialog  {
         super(context);
 
         //get injected modules we need
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_linkedin_post);

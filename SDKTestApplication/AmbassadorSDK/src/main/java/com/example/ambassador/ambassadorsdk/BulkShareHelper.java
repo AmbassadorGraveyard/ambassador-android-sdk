@@ -1,14 +1,11 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.content.Context;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +25,7 @@ public class BulkShareHelper {
     }
 
     public BulkShareHelper() {
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
     }
 
     public void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {

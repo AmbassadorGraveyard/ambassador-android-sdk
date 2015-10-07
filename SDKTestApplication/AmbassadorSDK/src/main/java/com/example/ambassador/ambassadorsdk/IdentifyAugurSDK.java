@@ -18,7 +18,7 @@ class IdentifyAugurSDK {
     }
 
     public void getAugur(final AmbassadorSingleton singleton, final AugurCompletion completion) {
-        Augur.getJSON(MyApplication.getAppContext(), "***REMOVED***", new Handler.Callback() {
+        Augur.getJSON(ApplicationContext.get(), "***REMOVED***", new Handler.Callback() {
             @Override
             public boolean handleMessage(final Message msg) {
                 // json == the full sever response from the Augur API
@@ -27,7 +27,7 @@ class IdentifyAugurSDK {
                     // Alter the device 'type' to be "SmartPhone" or "Tablet" instead of "Android"
                     JSONObject jsonObject = new JSONObject(json);
                     JSONObject device = jsonObject.getJSONObject("device");
-                    device.put("type", Utilities.deviceType(MyApplication.getAppContext()));
+                    device.put("type", Utilities.deviceType(ApplicationContext.get()));
                     jsonObject.put("device", device);
 
                     Utilities.debugLog("Augur", "Augur successfully received through SDK call");

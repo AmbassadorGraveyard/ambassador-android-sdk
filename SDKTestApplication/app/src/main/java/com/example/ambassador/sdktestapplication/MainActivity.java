@@ -1,16 +1,15 @@
 package com.example.ambassador.sdktestapplication;
 
 import android.content.Context;
-
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+
 import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.example.ambassador.ambassadorsdk.ConversionParameters;
-import com.example.ambassador.ambassadorsdk.ServiceSelectorPreferences;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -22,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         final Context cxt = this;
 
-        AmbassadorSDK.runWithKeys("SDKToken ***REMOVED***", "***REMOVED***");
+        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
         AmbassadorSDK.identify("jake@getambassador.com");
 
         btnRAF = (Button)findViewById(R.id.btnShowRAF);

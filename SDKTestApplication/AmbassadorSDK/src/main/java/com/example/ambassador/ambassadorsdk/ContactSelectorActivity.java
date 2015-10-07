@@ -70,7 +70,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
 
         ListView lvContacts = (ListView)findViewById(R.id.lvContacts);
         Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);

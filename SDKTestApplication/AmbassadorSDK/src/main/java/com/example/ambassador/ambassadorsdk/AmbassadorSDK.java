@@ -14,7 +14,7 @@ public class AmbassadorSDK {
     AmbassadorSingleton ambassadorSingleton;
 
     public AmbassadorSDK() {
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
     }
 
 
@@ -34,7 +34,9 @@ public class AmbassadorSDK {
         ambassadorSDK.localRegisterConversion(conversionParameters);
     }
 
-    public static void runWithKeys(String universalToken, String universalID) {
+    public static void runWithKeys(Context context, String universalToken, String universalID) {
+        ApplicationContext.getInstance().init(context);
+
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
         ambassadorSDK.localRunWithKeys(universalToken, universalID);
     }
@@ -55,7 +57,7 @@ public class AmbassadorSDK {
 
     void localIdentify(String identifier) {
         // Functionality: Gets unique information from the device for tracking purposes
-        Context context = MyApplication.getAppContext();
+        Context context = ApplicationContext.get();
         ambassadorSingleton.setUserEmail(identifier);
 
         IIdentify identify = new Identify(context, identifier);

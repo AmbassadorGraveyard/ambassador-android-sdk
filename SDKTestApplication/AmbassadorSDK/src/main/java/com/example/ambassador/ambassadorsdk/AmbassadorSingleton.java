@@ -20,8 +20,7 @@ public class AmbassadorSingleton {
     static final String PUSHER_SECRET = "***REMOVED***";
     static final Boolean isReleaseBuild = false;
 
-//    private static AmbassadorSingleton mInstance = null;
-    private Context context = MyApplication.getAppContext();
+    private Context context = ApplicationContext.get();
     private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     private ServiceSelectorPreferences rafParameters;
 

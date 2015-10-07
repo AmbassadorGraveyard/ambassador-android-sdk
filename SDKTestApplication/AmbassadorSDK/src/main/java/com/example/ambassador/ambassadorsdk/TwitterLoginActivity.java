@@ -36,7 +36,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
 
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
         _setUpToolbar();
 
         // UI Components
