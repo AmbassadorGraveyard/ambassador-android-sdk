@@ -1,6 +1,7 @@
 package com.example.ambassador.ambassadorsdk;
 
 import android.app.Instrumentation;
+import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.assertion.ViewAssertions;
@@ -90,7 +91,7 @@ public class AmbassadorActivityTest {
     @Before
     public void beforeEachTest() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        final MyApplication app = (MyApplication)instrumentation.getTargetContext().getApplicationContext();
+        final Context context = instrumentation.getTargetContext().getApplicationContext();
 
         parameters = new ServiceSelectorPreferences();
         parameters.defaultShareMessage = "Check out this company!";
@@ -100,13 +101,12 @@ public class AmbassadorActivityTest {
 
         //tell the application which component we want to use - in this case use the the one created above instead of the
         //application component which is created in the Application (and uses the real tweetRequest)
-        //Context context = mActivityTestIntentRule.getActivity();
-        //AmbassadorApplicationModule mockAmb = new MockAmbassadorApplicationModule();
+        ApplicationContext.getInstance().init(context);
         AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
         amb.setMockMode(true);
-        app.setAmbModule(amb);
+        ApplicationContext.setAmbModule(amb);
         TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
-        app.setComponent(component);
+        ApplicationContext.setComponent(component);
         //perform injection
         component.inject(this);
 
@@ -136,7 +136,7 @@ public class AmbassadorActivityTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Intent intent = new Intent("pusherData");
-                LocalBroadcastManager.getInstance(app.getApplicationContext()).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(ApplicationContext.get()).sendBroadcast(intent);
                 return null;
             }
         })
