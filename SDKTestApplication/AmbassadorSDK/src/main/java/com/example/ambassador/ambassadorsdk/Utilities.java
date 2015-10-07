@@ -21,7 +21,7 @@ class Utilities {
     }
 
     public static int getPixelSizeForDimension(int dimension) {
-        Context cxt = MyApplication.getAppContext();
+        Context cxt = ApplicationContext.get();
         return cxt.getResources().getDimensionPixelSize(dimension);
     }
 
@@ -87,6 +87,6 @@ class Utilities {
     }
 
     public static float getScreenDensity() {
-        return MyApplication.getAppContext().getResources().getDisplayMetrics().density;
+        return ApplicationContext.get().getResources().getDisplayMetrics().density;
     }
 }

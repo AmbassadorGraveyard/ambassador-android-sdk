@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -13,11 +12,6 @@ import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import javax.inject.Inject;
 
@@ -49,7 +43,7 @@ class ContactNameDialog extends Dialog {
             setOwnerActivity((Activity) context);
         }
 
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
         this.pd = pd;
         mCallback = (ContactNameListener)getOwnerActivity();
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar

@@ -33,7 +33,7 @@ class Identify implements IIdentify {
         this.context = context;
         this.identifier = identifier;
 
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
 
         if (pusher == null) {
             pusher = new IdentifyPusher();

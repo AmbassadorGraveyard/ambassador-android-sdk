@@ -1,6 +1,5 @@
 package com.example.ambassador.ambassadorsdk;
 
-import android.app.Application;
 import android.content.Context;
 
 import javax.inject.Singleton;
@@ -8,10 +7,10 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 /**
- * Created by JakeDunahee on 7/31/15.
+ * Created by coreyfields on 10/7/15.
  */
-public class MyApplication extends Application {
-    private static Context context;
+public class ApplicationContext {
+    private Context appContext;
     private static AmbassadorApplicationComponent component = null;
     public static AmbassadorApplicationModule amb;
 
@@ -20,6 +19,19 @@ public class MyApplication extends Application {
     public interface ApplicationComponent extends AmbassadorApplicationComponent {
         //dummy component which will not override anything from parent interface
         //the testing component will provide its own overrides to inject into the tests
+    }
+
+    public void init(Context context) {
+        if (appContext == null) {
+            appContext = context;
+        }
+
+        //get injected modules we need
+        if (component == null) {
+            amb = new AmbassadorApplicationModule();
+            ApplicationComponent component = DaggerApplicationContext_ApplicationComponent.builder().ambassadorApplicationModule(amb).build();
+            setComponent(component);
+        }
     }
 
     public static AmbassadorApplicationComponent getComponent() {
@@ -38,19 +50,17 @@ public class MyApplication extends Application {
         amb = ambModule;
     }
 
-    public void onCreate() {
-        super.onCreate();
-        context = getApplicationContext();
-
-        //get injected modules we need
-        if (component == null) {
-            amb = new AmbassadorApplicationModule();
-            ApplicationComponent component = DaggerMyApplication_ApplicationComponent.builder().ambassadorApplicationModule(amb).build();
-            setComponent(component);
-        }
+    private Context getContext() {
+        return appContext;
     }
 
-    public static Context getAppContext() {
-        return context;
+    public static Context get() {
+        return getInstance().getContext();
+    }
+
+    private static ApplicationContext instance;
+
+    public static ApplicationContext getInstance() {
+        return instance == null ? (instance = new ApplicationContext()) : instance;
     }
 }

@@ -30,14 +30,14 @@ class ConversionUtility {
     public ConversionUtility(Context context) {
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
     }
 
     public ConversionUtility(Context context, ConversionParameters parameters) {
         this.parameters = parameters;
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
     }
 
     // Function used by ambassador Singleton to register a conversion

@@ -32,7 +32,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
 
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
 
         // UI Components
         loader = (ProgressBar)findViewById(R.id.loadingPanel);

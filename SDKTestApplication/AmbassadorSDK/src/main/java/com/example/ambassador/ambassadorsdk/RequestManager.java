@@ -42,7 +42,7 @@ public class RequestManager {
     }
 
     public RequestManager() {
-        MyApplication.getComponent().inject(this);
+        ApplicationContext.getComponent().inject(this);
     }
 
     // region Helper Setup Functions
