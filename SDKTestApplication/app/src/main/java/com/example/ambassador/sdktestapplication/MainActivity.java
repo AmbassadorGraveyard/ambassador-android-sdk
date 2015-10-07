@@ -21,7 +21,12 @@ public class MainActivity extends AppCompatActivity {
 
         final Context cxt = this;
 
+        //dev
         AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
+
+        //prod
+        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
+
         AmbassadorSDK.identify("jake@getambassador.com");
 
         btnRAF = (Button)findViewById(R.id.btnShowRAF);

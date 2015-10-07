@@ -39,7 +39,8 @@ class IdentifyPusher {
         options.setAuthorizer(authorizer);
         options.setEncrypted(true);
 
-        Pusher pusher = new Pusher(AmbassadorSingleton.PUSHER_KEY, options);
+        String key = AmbassadorSingleton.isReleaseBuild ? AmbassadorSingleton.PUSHER_KEY_PROD : AmbassadorSingleton.PUSHER_KEY_DEV;
+        Pusher pusher = new Pusher(key, options);
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
