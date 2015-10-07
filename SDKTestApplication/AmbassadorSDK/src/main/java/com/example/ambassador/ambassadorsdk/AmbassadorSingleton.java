@@ -16,7 +16,8 @@ public class AmbassadorSingleton {
     static final String LINKED_IN_CLIENT_ID = "777z4czm3edaef";
     static final String LINKED_IN_CLIENT_SECRET = "lM1FzXJauTSfxdnW";
     static final String PUSHER_APP_ID = "112803";
-    static final String PUSHER_KEY = "8bd3fe1994164f9b83f6";
+    static final String PUSHER_KEY_DEV = "8bd3fe1994164f9b83f6";
+    static final String PUSHER_KEY_PROD = "79576dbee58121cac49a";
     static final String PUSHER_SECRET = "35327adb59c3b567a44a";
     static final Boolean isReleaseBuild = false;
 
@@ -27,7 +28,7 @@ public class AmbassadorSingleton {
     // STATIC VARIABLES
     static String identifyURL() {
         if (AmbassadorSingleton.isReleaseBuild) {
-            return "https://api.ambassador.com/universal/action/identify/?u=";
+            return "https://api.getambassador.com/universal/action/identify/?u=";
         } else {
             return "https://dev-ambassador-api.herokuapp.com/universal/action/identify/?u=";
         }
@@ -35,7 +36,7 @@ public class AmbassadorSingleton {
 
     static String conversionURL() {
         if (AmbassadorSingleton.isReleaseBuild) {
-            return "https://api.ambassador.com/universal/action/conversion/?u=";
+            return "https://api.getambassador.com/universal/action/conversion/?u=";
         } else {
             return "https://dev-ambassador-api.herokuapp.com/universal/action/conversion/?u=";
         }
@@ -43,7 +44,7 @@ public class AmbassadorSingleton {
 
     static String bulkSMSShareURL() {
         if (AmbassadorSingleton.isReleaseBuild) {
-            return "https://api.ambassador.com/share/sms/";
+            return "https://api.getambassador.com/share/sms/";
         } else {
             return "https://dev-ambassador-api.herokuapp.com/share/sms/";
         }
@@ -51,7 +52,7 @@ public class AmbassadorSingleton {
 
     static String bulkEmailShareURL() {
         if (AmbassadorSingleton.isReleaseBuild) {
-            return "https://api.ambassador.com/share/email/";
+            return "https://api.getambassador.com/share/email/";
         } else {
             return "https://dev-ambassador-api.herokuapp.com/share/email/";
         }
@@ -59,7 +60,7 @@ public class AmbassadorSingleton {
 
     static String shareTrackURL() {
         if (AmbassadorSingleton.isReleaseBuild) {
-            return "https://api.ambassador.com/track/share/";
+            return "https://api.getambassador.com/track/share/";
         } else {
             return "https://dev-ambassador-api.herokuapp.com/track/share/";
         }
@@ -67,7 +68,7 @@ public class AmbassadorSingleton {
 
     static String pusherCallbackURL() {
         if (AmbassadorSingleton.isReleaseBuild) {
-            return "https://api.ambassador.com/auth/subscribe/";
+            return "https://api.getambassador.com/auth/subscribe/";
         } else {
             return "https://dev-ambassador-api.herokuapp.com/auth/subscribe/";
         }

@@ -17,7 +17,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        AmbassadorSDK.runWithKeys("SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
+
+        //dev
+        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
+
+        //prod
+        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
+
         AmbassadorSDK.identify("jake@getambassador.com");
 
         Button btnRaf = (Button) findViewById(R.id.btnRAF2);
@@ -26,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         btnRaf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AmbassadorSDK.presentRAF(context, "305");
+                AmbassadorSDK.presentRAF(context, "260");
             }
         });
     }
