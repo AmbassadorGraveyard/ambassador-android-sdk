@@ -4,8 +4,8 @@ test:
         background: true
         parallel: true
   override:
-    - ./gradlew -p SDKTestApplication assemble
-    - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
+    # - ./gradlew -p SDKTestApplication assemble
+    # - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     - ./gradlew -p SDKTestApplication test
     - cp -r SDKTestApplication/AmbassadorSDK/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
     - circle-android wait-for-boot   
