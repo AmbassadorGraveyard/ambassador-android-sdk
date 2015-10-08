@@ -9,5 +9,5 @@ test:
     - ./gradlew -p SDKTestApplication test
     - cp -r SDKTestApplication/AmbassadorSDK/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
     - circle-android wait-for-boot   
-    - ./gradlew -p SDKTestApplication connectedAndroidTest
-    - cp -r SDKTestApplication/build/outputs/androidTest-results/* CIRCLE_TEST_REPORTS
+    - ./gradlew -p SDKTestApplication spoon
+    - cp -r SDKTestApplication/build/spoon/debug/* CIRCLE_TEST_REPORTS
