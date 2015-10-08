@@ -1,3 +1,5 @@
 test:
   override:
-    - ./gradlew -p SDKTestApplication/AmbassadorSDK assemble
+    - ./gradlew test:
+    pwd:
+    SDKTestApplication/AmbassadorSDK
