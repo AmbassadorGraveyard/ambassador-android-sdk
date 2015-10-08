@@ -2,5 +2,5 @@ test:
   override:
     - ./gradlew -p SDKTestApplication test
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
-    - cp -r SDKTestApplication/build/reports/tests/* $CIRCLE_TEST_REPORTS
+    - cp -r SDKTestApplication/AmbassadorSDK/build/reports/tests/* $CIRCLE_TEST_REPORTS
   # . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
