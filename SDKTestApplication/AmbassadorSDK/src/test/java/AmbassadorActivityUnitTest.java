@@ -1,4 +1,4 @@
-package com.example.ambassador.ambassadorsdk;
+package com.ambassador.ambassadorsdk;
 
 import android.app.ProgressDialog;
 import android.content.ClipData;

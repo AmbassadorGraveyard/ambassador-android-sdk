@@ -27,7 +27,7 @@
         android:textColor="@android:color/darker_gray"
         android:gravity="start" />
 
-    <com.example.ambassador.ambassadorsdk.CustomEditText
+    <com.ambassador.ambassadorsdk.CustomEditText
         android:id="@+id/etFirstName"
         android:layout_below="@id/explanation"
         android:layout_width="match_parent"
@@ -40,7 +40,7 @@
         android:layout_centerHorizontal="true"
         android:textCursorDrawable="@null" />
 
-    <com.example.ambassador.ambassadorsdk.CustomEditText
+    <com.ambassador.ambassadorsdk.CustomEditText
         android:id="@+id/etLastName"
         android:layout_below="@id/etFirstName"
         android:layout_width="match_parent"
