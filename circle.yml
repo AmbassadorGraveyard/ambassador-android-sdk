@@ -2,5 +2,9 @@ test:
   override:
     - ./gradlew -p SDKTestApplication spoonDebugAndroidTest
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
-    - cp -r SDKTestApplication/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+    #- cp -r SDKTestApplication/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
+
+test:
+	post:
+	- mkdir -p $CIRCLE_TEST_REPORTS/junit/
   
