@@ -314,7 +314,11 @@ public class AmbassadorActivity extends AppCompatActivity {
                     ambassadorConfig.setURL(urlObj.getString("url"));
                     ambassadorConfig.setShortCode(urlObj.getString("short_code"));
                     ambassadorConfig.setEmailSubject(urlObj.getString("subject"));
-                    ambassadorConfig.setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
+
+                    //check for weird multiple URL issue seen occasionally
+                    if (!initialShareMessage.contains(urlObj.getString("url"))) {
+                        ambassadorConfig.setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
+                    }
                 }
             }
         } catch (JSONException e) {
