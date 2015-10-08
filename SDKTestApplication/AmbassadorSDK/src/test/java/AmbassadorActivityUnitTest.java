@@ -138,9 +138,9 @@ public class AmbassadorActivityTest extends TestCase {
 //        when(mockSingleton.getCampaignID()).thenReturn("0");
 //        doNothing().when(mockSingleton).setRafDefaultMessage(anyString());
 //        doNothing().when(mockShortURLET).setText(anyString());
-//        doNothing().when(mockSingleton).saveURL(anyString());
-//        doNothing().when(mockSingleton).saveShortCode(anyString());
-//        doNothing().when(mockSingleton).saveEmailSubject(anyString());
+//        doNothing().when(mockSingleton).setURL(anyString());
+//        doNothing().when(mockSingleton).setShortCode(anyString());
+//        doNothing().when(mockSingleton).setEmailSubject(anyString());
 //        when(mockObject.getString(anyString())).thenReturn("String");
 //        when(mockObject.getJSONArray("urls")).thenReturn(mockArray);
 //        when(mockArray.getJSONObject(anyInt())).thenReturn(mockObject);

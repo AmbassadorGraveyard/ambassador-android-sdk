@@ -311,9 +311,9 @@ public class AmbassadorActivity extends AppCompatActivity {
                 int myUID = Integer.parseInt(ambassadorConfig.getCampaignID());
                 if (campID == myUID) {
                     etShortUrl.setText(urlObj.getString("url"));
-                    ambassadorConfig.saveURL(urlObj.getString("url"));
-                    ambassadorConfig.saveShortCode(urlObj.getString("short_code"));
-                    ambassadorConfig.saveEmailSubject(urlObj.getString("subject"));
+                    ambassadorConfig.setURL(urlObj.getString("url"));
+                    ambassadorConfig.setShortCode(urlObj.getString("short_code"));
+                    ambassadorConfig.setEmailSubject(urlObj.getString("subject"));
                     ambassadorConfig.setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
                 }
             }

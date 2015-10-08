@@ -19,7 +19,6 @@ import javax.inject.Inject;
 class Identify implements IIdentify {
     private Context context;
     private IdentifyPusher pusher;
-    private String identifier;
     IdentifyAugurSDK augur;
     private Timer augurTimer;
 
@@ -29,9 +28,8 @@ class Identify implements IIdentify {
     @Inject
     AmbassadorConfig ambassadorConfig;
 
-    public Identify(Context context, String identifier) {
+    public Identify(Context context) {
         this.context = context;
-        this.identifier = identifier;
 
         AmbassadorSingleton.getComponent().inject(this);
 
@@ -69,7 +67,7 @@ class Identify implements IIdentify {
                             @Override
                             public void onSuccess(Object successResponse) {
                                 Utilities.debugLog("Pusher External", "Saved pusher object as String = " + successResponse.toString());
-                                _getAndSavePusherInfo(successResponse.toString());
+                                _getAndsetPusherInfo(successResponse.toString());
                             }
 
                             @Override
@@ -78,7 +76,7 @@ class Identify implements IIdentify {
                             }
                         });
                     } else {
-                        _getAndSavePusherInfo(data);
+                        _getAndsetPusherInfo(data);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -87,7 +85,7 @@ class Identify implements IIdentify {
         });
     }
 
-    private void _getAndSavePusherInfo(String jsonObject) {
+    private void _getAndsetPusherInfo(String jsonObject) {
         // Functionality: Saves Pusher object to SharedPreferences
         JSONObject pusherSave = new JSONObject();
 
@@ -100,7 +98,7 @@ class Identify implements IIdentify {
             pusherSave.put("phoneNumber", pusherObject.getString("phone"));
             pusherSave.put("urls", pusherObject.getJSONArray("urls"));
 
-            ambassadorConfig.savePusherInfo(pusherSave.toString());
+            ambassadorConfig.setPusherInfo(pusherSave.toString());
             _sendIdBroadcast(); // Tells MainActivity to update edittext with url
         } catch (JSONException e) {
             e.printStackTrace();

@@ -101,7 +101,7 @@ class ContactNameDialog extends Dialog {
         if (firstName == null || lastName == null) return;
 
         pd.show();
-        ambassadorConfig.savePusherInfo(pusherData.toString());
+        ambassadorConfig.setPusherInfo(pusherData.toString());
 
         // Call api - on success we'll initiate the bulk share
         try {
@@ -109,7 +109,7 @@ class ContactNameDialog extends Dialog {
                 @Override
                 public void onSuccess(Object successResponse) {
                     mCallback.namesHaveBeenUpdated();
-                    ambassadorConfig.saveUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
+                    ambassadorConfig.setUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
                     hide();
                 }
 

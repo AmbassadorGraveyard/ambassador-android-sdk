@@ -97,31 +97,31 @@ public class AmbassadorConfig {
         sharePrefs.edit().putString("campaignID", campaignID).apply();
     }
 
-    void savePusherInfo(String pusherObject) {
+    void setPusherInfo(String pusherObject) {
         sharePrefs.edit().putString("pusherObject", pusherObject).apply();
     }
 
-    public void saveURL(String url) {
+    public void setURL(String url) {
         sharePrefs.edit().putString("url", url).apply();
     }
 
-    void saveUniversalToken(String univKey) {
+    void setUniversalToken(String univKey) {
         sharePrefs.edit().putString("universalToken", univKey).apply();
     }
 
-    void saveUniversalID(String univID) {
+    void setUniversalID(String univID) {
         sharePrefs.edit().putString("universalID", univID).apply();
     }
 
-    public void saveShortCode(String shortCode) {
+    public void setShortCode(String shortCode) {
         sharePrefs.edit().putString("shortCode", shortCode).apply();
     }
 
-    void saveUserFullName(String firstName, String lastName) {
+    void setUserFullName(String firstName, String lastName) {
         sharePrefs.edit().putString("fullName", firstName + " " + lastName).apply();
     }
 
-    public void saveEmailSubject(String subjectLine) {
+    public void setEmailSubject(String subjectLine) {
         sharePrefs.edit().putString("subjectLine", subjectLine).apply();
     }
 
