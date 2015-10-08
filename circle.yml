@@ -1,4 +1,0 @@
-test:
-  override:
-    - ./gradlew -p SDKTestApplication spoonDebugAndroidTest
-  
