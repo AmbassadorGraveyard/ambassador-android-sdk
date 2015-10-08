@@ -103,13 +103,13 @@ public class AmbassadorSDKTest {
         String fakeUniversalId = "blah blah";
 
         // ACT
-        doNothing().when(mockSingleton).saveUniversalToken(fakeUniversalToken);
+        doNothing().when(mockSingleton).setUniversalToken(fakeUniversalToken);
         doNothing().when(mockSingleton).startConversionTimer();
         AmbassadorSDK.runWithKeys(fakeUniversalToken, fakeUniversalId);
-        doNothing().when(mockSingleton).saveUniversalID(fakeUniversalId);
+        doNothing().when(mockSingleton).setUniversalID(fakeUniversalId);
 
         // ASSERT
-        verify(mockSingleton).saveUniversalToken(fakeUniversalToken);
+        verify(mockSingleton).setUniversalToken(fakeUniversalToken);
         verify(mockSingleton).startConversionTimer();
     }
 
@@ -121,7 +121,7 @@ public class AmbassadorSDKTest {
         ConversionParameters mockParameters = mock(ConversionParameters.class);
 
         // ACT
-        doNothing().when(mockSingleton).saveUniversalToken(fakeUniversalToken);
+        doNothing().when(mockSingleton).setUniversalToken(fakeUniversalToken);
         doNothing().when(mockSingleton).startConversionTimer();
         when(mockSingleton.convertedOnInstall()).thenReturn(false);
         doNothing().when(mockSingleton).convertForInstallation(mockParameters);
@@ -129,7 +129,7 @@ public class AmbassadorSDKTest {
 
         // ASSERT
         assertEquals(false, mockSingleton.convertedOnInstall());
-        verify(mockSingleton).saveUniversalToken(fakeUniversalToken);
+        verify(mockSingleton).setUniversalToken(fakeUniversalToken);
         verify(mockSingleton).startConversionTimer();
         verify(mockSingleton).convertForInstallation(mockParameters);
     }

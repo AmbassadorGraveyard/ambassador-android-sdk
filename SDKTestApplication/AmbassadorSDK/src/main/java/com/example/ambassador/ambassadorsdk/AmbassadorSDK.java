@@ -60,7 +60,7 @@ public class AmbassadorSDK {
         Context context = AmbassadorSingleton.get();
         ambassadorConfig.setUserEmail(identifier);
 
-        IIdentify identify = new Identify(context, identifier);
+        IIdentify identify = new Identify(context);
         ambassadorConfig.startIdentify(identify);
     }
 
@@ -71,15 +71,15 @@ public class AmbassadorSDK {
 
     void localRunWithKeys(String universalToken, String universalID) {
         // Functionality: Basically initializes the AmbassadorSDK
-        ambassadorConfig.saveUniversalToken(universalToken);
-        ambassadorConfig.saveUniversalID(universalID);
+        ambassadorConfig.setUniversalToken(universalToken);
+        ambassadorConfig.setUniversalID(universalID);
         ambassadorConfig.startConversionTimer();
     }
 
     void localRunWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
         // Functionality: Initializes SDK and converts for the first time running
-        ambassadorConfig.saveUniversalToken(universalToken);
-        ambassadorConfig.saveUniversalID(universalID);
+        ambassadorConfig.setUniversalToken(universalToken);
+        ambassadorConfig.setUniversalID(universalID);
         ambassadorConfig.startConversionTimer();
 
         // Checks boolean from sharedpreferences to see if this the first launch and registers conversion if it is
