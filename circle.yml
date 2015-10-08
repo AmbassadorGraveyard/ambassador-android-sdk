@@ -1,5 +1,4 @@
 test:
   override:
-    - ./gradlew test:
-    pwd:
-    SDKTestApplication/AmbassadorSDK
+    - ./gradlew -p SDKTestApplication test
+  
