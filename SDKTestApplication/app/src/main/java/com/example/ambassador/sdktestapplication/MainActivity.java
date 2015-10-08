@@ -8,8 +8,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
-import com.example.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.ConversionParameters;
 
 
 public class MainActivity extends AppCompatActivity {

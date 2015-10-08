@@ -50,7 +50,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp" />
 
-    <com.example.ambassador.ambassadorsdk.CustomEditText
+    <com.ambassador.ambassadorsdk.CustomEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/etLinkedInMessage"
