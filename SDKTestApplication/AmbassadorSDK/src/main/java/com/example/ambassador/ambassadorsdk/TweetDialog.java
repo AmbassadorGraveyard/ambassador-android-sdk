@@ -25,14 +25,14 @@ class TweetDialog extends Dialog {
     RequestManager requestManager;
 
     @Inject
-    AmbassadorSingleton ambassadorSingleton;
+    AmbassadorConfig ambassadorConfig;
 
     @Inject
     public TweetDialog(@ForActivity Context context) {
         super(context);
 
         //get injected modules we need
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_twitter_tweet);
@@ -63,7 +63,7 @@ class TweetDialog extends Dialog {
         this.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                etTwitterMessage.setText(ambassadorSingleton.getRafParameters().defaultShareMessage);
+                etTwitterMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
             }
         });
     }
@@ -92,10 +92,10 @@ class TweetDialog extends Dialog {
     }
 
     private void _btnTweetClicked() {
-        if (Utilities.containsURL(etTwitterMessage.getText().toString(), ambassadorSingleton.getURL())) {
+        if (Utilities.containsURL(etTwitterMessage.getText().toString(), ambassadorConfig.getURL())) {
             _shareTweet();
         } else {
-            Utilities.presentUrlDialog(this.getOwnerActivity(), etTwitterMessage, ambassadorSingleton.getURL(), new Utilities.UrlAlertInterface() {
+            Utilities.presentUrlDialog(this.getOwnerActivity(), etTwitterMessage, ambassadorConfig.getURL(), new Utilities.UrlAlertInterface() {
                 @Override
                 public void sendAnywayTapped(DialogInterface dialogInterface) {
                     dialogInterface.dismiss();

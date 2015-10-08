@@ -25,7 +25,7 @@ class ContactNameDialog extends Dialog {
     private ProgressDialog pd;
 
     @Inject
-    AmbassadorSingleton ambassadorSingleton;
+    AmbassadorConfig ambassadorConfig;
 
     @Inject
     RequestManager requestManager;
@@ -43,7 +43,7 @@ class ContactNameDialog extends Dialog {
             setOwnerActivity((Activity) context);
         }
 
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
         this.pd = pd;
         mCallback = (ContactNameListener)getOwnerActivity();
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
@@ -89,7 +89,7 @@ class ContactNameDialog extends Dialog {
 
     private void _handleNameInput(String firstName, String lastName) {
         try {
-            pusherData = new JSONObject(ambassadorSingleton.getPusherInfo());
+            pusherData = new JSONObject(ambassadorConfig.getPusherInfo());
             pusherData.put("firstName", firstName);
             pusherData.put("lastName", lastName);
         } catch (JSONException e) {
@@ -101,7 +101,7 @@ class ContactNameDialog extends Dialog {
         if (firstName == null || lastName == null) return;
 
         pd.show();
-        ambassadorSingleton.savePusherInfo(pusherData.toString());
+        ambassadorConfig.savePusherInfo(pusherData.toString());
 
         // Call api - on success we'll initiate the bulk share
         try {
@@ -109,7 +109,7 @@ class ContactNameDialog extends Dialog {
                 @Override
                 public void onSuccess(Object successResponse) {
                     mCallback.namesHaveBeenUpdated();
-                    ambassadorSingleton.saveUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
+                    ambassadorConfig.saveUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
                     hide();
                 }
 

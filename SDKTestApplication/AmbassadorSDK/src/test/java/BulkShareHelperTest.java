@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
  * Created by JakeDunahee on 9/9/15.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({BulkShareHelper.class, BulkShareSMSRequest.class, Toast.class, AmbassadorSingleton.class})
+@PrepareForTest({BulkShareHelper.class, BulkShareSMSRequest.class, Toast.class, AmbassadorConfig.class})
 public class BulkShareHelperTest {
     ProgressDialog mockDialog = mock(ProgressDialog.class);
     String mockMessage = "This is a mock message. http://mockURL.co";
@@ -165,8 +165,8 @@ public class BulkShareHelperTest {
     @Test
     public void contactArrayTest() throws Exception {
         // ARRANGE
-        PowerMockito.mockStatic(AmbassadorSingleton.class);
-        AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
+        PowerMockito.mockStatic(AmbassadorConfig.class);
+        AmbassadorConfig mockSingleton = mock(AmbassadorConfig.class);
         ArrayList<String> phoneNumberList = new ArrayList<>();
         JSONArray mockArray = mock(JSONArray.class);
         JSONObject mockObject = mock(JSONObject.class);
@@ -174,7 +174,7 @@ public class BulkShareHelperTest {
         // ACT
         PowerMockito.whenNew(JSONArray.class).withAnyArguments().thenReturn(mockArray);
         PowerMockito.whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
-        when(AmbassadorSingleton.getInstance()).thenReturn(mockSingleton);
+        when(AmbassadorConfig.getInstance()).thenReturn(mockSingleton);
         when(mockSingleton.getShortCode()).thenReturn("fakeShortCode");
         when(mockObject.put(anyString(), any())).thenReturn(mockObject);
         phoneNumberList.add("5555555555");
@@ -187,14 +187,14 @@ public class BulkShareHelperTest {
     @Test
     public void payloadObjectForSMSTest() throws Exception {
         // ARRANGE
-        PowerMockito.mockStatic(AmbassadorSingleton.class);
-        AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
+        PowerMockito.mockStatic(AmbassadorConfig.class);
+        AmbassadorConfig mockSingleton = mock(AmbassadorConfig.class);
         JSONObject mockObject = mock(JSONObject.class);
         ArrayList<String> phoneNumberList = new ArrayList<>();
 
         // ACT
         PowerMockito.whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
-        when(AmbassadorSingleton.getInstance()).thenReturn(mockSingleton);
+        when(AmbassadorConfig.getInstance()).thenReturn(mockSingleton);
         when(mockObject.put(anyString(), any())).thenReturn(mockObject);
         when(mockSingleton.getFullName()).thenReturn("fakeName");
         BulkShareHelper.payloadObjectForSMS(phoneNumberList, "test message");
@@ -206,14 +206,14 @@ public class BulkShareHelperTest {
     @Test
     public void payloadObjectForEmailTest() throws Exception {
         // ARRANGE
-        PowerMockito.mockStatic(AmbassadorSingleton.class);
-        AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
+        PowerMockito.mockStatic(AmbassadorConfig.class);
+        AmbassadorConfig mockSingleton = mock(AmbassadorConfig.class);
         JSONObject mockObject = mock(JSONObject.class);
         ArrayList<String> emailList = new ArrayList<>();
 
         // ACT
         PowerMockito.whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
-        when(AmbassadorSingleton.getInstance()).thenReturn(mockSingleton);
+        when(AmbassadorConfig.getInstance()).thenReturn(mockSingleton);
         when(mockObject.put(anyString(), any())).thenReturn(mockObject);
         when(mockSingleton.getShortCode()).thenReturn("123456");
         when(mockSingleton.getEmailSubjectLine()).thenReturn("email subject line");

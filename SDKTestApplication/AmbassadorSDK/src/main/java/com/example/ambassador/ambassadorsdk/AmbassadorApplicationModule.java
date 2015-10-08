@@ -57,8 +57,8 @@ public class AmbassadorApplicationModule {
 
     @Provides
     @Singleton
-    AmbassadorSingleton provideAmbassadorSingleton() {
-        if (mockMode) return mock(AmbassadorSingleton.class);
-        return new AmbassadorSingleton();
+    AmbassadorConfig provideAmbassadorConfig() {
+        if (mockMode) return mock(AmbassadorConfig.class);
+        return new AmbassadorConfig();
     }
 }

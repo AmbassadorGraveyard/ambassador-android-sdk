@@ -32,7 +32,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
 
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
 
         // UI Components
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
@@ -77,7 +77,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
             String codeErrorString = urlArray[1];
 
             // Checks for url to get code for getting Access Token
-            if (callbackURL.startsWith(AmbassadorSingleton.CALLBACK_URL) && codeErrorString.startsWith("code")) {
+            if (callbackURL.startsWith(AmbassadorConfig.CALLBACK_URL) && codeErrorString.startsWith("code")) {
                 String code;
                 if (url.contains("&")) {
                     code = url.substring(url.indexOf("code=") + "code=".length(), url.indexOf("&"));

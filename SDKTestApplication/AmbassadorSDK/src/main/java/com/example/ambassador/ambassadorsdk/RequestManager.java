@@ -34,7 +34,7 @@ public class RequestManager {
     final Handler mHandler = new Handler();
 
     @Inject
-    AmbassadorSingleton ambassadorSingleton;
+    AmbassadorConfig ambassadorConfig;
 
     interface RequestCompletion {
         void onSuccess(Object successResponse);
@@ -42,7 +42,7 @@ public class RequestManager {
     }
 
     public RequestManager() {
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
     }
 
     // region Helper Setup Functions
@@ -60,8 +60,8 @@ public class RequestManager {
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             }
 
-            connection.setRequestProperty("MBSY_UNIVERSAL_ID", ambassadorSingleton.getUniversalID());
-            connection.setRequestProperty("Authorization", ambassadorSingleton.getUniversalKey());
+            connection.setRequestProperty("MBSY_UNIVERSAL_ID", ambassadorConfig.getUniversalID());
+            connection.setRequestProperty("Authorization", ambassadorConfig.getUniversalKey());
         } catch (IOException e) {
             e.printStackTrace();
             Log.e("IOException", e.toString());
@@ -99,11 +99,11 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.bulkSMSShareURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkSMSShareURL(), true);
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts), ambassadorSingleton.getFullName(), messageToShare).toString());
+                    oStream.writeBytes(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts), ambassadorConfig.getFullName(), messageToShare).toString());
                     oStream.flush();
                     oStream.close();
 
@@ -134,13 +134,13 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.bulkEmailShareURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkEmailShareURL(), true);
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
                     oStream.writeBytes(BulkShareHelper.payloadObjectForEmail(BulkShareHelper.verifiedEmailList(contacts),
-                            ambassadorSingleton.getShortCode(),
-                            ambassadorSingleton.getEmailSubjectLine(),
+                            ambassadorConfig.getShortCode(),
+                            ambassadorConfig.getEmailSubjectLine(),
                             messageToShare).toString());
                     oStream.flush();
                     oStream.close();
@@ -172,14 +172,14 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.shareTrackURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.shareTrackURL(), true);
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
                     if (isSMS) {
-                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), isSMS, ambassadorSingleton.getShortCode()).toString());
+                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), isSMS, ambassadorConfig.getShortCode()).toString());
                     } else {
-                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), isSMS, ambassadorSingleton.getShortCode()).toString());
+                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), isSMS, ambassadorConfig.getShortCode()).toString());
                     }
                     oStream.flush();
                     oStream.close();
@@ -202,11 +202,11 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.conversionURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.conversionURL(), true);
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(ConversionUtility.createJSONConversion(conversionParameters, ambassadorSingleton.getIdentifyObject()).toString());
+                    oStream.writeBytes(ConversionUtility.createJSONConversion(conversionParameters, ambassadorConfig.getIdentifyObject()).toString());
                     oStream.flush();
                     oStream.close();
 
@@ -241,15 +241,15 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.identifyURL() + ambassadorSingleton.getUniversalID(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID(), true);
 
                 JSONObject identifyObject = new JSONObject();
 
                 try {
-                    JSONObject augurObject = new JSONObject(ambassadorSingleton.getIdentifyObject());
+                    JSONObject augurObject = new JSONObject(ambassadorConfig.getIdentifyObject());
                     identifyObject.put("enroll", true);
-                    identifyObject.put("campaign_id", ambassadorSingleton.getCampaignID());
-                    identifyObject.put("email", ambassadorSingleton.getUserEmail());
+                    identifyObject.put("campaign_id", ambassadorConfig.getCampaignID());
+                    identifyObject.put("email", ambassadorConfig.getUserEmail());
                     identifyObject.put("source", "android_sdk_pilot");
                     identifyObject.put("mbsy_source", "");
                     identifyObject.put("mbsy_cookie_code", "");
@@ -283,7 +283,7 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = setUpConnection("POST", AmbassadorSingleton.identifyURL() + ambassadorSingleton.getUniversalID(), true);
+                HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID(), true);
                 JSONObject dataObject = new JSONObject();
                 JSONObject nameObject = new JSONObject();
 
@@ -357,12 +357,12 @@ public class RequestManager {
             @Override
             public void run() {
                 Twitter twitter = new TwitterFactory().getInstance();
-                twitter.setOAuthConsumer(AmbassadorSingleton.TWITTER_KEY, AmbassadorSingleton.TWITTER_SECRET);
+                twitter.setOAuthConsumer(AmbassadorConfig.TWITTER_KEY, AmbassadorConfig.TWITTER_SECRET);
                 RequestToken requestToken = null;
                 int responseCode;
 
                 try {
-                    requestToken = twitter.getOAuthRequestToken(AmbassadorSingleton.CALLBACK_URL);
+                    requestToken = twitter.getOAuthRequestToken(AmbassadorConfig.CALLBACK_URL);
                     Utilities.debugLog("Twitter", "TWITTER LOGIN Request Token Successfully created!");
                     responseCode = 200;
                 } catch (TwitterException e) {
@@ -394,14 +394,14 @@ public class RequestManager {
             @Override
             public void run() {
                 Twitter twitter = new TwitterFactory().getInstance();
-                twitter.setOAuthConsumer(AmbassadorSingleton.TWITTER_KEY, AmbassadorSingleton.TWITTER_SECRET);
+                twitter.setOAuthConsumer(AmbassadorConfig.TWITTER_KEY, AmbassadorConfig.TWITTER_SECRET);
 
                 int responseCode;
 
                 try {
                     AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, oauthSecret);
-                    ambassadorSingleton.setTwitterAccessToken(accessToken.getToken());
-                    ambassadorSingleton.setTwitterAccessTokenSecret(accessToken.getTokenSecret());
+                    ambassadorConfig.setTwitterAccessToken(accessToken.getToken());
+                    ambassadorConfig.setTwitterAccessTokenSecret(accessToken.getTokenSecret());
                     responseCode = 200;
                 } catch (twitter4j.TwitterException e) {
                     e.printStackTrace();
@@ -429,10 +429,10 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                AccessToken accessToken = new AccessToken(ambassadorSingleton.getTwitterAccessToken(),
-                        ambassadorSingleton.getTwitterAccessTokenSecret());
+                AccessToken accessToken = new AccessToken(ambassadorConfig.getTwitterAccessToken(),
+                        ambassadorConfig.getTwitterAccessTokenSecret());
                 final Twitter twitter = new TwitterFactory().getInstance();
-                twitter.setOAuthConsumer(AmbassadorSingleton.TWITTER_KEY, AmbassadorSingleton.TWITTER_SECRET);
+                twitter.setOAuthConsumer(AmbassadorConfig.TWITTER_KEY, AmbassadorConfig.TWITTER_SECRET);
                 twitter.setOAuthAccessToken(accessToken);
 
                 int responseCode;
@@ -476,9 +476,9 @@ public class RequestManager {
                 // Create params to send for Access Token
                 try {
                     urlParams = "grant_type=authorization_code&code=" + URLEncoder.encode(code, charset) +
-                            "&redirect_uri=" + URLEncoder.encode(AmbassadorSingleton.CALLBACK_URL, charset) +
-                            "&client_id=" + URLEncoder.encode(AmbassadorSingleton.LINKED_IN_CLIENT_ID, charset) +
-                            "&client_secret=" + URLEncoder.encode(AmbassadorSingleton.LINKED_IN_CLIENT_SECRET, charset);
+                            "&redirect_uri=" + URLEncoder.encode(AmbassadorConfig.CALLBACK_URL, charset) +
+                            "&client_id=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_ID, charset) +
+                            "&client_secret=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_SECRET, charset);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                     Utilities.debugLog("LinkedIn", "LinkedIn Login Request failed due to UnsupportedEncodingException -" + e.getMessage());
@@ -501,7 +501,7 @@ public class RequestManager {
                                 try {
                                     JSONObject json = new JSONObject(response);
                                     String accessToken = json.getString("access_token");
-                                    ambassadorSingleton.setLinkedInToken(accessToken);
+                                    ambassadorConfig.setLinkedInToken(accessToken);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                     completion.onFailure("Failure with JSONException - " + e.getMessage());
@@ -535,7 +535,7 @@ public class RequestManager {
                     connection.setRequestMethod("POST");
                     connection.setRequestProperty("Host", "api.linkedin.com");
                     connection.setRequestProperty("Content-Type", "application/json");
-                    connection.setRequestProperty("Authorization", "Bearer " + ambassadorSingleton.getLinkedInToken());
+                    connection.setRequestProperty("Authorization", "Bearer " + ambassadorConfig.getLinkedInToken());
                     connection.setRequestProperty("x-li-format", "json");
 
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());

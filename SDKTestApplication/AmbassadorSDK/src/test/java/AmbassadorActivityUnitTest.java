@@ -40,7 +40,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * Created by JakeDunahee on 9/9/15.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ClipData.class, Toast.class, AmbassadorActivity.class, Integer.class, AmbassadorSingleton.class})
+@PrepareForTest({ClipData.class, Toast.class, AmbassadorActivity.class, Integer.class, AmbassadorConfig.class})
 public class AmbassadorActivityTest extends TestCase {
     @Mock
     private AmbassadorActivity ambassadorActivity;
@@ -120,10 +120,10 @@ public class AmbassadorActivityTest extends TestCase {
 //    public void tryAndSetURLTrueTest() throws Exception {
 //        // ARRANGE
 //        PowerMockito.mockStatic(Integer.class);
-//        PowerMockito.mockStatic(AmbassadorSingleton.class);
+//        PowerMockito.mockStatic(AmbassadorConfig.class);
 //        JSONArray mockArray = mock(JSONArray.class);
 //        JSONObject mockObject = mock(JSONObject.class);
-//        AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
+//        AmbassadorConfig mockSingleton = mock(AmbassadorConfig.class);
 //        EditText mockShortURLET = mock(EditText.class);
 //        String pusher = "{\"email\":\"jake@getambassador.com\"," +
 //                "\"firstName\":\"erer\",\"lastName\":\"ere\"," +
