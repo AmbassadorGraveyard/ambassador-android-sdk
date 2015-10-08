@@ -36,7 +36,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
 
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
         _setUpToolbar();
 
         // UI Components
@@ -46,7 +46,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
         wvTwitter.setWebViewClient(new CustomBrowser());
 
         Twitter twitter = new TwitterFactory().getInstance();
-        twitter.setOAuthConsumer(AmbassadorSingleton.TWITTER_KEY, AmbassadorSingleton.TWITTER_SECRET);
+        twitter.setOAuthConsumer(AmbassadorConfig.TWITTER_KEY, AmbassadorConfig.TWITTER_SECRET);
 
         requestManager.twitterLoginRequest(new RequestManager.RequestCompletion() {
             @Override
@@ -86,7 +86,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // Checks for callback url to get the oAuth verifier string for Twitter login
-            if (url.startsWith(AmbassadorSingleton.CALLBACK_URL)) {
+            if (url.startsWith(AmbassadorConfig.CALLBACK_URL)) {
                 loader.setVisibility(View.VISIBLE);
                 wvTwitter.setVisibility(View.INVISIBLE);
                 String oauth_secret = url.substring(url.indexOf("oauth_verifier=") + "oauth_verifier=".length(), url.length());

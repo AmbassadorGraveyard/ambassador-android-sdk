@@ -37,15 +37,15 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest ({AmbassadorSDK.class, AmbassadorSingleton.class, MyApplication.class})
+@PrepareForTest ({AmbassadorSDK.class, AmbassadorConfig.class, MyApplication.class})
 public class AmbassadorSDKTest {
     Context mockContext = mock(Context.class);
-    AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
+    AmbassadorConfig mockSingleton = mock(AmbassadorConfig.class);
 
     @Before
     public void setUp() {
-        PowerMockito.mockStatic(AmbassadorSingleton.class);
-        when(AmbassadorSingleton.getInstance()).thenReturn(mockSingleton);
+        PowerMockito.mockStatic(AmbassadorConfig.class);
+        when(AmbassadorConfig.getInstance()).thenReturn(mockSingleton);
     }
 
     @Test

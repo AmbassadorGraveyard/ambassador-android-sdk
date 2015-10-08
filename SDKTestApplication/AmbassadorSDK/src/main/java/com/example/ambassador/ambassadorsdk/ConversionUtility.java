@@ -24,25 +24,25 @@ class ConversionUtility {
     RequestManager requestManager;
 
     @Inject
-    AmbassadorSingleton ambassadorSingleton;
+    AmbassadorConfig ambassadorConfig;
 
     // Constructors for ConversionUtility
     public ConversionUtility(Context context) {
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
     }
 
     public ConversionUtility(Context context, ConversionParameters parameters) {
         this.parameters = parameters;
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
     }
 
     // Function used by ambassador Singleton to register a conversion
     public void registerConversion() {
-        if (ambassadorSingleton.getPusherInfo() != null) {
+        if (ambassadorConfig.getPusherInfo() != null) {
             try {
                 if (parameters.isValid()) {
                     makeConversionRequest(parameters);
@@ -116,7 +116,7 @@ class ConversionUtility {
 
     // Attempts to register conversions stored in database
     public void readAndSaveDatabaseEntries() {
-        if (ambassadorSingleton.getPusherInfo() != null) {
+        if (ambassadorConfig.getPusherInfo() != null) {
             String[] projection = {
                     ConversionSQLStrings.ConversionSQLEntry._ID,
                     ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN,

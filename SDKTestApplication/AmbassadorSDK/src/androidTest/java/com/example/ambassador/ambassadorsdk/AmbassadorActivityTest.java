@@ -76,7 +76,7 @@ public class AmbassadorActivityTest {
     BulkShareHelper bulkShareHelper;
 
     @Inject
-    AmbassadorSingleton ambassadorSingleton;
+    AmbassadorConfig ambassadorConfig;
 
     //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
     @Singleton
@@ -101,21 +101,21 @@ public class AmbassadorActivityTest {
 
         //tell the application which component we want to use - in this case use the the one created above instead of the
         //application component which is created in the Application (and uses the real tweetRequest)
-        ApplicationContext.getInstance().init(context);
+        AmbassadorSingleton.getInstance().init(context);
         AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
         amb.setMockMode(true);
-        ApplicationContext.setAmbModule(amb);
+        AmbassadorSingleton.setAmbModule(amb);
         TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
-        ApplicationContext.setComponent(component);
+        AmbassadorSingleton.setComponent(component);
         //perform injection
         component.inject(this);
 
         final String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
 
-        doNothing().when(ambassadorSingleton).setRafParameters(anyString(), anyString(), anyString(), anyString());
-        doNothing().when(ambassadorSingleton).saveURL(anyString());
-        doNothing().when(ambassadorSingleton).saveShortCode(anyString());
-        doNothing().when(ambassadorSingleton).saveEmailSubject(anyString());
+        doNothing().when(ambassadorConfig).setRafParameters(anyString(), anyString(), anyString(), anyString());
+        doNothing().when(ambassadorConfig).saveURL(anyString());
+        doNothing().when(ambassadorConfig).saveShortCode(anyString());
+        doNothing().when(ambassadorConfig).saveEmailSubject(anyString());
 
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
@@ -123,12 +123,12 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-        .when(ambassadorSingleton).setRafDefaultMessage(anyString());
+        .when(ambassadorConfig).setRafDefaultMessage(anyString());
 
-        when(ambassadorSingleton.getCampaignID()).thenReturn("260");
-        when(ambassadorSingleton.getURL()).thenReturn("http://staging.mbsy.co/jHjl");
-        when(ambassadorSingleton.getPusherInfo()).thenReturn(pusher);
-        when(ambassadorSingleton.getRafParameters()).thenReturn(parameters);
+        when(ambassadorConfig.getCampaignID()).thenReturn("260");
+        when(ambassadorConfig.getURL()).thenReturn("http://staging.mbsy.co/jHjl");
+        when(ambassadorConfig.getPusherInfo()).thenReturn(pusher);
+        when(ambassadorConfig.getRafParameters()).thenReturn(parameters);
 
         //app workflow is identify-> backend calls pusher and triggers a response which is received by our app and
         //calls tryAndSetURL. Instead we'll mock the identifyRequest and tell it to effectively bypass pusher and
@@ -136,7 +136,7 @@ public class AmbassadorActivityTest {
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Intent intent = new Intent("pusherData");
-                LocalBroadcastManager.getInstance(ApplicationContext.get()).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(AmbassadorSingleton.get()).sendBroadcast(intent);
                 return null;
             }
         })
@@ -322,7 +322,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
-        when(ambassadorSingleton.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
+        when(ambassadorConfig.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
         onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
@@ -416,7 +416,7 @@ public class AmbassadorActivityTest {
     public void testTwitter() {
         //TODO: finish the test for twitterloginactivity once we can type into webviews, strategy outlined below
         //mock token as null so login screen gets presented
-        //when(ambassadorSingleton.getTwitterAccessToken()).thenReturn(null);
+        //when(ambassadorConfig.getTwitterAccessToken()).thenReturn(null);
 
         //when twitterLoginRequest gets called, return a mock of the request object
 /*        doAnswer(new Answer<Void>() {
@@ -450,7 +450,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
-        when(ambassadorSingleton.getTwitterAccessToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
+        when(ambassadorConfig.getTwitterAccessToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));

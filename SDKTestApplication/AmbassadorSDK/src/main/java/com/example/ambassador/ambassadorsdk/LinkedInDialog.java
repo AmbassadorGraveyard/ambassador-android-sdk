@@ -25,14 +25,14 @@ class LinkedInDialog extends Dialog  {
     RequestManager requestManager;
 
     @Inject
-    AmbassadorSingleton ambassadorSingleton;
+    AmbassadorConfig ambassadorConfig;
 
     @Inject
     public LinkedInDialog(@ForActivity Context context) {
         super(context);
 
         //get injected modules we need
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_linkedin_post);
@@ -64,7 +64,7 @@ class LinkedInDialog extends Dialog  {
         this.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                etMessage.setText(ambassadorSingleton.getRafParameters().defaultShareMessage);
+                etMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
             }
         });
     }
@@ -105,10 +105,10 @@ class LinkedInDialog extends Dialog  {
     }
 
     private void _btnPostClicked() {
-        if (Utilities.containsURL(etMessage.getText().toString(), ambassadorSingleton.getURL())) {
+        if (Utilities.containsURL(etMessage.getText().toString(), ambassadorConfig.getURL())) {
             _postToLinkedIn();
         } else {
-            Utilities.presentUrlDialog(this.getOwnerActivity(), etMessage, ambassadorSingleton.getURL(), new Utilities.UrlAlertInterface() {
+            Utilities.presentUrlDialog(this.getOwnerActivity(), etMessage, ambassadorConfig.getURL(), new Utilities.UrlAlertInterface() {
                 @Override
                 public void sendAnywayTapped(DialogInterface dialogInterface) {
                     dialogInterface.dismiss();

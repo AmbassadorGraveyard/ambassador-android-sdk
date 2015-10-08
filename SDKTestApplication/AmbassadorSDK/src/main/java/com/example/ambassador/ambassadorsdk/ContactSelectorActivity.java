@@ -63,14 +63,14 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     BulkShareHelper bulkShareHelper;
 
     @Inject
-    AmbassadorSingleton ambassadorSingleton;
+    AmbassadorConfig ambassadorConfig;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
 
         ListView lvContacts = (ListView)findViewById(R.id.lvContacts);
         Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
@@ -84,7 +84,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         tvNoContacts = (TextView) findViewById(R.id.tvNoContacts);
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        _setUpToolbar(ambassadorSingleton.getRafParameters().toolbarTitle);
+        _setUpToolbar(ambassadorConfig.getRafParameters().toolbarTitle);
 
         //setup progress dialog only once
         pd = new ProgressDialog(this);
@@ -101,7 +101,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         // Sets share message to default message from RAF Parameters
-        etShareMessage.setText(ambassadorSingleton.getRafParameters().defaultShareMessage);
+        etShareMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
 
         adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
         lvContacts.setAdapter(adapter);
@@ -160,7 +160,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
         //get and store pusher data
         try {
-            pusherData = new JSONObject(ambassadorSingleton.getPusherInfo());
+            pusherData = new JSONObject(ambassadorConfig.getPusherInfo());
         }
         catch (JSONException e) {
             e.printStackTrace();
@@ -240,7 +240,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             tvNoContacts.setVisibility(View.VISIBLE);
         }
 
-        if (!AmbassadorSingleton.isReleaseBuild && contactList.size() < 2) {
+        if (!AmbassadorConfig.isReleaseBuild && contactList.size() < 2) {
             contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
             contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
             contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
@@ -275,7 +275,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             tvNoContacts.setVisibility(View.VISIBLE);
         }
 
-        if (!AmbassadorSingleton.isReleaseBuild && contactList.size() < 2) {
+        if (!AmbassadorConfig.isReleaseBuild && contactList.size() < 2) {
             contactList.add(new ContactObject("John Jones", "corey@getambassador.com"));
             contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
             contactList.add(new ContactObject("Friend One", "corey@getambassador.com"));
@@ -407,7 +407,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     private void _sendToContacts() {
-        if (Utilities.containsURL(etShareMessage.getText().toString(), ambassadorSingleton.getURL())) {
+        if (Utilities.containsURL(etShareMessage.getText().toString(), ambassadorConfig.getURL())) {
             //get and store pusher data
             try {
                 //if user is doing sms and we don't have first or last name, we need to get it with a dialog
@@ -431,7 +431,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                 e.printStackTrace();
             }
         } else {
-            Utilities.presentUrlDialog(this, etShareMessage, ambassadorSingleton.getURL(), new Utilities.UrlAlertInterface() {
+            Utilities.presentUrlDialog(this, etShareMessage, ambassadorConfig.getURL(), new Utilities.UrlAlertInterface() {
                 @Override
                 public void sendAnywayTapped(DialogInterface dialogInterface) {
                     dialogInterface.dismiss();

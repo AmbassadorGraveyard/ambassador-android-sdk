@@ -24,7 +24,7 @@ class IdentifyPusher {
         String channelName = "private-snippet-channel@user=" + augurDeviceID;
 
         // HttpAuthorizer is used to append headers and extra parameters to the initial Pusher authorization request
-        HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorSingleton.pusherCallbackURL());
+        HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
 
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Authorization", universalToken);
@@ -39,7 +39,7 @@ class IdentifyPusher {
         options.setAuthorizer(authorizer);
         options.setEncrypted(true);
 
-        String key = AmbassadorSingleton.isReleaseBuild ? AmbassadorSingleton.PUSHER_KEY_PROD : AmbassadorSingleton.PUSHER_KEY_DEV;
+        String key = AmbassadorConfig.isReleaseBuild ? AmbassadorConfig.PUSHER_KEY_PROD : AmbassadorConfig.PUSHER_KEY_DEV;
         Pusher pusher = new Pusher(key, options);
         pusher.connect(new ConnectionEventListener() {
             @Override

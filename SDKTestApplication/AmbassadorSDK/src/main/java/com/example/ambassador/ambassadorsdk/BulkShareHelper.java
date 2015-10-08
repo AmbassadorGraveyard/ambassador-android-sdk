@@ -25,7 +25,7 @@ public class BulkShareHelper {
     }
 
     public BulkShareHelper() {
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
     }
 
     public void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {

@@ -11,10 +11,10 @@ import javax.inject.Inject;
 public class AmbassadorSDK {
 
     @Inject
-    AmbassadorSingleton ambassadorSingleton;
+    AmbassadorConfig ambassadorConfig;
 
     public AmbassadorSDK() {
-        ApplicationContext.getComponent().inject(this);
+        AmbassadorSingleton.getComponent().inject(this);
     }
 
 
@@ -35,7 +35,7 @@ public class AmbassadorSDK {
     }
 
     public static void runWithKeys(Context context, String universalToken, String universalID) {
-        ApplicationContext.getInstance().init(context);
+        AmbassadorSingleton.getInstance().init(context);
 
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
         ambassadorSDK.localRunWithKeys(universalToken, universalID);
@@ -51,40 +51,40 @@ public class AmbassadorSDK {
     void localPresentRAF(Context context, String campaignID) {
         // Functionality: Present the RAF Screen using an intent from the passed class
         Intent intent = new Intent(context, AmbassadorActivity.class);
-        ambassadorSingleton.setCampaignID(campaignID);
+        ambassadorConfig.setCampaignID(campaignID);
         context.startActivity(intent);
     }
 
     void localIdentify(String identifier) {
         // Functionality: Gets unique information from the device for tracking purposes
-        Context context = ApplicationContext.get();
-        ambassadorSingleton.setUserEmail(identifier);
+        Context context = AmbassadorSingleton.get();
+        ambassadorConfig.setUserEmail(identifier);
 
         IIdentify identify = new Identify(context, identifier);
-        ambassadorSingleton.startIdentify(identify);
+        ambassadorConfig.startIdentify(identify);
     }
 
     void localRegisterConversion(ConversionParameters parameters) {
         // Functionality: Registers a conversion set by the dev
-        ambassadorSingleton.registerConversion(parameters);
+        ambassadorConfig.registerConversion(parameters);
     }
 
     void localRunWithKeys(String universalToken, String universalID) {
         // Functionality: Basically initializes the AmbassadorSDK
-        ambassadorSingleton.saveUniversalToken(universalToken);
-        ambassadorSingleton.saveUniversalID(universalID);
-        ambassadorSingleton.startConversionTimer();
+        ambassadorConfig.saveUniversalToken(universalToken);
+        ambassadorConfig.saveUniversalID(universalID);
+        ambassadorConfig.startConversionTimer();
     }
 
     void localRunWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
         // Functionality: Initializes SDK and converts for the first time running
-        ambassadorSingleton.saveUniversalToken(universalToken);
-        ambassadorSingleton.saveUniversalID(universalID);
-        ambassadorSingleton.startConversionTimer();
+        ambassadorConfig.saveUniversalToken(universalToken);
+        ambassadorConfig.saveUniversalID(universalID);
+        ambassadorConfig.startConversionTimer();
 
         // Checks boolean from sharedpreferences to see if this the first launch and registers conversion if it is
-        if (!ambassadorSingleton.convertedOnInstall()) {
-            ambassadorSingleton.convertForInstallation(parameters);
+        if (!ambassadorConfig.convertedOnInstall()) {
+            ambassadorConfig.convertForInstallation(parameters);
         }
     }
 }

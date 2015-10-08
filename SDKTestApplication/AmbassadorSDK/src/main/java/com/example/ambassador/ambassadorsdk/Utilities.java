@@ -21,7 +21,7 @@ class Utilities {
     }
 
     public static int getPixelSizeForDimension(int dimension) {
-        Context cxt = ApplicationContext.get();
+        Context cxt = AmbassadorSingleton.get();
         return cxt.getResources().getDimensionPixelSize(dimension);
     }
 
@@ -81,12 +81,12 @@ class Utilities {
 
 
     public static void debugLog(String tagString, String logMessage) {
-        if (!AmbassadorSingleton.isReleaseBuild) {
+        if (!AmbassadorConfig.isReleaseBuild) {
             Log.d(tagString, logMessage);
         }
     }
 
     public static float getScreenDensity() {
-        return ApplicationContext.get().getResources().getDisplayMetrics().density;
+        return AmbassadorSingleton.get().getResources().getDisplayMetrics().density;
     }
 }
