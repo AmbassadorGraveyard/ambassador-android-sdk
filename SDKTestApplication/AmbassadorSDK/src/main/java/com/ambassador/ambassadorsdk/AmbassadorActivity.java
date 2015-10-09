@@ -242,6 +242,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         if (pos >= 1 && pos <= 5) {
             ImageView logo = new ImageView(this);
+            logo.setId(drawableId);
             logo.setImageDrawable(ContextCompat.getDrawable(this, drawableId));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height));
             params.gravity = Gravity.CENTER_HORIZONTAL;

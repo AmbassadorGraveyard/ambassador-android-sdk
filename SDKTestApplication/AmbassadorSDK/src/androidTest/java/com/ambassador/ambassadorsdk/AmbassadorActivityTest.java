@@ -67,6 +67,7 @@ public class AmbassadorActivityTest {
     private ServiceSelectorPreferences parameters;
     private static final String EMAIL_PATTERN = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\\b";
     private static final String SMS_PATTERN = "Mobile (.*)";
+    private Context context;
 
     //tell Dagger this code will participate in dependency injection
     @Inject
@@ -91,7 +92,7 @@ public class AmbassadorActivityTest {
     @Before
     public void beforeEachTest() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
-        final Context context = instrumentation.getTargetContext().getApplicationContext();
+        context = instrumentation.getTargetContext().getApplicationContext();
 
         parameters = new ServiceSelectorPreferences();
         parameters.defaultShareMessage = "Check out this company!";
@@ -539,6 +540,25 @@ public class AmbassadorActivityTest {
 
         //TODO: testing toast (didn't work)
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void testCustomImages() {
+        int drawableId = context.getResources().getIdentifier("raf_logo", "drawable", context.getPackageName());
+        int pos;
+        try {
+            pos = Integer.parseInt(context.getString(R.string.RAFLogoPosition));
+        }
+        catch (NumberFormatException e) {
+            pos = 0;
+        }
+
+        if (drawableId != 0 && pos >= 1 && pos <= 5) {
+            onView(withId(drawableId)).check(matches(isDisplayed()));
+        }
+        else {
+            onView(withId(drawableId)).check(ViewAssertions.doesNotExist());
+        }
     }
 
     private String _getRandomNumber() {
