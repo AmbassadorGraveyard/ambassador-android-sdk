@@ -48,7 +48,7 @@ class Identify implements IIdentify {
                 augur.getAugur(ambassadorConfig, new IdentifyAugurSDK.AugurCompletion() {
                     @Override
                     public void augurComplete() {
-                        setUpPusher(augur.deviceID);
+                        setUpPusher(augur.getDeviceID());
                         augurTimer.cancel();
                     }
                 });
