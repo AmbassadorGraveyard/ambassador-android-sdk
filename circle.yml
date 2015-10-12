@@ -1,6 +1,6 @@
 test:
   pre:
-    - emulator -avd circleci-android19 -no-audio:
+    - emulator -avd circleci-android21 -no-audio:
         background: true
         parallel: true
   override:
