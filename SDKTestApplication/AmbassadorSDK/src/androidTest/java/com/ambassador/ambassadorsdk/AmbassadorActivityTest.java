@@ -347,14 +347,9 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnPost)).perform(click());
         verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
-        //onView(withText("INSERT LINK")).perform(click());
-        //onView(withId(android.R.id.button2)).perform(click());
-        //TODO: can't get the programmatically-created AlertDialog to be visible to Espresso with above two lines
-        //TODO: see https://code.google.com/p/android-test-kit/issues/detail?id=60
-        //TODO: instead, just make sure the linkedin dialog isn't there anymore, then back out
-        onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
-        pressBack();
-
+        //since text was cleared, ensure dialog is present, then click "send anyway"
+        onView(withText("Hold on!")).check(matches(isDisplayed()));
+        onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
         pressBack();
         verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
@@ -475,14 +470,9 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnTweet)).perform(click());
         verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
-        //onView(withText("INSERT LINK")).perform(click());
-        //onView(withId(android.R.id.button2)).perform(click());
-        //TODO: can't get the programmatically-created AlertDialog to be visible to Espresso with above two lines
-        //TODO: see https://code.google.com/p/android-test-kit/issues/detail?id=60
-        //TODO: instead, just make sure the twitter dialog isn't there anymore, then back out
-        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
-        pressBack();
-
+        //since text was cleared, ensure dialog is present, then click "send anyway"
+        onView(withText("Hold on!")).check(matches(isDisplayed()));
+        onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
         pressBack();
         verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
