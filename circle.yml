@@ -1,13 +1,13 @@
 test:
   pre:
-    - emulator -avd circleci-android21 -no-audio:
+    - emulator -avd circleci-android21 -no-audio -no-window:
         background: true
-        parallel: true
+    - ./gradlew -p SDKTestApplication test
   override:
     # - ./gradlew -p SDKTestApplication assemble
     # - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
-    - ./gradlew -p SDKTestApplication test
+    
     - cp -r SDKTestApplication/AmbassadorSDK/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
-    - circle-android wait-for-boot   
-    - ./gradlew -p SDKTestApplication connectedAndroidTest -PdisablePreDex
+    
+    - ./gradlew -p SDKTestApplication connectedAndroidTest 
     - cp -r SDKTestApplication/AmbassadorSDK/build/reports/androidTests/connected/* $CIRCLE_TEST_REPORTS
