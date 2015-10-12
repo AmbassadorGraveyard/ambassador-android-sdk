@@ -2,6 +2,7 @@ test:
   pre:
     - emulator -avd circleci-android21 -no-audio -no-window:
         background: true
+        parallel: true
     - ./gradlew -p SDKTestApplication test
   override:
     # - ./gradlew -p SDKTestApplication assemble
