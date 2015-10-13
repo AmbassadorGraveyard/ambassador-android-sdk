@@ -1,3 +1,11 @@
+env:
+  matrix:
+   - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
+
+android:
+  components:
+   - sys-img-armeabi-v7a-android-21
+
 test:
   # pre:
   #   - emulator -avd circleci-android21 -no-audio -no-window:
@@ -14,7 +22,7 @@ test:
     # - cp -r SDKTestApplication/AmbassadorSDK/build/reports/androidTests/connected/* $CIRCLE_TEST_REPORTS
 
     # start the emulator
-    - emulator -avd circleci-android22 -no-audio -no-window:
+    - emulator -avd circleci-android21 -no-audio -no-window:
         background: true
         parallel: true
     # wait for it to have booted
