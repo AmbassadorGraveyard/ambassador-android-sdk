@@ -194,7 +194,6 @@ The resulting toolbar would display:
 
 <img src="screenshots/appCustomToolBarColor.png" width="250" />
 
-
 _Note_: If any values in this file are blank, the RAF will use the default values shipped with the SDK. The strings for the RAF Screen will revert to these:
 
 * **toolbarTitle** - "Refer your friends"
@@ -203,3 +202,49 @@ _Note_: If any values in this file are blank, the RAF will use the default value
 * **defaultShareMessage** - "I'm a fan of this company, check them out!"
 
 _Note_: The shortURL will automatically be appended to the defaultShareMessage
+
+#### Using Custom Fonts
+
+If you wish to use custom fonts in the Ambassador SDK, you must place them in your app's **assets/fonts** folder:
+
+<img src="screenshots/assetsStructure.png" />
+
+To use a custom font, insert the name of the font as `fonts/<your font name.extension>`.  Ex: `fonts/ExampleFont.ttf`:
+
+<img src="screenshots/changedFontValue.png" />
+
+By inserting the **fonts/Action_Man.ttf** value as seen above, expect the following result:
+
+<img src="screenshots/newFontDemoShot.png" width="250" />
+
+_Note_: By leaving a font value blank or entering it incorrectly, **Roboto-RobotoRegular** will be used by default.
+
+#### Using Custom Images
+
+A custom image can be placed on the SDK Home Screen. This is commonly used for company logos.
+
+First, rename your image file `raf_logo.png` (must be lowercase). Then place this image in your app's drawable-mdpi folder.
+
+<img src="screenshots/raf_logo_folder.png" />
+
+_Note_: To create properly-scaled images for differing device densities, you must create an image for each android density. To read more about this, visit <a href="http://developer.android.com/guide/practices/screens_support.html" target="1">Supporting Multiple Screens</a>. If you choose to do this, place each scaled image in the proper folder (drawable-xhdpi, drawable-xxhdpi, etc.). If you choose not to do this, Android will pull the image from the mdpi folder, however it may not properly scale depending on the density of the target device.
+
+The SDK will constrain your image height to 30dp (density-independent pixels). This is to prevent images of large height from pushing the content below it down and off the screen. There is no constraint on the width, however the image will not get cut off on either the right or the left.
+
+To set the position of the logo, edit the following value in customValues.xml.
+
+<img src="screenshots/rafLogoPosition.png" />
+
+_Note_: The RAFLogoPosition element is ignored when no `raf_logo.png` is present in the drawable folders. Set the RAFLogoPosition to 0 to hide the logo.
+
+The following images show the logo in the various positions set in the custom values:
+
+<img src="screenshots/rafLogoPosition1.png" />
+
+<img src="screenshots/rafLogoPosition2.png" />
+
+<img src="screenshots/rafLogoPosition3.png" />
+
+<img src="screenshots/rafLogoPosition4.png" />
+
+<img src="screenshots/rafLogoPosition5.png" />
