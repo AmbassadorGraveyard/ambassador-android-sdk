@@ -15,9 +15,8 @@ test:
     # - cp -r SDKTestApplication/AmbassadorSDK/build/reports/androidTests/connected/* $CIRCLE_TEST_REPORTS
 
     # start the emulator
-    - emulator -avd circleci-android21 -no-audio -no-window:
+    - emulator -avd circleci-android22 -no-audio -no-window:
         background: true
-        parallel: false
     # wait for it to have booted
     - circle-android wait-for-boot
     # run tests  against the emulator.
