@@ -1,6 +1,3 @@
-# env:
-#   matrix:
-#    - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
 
 
 test:
@@ -20,12 +17,12 @@ test:
 
     # start the emulator
     - emulator -avd circleci-android21 -no-audio -no-window:
-        background: true
+        background: false
         parallel: true
     # wait for it to have booted
     - circle-android wait-for-boot
     # run tests  against the emulator.
-    - ./gradlew -p SDKTestApplication/AmbassadorSDK assemble
+    - ./gradlew -p SDKTestApplication/AmbassadorSDK connectedAndroidTest
     # copy the build outputs to artifacts
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     # copy the test results to the test results directory.
