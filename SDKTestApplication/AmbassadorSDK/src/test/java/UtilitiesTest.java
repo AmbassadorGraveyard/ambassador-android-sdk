@@ -1,6 +1,5 @@
-package com.example.ambassador.ambassadorsdk;
+package com.ambassador.ambassadorsdk;
 import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
-import com.facebook.internal.Utility;
 
 import org.junit.Before;
 import org.junit.Test;
