@@ -324,6 +324,35 @@ public class RequestManager {
         new Thread(runnable).start();
     }
 
+    void createPusherChannel(final RequestCompletion completion) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.pusherChannelNameURL(), true);
+
+                try {
+                    final int responseCode = connection.getResponseCode();
+                    final String response = getResponse(connection, responseCode);
+                    Utilities.debugLog("createPusherChannel", "CREATE PUSHER CHANNEL Response Code = " + responseCode + " and Response = " + response);
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
+                                completion.onSuccess(response);
+                            } else {
+                                completion.onFailure(response);
+                            }
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    completion.onFailure("Create Pusher Channel Failure due to IOException - " + e.getMessage());
+                }
+            }
+        };
+        new Thread(runnable).start();    }
+
     void externalPusherRequest(final String url, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override

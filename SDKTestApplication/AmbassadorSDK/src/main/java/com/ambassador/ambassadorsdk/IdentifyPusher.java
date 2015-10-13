@@ -9,19 +9,53 @@ import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
 import com.pusher.client.util.HttpAuthorizer;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 /**
  * Created by JakeDunahee on 9/1/15.
  */
 class IdentifyPusher {
+    String channelName;
+
+    @Inject
+    RequestManager requestManager;
+
+    public IdentifyPusher() {
+        AmbassadorSingleton.getComponent().inject(this);
+    }
+
     interface PusherCompletion {
         void pusherEventTriggered(String data);
     }
 
     public void createPusher(String augurDeviceID, String universalToken, final PusherCompletion completion) {
         // Functionality: Subscribes to Pusher channel and sets listener for pusher action
-        String channelName = "private-snippet-channel@user=" + augurDeviceID;
+
+        if (augurDeviceID == null) {
+            //if we don't have a deviceID, we need to get a unique pusher channel from our api
+            requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(Object successResponse) {
+                    try {
+                        JSONObject obj = new JSONObject(successResponse.toString());
+                        channelName = obj.getString("channel_name");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }                }
+
+                @Override
+                public void onFailure(Object failureResponse) {
+                }
+            });
+        }
+        else {
+            channelName = "private-snippet-channel@user=" + augurDeviceID;
+        }
 
         // HttpAuthorizer is used to append headers and extra parameters to the initial Pusher authorization request
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());

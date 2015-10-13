@@ -66,6 +66,14 @@ public class AmbassadorConfig {
         }
     }
 
+    static String pusherChannelNameURL() {
+        if (AmbassadorConfig.isReleaseBuild) {
+            return "https://api.getambassador.com/session/subscribe/";
+        } else {
+            return "https://dev-ambassador-api.herokuapp.com/session/subscribe/";
+        }
+    }
+
     static String pusherCallbackURL() {
         if (AmbassadorConfig.isReleaseBuild) {
             return "https://api.getambassador.com/auth/subscribe/";
