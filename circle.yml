@@ -6,22 +6,15 @@ dependencies:
 
 test:
   override:
-    # - ./gradlew -p SDKTestApplication assemble
-    # - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
-    
-    # - cp -r SDKTestApplication/AmbassadorSDK/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
-    # - circle-android wait-for-boot   
-    # - ./gradlew -p SDKTestApplication spoon 
-    # - cp -r SDKTestApplication/AmbassadorSDK/build/reports/androidTests/connected/* $CIRCLE_TEST_REPORTS
-
-    # start the emulator
+  # start the emulator
     - emulator -avd circleci-android22 -no-audio -no-window:
         background: true
+    - ./gradlew -p SDKTestApplication assemble
+    - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
+    - cp -r SDKTestApplication/AmbassadorSDK/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
     # wait for it to have booted
     - circle-android wait-for-boot
     # run tests  against the emulator.
     - ./gradlew -p SDKTestApplication connectedDebugAndroidTest
-    # copy the build outputs to artifacts
-    - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     # copy the test results to the test results directory.
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
