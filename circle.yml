@@ -17,8 +17,8 @@ test:
 
     # start the emulator
     - emulator -avd circleci-android21 -no-audio -no-window:
-        background: false
-        parallel: true
+        # background: false
+        # parallel: true
     # wait for it to have booted
     - circle-android wait-for-boot
     # run tests  against the emulator.
