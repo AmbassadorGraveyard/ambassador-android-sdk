@@ -20,7 +20,7 @@ test:
     # wait for it to have booted
     - circle-android wait-for-boot
     # run tests  against the emulator.
-    - ./gradlew -p SDKTestApplication :AmbassadorSDK:connectedAndroidTest
+    - ./gradlew -p SDKTestApplication connectedAndroidTest
     # copy the build outputs to artifacts
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     # copy the test results to the test results directory.
