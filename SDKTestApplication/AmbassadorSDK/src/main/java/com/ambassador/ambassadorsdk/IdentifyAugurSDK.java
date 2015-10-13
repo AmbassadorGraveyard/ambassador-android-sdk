@@ -26,8 +26,10 @@ class IdentifyAugurSDK {
             augurConfig.put("context", AmbassadorSingleton.get());
             augurConfig.put("apiKey","***REMOVED***");
             // optional
-            // config.put("endToEndEncryption", true);
-            // config.put("disableConsumerInsights", true);
+            //augurConfig.put("timeout", 1000); // default: 5000 (5 seconds)
+            //augurConfig.put("maxRetries", 5); // default: 5
+            //augurConfig.put("endToEndEncryption", false); // default: false
+            //augurConfig.put("disableConsumerInsights", true); // default: false
         } catch (Exception e) {
             Utilities.debugLog("Augur", "JSON.config.error " + augurConfig.toString());
         }
