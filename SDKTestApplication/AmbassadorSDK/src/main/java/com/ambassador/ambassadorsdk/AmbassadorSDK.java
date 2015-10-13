@@ -19,9 +19,9 @@ public class AmbassadorSDK {
 
 
     // Static Functions
-    public static void presentRAF(Context context, String campaingID) {
+    public static void presentRAF(Context context, String campaignID) {
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
-        ambassadorSDK.localPresentRAF(context, campaingID);
+        ambassadorSDK.localPresentRAF(context, campaignID);
     }
 
     public static void identify(String emailAddress) {

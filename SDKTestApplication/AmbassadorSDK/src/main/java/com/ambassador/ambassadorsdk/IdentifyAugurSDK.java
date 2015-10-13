@@ -57,11 +57,12 @@ class IdentifyAugurSDK {
                     ambassadorConfig.setIdentifyObject(jsonObject.toString());
                     deviceID = Augur.DID;
                     universalID = Augur.UID;
-                    completion.augurComplete();
                 } catch (Exception e) {
                     e.printStackTrace();
                     //json = e.toString();
                 }
+
+                completion.augurComplete();
 
                 return true;
             }
