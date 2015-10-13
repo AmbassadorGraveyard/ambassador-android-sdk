@@ -7,9 +7,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import javax.inject.Inject;
 
 
@@ -20,7 +17,6 @@ class Identify implements IIdentify {
     private Context context;
     private IdentifyPusher pusher;
     IdentifyAugurSDK augur;
-    private Timer augurTimer;
 
     @Inject
     RequestManager requestManager;
@@ -36,24 +32,17 @@ class Identify implements IIdentify {
         if (pusher == null) {
             pusher = new IdentifyPusher();
             augur = new IdentifyAugurSDK();
-            augurTimer = new Timer();
         }
     }
 
     @Override
     public void getIdentity() {
-        augurTimer.scheduleAtFixedRate(new TimerTask() {
+        augur.getAugur(ambassadorConfig, new IdentifyAugurSDK.AugurCompletion() {
             @Override
-            public void run() {
-                augur.getAugur(ambassadorConfig, new IdentifyAugurSDK.AugurCompletion() {
-                    @Override
-                    public void augurComplete() {
-                        setUpPusher(augur.getDeviceID());
-                        augurTimer.cancel();
-                    }
-                });
+            public void augurComplete() {
+                setUpPusher(augur.getDeviceID());
             }
-        }, 0, 5000);
+        });
     }
 
     void setUpPusher(String deviceID) {

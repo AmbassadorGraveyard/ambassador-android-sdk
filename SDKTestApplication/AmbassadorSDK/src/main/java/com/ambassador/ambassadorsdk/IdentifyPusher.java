@@ -20,7 +20,7 @@ class IdentifyPusher {
     }
 
     public void createPusher(String augurDeviceID, String universalToken, final PusherCompletion completion) {
-        // Functionality: Subcribes to Pusher channel and sets listener for pusher action
+        // Functionality: Subscribes to Pusher channel and sets listener for pusher action
         String channelName = "private-snippet-channel@user=" + augurDeviceID;
 
         // HttpAuthorizer is used to append headers and extra parameters to the initial Pusher authorization request
