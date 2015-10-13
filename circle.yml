@@ -9,7 +9,7 @@ test:
   # start the emulator
     - emulator -avd circleci-android22 -no-audio -no-window:
         background: true
-    - ./gradlew -p SDKTestApplication assemble
+    - ./gradlew -p SDKTestApplication test
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     - cp -r SDKTestApplication/AmbassadorSDK/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
     # wait for it to have booted
