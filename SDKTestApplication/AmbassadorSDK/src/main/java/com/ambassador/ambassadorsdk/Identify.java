@@ -56,7 +56,7 @@ class Identify implements IIdentify {
                             @Override
                             public void onSuccess(Object successResponse) {
                                 Utilities.debugLog("Pusher External", "Saved pusher object as String = " + successResponse.toString());
-                                _getAndsetPusherInfo(successResponse.toString());
+                                getAndsetPusherInfo(successResponse.toString());
                             }
 
                             @Override
@@ -65,7 +65,7 @@ class Identify implements IIdentify {
                             }
                         });
                     } else {
-                        _getAndsetPusherInfo(data);
+                        getAndsetPusherInfo(data);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -74,7 +74,7 @@ class Identify implements IIdentify {
         });
     }
 
-    private void _getAndsetPusherInfo(String jsonObject) {
+    void getAndsetPusherInfo(String jsonObject) {
         // Functionality: Saves Pusher object to SharedPreferences
         JSONObject pusherSave = new JSONObject();
 

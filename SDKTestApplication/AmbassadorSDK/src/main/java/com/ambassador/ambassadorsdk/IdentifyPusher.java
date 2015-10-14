@@ -12,7 +12,11 @@ import com.pusher.client.util.HttpAuthorizer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -33,30 +37,72 @@ class IdentifyPusher {
         void pusherEventTriggered(String data);
     }
 
-    public void createPusher(String augurDeviceID, String universalToken, final PusherCompletion completion) {
+    public void createPusher(String augurDeviceID, final String universalToken, final PusherCompletion completion) {
         // Functionality: Subscribes to Pusher channel and sets listener for pusher action
 
-        if (augurDeviceID == null) {
-            //if we don't have a deviceID, we need to get a unique pusher channel from our api
-            requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
-                @Override
-                public void onSuccess(Object successResponse) {
-                    try {
-                        JSONObject obj = new JSONObject(successResponse.toString());
-                        channelName = obj.getString("channel_name");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }                }
-
-                @Override
-                public void onFailure(Object failureResponse) {
-                }
-            });
-        }
-        else {
+        if (augurDeviceID != null) {
             channelName = "private-snippet-channel@user=" + augurDeviceID;
+            subscribePusher(universalToken, completion);
+            return;
         }
 
+        //if we don't have a deviceID, we need to get a unique pusher channel from our api
+        requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess(Object successResponse) {
+                try {
+                    JSONObject obj = new JSONObject(successResponse.toString());
+                    channelName = obj.getString("channel_name");
+                    String expiresAt = obj.getString("expires_at");
+                    //String expiresAt = "2011-04-15T20:08:18Z";
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    Date date;
+                    try {
+                        date = sdf.parse(expiresAt);
+                        if (date.getTime() < System.currentTimeMillis()) {
+                            createPusher(null, universalToken, completion);
+                        }
+                        else {
+                            subscribePusher(universalToken, completion);
+                        }
+                    }
+                    catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Object failureResponse) {
+                Utilities.debugLog("createPusher", "CREATE PUSHER failed with Response = " + failureResponse);
+
+                //TESTING CODE
+/*                channelName = "private-snippet-channel@user=gAAAAABWHreZ0RD2S59JXmfsm1JzOAxlw9dbWlwvcPEM2TWWo49rTFFmLPI2yTmuK8PjQ_GTFpvJX_54LL0-n2cBRd3eM-cJ7YP3Mhhqrswl0JMqfhkgL7lehDq8P6E-3gjn_0FlwdTK-mT5EXCMoa6JjIw_ZLRg7w==";
+                String expiresAt = "2015-10-21T20:08:18Z";
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                Date date;
+                try {
+                    date = sdf.parse(expiresAt);
+                    if (date.getTime() < System.currentTimeMillis()) {
+                        createPusher(null, universalToken, completion);
+                    }
+                    else {
+                        subscribePusher(universalToken, completion);
+                    }
+                }
+                catch (ParseException e) {
+                    e.printStackTrace();
+                }*/
+
+            }
+        });
+    }
+
+    void subscribePusher(String universalToken, final PusherCompletion completion) {
         // HttpAuthorizer is used to append headers and extra parameters to the initial Pusher authorization request
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
 
