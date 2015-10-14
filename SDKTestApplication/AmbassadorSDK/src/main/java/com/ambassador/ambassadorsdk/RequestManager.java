@@ -15,9 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-
 import java.util.List;
-
 
 import javax.inject.Inject;
 
@@ -246,7 +244,13 @@ public class RequestManager {
                 JSONObject identifyObject = new JSONObject();
 
                 try {
-                    JSONObject augurObject = new JSONObject(ambassadorConfig.getIdentifyObject());
+                    JSONObject augurObject = null;
+                    try {
+                        augurObject = new JSONObject(ambassadorConfig.getIdentifyObject());
+                    }
+                    catch (NullPointerException e) {
+                        Utilities.debugLog("IdentifyRequest", "augurObject NULL");
+                    }
                     identifyObject.put("enroll", true);
                     identifyObject.put("campaign_id", ambassadorConfig.getCampaignID());
                     identifyObject.put("email", ambassadorConfig.getUserEmail());
