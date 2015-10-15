@@ -11,14 +11,7 @@ import io.augur.wintermute.Augur;
  * Created by JakeDunahee on 9/1/15.
  */
 class IdentifyAugurSDK {
-    private String deviceID;
-    private String universalID;
-
-    interface AugurCompletion {
-        void augurComplete();
-    }
-
-    public void getAugur(final AmbassadorConfig ambassadorConfig, final AugurCompletion completion) {
+    public void getAugur(final AmbassadorConfig ambassadorConfig) {
         JSONObject augurConfig = new JSONObject();
 
         try {
@@ -55,25 +48,14 @@ class IdentifyAugurSDK {
 
                     Utilities.debugLog("Augur", "Augur successfully received through SDK call");
                     ambassadorConfig.setIdentifyObject(jsonObject.toString());
-                    deviceID = Augur.DID;
-                    universalID = Augur.UID;
+                    //deviceID = Augur.DID;
+                    //universalID = Augur.UID;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    //json = e.toString();
                 }
-
-                completion.augurComplete();
 
                 return true;
             }
         });
-    }
-
-    String getDeviceID() {
-        return deviceID;
-    }
-
-    String getUniversalID() {
-        return universalID;
     }
 }

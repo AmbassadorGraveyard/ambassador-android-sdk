@@ -66,7 +66,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     };
 
     final private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        // Executed when Pusher data is received, used to update the shortURL editText if loading screen is present
+        // Executed when IdentifyPusher data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
             tryAndSetURL(ambassadorConfig.getPusherInfo(), ambassadorConfig.getRafParameters().defaultShareMessage);
@@ -168,7 +168,13 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         }, 30000);
 
-        requestManager.identifyRequest();
+        if (PusherChannel.isExpired()) {
+            IdentifyPusher pusher = new IdentifyPusher(AmbassadorSingleton.get(), ambassadorConfig);
+            pusher.createPusher();
+        }
+        else {
+            requestManager.identifyRequest();
+        }
     }
 
     @Override
@@ -292,19 +298,19 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     // UI SETTER METHODS
     void tryAndSetURL(String pusherString, String initialShareMessage) {
-        // Functionality: Gets URL from Pusher
-        // First checks to see if Pusher info has already been saved to SharedPreferencs
+        // Functionality: Gets URL from IdentifyPusher
+        // First checks to see if IdentifyPusher info has already been saved to SharedPreferencs
         if (pd != null) {
             pd.dismiss();
             networkTimer.cancel();
         }
 
         try {
-            // We get a JSON object from the Pusher Info string saved to SharedPreferences
+            // We get a JSON object from the IdentifyPusher Info string saved to SharedPreferences
             JSONObject pusherData = new JSONObject(pusherString);
             JSONArray urlArray = pusherData.getJSONArray("urls");
 
-            // Iterates throught all the urls in the Pusher object until we find one will a matching campaign ID
+            // Iterates throught all the urls in the IdentifyPusher object until we find one will a matching campaign ID
             for (int i = 0; i < urlArray.length(); i++) {
                 JSONObject urlObj = urlArray.getJSONObject(i);
                 int campID = urlObj.getInt("campaign_uid");
@@ -327,7 +333,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     private void _showNetworkError() {
-        // Functionality: After 30 seconds of waiting for data from Pusher/Augur, shows toast to user
+        // Functionality: After 30 seconds of waiting for data from IdentifyPusher/Augur, shows toast to user
         // stating that there is a network error and then dismisses the RAF activity
         timerHandler.post(myRunnable);
     }
