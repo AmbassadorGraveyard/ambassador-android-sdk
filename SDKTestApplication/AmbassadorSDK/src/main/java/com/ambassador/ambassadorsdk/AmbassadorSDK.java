@@ -60,8 +60,11 @@ public class AmbassadorSDK {
         Context context = AmbassadorSingleton.get();
         ambassadorConfig.setUserEmail(identifier);
 
-        IIdentify identify = new Identify(context);
-        ambassadorConfig.startIdentify(identify);
+        IIdentify identify = new Identify();
+        identify.getIdentity();
+
+        IdentifyPusher pusher = new IdentifyPusher(context, ambassadorConfig);
+        pusher.createPusher();
     }
 
     void localRegisterConversion(ConversionParameters parameters) {

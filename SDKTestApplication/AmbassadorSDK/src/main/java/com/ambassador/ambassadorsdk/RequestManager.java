@@ -44,7 +44,7 @@ public class RequestManager {
     }
 
     // region Helper Setup Functions
-    HttpURLConnection setUpConnection(String methodType, String url, boolean useJSONForPost) {
+    HttpURLConnection setUpConnection(String methodType, String url, boolean useJSONForPost, boolean pusherChannel) {
         HttpURLConnection connection = null;
 
         try {
@@ -58,6 +58,11 @@ public class RequestManager {
                 connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
             }
 
+            if (pusherChannel) {
+                PusherChannel.setRequestId(System.currentTimeMillis());
+                connection.setRequestProperty("X-Mbsy-Client-Session-ID`", PusherChannel.getSessionId());
+                connection.setRequestProperty("X-Mbsy-Client-Request-ID", String.valueOf(PusherChannel.getRequestId()));
+            }
             connection.setRequestProperty("MBSY_UNIVERSAL_ID", ambassadorConfig.getUniversalID());
             connection.setRequestProperty("Authorization", ambassadorConfig.getUniversalKey());
         } catch (IOException e) {
@@ -97,7 +102,7 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkSMSShareURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkSMSShareURL(), true, false);
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -132,7 +137,7 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkEmailShareURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkEmailShareURL(), true, false);
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -170,7 +175,7 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.shareTrackURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.shareTrackURL(), true, false);
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -200,7 +205,7 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.conversionURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.conversionURL(), true, false);
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -222,7 +227,6 @@ public class RequestManager {
                             }
                         }
                     });
-
                 } catch (IOException e) {
                     e.printStackTrace();
                     completion.onFailure("REGISTER CONVERSION Failure due to IOException - " + e.getMessage());
@@ -239,7 +243,7 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID(), true, true);
 
                 JSONObject identifyObject = new JSONObject();
 
@@ -272,8 +276,7 @@ public class RequestManager {
 
                     final int responseCode = connection.getResponseCode();
                     String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Response Code = " + responseCode +
-                            " and Response = " + response);
+                    Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Response Code = " + responseCode + " and Response = " + response);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Failure due to IOException - " + e.getMessage());
@@ -287,7 +290,7 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID(), true);
+                HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID(), true, false);
                 JSONObject dataObject = new JSONObject();
                 JSONObject nameObject = new JSONObject();
 
@@ -332,7 +335,7 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.pusherChannelNameURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.pusherChannelNameURL(), true, false);
 
                 try {
                     final int responseCode = connection.getResponseCode();
@@ -351,22 +354,23 @@ public class RequestManager {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Create Pusher Channel Failure due to IOException - " + e.getMessage());
+                    completion.onFailure("Create IdentifyPusher Channel Failure due to IOException - " + e.getMessage());
                 }
             }
         };
-        new Thread(runnable).start();    }
+        new Thread(runnable).start();
+    }
 
     void externalPusherRequest(final String url, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("GET", url, true);
+                final HttpURLConnection connection = setUpConnection("GET", url, true, false);
 
                 try {
                     final int responseCode = connection.getResponseCode();
                     String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("Pusher", "EXTERNAL PUSHER CALL Response Code = " + responseCode +
+                    Utilities.debugLog("IdentifyPusher", "EXTERNAL PUSHER CALL Response Code = " + responseCode +
                                                                 " and Response = " + response);
 
                     if (Utilities.isSuccessfulResponseCode(responseCode)) {
@@ -376,7 +380,7 @@ public class RequestManager {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("External Pusher Request failure due to IOException - " + e.getMessage());
+                    completion.onFailure("External IdentifyPusher Request failure due to IOException - " + e.getMessage());
                 }
             }
         };
@@ -502,7 +506,7 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", "https://www.linkedin.com/uas/oauth2/accessToken", false);
+                final HttpURLConnection connection = setUpConnection("POST", "https://www.linkedin.com/uas/oauth2/accessToken", false, false);
                 String charset = "UTF-8";
                 String urlParams = null;
 

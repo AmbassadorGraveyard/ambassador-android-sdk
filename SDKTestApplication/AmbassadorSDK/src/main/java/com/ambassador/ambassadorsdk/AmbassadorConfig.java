@@ -204,10 +204,6 @@ public class AmbassadorConfig {
         conversionUtility.registerConversion();
     }
 
-    void startIdentify(IIdentify identify) {
-        identify.getIdentity();
-    }
-
     void startConversionTimer() {
         final ConversionUtility utility = new ConversionUtility(context);
         Timer timer = new Timer();

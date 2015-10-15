@@ -1,7 +1,10 @@
 package com.ambassador.ambassadorsdk;
 
 
-import com.pusher.client.Pusher;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
+
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.PrivateChannelEventListener;
 import com.pusher.client.connection.ConnectionEventListener;
@@ -24,12 +27,16 @@ import javax.inject.Inject;
  * Created by JakeDunahee on 9/1/15.
  */
 class IdentifyPusher {
+    Context context;
     String channelName;
+    AmbassadorConfig ambassadorConfig;
 
     @Inject
     RequestManager requestManager;
 
-    public IdentifyPusher() {
+    public IdentifyPusher(Context context, AmbassadorConfig ambassadorConfig) {
+        this.context = context;
+        this.ambassadorConfig = ambassadorConfig;
         AmbassadorSingleton.getComponent().inject(this);
     }
 
@@ -37,49 +44,18 @@ class IdentifyPusher {
         void pusherEventTriggered(String data);
     }
 
-    public void createPusher(String augurDeviceID, final String universalToken, final PusherCompletion completion) {
-        // Functionality: Subscribes to Pusher channel and sets listener for pusher action
-
-        if (augurDeviceID != null) {
-            channelName = "private-snippet-channel@user=" + augurDeviceID;
-            subscribePusher(universalToken, completion);
-            return;
-        }
-
-        //if we don't have a deviceID, we need to get a unique pusher channel from our api
+    public void createPusher() {
         requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-                try {
-                    JSONObject obj = new JSONObject(successResponse.toString());
-                    channelName = obj.getString("channel_name");
-                    String expiresAt = obj.getString("expires_at");
-                    //String expiresAt = "2011-04-15T20:08:18Z";
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                    Date date;
-                    try {
-                        date = sdf.parse(expiresAt);
-                        if (date.getTime() < System.currentTimeMillis()) {
-                            createPusher(null, universalToken, completion);
-                        }
-                        else {
-                            subscribePusher(universalToken, completion);
-                        }
-                    }
-                    catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                createPusherChannelSuccess(successResponse);
             }
 
             @Override
             public void onFailure(Object failureResponse) {
                 Utilities.debugLog("createPusher", "CREATE PUSHER failed with Response = " + failureResponse);
 
-                //TESTING CODE
+                //TESTING CODE - IF ENDPOINT IS DOWN
 /*                channelName = "private-snippet-channel@user=gAAAAABWHreZ0RD2S59JXmfsm1JzOAxlw9dbWlwvcPEM2TWWo49rTFFmLPI2yTmuK8PjQ_GTFpvJX_54LL0-n2cBRd3eM-cJ7YP3Mhhqrswl0JMqfhkgL7lehDq8P6E-3gjn_0FlwdTK-mT5EXCMoa6JjIw_ZLRg7w==";
                 String expiresAt = "2015-10-21T20:08:18Z";
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -102,8 +78,66 @@ class IdentifyPusher {
         });
     }
 
+    void createPusherChannelSuccess(Object successResponse) {
+        String sessionId = null;
+        String expiresAt = null;
+        try {
+            JSONObject obj = new JSONObject(successResponse.toString());
+            sessionId = obj.getString("client_usession_id");
+            channelName = obj.getString("channel_name");
+            expiresAt = obj.getString("expires_at");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date expiresAtDate = null;
+        try {
+            expiresAtDate = sdf.parse(expiresAt);
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+        PusherChannel.setSessionId(sessionId);
+        PusherChannel.setChannelName(channelName);
+        PusherChannel.setExpiresAt(expiresAtDate);
+
+        if (PusherChannel.isExpired()) {
+            createPusher();
+            return;
+        }
+
+        subscribePusher(ambassadorConfig.getUniversalKey(), new PusherCompletion() {
+            @Override
+            public void pusherEventTriggered(String data) {
+                try {
+                    JSONObject pusherObject = new JSONObject(data);
+                    if (pusherObject.has("url")) {
+                        requestManager.externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
+                            @Override
+                            public void onSuccess(Object successResponse) {
+                                Utilities.debugLog("IdentifyPusher External", "Saved pusher object as String = " + successResponse.toString());
+                                setPusherInfo(successResponse.toString());
+                            }
+
+                            @Override
+                            public void onFailure(Object failureResponse) {
+                                Utilities.debugLog("IdentifyPusher External", "FAILED to save pusher object with error: " + failureResponse);
+                            }
+                        });
+                    } else {
+                        setPusherInfo(data);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     void subscribePusher(String universalToken, final PusherCompletion completion) {
-        // HttpAuthorizer is used to append headers and extra parameters to the initial Pusher authorization request
+        // HttpAuthorizer is used to append headers and extra parameters to the initial IdentifyPusher authorization request
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
 
         HashMap<String, String> headers = new HashMap<>();
@@ -120,16 +154,16 @@ class IdentifyPusher {
         options.setEncrypted(true);
 
         String key = AmbassadorConfig.isReleaseBuild ? AmbassadorConfig.PUSHER_KEY_PROD : AmbassadorConfig.PUSHER_KEY_DEV;
-        Pusher pusher = new Pusher(key, options);
+        com.pusher.client.Pusher pusher = new com.pusher.client.Pusher(key, options);
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
-                Utilities.debugLog("Pusher", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
+                Utilities.debugLog("IdentifyPusher", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
             }
 
             @Override
             public void onError(String s, String s1, Exception e) {
-                Utilities.debugLog("Pusher", "There was a problem connecting to Pusher" + "Exception = " + e);
+                Utilities.debugLog("IdentifyPusher", "There was a problem connecting to IdentifyPusher" + "Exception = " + e);
             }
         }, ConnectionState.ALL);
 
@@ -138,20 +172,42 @@ class IdentifyPusher {
         pusher.subscribePrivate(channelName, new PrivateChannelEventListener() {
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
-                Utilities.debugLog("Pusher", "Failed to subscribe to Pusher because " + message + ". The " +
+                Utilities.debugLog("IdentifyPusher", "Failed to subscribe to IdentifyPusher because " + message + ". The " +
                         "exception was " + e);
             }
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-                Utilities.debugLog("Pusher", "Successfully subscribed to " + channelName);
+                Utilities.debugLog("IdentifyPusher", "Successfully subscribed to " + channelName);
             }
 
             @Override
             public void onEvent(String channelName, String eventName, String data) {
-                Utilities.debugLog("Pusher", "data = " + data);
+                Utilities.debugLog("IdentifyPusher", "data = " + data);
                 completion.pusherEventTriggered(data);
             }
         }, "identify_action");
+    }
+
+    void setPusherInfo(String jsonObject) {
+        // Functionality: Saves IdentifyPusher object to SharedPreferences
+        JSONObject pusherSave = new JSONObject();
+
+        try {
+            JSONObject pusherObject = new JSONObject(jsonObject);
+
+            pusherSave.put("email", pusherObject.getString("email"));
+            pusherSave.put("firstName", pusherObject.getString("first_name"));
+            pusherSave.put("lastName", pusherObject.getString("last_name"));
+            pusherSave.put("phoneNumber", pusherObject.getString("phone"));
+            pusherSave.put("urls", pusherObject.getJSONArray("urls"));
+            ambassadorConfig.setPusherInfo(pusherSave.toString());
+
+            //tell MainActivity to update edittext with url
+            Intent intent = new Intent("pusherData");
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
