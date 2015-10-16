@@ -168,7 +168,7 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         }, 30000);
 
-        if (PusherChannel.isExpired()) {
+        if (PusherChannel.getSessionId() != null && PusherChannel.isExpired()) {
             IdentifyPusher pusher = new IdentifyPusher(AmbassadorSingleton.get(), ambassadorConfig);
             pusher.createPusher();
         }
