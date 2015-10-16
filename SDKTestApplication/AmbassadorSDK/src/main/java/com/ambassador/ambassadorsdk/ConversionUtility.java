@@ -42,6 +42,9 @@ class ConversionUtility {
 
     // Function used by ambassador Singleton to register a conversion
     public void registerConversion() {
+        //if we have no identify object, don't bother with a conversion
+        if (ambassadorConfig.getIdentifyObject() == null) return;
+
         if (ambassadorConfig.getPusherInfo() != null) {
             try {
                 if (parameters.isValid()) {

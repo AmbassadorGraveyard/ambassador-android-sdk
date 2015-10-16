@@ -28,7 +28,6 @@ import javax.inject.Inject;
  */
 class IdentifyPusher {
     Context context;
-    String channelName;
     AmbassadorConfig ambassadorConfig;
 
     @Inject
@@ -53,27 +52,8 @@ class IdentifyPusher {
 
             @Override
             public void onFailure(Object failureResponse) {
+                //TEMP CODE FOR WHEN ENDPOINT IS DOWN
                 Utilities.debugLog("createPusher", "CREATE PUSHER failed with Response = " + failureResponse);
-
-                //TESTING CODE - IF ENDPOINT IS DOWN
-/*                channelName = "private-snippet-channel@user=gAAAAABWHreZ0RD2S59JXmfsm1JzOAxlw9dbWlwvcPEM2TWWo49rTFFmLPI2yTmuK8PjQ_GTFpvJX_54LL0-n2cBRd3eM-cJ7YP3Mhhqrswl0JMqfhkgL7lehDq8P6E-3gjn_0FlwdTK-mT5EXCMoa6JjIw_ZLRg7w==";
-                String expiresAt = "2015-10-21T20:08:18Z";
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-                Date date;
-                try {
-                    date = sdf.parse(expiresAt);
-                    if (date.getTime() < System.currentTimeMillis()) {
-                        createPusher(null, universalToken, completion);
-                    }
-                    else {
-                        subscribePusher(universalToken, completion);
-                    }
-                }
-                catch (ParseException e) {
-                    e.printStackTrace();
-                }*/
-
             }
         });
     }
@@ -81,9 +61,10 @@ class IdentifyPusher {
     void createPusherChannelSuccess(Object successResponse) {
         String sessionId = null;
         String expiresAt = null;
+        String channelName = null;
         try {
             JSONObject obj = new JSONObject(successResponse.toString());
-            sessionId = obj.getString("client_usession_id");
+            sessionId = obj.getString("client_session_uid");
             channelName = obj.getString("channel_name");
             expiresAt = obj.getString("expires_at");
         } catch (JSONException e) {
@@ -108,35 +89,10 @@ class IdentifyPusher {
             return;
         }
 
-        subscribePusher(ambassadorConfig.getUniversalKey(), new PusherCompletion() {
-            @Override
-            public void pusherEventTriggered(String data) {
-                try {
-                    JSONObject pusherObject = new JSONObject(data);
-                    if (pusherObject.has("url")) {
-                        requestManager.externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
-                            @Override
-                            public void onSuccess(Object successResponse) {
-                                Utilities.debugLog("IdentifyPusher External", "Saved pusher object as String = " + successResponse.toString());
-                                setPusherInfo(successResponse.toString());
-                            }
-
-                            @Override
-                            public void onFailure(Object failureResponse) {
-                                Utilities.debugLog("IdentifyPusher External", "FAILED to save pusher object with error: " + failureResponse);
-                            }
-                        });
-                    } else {
-                        setPusherInfo(data);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        subscribePusher(ambassadorConfig.getUniversalKey());
     }
 
-    void subscribePusher(String universalToken, final PusherCompletion completion) {
+    void subscribePusher(String universalToken) {
         // HttpAuthorizer is used to append headers and extra parameters to the initial IdentifyPusher authorization request
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
 
@@ -146,7 +102,7 @@ class IdentifyPusher {
 
         HashMap<String, String> queryParams = new HashMap<>();
         queryParams.put("auth_type", "private");
-        queryParams.put("channel", channelName);
+        queryParams.put("channel", PusherChannel.getchannelName());
         authorizer.setQueryStringParameters(queryParams);
 
         PusherOptions options = new PusherOptions();
@@ -169,7 +125,7 @@ class IdentifyPusher {
 
         pusher.connect();
 
-        pusher.subscribePrivate(channelName, new PrivateChannelEventListener() {
+        pusher.subscribePrivate(PusherChannel.getchannelName(), new PrivateChannelEventListener() {
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
                 Utilities.debugLog("IdentifyPusher", "Failed to subscribe to IdentifyPusher because " + message + ". The " +
@@ -184,7 +140,32 @@ class IdentifyPusher {
             @Override
             public void onEvent(String channelName, String eventName, String data) {
                 Utilities.debugLog("IdentifyPusher", "data = " + data);
-                completion.pusherEventTriggered(data);
+
+                try {
+                    JSONObject pusherObject = new JSONObject(data);
+
+                    //make sure the request id coming back is for the one we sent off
+                    if (pusherObject.getLong("request_id") != PusherChannel.getRequestId()) return;
+
+                    if (pusherObject.has("url")) {
+                        requestManager.externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
+                            @Override
+                            public void onSuccess(Object successResponse) {
+                                Utilities.debugLog("IdentifyPusher External", "Saved pusher object as String = " + successResponse.toString());
+                                setPusherInfo(successResponse.toString());
+                            }
+
+                            @Override
+                            public void onFailure(Object failureResponse) {
+                                Utilities.debugLog("IdentifyPusher External", "FAILED to save pusher object with error: " + failureResponse);
+                            }
+                        });
+                    } else {
+                        setPusherInfo(data);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }, "identify_action");
     }

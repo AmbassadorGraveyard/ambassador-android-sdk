@@ -3,6 +3,9 @@ package com.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.content.Intent;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.inject.Inject;
 
 /**
@@ -30,8 +33,8 @@ public class AmbassadorSDK {
     }
 
     public static void registerConversion(ConversionParameters conversionParameters) {
-        AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
-        ambassadorSDK.localRegisterConversion(conversionParameters);
+        ConversionUtility conversionUtility = new ConversionUtility(AmbassadorSingleton.get(), conversionParameters);
+        conversionUtility.registerConversion();
     }
 
     public static void runWithKeys(Context context, String universalToken, String universalID) {
@@ -67,27 +70,34 @@ public class AmbassadorSDK {
         pusher.createPusher();
     }
 
-    void localRegisterConversion(ConversionParameters parameters) {
-        // Functionality: Registers a conversion set by the dev
-        ambassadorConfig.registerConversion(parameters);
-    }
-
     void localRunWithKeys(String universalToken, String universalID) {
         // Functionality: Basically initializes the AmbassadorSDK
         ambassadorConfig.setUniversalToken(universalToken);
         ambassadorConfig.setUniversalID(universalID);
-        ambassadorConfig.startConversionTimer();
+        startConversionTimer();
     }
 
     void localRunWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
         // Functionality: Initializes SDK and converts for the first time running
         ambassadorConfig.setUniversalToken(universalToken);
         ambassadorConfig.setUniversalID(universalID);
-        ambassadorConfig.startConversionTimer();
+        startConversionTimer();
 
         // Checks boolean from sharedpreferences to see if this the first launch and registers conversion if it is
         if (!ambassadorConfig.convertedOnInstall()) {
-            ambassadorConfig.convertForInstallation(parameters);
+            registerConversion(parameters);
+            ambassadorConfig.setConvertForInstall();
         }
+    }
+
+    void startConversionTimer() {
+        final ConversionUtility utility = new ConversionUtility(AmbassadorSingleton.get());
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                utility.readAndSaveDatabaseEntries();
+            }
+        }, 0, 10000);
     }
 }

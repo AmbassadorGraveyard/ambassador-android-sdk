@@ -60,7 +60,7 @@ public class RequestManager {
 
             if (pusherChannel) {
                 PusherChannel.setRequestId(System.currentTimeMillis());
-                connection.setRequestProperty("X-Mbsy-Client-Session-ID`", PusherChannel.getSessionId());
+                connection.setRequestProperty("X-Mbsy-Client-Session-ID", PusherChannel.getSessionId());
                 connection.setRequestProperty("X-Mbsy-Client-Request-ID", String.valueOf(PusherChannel.getRequestId()));
             }
             connection.setRequestProperty("MBSY_UNIVERSAL_ID", ambassadorConfig.getUniversalID());

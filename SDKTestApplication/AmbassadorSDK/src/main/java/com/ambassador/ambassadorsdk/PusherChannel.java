@@ -6,10 +6,10 @@ import java.util.Date;
  * Created by coreyfields on 10/15/15.
  */
 public class PusherChannel {
-    static String sessionId;
-    static String channelName;
-    static Date expiresAt;
-    static long requestId;
+    private static String sessionId;
+    private static String channelName;
+    private static Date expiresAt;
+    private static long requestId;
 
     static void setSessionId(String id) {
         sessionId = id;

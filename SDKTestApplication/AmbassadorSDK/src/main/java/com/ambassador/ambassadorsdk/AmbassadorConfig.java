@@ -2,8 +2,6 @@ package com.ambassador.ambassadorsdk;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by JakeDunahee on 7/29/15.
@@ -25,7 +23,6 @@ public class AmbassadorConfig {
     private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     private ServiceSelectorPreferences rafParameters;
 
-    // STATIC VARIABLES
     static String identifyURL() {
         if (AmbassadorConfig.isReleaseBuild) {
             return "https://api.getambassador.com/universal/action/identify/?u=";
@@ -81,10 +78,7 @@ public class AmbassadorConfig {
             return "https://dev-ambassador-api.herokuapp.com/auth/subscribe/";
         }
     }
-    // END STATIC VARIABLES
 
-
-    // SHAREDINSTANCE SETTERS
     void setLinkedInToken(String token) {
         sharePrefs.edit().putString("linkedInToken", token).apply();
     }
@@ -148,10 +142,7 @@ public class AmbassadorConfig {
         rafParameters.descriptionText = descriptionText;
         rafParameters.toolbarTitle = toolbarTitle;
     }
-    // END SHAREDINSTANCE SETTERS
 
-
-    // SHAREDINSTANCE GETTERS
     public ServiceSelectorPreferences getRafParameters() { return rafParameters; }
 
     public String getLinkedInToken() { return sharePrefs.getString("linkedInToken", null); }
@@ -195,29 +186,8 @@ public class AmbassadorConfig {
     }
 
     boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
-    // END SHAREDINSTANCE GETTERS
 
-
-    // AMBASSADOR SDK CALLS
-    void registerConversion(ConversionParameters parameters) {
-        ConversionUtility conversionUtility = new ConversionUtility(context, parameters);
-        conversionUtility.registerConversion();
-    }
-
-    void startConversionTimer() {
-        final ConversionUtility utility = new ConversionUtility(context);
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                utility.readAndSaveDatabaseEntries();
-            }
-        }, 0, 10000);
-    }
-
-    void convertForInstallation(ConversionParameters parameters) {
-        registerConversion(parameters);
+    void setConvertForInstall() {
         sharePrefs.edit().putBoolean("installConversion", true).apply();
     }
-    // END AMBASSADOR SDK CALLS
 }
