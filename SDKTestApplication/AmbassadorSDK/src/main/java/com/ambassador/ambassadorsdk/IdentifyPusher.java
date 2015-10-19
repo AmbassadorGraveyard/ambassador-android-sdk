@@ -52,7 +52,6 @@ class IdentifyPusher {
 
             @Override
             public void onFailure(Object failureResponse) {
-                //TEMP CODE FOR WHEN ENDPOINT IS DOWN
                 Utilities.debugLog("createPusher", "CREATE PUSHER failed with Response = " + failureResponse);
             }
         });

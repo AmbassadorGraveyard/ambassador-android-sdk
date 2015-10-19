@@ -44,7 +44,7 @@ public class RequestManager {
     }
 
     // region Helper Setup Functions
-    HttpURLConnection setUpConnection(String methodType, String url, boolean useJSONForPost, boolean pusherChannel) {
+    HttpURLConnection setUpConnection(String methodType, String url) {
         HttpURLConnection connection = null;
 
         try {
@@ -52,17 +52,6 @@ public class RequestManager {
             connection.setDoInput(true);
             if (methodType.equals("POST")) { connection.setDoOutput(true); }
             connection.setRequestMethod(methodType);
-            if (useJSONForPost) {
-                connection.setRequestProperty("Content-Type", "application/json");
-            } else {
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            }
-
-            if (pusherChannel) {
-                PusherChannel.setRequestId(System.currentTimeMillis());
-                connection.setRequestProperty("X-Mbsy-Client-Session-ID", PusherChannel.getSessionId());
-                connection.setRequestProperty("X-Mbsy-Client-Request-ID", String.valueOf(PusherChannel.getRequestId()));
-            }
             connection.setRequestProperty("MBSY_UNIVERSAL_ID", ambassadorConfig.getUniversalID());
             connection.setRequestProperty("Authorization", ambassadorConfig.getUniversalKey());
         } catch (IOException e) {
@@ -102,7 +91,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkSMSShareURL(), true, false);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkSMSShareURL());
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -137,7 +127,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkEmailShareURL(), true, false);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkEmailShareURL());
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -175,7 +166,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.shareTrackURL(), true, false);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.shareTrackURL());
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -205,7 +197,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.conversionURL(), true, false);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.conversionURL());
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -243,10 +236,14 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID(), true, true);
+                PusherChannel.setRequestId(System.currentTimeMillis());
+
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID());
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("X-Mbsy-Client-Session-ID", PusherChannel.getSessionId());
+                connection.setRequestProperty("X-Mbsy-Client-Request-ID", String.valueOf(PusherChannel.getRequestId()));
 
                 JSONObject identifyObject = new JSONObject();
-
                 try {
                     JSONObject augurObject = null;
                     try {
@@ -290,7 +287,9 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID(), true, false);
+                HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID());
+                connection.setRequestProperty("Content-Type", "application/json");
+
                 JSONObject dataObject = new JSONObject();
                 JSONObject nameObject = new JSONObject();
 
@@ -335,7 +334,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.pusherChannelNameURL(), true, false);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.pusherChannelNameURL());
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     final int responseCode = connection.getResponseCode();
@@ -365,7 +365,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("GET", url, true, false);
+                final HttpURLConnection connection = setUpConnection("GET", url);
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     final int responseCode = connection.getResponseCode();
@@ -506,7 +507,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", "https://www.linkedin.com/uas/oauth2/accessToken", false, false);
+                final HttpURLConnection connection = setUpConnection("POST", "https://www.linkedin.com/uas/oauth2/accessToken");
+
                 String charset = "UTF-8";
                 String urlParams = null;
 
@@ -567,6 +569,7 @@ public class RequestManager {
 
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     connection.setDoOutput(true);
                     connection.setDoInput(true);
                     connection.setRequestMethod("POST");
