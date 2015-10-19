@@ -65,9 +65,9 @@ public class AmbassadorConfig {
 
     static String pusherChannelNameURL() {
         if (AmbassadorConfig.isReleaseBuild) {
-            return "https://api.getambassador.com/session/subscribe/";
+            return "https://api.getambassador.com/auth/session/";
         } else {
-            return "https://dev-ambassador-api.herokuapp.com/session/subscribe/";
+            return "https://dev-ambassador-api.herokuapp.com/auth/session/";
         }
     }
 
