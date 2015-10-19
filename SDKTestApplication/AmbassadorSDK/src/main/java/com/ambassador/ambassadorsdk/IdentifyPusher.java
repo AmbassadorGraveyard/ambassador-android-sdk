@@ -141,16 +141,22 @@ class IdentifyPusher {
                 Utilities.debugLog("IdentifyPusher", "data = " + data);
 
                 try {
-                    JSONObject pusherObject = new JSONObject(data);
-
-                    //make sure the request id coming back is for the one we sent off
-                    if (pusherObject.getLong("request_id") != PusherChannel.getRequestId()) return;
+                    final JSONObject pusherObject = new JSONObject(data);
 
                     if (pusherObject.has("url")) {
                         requestManager.externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
                             @Override
                             public void onSuccess(Object successResponse) {
                                 Utilities.debugLog("IdentifyPusher External", "Saved pusher object as String = " + successResponse.toString());
+
+                                try {
+                                    final JSONObject pusherUrlObject = new JSONObject(successResponse.toString());
+                                    //make sure the request id coming back is for the one we sent off
+                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId()) return;
+                                }
+                                catch(JSONException e) {
+                                    e.printStackTrace();
+                                }
                                 setPusherInfo(successResponse.toString());
                             }
 
@@ -160,6 +166,8 @@ class IdentifyPusher {
                             }
                         });
                     } else {
+                        //make sure the request id coming back is for the one we sent off
+                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId()) return;
                         setPusherInfo(data);
                     }
                 } catch (JSONException e) {
