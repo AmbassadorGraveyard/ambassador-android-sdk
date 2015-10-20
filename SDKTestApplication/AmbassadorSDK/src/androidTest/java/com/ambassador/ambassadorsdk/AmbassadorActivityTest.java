@@ -111,7 +111,7 @@ public class AmbassadorActivityTest {
         //perform injection
         component.inject(this);
 
-        final String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
+        final String pusher = "{\"email\":\"anonymous_user_1900@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
 
         doNothing().when(ambassadorConfig).setRafParameters(anyString(), anyString(), anyString(), anyString());
         doNothing().when(ambassadorConfig).setURL(anyString());
@@ -151,7 +151,7 @@ public class AmbassadorActivityTest {
     public void afterEachTest() {
     }
 
-    @Test
+    //@Test
     public void testMainLayout() {
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
@@ -163,7 +163,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
     }
 
-    @Test
+    //@Test
     public void testFacebook() {
         //TODO: remove hardcoded id check, try to get withText working
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
@@ -176,7 +176,7 @@ public class AmbassadorActivityTest {
         //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
     }
 
-    @Test
+    //@Test
     public void testContactsEmail() {
         //start recording fired Intents
         Intents.init();
@@ -314,9 +314,15 @@ public class AmbassadorActivityTest {
 
         //test to make sure you're seeing SMS and not email
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
+        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
+        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnSend)).check(matches(isEnabled()));
+
+        onView(withId(R.id.btnSend)).perform(click());
+        pressBack();
     }
 
-    @Test
+    //@Test
     public void testLinkedIn() {
         //TODO: test linkedInLoginActivity (see strategy in testTwitter
 
@@ -408,7 +414,7 @@ public class AmbassadorActivityTest {
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
-    @Test
+    //@Test
     public void testTwitter() {
         //TODO: finish the test for twitterloginactivity once we can type into webviews, strategy outlined below
         //mock token as null so login screen gets presented
@@ -532,7 +538,7 @@ public class AmbassadorActivityTest {
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
-    @Test
+    //@Test
     public void testCustomImages() {
         int drawableId = context.getResources().getIdentifier("raf_logo", "drawable", context.getPackageName());
         int pos;
