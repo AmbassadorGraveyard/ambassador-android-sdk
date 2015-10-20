@@ -39,10 +39,6 @@ class IdentifyPusher {
         AmbassadorSingleton.getComponent().inject(this);
     }
 
-    interface PusherCompletion {
-        void pusherEventTriggered(String data);
-    }
-
     public void createPusher() {
         requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
             @Override
