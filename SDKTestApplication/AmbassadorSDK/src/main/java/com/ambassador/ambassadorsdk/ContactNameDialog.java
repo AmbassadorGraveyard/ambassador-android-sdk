@@ -61,11 +61,11 @@ class ContactNameDialog extends Dialog {
             }
         });
 
-        Button btnSend = (Button)findViewById(R.id.btnSend);
-        btnSend.setOnClickListener(new View.OnClickListener() {
+        Button btnContinue = (Button)findViewById(R.id.btnContinue);
+        btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _continueSending();
+                continueSending();
             }
         });
     }
@@ -75,7 +75,7 @@ class ContactNameDialog extends Dialog {
         inputManager.showSoftInput(etFirstName, 0);
     }
 
-    private void _continueSending() {
+    void continueSending() {
         if (etFirstName.getText().toString().isEmpty()) {
             Toast.makeText(getOwnerActivity(), "Hmm, your entry is suspiciously blank", Toast.LENGTH_SHORT).show();
             etFirstName.shakeEditText();
@@ -83,11 +83,11 @@ class ContactNameDialog extends Dialog {
             Toast.makeText(getOwnerActivity(), "Hmm, your entry is suspiciously blank", Toast.LENGTH_SHORT).show();
             etLastName.shakeEditText();
         } else {
-            _handleNameInput(etFirstName.getText().toString(), etLastName.getText().toString());
+            handleNameInput(etFirstName.getText().toString(), etLastName.getText().toString());
         }
     }
 
-    private void _handleNameInput(String firstName, String lastName) {
+    void handleNameInput(String firstName, String lastName) {
         try {
             pusherData = new JSONObject(ambassadorConfig.getPusherInfo());
             pusherData.put("firstName", firstName);

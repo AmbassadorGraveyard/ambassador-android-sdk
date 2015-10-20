@@ -111,7 +111,7 @@ public class AmbassadorActivityTest {
         //perform injection
         component.inject(this);
 
-        final String pusher = "{\"email\":\"anonymous_user_1900@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
+        String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
 
         doNothing().when(ambassadorConfig).setRafParameters(anyString(), anyString(), anyString(), anyString());
         doNothing().when(ambassadorConfig).setURL(anyString());
@@ -314,12 +314,42 @@ public class AmbassadorActivityTest {
 
         //test to make sure you're seeing SMS and not email
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
+
+        //this email will force the contact name dialog to come up when submitting
+        String pusher = "{\"email\":\"anonymous_user_2000@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
+        when(ambassadorConfig.getPusherInfo()).thenReturn(pusher);
+
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
         onView(withId(R.id.btnSend)).check(matches(isEnabled()));
 
         onView(withId(R.id.btnSend)).perform(click());
+        //contact name dialog should be displayed
+        onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
         pressBack();
+        onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
+
+        onView(withId(R.id.btnSend)).perform(click());
+        //contact name dialog should be displayed
+        onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnContinue)).perform(click());
+        verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
+
+        onView(withId(R.id.btnCancel)).perform(click());
+        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
+        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnSend)).check(matches(isEnabled()));
+        onView(withId(R.id.btnSend)).perform(click());
+
+        //contact name dialog should be displayed
+        onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
+        //TODO: type in first name
+        onView(withId(R.id.btnContinue)).perform(click());
+        verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
+        //TODO: type in last name
+        //TODO: click continue
+        //TODO: simulate a response
+        onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
     }
 
     //@Test
