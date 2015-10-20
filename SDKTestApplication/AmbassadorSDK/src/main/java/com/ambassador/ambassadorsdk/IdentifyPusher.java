@@ -118,8 +118,6 @@ class IdentifyPusher {
             }
         }, ConnectionState.ALL);
 
-        pusher.connect();
-
         pusher.subscribePrivate(PusherChannel.getchannelName(), new PrivateChannelEventListener() {
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
