@@ -1,5 +1,7 @@
-package com.ambassador.ambassadorsdk;
+package com.example.ambassador.ambassadorsdk;
 
+import android.app.Application;
+import android.app.Instrumentation;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -19,10 +21,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Random;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.Component;
+
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -40,18 +49,28 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  * Created by JakeDunahee on 9/9/15.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ClipData.class, Toast.class, AmbassadorActivity.class, Integer.class, AmbassadorConfig.class})
-public class AmbassadorActivityTest extends TestCase {
-    @Mock
-    private AmbassadorActivity ambassadorActivity;
+@PrepareForTest({ClipData.class, Toast.class, AmbassadorActivity.class, Integer.class, AmbassadorSingleton.class})
+public class AmbassadorActivityUnitTest extends TestCase {
+    AmbassadorActivity ambassadorActivity = spy(new AmbassadorActivity());
 
-    String valueString;
+    @Inject
+    AmbassadorSingleton ambassadorSingleton;
+
+    @Singleton
+    @Component(modules = {AmbassadorApplicationModule.class})
+    public interface TestComponent {
+        void inject(AmbassadorActivityUnitTest ambassadorActivityUnitTest);
+    }
 
     @Before
     public void setup() {
-//        MockitoAnnotations.initMocks(this);
-        ambassadorActivity = spy(AmbassadorActivity.class);
+        MockitoAnnotations.initMocks(this);
 
+        AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
+        amb.setMockMode(true);
+
+        TestComponent component = DaggerAmbassadorActivityUnitTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
+        component.inject(this);
     }
 
 
@@ -116,40 +135,42 @@ public class AmbassadorActivityTest extends TestCase {
         verify(ambassadorActivity).startActivity(mockIntent);
     }
 
-//    @Test
-//    public void tryAndSetURLTrueTest() throws Exception {
-//        // ARRANGE
-//        PowerMockito.mockStatic(Integer.class);
-//        PowerMockito.mockStatic(AmbassadorConfig.class);
-//        JSONArray mockArray = mock(JSONArray.class);
-//        JSONObject mockObject = mock(JSONObject.class);
-//        AmbassadorConfig mockSingleton = mock(AmbassadorConfig.class);
-//        EditText mockShortURLET = mock(EditText.class);
-//        String pusher = "{\"email\":\"jake@getambassador.com\"," +
-//                "\"firstName\":\"erer\",\"lastName\":\"ere\"," +
-//                "\"phoneNumber\":\"null\"," +
-//                "\"urls\":[" +
-//                "{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}" +
-//                "]}";
-//
-//        // ACT
-//        whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
-//        when(mockSingleton.getInstance()).thenReturn(mockSingleton);
-//        when(mockSingleton.getCampaignID()).thenReturn("0");
-//        doNothing().when(mockSingleton).setRafDefaultMessage(anyString());
-//        doNothing().when(mockShortURLET).setText(anyString());
-//        doNothing().when(mockSingleton).setURL(anyString());
-//        doNothing().when(mockSingleton).setShortCode(anyString());
-//        doNothing().when(mockSingleton).setEmailSubject(anyString());
-//        when(mockObject.getString(anyString())).thenReturn("String");
-//        when(mockObject.getJSONArray("urls")).thenReturn(mockArray);
-//        when(mockArray.getJSONObject(anyInt())).thenReturn(mockObject);
-//        doReturn(new Integer(3)).when(mockArray).length();
-//        doReturn(0).when(mockObject).getInt("campaign_uid");
-//        PowerMockito.when(Integer.parseInt(anyString())).thenReturn(new Integer(0));
-//
-//        // ASSERT
-//        ambassadorActivity.tryAndSetURL(pusher, "Test message");
-//        verify(ambassadorActivity).tryAndSetURL(pusher, "Test message");
-//    }
+    @Test
+    public void tryAndSetURLTrueTest() throws Exception {
+        // ARRANGE
+        PowerMockito.mockStatic(Integer.class);
+        PowerMockito.mockStatic(AmbassadorSingleton.class);
+        CustomEditText mockCustomEditText = mock(CustomEditText.class);
+        JSONArray mockArray = mock(JSONArray.class);
+        JSONObject mockObject = mock(JSONObject.class);
+        ambassadorActivity.ambassadorSingleton = ambassadorSingleton;
+        ambassadorActivity.etShortUrl = mockCustomEditText;
+        EditText mockShortURLET = mock(EditText.class);
+        String pusher = "{\"email\":\"jake@getambassador.com\"," +
+                "\"firstName\":\"erer\",\"lastName\":\"ere\"," +
+                "\"phoneNumber\":\"null\"," +
+                "\"urls\":[" +
+                "{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}" +
+                "]}";
+
+        // ACT
+        whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
+        when(ambassadorSingleton.getCampaignID()).thenReturn("0");
+        doNothing().when(ambassadorSingleton).setRafDefaultMessage(anyString());
+        doNothing().when(mockShortURLET).setText(anyString());
+        doNothing().when(ambassadorSingleton).saveURL(anyString());
+        doNothing().when(ambassadorSingleton).saveShortCode(anyString());
+        doNothing().when(ambassadorSingleton).saveEmailSubject(anyString());
+        doNothing().when(mockCustomEditText).setText(anyString());
+        when(mockObject.getString(anyString())).thenReturn("String");
+        when(mockObject.getJSONArray("urls")).thenReturn(mockArray);
+        when(mockArray.getJSONObject(anyInt())).thenReturn(mockObject);
+        doReturn(new Integer(3)).when(mockArray).length();
+        doReturn(0).when(mockObject).getInt("campaign_uid");
+        PowerMockito.when(Integer.parseInt(anyString())).thenReturn(new Integer(0));
+
+        // ASSERT
+        ambassadorActivity.tryAndSetURL(pusher, "Test message");
+        verify(ambassadorActivity).tryAndSetURL(pusher, "Test message");
+    }
 }
