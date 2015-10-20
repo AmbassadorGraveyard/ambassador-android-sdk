@@ -114,7 +114,7 @@ class IdentifyPusher {
 
             @Override
             public void onError(String s, String s1, Exception e) {
-                Utilities.debugLog("IdentifyPusher", "There was a problem connecting to IdentifyPusher" + "Exception = " + e);
+                Utilities.debugLog("IdentifyPusher", "There was a problem connecting to IdentifyPusher" + "Exception = " + s);
             }
         }, ConnectionState.ALL);
 
