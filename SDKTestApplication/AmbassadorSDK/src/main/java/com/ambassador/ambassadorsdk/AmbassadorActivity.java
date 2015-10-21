@@ -175,7 +175,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
 
         //otherwise, resubscribe to pusher and then call API Identify
-        PusherSDK pusher = new PusherSDK(AmbassadorSingleton.get());
+        PusherChannel.setSessionId(null);
+        PusherChannel.setChannelName(null);
+        PusherChannel.setExpiresAt(null);
+        PusherChannel.setRequestId(-1);
+        PusherSDK pusher = new PusherSDK();
         pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
             @Override
             public void pusherSubscribed() {
