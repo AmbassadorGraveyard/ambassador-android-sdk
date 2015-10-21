@@ -11,9 +11,6 @@ import android.widget.Button;
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -29,13 +26,15 @@ public class MainActivity extends AppCompatActivity {
         //prod
         //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
 
-        Timer t = new Timer();
+/*        Timer t = new Timer();
         t.schedule(new TimerTask() {
             @Override
             public void run() {
                 AmbassadorSDK.identify("jake@getambassador.com");
             }
-        }, 10000);
+        }, 10000);*/
+
+        AmbassadorSDK.identify("jake@getambassador.com");
 
         Button btnRAF = (Button)findViewById(R.id.btnShowRAF);
         btnRAF.setOnClickListener(new View.OnClickListener() {
