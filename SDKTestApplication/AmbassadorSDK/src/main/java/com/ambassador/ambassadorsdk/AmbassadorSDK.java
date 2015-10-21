@@ -66,8 +66,12 @@ public class AmbassadorSDK {
         IIdentify identify = new Identify();
         identify.getIdentity();
 
-        IdentifyPusher pusher = new IdentifyPusher(context, ambassadorConfig);
-        pusher.createPusher();
+        PusherSDK pusher = new PusherSDK(context);
+        pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
+            @Override
+            public void pusherSubscribed() {
+            }
+        });
     }
 
     void localRunWithKeys(String universalToken, String universalID) {

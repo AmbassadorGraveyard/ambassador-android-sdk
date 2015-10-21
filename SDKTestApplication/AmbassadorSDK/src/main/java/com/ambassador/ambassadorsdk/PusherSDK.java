@@ -27,24 +27,31 @@ import javax.inject.Inject;
 /**
  * Created by JakeDunahee on 9/1/15.
  */
-class IdentifyPusher {
+class PusherSDK {
+    interface PusherSubscribeCallback {
+        void pusherSubscribed();
+    }
+
     Context context;
+    PusherSubscribeCallback pusherSubscribeCallback;
+
+    @Inject
     AmbassadorConfig ambassadorConfig;
 
     @Inject
     RequestManager requestManager;
 
-    public IdentifyPusher(Context context, AmbassadorConfig ambassadorConfig) {
+    public PusherSDK(Context context) {
         this.context = context;
-        this.ambassadorConfig = ambassadorConfig;
         AmbassadorSingleton.getComponent().inject(this);
     }
 
-    public void createPusher() {
+    public void createPusher(final PusherSubscribeCallback pusherSubscribeCallback) {
+        this.pusherSubscribeCallback = pusherSubscribeCallback;
         requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-                createPusherChannelSuccess(successResponse);
+                subscribePusher(successResponse);
             }
 
             @Override
@@ -54,7 +61,7 @@ class IdentifyPusher {
         });
     }
 
-    void createPusherChannelSuccess(Object successResponse) {
+    void subscribePusher(Object successResponse) {
         String sessionId = null;
         String expiresAt = null;
         String channelName = null;
@@ -81,19 +88,15 @@ class IdentifyPusher {
         PusherChannel.setExpiresAt(expiresAtDate);
 
         if (PusherChannel.isExpired()) {
-            createPusher();
+            createPusher(pusherSubscribeCallback);
             return;
         }
 
-        subscribePusher(ambassadorConfig.getUniversalKey());
-    }
-
-    void subscribePusher(String universalToken) {
-        // HttpAuthorizer is used to append headers and extra parameters to the initial IdentifyPusher authorization request
+        // HttpAuthorizer is used to append headers and extra parameters to the initial PusherSDK authorization request
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
 
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("Authorization", universalToken);
+        headers.put("Authorization", ambassadorConfig.getUniversalKey());
         authorizer.setHeaders(headers);
 
         HashMap<String, String> queryParams = new HashMap<>();
@@ -110,30 +113,30 @@ class IdentifyPusher {
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
-                Utilities.debugLog("IdentifyPusher", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
+                Utilities.debugLog("PusherSDK", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
             }
 
             @Override
             public void onError(String s, String s1, Exception e) {
-                Utilities.debugLog("IdentifyPusher", "There was a problem connecting to IdentifyPusher" + "Exception = " + s);
+                Utilities.debugLog("PusherSDK", "There was a problem connecting to PusherSDK" + "Exception = " + s);
             }
         }, ConnectionState.ALL);
 
         pusher.subscribePrivate(PusherChannel.getchannelName(), new PrivateChannelEventListener() {
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
-                Utilities.debugLog("IdentifyPusher", "Failed to subscribe to IdentifyPusher because " + message + ". The " +
+                Utilities.debugLog("PusherSDK", "Failed to subscribe to PusherSDK because " + message + ". The " +
                         "exception was " + e);
             }
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-                Utilities.debugLog("IdentifyPusher", "Successfully subscribed to " + channelName);
+                Utilities.debugLog("PusherSDK", "Successfully subscribed to " + channelName);
             }
 
             @Override
             public void onEvent(String channelName, String eventName, String data) {
-                Utilities.debugLog("IdentifyPusher", "data = " + data);
+                Utilities.debugLog("PusherSDK", "data = " + data);
 
                 try {
                     final JSONObject pusherObject = new JSONObject(data);
@@ -142,7 +145,7 @@ class IdentifyPusher {
                         requestManager.externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
                             @Override
                             public void onSuccess(Object successResponse) {
-                                Utilities.debugLog("IdentifyPusher External", "Saved pusher object as String = " + successResponse.toString());
+                                Utilities.debugLog("PusherSDK External", "Saved pusher object as String = " + successResponse.toString());
 
                                 try {
                                     final JSONObject pusherUrlObject = new JSONObject(successResponse.toString());
@@ -157,7 +160,7 @@ class IdentifyPusher {
 
                             @Override
                             public void onFailure(Object failureResponse) {
-                                Utilities.debugLog("IdentifyPusher External", "FAILED to save pusher object with error: " + failureResponse);
+                                Utilities.debugLog("PusherSDK External", "FAILED to save pusher object with error: " + failureResponse);
                             }
                         });
                     } else {
@@ -173,7 +176,7 @@ class IdentifyPusher {
     }
 
     void setPusherInfo(String jsonObject) {
-        // Functionality: Saves IdentifyPusher object to SharedPreferences
+        // Functionality: Saves PusherSDK object to SharedPreferences
         JSONObject pusherSave = new JSONObject();
 
         try {
