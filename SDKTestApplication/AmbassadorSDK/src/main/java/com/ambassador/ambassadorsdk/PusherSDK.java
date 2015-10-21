@@ -1,7 +1,6 @@
 package com.ambassador.ambassadorsdk;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -32,7 +31,6 @@ class PusherSDK {
         void pusherSubscribed();
     }
 
-    Context context;
     PusherSubscribeCallback pusherSubscribeCallback;
 
     @Inject
@@ -41,8 +39,7 @@ class PusherSDK {
     @Inject
     RequestManager requestManager;
 
-    public PusherSDK(Context context) {
-        this.context = context;
+    public PusherSDK() {
         AmbassadorSingleton.getComponent().inject(this);
     }
 
@@ -51,7 +48,15 @@ class PusherSDK {
         requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-                subscribePusher(successResponse);
+                //following code checks for a possible race condition
+                //SCENARIO: client app loads, identify gets called, but before the response
+                //comes back (thus before we have a pusher channel) the user clicks presentRAF
+                //in this case, the AmbassadorActivity sees that no channel is there and attempts
+                //to create one. Now we have two channels set up. So in the onSuccess of createPusher
+                //check if one exists. Therefore we only use the channel that was subscribed to first
+                if (PusherChannel.getSessionId() == null || PusherChannel.isExpired()) {
+                    subscribePusher(successResponse);
+                }
             }
 
             @Override
@@ -83,14 +88,14 @@ class PusherSDK {
         catch (ParseException e) {
             e.printStackTrace();
         }
-        PusherChannel.setSessionId(sessionId);
-        PusherChannel.setChannelName(channelName);
-        PusherChannel.setExpiresAt(expiresAtDate);
 
+        PusherChannel.setExpiresAt(expiresAtDate);
         if (PusherChannel.isExpired()) {
             createPusher(pusherSubscribeCallback);
             return;
         }
+        PusherChannel.setSessionId(sessionId);
+        PusherChannel.setChannelName(channelName);
 
         // HttpAuthorizer is used to append headers and extra parameters to the initial PusherSDK authorization request
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
@@ -131,6 +136,7 @@ class PusherSDK {
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
+                pusherSubscribeCallback.pusherSubscribed();
                 Utilities.debugLog("PusherSDK", "Successfully subscribed to " + channelName);
             }
 
@@ -191,7 +197,7 @@ class PusherSDK {
 
             //tell MainActivity to update edittext with url
             Intent intent = new Intent("pusherData");
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(AmbassadorSingleton.get()).sendBroadcast(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }

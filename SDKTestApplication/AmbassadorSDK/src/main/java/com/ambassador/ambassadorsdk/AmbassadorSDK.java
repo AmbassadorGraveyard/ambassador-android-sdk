@@ -52,21 +52,18 @@ public class AmbassadorSDK {
 
     // Package-private local functions
     void localPresentRAF(Context context, String campaignID) {
-        // Functionality: Present the RAF Screen using an intent from the passed class
         Intent intent = new Intent(context, AmbassadorActivity.class);
         ambassadorConfig.setCampaignID(campaignID);
         context.startActivity(intent);
     }
 
     void localIdentify(String identifier) {
-        // Functionality: Gets unique information from the device for tracking purposes
-        Context context = AmbassadorSingleton.get();
         ambassadorConfig.setUserEmail(identifier);
 
         IIdentify identify = new Identify();
         identify.getIdentity();
 
-        PusherSDK pusher = new PusherSDK(context);
+        PusherSDK pusher = new PusherSDK();
         pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
             @Override
             public void pusherSubscribed() {
@@ -75,14 +72,12 @@ public class AmbassadorSDK {
     }
 
     void localRunWithKeys(String universalToken, String universalID) {
-        // Functionality: Basically initializes the AmbassadorSDK
         ambassadorConfig.setUniversalToken(universalToken);
         ambassadorConfig.setUniversalID(universalID);
         startConversionTimer();
     }
 
     void localRunWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
-        // Functionality: Initializes SDK and converts for the first time running
         ambassadorConfig.setUniversalToken(universalToken);
         ambassadorConfig.setUniversalID(universalID);
         startConversionTimer();
