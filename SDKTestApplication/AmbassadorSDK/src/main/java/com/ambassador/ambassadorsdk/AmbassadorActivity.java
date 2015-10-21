@@ -66,7 +66,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     };
 
     final private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        // Executed when IdentifyPusher data is received, used to update the shortURL editText if loading screen is present
+        // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
             tryAndSetURL(ambassadorConfig.getPusherInfo(), ambassadorConfig.getRafParameters().defaultShareMessage);
@@ -168,13 +168,20 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         }, 30000);
 
-        if (PusherChannel.getSessionId() != null && PusherChannel.isExpired()) {
-            IdentifyPusher pusher = new IdentifyPusher(AmbassadorSingleton.get(), ambassadorConfig);
-            pusher.createPusher();
-        }
-        else {
+        //if we have a channel and it's not expired, call API Identify
+        if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired()) {
             requestManager.identifyRequest();
+            return;
         }
+
+        //otherwise, resubscribe to pusher and then call API Identify
+        PusherSDK pusher = new PusherSDK(AmbassadorSingleton.get());
+        pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
+            @Override
+            public void pusherSubscribed() {
+                requestManager.identifyRequest();
+            }
+        });
     }
 
     @Override
@@ -298,19 +305,19 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     // UI SETTER METHODS
     void tryAndSetURL(String pusherString, String initialShareMessage) {
-        // Functionality: Gets URL from IdentifyPusher
-        // First checks to see if IdentifyPusher info has already been saved to SharedPreferencs
+        // Functionality: Gets URL from PusherSDK
+        // First checks to see if PusherSDK info has already been saved to SharedPreferencs
         if (pd != null) {
             pd.dismiss();
             networkTimer.cancel();
         }
 
         try {
-            // We get a JSON object from the IdentifyPusher Info string saved to SharedPreferences
+            // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
             JSONObject pusherData = new JSONObject(pusherString);
             JSONArray urlArray = pusherData.getJSONArray("urls");
 
-            // Iterates throught all the urls in the IdentifyPusher object until we find one will a matching campaign ID
+            // Iterates throught all the urls in the PusherSDK object until we find one will a matching campaign ID
             for (int i = 0; i < urlArray.length(); i++) {
                 JSONObject urlObj = urlArray.getJSONObject(i);
                 int campID = urlObj.getInt("campaign_uid");
@@ -333,7 +340,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     private void _showNetworkError() {
-        // Functionality: After 30 seconds of waiting for data from IdentifyPusher/Augur, shows toast to user
+        // Functionality: After 30 seconds of waiting for data from PusherSDK/Augur, shows toast to user
         // stating that there is a network error and then dismisses the RAF activity
         timerHandler.post(myRunnable);
     }
