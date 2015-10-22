@@ -26,15 +26,6 @@ public class MainActivity extends AppCompatActivity {
         //prod
         //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
 
-/*        final Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                AmbassadorSDK.identify("jake@getambassador.com");
-                t.cancel();
-            }
-        }, 10000);*/
-
         AmbassadorSDK.identify("jake@getambassador.com");
 
         Button btnRAF = (Button)findViewById(R.id.btnShowRAF);
