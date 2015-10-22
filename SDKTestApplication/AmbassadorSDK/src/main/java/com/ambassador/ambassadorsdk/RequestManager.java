@@ -15,9 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-
 import java.util.List;
-
 
 import javax.inject.Inject;
 
@@ -46,7 +44,7 @@ public class RequestManager {
     }
 
     // region Helper Setup Functions
-    HttpURLConnection setUpConnection(String methodType, String url, boolean useJSONForPost) {
+    HttpURLConnection setUpConnection(String methodType, String url) {
         HttpURLConnection connection = null;
 
         try {
@@ -54,12 +52,6 @@ public class RequestManager {
             connection.setDoInput(true);
             if (methodType.equals("POST")) { connection.setDoOutput(true); }
             connection.setRequestMethod(methodType);
-            if (useJSONForPost) {
-                connection.setRequestProperty("Content-Type", "application/json");
-            } else {
-                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            }
-
             connection.setRequestProperty("MBSY_UNIVERSAL_ID", ambassadorConfig.getUniversalID());
             connection.setRequestProperty("Authorization", ambassadorConfig.getUniversalKey());
         } catch (IOException e) {
@@ -99,7 +91,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkSMSShareURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkSMSShareURL());
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -134,7 +127,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkEmailShareURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkEmailShareURL());
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -172,7 +166,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.shareTrackURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.shareTrackURL());
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -202,7 +197,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.conversionURL(), true);
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.conversionURL());
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
@@ -224,7 +220,6 @@ public class RequestManager {
                             }
                         }
                     });
-
                 } catch (IOException e) {
                     e.printStackTrace();
                     completion.onFailure("REGISTER CONVERSION Failure due to IOException - " + e.getMessage());
@@ -241,12 +236,22 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID(), true);
+                PusherChannel.setRequestId(System.currentTimeMillis());
+
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID());
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("X-Mbsy-Client-Session-ID", PusherChannel.getSessionId());
+                connection.setRequestProperty("X-Mbsy-Client-Request-ID", String.valueOf(PusherChannel.getRequestId()));
 
                 JSONObject identifyObject = new JSONObject();
-
                 try {
-                    JSONObject augurObject = new JSONObject(ambassadorConfig.getIdentifyObject());
+                    JSONObject augurObject = null;
+                    try {
+                        augurObject = new JSONObject(ambassadorConfig.getIdentifyObject());
+                    }
+                    catch (NullPointerException e) {
+                        Utilities.debugLog("IdentifyRequest", "augurObject NULL");
+                    }
                     identifyObject.put("enroll", true);
                     identifyObject.put("campaign_id", ambassadorConfig.getCampaignID());
                     identifyObject.put("email", ambassadorConfig.getUserEmail());
@@ -268,8 +273,7 @@ public class RequestManager {
 
                     final int responseCode = connection.getResponseCode();
                     String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Response Code = " + responseCode +
-                            " and Response = " + response);
+                    Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Response Code = " + responseCode + " and Response = " + response);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Failure due to IOException - " + e.getMessage());
@@ -283,7 +287,9 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID(), true);
+                HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID());
+                connection.setRequestProperty("Content-Type", "application/json");
+
                 JSONObject dataObject = new JSONObject();
                 JSONObject nameObject = new JSONObject();
 
@@ -324,16 +330,48 @@ public class RequestManager {
         new Thread(runnable).start();
     }
 
+    void createPusherChannel(final RequestCompletion completion) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.pusherChannelNameURL());
+                connection.setRequestProperty("Content-Type", "application/json");
+
+                try {
+                    final int responseCode = connection.getResponseCode();
+                    final String response = getResponse(connection, responseCode);
+                    Utilities.debugLog("createPusherChannel", "CREATE PUSHER CHANNEL Response Code = " + responseCode + " and Response = " + response);
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
+                                completion.onSuccess(response);
+                            } else {
+                                completion.onFailure(response);
+                            }
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    completion.onFailure("Create PusherSDK Channel Failure due to IOException - " + e.getMessage());
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+
     void externalPusherRequest(final String url, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("GET", url, true);
+                final HttpURLConnection connection = setUpConnection("GET", url);
+                connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
                     final int responseCode = connection.getResponseCode();
                     String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("Pusher", "EXTERNAL PUSHER CALL Response Code = " + responseCode +
+                    Utilities.debugLog("PusherSDK", "EXTERNAL PUSHER CALL Response Code = " + responseCode +
                                                                 " and Response = " + response);
 
                     if (Utilities.isSuccessfulResponseCode(responseCode)) {
@@ -343,7 +381,7 @@ public class RequestManager {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("External Pusher Request failure due to IOException - " + e.getMessage());
+                    completion.onFailure("External PusherSDK Request failure due to IOException - " + e.getMessage());
                 }
             }
         };
@@ -469,7 +507,8 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", "https://www.linkedin.com/uas/oauth2/accessToken", false);
+                final HttpURLConnection connection = setUpConnection("POST", "https://www.linkedin.com/uas/oauth2/accessToken");
+
                 String charset = "UTF-8";
                 String urlParams = null;
 
@@ -530,6 +569,7 @@ public class RequestManager {
 
                 try {
                     HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     connection.setDoOutput(true);
                     connection.setDoInput(true);
                     connection.setRequestMethod("POST");
