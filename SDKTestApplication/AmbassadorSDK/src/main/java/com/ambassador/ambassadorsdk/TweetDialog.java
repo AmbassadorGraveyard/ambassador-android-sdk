@@ -79,6 +79,7 @@ class TweetDialog extends Dialog {
                 public void onSuccess(Object successResponse) {
                     loader.setVisibility(View.GONE);
                     Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+                    requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.TWITTER);
                     dismiss();
                 }
 

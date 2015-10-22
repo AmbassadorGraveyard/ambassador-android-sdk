@@ -52,7 +52,7 @@ public class BulkShareHelper {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    requestManager.bulkShareTrack(contacts, true);
+                    requestManager.bulkShareTrack(contacts, SocialServiceTrackType.SMS);
                     completion.bulkShareSuccess();
                 }
 
@@ -65,7 +65,7 @@ public class BulkShareHelper {
             requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successReponse) {
-                    requestManager.bulkShareTrack(contacts, false);
+                    requestManager.bulkShareTrack(contacts, SocialServiceTrackType.EMAIL);
                     completion.bulkShareSuccess();
                 }
 
@@ -113,7 +113,7 @@ public class BulkShareHelper {
 
     // JSON OBJECT MAKER
     static JSONArray contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
-        // Functionality: Creates a jsonArray of jsonobjects created from validated phone numbers and email addresses
+        // Functionality: Creates a jsonArray of jsonObjects created from validated phone numbers and email addresses
         String socialName = trackType.toString();
         JSONArray objectsList = new JSONArray();
         for (int i = 0; i < values.size(); i++) {
@@ -122,15 +122,19 @@ public class BulkShareHelper {
                 newObject.put("short_code", shortCode);
                 newObject.put("social_name", socialName);
 
-                if (trackType == SocialServiceTrackType.SMS) {
-                    newObject.put("recipient_email", "");
-                    newObject.put("recipient_username", values.get(i));
-                } else if (trackType == SocialServiceTrackType.EMAIL) {
-                    newObject.put("recipient_email", values.get(i));
-                    newObject.put("recipient_username", "");
-                } else {
-                    newObject.put("recipient_email", "");
-                    newObject.put("recipient_username", "");
+                switch (trackType) {
+                    case SMS:
+                        newObject.put("recipient_email", "");
+                        newObject.put("recipient_username", values.get(i));
+                        break;
+                    case EMAIL:
+                        newObject.put("recipient_email", values.get(i));
+                        newObject.put("recipient_username", "");
+                        break;
+                    default:
+                        newObject.put("recipient_email", "");
+                        newObject.put("recipient_username", "");
+                        break;
                 }
 
                 objectsList.put(newObject);
@@ -140,6 +144,11 @@ public class BulkShareHelper {
         }
 
         return objectsList;
+    }
+
+    // Overloaded method for optional list parameter
+    static JSONArray contactArray(SocialServiceTrackType trackType, String shortCode) {
+        return contactArray(null, trackType, shortCode);
     }
 
     static JSONObject payloadObjectForEmail(List<String> emails, String shortCode, String emailSubject, String message) {
