@@ -13,13 +13,12 @@ import com.ambassador.ambassadorsdk.ConversionParameters;
 
 
 public class MainActivity extends AppCompatActivity {
-    Button btnRAF;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Context cxt = this;
+        final Context context = this;
 
         //dev
         AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
@@ -27,18 +26,27 @@ public class MainActivity extends AppCompatActivity {
         //prod
         //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
 
+/*        final Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                AmbassadorSDK.identify("jake@getambassador.com");
+                t.cancel();
+            }
+        }, 10000);*/
+
         AmbassadorSDK.identify("jake@getambassador.com");
 
-        btnRAF = (Button)findViewById(R.id.btnShowRAF);
+        Button btnRAF = (Button)findViewById(R.id.btnShowRAF);
         btnRAF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AmbassadorSDK.presentRAF(cxt, "260");
+                AmbassadorSDK.presentRAF(context, "260");
 
                 ConversionParameters conversionParameters = new ConversionParameters();
                 conversionParameters.mbsy_first_name = "Jake";
                 conversionParameters.mbsy_last_name = "Dunahee";
-                conversionParameters.mbsy_email = "jake@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParamtersException
+                conversionParameters.mbsy_email = "jake@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
                 conversionParameters.mbsy_campaign = 305;
                 conversionParameters.mbsy_revenue = 200;
 
