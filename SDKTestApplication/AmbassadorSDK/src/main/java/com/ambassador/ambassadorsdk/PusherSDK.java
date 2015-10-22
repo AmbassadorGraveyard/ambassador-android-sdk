@@ -31,8 +31,6 @@ class PusherSDK {
         void pusherSubscribed();
     }
 
-    PusherSubscribeCallback pusherSubscribeCallback;
-
     @Inject
     AmbassadorConfig ambassadorConfig;
 
@@ -44,7 +42,6 @@ class PusherSDK {
     }
 
     public void createPusher(final PusherSubscribeCallback pusherSubscribeCallback) {
-        this.pusherSubscribeCallback = pusherSubscribeCallback;
         requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
@@ -55,7 +52,7 @@ class PusherSDK {
                 //to create one. Now we have two channels set up. So in the onSuccess of createPusher
                 //check if one exists. Therefore we only use the channel that was subscribed to first
                 if (PusherChannel.getSessionId() == null || PusherChannel.isExpired()) {
-                    subscribePusher(successResponse);
+                    setupPusher(successResponse, pusherSubscribeCallback);
                 }
             }
 
@@ -66,7 +63,7 @@ class PusherSDK {
         });
     }
 
-    void subscribePusher(Object successResponse) {
+    void setupPusher(Object successResponse, PusherSubscribeCallback pusherSubscribeCallback) {
         String sessionId = null;
         String expiresAt = null;
         String channelName = null;
@@ -84,8 +81,7 @@ class PusherSDK {
         Date expiresAtDate = null;
         try {
             expiresAtDate = sdf.parse(expiresAt);
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
         }
 
@@ -97,6 +93,10 @@ class PusherSDK {
         PusherChannel.setSessionId(sessionId);
         PusherChannel.setChannelName(channelName);
 
+        subscribePusher(pusherSubscribeCallback);
+    }
+
+    void subscribePusher(final PusherSubscribeCallback pusherSubscribeCallback) {
         // HttpAuthorizer is used to append headers and extra parameters to the initial PusherSDK authorization request
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
 
@@ -114,11 +114,12 @@ class PusherSDK {
         options.setEncrypted(true);
 
         String key = AmbassadorConfig.isReleaseBuild ? AmbassadorConfig.PUSHER_KEY_PROD : AmbassadorConfig.PUSHER_KEY_DEV;
-        Pusher pusher = new com.pusher.client.Pusher(key, options);
+        final Pusher pusher = new com.pusher.client.Pusher(key, options);
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
                 Utilities.debugLog("PusherSDK", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
+                PusherChannel.setConnectionState(pusher.getConnection().getState());
             }
 
             @Override
@@ -156,9 +157,9 @@ class PusherSDK {
                                 try {
                                     final JSONObject pusherUrlObject = new JSONObject(successResponse.toString());
                                     //make sure the request id coming back is for the one we sent off
-                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId()) return;
-                                }
-                                catch(JSONException e) {
+                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId())
+                                        return;
+                                } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                                 setPusherInfo(successResponse.toString());
@@ -171,7 +172,8 @@ class PusherSDK {
                         });
                     } else {
                         //make sure the request id coming back is for the one we sent off
-                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId()) return;
+                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId())
+                            return;
                         setPusherInfo(data);
                     }
                 } catch (JSONException e) {
@@ -179,6 +181,15 @@ class PusherSDK {
                 }
             }
         }, "identify_action");
+
+/*        final Timer t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                pusher.disconnect();
+                t.cancel();
+            }
+        }, 10000);*/
     }
 
     void setPusherInfo(String jsonObject) {
