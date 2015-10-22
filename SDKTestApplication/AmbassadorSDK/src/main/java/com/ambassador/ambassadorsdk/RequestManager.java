@@ -162,7 +162,7 @@ public class RequestManager {
         new Thread(runnable).start();
     }
 
-    void bulkShareTrack(final List<ContactObject> contacts, final boolean isSMS) {
+    void bulkShareTrack(final List<ContactObject> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -171,24 +171,36 @@ public class RequestManager {
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    if (isSMS) {
-                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), isSMS, ambassadorConfig.getShortCode()).toString());
-                    } else {
-                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), isSMS, ambassadorConfig.getShortCode()).toString());
+
+                    switch (shareType) {
+                        case SMS:
+                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getShortCode()).toString());
+                            break;
+                        case EMAIL:
+                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getShortCode()).toString());
+                            break;
+                        default:
+                            oStream.writeBytes(BulkShareHelper.contactArray(shareType, ambassadorConfig.getShortCode()).toString());
                     }
+
                     oStream.flush();
                     oStream.close();
 
                     final int responseCode = connection.getResponseCode();
                     String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("BulkShare", "BULK SHARE TRACK Response Code = " + responseCode + " and Response = " + response);
+                    Utilities.debugLog("BulkShare", "BULK SHARE TRACK for " + shareType.toString() + " Response Code = " + responseCode + " and Response = " + response);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Utilities.debugLog("BulkShare", "BULK SHARE TRACK Failure due to IOException - " + e.getMessage());
+                    Utilities.debugLog("BulkShare", "BULK SHARE TRACK Failure for " + shareType.toString() + " due to IOException - " + e.getMessage());
                 }
             }
         };
         new Thread(runnable).start();
+    }
+
+    // Overloaded bulkShareTrack for instances where no contact list is passed
+    void bulkShareTrack(final BulkShareHelper.SocialServiceTrackType shareType) {
+        bulkShareTrack(null, shareType);
     }
     // endregion BULK SHARE
 
