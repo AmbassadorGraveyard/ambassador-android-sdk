@@ -24,6 +24,24 @@ public class BulkShareHelper {
         void bulkShareFailure();
     }
 
+    enum SocialServiceTrackType {
+        SMS("sms"),
+        EMAIL("email"),
+        TWITTER("twitter"),
+        FACEBOOK("facebook"),
+        LINKEDIN("linkedin");
+
+        private String stringValue;
+        SocialServiceTrackType(String toString) {
+            stringValue = toString;
+        }
+
+        @Override
+        public String toString() {
+            return stringValue;
+        }
+    }
+
     public BulkShareHelper() {
         AmbassadorSingleton.getComponent().inject(this);
     }
@@ -94,9 +112,9 @@ public class BulkShareHelper {
 
 
     // JSON OBJECT MAKER
-    static JSONArray contactArray(List<String> values, Boolean phoneNumbers, String shortCode) {
+    static JSONArray contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
         // Functionality: Creates a jsonArray of jsonobjects created from validated phone numbers and email addresses
-        String socialName = (phoneNumbers) ? "sms" : "email";
+        String socialName = trackType.toString();
         JSONArray objectsList = new JSONArray();
         for (int i = 0; i < values.size(); i++) {
             JSONObject newObject = new JSONObject();
@@ -104,11 +122,14 @@ public class BulkShareHelper {
                 newObject.put("short_code", shortCode);
                 newObject.put("social_name", socialName);
 
-                if (phoneNumbers) {
+                if (trackType == SocialServiceTrackType.SMS) {
                     newObject.put("recipient_email", "");
                     newObject.put("recipient_username", values.get(i));
-                } else {
+                } else if (trackType == SocialServiceTrackType.EMAIL) {
                     newObject.put("recipient_email", values.get(i));
+                    newObject.put("recipient_username", "");
+                } else {
+                    newObject.put("recipient_email", "");
                     newObject.put("recipient_username", "");
                 }
 
