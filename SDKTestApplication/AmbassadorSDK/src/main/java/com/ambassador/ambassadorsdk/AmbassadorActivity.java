@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.facebook.FacebookSdk;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.pusher.client.connection.ConnectionState;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -168,9 +169,22 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         }, 30000);
 
-        //if we have a channel and it's not expired, call API Identify
-        if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired()) {
+        //if we have a channel and it's not expired and connected, call API Identify
+        if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() == ConnectionState.CONNECTED) {
             requestManager.identifyRequest();
+            return;
+        }
+
+        PusherSDK pusher = new PusherSDK();
+        //if we have a channel and it's not expired but it's not currently connected, subscribe to the existing channel
+        if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() != ConnectionState.CONNECTED) {
+            pusher.subscribePusher(new PusherSDK.PusherSubscribeCallback() {
+               @Override
+               public void pusherSubscribed() {
+                   requestManager.identifyRequest();
+               }
+            });
+
             return;
         }
 
@@ -179,7 +193,6 @@ public class AmbassadorActivity extends AppCompatActivity {
         PusherChannel.setChannelName(null);
         PusherChannel.setExpiresAt(null);
         PusherChannel.setRequestId(-1);
-        PusherSDK pusher = new PusherSDK();
         pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
             @Override
             public void pusherSubscribed() {
