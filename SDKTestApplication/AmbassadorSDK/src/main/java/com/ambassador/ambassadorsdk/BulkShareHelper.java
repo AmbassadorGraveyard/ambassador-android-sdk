@@ -116,6 +116,11 @@ public class BulkShareHelper {
         // Functionality: Creates a jsonArray of jsonObjects created from validated phone numbers and email addresses
         String socialName = trackType.toString();
         JSONArray objectsList = new JSONArray();
+        if (values == null) {
+            values = new ArrayList<String>();
+            values.add("");
+        }
+
         for (int i = 0; i < values.size(); i++) {
             JSONObject newObject = new JSONObject();
             try {

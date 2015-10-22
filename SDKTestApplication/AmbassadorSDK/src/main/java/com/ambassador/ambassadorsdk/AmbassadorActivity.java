@@ -27,7 +27,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
@@ -52,6 +56,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     private ProgressDialog pd;
     private LinearLayout llMainLayout;
     private Timer networkTimer;
+    private CallbackManager callbackManager;
     private final android.os.Handler timerHandler = new android.os.Handler();
     private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
     private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
@@ -195,6 +200,12 @@ public class AmbassadorActivity extends AppCompatActivity {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
     // END ACTIVITY OVERRIDE METHODS
 
 
@@ -268,6 +279,25 @@ public class AmbassadorActivity extends AppCompatActivity {
                 .setContentTitle(ambassadorConfig.getRafParameters().defaultShareMessage)
                 .setContentUrl(Uri.parse(ambassadorConfig.getURL()))
                 .build();
+
+        callbackManager = CallbackManager.Factory.create();
+        fbDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+                Toast.makeText(getApplicationContext(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+                requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                Toast.makeText(getApplicationContext(), "Unable to post.  Please try again.", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         fbDialog.show(content);
     }
@@ -350,8 +380,6 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.homeToolBar));
         toolbar.setTitleTextColor(getResources().getColor(R.color.homeToolBarText));
-//        TextView toolbarTextView = (TextView) toolbar.findViewById(R.id.title);
-//        toolbarTextView.setText("tacos");
     }
     // END UI SETTER METHODS
 }
