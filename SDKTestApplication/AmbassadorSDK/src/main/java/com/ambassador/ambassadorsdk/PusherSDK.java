@@ -181,15 +181,6 @@ class PusherSDK {
                 }
             }
         }, "identify_action");
-
-/*        final Timer t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                pusher.disconnect();
-                t.cancel();
-            }
-        }, 10000);*/
     }
 
     void setPusherInfo(String jsonObject) {

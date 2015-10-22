@@ -14,11 +14,6 @@ public class PusherChannel {
     private static long requestId;
     private static ConnectionState connectionState;
 
-/*    public enum ConnectionState {
-        CONNECTED,
-        DISCONNECTED
-    }*/
-
     static void setSessionId(String id) {
         sessionId = id;
     }
