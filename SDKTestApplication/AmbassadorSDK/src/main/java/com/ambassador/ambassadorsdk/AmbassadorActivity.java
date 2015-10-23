@@ -34,6 +34,7 @@ import com.facebook.FacebookSdk;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.pusher.client.connection.ConnectionState;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,7 +72,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     };
 
     final private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        // Executed when IdentifyPusher data is received, used to update the shortURL editText if loading screen is present
+        // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
             tryAndSetURL(ambassadorConfig.getPusherInfo(), ambassadorConfig.getRafParameters().defaultShareMessage);
@@ -173,13 +174,36 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         }, 30000);
 
-        if (PusherChannel.getSessionId() != null && PusherChannel.isExpired()) {
-            IdentifyPusher pusher = new IdentifyPusher(AmbassadorSingleton.get(), ambassadorConfig);
-            pusher.createPusher();
-        }
-        else {
+        //if we have a channel and it's not expired and connected, call API Identify
+        if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() == ConnectionState.CONNECTED) {
             requestManager.identifyRequest();
+            return;
         }
+
+        PusherSDK pusher = new PusherSDK();
+        //if we have a channel and it's not expired but it's not currently connected, subscribe to the existing channel
+        if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() != ConnectionState.CONNECTED) {
+            pusher.subscribePusher(new PusherSDK.PusherSubscribeCallback() {
+               @Override
+               public void pusherSubscribed() {
+                   requestManager.identifyRequest();
+               }
+            });
+
+            return;
+        }
+
+        //otherwise, resubscribe to pusher and then call API Identify
+        PusherChannel.setSessionId(null);
+        PusherChannel.setChannelName(null);
+        PusherChannel.setExpiresAt(null);
+        PusherChannel.setRequestId(-1);
+        pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
+            @Override
+            public void pusherSubscribed() {
+                requestManager.identifyRequest();
+            }
+        });
     }
 
     @Override
@@ -328,19 +352,19 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     // UI SETTER METHODS
     void tryAndSetURL(String pusherString, String initialShareMessage) {
-        // Functionality: Gets URL from IdentifyPusher
-        // First checks to see if IdentifyPusher info has already been saved to SharedPreferencs
+        // Functionality: Gets URL from PusherSDK
+        // First checks to see if PusherSDK info has already been saved to SharedPreferencs
         if (pd != null) {
             pd.dismiss();
             networkTimer.cancel();
         }
 
         try {
-            // We get a JSON object from the IdentifyPusher Info string saved to SharedPreferences
+            // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
             JSONObject pusherData = new JSONObject(pusherString);
             JSONArray urlArray = pusherData.getJSONArray("urls");
 
-            // Iterates throught all the urls in the IdentifyPusher object until we find one will a matching campaign ID
+            // Iterates throught all the urls in the PusherSDK object until we find one will a matching campaign ID
             for (int i = 0; i < urlArray.length(); i++) {
                 JSONObject urlObj = urlArray.getJSONObject(i);
                 int campID = urlObj.getInt("campaign_uid");
@@ -363,7 +387,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     private void _showNetworkError() {
-        // Functionality: After 30 seconds of waiting for data from IdentifyPusher/Augur, shows toast to user
+        // Functionality: After 30 seconds of waiting for data from PusherSDK/Augur, shows toast to user
         // stating that there is a network error and then dismisses the RAF activity
         timerHandler.post(myRunnable);
     }
