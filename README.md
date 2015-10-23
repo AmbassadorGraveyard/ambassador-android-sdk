@@ -242,11 +242,3 @@ _Note_: The RAFLogoPosition element is ignored when no `raf_logo.png` is present
 The following images show the logo in the various positions set in the custom values:
 
 <img src="screenshots/rafLogoPosition1.png" />
-
-<img src="screenshots/rafLogoPosition2.png" />
-
-<img src="screenshots/rafLogoPosition3.png" />
-
-<img src="screenshots/rafLogoPosition4.png" />
-
-<img src="screenshots/rafLogoPosition5.png" />
