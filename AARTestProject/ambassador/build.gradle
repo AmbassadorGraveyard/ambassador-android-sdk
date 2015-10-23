@@ -39,7 +39,7 @@ dependencies {
     compile 'com.pusher:pusher-java-client:0.3.3'
     compile 'org.slf4j:slf4j-android:1.7.12'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
-    compile(name: 'augur', ext: 'aar')
+    compile(name: 'augur-v1.2.0', ext: 'aar')
     compile(name:'AmbassadorSDK-release', ext:'aar')
     compile "com.google.dagger:dagger:2.0"
     apt "com.google.dagger:dagger-compiler:2.0"
