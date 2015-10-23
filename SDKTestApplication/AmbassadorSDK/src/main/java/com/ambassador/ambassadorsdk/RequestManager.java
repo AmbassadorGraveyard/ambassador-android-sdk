@@ -114,7 +114,7 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                     mHandler.post(new Runnable() {
                         @Override
@@ -158,7 +158,7 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                     mHandler.post(new Runnable() {
                         @Override
@@ -242,7 +242,7 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                     mHandler.post(new Runnable() {
                         @Override
@@ -345,7 +345,7 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (JSONException e) {
+                } catch (final JSONException e) {
                     e.printStackTrace();
                     mHandler.post(new Runnable() {
                         @Override
@@ -353,7 +353,7 @@ public class RequestManager {
                             completion.onFailure("Update call failed with JSONException - " + e.getMessage());
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                     mHandler.post(new Runnable() {
                         @Override
@@ -389,7 +389,7 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                     mHandler.post(new Runnable() {
                         @Override
@@ -421,7 +421,7 @@ public class RequestManager {
                     } else {
                         completion.onFailure(response);
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
                     mHandler.post(new Runnable() {
                         @Override
