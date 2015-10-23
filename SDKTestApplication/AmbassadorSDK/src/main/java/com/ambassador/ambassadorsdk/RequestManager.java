@@ -114,9 +114,14 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Bulk SMS Share Failure due to IOExceiption - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Bulk SMS Share Failure due to IOExceiption - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -153,16 +158,21 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Bulk Share Email Failure due to IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Bulk Share Email Failure due to IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
         new Thread(runnable).start();
     }
 
-    void bulkShareTrack(final List<ContactObject> contacts, final boolean isSMS) {
+    void bulkShareTrack(final List<ContactObject> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -171,24 +181,36 @@ public class RequestManager {
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    if (isSMS) {
-                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), isSMS, ambassadorConfig.getShortCode()).toString());
-                    } else {
-                        oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), isSMS, ambassadorConfig.getShortCode()).toString());
+
+                    switch (shareType) {
+                        case SMS:
+                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getShortCode()).toString());
+                            break;
+                        case EMAIL:
+                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getShortCode()).toString());
+                            break;
+                        default:
+                            oStream.writeBytes(BulkShareHelper.contactArray(shareType, ambassadorConfig.getShortCode()).toString());
                     }
+
                     oStream.flush();
                     oStream.close();
 
                     final int responseCode = connection.getResponseCode();
                     String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("BulkShare", "BULK SHARE TRACK Response Code = " + responseCode + " and Response = " + response);
+                    Utilities.debugLog("BulkShare", "BULK SHARE TRACK for " + shareType.toString() + " Response Code = " + responseCode + " and Response = " + response);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Utilities.debugLog("BulkShare", "BULK SHARE TRACK Failure due to IOException - " + e.getMessage());
+                    Utilities.debugLog("BulkShare", "BULK SHARE TRACK Failure for " + shareType.toString() + " due to IOException - " + e.getMessage());
                 }
             }
         };
         new Thread(runnable).start();
+    }
+
+    // Overloaded bulkShareTrack for instances where no contact list is passed
+    void bulkShareTrack(final BulkShareHelper.SocialServiceTrackType shareType) {
+        bulkShareTrack(null, shareType);
     }
     // endregion BULK SHARE
 
@@ -220,9 +242,14 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("REGISTER CONVERSION Failure due to IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("REGISTER CONVERSION Failure due to IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -318,12 +345,22 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (JSONException e) {
+                } catch (final JSONException e) {
                     e.printStackTrace();
-                    completion.onFailure("Update call failed with JSONException - " + e.getMessage());
-                } catch (IOException e) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Update call failed with JSONException - " + e.getMessage());
+                        }
+                    });
+                } catch (final IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Update call failed with IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Update call failed with IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -352,9 +389,14 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Create PusherSDK Channel Failure due to IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Create PusherSDK Channel Failure due to IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -379,9 +421,14 @@ public class RequestManager {
                     } else {
                         completion.onFailure(response);
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("External PusherSDK Request failure due to IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("External PusherSDK Request failure due to IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -552,9 +599,14 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Failure with IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Failure with IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -597,11 +649,16 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Linkedin Post FAILED due to IOException - " + e.getMessage());
-                }
 
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Linkedin Post FAILED due to IOException - " + e.getMessage());
+                        }
+                    });
+                }
             }
         };
         new Thread(runnable).start();
