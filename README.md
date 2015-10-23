@@ -97,7 +97,9 @@ desktop or another place that you can easily access.
 
           // Use this 'run' method if you DON'T want to
           // register a conversion on the first launch of your app.
-          AmbassadorSDK.runWithKeys("your_universal_key", "your_universal_ID");
+          // You will need to pass in your application's context as the first
+          // parameter so that our SDK can access it
+          AmbassadorSDK.runWithKeys(getApplicationContext(), "your_universal_key", "your_universal_ID");
 
           // -- OR --
 
@@ -105,7 +107,7 @@ desktop or another place that you can easily access.
           // then create a ConversionParameters object to pass to the method below
           ConversionParameters parameters = new ConversionParameters();
           // ** Would set the parameter properties here (find out more in 'Conversions' section)
-          AmbassadorSDK.runWithKeysAndConvertOnInstall("your_universal_key", "your_universal_ID", parameters);
+          AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "your_universal_key", "your_universal_ID", parameters);
       }
    ```
 
