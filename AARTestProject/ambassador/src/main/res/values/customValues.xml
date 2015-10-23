@@ -23,7 +23,7 @@
     <string name="socialGridText">fonts/Roboto-RobotoRegular.ttf</string>
     <color name="contactsListViewBackground">@android:color/white</color>
     <dimen name="contactsListName">15sp</dimen>
-    <string name="contactsListName">fonts/Roboto-RobotoRegular.ttff</string>
+    <string name="contactsListName">fonts/Roboto-RobotoRegular.ttf</string>
     <dimen name="contactsListValue">12sp</dimen>
     <string name="contactsListValue">fonts/Roboto-RobotoRegular.ttf</string>
     <color name="contactsSendBackground">@android:color/white</color>

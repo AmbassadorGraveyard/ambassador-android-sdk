@@ -24,6 +24,24 @@ public class BulkShareHelper {
         void bulkShareFailure();
     }
 
+    enum SocialServiceTrackType {
+        SMS("sms"),
+        EMAIL("email"),
+        TWITTER("twitter"),
+        FACEBOOK("facebook"),
+        LINKEDIN("linkedin");
+
+        private String stringValue;
+        SocialServiceTrackType(String toString) {
+            stringValue = toString;
+        }
+
+        @Override
+        public String toString() {
+            return stringValue;
+        }
+    }
+
     public BulkShareHelper() {
         AmbassadorSingleton.getComponent().inject(this);
     }
@@ -34,7 +52,7 @@ public class BulkShareHelper {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    requestManager.bulkShareTrack(contacts, true);
+                    requestManager.bulkShareTrack(contacts, SocialServiceTrackType.SMS);
                     completion.bulkShareSuccess();
                 }
 
@@ -47,7 +65,7 @@ public class BulkShareHelper {
             requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successReponse) {
-                    requestManager.bulkShareTrack(contacts, false);
+                    requestManager.bulkShareTrack(contacts, SocialServiceTrackType.EMAIL);
                     completion.bulkShareSuccess();
                 }
 
@@ -94,22 +112,34 @@ public class BulkShareHelper {
 
 
     // JSON OBJECT MAKER
-    static JSONArray contactArray(List<String> values, Boolean phoneNumbers, String shortCode) {
-        // Functionality: Creates a jsonArray of jsonobjects created from validated phone numbers and email addresses
-        String socialName = (phoneNumbers) ? "sms" : "email";
+    static JSONArray contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
+        // Functionality: Creates a jsonArray of jsonObjects created from validated phone numbers and email addresses
+        String socialName = trackType.toString();
         JSONArray objectsList = new JSONArray();
+        if (values == null) {
+            values = new ArrayList<String>();
+            values.add("");
+        }
+
         for (int i = 0; i < values.size(); i++) {
             JSONObject newObject = new JSONObject();
             try {
                 newObject.put("short_code", shortCode);
                 newObject.put("social_name", socialName);
 
-                if (phoneNumbers) {
-                    newObject.put("recipient_email", "");
-                    newObject.put("recipient_username", values.get(i));
-                } else {
-                    newObject.put("recipient_email", values.get(i));
-                    newObject.put("recipient_username", "");
+                switch (trackType) {
+                    case SMS:
+                        newObject.put("recipient_email", "");
+                        newObject.put("recipient_username", values.get(i));
+                        break;
+                    case EMAIL:
+                        newObject.put("recipient_email", values.get(i));
+                        newObject.put("recipient_username", "");
+                        break;
+                    default:
+                        newObject.put("recipient_email", "");
+                        newObject.put("recipient_username", "");
+                        break;
                 }
 
                 objectsList.put(newObject);
@@ -119,6 +149,11 @@ public class BulkShareHelper {
         }
 
         return objectsList;
+    }
+
+    // Overloaded method for optional list parameter
+    static JSONArray contactArray(SocialServiceTrackType trackType, String shortCode) {
+        return contactArray(null, trackType, shortCode);
     }
 
     static JSONObject payloadObjectForEmail(List<String> emails, String shortCode, String emailSubject, String message) {

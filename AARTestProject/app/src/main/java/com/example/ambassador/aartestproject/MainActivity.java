@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 
 
 public class MainActivity extends AppCompatActivity {
