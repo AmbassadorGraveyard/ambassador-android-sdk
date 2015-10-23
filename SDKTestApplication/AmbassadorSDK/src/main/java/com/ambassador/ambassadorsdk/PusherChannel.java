@@ -1,5 +1,7 @@
 package com.ambassador.ambassadorsdk;
 
+import com.pusher.client.connection.ConnectionState;
+
 import java.util.Date;
 
 /**
@@ -10,6 +12,7 @@ public class PusherChannel {
     private static String channelName;
     private static Date expiresAt;
     private static long requestId;
+    private static ConnectionState connectionState;
 
     static void setSessionId(String id) {
         sessionId = id;
@@ -25,6 +28,10 @@ public class PusherChannel {
 
     static void setRequestId(long rId) {
         requestId = rId;
+    }
+
+    static void setConnectionState(ConnectionState connState) {
+        connectionState = connState;
     }
 
     static String getSessionId() {
@@ -45,5 +52,9 @@ public class PusherChannel {
 
     static Boolean isExpired() {
         return expiresAt.getTime() < System.currentTimeMillis();
+    }
+
+    static ConnectionState getConnectionState() {
+        return connectionState;
     }
 }

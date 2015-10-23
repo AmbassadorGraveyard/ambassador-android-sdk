@@ -394,7 +394,7 @@ public class RequestManager {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            completion.onFailure("Create IdentifyPusher Channel Failure due to IOException - " + e.getMessage());
+                            completion.onFailure("Create PusherSDK Channel Failure due to IOException - " + e.getMessage());
                         }
                     });
                 }
@@ -413,7 +413,7 @@ public class RequestManager {
                 try {
                     final int responseCode = connection.getResponseCode();
                     String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("IdentifyPusher", "EXTERNAL PUSHER CALL Response Code = " + responseCode +
+                    Utilities.debugLog("PusherSDK", "EXTERNAL PUSHER CALL Response Code = " + responseCode +
                                                                 " and Response = " + response);
 
                     if (Utilities.isSuccessfulResponseCode(responseCode)) {
@@ -426,7 +426,7 @@ public class RequestManager {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            completion.onFailure("External IdentifyPusher Request failure due to IOException - " + e.getMessage());
+                            completion.onFailure("External PusherSDK Request failure due to IOException - " + e.getMessage());
                         }
                     });
                 }

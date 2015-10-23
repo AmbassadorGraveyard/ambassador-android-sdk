@@ -1,7 +1,6 @@
 package com.ambassador.ambassadorsdk;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -27,24 +26,34 @@ import javax.inject.Inject;
 /**
  * Created by JakeDunahee on 9/1/15.
  */
-class IdentifyPusher {
-    Context context;
+class PusherSDK {
+    interface PusherSubscribeCallback {
+        void pusherSubscribed();
+    }
+
+    @Inject
     AmbassadorConfig ambassadorConfig;
 
     @Inject
     RequestManager requestManager;
 
-    public IdentifyPusher(Context context, AmbassadorConfig ambassadorConfig) {
-        this.context = context;
-        this.ambassadorConfig = ambassadorConfig;
+    public PusherSDK() {
         AmbassadorSingleton.getComponent().inject(this);
     }
 
-    public void createPusher() {
+    public void createPusher(final PusherSubscribeCallback pusherSubscribeCallback) {
         requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-                createPusherChannelSuccess(successResponse);
+                //following code checks for a possible race condition
+                //SCENARIO: client app loads, identify gets called, but before the response
+                //comes back (thus before we have a pusher channel) the user clicks presentRAF
+                //in this case, the AmbassadorActivity sees that no channel is there and attempts
+                //to create one. Now we have two channels set up. So in the onSuccess of createPusher
+                //check if one exists. Therefore we only use the channel that was subscribed to first
+                if (PusherChannel.getSessionId() == null || PusherChannel.isExpired()) {
+                    setupPusher(successResponse, pusherSubscribeCallback);
+                }
             }
 
             @Override
@@ -54,7 +63,7 @@ class IdentifyPusher {
         });
     }
 
-    void createPusherChannelSuccess(Object successResponse) {
+    void setupPusher(Object successResponse, PusherSubscribeCallback pusherSubscribeCallback) {
         String sessionId = null;
         String expiresAt = null;
         String channelName = null;
@@ -72,28 +81,27 @@ class IdentifyPusher {
         Date expiresAtDate = null;
         try {
             expiresAtDate = sdf.parse(expiresAt);
-        }
-        catch (ParseException e) {
+        } catch (ParseException e) {
             e.printStackTrace();
+        }
+
+        PusherChannel.setExpiresAt(expiresAtDate);
+        if (PusherChannel.isExpired()) {
+            createPusher(pusherSubscribeCallback);
+            return;
         }
         PusherChannel.setSessionId(sessionId);
         PusherChannel.setChannelName(channelName);
-        PusherChannel.setExpiresAt(expiresAtDate);
 
-        if (PusherChannel.isExpired()) {
-            createPusher();
-            return;
-        }
-
-        subscribePusher(ambassadorConfig.getUniversalKey());
+        subscribePusher(pusherSubscribeCallback);
     }
 
-    void subscribePusher(String universalToken) {
-        // HttpAuthorizer is used to append headers and extra parameters to the initial IdentifyPusher authorization request
+    void subscribePusher(final PusherSubscribeCallback pusherSubscribeCallback) {
+        // HttpAuthorizer is used to append headers and extra parameters to the initial PusherSDK authorization request
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
 
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("Authorization", universalToken);
+        headers.put("Authorization", ambassadorConfig.getUniversalKey());
         authorizer.setHeaders(headers);
 
         HashMap<String, String> queryParams = new HashMap<>();
@@ -106,34 +114,36 @@ class IdentifyPusher {
         options.setEncrypted(true);
 
         String key = AmbassadorConfig.isReleaseBuild ? AmbassadorConfig.PUSHER_KEY_PROD : AmbassadorConfig.PUSHER_KEY_DEV;
-        Pusher pusher = new com.pusher.client.Pusher(key, options);
+        final Pusher pusher = new com.pusher.client.Pusher(key, options);
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
-                Utilities.debugLog("IdentifyPusher", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
+                Utilities.debugLog("PusherSDK", "State changed from " + connectionStateChange.getPreviousState() + " to " + connectionStateChange.getCurrentState());
+                PusherChannel.setConnectionState(pusher.getConnection().getState());
             }
 
             @Override
             public void onError(String s, String s1, Exception e) {
-                Utilities.debugLog("IdentifyPusher", "There was a problem connecting to IdentifyPusher" + "Exception = " + s);
+                Utilities.debugLog("PusherSDK", "There was a problem connecting to PusherSDK" + "Exception = " + s);
             }
         }, ConnectionState.ALL);
 
         pusher.subscribePrivate(PusherChannel.getchannelName(), new PrivateChannelEventListener() {
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
-                Utilities.debugLog("IdentifyPusher", "Failed to subscribe to IdentifyPusher because " + message + ". The " +
+                Utilities.debugLog("PusherSDK", "Failed to subscribe to PusherSDK because " + message + ". The " +
                         "exception was " + e);
             }
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-                Utilities.debugLog("IdentifyPusher", "Successfully subscribed to " + channelName);
+                pusherSubscribeCallback.pusherSubscribed();
+                Utilities.debugLog("PusherSDK", "Successfully subscribed to " + channelName);
             }
 
             @Override
             public void onEvent(String channelName, String eventName, String data) {
-                Utilities.debugLog("IdentifyPusher", "data = " + data);
+                Utilities.debugLog("PusherSDK", "data = " + data);
 
                 try {
                     final JSONObject pusherObject = new JSONObject(data);
@@ -142,14 +152,14 @@ class IdentifyPusher {
                         requestManager.externalPusherRequest(pusherObject.getString("url"), new RequestManager.RequestCompletion() {
                             @Override
                             public void onSuccess(Object successResponse) {
-                                Utilities.debugLog("IdentifyPusher External", "Saved pusher object as String = " + successResponse.toString());
+                                Utilities.debugLog("PusherSDK External", "Saved pusher object as String = " + successResponse.toString());
 
                                 try {
                                     final JSONObject pusherUrlObject = new JSONObject(successResponse.toString());
                                     //make sure the request id coming back is for the one we sent off
-                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId()) return;
-                                }
-                                catch(JSONException e) {
+                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId())
+                                        return;
+                                } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                                 setPusherInfo(successResponse.toString());
@@ -157,12 +167,13 @@ class IdentifyPusher {
 
                             @Override
                             public void onFailure(Object failureResponse) {
-                                Utilities.debugLog("IdentifyPusher External", "FAILED to save pusher object with error: " + failureResponse);
+                                Utilities.debugLog("PusherSDK External", "FAILED to save pusher object with error: " + failureResponse);
                             }
                         });
                     } else {
                         //make sure the request id coming back is for the one we sent off
-                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId()) return;
+                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId())
+                            return;
                         setPusherInfo(data);
                     }
                 } catch (JSONException e) {
@@ -173,7 +184,7 @@ class IdentifyPusher {
     }
 
     void setPusherInfo(String jsonObject) {
-        // Functionality: Saves IdentifyPusher object to SharedPreferences
+        // Functionality: Saves PusherSDK object to SharedPreferences
         JSONObject pusherSave = new JSONObject();
 
         try {
@@ -188,7 +199,7 @@ class IdentifyPusher {
 
             //tell MainActivity to update edittext with url
             Intent intent = new Intent("pusherData");
-            LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(AmbassadorSingleton.get()).sendBroadcast(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }
