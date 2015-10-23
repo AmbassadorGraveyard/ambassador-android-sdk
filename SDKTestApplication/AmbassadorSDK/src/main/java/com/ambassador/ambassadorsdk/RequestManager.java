@@ -116,7 +116,12 @@ public class RequestManager {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Bulk SMS Share Failure due to IOExceiption - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Bulk SMS Share Failure due to IOExceiption - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -155,7 +160,12 @@ public class RequestManager {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Bulk Share Email Failure due to IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Bulk Share Email Failure due to IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -234,7 +244,12 @@ public class RequestManager {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("REGISTER CONVERSION Failure due to IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("REGISTER CONVERSION Failure due to IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -332,10 +347,20 @@ public class RequestManager {
                     });
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    completion.onFailure("Update call failed with JSONException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Update call failed with JSONException - " + e.getMessage());
+                        }
+                    });
                 } catch (IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Update call failed with IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Update call failed with IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -366,7 +391,12 @@ public class RequestManager {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Create IdentifyPusher Channel Failure due to IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Create IdentifyPusher Channel Failure due to IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -393,7 +423,12 @@ public class RequestManager {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("External IdentifyPusher Request failure due to IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("External IdentifyPusher Request failure due to IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -564,9 +599,14 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Failure with IOException - " + e.getMessage());
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Failure with IOException - " + e.getMessage());
+                        }
+                    });
                 }
             }
         };
@@ -609,11 +649,16 @@ public class RequestManager {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     e.printStackTrace();
-                    completion.onFailure("Linkedin Post FAILED due to IOException - " + e.getMessage());
-                }
 
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Linkedin Post FAILED due to IOException - " + e.getMessage());
+                        }
+                    });
+                }
             }
         };
         new Thread(runnable).start();
