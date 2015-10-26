@@ -130,6 +130,8 @@ public class AmbassadorActivityTest {
         when(ambassadorConfig.getURL()).thenReturn("http://staging.mbsy.co/jHjl");
         when(ambassadorConfig.getPusherInfo()).thenReturn(pusher);
         when(ambassadorConfig.getRafParameters()).thenReturn(parameters);
+        when(ambassadorConfig.getUniversalKey()).thenReturn("SDKToken ***REMOVED***");
+        when(ambassadorConfig.getUniversalID()).thenReturn("***REMOVED***");
 
         //app workflow is identify-> backend calls pusher and triggers a response which is received by our app and
         //calls tryAndSetURL. Instead we'll mock the identifyRequest and tell it to effectively bypass pusher and
