@@ -51,7 +51,7 @@ desktop or another place that you can easily access.
 
  <img src="screenshots/chooseAmbassadorFolder.png" width="600" />
 
-* Click **'Finish'** and give Android Studio a moment to finish creating the module.
+* Click **'Finish'** and once the modal is closed, give Android Studio a moment to finish creating the module. Android Studio may take several minutes.
 
  <img src="screenshots/moduleImported.png" width="600" />
 
@@ -106,7 +106,7 @@ desktop or another place that you can easily access.
           //  If you DO want to register a conversion on the first launch
           // then create a ConversionParameters object to pass to the method below
           ConversionParameters parameters = new ConversionParameters();
-          // ** Would set the parameter properties here (find out more in 'Conversions' section)
+          // ** Set the parameter properties here (find out more in 'Conversions' section)
           AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "your_universal_key", "your_universal_ID", parameters);
       }
    ```
