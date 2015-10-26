@@ -165,9 +165,9 @@ public class AmbassadorConfig {
         return sharePrefs.getString("url", null);
     }
 
-    String getUniversalKey() { return sharePrefs.getString("universalToken", null); }
+    public String getUniversalKey() { return sharePrefs.getString("universalToken", null); }
 
-    String getUniversalID() {
+    public String getUniversalID() {
         return sharePrefs.getString("universalID", null);
     }
 
