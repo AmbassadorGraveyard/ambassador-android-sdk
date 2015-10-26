@@ -97,7 +97,9 @@ desktop or another place that you can easily access.
 
           // Use this 'run' method if you DON'T want to
           // register a conversion on the first launch of your app.
-          AmbassadorSDK.runWithKeys("your_universal_key", "your_universal_ID");
+          // You will need to pass in your application's context as the first
+          // parameter so that our SDK can access it
+          AmbassadorSDK.runWithKeys(getApplicationContext(), "your_universal_key", "your_universal_ID");
 
           // -- OR --
 
@@ -105,7 +107,7 @@ desktop or another place that you can easily access.
           // then create a ConversionParameters object to pass to the method below
           ConversionParameters parameters = new ConversionParameters();
           // ** Would set the parameter properties here (find out more in 'Conversions' section)
-          AmbassadorSDK.runWithKeysAndConvertOnInstall("your_universal_key", "your_universal_ID", parameters);
+          AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "your_universal_key", "your_universal_ID", parameters);
       }
    ```
 
@@ -237,14 +239,6 @@ To set the position of the logo, edit the following value in customValues.xml.
 
 _Note_: The RAFLogoPosition element is ignored when no `raf_logo.png` is present in the drawable folders. Set the RAFLogoPosition to 0 to hide the logo.
 
-The following images show the logo in the various positions set in the custom values:
+The following image shows the logo in the various positions set in the custom values:
 
 <img src="screenshots/rafLogoPosition1.png" />
-
-<img src="screenshots/rafLogoPosition2.png" />
-
-<img src="screenshots/rafLogoPosition3.png" />
-
-<img src="screenshots/rafLogoPosition4.png" />
-
-<img src="screenshots/rafLogoPosition5.png" />
