@@ -79,6 +79,9 @@ public class AmbassadorActivityTest {
     @Inject
     AmbassadorConfig ambassadorConfig;
 
+    @Inject
+    PusherSDK pusher;
+
     //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
     @Singleton
     @Component(modules = {AmbassadorApplicationModule.class})
@@ -111,8 +114,7 @@ public class AmbassadorActivityTest {
         //perform injection
         component.inject(this);
 
-        String pusher = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
-
+        String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
         doNothing().when(ambassadorConfig).setRafParameters(anyString(), anyString(), anyString(), anyString());
         doNothing().when(ambassadorConfig).setURL(anyString());
         doNothing().when(ambassadorConfig).setShortCode(anyString());
@@ -128,25 +130,47 @@ public class AmbassadorActivityTest {
 
         when(ambassadorConfig.getCampaignID()).thenReturn("260");
         when(ambassadorConfig.getURL()).thenReturn("http://staging.mbsy.co/jHjl");
-        when(ambassadorConfig.getPusherInfo()).thenReturn(pusher);
+        when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
         when(ambassadorConfig.getRafParameters()).thenReturn(parameters);
         when(ambassadorConfig.getUniversalKey()).thenReturn("SDKToken ***REMOVED***");
         when(ambassadorConfig.getUniversalID()).thenReturn("***REMOVED***");
 
-        //app workflow is identify-> backend calls pusher and triggers a response which is received by our app and
-        //calls tryAndSetURL. Instead we'll mock the identifyRequest and tell it to effectively bypass pusher and
-        //call tryAndSetURL right away to dismiss the loader
+        //app workflow is identify -> backend calls pusher and triggers a response which is received by our app and
+        //calls tryAndSetURL
+        //if the app has a channel and it's not expired and connected, identify will be called right away.
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
-                Intent intent = new Intent("pusherData");
-                LocalBroadcastManager.getInstance(AmbassadorSingleton.get()).sendBroadcast(intent);
+                _sendPusherIntent();
                 return null;
             }
         })
         .when(requestManager).identifyRequest();
 
+        //if the app has a channel and it's not expired but it's not currently connected, it will subscribe to the existing channel
+        //mock the subscribe call, bypass identify in the callback, instead send the intent which will call tryAndSetURL
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                _sendPusherIntent();
+                return null;
+            }
+        }).when(pusher).subscribePusher(any(PusherSDK.PusherSubscribeCallback.class));
+
+        //otherwise, the app will resubscribe to pusher and then call identify
+        //mock the createPusher call, bypass identify in the callback, instead send the intent which will call tryAndSetURL
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                _sendPusherIntent();
+                return null;
+            }
+        }).when(pusher).createPusher(any(PusherSDK.PusherSubscribeCallback.class));
+
         Intent intent = new Intent();
         mActivityTestIntentRule.launchActivity(intent);
+    }
+
+    private void _sendPusherIntent() {
+        Intent intent = new Intent("pusherData");
+        LocalBroadcastManager.getInstance(AmbassadorSingleton.get()).sendBroadcast(intent);
     }
 
     @After
@@ -291,7 +315,6 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnSend)).perform(click());
         verify(bulkShareHelper, times(2)).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
-
         //TODO: after figuring out how to use mock list of contacts, test deleting one to make sure NO CONTACTS textview is shown
     }
 
@@ -318,8 +341,8 @@ public class AmbassadorActivityTest {
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
 
         //this email will force the contact name dialog to come up when submitting
-        String pusher = "{\"email\":\"anonymous_user_2000@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
-        when(ambassadorConfig.getPusherInfo()).thenReturn(pusher);
+        String pusherResponse = "{\"email\":\"anonymous_user_2000@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
+        when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
 
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
         onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
@@ -345,18 +368,62 @@ public class AmbassadorActivityTest {
 
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
-        //TODO: type in first name
+        onView(withId(R.id.etFirstName)).perform(typeText("Test"), closeSoftKeyboard());
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
-        //TODO: type in last name
-        //TODO: click continue
-        //TODO: simulate a response
+        onView(withId(R.id.etLastName)).perform(typeText("User"), closeSoftKeyboard());
+
+        doNothing().when(ambassadorConfig).setPusherInfo(anyString());
+        doNothing().when(ambassadorConfig).setUserFullName(anyString(), anyString());
+
+        //test will call updateNameRequest twice (fail and success)
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] object = invocation.getArguments();
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) object[3];
+                completion.onFailure("blah");
+                return null;
+            }
+        })
+        .doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] object = invocation.getArguments();
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) object[3];
+                completion.onSuccess("cool");
+                return null;
+            }
+        })
+        .when(requestManager).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
+
+        //if the name request goes through, the app will attempt to call bulkShare
+        doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                Object[] object = invocation.getArguments();
+                BulkShareHelper.BulkShareCompletion completion = (BulkShareHelper.BulkShareCompletion) object[3];
+                completion.bulkShareSuccess();
+                return null;
+            }
+        })
+        .when(bulkShareHelper).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
+
+        //this call will fail, so make sure the dialog is still present and the mocks never get called
+        onView(withId(R.id.btnContinue)).perform(click());
+        onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
+        verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
+
+        //this call will succeed, so make sure the mocks get called the appropriate number of times, the dialog is not present, and the main layout appears
+        onView(withId(R.id.btnContinue)).perform(click());
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
+        verify(bulkShareHelper, times(1)).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
+        verify(requestManager, times(2)).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
+        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
+        onView(withId(R.id.lvContacts)).check(ViewAssertions.doesNotExist());
     }
 
-    //@Test
+    @Test
     public void testLinkedIn() {
-        //TODO: test linkedInLoginActivity (see strategy in testTwitter
+        //TODO: test linkedInLoginActivity (see strategy in testTwitter)
 
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));

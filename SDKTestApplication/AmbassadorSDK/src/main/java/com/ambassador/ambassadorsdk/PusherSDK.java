@@ -26,7 +26,7 @@ import javax.inject.Inject;
 /**
  * Created by JakeDunahee on 9/1/15.
  */
-class PusherSDK {
+public class PusherSDK {
     interface PusherSubscribeCallback {
         void pusherSubscribed();
     }
@@ -96,7 +96,7 @@ class PusherSDK {
         subscribePusher(pusherSubscribeCallback);
     }
 
-    void subscribePusher(final PusherSubscribeCallback pusherSubscribeCallback) {
+    public void subscribePusher(final PusherSubscribeCallback pusherSubscribeCallback) {
         // HttpAuthorizer is used to append headers and extra parameters to the initial PusherSDK authorization request
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
 

@@ -447,7 +447,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     private void _initiateSend() {
-        //this method is called from two places, one of which could already be showing the pd
+        //this method is called from two places, one of which could already be showing the progress dialog
         if (!pd.isShowing()) pd.show();
 
         bulkShareHelper.bulkShare(etShareMessage.getText().toString(), adapter.selectedContacts, showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
