@@ -21,7 +21,6 @@ import javax.inject.Inject;
 class ContactNameDialog extends Dialog {
     private CustomEditText etFirstName, etLastName;
     private ContactNameListener mCallback;
-    private JSONObject pusherData;
     private ProgressDialog pd;
 
     @Inject
@@ -30,12 +29,10 @@ class ContactNameDialog extends Dialog {
     @Inject
     RequestManager requestManager;
 
-    // Interface
     public interface ContactNameListener {
         void namesHaveBeenUpdated();
     }
 
-    // Constuctor
     public ContactNameDialog(Context context, ProgressDialog pd) {
         super(context);
 
@@ -88,6 +85,7 @@ class ContactNameDialog extends Dialog {
     }
 
     void handleNameInput(String firstName, String lastName) {
+        JSONObject pusherData;
         try {
             pusherData = new JSONObject(ambassadorConfig.getPusherInfo());
             pusherData.put("firstName", firstName);
@@ -97,13 +95,12 @@ class ContactNameDialog extends Dialog {
             return;
         }
 
-        //this shouldn't happen because UI enforces entry, but check anyway unless UI validation is removed
+        //this shouldn't happen because UI enforces entry, but check anyway in case UI validation is removed
         if (firstName == null || lastName == null) return;
 
         pd.show();
         ambassadorConfig.setPusherInfo(pusherData.toString());
 
-        // Call api - on success we'll initiate the bulk share
         try {
             requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
                 @Override
@@ -116,6 +113,7 @@ class ContactNameDialog extends Dialog {
                 @Override
                 public void onFailure(Object failureResponse) {
                     Toast.makeText(getOwnerActivity(), "Unable to update information.  Please try again.", Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
                 }
             });
         } catch (JSONException e) {
