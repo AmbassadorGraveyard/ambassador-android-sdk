@@ -20,7 +20,7 @@ class IdentifyAugurSDK {
             augurConfig.put("apiKey","***REMOVED***");
             // optional
             //augurConfig.put("timeout", 1000); // default: 5000 (5 seconds)
-            //augurConfig.put("maxRetries", 5); // default: 5
+            augurConfig.put("maxRetries", 5); // default: 5
             //augurConfig.put("endToEndEncryption", false); // default: false
             //augurConfig.put("disableConsumerInsights", true); // default: false
         } catch (Exception e) {
