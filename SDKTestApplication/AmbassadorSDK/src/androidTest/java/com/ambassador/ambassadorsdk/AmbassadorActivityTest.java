@@ -177,7 +177,7 @@ public class AmbassadorActivityTest {
     public void afterEachTest() {
     }
 
-    //@Test
+    @Test
     public void testMainLayout() {
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
@@ -189,7 +189,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
     }
 
-    //@Test
+    @Test
     public void testFacebook() {
         //TODO: remove hardcoded id check, try to get withText working
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
@@ -202,7 +202,7 @@ public class AmbassadorActivityTest {
         //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
     }
 
-    //@Test
+    @Test
     public void testContactsEmail() {
         //start recording fired Intents
         Intents.init();
@@ -513,7 +513,7 @@ public class AmbassadorActivityTest {
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
-    //@Test
+    @Test
     public void testTwitter() {
         //TODO: finish the test for twitterloginactivity once we can type into webviews, strategy outlined below
         //mock token as null so login screen gets presented
