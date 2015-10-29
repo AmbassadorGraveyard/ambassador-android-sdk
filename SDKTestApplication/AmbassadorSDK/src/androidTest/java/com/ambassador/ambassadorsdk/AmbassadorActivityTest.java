@@ -468,6 +468,7 @@ public class AmbassadorActivityTest {
         String linkedInText = _getRandomNumber();
         onView(withId(R.id.etLinkedInMessage)).perform(typeText(linkedInText), closeSoftKeyboard());
 
+        doNothing().when(requestManager).bulkShareTrack(any(BulkShareHelper.SocialServiceTrackType.class));
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] object = invocation.getArguments();
@@ -591,6 +592,7 @@ public class AmbassadorActivityTest {
         String tweetText = _getRandomNumber();
         onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
 
+        doNothing().when(requestManager).bulkShareTrack(any(BulkShareHelper.SocialServiceTrackType.class));
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 Object[] object = invocation.getArguments();
@@ -637,7 +639,7 @@ public class AmbassadorActivityTest {
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
-    //@Test
+    @Test
     public void testCustomImages() {
         int drawableId = context.getResources().getIdentifier("raf_logo", "drawable", context.getPackageName());
         int pos;

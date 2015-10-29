@@ -209,7 +209,7 @@ public class RequestManager {
     }
 
     // Overloaded bulkShareTrack for instances where no contact list is passed
-    void bulkShareTrack(final BulkShareHelper.SocialServiceTrackType shareType) {
+    public void bulkShareTrack(final BulkShareHelper.SocialServiceTrackType shareType) {
         bulkShareTrack(null, shareType);
     }
     // endregion BULK SHARE
