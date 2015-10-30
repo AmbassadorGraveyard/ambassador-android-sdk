@@ -281,7 +281,7 @@ public class AmbassadorActivityTest {
         //share message should not be editable after done button clicked
         onView(withId(R.id.etShareMessage)).check(matches(not(isEnabled())));
         onView(withId(R.id.btnEdit)).perform(click());
-        onView(withId(R.id.etShareMessage)).perform(clearText(), closeSoftKeyboard());
+        onView(withId(R.id.etShareMessage)).perform(clearText());
         onView(withId(R.id.etShareMessage)).perform(typeText("test"), closeSoftKeyboard());
         onView(withId(R.id.btnDone)).perform(click());
         onView(withId(R.id.btnSend)).perform(click());
