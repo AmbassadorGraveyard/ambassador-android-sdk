@@ -61,4 +61,11 @@ public class AmbassadorApplicationModule {
         if (mockMode) return mock(AmbassadorConfig.class);
         return new AmbassadorConfig();
     }
+
+    @Provides
+    @Singleton
+    PusherSDK providePusherSDK() {
+        if (mockMode) return mock(PusherSDK.class);
+        return new PusherSDK();
+    }
 }
