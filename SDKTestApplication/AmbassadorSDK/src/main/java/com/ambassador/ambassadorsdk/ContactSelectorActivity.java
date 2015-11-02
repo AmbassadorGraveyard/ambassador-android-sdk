@@ -295,6 +295,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             contactList.add(new ContactObject("Brian Davidson", "corey@getambassador.com"));
             contactList.add(new ContactObject("Jim Harbaugh", "corey@getambassador.com"));
             contactList.add(new ContactObject("Ambassador Diplomat", "corey@getambassador.com"));
+            contactList.add(new ContactObject("Ambassador Diplomat2", "corey@getambassador.com"));
         }
 
         if (contactList.size() < 1) {
