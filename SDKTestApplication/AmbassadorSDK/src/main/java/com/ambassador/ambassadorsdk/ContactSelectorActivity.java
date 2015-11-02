@@ -236,20 +236,22 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
                 contactList.add(object);
             } while (phones.moveToNext());
-        } else {
-            tvNoContacts.setVisibility(View.VISIBLE);
         }
 
         if (!AmbassadorConfig.isReleaseBuild && contactList.size() < 2) {
-            contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Home", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
+        }
+
+        if (contactList.size() < 1) {
+            tvNoContacts.setVisibility(View.VISIBLE);
         }
 
         phones.close();
@@ -271,8 +273,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                 contactList.add(object);
             }
             while (emails.moveToNext());
-        } else {
-            tvNoContacts.setVisibility(View.VISIBLE);
         }
 
         if (!AmbassadorConfig.isReleaseBuild && contactList.size() < 2) {
@@ -295,6 +295,10 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             contactList.add(new ContactObject("Brian Davidson", "corey@getambassador.com"));
             contactList.add(new ContactObject("Jim Harbaugh", "corey@getambassador.com"));
             contactList.add(new ContactObject("Ambassador Diplomat", "corey@getambassador.com"));
+        }
+
+        if (contactList.size() < 1) {
+            tvNoContacts.setVisibility(View.VISIBLE);
         }
 
         emails.close();
