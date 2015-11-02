@@ -94,6 +94,9 @@ public class AmbassadorActivity extends AppCompatActivity {
     @Inject
     AmbassadorConfig ambassadorConfig;
 
+    @Inject
+    PusherSDK pusher;
+
     // ACTIVITY OVERRIDE METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,7 +183,6 @@ public class AmbassadorActivity extends AppCompatActivity {
             return;
         }
 
-        PusherSDK pusher = new PusherSDK();
         //if we have a channel and it's not expired but it's not currently connected, subscribe to the existing channel
         if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() != ConnectionState.CONNECTED) {
             pusher.subscribePusher(new PusherSDK.PusherSubscribeCallback() {
@@ -283,6 +285,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         if (pos >= 1 && pos <= 5) {
             ImageView logo = new ImageView(this);
+            logo.setId(drawableId);
             logo.setImageDrawable(ContextCompat.getDrawable(this, drawableId));
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height));
             params.gravity = Gravity.CENTER_HORIZONTAL;

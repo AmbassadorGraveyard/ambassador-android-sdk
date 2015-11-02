@@ -99,7 +99,7 @@ public class AmbassadorConfig {
         sharePrefs.edit().putString("campaignID", campaignID).apply();
     }
 
-    void setPusherInfo(String pusherObject) {
+    public void setPusherInfo(String pusherObject) {
         sharePrefs.edit().putString("pusherObject", pusherObject).apply();
     }
 
@@ -119,7 +119,7 @@ public class AmbassadorConfig {
         sharePrefs.edit().putString("shortCode", shortCode).apply();
     }
 
-    void setUserFullName(String firstName, String lastName) {
+    public void setUserFullName(String firstName, String lastName) {
         sharePrefs.edit().putString("fullName", firstName + " " + lastName).apply();
     }
 
@@ -165,9 +165,9 @@ public class AmbassadorConfig {
         return sharePrefs.getString("url", null);
     }
 
-    String getUniversalKey() { return sharePrefs.getString("universalToken", null); }
+    public String getUniversalKey() { return sharePrefs.getString("universalToken", null); }
 
-    String getUniversalID() {
+    public String getUniversalID() {
         return sharePrefs.getString("universalID", null);
     }
 

@@ -209,7 +209,7 @@ public class RequestManager {
     }
 
     // Overloaded bulkShareTrack for instances where no contact list is passed
-    void bulkShareTrack(final BulkShareHelper.SocialServiceTrackType shareType) {
+    public void bulkShareTrack(final BulkShareHelper.SocialServiceTrackType shareType) {
         bulkShareTrack(null, shareType);
     }
     // endregion BULK SHARE
@@ -310,7 +310,7 @@ public class RequestManager {
         new Thread(runnable).start();
     }
 
-    void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
+    public void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
