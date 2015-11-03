@@ -1,31 +1,36 @@
 package com.ambassador.ambassadorsdk;
-import org.junit.runner.RunWith;
 
 import android.widget.Toast;
-
-import com.ambassador.ambassadorsdk.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.AmbassadorApplicationModule;
-import com.ambassador.ambassadorsdk.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.BulkShareHelper;
-import com.ambassador.ambassadorsdk.RequestManager;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import static org.powermock.api.mockito.PowerMockito.whenNew;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Component;
 
+import static junit.framework.Assert.assertEquals;
+
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 
 /**
  * Created by JakeDunahee on 9/9/15.
@@ -63,29 +68,30 @@ public class BulkShareHelperUnitTest {
     }
 
     @Test
-    public void bulkShareSMSTest() {
-//        // ARRANGE
-//        String mockMessage = "fakeMessage";
-//        List mockContacts = mock(List.class);
-//        RequestManager.RequestCompletion mockRequestcompletion = mock(RequestManager.RequestCompletion.class);
-//        BulkShareHelper.BulkShareCompletion mockShareCompletion = mock(BulkShareHelper.BulkShareCompletion.class);
-//
-//        // ACT
-//        doNothing().when(mockRequestManager).bulkShareSms(mockContacts, mockMessage, mockRequestcompletion);
-//        bulkShareHelper.bulkShare(mockMessage, mockContacts, true, mockShareCompletion);
-//
-//        // ASSERT
-//        verify(bulkShareHelper).bulkShare(mockMessage, mockContacts, true, mockShareCompletion);
-//        verify(mockRequestManager).bulkShareSms(mockContacts, mockMessage, mockRequestcompletion);
-//        doAnswer(new Answer() {
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable {
-//                assertEquals("fakeMessage", invocation.getArguments()[2]);
-//                return null;
-//            }
-//        }).when(mockRequestManager).bulkShareSms(anyList(), anyString(), any(RequestManager.RequestCompletion.class));
-    }
+    public void bulkShareSMSTest() throws Exception {
+        // ARRANGE
+        String mockMessage = "fakeMessage";
+        List mockContacts = mock(List.class);
+        RequestManager.RequestCompletion mockRequestCompletion = mock(RequestManager.RequestCompletion.class);
+        BulkShareHelper.BulkShareCompletion mockShareCompletion = mock(BulkShareHelper.BulkShareCompletion.class);
+        doAnswer(new Answer() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                assertEquals("fakeMessage", invocation.getArguments()[1]);
+                return null;
+            }
+        }).when(mockRequestManager).bulkShareSms(anyList(), anyString(), any(RequestManager.RequestCompletion.class));
 
+        // ACT
+        //whenNew(BulkShareHelper.BulkShareCompletion.class).withNoArguments().thenReturn(mockShareCompletion);
+        doNothing().when(mockRequestManager).bulkShareSms(mockContacts, mockMessage, mockRequestCompletion);
+        bulkShareHelper.bulkShare(mockMessage, mockContacts, true, mockShareCompletion);
+
+        // ASSERT
+        verify(bulkShareHelper).bulkShare(mockMessage, mockContacts, true, mockShareCompletion);
+        verify(mockRequestManager).bulkShareSms(mockContacts, mockMessage, mockRequestCompletion);
+    }
+//
 //    @Test
 //    public void bulkSMSShareTest() throws Exception {
 //        // ARRANGE
@@ -102,7 +108,7 @@ public class BulkShareHelperUnitTest {
 //        assertEquals(mockExecuteTask, mockRequest.execute());
 //        verify(bulkShareHelper).bulkShare(mockContacts, true);
 //    }
-
+//
 //    @Test
 //    public void bulkEmailShareTest() throws Exception {
 //        // ARRANGE

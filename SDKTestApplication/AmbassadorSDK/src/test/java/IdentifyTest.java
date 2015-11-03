@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
+import org.powermock.core.classloader.annotations.PrepareForTest;
 
 import javax.inject.Inject;
 
@@ -33,30 +34,24 @@ public class IdentifyTest extends TestCase {
 
     @Before
     public void setup() {
-//        Context context = mock(Context.class);
-//        idSpy = spy(new Identify());
+        //Context context = mock(Context.class);
+        //idSpy = spy(new Identify());
     }
 
     @Test
     public void getIdentityTest() {
-        //IdentifyAugurSDK.AugurCompletion completionMock = mock(IdentifyAugurSDK.AugurCompletion.class);
-//        IdentifyAugurSDK augurSDK = mock(IdentifyAugurSDK.class);
-//
-//        doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                data = "completionData";
-//                return null;
-//            }
-//        }).when(augurSDK).getAugur(ambassadorConfig);
-//
-//        augurSDK.getAugur(ambassadorConfig);
-//
-//        assertEquals("GetIdentify", "completionData", data);
-    }
+        IdentifyAugurSDK augurSDK = mock(IdentifyAugurSDK.class);
 
-//    @Test
-//    public void setUpPusherTest() {
-//        IdentifyPusher.PusherCompletion pusherCompletion = mock(IdentifyPusher.PusherCompletion.class);
-//    }
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                data = "completionData";
+                return null;
+            }
+        }).when(augurSDK).getAugur(ambassadorConfig);
+
+        augurSDK.getAugur(ambassadorConfig);
+
+        assertEquals("GetIdentify", "completionData", data);
+    }
 }

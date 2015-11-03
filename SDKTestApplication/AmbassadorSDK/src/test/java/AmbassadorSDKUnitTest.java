@@ -69,46 +69,51 @@ public class AmbassadorSDKUnitTest {
         ambassadorSDK = Mockito.spy(AmbassadorSDK.class);
         ambassadorSDK.ambassadorConfig = ambassadorConfig;
     }
-//
-//    @Test
-//    public void localIdentifyTest() throws Exception {
-//        // ARRANGE
-//        Identify mockIdentify = mock(Identify.class);
-//        PowerMockito.mockStatic(AmbassadorSingleton.class);
-//
-//        // ACT
-//        PowerMockito.when(AmbassadorSingleton.getAppContext()).thenReturn(mockContext);
-//        whenNew(Identify.class).withArguments(mockContext, "test@test.com").thenReturn(mockIdentify);
-//        doNothing().when(ambassadorConfig).startIdentify(mockIdentify);
-//        ambassadorSDK.localIdentify("test@test.com");
-//
-//        // ASSERT
-//        verify(ambassadorConfig).startIdentify(mockIdentify);
-//        doAnswer(new Answer() {
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable {
-//                assertEquals("test@test.com", invocation.getArguments()[0]);
-//                return null;
-//            }
-//        }).when(ambassadorConfig).setUserEmail(anyString());
-//    }
 
-//    @Test
-//    public void localPresentRAFTest() throws Exception {
-//        // ARRANGE
-//        Intent mockIntent = mock(Intent.class);
-//
-//        // ACT
-//        whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
-//        doNothing().when(ambassadorConfig).setCampaignID(anyString());
-//        doNothing().when(mockContext).startActivity(mockIntent);
-//        ambassadorSDK.localPresentRAF(mockContext, "206");
-//
-//        // ASSERT
-//        verify(ambassadorConfig).setCampaignID("206");
-//        verify(mockContext).startActivity(mockIntent);
-//    }
-//
+    @Test
+    public void localIdentifyTest() throws Exception {
+        // ARRANGE
+        final String email = "test@test.com";
+        Identify mockIdentify = mock(Identify.class);
+        PusherSDK mockPusherSDK = mock(PusherSDK.class);
+
+        PowerMockito.mockStatic(AmbassadorSingleton.class);
+        doAnswer(new Answer() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                assertEquals(email, invocation.getArguments()[0]);
+                return null;
+            }
+        }).when(ambassadorConfig).setUserEmail(anyString());
+
+        // ACT
+        whenNew(Identify.class).withAnyArguments().thenReturn(mockIdentify);
+        whenNew(PusherSDK.class).withAnyArguments().thenReturn(mockPusherSDK);
+        doNothing().when(ambassadorConfig).setUserEmail(email);
+        doNothing().when(mockIdentify).getIdentity();
+        ambassadorSDK.localIdentify(email);
+
+        // ASSERT
+        verify(ambassadorConfig).setUserEmail(email);
+        verify(mockIdentify).getIdentity();
+    }
+
+    @Test
+    public void localPresentRAFTest() throws Exception {
+        // ARRANGE
+        Intent mockIntent = mock(Intent.class);
+
+        // ACT
+        whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
+        doNothing().when(ambassadorConfig).setCampaignID(anyString());
+        doNothing().when(mockContext).startActivity(mockIntent);
+        ambassadorSDK.localPresentRAF(mockContext, "206");
+
+        // ASSERT
+        verify(ambassadorConfig).setCampaignID("206");
+        verify(mockContext).startActivity(mockIntent);
+    }
+
 //    @Test
 //    public void localRunWithKeysTest() {
 //        // ARRANGE
@@ -144,6 +149,20 @@ public class AmbassadorSDKUnitTest {
 //        String mockToken = "mockSDKToken";
 //        String mockID = "mockID";
 //        ConversionParameters mockParameters = mock(ConversionParameters.class);
+//        doAnswer(new Answer() {
+//            @Override
+//            public Void answer(InvocationOnMock invocation) throws Throwable {
+//                assertEquals("mockSDKToken", invocation.getArguments()[0]);
+//                return null;
+//            }
+//        }).when(ambassadorConfig).setUniversalToken(mockToken);
+//        doAnswer(new Answer() {
+//            @Override
+//            public Void answer(InvocationOnMock invocation) throws Throwable {
+//                assertEquals("mockID", invocation.getArguments()[0]);
+//                return null;
+//            }
+//        }).when(ambassadorConfig).setUniversalID(mockID);
 //
 //        // ACT
 //        when(ambassadorConfig.convertedOnInstall()).thenReturn(false);
@@ -154,21 +173,6 @@ public class AmbassadorSDKUnitTest {
 //        // ASSERT
 //        verify(ambassadorSDK).localRunWithKeysAndConvertOnInstall(mockToken, mockID, mockParameters);
 //        verify(ambassadorConfig).convertForInstallation(mockParameters);
-//        doAnswer(new Answer() {
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable {
-//                assertEquals("mockSDKToken", invocation.getArguments()[0]);
-//                return null;
-//            }
-//        }).when(ambassadorConfig).saveUniversalToken(mockToken);
-//
-//        doAnswer(new Answer() {
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable {
-//                assertEquals("mockID", invocation.getArguments()[0]);
-//                return null;
-//            }
-//        }).when(ambassadorConfig).saveUniversalID(mockID);
 //    }
 
 
@@ -177,13 +181,6 @@ public class AmbassadorSDKUnitTest {
     public void presentRAFTest() throws Exception {
         // ARRANGE
         String campID = "206";
-
-        // ACT
-        whenNew(AmbassadorSDK.class).withAnyArguments().thenReturn(ambassadorSDK);
-        AmbassadorSDK.presentRAF(mockContext, campID);
-
-        // ASSERT
-        verify(ambassadorSDK).localPresentRAF(mockContext, campID);
         doAnswer(new Answer() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
@@ -193,12 +190,26 @@ public class AmbassadorSDKUnitTest {
                 return null;
             }
         }).when(ambassadorSDK).localPresentRAF(mockContext, campID);
+
+        // ACT
+        whenNew(AmbassadorSDK.class).withAnyArguments().thenReturn(ambassadorSDK);
+        AmbassadorSDK.presentRAF(mockContext, campID);
+
+        // ASSERT
+        verify(ambassadorSDK).localPresentRAF(mockContext, campID);
     }
 
-    //@Test
+    @Test
     public void identifyTest() throws Exception {
         // ARRANGE
         String email = "test@test.com";
+        doAnswer(new Answer() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                assertEquals("test@test.com", invocation.getArguments()[0]);
+                return null;
+            }
+        }).when(ambassadorSDK).localIdentify(email);
 
         // ACT
         whenNew(AmbassadorSDK.class).withAnyArguments().thenReturn(ambassadorSDK);
@@ -206,13 +217,6 @@ public class AmbassadorSDKUnitTest {
 
         // ASSERT
         verify(ambassadorSDK).localIdentify(email);
-//        doAnswer(new Answer() {
-//            @Override
-//            public Void answer(InvocationOnMock invocation) throws Throwable {
-//                assertEquals("test@test.com", invocation.getArguments()[0]);
-//                return null;
-//            }
-//        }).when(ambassadorSDK).localIdentify(email);
     }
 
     @Test
@@ -230,18 +234,11 @@ public class AmbassadorSDKUnitTest {
         verify(conversionUtility).registerConversion();
     }
 
-    //@Test
+   // @Test
     public void runWithKeysTest() throws Exception {
         // ARRANGE
         String mockToken = "mockSDKToken";
         String mockID = "mockID";
-
-        // ACT
-        whenNew(AmbassadorSDK.class).withAnyArguments().thenReturn(ambassadorSDK);
-        AmbassadorSDK.runWithKeys(mockContext, mockToken, mockID);
-
-        // ASSERT
-        verify(ambassadorSDK).localRunWithKeys(mockToken, mockID);
         doAnswer(new Answer() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
@@ -250,21 +247,21 @@ public class AmbassadorSDKUnitTest {
                 return null;
             }
         }).when(ambassadorSDK).localRunWithKeys(mockToken, mockID);
+
+        // ACT
+        whenNew(AmbassadorSDK.class).withAnyArguments().thenReturn(ambassadorSDK);
+        AmbassadorSDK.runWithKeys(mockContext, mockToken, mockID);
+
+        // ASSERT
+        verify(ambassadorSDK).localRunWithKeys(mockToken, mockID);
     }
 
-    //@Test
+    @Test
     public void runWithKeysAndConvertOnInstallTest() throws Exception {
         // ARRANGE
         String mockToken = "mockSDKToken";
         String mockID = "mockID";
         final ConversionParameters mockParameters = mock(ConversionParameters.class);
-
-        // ACT
-        whenNew(AmbassadorSDK.class).withAnyArguments().thenReturn(ambassadorSDK);
-        AmbassadorSDK.runWithKeysAndConvertOnInstall(mockToken, mockID, mockParameters);
-
-        // ASSERT
-        verify(ambassadorSDK).localRunWithKeysAndConvertOnInstall(mockToken, mockID, mockParameters);
         doAnswer(new Answer() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
@@ -273,6 +270,13 @@ public class AmbassadorSDKUnitTest {
                 assertEquals(mockParameters, invocation.getArguments()[2]);
                 return null;
             }
-        }).when(ambassadorSDK).localRunWithKeys(mockToken, mockID);
+        }).when(ambassadorSDK).localRunWithKeysAndConvertOnInstall(mockToken, mockID, mockParameters);
+
+        // ACT
+        whenNew(AmbassadorSDK.class).withAnyArguments().thenReturn(ambassadorSDK);
+        AmbassadorSDK.runWithKeysAndConvertOnInstall(mockToken, mockID, mockParameters);
+
+        // ASSERT
+        verify(ambassadorSDK).localRunWithKeysAndConvertOnInstall(mockToken, mockID, mockParameters);
     }
 }
