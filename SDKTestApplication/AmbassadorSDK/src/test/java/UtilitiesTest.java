@@ -1,5 +1,4 @@
 package com.ambassador.ambassadorsdk;
-import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
 
 import org.junit.Before;
 import org.junit.Test;
