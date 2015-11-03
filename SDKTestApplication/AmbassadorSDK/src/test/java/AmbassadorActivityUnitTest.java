@@ -1,30 +1,29 @@
-package com.example.ambassador.ambassadorsdk;
+package com.ambassador.ambassadorsdk;
 
-import android.app.Application;
-import android.app.Instrumentation;
-import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.test.mock.MockContext;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.ambassador.ambassadorsdk.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.AmbassadorApplicationModule;
+import com.ambassador.ambassadorsdk.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.AmbassadorSingleton;
 
 import junit.framework.TestCase;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
 import java.util.Random;
 
 import javax.inject.Inject;
@@ -32,17 +31,16 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.junit.Assert.*;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
@@ -54,7 +52,7 @@ public class AmbassadorActivityUnitTest extends TestCase {
     AmbassadorActivity ambassadorActivity = spy(new AmbassadorActivity());
 
     @Inject
-    AmbassadorSingleton ambassadorSingleton;
+    AmbassadorConfig ambassadorConfig;
 
     @Singleton
     @Component(modules = {AmbassadorApplicationModule.class})
@@ -143,7 +141,7 @@ public class AmbassadorActivityUnitTest extends TestCase {
         CustomEditText mockCustomEditText = mock(CustomEditText.class);
         JSONArray mockArray = mock(JSONArray.class);
         JSONObject mockObject = mock(JSONObject.class);
-        ambassadorActivity.ambassadorSingleton = ambassadorSingleton;
+        ambassadorActivity.ambassadorConfig = ambassadorConfig;
         ambassadorActivity.etShortUrl = mockCustomEditText;
         EditText mockShortURLET = mock(EditText.class);
         String pusher = "{\"email\":\"jake@getambassador.com\"," +
@@ -155,12 +153,12 @@ public class AmbassadorActivityUnitTest extends TestCase {
 
         // ACT
         whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
-        when(ambassadorSingleton.getCampaignID()).thenReturn("0");
-        doNothing().when(ambassadorSingleton).setRafDefaultMessage(anyString());
+        when(ambassadorConfig.getCampaignID()).thenReturn("0");
+        doNothing().when(ambassadorConfig).setRafDefaultMessage(anyString());
         doNothing().when(mockShortURLET).setText(anyString());
-        doNothing().when(ambassadorSingleton).saveURL(anyString());
-        doNothing().when(ambassadorSingleton).saveShortCode(anyString());
-        doNothing().when(ambassadorSingleton).saveEmailSubject(anyString());
+        doNothing().when(ambassadorConfig).setURL(anyString());
+        doNothing().when(ambassadorConfig).setShortCode(anyString());
+        doNothing().when(ambassadorConfig).setEmailSubject(anyString());
         doNothing().when(mockCustomEditText).setText(anyString());
         when(mockObject.getString(anyString())).thenReturn("String");
         when(mockObject.getJSONArray("urls")).thenReturn(mockArray);
