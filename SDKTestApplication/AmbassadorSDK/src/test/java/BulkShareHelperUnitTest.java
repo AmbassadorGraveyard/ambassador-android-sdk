@@ -1,51 +1,37 @@
-package com.example.ambassador.ambassadorsdk;
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
+package com.ambassador.ambassadorsdk;
+import org.junit.runner.RunWith;
+
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ambassador.ambassadorsdk.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.AmbassadorApplicationModule;
+import com.ambassador.ambassadorsdk.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.BulkShareHelper;
+import com.ambassador.ambassadorsdk.RequestManager;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.internal.runners.JUnit38ClassRunner;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.runners.MockitoJUnitRunner;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Component;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyList;
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.refEq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * Created by JakeDunahee on 9/9/15.
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({BulkShareHelper.class, Toast.class, AmbassadorSingleton.class, MyApplication.class})
+@PrepareForTest({BulkShareHelper.class, Toast.class, AmbassadorSingleton.class, AmbassadorSingleton.class})
 public class BulkShareHelperUnitTest {
     BulkShareHelper bulkShareHelper;
 
@@ -67,9 +53,9 @@ public class BulkShareHelperUnitTest {
         TestComponent component = DaggerBulkShareHelperUnitTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
         component.inject(this);
 
-        PowerMockito.mockStatic(MyApplication.class);
+        PowerMockito.mockStatic(AmbassadorSingleton.class);
         AmbassadorApplicationComponent application = mock(AmbassadorApplicationComponent.class);
-        PowerMockito.when(MyApplication.getComponent()).thenReturn(application);
+        PowerMockito.when(AmbassadorSingleton.getComponent()).thenReturn(application);
         doNothing().when(application).inject(any(BulkShareHelper.class));
 
         bulkShareHelper = spy(new BulkShareHelper());
