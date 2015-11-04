@@ -2,6 +2,8 @@ package com.ambassador.ambassadorsdk;
 
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,8 +13,8 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -21,7 +23,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 import static junit.framework.Assert.assertEquals;
-
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
@@ -30,6 +32,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -148,121 +151,108 @@ public class BulkShareHelperUnitTest {
         // ASSERT AGAIN
         verify(mockBulkShareCompletion).bulkShareFailure();
     }
-//
-//    @Test
-//    public void callSuccessfulTest() {
-//        // ARRANGE
-//        PowerMockito.mockStatic(Toast.class);
-//        Toast mockToast = mock(Toast.class);
-//        Activity mockOwnerActivity = mock(Activity.class);
-//
-//        // ACT
-//        when(mockDialog.getOwnerActivity()).thenReturn(mockOwnerActivity);
-//        PowerMockito.when(Toast.makeText(mockOwnerActivity, "Message successfully shared!", Toast.LENGTH_SHORT)).thenReturn(mockToast);
-//        doNothing().when(mockToast).show();
-//        doNothing().when(mockDialog).dismiss();
-//        doNothing().when(mockOwnerActivity).finish();
-//        bulkShareHelper.callIsSuccessful();
-//
-//        // ASSERT
-//        assertEquals(mockOwnerActivity, mockDialog.getOwnerActivity());
-//        verify(bulkShareHelper).callIsSuccessful();
-//    }
-//
-//    @Test
-//    public void callUnsuccessfulTest() {
-//        // ARRANGE
-//        PowerMockito.mockStatic(Toast.class);
-//        Toast mockToast = mock(Toast.class);
-//        Activity mockOwnerActivity = mock(Activity.class);
-//
-//        // ACT
-//        when(mockDialog.getOwnerActivity()).thenReturn(mockOwnerActivity);
-//        PowerMockito.when(Toast.makeText(mockOwnerActivity, "Unable to share message. Please try again.", Toast.LENGTH_SHORT)).thenReturn(mockToast);
-//        doNothing().when(mockToast).show();
-//        doNothing().when(mockDialog).dismiss();
-//        bulkShareHelper.callIsUnsuccessful();
-//
-//        // ASSERT
-//        verify(bulkShareHelper).callIsUnsuccessful();
-//    }
-//
-//    // STATIC HELPER FUNCTIONS
-//    @Test
-//    public void verifiedSMSListTest() {
-//        // ARRANGE
-//        ArrayList<ContactObject> mockContacts = new ArrayList<>();
-//        ContactObject passObject1 = new ContactObject("Success1", "Mobile", "815-555-4562");
-//        ContactObject failObject1 = new ContactObject("Failure1", "Mobile", "4578-5648-1213");
-//        ContactObject passObject2 = new ContactObject("Success2", "Mobile", "555-1234");
-//        ContactObject failObject2 = new ContactObject("Failure2", "Mobile", "4567");
-//        ContactObject passObject3 = new ContactObject("Success3", "Mobile", "+1-123-555-4561");
-//
-//        // ACT
-//        mockContacts.add(passObject1);
-//        mockContacts.add(failObject1);
-//        mockContacts.add(passObject2);
-//        mockContacts.add(failObject2);
-//        mockContacts.add(passObject3);
-//
-//        // ASSERT
-//        assertEquals("[8155554562, 5551234, 11235554561]", BulkShareHelper.verifiedSMSList(mockContacts).toString());
-//    }
-//
-//    @Test
-//    public void verifiedEmailListTest() {
-//        // ARRANGE
-//        ArrayList<ContactObject> mockContacts = new ArrayList<>();
-//        ContactObject object1 = new ContactObject("Success1", "test@test.com");
-//        ContactObject object2 = new ContactObject("Success2", "test@test1.com");
-//
-//        // ACT
-//        mockContacts.add(object1);
-//        mockContacts.add(object2);
-//        PowerMockito.spy(BulkShareHelper.class);
-//        PowerMockito.when(BulkShareHelper.isValidEmail(anyString())).thenReturn(true);
-//
-//        // ASSERT
-//        assertEquals("[test@test.com, test@test1.com]", BulkShareHelper.verifiedEmailList(mockContacts).toString());
-//    }
-//
-//    @Test
-//    public void isValidEmailTest() {
-//        // ARRANGE
-//        String validAddress = "user@domain.com";
-//        String validAddress2 = "user@domain.co.in";
-//        String invalidAddress = "user#domain.com";
-//        String invalidAddress2 = "@yahoo.com.";
-//
-//        // ASSERT
-//        assertEquals(true, BulkShareHelper.isValidEmail(validAddress));
-//        assertEquals(true, BulkShareHelper.isValidEmail(validAddress2));
-//        assertEquals(false, BulkShareHelper.isValidEmail(invalidAddress));
-//        assertEquals(false, BulkShareHelper.isValidEmail(invalidAddress2));
-//    }
-//
-//    @Test
-//    public void contactArrayTest() throws Exception {
-//        // ARRANGE
-//        PowerMockito.mockStatic(AmbassadorSingleton.class);
-//        AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
-//        ArrayList<String> phoneNumberList = new ArrayList<>();
-//        JSONArray mockArray = mock(JSONArray.class);
-//        JSONObject mockObject = mock(JSONObject.class);
-//
-//        // ACT
-//        PowerMockito.whenNew(JSONArray.class).withAnyArguments().thenReturn(mockArray);
-//        PowerMockito.whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
-//        when(AmbassadorSingleton.getInstance()).thenReturn(mockSingleton);
-//        when(mockSingleton.getShortCode()).thenReturn("fakeShortCode");
-//        when(mockObject.put(anyString(), any())).thenReturn(mockObject);
-//        phoneNumberList.add("5555555555");
-//        bulkShareHelper.contactArray(phoneNumberList, true);
-//
-//        // ASSERT
-//        assertNotNull(mockObject);
-//    }
-//
+
+    // STATIC HELPER FUNCTIONS
+    @Test
+    public void verifiedSMSListTest() {
+        // ARRANGE
+        ArrayList<ContactObject> mockContacts = new ArrayList<>();
+        ContactObject passObject1 = new ContactObject("Success1", "Mobile", "815-555-4562");
+        ContactObject failObject1 = new ContactObject("Failure1", "Mobile", "4578-5648-1213");
+        ContactObject passObject2 = new ContactObject("Success2", "Mobile", "555-1234");
+        ContactObject failObject2 = new ContactObject("Failure2", "Mobile", "4567");
+        ContactObject passObject3 = new ContactObject("Success3", "Mobile", "+1-123-555-4561");
+
+        // ACT
+        mockContacts.add(passObject1);
+        mockContacts.add(failObject1);
+        mockContacts.add(passObject2);
+        mockContacts.add(failObject2);
+        mockContacts.add(passObject3);
+
+        // ASSERT
+        assertEquals("[8155554562, 5551234, 11235554561]", BulkShareHelper.verifiedSMSList(mockContacts).toString());
+    }
+
+    @Test
+    public void verifiedEmailListTest() {
+        // ARRANGE
+        ArrayList<ContactObject> mockContacts = new ArrayList<>();
+        ContactObject object1 = new ContactObject("Success1", "test@test.com");
+        ContactObject object2 = new ContactObject("Success2", "test@test1.com");
+
+        // ACT
+        mockContacts.add(object1);
+        mockContacts.add(object2);
+        PowerMockito.spy(BulkShareHelper.class);
+        PowerMockito.when(BulkShareHelper.isValidEmail(anyString())).thenReturn(true);
+
+        // ASSERT
+        assertEquals("[test@test.com, test@test1.com]", BulkShareHelper.verifiedEmailList(mockContacts).toString());
+    }
+
+    @Test
+    public void isValidEmailTest() {
+        // ARRANGE
+        String validAddress = "user@domain.com";
+        String validAddress2 = "user@domain.co.in";
+        String invalidAddress = "user#domain.com";
+        String invalidAddress2 = "@yahoo.com.";
+
+        // ASSERT
+        assertEquals(true, BulkShareHelper.isValidEmail(validAddress));
+        assertEquals(true, BulkShareHelper.isValidEmail(validAddress2));
+        assertEquals(false, BulkShareHelper.isValidEmail(invalidAddress));
+        assertEquals(false, BulkShareHelper.isValidEmail(invalidAddress2));
+    }
+
+    @Test
+    public void contactArrayTest() throws Exception {
+        // ARRANGE
+        ArrayList<String> phoneNumberList = new ArrayList<>();
+        ArrayList<String> emailList = new ArrayList<>();
+
+        // ACT
+        phoneNumberList.add("5555555555");
+        phoneNumberList.add("1234567891");
+        JSONArray smsResults = bulkShareHelper.contactArray(phoneNumberList, BulkShareHelper.SocialServiceTrackType.SMS, "whatever");
+        JSONObject smsObj = smsResults.getJSONObject(0);
+
+        emailList.add("test@test.com");
+        JSONArray emailResults = bulkShareHelper.contactArray(emailList, BulkShareHelper.SocialServiceTrackType.EMAIL, "whatever");
+        JSONObject emailObj = emailResults.getJSONObject(0);
+
+        JSONArray twitterResults = bulkShareHelper.contactArray(BulkShareHelper.SocialServiceTrackType.TWITTER, "whatever");
+        JSONObject twitterObj = twitterResults.getJSONObject(0);
+
+        JSONArray linkedInResults = bulkShareHelper.contactArray(BulkShareHelper.SocialServiceTrackType.LINKEDIN, "whatever");
+        JSONObject linkedInObj = linkedInResults.getJSONObject(0);
+
+        JSONArray facebookResults = bulkShareHelper.contactArray(BulkShareHelper.SocialServiceTrackType.FACEBOOK, "whatever");
+        JSONObject facebookObj = facebookResults.getJSONObject(0);
+
+        // ASSERT
+        assertEquals(2, smsResults.length());
+        assertEquals("5555555555", smsObj.getString("recipient_username"));
+        assertEquals("", smsObj.getString("recipient_email"));
+
+        assertEquals(1, emailResults.length());
+        assertEquals("test@test.com", emailObj.getString("recipient_email"));
+        assertEquals("", emailObj.getString("recipient_username"));
+
+        assertEquals(1, twitterResults.length());
+        assertEquals("", twitterObj.getString("recipient_email"));
+        assertEquals("", twitterObj.getString("recipient_username"));
+
+        assertEquals(1, linkedInResults.length());
+        assertEquals("", linkedInObj.getString("recipient_email"));
+        assertEquals("", linkedInObj.getString("recipient_username"));
+
+        assertEquals(1, facebookResults.length());
+        assertEquals("", facebookObj.getString("recipient_email"));
+        assertEquals("", facebookObj.getString("recipient_username"));
+    }
+
 //    @Test
 //    public void payloadObjectForSMSTest() throws Exception {
 //        // ARRANGE
