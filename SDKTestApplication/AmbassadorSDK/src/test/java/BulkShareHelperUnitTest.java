@@ -72,24 +72,40 @@ public class BulkShareHelperUnitTest {
         // ARRANGE
         String mockMessage = "fakeMessage";
         List mockContacts = mock(List.class);
-        RequestManager.RequestCompletion mockRequestCompletion = mock(RequestManager.RequestCompletion.class);
-        BulkShareHelper.BulkShareCompletion mockShareCompletion = mock(BulkShareHelper.BulkShareCompletion.class);
+        BulkShareHelper.BulkShareCompletion mockBulkShareCompletion = mock(BulkShareHelper.BulkShareCompletion.class);
+
         doAnswer(new Answer() {
             @Override
             public Void answer(InvocationOnMock invocation) throws Throwable {
-                assertEquals("fakeMessage", invocation.getArguments()[1]);
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)invocation.getArguments()[2];
+                completion.onSuccess("fakeResponse");
                 return null;
             }
-        }).when(mockRequestManager).bulkShareSms(anyList(), anyString(), any(RequestManager.RequestCompletion.class));
+        })
+        .doAnswer(new Answer() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocation.getArguments()[2];
+                completion.onFailure("fakeResponse");
+                return null;
+            }
+        })
+        .when(mockRequestManager).bulkShareSms(anyList(), anyString(), any(RequestManager.RequestCompletion.class));
 
         // ACT
-        //whenNew(BulkShareHelper.BulkShareCompletion.class).withNoArguments().thenReturn(mockShareCompletion);
-        doNothing().when(mockRequestManager).bulkShareSms(mockContacts, mockMessage, mockRequestCompletion);
-        bulkShareHelper.bulkShare(mockMessage, mockContacts, true, mockShareCompletion);
+        bulkShareHelper.bulkShare(mockMessage, mockContacts, true, mockBulkShareCompletion);
 
         // ASSERT
-        verify(bulkShareHelper).bulkShare(mockMessage, mockContacts, true, mockShareCompletion);
-        verify(mockRequestManager).bulkShareSms(mockContacts, mockMessage, mockRequestCompletion);
+        verify(bulkShareHelper).bulkShare(mockMessage, mockContacts, true, mockBulkShareCompletion);
+        verify(mockRequestManager).bulkShareSms(anyList(), anyString(), any(RequestManager.RequestCompletion.class));
+        verify(mockRequestManager).bulkShareTrack(anyList(), any(BulkShareHelper.SocialServiceTrackType.class));
+        verify(mockBulkShareCompletion).bulkShareSuccess();
+
+        // ACT AGAIN
+        bulkShareHelper.bulkShare(mockMessage, mockContacts, true, mockBulkShareCompletion);
+
+        // ASSERT AGAIN
+        verify(mockBulkShareCompletion).bulkShareFailure();
     }
 //
 //    @Test
