@@ -107,40 +107,47 @@ public class BulkShareHelperUnitTest {
         // ASSERT AGAIN
         verify(mockBulkShareCompletion).bulkShareFailure();
     }
-//
-//    @Test
-//    public void bulkSMSShareTest() throws Exception {
-//        // ARRANGE
-//        BulkShareSMSRequest mockRequest = mock(BulkShareSMSRequest.class);
-//        AsyncTask<Void, Void, Void> mockExecuteTask = mock(AsyncTask.class);
-//        ArrayList<ContactObject> mockContacts = mock(ArrayList.class);
-//
-//        // ACT
-//        PowerMockito.whenNew(BulkShareSMSRequest.class).withAnyArguments().thenReturn(mockRequest);
-//        when(mockRequest.execute()).thenReturn(mockExecuteTask);
-//        bulkShareHelper.bulkShare(mockContacts, true);
-//
-//        // ASSERT
-//        assertEquals(mockExecuteTask, mockRequest.execute());
-//        verify(bulkShareHelper).bulkShare(mockContacts, true);
-//    }
-//
-//    @Test
-//    public void bulkEmailShareTest() throws Exception {
-//        // ARRANGE
-//        BulkShareEmailRequest mockRequest = mock(BulkShareEmailRequest.class);
-//        AsyncTask<Void, Void, Void> mockExecuteTask = mock(AsyncTask.class);
-//        ArrayList<ContactObject> mockContacts = mock(ArrayList.class);
-//
-//        // ACT
-//        PowerMockito.whenNew(BulkShareEmailRequest.class).withAnyArguments().thenReturn(mockRequest);
-//        when(mockRequest.execute()).thenReturn(mockExecuteTask);
-//        bulkShareHelper.bulkShare(mockContacts, false);
-//
-//        // ASSERT
-//        assertEquals(mockExecuteTask, mockRequest.execute());
-//        verify(bulkShareHelper).bulkShare(mockContacts, false);
-//    }
+
+    @Test
+    public void bulkShareEmailTest() throws Exception {
+        // ARRANGE
+        String mockMessage = "fakeMessage";
+        List mockContacts = mock(List.class);
+        BulkShareHelper.BulkShareCompletion mockBulkShareCompletion = mock(BulkShareHelper.BulkShareCompletion.class);
+
+        doAnswer(new Answer() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)invocation.getArguments()[2];
+                completion.onSuccess("fakeResponse");
+                return null;
+            }
+        })
+        .doAnswer(new Answer() {
+            @Override
+            public Void answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocation.getArguments()[2];
+                completion.onFailure("fakeResponse");
+                return null;
+            }
+        })
+        .when(mockRequestManager).bulkShareEmail(anyList(), anyString(), any(RequestManager.RequestCompletion.class));
+
+        // ACT
+        bulkShareHelper.bulkShare(mockMessage, mockContacts, false, mockBulkShareCompletion);
+
+        // ASSERT
+        verify(bulkShareHelper).bulkShare(mockMessage, mockContacts, false, mockBulkShareCompletion);
+        verify(mockRequestManager).bulkShareEmail(anyList(), anyString(), any(RequestManager.RequestCompletion.class));
+        verify(mockRequestManager).bulkShareTrack(anyList(), any(BulkShareHelper.SocialServiceTrackType.class));
+        verify(mockBulkShareCompletion).bulkShareSuccess();
+
+        // ACT AGAIN
+        bulkShareHelper.bulkShare(mockMessage, mockContacts, false, mockBulkShareCompletion);
+
+        // ASSERT AGAIN
+        verify(mockBulkShareCompletion).bulkShareFailure();
+    }
 //
 //    @Test
 //    public void callSuccessfulTest() {
