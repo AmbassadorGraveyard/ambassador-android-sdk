@@ -65,7 +65,7 @@ class Utilities {
         new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton("Okay", okayOnClickListener)
+                .setPositiveButton("OK", okayOnClickListener)
                 .show();
     }
 
