@@ -1,14 +1,17 @@
 package com.ambassador.ambassadorsdk;
 
+import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -44,6 +47,9 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * Created by JakeDunahee on 7/31/15.
  */
 public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener {
+    private static final int CHECK_CONTACT_PERMISSIONS = 1;
+
+    private ListView lvContacts;
     private Button btnSend;
     private ImageButton btnEdit;
     private Button btnDone;
@@ -72,7 +78,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
         AmbassadorSingleton.getComponent().inject(this);
 
-        ListView lvContacts = (ListView)findViewById(R.id.lvContacts);
+        lvContacts = (ListView)findViewById(R.id.lvContacts);
         Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
         btnDone = (Button)findViewById(R.id.btnDone);
@@ -92,27 +98,12 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         pd.setOwnerActivity(this);
         pd.setCancelable(false);
 
-        // Finds out whether to show emails or phone numbers
-        showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
-        if (showPhoneNumbers) {
-            _getContactPhoneList();
-        } else {
-            _getContactEmailList();
+        if (_handleContactsPermission()) {
+            _handleContactsPopulation();
         }
 
         // Sets share message to default message from RAF Parameters
         etShareMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
-
-        adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
-        lvContacts.setAdapter(adapter);
-        lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get checkmark image and animate in or out based on its selection state and updates arrays
-                adapter.updateArrays(position, view);
-                _updateSendButton(adapter.selectedContacts.size());
-            }
-        });
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,6 +251,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     private void _getContactEmailList() {
         contactList = new ArrayList<>();
+
+
 
         Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
                 null, null, null, null);
@@ -475,5 +468,56 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     @Override
     public void namesHaveBeenUpdated() {
         _initiateSend();
+    }
+
+    private void _handleContactsPopulation() {
+        // Finds out whether to show emails or phone numbers
+        showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
+        if (showPhoneNumbers) {
+            _getContactPhoneList();
+        } else {
+            _getContactEmailList();
+        }
+
+        adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
+        lvContacts.setAdapter(adapter);
+        lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Get checkmark image and animate in or out based on its selection state and updates arrays
+                adapter.updateArrays(position, view);
+                _updateSendButton(adapter.selectedContacts.size());
+            }
+        });
+    }
+
+    private boolean _handleContactsPermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            return true; // have permission, proceed as normal
+        } else if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, CHECK_CONTACT_PERMISSIONS);
+        }
+        return false;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case CHECK_CONTACT_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted
+                    _handleContactsPopulation();
+                } else {
+                    // Permission denied, kick em out
+                    Utilities.presentBasicMessageDialog(this, getString(R.string.contacts_permission_denied_title), getString(R.string.contacts_permission_denied_message), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+                }
+                break;
+        }
     }
 }
