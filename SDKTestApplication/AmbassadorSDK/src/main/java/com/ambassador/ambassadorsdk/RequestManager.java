@@ -96,7 +96,9 @@ public class RequestManager {
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts), ambassadorConfig.getFullName(), messageToShare).toString());
+                    oStream.writeBytes(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts),
+                            ambassadorConfig.getFullName(),
+                            messageToShare).toString());
                     oStream.flush();
                     oStream.close();
 
