@@ -61,6 +61,14 @@ class Utilities {
         dialogBuilder.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(context.getResources().getColor(R.color.twitter_blue));
     }
 
+    public static void presentBasicMessageDialog(Context context, String title, String message, DialogInterface.OnClickListener okayOnClickListener) {
+        new AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Okay", okayOnClickListener)
+                .show();
+    }
+
     private static void _insertURLIntoMessage(EditText editText, String url) {
         String appendingLink = url;
 
