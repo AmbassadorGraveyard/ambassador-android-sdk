@@ -211,84 +211,107 @@ public class BulkShareHelperUnitTest {
         // ARRANGE
         ArrayList<String> phoneNumberList = new ArrayList<>();
         ArrayList<String> emailList = new ArrayList<>();
+        String mockShortCode = "whatever";
+        String mockPhoneNumber1 = "5555555555";
+        String mockPhoneNumber2 = "1234567891";
+        String mockEmail = "test@test.com";
 
         // ACT
-        phoneNumberList.add("5555555555");
-        phoneNumberList.add("1234567891");
-        JSONArray smsResults = bulkShareHelper.contactArray(phoneNumberList, BulkShareHelper.SocialServiceTrackType.SMS, "whatever");
+        phoneNumberList.add(mockPhoneNumber1);
+        phoneNumberList.add(mockPhoneNumber2);
+        JSONArray smsResults = bulkShareHelper.contactArray(phoneNumberList, BulkShareHelper.SocialServiceTrackType.SMS, mockShortCode);
         JSONObject smsObj = smsResults.getJSONObject(0);
 
-        emailList.add("test@test.com");
-        JSONArray emailResults = bulkShareHelper.contactArray(emailList, BulkShareHelper.SocialServiceTrackType.EMAIL, "whatever");
+        emailList.add(mockEmail);
+        JSONArray emailResults = bulkShareHelper.contactArray(emailList, BulkShareHelper.SocialServiceTrackType.EMAIL, mockShortCode);
         JSONObject emailObj = emailResults.getJSONObject(0);
 
-        JSONArray twitterResults = bulkShareHelper.contactArray(BulkShareHelper.SocialServiceTrackType.TWITTER, "whatever");
+        JSONArray twitterResults = bulkShareHelper.contactArray(BulkShareHelper.SocialServiceTrackType.TWITTER, mockShortCode);
         JSONObject twitterObj = twitterResults.getJSONObject(0);
 
-        JSONArray linkedInResults = bulkShareHelper.contactArray(BulkShareHelper.SocialServiceTrackType.LINKEDIN, "whatever");
+        JSONArray linkedInResults = bulkShareHelper.contactArray(BulkShareHelper.SocialServiceTrackType.LINKEDIN, mockShortCode);
         JSONObject linkedInObj = linkedInResults.getJSONObject(0);
 
-        JSONArray facebookResults = bulkShareHelper.contactArray(BulkShareHelper.SocialServiceTrackType.FACEBOOK, "whatever");
+        JSONArray facebookResults = bulkShareHelper.contactArray(BulkShareHelper.SocialServiceTrackType.FACEBOOK, mockShortCode);
         JSONObject facebookObj = facebookResults.getJSONObject(0);
 
         // ASSERT
         assertEquals(2, smsResults.length());
-        assertEquals("5555555555", smsObj.getString("recipient_username"));
+        assertEquals(mockPhoneNumber1, smsObj.getString("recipient_username"));
         assertEquals("", smsObj.getString("recipient_email"));
+        assertEquals(mockShortCode, smsObj.getString("short_code"));
+        assertEquals(BulkShareHelper.SocialServiceTrackType.SMS.toString(), smsObj.getString("social_name"));
 
         assertEquals(1, emailResults.length());
-        assertEquals("test@test.com", emailObj.getString("recipient_email"));
+        assertEquals(mockEmail, emailObj.getString("recipient_email"));
         assertEquals("", emailObj.getString("recipient_username"));
+        assertEquals(mockShortCode, emailObj.getString("short_code"));
+        assertEquals(BulkShareHelper.SocialServiceTrackType.EMAIL.toString(), emailObj.getString("social_name"));
 
         assertEquals(1, twitterResults.length());
         assertEquals("", twitterObj.getString("recipient_email"));
         assertEquals("", twitterObj.getString("recipient_username"));
+        assertEquals(mockShortCode, twitterObj.getString("short_code"));
+        assertEquals(BulkShareHelper.SocialServiceTrackType.TWITTER.toString(), twitterObj.getString("social_name"));
 
         assertEquals(1, linkedInResults.length());
         assertEquals("", linkedInObj.getString("recipient_email"));
         assertEquals("", linkedInObj.getString("recipient_username"));
+        assertEquals(mockShortCode, linkedInObj.getString("short_code"));
+        assertEquals(BulkShareHelper.SocialServiceTrackType.LINKEDIN.toString(), linkedInObj.getString("social_name"));
 
         assertEquals(1, facebookResults.length());
         assertEquals("", facebookObj.getString("recipient_email"));
         assertEquals("", facebookObj.getString("recipient_username"));
+        assertEquals(mockShortCode, facebookObj.getString("short_code"));
+        assertEquals(BulkShareHelper.SocialServiceTrackType.FACEBOOK.toString(), facebookObj.getString("social_name"));
     }
 
-//    @Test
-//    public void payloadObjectForSMSTest() throws Exception {
-//        // ARRANGE
-//        PowerMockito.mockStatic(AmbassadorSingleton.class);
-//        AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
-//        JSONObject mockObject = mock(JSONObject.class);
-//        ArrayList<String> phoneNumberList = new ArrayList<>();
-//
-//        // ACT
-//        PowerMockito.whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
-//        when(AmbassadorSingleton.getInstance()).thenReturn(mockSingleton);
-//        when(mockObject.put(anyString(), any())).thenReturn(mockObject);
-//        when(mockSingleton.getFullName()).thenReturn("fakeName");
-//        BulkShareHelper.payloadObjectForSMS(phoneNumberList, "test message");
-//
-//        // ASSERT
-//        assertNotNull(mockObject);
-//    }
-//
-//    @Test
-//    public void payloadObjectForEmailTest() throws Exception {
-//        // ARRANGE
-//        PowerMockito.mockStatic(AmbassadorSingleton.class);
-//        AmbassadorSingleton mockSingleton = mock(AmbassadorSingleton.class);
-//        JSONObject mockObject = mock(JSONObject.class);
-//        ArrayList<String> emailList = new ArrayList<>();
-//
-//        // ACT
-//        PowerMockito.whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
-//        when(AmbassadorSingleton.getInstance()).thenReturn(mockSingleton);
-//        when(mockObject.put(anyString(), any())).thenReturn(mockObject);
-//        when(mockSingleton.getShortCode()).thenReturn("123456");
-//        when(mockSingleton.getEmailSubjectLine()).thenReturn("email subject line");
-//        BulkShareHelper.payloadObjectForEmail(emailList, "test message");
-//
-//        // ASSERT
-//        assertNotNull(mockObject);
-//    }
+    @Test
+    public void payloadObjectForEmailTest() throws Exception {
+        // ARRANGE
+        ArrayList<String> emailList = new ArrayList<>();
+        String mockEmail1 = "test@test.com";
+        String mockEmail2 = "test2@test.com";
+        String mockShortCode = "whatever";
+        String mockEmailSubject = "subject";
+        String mockEmailMessage = "message";
+
+        // ACT
+        emailList.add(mockEmail1);
+        emailList.add(mockEmail2);
+        JSONObject emailPayload = bulkShareHelper.payloadObjectForEmail(emailList, mockShortCode, mockEmailSubject, mockEmailMessage);
+        JSONArray emailArray = emailPayload.getJSONArray("to_emails");
+
+        // ASSERT
+        assertEquals(2, emailArray.length());
+        assertEquals(mockEmail1, emailArray.get(0));
+        assertEquals(mockEmail2, emailArray.get(1));
+        assertEquals(mockShortCode, emailPayload.getString("short_code"));
+        assertEquals(mockEmailSubject, emailPayload.getString("subject_line"));
+        assertEquals(mockEmailMessage, emailPayload.getString("message"));
+    }
+
+    @Test
+    public void payloadObjectForSMSTest() throws Exception {
+        // ARRANGE
+        ArrayList<String> phoneNumberList = new ArrayList<>();
+        String mockPhoneNumber1 = "5555555555";
+        String mockPhoneNumber2 = "1234567891";
+        String mockFullName = "name";
+        String mockSmsMessage = "message";
+
+        // ACT
+        phoneNumberList.add(mockPhoneNumber1);
+        phoneNumberList.add(mockPhoneNumber2);
+        JSONObject phonePayload = bulkShareHelper.payloadObjectForSMS(phoneNumberList, mockFullName, mockSmsMessage);
+        JSONArray phoneArray = phonePayload.getJSONArray("to");
+
+        // ASSERT
+        assertEquals(2, phoneArray.length());
+        assertEquals(mockPhoneNumber1, phoneArray.get(0));
+        assertEquals(mockPhoneNumber2, phoneArray.get(1));
+        assertEquals(mockFullName, phonePayload.getString("from"));
+        assertEquals(mockSmsMessage, phonePayload.getString("message"));
+    }
 }
