@@ -66,7 +66,7 @@ import static org.mockito.Mockito.when;
 public class AmbassadorActivityTest {
     private ServiceSelectorPreferences parameters;
     private static final String EMAIL_PATTERN = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\\b";
-    private static final String SMS_PATTERN = "Mobile (.*)";
+    private static final String SMS_PATTERN = "(Home|Work|Mobile) (.*)";
     private Context context;
 
     //tell Dagger this code will participate in dependency injection
