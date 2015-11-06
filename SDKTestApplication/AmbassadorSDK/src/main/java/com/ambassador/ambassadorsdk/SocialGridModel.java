@@ -1,7 +1,5 @@
 package com.ambassador.ambassadorsdk;
 
-import android.graphics.drawable.Drawable;
-
 /**
  * Created by dylan on 11/6/15.
  */
@@ -12,19 +10,19 @@ public class SocialGridModel {
     }
 
     private String title;
-    private Drawable drawable;
+    private int drawable;
     private int color;
     private boolean drawBorder;
     private OnClickListener onClickListener;
 
-    public SocialGridModel(String title, Drawable drawable, int color) {
+    public SocialGridModel(String title, int drawable, int color) {
         this.title = title;
         this.drawable = drawable;
         this.color = color;
         this.drawBorder = false;
     }
 
-    public SocialGridModel(String title, Drawable drawable, int color, boolean drawBorder) {
+    public SocialGridModel(String title, int drawable, int color, boolean drawBorder) {
         this.title = title;
         this.drawable = drawable;
         this.color = color;
@@ -49,7 +47,7 @@ public class SocialGridModel {
         return title;
     }
 
-    public Drawable getDrawable() {
+    public int getDrawable() {
         return drawable;
     }
 
