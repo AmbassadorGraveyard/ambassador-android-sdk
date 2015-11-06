@@ -40,6 +40,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,7 +61,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     private Timer networkTimer;
     private CallbackManager callbackManager;
     private final android.os.Handler timerHandler = new android.os.Handler();
-    private SocialGridModel[] gridModels;
+    private ArrayList<SocialGridModel> gridModels;
 
     final private Runnable myRunnable = new Runnable() {
         @Override
@@ -430,6 +432,11 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         });
 
-        gridModels = new SocialGridModel[]{ modelFacebook, modelTwitter, modelLinkedIn, modelEmail, modelSms };
+        gridModels = new ArrayList<>();
+        gridModels.add(modelFacebook);
+        gridModels.add(modelTwitter);
+        gridModels.add(modelLinkedIn);
+        gridModels.add(modelEmail);
+        gridModels.add(modelSms);
     }
 }

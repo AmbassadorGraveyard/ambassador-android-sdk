@@ -12,16 +12,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by JakeDunahee on 7/22/15.
  */
 class SocialGridAdapter extends BaseAdapter {
     private Context context;
-    private SocialGridModel[] models;
+    private ArrayList<SocialGridModel> models;
     LayoutInflater inflater;
     private ShapeDrawable rectShapeDrawable;
 
-    public SocialGridAdapter(Context context, SocialGridModel[] models) {
+    public SocialGridAdapter(Context context, ArrayList<SocialGridModel> models) {
         this.context = context;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -38,12 +40,12 @@ class SocialGridAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return models.length;
+        return models.size();
     }
 
     @Override
     public SocialGridModel getItem(int position) {
-        return models[position];
+        return models.get(position);
     }
 
     @Override
