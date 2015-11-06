@@ -59,9 +59,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     private Timer networkTimer;
     private CallbackManager callbackManager;
     private final android.os.Handler timerHandler = new android.os.Handler();
-    private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
-    private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
-            R.drawable.email_icon, R.drawable.sms_icon};
+    private SocialGridModel[] gridModels;
 
     final private Runnable myRunnable = new Runnable() {
         @Override
@@ -147,12 +145,14 @@ public class AmbassadorActivity extends AppCompatActivity {
         btnCopyPaste.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
         // Sets up social gridView
-        SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridTitles, gridDrawables);
+        _instantiateGridModelsIntoArray();
+        final SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridModels);
         gvSocialGrid.setAdapter(gridAdapter);
         gvSocialGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                respondToGridViewClick(position);
+                SocialGridModel model = gridAdapter.getItem(position);
+                model.click();
             }
         });
 
@@ -243,31 +243,6 @@ public class AmbassadorActivity extends AppCompatActivity {
         Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show();
 
         return clip.toString();
-    }
-
-    int respondToGridViewClick(int position) {
-        // Functionality: Handles items being clicked in the gridview
-        switch (position) {
-            case 0:
-                shareWithFacebook();
-                break;
-            case 1:
-                shareWithTwitter();
-                break;
-            case 2:
-                shareWithLinkedIn();
-                break;
-            case 3:
-                goToContactsPage(false);
-                break;
-            case 4:
-                goToContactsPage(true);
-                break;
-            default:
-                return -1;
-        }
-
-        return position;
     }
 
     void loadCustomImages() {
@@ -409,4 +384,52 @@ public class AmbassadorActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(getResources().getColor(R.color.homeToolBarText));
     }
     // END UI SETTER METHODS
+
+    /**
+     * Instantiates a model object for each social grid item and binds a passthrough
+     * onclick method that calls the existing method handler, eg. shareWithFacebook();
+     */
+    private void _instantiateGridModelsIntoArray() {
+        SocialGridModel modelFacebook = new SocialGridModel("FACEBOOK", R.drawable.facebook_icon, getResources().getColor(R.color.facebook_blue));
+        modelFacebook.setOnClickListener(new SocialGridModel.OnClickListener() {
+            @Override
+            public void onClick() {
+                shareWithFacebook();
+            }
+        });
+
+        SocialGridModel modelTwitter = new SocialGridModel("TWITTER", R.drawable.twitter_icon, getResources().getColor(R.color.twitter_blue));
+        modelTwitter.setOnClickListener(new SocialGridModel.OnClickListener() {
+            @Override
+            public void onClick() {
+                shareWithTwitter();
+            }
+        });
+
+        SocialGridModel modelLinkedIn = new SocialGridModel("LINKEDIN", R.drawable.linkedin_icon, getResources().getColor(R.color.linkedin_blue));
+        modelLinkedIn.setOnClickListener(new SocialGridModel.OnClickListener() {
+            @Override
+            public void onClick() {
+                shareWithLinkedIn();
+            }
+        });
+
+        SocialGridModel modelEmail = new SocialGridModel("EMAIL", R.drawable.email_icon, getResources().getColor(android.R.color.white), true);
+        modelEmail.setOnClickListener(new SocialGridModel.OnClickListener() {
+            @Override
+            public void onClick() {
+                goToContactsPage(false);
+            }
+        });
+
+        SocialGridModel modelSms = new SocialGridModel("SMS", R.drawable.sms_icon, getResources().getColor(android.R.color.white), true);
+        modelSms.setOnClickListener(new SocialGridModel.OnClickListener() {
+            @Override
+            public void onClick() {
+                goToContactsPage(true);
+            }
+        });
+
+        gridModels = new SocialGridModel[]{ modelFacebook, modelTwitter, modelLinkedIn, modelEmail, modelSms };
+    }
 }
