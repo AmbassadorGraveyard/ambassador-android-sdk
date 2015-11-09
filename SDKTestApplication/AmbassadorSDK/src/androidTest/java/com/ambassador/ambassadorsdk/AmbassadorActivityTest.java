@@ -4,6 +4,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
@@ -192,8 +193,10 @@ public class AmbassadorActivityTest {
     @Test
     public void testFacebook() {
         //TODO: remove hardcoded id check, try to get withText working
-        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
-        //onView(withText("You must")).check(matches(isDisplayed()));
+        //onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(0).perform(click());
+        onView(withText("FACEBOOK")).perform(click());
+
+
         onView(withId(16908290)).check(matches(isDisplayed()));
         pressBack();
 
@@ -207,7 +210,8 @@ public class AmbassadorActivityTest {
         //start recording fired Intents
         Intents.init();
         //click email icon
-        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(3).perform(click());
+        onView(withText("EMAIL")).perform(click());
+
         //check that the Intent fired
         intended(hasComponent(ContactSelectorActivity.class.getName()));
         //stop recording Intents
@@ -323,7 +327,7 @@ public class AmbassadorActivityTest {
         //start recording fired Intents
         Intents.init();
         //click sms icon
-        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(4).perform(click());
+        onView(withText("SMS")).perform(click());
         //check that the Intent fired
         intended(hasComponent(ContactSelectorActivity.class.getName()));
         //stop recording Intents
@@ -430,7 +434,7 @@ public class AmbassadorActivityTest {
 
         when(ambassadorConfig.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
 
-        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
+        onView(withText("LINKEDIN")).perform(click());
         onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.etLinkedInMessage)).check(matches(isDisplayed()));
         onView(withId(R.id.tvLinkedInHeaderText)).check(matches(isDisplayed()));
@@ -554,7 +558,8 @@ public class AmbassadorActivityTest {
 
         when(ambassadorConfig.getTwitterAccessToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
 
-        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
+        onView(withText("TWITTER")).perform(click());
+
         onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.etTweetMessage)).check(matches(isDisplayed()));
         onView(withId(R.id.tvTwitterHeaderText)).check(matches(isDisplayed()));
