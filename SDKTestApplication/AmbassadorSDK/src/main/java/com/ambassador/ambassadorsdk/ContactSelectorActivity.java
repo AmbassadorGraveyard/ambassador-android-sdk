@@ -510,7 +510,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                     _handleContactsPopulation();
                 } else {
                     // Permission denied, kick em out
-                    Utilities.presentBasicMessageDialog(this, getString(R.string.contacts_permission_denied_title), getString(R.string.contacts_permission_denied_message), new DialogInterface.OnClickListener() {
+                    Utilities.presentNonCancelableMessageDialog(this, getString(R.string.contacts_permission_denied_title), getString(R.string.contacts_permission_denied_message), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();
