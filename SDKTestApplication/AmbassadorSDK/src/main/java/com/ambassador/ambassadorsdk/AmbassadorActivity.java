@@ -101,8 +101,6 @@ public class AmbassadorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
-
         if (!AmbassadorSingleton.isValid()) {
             finish();
             return;
@@ -115,6 +113,8 @@ public class AmbassadorActivity extends AppCompatActivity {
                         .setFontAttrId(R.attr.fontPath)
                         .build()
         );
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         //tell Dagger to inject dependencies
         AmbassadorSingleton.getAmbModule().setContext(this);
