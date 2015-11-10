@@ -92,11 +92,11 @@ public class UtilitiesTest {
         int parameter = android.R.dimen.app_icon_size;
         int expected = 25;
         Resources mockResources = mock(Resources.class);
-
-        // ACT
         PowerMockito.when(AmbassadorSingleton.get()).thenReturn(mockContext);
         when(mockContext.getResources()).thenReturn(mockResources);
         when(mockResources.getDimensionPixelSize(anyInt())).thenReturn(expected);
+
+        // ACT
         int ret = Utilities.getPixelSizeForDimension(parameter);
 
         // ASSERT
@@ -127,11 +127,10 @@ public class UtilitiesTest {
         // ARRANGE
         Resources mockResources = mock(Resources.class);
         Configuration mockConfiguration = mock(Configuration.class);
-
-        // ACT
         when(mockContext.getResources()).thenReturn(mockResources);
         when(mockResources.getConfiguration()).thenReturn(mockConfiguration);
 
+        // ACT
         mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
         boolean smallCase = Utilities.isTablet(mockContext);
         mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
@@ -153,11 +152,10 @@ public class UtilitiesTest {
         // ARRANGE
         Resources mockResources = mock(Resources.class);
         Configuration mockConfiguration = mock(Configuration.class);
-
-        // ACT
         when(mockContext.getResources()).thenReturn(mockResources);
         when(mockResources.getConfiguration()).thenReturn(mockConfiguration);
 
+        // ACT
         mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
         String smallCase = Utilities.deviceType(mockContext);
         mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
@@ -191,11 +189,11 @@ public class UtilitiesTest {
         DisplayMetrics mockDisplayMetrics = mock(DisplayMetrics.class);
         float density = 0.5f;
         mockDisplayMetrics.density = density;
-
-        // ACT
         PowerMockito.when(AmbassadorSingleton.get()).thenReturn(mockContext);
         when(mockContext.getResources()).thenReturn(mockResources);
         when(mockResources.getDisplayMetrics()).thenReturn(mockDisplayMetrics);
+
+        // ACT
         float ret = Utilities.getScreenDensity();
 
         // ASSERT
