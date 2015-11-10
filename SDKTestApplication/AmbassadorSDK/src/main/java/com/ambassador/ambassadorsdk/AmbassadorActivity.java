@@ -41,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -392,6 +393,8 @@ public class AmbassadorActivity extends AppCompatActivity {
      */
     private void _instantiateGridModelsIntoArray() {
         SocialGridModel modelFacebook = new SocialGridModel("FACEBOOK", R.drawable.facebook_icon, getResources().getColor(R.color.facebook_blue));
+        modelFacebook.setDisabled(!getResources().getBoolean(R.bool.showFacebook));
+        modelFacebook.setWeight(getResources().getInteger(R.integer.weightFacebook));
         modelFacebook.setOnClickListener(new SocialGridModel.OnClickListener() {
             @Override
             public void onClick() {
@@ -400,6 +403,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         });
 
         SocialGridModel modelTwitter = new SocialGridModel("TWITTER", R.drawable.twitter_icon, getResources().getColor(R.color.twitter_blue));
+        modelTwitter.setDisabled(!getResources().getBoolean(R.bool.showTwitter));
+        modelTwitter.setWeight(getResources().getInteger(R.integer.weightTwitter));
         modelTwitter.setOnClickListener(new SocialGridModel.OnClickListener() {
             @Override
             public void onClick() {
@@ -408,6 +413,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         });
 
         SocialGridModel modelLinkedIn = new SocialGridModel("LINKEDIN", R.drawable.linkedin_icon, getResources().getColor(R.color.linkedin_blue));
+        modelLinkedIn.setDisabled(!getResources().getBoolean(R.bool.showLinkedIn));
+        modelLinkedIn.setWeight(getResources().getInteger(R.integer.weightLinkedIn));
         modelLinkedIn.setOnClickListener(new SocialGridModel.OnClickListener() {
             @Override
             public void onClick() {
@@ -416,6 +423,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         });
 
         SocialGridModel modelEmail = new SocialGridModel("EMAIL", R.drawable.email_icon, getResources().getColor(android.R.color.white), true);
+        modelEmail.setDisabled(!getResources().getBoolean(R.bool.showEmail));
+        modelEmail.setWeight(getResources().getInteger(R.integer.weightEmail));
         modelEmail.setOnClickListener(new SocialGridModel.OnClickListener() {
             @Override
             public void onClick() {
@@ -424,6 +433,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         });
 
         SocialGridModel modelSms = new SocialGridModel("SMS", R.drawable.sms_icon, getResources().getColor(android.R.color.white), true);
+        modelSms.setDisabled(!getResources().getBoolean(R.bool.showSMS));
+        modelSms.setWeight(getResources().getInteger(R.integer.weightSMS));
         modelSms.setOnClickListener(new SocialGridModel.OnClickListener() {
             @Override
             public void onClick() {
@@ -431,11 +442,26 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         });
 
+        ArrayList<SocialGridModel> tmpGridModels = new ArrayList<>();
+
+        tmpGridModels.add(modelFacebook);
+        tmpGridModels.add(modelTwitter);
+        tmpGridModels.add(modelLinkedIn);
+        tmpGridModels.add(modelEmail);
+        tmpGridModels.add(modelSms);
+
+        _handleDisablingAndSorting(tmpGridModels);
+    }
+
+    private void _handleDisablingAndSorting(ArrayList<SocialGridModel> tmpGridModels) {
         gridModels = new ArrayList<>();
-        gridModels.add(modelFacebook);
-        gridModels.add(modelTwitter);
-        gridModels.add(modelLinkedIn);
-        gridModels.add(modelEmail);
-        gridModels.add(modelSms);
+
+        for (SocialGridModel model : tmpGridModels) {
+            if (!model.isDisabled()) {
+                gridModels.add(model);
+            }
+        }
+
+        Collections.sort(gridModels);
     }
 }
