@@ -76,6 +76,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
+        if (!AmbassadorSingleton.isValid()) {
+            finish();
+            return;
+        }
+
         AmbassadorSingleton.getComponent().inject(this);
 
         lvContacts = (ListView)findViewById(R.id.lvContacts);
