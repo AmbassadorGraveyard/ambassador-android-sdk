@@ -102,6 +102,11 @@ public class AmbassadorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (!AmbassadorSingleton.isValid()) {
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_ambassador);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
