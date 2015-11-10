@@ -36,6 +36,11 @@ public class TwitterLoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
 
+        if (!AmbassadorSingleton.isValid()) {
+            finish();
+            return;
+        }
+
         AmbassadorSingleton.getComponent().inject(this);
         _setUpToolbar();
 
