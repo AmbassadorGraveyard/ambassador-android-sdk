@@ -19,6 +19,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -26,10 +29,12 @@ import dagger.Component;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
@@ -69,6 +74,10 @@ public class AmbassadorSDKUnitTest {
         ambassadorSDK = Mockito.spy(AmbassadorSDK.class);
         ambassadorSDK.ambassadorConfig = ambassadorConfig;
     }
+
+    /**
+     * Static method tests
+     */
 
     @Test
     public void presentRAFTest() throws Exception {
@@ -181,27 +190,39 @@ public class AmbassadorSDKUnitTest {
         verify(ambassadorSDK).localRunWithKeysAndConvertOnInstall(mockToken, mockID, mockParameters);
     }
 
+    /**
+     * Local method tests
+     */
+
+    @Test
+    public void localPresentRAFTest() throws Exception {
+        // ARRANGE
+        Intent mockIntent = mock(Intent.class);
+        whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
+        doNothing().when(ambassadorConfig).setCampaignID(anyString());
+        doNothing().when(mockContext).startActivity(mockIntent);
+
+        // ACT
+        ambassadorSDK.localPresentRAF(mockContext, "206");
+
+        // ASSERT
+        verify(ambassadorConfig).setCampaignID("206");
+        verify(mockContext).startActivity(mockIntent);
+    }
+
     @Test
     public void localIdentifyTest() throws Exception {
         // ARRANGE
         final String email = "test@test.com";
+        doNothing().when(ambassadorConfig).setUserEmail(email);
         Identify mockIdentify = mock(Identify.class);
+        doNothing().when(mockIdentify).getIdentity();
+        whenNew(Identify.class).withAnyArguments().thenReturn(mockIdentify);
         PusherSDK mockPusherSDK = mock(PusherSDK.class);
-
-        PowerMockito.mockStatic(AmbassadorSingleton.class);
-        doAnswer(new Answer() {
-            @Override
-            public Void answer(InvocationOnMock invocation) throws Throwable {
-                assertEquals(email, invocation.getArguments()[0]);
-                return null;
-            }
-        }).when(ambassadorConfig).setUserEmail(anyString());
+        whenNew(PusherSDK.class).withAnyArguments().thenReturn(mockPusherSDK);
+        doNothing().when(mockPusherSDK).createPusher(any(PusherSDK.PusherSubscribeCallback.class));
 
         // ACT
-        whenNew(Identify.class).withAnyArguments().thenReturn(mockIdentify);
-        whenNew(PusherSDK.class).withAnyArguments().thenReturn(mockPusherSDK);
-        doNothing().when(ambassadorConfig).setUserEmail(email);
-        doNothing().when(mockIdentify).getIdentity();
         ambassadorSDK.localIdentify(email);
 
         // ASSERT
@@ -210,19 +231,70 @@ public class AmbassadorSDKUnitTest {
     }
 
     @Test
-    public void localPresentRAFTest() throws Exception {
+    public void localRunWithKeysTest() {
         // ARRANGE
-        Intent mockIntent = mock(Intent.class);
+        String mockToken = "mockSDKToken";
+        String mockID = "mockID";
+        doNothing().when(ambassadorSDK).startConversionTimer();
 
         // ACT
-        whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
-        doNothing().when(ambassadorConfig).setCampaignID(anyString());
-        doNothing().when(mockContext).startActivity(mockIntent);
-        ambassadorSDK.localPresentRAF(mockContext, "206");
+        ambassadorSDK.localRunWithKeys(mockToken, mockID);
 
         // ASSERT
-        verify(ambassadorConfig).setCampaignID("206");
-        verify(mockContext).startActivity(mockIntent);
+        verify(ambassadorConfig).setUniversalToken(mockToken);
+        verify(ambassadorConfig).setUniversalID(mockID);
+        verify(ambassadorSDK).startConversionTimer();
+    }
+
+    @Test
+    public void localRunWithKeysAndConvertOnInstallTest() {
+        // ARRANGE
+        String mockToken = "mockSDKToken";
+        String mockID = "mockID";
+        final ConversionParameters mockParameters = mock(ConversionParameters.class);
+        doNothing().when(ambassadorSDK).startConversionTimer();
+        when(ambassadorConfig.convertedOnInstall()).thenReturn(true);
+
+        PowerMockito.mockStatic(AmbassadorSDK.class);
+
+        // ACT
+        ambassadorSDK.localRunWithKeysAndConvertOnInstall(mockToken, mockID, mockParameters);
+
+        // ASSERT
+        verify(ambassadorConfig, times(1)).setUniversalToken(mockToken);
+        verify(ambassadorConfig, times(1)).setUniversalID(mockID);
+        verify(ambassadorSDK, times(1)).startConversionTimer();
+        verify(ambassadorConfig, times(0)).setConvertForInstall();
+
+        // ARRANGE
+        when(ambassadorConfig.convertedOnInstall()).thenReturn(false);
+
+        // ACT
+        ambassadorSDK.localRunWithKeysAndConvertOnInstall(mockToken, mockID, mockParameters);
+
+        // ASSERT
+        verify(ambassadorConfig, times(2)).setUniversalToken(mockToken);
+        verify(ambassadorConfig, times(2)).setUniversalID(mockID);
+        verify(ambassadorSDK, times(2)).startConversionTimer();
+        verify(ambassadorConfig, times(1)).setConvertForInstall();
+    }
+
+    @Test
+    public void startConversionTimerTest() throws Exception {
+        // ARRANGE
+        ConversionUtility mockConversionUtility = mock(ConversionUtility.class);
+        whenNew(ConversionUtility.class).withAnyArguments().thenReturn(mockConversionUtility);
+        Timer mockTimer = mock(Timer.class);
+        whenNew(Timer.class).withAnyArguments().thenReturn(mockTimer);
+        final TimerTask mockTimerTask = mock(TimerTask.class);
+        whenNew(TimerTask.class).withAnyArguments().thenReturn(mockTimerTask);
+        doNothing().when(mockTimer).scheduleAtFixedRate(any(TimerTask.class), anyInt(), anyInt());
+
+        // ACT
+        ambassadorSDK.startConversionTimer();
+
+        // ASSERT
+        verify(mockTimer).scheduleAtFixedRate(any(TimerTask.class), anyInt(), anyInt());
     }
 
 }
