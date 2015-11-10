@@ -20,6 +20,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.mockito.Mockito.*;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,12 +59,51 @@ public class ContactListAdapterTest {
     }
 
     @Test
-    public void filterListTest() {
+    public void filterListTest() throws Exception {
         // ARRANGE
+        Activity mockActivity = mock(Activity.class);
+        List<ContactObject> contactObjects = new ArrayList<>();
+        contactObjects.add(new ContactObject("1", "1"));
+        contactObjects.add(new ContactObject("catdog", "2"));
+        contactObjects.add(new ContactObject("cadog", "ca"));
+        contactObjects.add(new ContactObject("cat", "4"));
+
+        ContactListAdapter contactListAdapter = new ContactListAdapter(mockActivity, contactObjects, false);
+        ContactListAdapter spy = Mockito.spy(contactListAdapter);
+        List<ContactObject> selectedContacts = spy.selectedContacts;
+        doNothing().when(spy).notifyDataSetChanged();
+
+        Field f = contactListAdapter.getClass().getDeclaredField("filteredContactList");
+        f.setAccessible(true);
+        ArrayList<ContactObject> filteredList;
 
         // ACT
+        spy.filterList(null);
 
         // ASSERT
+        filteredList = (ArrayList) f.get(spy);
+        assertTrue(filteredList.size() == contactObjects.size());
+
+        // ACT
+        spy.filterList("");
+
+        // ASSERT
+        filteredList = (ArrayList) f.get(spy);
+        assertTrue(filteredList.size() == contactObjects.size());
+
+        // ACT
+        spy.filterList("cat");
+
+        // ASSERT
+        filteredList = (ArrayList) f.get(spy);
+        assertTrue(filteredList.size() == 2);
+
+        // ACT
+        spy.filterList("ca");
+
+        // ASSERT
+        filteredList = (ArrayList) f.get(spy);
+        assertTrue(filteredList.size() == 3);
     }
 
     @Test
