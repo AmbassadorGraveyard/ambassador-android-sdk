@@ -7,11 +7,6 @@ import android.content.Intent;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ambassador.ambassadorsdk.AmbassadorActivity;
-import com.ambassador.ambassadorsdk.AmbassadorApplicationModule;
-import com.ambassador.ambassadorsdk.AmbassadorConfig;
-import com.ambassador.ambassadorsdk.AmbassadorSingleton;
-
 import junit.framework.TestCase;
 
 import org.json.JSONArray;
@@ -48,7 +43,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ClipData.class, Toast.class, AmbassadorActivity.class, Integer.class, AmbassadorSingleton.class})
-public class AmbassadorActivityUnitTest extends TestCase {
+public class AmbassadorActivityTest extends TestCase {
     AmbassadorActivity ambassadorActivity = spy(new AmbassadorActivity());
 
     @Inject
@@ -57,7 +52,7 @@ public class AmbassadorActivityUnitTest extends TestCase {
     @Singleton
     @Component(modules = {AmbassadorApplicationModule.class})
     public interface TestComponent {
-        void inject(AmbassadorActivityUnitTest ambassadorActivityUnitTest);
+        void inject(AmbassadorActivityTest ambassadorActivityTest);
     }
 
     @Before
@@ -67,7 +62,7 @@ public class AmbassadorActivityUnitTest extends TestCase {
         AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
         amb.setMockMode(true);
 
-        TestComponent component = DaggerAmbassadorActivityUnitTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
+        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
         component.inject(this);
     }
 
