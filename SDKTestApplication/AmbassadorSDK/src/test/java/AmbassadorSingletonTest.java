@@ -34,8 +34,8 @@ import static org.mockito.Mockito.when;
 public class AmbassadorSingletonTest {
 
     Context mockContext;
-    AmbassadorApplicationComponent mockComponent = mock(AmbassadorApplicationComponent.class);
-    AmbassadorApplicationModule mockModule = mock(AmbassadorApplicationModule.class);
+    AmbassadorApplicationComponent mockComponent;
+    AmbassadorApplicationModule mockModule;
 
     @Singleton
     @Component(modules = {AmbassadorApplicationModule.class})
@@ -53,6 +53,8 @@ public class AmbassadorSingletonTest {
         component.inject(this);
 
         mockContext = mock(Context.class);
+        mockComponent = mock(AmbassadorApplicationComponent.class);
+        mockModule = mock(AmbassadorApplicationModule.class);
 
         PowerMockito.mock(AmbassadorApplicationModule.class);
     }
