@@ -242,3 +242,33 @@ _Note_: The RAFLogoPosition element is ignored when no `raf_logo.png` is present
 The following image shows the logo in the various positions set in the custom values:
 
 <img src="screenshots/rafLogoPosition1.png" />
+
+#### Disabling Sharing Options
+
+Any of the sharing methods can be disabled if it is not relevant for your campaign.
+
+The relevant values are stored as booleans in the customValues.xml file.
+
+<img src="screenshots/disableIconValues.png" />
+
+Setting the showLinkedIn boolean to false, like in the screenshot above, would result in the LinkedIn share option not appearing in your app.
+
+<img src="screenshots/disableIconExample.png" width="250" />
+
+#### Reordering Sharing Options
+
+Any of the sharing methods can be reordered.
+
+The relevant values are stored as integers in the customValues.xml file.  The options are sorted based on weight. Lower weight will appear first.
+
+<img src="screenshots/reorderIconValues.png" />
+
+This is the standard ordering with Facebook appearing first and SMS last.
+
+<img src="screenshots/standardIconOrder.png" width="250" />
+
+Modifying the weights to give SMS the lowest weight will result in it being moved to the start.
+
+<img src="screenshots/reorderIconValuesModified.png" />
+
+<img src="screenshots/modifiedIconOrder.png" width="250" />
