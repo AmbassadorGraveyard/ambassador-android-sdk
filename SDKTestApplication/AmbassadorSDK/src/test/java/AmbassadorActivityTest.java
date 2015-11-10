@@ -44,7 +44,8 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ClipData.class, Toast.class, AmbassadorActivity.class, Integer.class, AmbassadorSingleton.class})
 public class AmbassadorActivityTest extends TestCase {
-    AmbassadorActivity ambassadorActivity = spy(new AmbassadorActivity());
+
+    AmbassadorActivity ambassadorActivity;
 
     @Inject
     AmbassadorConfig ambassadorConfig;
@@ -64,11 +65,12 @@ public class AmbassadorActivityTest extends TestCase {
 
         TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
         component.inject(this);
+
+        ambassadorActivity = spy(new AmbassadorActivity());
     }
 
-
     @Test
-    public void testcopyToClipboardTest() {
+    public void copyToClipboardTest() {
         // ARRANGE
         PowerMockito.mockStatic(ClipData.class);
         PowerMockito.mockStatic(Toast.class);
@@ -77,17 +79,18 @@ public class AmbassadorActivityTest extends TestCase {
         ClipData mockClipData = mock(ClipData.class);
         Toast mockToast = mock(Toast.class);
         String textToCopy = "random text";
-
-        // ACT
         when(ClipData.newPlainText("simpleText", textToCopy)).thenReturn(mockClipData);
         when(mockContext.getSystemService(Context.CLIPBOARD_SERVICE)).thenReturn(mockClipboard);
         when(Toast.makeText(mockContext, "Copied to clipboard", Toast.LENGTH_SHORT)).thenReturn(mockToast);
         when(mockClipData.toString()).thenReturn(textToCopy);
         doNothing().when(mockToast).show();
 
+        // ACT
+        String test = ambassadorActivity.copyShortURLToClipboard(textToCopy, mockContext);
+
         // ASSERT
-        assertNotNull(ambassadorActivity.copyShortURLToClipboard(textToCopy, mockContext));
-        assertEquals(textToCopy, ambassadorActivity.copyShortURLToClipboard(textToCopy, mockContext));
+        assertNotNull(test);
+        assertEquals(textToCopy, test);
     }
 
     @Test
@@ -95,33 +98,40 @@ public class AmbassadorActivityTest extends TestCase {
         // ARRANGE
         Random random = new Random();
         int randomNum = random.nextInt(4 - 0) + 0;
-
-        // ACT
         doNothing().when(ambassadorActivity).shareWithLinkedIn();
         doNothing().when(ambassadorActivity).shareWithFacebook();
         doNothing().when(ambassadorActivity).shareWithTwitter();
         doNothing().when(ambassadorActivity).goToContactsPage(anyBoolean());
 
+        // ACT
+        int test = ambassadorActivity.respondToGridViewClick(randomNum);
+
         // ASSERT
-        assertEquals("Expected response of " + randomNum, randomNum, ambassadorActivity.respondToGridViewClick(randomNum));
-        assertNotEquals(-1, ambassadorActivity.respondToGridViewClick(randomNum));
+        assertEquals("Expected response of " + randomNum, randomNum, test);
+        assertNotEquals(-1, test);
     }
 
     @Test
     public void failedGridViewTest() {
+        // ARRANGE
+        int index = 5;
+
+        // ACT
+        int test = ambassadorActivity.respondToGridViewClick(index);
+
         // ASSERT
-        assertEquals(-1, ambassadorActivity.respondToGridViewClick(5));
+        assertEquals(-1, test);
     }
 
     @Test
     public void goToContactsPageTest() throws Exception{
         // ARRANGE
         Intent mockIntent = mock(Intent.class);
-
-        // ACT
         whenNew(Intent.class).withAnyArguments().thenReturn(mockIntent);
         when(mockIntent.putExtra("showPhoneNumbers", true)).thenReturn(mockIntent);
         doNothing().when(ambassadorActivity).startActivity(mockIntent);
+
+        // ACT
         ambassadorActivity.goToContactsPage(true);
 
         // ASSERT
@@ -145,8 +155,6 @@ public class AmbassadorActivityTest extends TestCase {
                 "\"urls\":[" +
                 "{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}" +
                 "]}";
-
-        // ACT
         whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
         when(ambassadorConfig.getCampaignID()).thenReturn("0");
         doNothing().when(ambassadorConfig).setRafDefaultMessage(anyString());
@@ -162,8 +170,11 @@ public class AmbassadorActivityTest extends TestCase {
         doReturn(0).when(mockObject).getInt("campaign_uid");
         PowerMockito.when(Integer.parseInt(anyString())).thenReturn(new Integer(0));
 
-        // ASSERT
+        // ACT
         ambassadorActivity.tryAndSetURL(pusher, "Test message");
+
+        // ASSERT
         verify(ambassadorActivity).tryAndSetURL(pusher, "Test message");
     }
+
 }
