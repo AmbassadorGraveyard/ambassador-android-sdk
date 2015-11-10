@@ -3,11 +3,6 @@ package com.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ambassador.ambassadorsdk.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.AmbassadorApplicationModule;
-import com.ambassador.ambassadorsdk.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.ConversionParameters;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +39,7 @@ import static org.powermock.api.mockito.PowerMockito.whenNew;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest ({AmbassadorSDK.class, AmbassadorSingleton.class})
-public class AmbassadorSDKUnitTest {
+public class AmbassadorSDKTest {
 
     AmbassadorSDK ambassadorSDK;
     Context mockContext = mock(Context.class);
@@ -55,7 +50,7 @@ public class AmbassadorSDKUnitTest {
     @Singleton
     @Component(modules = {AmbassadorApplicationModule.class})
     public interface TestComponent {
-        void inject(AmbassadorSDKUnitTest ambassadorSDKUnitTest);
+        void inject(AmbassadorSDKTest ambassadorSDKTest);
     }
 
     @Before
@@ -64,7 +59,7 @@ public class AmbassadorSDKUnitTest {
         AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
         amb.setMockMode(true);
 
-        TestComponent component = DaggerAmbassadorSDKUnitTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
+        TestComponent component = DaggerAmbassadorSDKTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
         component.inject(this);
 
         PowerMockito.mockStatic(AmbassadorSingleton.class);

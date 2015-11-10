@@ -32,7 +32,6 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 
 /**
@@ -40,7 +39,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BulkShareHelper.class, Toast.class, AmbassadorSingleton.class, AmbassadorSingleton.class})
-public class BulkShareHelperUnitTest {
+public class BulkShareHelperTest {
     BulkShareHelper bulkShareHelper;
 
     @Inject
@@ -49,7 +48,7 @@ public class BulkShareHelperUnitTest {
     @Singleton
     @Component(modules = {AmbassadorApplicationModule.class})
     public interface TestComponent {
-        void inject(BulkShareHelperUnitTest bulkShareHelperUnitTest);
+        void inject(BulkShareHelperTest bulkShareHelperTest);
     }
 
     @Before
@@ -58,7 +57,7 @@ public class BulkShareHelperUnitTest {
         AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
         amb.setMockMode(true);
 
-        TestComponent component = DaggerBulkShareHelperUnitTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
+        TestComponent component = DaggerBulkShareHelperTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
         component.inject(this);
 
         PowerMockito.mockStatic(AmbassadorSingleton.class);
