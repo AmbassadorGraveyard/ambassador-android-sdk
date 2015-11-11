@@ -1,88 +1,97 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
-    android:background="@color/homeBackground"
-    android:orientation="vertical"
-    android:id="@+id/llMainLayout">
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Spread the word!"
-        android:textColor="@color/homeWelcomeTitle"
-        android:textSize="@dimen/homeWelcomeTitle"
-        android:id="@+id/tvWelcomeTitle"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        fontPath="@string/homeWelcomeTitle" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Refer a friend to get a reward"
-        android:textColor="@color/homeWelcomeDesc"
-        android:textSize="@dimen/homeWelcomeDesc"
-        android:id="@+id/tvWelcomeDesc"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        fontPath="@string/homeWelcomeDesc" />
-
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/homeShareTextBar"
-        android:layout_marginTop="35dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity"
+        android:background="@color/homeBackground"
+        android:orientation="vertical"
+        android:id="@+id/llMainLayout">
 
-        <com.ambassador.ambassadorsdk.CustomEditText
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Spread the word!"
+            android:textColor="@color/homeWelcomeTitle"
+            android:textSize="@dimen/homeWelcomeTitle"
+            android:id="@+id/tvWelcomeTitle"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            fontPath="@string/homeWelcomeTitle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refer a friend to get a reward"
+            android:textColor="@color/homeWelcomeDesc"
+            android:textSize="@dimen/homeWelcomeDesc"
+            android:id="@+id/tvWelcomeDesc"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            fontPath="@string/homeWelcomeDesc" />
+
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:background="@color/homeShareTextBar"
-            android:id="@+id/etShortURL"
-            android:text=""
+            android:layout_marginTop="35dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textSize="@dimen/homeShareText"
-            android:textColor="@color/homeShareText"
-            android:layout_gravity="center_horizontal"
-            android:editable="false"
-            android:clickable="true"
-            fontPath="@string/homeShareText" />
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
-        <ImageButton
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:id="@+id/btnCopyPaste"
-            android:background="?android:attr/selectableItemBackground"
-            android:src="@drawable/copy_paste_icon"
-            android:scaleType="fitXY"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginRight="5dp"
-            android:layout_marginEnd="5dp" />
+            <com.ambassador.ambassadorsdk.CustomEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/homeShareTextBar"
+                android:id="@+id/etShortURL"
+                android:text=""
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="@dimen/homeShareText"
+                android:textColor="@color/homeShareText"
+                android:layout_gravity="center_horizontal"
+                android:editable="false"
+                android:clickable="true"
+                fontPath="@string/homeShareText" />
 
-    </FrameLayout>
+            <ImageButton
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:id="@+id/btnCopyPaste"
+                android:background="?android:attr/selectableItemBackground"
+                android:src="@drawable/copy_paste_icon"
+                android:scaleType="fitXY"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp" />
 
-    <GridView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/gvSocialGrid"
-        android:stackFromBottom="false"
-        android:transitionGroup="false"
-        android:columnWidth="80dp"
-        android:numColumns="3"
-        android:verticalSpacing="10dp"
-        android:gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="30dp"
-        android:clickable="true" />
+        </FrameLayout>
 
-</LinearLayout>
+        <com.ambassador.ambassadorsdk.StaticGridView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/gvSocialGrid"
+            android:stackFromBottom="false"
+            android:transitionGroup="false"
+            android:columnWidth="80dp"
+            android:numColumns="3"
+            android:verticalSpacing="10dp"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="30dp"
+            android:clickable="true"/>
+
+    </LinearLayout>
+
+</ScrollView>

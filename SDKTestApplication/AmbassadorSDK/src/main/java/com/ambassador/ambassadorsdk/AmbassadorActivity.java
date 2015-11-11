@@ -20,7 +20,6 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -127,10 +126,10 @@ public class AmbassadorActivity extends AppCompatActivity {
                 getResources().getString(R.string.RAFtoolbarTitle));
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
-
+q
         // UI Components
         llMainLayout = (LinearLayout) findViewById(R.id.llMainLayout);
-        GridView gvSocialGrid = (GridView) findViewById(R.id.gvSocialGrid);
+        StaticGridView gvSocialGrid = (StaticGridView) findViewById(R.id.gvSocialGrid);
         ImageButton btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
         TextView tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
         TextView tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
