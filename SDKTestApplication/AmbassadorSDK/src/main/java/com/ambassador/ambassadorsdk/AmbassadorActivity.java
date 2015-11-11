@@ -126,7 +126,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 getResources().getString(R.string.RAFtoolbarTitle));
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
-q
+
         // UI Components
         llMainLayout = (LinearLayout) findViewById(R.id.llMainLayout);
         StaticGridView gvSocialGrid = (StaticGridView) findViewById(R.id.gvSocialGrid);
