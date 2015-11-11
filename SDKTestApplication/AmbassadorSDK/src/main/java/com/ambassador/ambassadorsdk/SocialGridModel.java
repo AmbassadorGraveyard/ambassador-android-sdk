@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk;
 /**
  * Created by dylan on 11/6/15.
  */
-public class SocialGridModel {
+public class SocialGridModel implements Comparable<SocialGridModel> {
 
     interface OnClickListener {
         void onClick();
@@ -14,6 +14,8 @@ public class SocialGridModel {
     private int color;
     private boolean drawBorder;
     private OnClickListener onClickListener;
+    private boolean disabled;
+    private int weight = 1000;
 
     public SocialGridModel(String title, int drawable, int color) {
         this.title = title;
@@ -39,6 +41,14 @@ public class SocialGridModel {
         }
     }
 
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+    }
+
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
     /**
      * Getters
      */
@@ -59,6 +69,25 @@ public class SocialGridModel {
         return drawBorder;
     }
 
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
     /** ---------------------------- */
+
+    @Override
+    public int compareTo(SocialGridModel another) {
+        if (another.getWeight() > weight) {
+            return -1;
+        } else if (another.getWeight() < weight) {
+            return 1;
+        } else {
+            return 0;
+        }
+    }
 
 }
