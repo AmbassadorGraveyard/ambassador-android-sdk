@@ -249,13 +249,13 @@ Any sharing method can be disabled if it is irrelevant to your campaign. The val
 
 <img src="screenshots/disableIconValues.png" />
 
-Setting the showLinkedIn boolean to false, as in the screenshot above, would result in the LinkedIn share option not displaying your app.
+Setting the showLinkedIn boolean to false, as in the screenshot above, would result in the LinkedIn share option not displaying in your app.
 
 <img src="screenshots/disableIconExample.png" width="250" />
 
 #### Reordering Sharing Options
 
-Any of the sharing methods can be reordered. The values are stored as integers in the customValues.xml file.  The options are sorted based on weightm with lower weights appearing first.
+Any of the sharing methods can be reordered. The values are stored as integers in the customValues.xml file.  The options are sorted based on weight, with lower weights appearing first.
 
 <img src="screenshots/reorderIconValues.png" />
 
@@ -263,7 +263,7 @@ This is the standard ordering with Facebook appearing first and SMS last.
 
 <img src="screenshots/standardIconOrder.png" width="250" />
 
-Modifying the weights to give SMS the lowest weight will result in it being moved to the start.
+Modifying the weights to give SMS the lowest weight will result in it being moved to the first position.
 
 <img src="screenshots/reorderIconValuesModified.png" />
 
