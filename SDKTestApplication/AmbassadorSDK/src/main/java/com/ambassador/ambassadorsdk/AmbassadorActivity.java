@@ -17,8 +17,10 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -53,8 +55,10 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * Created by JakeDunahee on 7/22/15.
  */
 public class AmbassadorActivity extends AppCompatActivity {
+
     CustomEditText etShortUrl;
     private ProgressDialog pd;
+    private LockableScrollView scrollView;
     private LinearLayout llMainLayout;
     private Timer networkTimer;
     private CallbackManager callbackManager;
@@ -105,7 +109,25 @@ public class AmbassadorActivity extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.activity_ambassador);
+        /** Apparently the content view has to be inflated like this for the ViewTreeObserver to work */
+        final View view = LayoutInflater.from(this).inflate(R.layout.activity_ambassador, null, false);
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (view.getViewTreeObserver().isAlive()) {
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+
+                int parentHeight = scrollView.getHeight();
+                int childHeight = llMainLayout.getHeight();
+
+                if (childHeight - parentHeight > 0 && childHeight - parentHeight < 25) {
+                    scrollView.lock();
+                }
+            }
+        });
+
+        setContentView(view);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath("fonts/Roboto-RobotoRegular.ttf")
@@ -128,6 +150,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
         // UI Components
+        scrollView = (LockableScrollView) findViewById(R.id.scrollView);
         llMainLayout = (LinearLayout) findViewById(R.id.llMainLayout);
         StaticGridView gvSocialGrid = (StaticGridView) findViewById(R.id.gvSocialGrid);
         ImageButton btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
