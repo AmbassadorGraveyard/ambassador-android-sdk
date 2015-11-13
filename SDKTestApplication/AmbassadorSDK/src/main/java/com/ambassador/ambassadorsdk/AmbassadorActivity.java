@@ -16,6 +16,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -121,7 +122,8 @@ public class AmbassadorActivity extends AppCompatActivity {
                 int parentHeight = scrollView.getHeight();
                 int childHeight = llMainLayout.getHeight();
 
-                if (childHeight - parentHeight > 0 && childHeight - parentHeight < 25) {
+                float dp = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 20, getResources().getDisplayMetrics());
+                if (childHeight - parentHeight > 0 && childHeight - parentHeight < dp) {
                     scrollView.lock();
                 }
             }
