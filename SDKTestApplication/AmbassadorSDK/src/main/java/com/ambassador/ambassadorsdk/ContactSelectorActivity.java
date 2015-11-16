@@ -74,9 +74,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.homeToolBar));
-
         setContentView(R.layout.activity_contacts);
 
         if (!AmbassadorSingleton.isValid()) {
