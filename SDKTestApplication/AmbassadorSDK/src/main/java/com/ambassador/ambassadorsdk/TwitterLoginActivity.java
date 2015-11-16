@@ -24,6 +24,7 @@ import twitter4j.auth.RequestToken;
  * Created by JakeDunahee on 7/29/15.
  */
 public class TwitterLoginActivity extends AppCompatActivity {
+
     private WebView wvTwitter;
     private ProgressBar loader;
     private RequestToken requestToken;
@@ -42,6 +43,13 @@ public class TwitterLoginActivity extends AppCompatActivity {
         }
 
         AmbassadorSingleton.getComponent().inject(this);
+
+        if (!Utilities.isConnected(this)) {
+            Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         _setUpToolbar();
 
         // UI Components
@@ -62,7 +70,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Object failureResponse) {
-
+                Toast.makeText(TwitterLoginActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -73,7 +81,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-   private void _setUpToolbar() {
+    private void _setUpToolbar() {
        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Log in to Twitter"); }
 
        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
@@ -88,6 +96,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
     }
 
     private class CustomBrowser extends WebViewClient {
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // Checks for callback url to get the oAuth verifier string for Twitter login
@@ -111,15 +120,21 @@ public class TwitterLoginActivity extends AppCompatActivity {
                 });
             }
 
-            return super.shouldOverrideUrlLoading(view, url);
+            return true;
         }
 
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            if (url.startsWith("https://api.twitter.com/oauth")) {
-                loader.setVisibility(View.INVISIBLE);
-            }
+            loader.setVisibility(View.INVISIBLE);
         }
+
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            Toast.makeText(TwitterLoginActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+            finish();
+        }
+
     }
 }
