@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -101,4 +103,17 @@ class Utilities {
     public static float getScreenDensity() {
         return AmbassadorSingleton.get().getResources().getDisplayMetrics().density;
     }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] networkInfos = cm.getAllNetworkInfo();
+        for (NetworkInfo networkInfo : networkInfos) {
+            if (networkInfo.isConnected()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }
