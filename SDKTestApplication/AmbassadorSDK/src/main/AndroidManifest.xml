@@ -13,8 +13,7 @@
         <activity
             android:name=".AmbassadorActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/ActivityTheme">
+            android:screenOrientation="portrait">
         </activity>
 
         <meta-data android:name="com.facebook.sdk.ApplicationId"
@@ -29,19 +28,16 @@
             android:name=".LinkedInLoginActivity"
 
             android:label="LinkedInLogin"
-            android:screenOrientation="portrait"
-            android:theme="@style/ActivityTheme"/>
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".TwitterLoginActivity"
             android:label="TwitterLoginActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/ActivityTheme"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ContactSelectorActivity"
             android:label="Contacts Activity"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/ActivityTheme"/>
+            android:screenOrientation="portrait"/>
 
         <provider android:authorities="com.facebook.app.FacebookContentProvider1527118794178815"
             android:name="com.facebook.FacebookContentProvider"

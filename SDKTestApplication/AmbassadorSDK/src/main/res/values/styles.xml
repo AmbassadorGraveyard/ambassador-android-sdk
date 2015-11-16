@@ -6,8 +6,4 @@
         <item name="colorControlActivated">@color/ultraLightGray</item>
         <item name="colorControlHighlight">@color/lightGray</item>
     </style>
-
-    <style name="ActivityTheme" parent="AppTheme">
-        <item name="android:colorPrimary">@color/homeToolBar</item>
-    </style>
 </resources>
