@@ -128,6 +128,8 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         });
 
+        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.homeToolBar));
+
         setContentView(view);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
