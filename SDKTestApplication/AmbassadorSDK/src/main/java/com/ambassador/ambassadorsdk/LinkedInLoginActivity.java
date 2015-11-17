@@ -30,9 +30,6 @@ public class LinkedInLoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.linkedin_blue));
-
         setContentView(R.layout.activity_webview);
 
         if (!AmbassadorSingleton.isValid()) {
