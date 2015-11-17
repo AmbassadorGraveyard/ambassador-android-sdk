@@ -317,8 +317,10 @@ public class AmbassadorActivity extends AppCompatActivity {
         fbDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
-                Toast.makeText(getApplicationContext(), "Posted successfully!", Toast.LENGTH_SHORT).show();
-                requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+                if (result.getPostId() != null) {
+                    Toast.makeText(getApplicationContext(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+                    requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+                }
             }
 
             @Override
