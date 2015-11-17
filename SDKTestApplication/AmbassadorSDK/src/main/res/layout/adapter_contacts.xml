@@ -5,16 +5,30 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="25dp"
+        android:maxWidth="250dp"
         android:text="Large Text"
         android:textColor="@color/darkGray"
         android:textSize="@dimen/contactsListName"
+        android:singleLine="true"
+        android:ellipsize="none"
         android:id="@+id/tvName"
         android:layout_marginTop="12dp"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginEnd="50dp"
         fontPath="@string/contactsListName"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:text="..."
+        android:textColor="@color/darkGray"
+        android:textSize="@dimen/contactsListName"
+        android:id="@+id/tvDots"
+        android:layout_toRightOf="@+id/tvName"
+        android:layout_toEndOf="@+id/tvName"
+        android:layout_marginTop="12dp"
+        fontPath="@string/contactsListName"
+        android:visibility="gone"/>
 
     <TextView
         android:layout_width="wrap_content"

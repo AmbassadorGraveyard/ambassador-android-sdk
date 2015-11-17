@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.EditText;
 
@@ -23,6 +25,14 @@ class Utilities {
     public static int getPixelSizeForDimension(int dimension) {
         Context cxt = AmbassadorSingleton.get();
         return cxt.getResources().getDimensionPixelSize(dimension);
+    }
+
+    public static float getDpSizeForPixels(int pixels) {
+        Context cxt = AmbassadorSingleton.get();
+        Resources resources = cxt.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = pixels / (metrics.densityDpi / 160f);
+        return dp;
     }
 
     public static boolean containsURL(String message, String url) {
