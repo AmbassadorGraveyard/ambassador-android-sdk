@@ -46,5 +46,15 @@
         <provider android:authorities="com.facebook.app.FacebookContentProvider***REMOVED***"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true"/>
+
+        <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
+        <receiver android:name=".InstallReceiver"
+            android:exported="true"
+            android:permission="android.permission.INSTALL_PACKAGES">
+            <intent-filter>
+                <action android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+
     </application>
 </manifest>
