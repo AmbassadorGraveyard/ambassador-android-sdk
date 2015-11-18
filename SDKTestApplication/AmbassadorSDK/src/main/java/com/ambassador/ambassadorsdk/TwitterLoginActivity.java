@@ -97,6 +97,8 @@ public class TwitterLoginActivity extends AppCompatActivity {
 
     private class CustomBrowser extends WebViewClient {
 
+        boolean errorOccurred = true;
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // Checks for callback url to get the oAuth verifier string for Twitter login
@@ -104,6 +106,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
                 loader.setVisibility(View.VISIBLE);
                 wvTwitter.setVisibility(View.INVISIBLE);
                 String oauth_secret = url.substring(url.indexOf("oauth_verifier=") + "oauth_verifier=".length(), url.length());
+                errorOccurred = false;
                 requestManager.twitterAccessTokenRequest(oauth_secret, requestToken, new RequestManager.RequestCompletion() {
                     @Override
                     public void onSuccess(Object successResponse) {
@@ -132,8 +135,10 @@ public class TwitterLoginActivity extends AppCompatActivity {
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
-            Toast.makeText(TwitterLoginActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
-            finish();
+            if (errorOccurred) {
+                Toast.makeText(TwitterLoginActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
 
     }

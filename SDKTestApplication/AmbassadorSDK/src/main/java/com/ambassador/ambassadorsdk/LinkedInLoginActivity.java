@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -80,6 +81,8 @@ public class LinkedInLoginActivity extends AppCompatActivity {
 
     private class CustomBrowser extends WebViewClient {
 
+        boolean errorOccurred = true;
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // Breaks up url to grab separate components
@@ -96,6 +99,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                     code = url.substring(url.indexOf("code=") + "code=".length(), url.length() - 1);
                 }
 
+                errorOccurred = false;
                 requestManager.linkedInLoginRequest(code, new RequestManager.RequestCompletion() {
                     @Override
                     public void onSuccess(Object successResponse) {
@@ -123,8 +127,11 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
-            Toast.makeText(LinkedInLoginActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
-            finish();
+            Log.v("ERROR", errorCode + "");
+            if (errorOccurred) {
+                Toast.makeText(LinkedInLoginActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
 
     }
