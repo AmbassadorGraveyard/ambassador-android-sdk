@@ -60,7 +60,7 @@ public class AmbassadorSDK {
     void localIdentify(String identifier) {
         ambassadorConfig.setUserEmail(identifier);
 
-        IIdentify identify = new Identify();
+        IIdentify identify = new IdentifyAugurSDK();
         identify.getIdentity();
 
         PusherSDK pusher = new PusherSDK();
