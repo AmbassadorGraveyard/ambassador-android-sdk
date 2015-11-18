@@ -21,19 +21,24 @@ public class MainActivity extends AppCompatActivity {
         final Context context = this;
 
         //dev - run
-        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
+        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
 
         //dev - run and convert on install
-        //ConversionParameters conversionParameters = new ConversionParameters();
-        //AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***", conversionParameters);
+        ConversionParameters conversionParameters = new ConversionParameters();
+        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_campaign = 305;
+        conversionParameters.mbsy_revenue = 200;
+        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***", conversionParameters);
 
         //prod - run
         //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
 
         //prod - run and convert on install
-        //ConversionParameters conversionParameters = new ConversionParameters();
-        //AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***", conversionParameters);
-
+        /*ConversionParameters conversionParameters = new ConversionParameters();
+        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_campaign = 305;
+        conversionParameters.mbsy_revenue = 200;
+        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***", conversionParameters);*/
 
         AmbassadorSDK.identify("jake@getambassador.com");
 
