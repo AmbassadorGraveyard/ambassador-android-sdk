@@ -17,10 +17,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -41,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -54,8 +56,10 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * Created by JakeDunahee on 7/22/15.
  */
 public class AmbassadorActivity extends AppCompatActivity {
+
     CustomEditText etShortUrl;
     private ProgressDialog pd;
+    private LockableScrollView scrollView;
     private LinearLayout llMainLayout;
     private Timer networkTimer;
     private CallbackManager callbackManager;
@@ -106,7 +110,27 @@ public class AmbassadorActivity extends AppCompatActivity {
             return;
         }
 
-        setContentView(R.layout.activity_ambassador);
+        /** Apparently the content view has to be inflated like this for the ViewTreeObserver to work */
+        final View view = LayoutInflater.from(this).inflate(R.layout.activity_ambassador, null, false);
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (view.getViewTreeObserver().isAlive()) {
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+
+                int parentHeight = scrollView.getHeight();
+                int childHeight = llMainLayout.getHeight();
+
+                if (childHeight - parentHeight > 0 && childHeight - parentHeight < Utilities.getPixelSizeForDimension(R.dimen.ambassador_activity_scroll_lock_buffer)) {
+                    scrollView.lock();
+                }
+            }
+        });
+
+        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.homeToolBar));
+
+        setContentView(view);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath("fonts/Roboto-RobotoRegular.ttf")
@@ -129,8 +153,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
         // UI Components
+        scrollView = (LockableScrollView) findViewById(R.id.scrollView);
         llMainLayout = (LinearLayout) findViewById(R.id.llMainLayout);
-        GridView gvSocialGrid = (GridView) findViewById(R.id.gvSocialGrid);
+        StaticGridView gvSocialGrid = (StaticGridView) findViewById(R.id.gvSocialGrid);
         ImageButton btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
         TextView tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
         TextView tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
@@ -292,8 +317,10 @@ public class AmbassadorActivity extends AppCompatActivity {
         fbDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
-                Toast.makeText(getApplicationContext(), "Posted successfully!", Toast.LENGTH_SHORT).show();
-                requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+                if (result.getPostId() != null) {
+                    Toast.makeText(getApplicationContext(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+                    requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+                }
             }
 
             @Override
@@ -397,6 +424,8 @@ public class AmbassadorActivity extends AppCompatActivity {
      */
     private void _instantiateGridModelsIntoArray() {
         SocialGridModel modelFacebook = new SocialGridModel("FACEBOOK", R.drawable.facebook_icon, getResources().getColor(R.color.facebook_blue));
+        modelFacebook.setDisabled(!getResources().getBoolean(R.bool.showFacebook));
+        modelFacebook.setWeight(getResources().getInteger(R.integer.weightFacebook));
         modelFacebook.setOnClickListener(new SocialGridModel.OnClickListener() {
             @Override
             public void onClick() {
@@ -405,6 +434,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         });
 
         SocialGridModel modelTwitter = new SocialGridModel("TWITTER", R.drawable.twitter_icon, getResources().getColor(R.color.twitter_blue));
+        modelTwitter.setDisabled(!getResources().getBoolean(R.bool.showTwitter));
+        modelTwitter.setWeight(getResources().getInteger(R.integer.weightTwitter));
         modelTwitter.setOnClickListener(new SocialGridModel.OnClickListener() {
             @Override
             public void onClick() {
@@ -413,6 +444,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         });
 
         SocialGridModel modelLinkedIn = new SocialGridModel("LINKEDIN", R.drawable.linkedin_icon, getResources().getColor(R.color.linkedin_blue));
+        modelLinkedIn.setDisabled(!getResources().getBoolean(R.bool.showLinkedIn));
+        modelLinkedIn.setWeight(getResources().getInteger(R.integer.weightLinkedIn));
         modelLinkedIn.setOnClickListener(new SocialGridModel.OnClickListener() {
             @Override
             public void onClick() {
@@ -421,6 +454,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         });
 
         SocialGridModel modelEmail = new SocialGridModel("EMAIL", R.drawable.email_icon, getResources().getColor(android.R.color.white), true);
+        modelEmail.setDisabled(!getResources().getBoolean(R.bool.showEmail));
+        modelEmail.setWeight(getResources().getInteger(R.integer.weightEmail));
         modelEmail.setOnClickListener(new SocialGridModel.OnClickListener() {
             @Override
             public void onClick() {
@@ -429,6 +464,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         });
 
         SocialGridModel modelSms = new SocialGridModel("SMS", R.drawable.sms_icon, getResources().getColor(android.R.color.white), true);
+        modelSms.setDisabled(!getResources().getBoolean(R.bool.showSMS));
+        modelSms.setWeight(getResources().getInteger(R.integer.weightSMS));
         modelSms.setOnClickListener(new SocialGridModel.OnClickListener() {
             @Override
             public void onClick() {
@@ -436,11 +473,26 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         });
 
+        ArrayList<SocialGridModel> tmpGridModels = new ArrayList<>();
+
+        tmpGridModels.add(modelFacebook);
+        tmpGridModels.add(modelTwitter);
+        tmpGridModels.add(modelLinkedIn);
+        tmpGridModels.add(modelEmail);
+        tmpGridModels.add(modelSms);
+
+        _handleDisablingAndSorting(tmpGridModels);
+    }
+
+    private void _handleDisablingAndSorting(ArrayList<SocialGridModel> tmpGridModels) {
         gridModels = new ArrayList<>();
-        gridModels.add(modelFacebook);
-        gridModels.add(modelTwitter);
-        gridModels.add(modelLinkedIn);
-        gridModels.add(modelEmail);
-        gridModels.add(modelSms);
+
+        for (SocialGridModel model : tmpGridModels) {
+            if (!model.isDisabled()) {
+                gridModels.add(model);
+            }
+        }
+
+        Collections.sort(gridModels);
     }
 }

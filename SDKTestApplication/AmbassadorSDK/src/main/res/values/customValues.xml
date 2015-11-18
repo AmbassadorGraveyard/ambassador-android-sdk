@@ -42,4 +42,14 @@
     <color name="linkedinToolBar">@color/linkedin_blue</color>
     <color name="linkedinToolBarText">@android:color/white</color>
     <color name="linkedinToolBarArrow">@android:color/white</color>
+    <bool name="showFacebook">true</bool>
+    <bool name="showTwitter">true</bool>
+    <bool name="showLinkedIn">true</bool>
+    <bool name="showEmail">true</bool>
+    <bool name="showSMS">true</bool>
+    <integer name="weightFacebook">10</integer>
+    <integer name="weightTwitter">20</integer>
+    <integer name="weightLinkedIn">30</integer>
+    <integer name="weightEmail">40</integer>
+    <integer name="weightSMS">50</integer>
 </resources>

@@ -4,9 +4,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Window;
 import android.widget.EditText;
 
 /**
@@ -25,6 +30,14 @@ class Utilities {
     public static int getPixelSizeForDimension(int dimension) {
         Context cxt = AmbassadorSingleton.get();
         return cxt.getResources().getDimensionPixelSize(dimension);
+    }
+    
+    public static float getDpSizeForPixels(int pixels) {
+        Context cxt = AmbassadorSingleton.get();
+        Resources resources = cxt.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = pixels / (metrics.densityDpi / 160f);
+        return dp;
     }
 
     public static boolean containsURL(String message, String url) {
@@ -114,6 +127,16 @@ class Utilities {
         }
 
         return false;
+    }
+
+    public static void setStatusBar(Window window, int primaryColor) {
+        if (Build.VERSION.SDK_INT >= 21) {
+            float[] hsv = new float[3];
+            Color.colorToHSV(primaryColor, hsv);
+            hsv[2] *= 0.8f;
+            primaryColor = Color.HSVToColor(hsv);
+            window.setStatusBarColor(primaryColor);
+        }
     }
 
 }

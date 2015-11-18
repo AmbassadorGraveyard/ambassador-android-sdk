@@ -35,6 +35,9 @@ public class TwitterLoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.twitter_blue));
+
         setContentView(R.layout.activity_webview);
 
         if (!AmbassadorSingleton.isValid()) {
