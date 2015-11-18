@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -46,6 +47,10 @@ public class AmbassadorSDK {
 
     public static void runWithKeysAndConvertOnInstall(Context context, String universalToken, String universalID, ConversionParameters parameters) {
         AmbassadorSingleton.getInstance().init(context);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
+        context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
 
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
         ambassadorSDK.localRunWithKeysAndConvertOnInstall(universalToken, universalID, parameters);
