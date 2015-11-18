@@ -126,7 +126,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            loader.setVisibility(View.INVISIBLE);
+            loader.setVisibility(View.GONE);
         }
 
         @Override
