@@ -82,12 +82,13 @@ public class AmbassadorSDK {
     void localRunWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
         ambassadorConfig.setUniversalToken(universalToken);
         ambassadorConfig.setUniversalID(universalID);
+
         startConversionTimer();
 
-        // Checks boolean from sharedpreferences to see if this the first launch and registers conversion if it is
+        // Checks boolean from shared preferences to see if this the first launch and registers conversion if it is
         if (!ambassadorConfig.convertedOnInstall()) {
             registerConversion(parameters);
-            ambassadorConfig.setConvertForInstall();
+            ambassadorConfig.setConvertOnInstall();
         }
     }
 

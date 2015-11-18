@@ -21,19 +21,24 @@ public class MainActivity extends AppCompatActivity {
         final Context context = this;
 
         //dev - run
-        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
+        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
 
         //dev - run and convert on install
-        //ConversionParameters conversionParameters = new ConversionParameters();
-        //AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32", conversionParameters);
+        ConversionParameters conversionParameters = new ConversionParameters();
+        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_campaign = 305;
+        conversionParameters.mbsy_revenue = 200;
+        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32", conversionParameters);
 
         //prod - run
         //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
 
         //prod - run and convert on install
-        //ConversionParameters conversionParameters = new ConversionParameters();
-        //AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b", conversionParameters);
-
+        /*ConversionParameters conversionParameters = new ConversionParameters();
+        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_campaign = 305;
+        conversionParameters.mbsy_revenue = 200;
+        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b", conversionParameters);*/
 
         AmbassadorSDK.identify("jake@getambassador.com");
 

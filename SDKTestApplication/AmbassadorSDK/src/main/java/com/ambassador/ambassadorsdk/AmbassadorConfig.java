@@ -115,8 +115,12 @@ public class AmbassadorConfig {
         sharePrefs.edit().putString("universalID", univID).apply();
     }
 
-    public void setShortCode(String shortCode) {
-        sharePrefs.edit().putString("shortCode", shortCode).apply();
+    public void setReferrerShortCode(String shortCode) {
+        sharePrefs.edit().putString("referrerShortCode", shortCode).apply();
+    }
+
+    public void setReferralShortCode(String shortCode) {
+        sharePrefs.edit().putString("referralShortCode", shortCode).apply();
     }
 
     public void setUserFullName(String firstName, String lastName) {
@@ -171,7 +175,9 @@ public class AmbassadorConfig {
         return sharePrefs.getString("universalID", null);
     }
 
-    String getShortCode() { return sharePrefs.getString("shortCode", null); }
+    String getReferrerShortCode() { return sharePrefs.getString("referrerShortCode", null); }
+
+    String getReferralShortCode() { return sharePrefs.getString("referralShortCode", null); }
 
     String getFullName() {
         return sharePrefs.getString("fullName", null);
@@ -187,7 +193,7 @@ public class AmbassadorConfig {
 
     boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
 
-    void setConvertForInstall() {
+    void setConvertOnInstall() {
         sharePrefs.edit().putBoolean("installConversion", true).apply();
     }
 }

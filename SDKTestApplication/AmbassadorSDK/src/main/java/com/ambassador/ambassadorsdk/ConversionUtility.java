@@ -40,25 +40,24 @@ class ConversionUtility {
         AmbassadorSingleton.getComponent().inject(this);
     }
 
-    // Function used by ambassador Singleton to register a conversion
     public void registerConversion() {
-        //if we have no identify object, don't bother with a conversion
-        if (ambassadorConfig.getIdentifyObject() == null) return;
-
-        if (ambassadorConfig.getPusherInfo() != null) {
-            try {
-                if (parameters.isValid()) {
-                    makeConversionRequest(parameters);
-                } else {
-                    throw new ConversionParametersException();
-                }
-            } catch (ConversionParametersException ex) {
-                Log.e("Conversion", ex.toString());
-            }
-        } else {
+        //if either augur identify or install intent hasn't come back yet, insert into DB for later retry
+        if (ambassadorConfig.getIdentifyObject() == null || ambassadorConfig.getReferralShortCode() == null) {
             ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
             db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
             Utilities.debugLog("Conversion", "Inserted row into table");
+            return;
+        }
+
+        parameters.mbsy_short_code = ambassadorConfig.getReferralShortCode();
+        try {
+            if (parameters.isValid()) {
+                makeConversionRequest(parameters);
+            } else {
+                throw new ConversionParametersException();
+            }
+        } catch (ConversionParametersException ex) {
+            Log.e("Conversion", ex.toString());
         }
     }
 
@@ -103,6 +102,7 @@ class ConversionUtility {
             fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA2, parameters.mbsy_event_data2);
             fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA3, parameters.mbsy_event_data3);
             fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED, parameters.mbsy_is_approved);
+            fieldObject.put("mbsy_short_code", parameters.mbsy_short_code);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -119,51 +119,50 @@ class ConversionUtility {
 
     // Attempts to register conversions stored in database
     public void readAndSaveDatabaseEntries() {
-        if (ambassadorConfig.getPusherInfo() != null) {
-            String[] projection = {
-                    ConversionSQLStrings.ConversionSQLEntry._ID,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_FIRST_NAME,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_LAST_NAME,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL_NEW_AMBASSADOR,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_UID,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM1,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM2,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM3,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_AUTO_CREATE,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_REVENUE,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_DEACTIVATE_NEW_AMBASSADOR,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_TRANSACTION_UID,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_ADD_TO_GROUP_ID,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA1,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA2,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA3,
-                    ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED,
-            };
+        String[] projection = {
+                ConversionSQLStrings.ConversionSQLEntry._ID,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_FIRST_NAME,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_LAST_NAME,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL_NEW_AMBASSADOR,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_UID,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM1,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM2,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM3,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_AUTO_CREATE,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_REVENUE,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_DEACTIVATE_NEW_AMBASSADOR,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_TRANSACTION_UID,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_ADD_TO_GROUP_ID,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA1,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA2,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA3,
+                ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED,
+        };
 
-            String sortOrder = ConversionSQLStrings.ConversionSQLEntry._ID + " DESC";
+        String sortOrder = ConversionSQLStrings.ConversionSQLEntry._ID + " DESC";
 
-            Cursor cursor = db.query(
-                    ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME,
-                    projection,
-                    null,
-                    null,
-                    null,
-                    null,
-                    sortOrder);
+        Cursor cursor = db.query(
+                ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME,
+                projection,
+                null,
+                null,
+                null,
+                null,
+                sortOrder);
 
-            // If there is anything in the database, cycles through and makes request to register conversions
-            if (cursor.moveToFirst()) {
-                do {
-                    final ConversionParameters DBparameters = ConversionDBHelper.createConversionParameterWithCursor(cursor);
-                    makeConversionRequest(DBparameters);
+        //nothing in the database, bail out
+        if (!cursor.moveToFirst()) return;
 
-                    // Deletes row after registering conversion and will resave if failure occurs
-                    ConversionDBHelper.deleteRow(db, cursor.getInt(cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry._ID)));
-                } while (cursor.moveToNext());
-            }
-        }
+        //if anything in the database, cycles through and makes requests to register conversions
+        do {
+            final ConversionParameters DBparameters = ConversionDBHelper.createConversionParameterWithCursor(cursor);
+            makeConversionRequest(DBparameters);
+
+            // Deletes row after registering conversion and will resave if failure occurs
+            ConversionDBHelper.deleteRow(db, cursor.getInt(cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry._ID)));
+        } while (cursor.moveToNext());
     }
 
     public void makeConversionRequest(final ConversionParameters newParameters) {
