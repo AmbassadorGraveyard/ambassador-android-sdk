@@ -7,4 +7,5 @@
     <string name="missing_url_dialog_message">Your Referral Link is not included in the message:</string>
     <string name="contacts_permission_denied_title">Sorry!</string>
     <string name="contacts_permission_denied_message">We need to view your contacts to use this feature. Since you denied permission, we\'re sending you back.</string>
+    <string name="connection_error">There is a problem with your connection.</string>
 </resources>
