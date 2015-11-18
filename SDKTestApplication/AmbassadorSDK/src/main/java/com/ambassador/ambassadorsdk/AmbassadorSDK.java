@@ -44,7 +44,9 @@ public class AmbassadorSDK {
         ambassadorSDK.localRunWithKeys(universalToken, universalID);
     }
 
-    public static void runWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
+    public static void runWithKeysAndConvertOnInstall(Context context, String universalToken, String universalID, ConversionParameters parameters) {
+        AmbassadorSingleton.getInstance().init(context);
+
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
         ambassadorSDK.localRunWithKeysAndConvertOnInstall(universalToken, universalID, parameters);
     }
