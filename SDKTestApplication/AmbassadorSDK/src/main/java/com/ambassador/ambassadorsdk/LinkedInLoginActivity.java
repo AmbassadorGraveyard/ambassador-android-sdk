@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -18,11 +19,10 @@ import javax.inject.Inject;
 /**
  * Created by JakeDunahee on 7/27/15.
  */
-
 public class LinkedInLoginActivity extends AppCompatActivity {
+
     WebView webView;
     ProgressBar loader;
-    boolean webViewSuccess = true;
 
     @Inject
     RequestManager requestManager;
@@ -42,13 +42,19 @@ public class LinkedInLoginActivity extends AppCompatActivity {
 
         AmbassadorSingleton.getComponent().inject(this);
 
+        if (!Utilities.isConnected(this)) {
+            Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         // UI Components
         loader = (ProgressBar)findViewById(R.id.loadingPanel);
         webView = (WebView)findViewById(R.id.wvSocial);
 
         _setUpToolbar();
         loader.setVisibility(View.VISIBLE);
-        webView.setWebViewClient(new MyBrowser());
+        webView.setWebViewClient(new CustomBrowser());
         webView.loadUrl("https://www.linkedin.com/uas/oauth2/authorization?" +
                 "response_type=code&client_id=***REMOVED***" +
                 "&redirect_uri=http://localhost:2999" +
@@ -76,7 +82,10 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(getResources().getColor(R.color.linkedinToolBarText));
     }
 
-    private class MyBrowser extends WebViewClient {
+    private class CustomBrowser extends WebViewClient {
+
+        boolean errorOccurred = true;
+
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             // Breaks up url to grab separate components
@@ -93,6 +102,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                     code = url.substring(url.indexOf("code=") + "code=".length(), url.length() - 1);
                 }
 
+                errorOccurred = false;
                 requestManager.linkedInLoginRequest(code, new RequestManager.RequestCompletion() {
                     @Override
                     public void onSuccess(Object successResponse) {
@@ -114,16 +124,19 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            if (webViewSuccess) {
-                loader.setVisibility(View.GONE);
-            }
+            loader.setVisibility(View.GONE);
         }
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            view.loadUrl("about:blank");
-            webViewSuccess = false;
+            super.onReceivedError(view, errorCode, description, failingUrl);
+            Log.v("ERROR", errorCode + "");
+            if (errorOccurred) {
+                Toast.makeText(LinkedInLoginActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
+
     }
 }
 

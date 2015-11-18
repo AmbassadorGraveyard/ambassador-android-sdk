@@ -4,8 +4,12 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
 import android.widget.EditText;
@@ -113,6 +117,18 @@ class Utilities {
         return AmbassadorSingleton.get().getResources().getDisplayMetrics().density;
     }
 
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] networkInfos = cm.getAllNetworkInfo();
+        for (NetworkInfo networkInfo : networkInfos) {
+            if (networkInfo.isConnected()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static void setStatusBar(Window window, int primaryColor) {
         if (Build.VERSION.SDK_INT >= 21) {
             float[] hsv = new float[3];
@@ -122,4 +138,5 @@ class Utilities {
             window.setStatusBarColor(primaryColor);
         }
     }
+
 }
