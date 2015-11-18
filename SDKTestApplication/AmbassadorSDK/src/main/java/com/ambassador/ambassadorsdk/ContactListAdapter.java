@@ -3,6 +3,8 @@ package com.ambassador.ambassadorsdk;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ class ContactListAdapter extends BaseAdapter  {
     private Boolean shouldShowPhoneNumbers;
     private final Activity context;
     private final int checkmarkPxXPos;
+    private float maxWidth;
 
     public ContactListAdapter(Activity context, List<ContactObject> contactObjects, Boolean showPhoneNumbers) {
         this.context = context;
@@ -36,6 +39,7 @@ class ContactListAdapter extends BaseAdapter  {
 
     static class ViewHolder {
         protected TextView tvName;
+        protected TextView tvDots;
         protected TextView tvPhoneOrEmail;
         protected ImageView ivCheckMark;
     }
@@ -63,16 +67,28 @@ class ContactListAdapter extends BaseAdapter  {
             LayoutInflater inflater = context.getLayoutInflater();
             convertView = inflater.inflate(R.layout.adapter_contacts, parent, false);
             viewHolder = new ViewHolder();
-            viewHolder.tvName = (TextView)convertView.findViewById(R.id.tvName);
-            viewHolder.tvPhoneOrEmail = (TextView)convertView.findViewById(R.id.tvNumberOrEmail);
-            viewHolder.ivCheckMark = (ImageView)convertView.findViewById(R.id.ivCheckMark);
+            viewHolder.tvName = (TextView) convertView.findViewById(R.id.tvName);
+            maxWidth = Utilities.getDpSizeForPixels(viewHolder.tvName.getMaxWidth());
+            viewHolder.tvDots = (TextView) convertView.findViewById(R.id.tvDots);
+            viewHolder.tvPhoneOrEmail = (TextView) convertView.findViewById(R.id.tvNumberOrEmail);
+            viewHolder.ivCheckMark = (ImageView) convertView.findViewById(R.id.ivCheckMark);
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (ViewHolder)convertView.getTag();
+            viewHolder = (ViewHolder) convertView.getTag();
         }
 
         ContactObject currentObject = filteredContactList.get(position);
-        viewHolder.tvName.setText(currentObject.name);
+
+        float widthInDp = getTextWidthDp(currentObject.name, viewHolder.tvName);
+
+        if (widthInDp > maxWidth) {
+            String text = cutTextToShow(currentObject.name, viewHolder.tvName);
+            viewHolder.tvName.setText(text);
+            viewHolder.tvDots.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.tvName.setText(currentObject.name);
+            viewHolder.tvDots.setVisibility(View.GONE);
+        }
 
         if (shouldShowPhoneNumbers) {
             viewHolder.tvPhoneOrEmail.setText(currentObject.type + " - " + currentObject.phoneNumber);
@@ -130,4 +146,24 @@ class ContactListAdapter extends BaseAdapter  {
                     .x(view.getWidth() - imageView.getWidth() - checkmarkPxXPos).setListener(null).start();
         }
     }
+
+    private float getTextWidthDp(String text, TextView tv) {
+        Rect bounds = new Rect();
+        Paint textPaint = tv.getPaint();
+        textPaint.getTextBounds(text, 0, text.length(), bounds);
+        float width = Utilities.getDpSizeForPixels(bounds.width());
+        return width;
+    }
+
+    private String cutTextToShow(String text, TextView tv) {
+        String cut;
+        for (int i = 0; i < text.length() + 1; i++) {
+            cut = text.substring(0, i);
+            if (getTextWidthDp(cut, tv) > maxWidth) {
+                return cut.substring(0, cut.length() - 1);
+            }
+        }
+        return "";
+    }
+
 }
