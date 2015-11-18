@@ -5,13 +5,24 @@ import android.os.Message;
 
 import org.json.JSONObject;
 
+import javax.inject.Inject;
+
 import io.augur.wintermute.Augur;
 
 /**
  * Created by JakeDunahee on 9/1/15.
  */
-class IdentifyAugurSDK {
-    public void getAugur(final AmbassadorConfig ambassadorConfig) {
+class IdentifyAugurSDK implements IIdentify {
+
+    @Inject
+    AmbassadorConfig ambassadorConfig;
+
+    public IdentifyAugurSDK() {
+        AmbassadorSingleton.getComponent().inject(this);
+    }
+
+    @Override
+    public void getIdentity() {
         JSONObject augurConfig = new JSONObject();
 
         try {
