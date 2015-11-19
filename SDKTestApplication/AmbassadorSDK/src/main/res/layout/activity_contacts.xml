@@ -47,14 +47,14 @@
 
     </RelativeLayout>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lvContacts"
+        android:id="@+id/rvContacts"
         android:layout_below="@+id/rlSearch"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/llSendView"
-        android:background="@color/contactsListViewBackground" />
+        android:background="@color/contactsListViewBackground"/>
 
     <LinearLayout
         android:orientation="vertical"
