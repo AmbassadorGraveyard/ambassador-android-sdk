@@ -1,10 +1,9 @@
 package com.ambassador.ambassadorsdk;
 
-
 /**
  * Created by JakeDunahee on 7/31/15.
  */
-class ContactObject {
+class ContactObject implements Comparable<ContactObject> {
 
     private String name;
     private String phoneNumber;
@@ -43,6 +42,11 @@ class ContactObject {
 
     public String getType() {
         return type;
+    }
+
+    @Override
+    public int compareTo(ContactObject another) {
+        return name.compareTo(another.getName());
     }
 
 }
