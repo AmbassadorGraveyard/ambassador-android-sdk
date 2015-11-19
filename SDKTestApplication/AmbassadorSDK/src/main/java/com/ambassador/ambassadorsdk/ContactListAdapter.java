@@ -79,21 +79,21 @@ class ContactListAdapter extends BaseAdapter  {
 
         ContactObject currentObject = filteredContactList.get(position);
 
-        float widthInDp = getTextWidthDp(currentObject.name, viewHolder.tvName);
+        float widthInDp = getTextWidthDp(currentObject.getName(), viewHolder.tvName);
 
         if (widthInDp > maxWidth) {
-            String text = cutTextToShow(currentObject.name, viewHolder.tvName);
+            String text = cutTextToShow(currentObject.getName(), viewHolder.tvName);
             viewHolder.tvName.setText(text);
             viewHolder.tvDots.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.tvName.setText(currentObject.name);
+            viewHolder.tvName.setText(currentObject.getName());
             viewHolder.tvDots.setVisibility(View.GONE);
         }
 
         if (shouldShowPhoneNumbers) {
-            viewHolder.tvPhoneOrEmail.setText(currentObject.type + " - " + currentObject.phoneNumber);
+            viewHolder.tvPhoneOrEmail.setText(currentObject.getType() + " - " + currentObject.getPhoneNumber());
         } else {
-            viewHolder.tvPhoneOrEmail.setText(currentObject.emailAddress);
+            viewHolder.tvPhoneOrEmail.setText(currentObject.getEmailAddress());
         }
 
         // Checks whether the view should be selected or not and correctly positions the checkmark image
@@ -112,7 +112,7 @@ class ContactListAdapter extends BaseAdapter  {
             filteredContactList.clear();
             for (int i = 0; i < contactObjects.size(); i++) {
                 ContactObject object = contactObjects.get(i);
-                if (object.name.toLowerCase().contains(filterString.toLowerCase())) { filteredContactList.add(object); }
+                if (object.getName().toLowerCase().contains(filterString.toLowerCase())) { filteredContactList.add(object); }
             }
 
             notifyDataSetChanged();
