@@ -9,6 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +20,8 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,15 +139,14 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             holder.ivCheckMark.setX(itemWidth);
         }
 
-        if (contact.getPictureUri() != null) {
-            //holder.ivPic.setImageURI(Uri.parse(contact.getPictureUri()));
-            try {
-                holder.ivPic.setImageBitmap(MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(contact.getPictureUri())));
-            } catch (Exception e) {
+        if (contact.getPicBmp() != null) {
+            holder.ivPic.setImageBitmap(contact.getPicBmp());
+        } else {
+            if (contact.getPictureUri() != null) {
+                new BitmapLoaderTask(holder.ivPic, contact).execute(contact.getPictureUri());
+            } else {
                 holder.ivPic.setImageBitmap(noPicBmp);
             }
-        } else {
-            holder.ivPic.setImageBitmap(noPicBmp);
         }
     }
 
@@ -218,6 +220,46 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         canvas.drawBitmap(bitmap, null, new Rect(0, 0, 192, 192), new Paint(Paint.ANTI_ALIAS_FLAG));
 
         return tmp;
+    }
+
+    private class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
+
+        private final WeakReference<ImageView> imageViewWeakReference;
+        private final WeakReference<ContactObject> contactObjectWeakReference;
+
+        public BitmapLoaderTask(ImageView imageView, ContactObject contact) {
+            imageViewWeakReference = new WeakReference<ImageView>(imageView);
+            contactObjectWeakReference = new WeakReference<ContactObject>(contact);
+        }
+
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            try {
+                return MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(params[0]));
+            } catch (IOException e) {
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (imageViewWeakReference != null && bitmap != null) {
+                final ImageView imageView = imageViewWeakReference.get();
+                if (imageView != null) {
+                    imageView.setImageBitmap(bitmap);
+                    final ContactObject contact = contactObjectWeakReference.get();
+                    if (contact != null) {
+                        contact.setPicBmp(bitmap);
+                    }
+                }
+            } else if (imageViewWeakReference != null) {
+                final ImageView imageView = imageViewWeakReference.get();
+                if (imageView != null) {
+                    imageView.setImageBitmap(noPicBmp);
+                }
+            }
+        }
+
     }
 
 }

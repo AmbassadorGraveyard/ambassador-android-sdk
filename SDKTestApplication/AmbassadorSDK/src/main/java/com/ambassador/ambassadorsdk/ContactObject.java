@@ -1,5 +1,7 @@
 package com.ambassador.ambassadorsdk;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by JakeDunahee on 7/31/15.
  */
@@ -10,6 +12,7 @@ class ContactObject implements Comparable<ContactObject> {
     private String phoneNumber;
     private String emailAddress;
     private String type;
+    private Bitmap picBmp;
 
     public ContactObject() {
         name = "No name available";
@@ -57,6 +60,14 @@ class ContactObject implements Comparable<ContactObject> {
 
     public String getType() {
         return type;
+    }
+
+    public Bitmap getPicBmp() {
+        return picBmp;
+    }
+
+    public void setPicBmp(Bitmap bitmap) {
+        this.picBmp = bitmap;
     }
 
     @Override
