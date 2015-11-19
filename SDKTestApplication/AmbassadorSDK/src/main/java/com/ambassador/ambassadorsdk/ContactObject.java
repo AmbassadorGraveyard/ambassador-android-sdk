@@ -6,6 +6,7 @@ package com.ambassador.ambassadorsdk;
 class ContactObject implements Comparable<ContactObject> {
 
     private String name;
+    private String pictureUri;
     private String phoneNumber;
     private String emailAddress;
     private String type;
@@ -17,19 +18,33 @@ class ContactObject implements Comparable<ContactObject> {
         type = "Not available";
     }
 
-    public ContactObject(String name, String type, String phoneNumber) {
+    public ContactObject(String name, String pictureUri, String emailAddress) {
         this.name = name;
+        this.pictureUri = pictureUri;
+        this.emailAddress = emailAddress;
+    }
+
+    public ContactObject(String name, String pictureUri, String type, String phoneNumber) {
+        this.name = name;
+        this.pictureUri = pictureUri;
         this.type = type;
         this.phoneNumber = phoneNumber;
     }
 
-    public ContactObject(String name, String emailAddress) {
+    public ContactObject(String name, String pictureUri, String emailAddress, String type, String phoneNumber) {
         this.name = name;
+        this.pictureUri = pictureUri;
         this.emailAddress = emailAddress;
+        this.type = type;
+        this.phoneNumber = phoneNumber;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getPictureUri() {
+        return pictureUri;
     }
 
     public String getPhoneNumber() {
@@ -47,6 +62,10 @@ class ContactObject implements Comparable<ContactObject> {
     @Override
     public int compareTo(ContactObject another) {
         return name.compareTo(another.getName());
+    }
+
+    public ContactObject clone() {
+        return new ContactObject(name, pictureUri, emailAddress, type, phoneNumber);
     }
 
 }

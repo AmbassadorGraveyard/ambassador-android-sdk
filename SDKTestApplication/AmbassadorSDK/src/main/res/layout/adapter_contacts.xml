@@ -2,10 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="70dp">
 
+    <ImageView
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/ivPic"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="25dp"
-        android:maxWidth="250dp"
+        android:maxWidth="220dp"
         android:text="Large Text"
         android:textColor="@color/darkGray"
         android:textSize="@dimen/contactsListName"
@@ -13,9 +20,10 @@
         android:ellipsize="none"
         android:id="@+id/tvName"
         android:layout_marginTop="12dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="6dp"
         android:layout_marginStart="10dp"
-        fontPath="@string/contactsListName"/>
+        fontPath="@string/contactsListName"
+        android:layout_toRightOf="@+id/ivPic"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -44,7 +52,8 @@
         android:layout_alignLeft="@+id/tvName"
         android:layout_marginRight="50dp"
         android:layout_marginEnd="50dp"
-        fontPath="@string/contactsListValue"/>
+        fontPath="@string/contactsListValue"
+        android:layout_toRightOf="@+id/ivPic"/>
 
     <ImageView
         android:layout_width="20dp"

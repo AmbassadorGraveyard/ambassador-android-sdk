@@ -14,6 +14,8 @@ import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,12 +23,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,7 +48,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener {
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
 
-    private ListView lvContacts;
+    private RecyclerView rvContacts;
     private Button btnSend;
     private ImageButton btnEdit;
     private Button btnDone;
@@ -74,7 +74,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.homeToolBar));
+        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.contactsToolBar));
 
         setContentView(R.layout.activity_contacts);
 
@@ -85,7 +85,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
         AmbassadorSingleton.getComponent().inject(this);
 
-        lvContacts = (ListView)findViewById(R.id.lvContacts);
+        rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
         Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
         btnDone = (Button)findViewById(R.id.btnDone);
@@ -211,8 +211,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         if (phones.moveToFirst()) {
             do {
                 String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String picUri = phones.getString(phones.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
                 String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
                 String typeNum = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
 
                 String type;
@@ -231,22 +231,22 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                         break;
                 }
 
-                ContactObject object = new ContactObject(name, type, phoneNumber);
+                ContactObject object = new ContactObject(name, picUri, type, phoneNumber);
 
                 contactList.add(object);
             } while (phones.moveToNext());
         }
 
         if (!AmbassadorConfig.isReleaseBuild && contactList.size() < 2) {
-            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
+            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
         }
 
         if (contactList.size() < 1) {
@@ -268,35 +268,36 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         if (emails.moveToFirst()) {
             do  {
                 String name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String picUri = emails.getString(emails.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
                 String emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                ContactObject object = new ContactObject(name, emailAddress);
+                ContactObject object = new ContactObject(name, picUri, emailAddress);
                 contactList.add(object);
             }
             while (emails.moveToNext());
         }
 
         if (!AmbassadorConfig.isReleaseBuild && contactList.size() < 2) {
-            contactList.add(new ContactObject("John Jones", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Friend One", "corey@getambassador.com"));
-            contactList.add(new ContactObject("John Doe", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Greg Lastname", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Mike Ambassador", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Cool Friend", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Brian Davidson", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Jim Harbaugh", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Ambassador Diplomat", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Cool Guy", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Friend One", "corey@getambassador.com"));
-            contactList.add(new ContactObject("John Doe", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Greg Lastname", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Mike Ambassador", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Cool Friend", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Brian Davidson", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Jim Harbaugh", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Ambassador Diplomat", "corey@getambassador.com"));
-            contactList.add(new ContactObject("Ambassador Diplomat2", "corey@getambassador.com"));
+            contactList.add(new ContactObject("John Jones", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Cool Guy", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Friend One", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("John Doe", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Greg Lastname", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Mike Ambassador", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Cool Friend", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Brian Davidson", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Jim Harbaugh", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Ambassador Diplomat", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Cool Guy", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Friend One", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("John Doe", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Greg Lastname", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Mike Ambassador", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Cool Friend", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Brian Davidson", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Jim Harbaugh", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Ambassador Diplomat", null, "corey@getambassador.com"));
+            contactList.add(new ContactObject("Ambassador Diplomat2", null, "corey@getambassador.com"));
         }
 
         if (contactList.size() < 1) {
@@ -325,7 +326,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     private void _doneEditingMessage() {
-        if (adapter.selectedContacts.size() > 0) btnSend.setEnabled(true);
+        if (adapter.getSelectedSize() > 0) btnSend.setEnabled(true);
         btnEdit.setVisibility(View.VISIBLE);
         btnDone.setVisibility(View.GONE);
         etShareMessage.setEnabled(false);
@@ -451,7 +452,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         //this method is called from two places, one of which could already be showing the progress dialog
         if (!pd.isShowing()) pd.show();
 
-        bulkShareHelper.bulkShare(etShareMessage.getText().toString(), adapter.selectedContacts, showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
+        bulkShareHelper.bulkShare(etShareMessage.getText().toString(), adapter.getSelectedContacts(), showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
             @Override
             public void bulkShareSuccess() {
                 pd.dismiss();
@@ -474,7 +475,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     private void _handleContactsPopulation() {
-        // Finds out whether to show emails or phone numbers
         showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
         if (showPhoneNumbers) {
             _getContactPhoneList();
@@ -483,15 +483,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
-        lvContacts.setAdapter(adapter);
-        lvContacts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get checkmark image and animate in or out based on its selection state and updates arrays
-                adapter.updateArrays(position, view);
-                _updateSendButton(adapter.selectedContacts.size());
-            }
-        });
+        rvContacts.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rvContacts.setLayoutManager(llm);
+        rvContacts.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+        rvContacts.setAdapter(adapter);
     }
 
     private boolean _handleContactsPermission() {
@@ -523,4 +519,5 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                 break;
         }
     }
+
 }

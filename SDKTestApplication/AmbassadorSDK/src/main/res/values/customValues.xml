@@ -36,6 +36,7 @@
     <color name="contactsDoneButtonText">@color/ambassador_blue</color>
     <color name="contactsSearchBar">@android:color/transparent</color>
     <color name="contactsSearchIcon">@android:color/white</color>
+    <color name="contactNoPhotoAvailableBackground">@color/ambassador_blue</color>
     <color name="twitterToolBar">@color/twitter_blue</color>
     <color name="twitterToolBarText">@android:color/white</color>
     <color name="twitterToolBarArrow">@android:color/white</color>
