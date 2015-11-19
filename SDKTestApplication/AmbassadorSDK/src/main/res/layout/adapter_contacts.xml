@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="70dp">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dp">
 
     <ImageView
+        android:id="@+id/ivPic"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:id="@+id/ivPic"/>
+        android:layout_marginLeft="10dp"/>
 
     <TextView
+        android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:maxWidth="220dp"
@@ -18,20 +21,18 @@
         android:textSize="@dimen/contactsListName"
         android:singleLine="true"
         android:ellipsize="none"
-        android:id="@+id/tvName"
         android:layout_marginTop="12dp"
         android:layout_marginLeft="6dp"
         android:layout_marginStart="10dp"
-        fontPath="@string/contactsListName"
-        android:layout_toRightOf="@+id/ivPic"/>
+        fontPath="@string/contactsListName"/>
 
     <TextView
+        android:id="@+id/tvDots"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
         android:text="..."
         android:textColor="@color/darkGray"
         android:textSize="@dimen/contactsListName"
-        android:id="@+id/tvDots"
         android:layout_toRightOf="@+id/tvName"
         android:layout_toEndOf="@+id/tvName"
         android:layout_marginTop="12dp"
@@ -39,11 +40,11 @@
         android:visibility="gone"/>
 
     <TextView
+        android:id="@+id/tvNumberOrEmail"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
         android:text="Medium Text"
         android:textColor="@color/lightGray"
-        android:id="@+id/tvNumberOrEmail"
         android:layout_marginLeft="0dp"
         android:layout_marginStart="0dp"
         android:textSize="@dimen/contactsListValue"
@@ -56,9 +57,9 @@
         android:layout_toRightOf="@+id/ivPic"/>
 
     <ImageView
+        android:id="@+id/ivCheckMark"
         android:layout_width="20dp"
         android:layout_height="wrap_content"
-        android:id="@+id/ivCheckMark"
         android:src="@drawable/checkmark"
         android:layout_alignTop="@+id/tvName"
         android:layout_alignParentEnd="true"
