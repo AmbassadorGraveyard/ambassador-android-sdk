@@ -9,8 +9,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Present RAF"
-        android:id="@+id/btnShowRAF"
+        android:id="@+id/btnPresentRAF"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="64dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Purchase this thing"
+        android:id="@+id/btnPurchase"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btnPresentRAF"
+        android:layout_marginTop="20dp" />
+
 </RelativeLayout>
