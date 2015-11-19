@@ -23,7 +23,8 @@
         android:ellipsize="none"
         android:layout_marginTop="12dp"
         android:layout_marginLeft="6dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="6dp"
+        android:layout_toRightOf="@+id/ivPic"
         fontPath="@string/contactsListName"/>
 
     <TextView
