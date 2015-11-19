@@ -5,10 +5,11 @@ package com.ambassador.ambassadorsdk;
  * Created by JakeDunahee on 7/31/15.
  */
 class ContactObject {
-    public String name;
-    public String phoneNumber;
-    public String emailAddress;
-    public String type;
+
+    private String name;
+    private String phoneNumber;
+    private String emailAddress;
+    private String type;
 
     public ContactObject() {
         name = "No name available";
@@ -27,4 +28,21 @@ class ContactObject {
         this.name = name;
         this.emailAddress = emailAddress;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public String getType() {
+        return type;
+    }
+
 }
