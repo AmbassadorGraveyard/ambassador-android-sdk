@@ -36,7 +36,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -207,31 +206,32 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private void _getContactPhoneList() {
         contactList = new ArrayList<>();
 
-        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                null, null, null, null);
+        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
         if (phones.moveToFirst()) {
             do {
-                ContactObject object = new ContactObject();
-                object.name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                object.phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 String typeNum = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
 
+                String type;
                 switch (Integer.parseInt(typeNum)) {
                     case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
-                        object.type = "Home";
+                        type = "Home";
                         break;
                     case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-                        object.type = "Mobile";
+                        type = "Mobile";
                         break;
                     case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
-                        object.type = "Work";
+                        type = "Work";
                         break;
                     default:
-                        object.type = "Other";
+                        type = "Other";
                         break;
                 }
+
+                ContactObject object = new ContactObject(name, type, phoneNumber);
 
                 contactList.add(object);
             } while (phones.moveToNext());
@@ -267,10 +267,10 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
         if (emails.moveToFirst()) {
             do  {
-                ContactObject object = new ContactObject();
-                object.name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                object.emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
+                ContactObject object = new ContactObject(name, emailAddress);
                 contactList.add(object);
             }
             while (emails.moveToNext());
@@ -308,12 +308,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     private void _sortContactsAlphabetically() {
-        Collections.sort(contactList, new Comparator<ContactObject>() {
-            @Override
-            public int compare(ContactObject lhs, ContactObject rhs) {
-                return lhs.name.compareTo(rhs.name);
-            }
-        });
+        Collections.sort(contactList);
     }
     //endregion
 
