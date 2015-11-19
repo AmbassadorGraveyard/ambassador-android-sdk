@@ -3,9 +3,6 @@ package com.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.Looper;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -54,11 +51,7 @@ public class AmbassadorSDK {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
 
-        HandlerThread handlerThread = new HandlerThread("ht");
-        handlerThread.start();
-        Looper looper = handlerThread.getLooper();
-        Handler handler = new Handler(looper);
-        context.registerReceiver(InstallReceiver.getInstance(), intentFilter, null, handler);
+        context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
 
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
         ambassadorSDK.localRunWithKeysAndConvertOnInstall(universalToken, universalID, parameters);
