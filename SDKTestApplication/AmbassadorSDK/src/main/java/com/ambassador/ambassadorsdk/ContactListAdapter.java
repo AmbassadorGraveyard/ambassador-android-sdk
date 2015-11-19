@@ -3,8 +3,6 @@ package com.ambassador.ambassadorsdk;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.graphics.Paint;
-import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,10 +77,10 @@ class ContactListAdapter extends BaseAdapter  {
 
         ContactObject currentObject = filteredContactList.get(position);
 
-        float widthInDp = getTextWidthDp(currentObject.getName(), viewHolder.tvName);
+        float widthInDp = Utilities.getTextWidthDp(currentObject.getName(), viewHolder.tvName);
 
         if (widthInDp > maxWidth) {
-            String text = cutTextToShow(currentObject.getName(), viewHolder.tvName);
+            String text = Utilities.cutTextToShow(currentObject.getName(), viewHolder.tvName, maxWidth);
             viewHolder.tvName.setText(text);
             viewHolder.tvDots.setVisibility(View.VISIBLE);
         } else {
@@ -145,25 +143,6 @@ class ContactListAdapter extends BaseAdapter  {
             imageView.animate().setDuration(300).setInterpolator(new OvershootInterpolator())
                     .x(view.getWidth() - imageView.getWidth() - checkmarkPxXPos).setListener(null).start();
         }
-    }
-
-    private float getTextWidthDp(String text, TextView tv) {
-        Rect bounds = new Rect();
-        Paint textPaint = tv.getPaint();
-        textPaint.getTextBounds(text, 0, text.length(), bounds);
-        float width = Utilities.getDpSizeForPixels(bounds.width());
-        return width;
-    }
-
-    private String cutTextToShow(String text, TextView tv) {
-        String cut;
-        for (int i = 0; i < text.length() + 1; i++) {
-            cut = text.substring(0, i);
-            if (getTextWidthDp(cut, tv) > maxWidth) {
-                return cut.substring(0, cut.length() - 1);
-            }
-        }
-        return "";
     }
 
 }
