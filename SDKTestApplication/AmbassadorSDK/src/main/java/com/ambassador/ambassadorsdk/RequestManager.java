@@ -140,7 +140,7 @@ public class RequestManager {
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
                     oStream.writeBytes(BulkShareHelper.payloadObjectForEmail(BulkShareHelper.verifiedEmailList(contacts),
-                            ambassadorConfig.getShortCode(),
+                            ambassadorConfig.getReferrerShortCode(),
                             ambassadorConfig.getEmailSubjectLine(),
                             messageToShare).toString());
                     oStream.flush();
@@ -186,13 +186,13 @@ public class RequestManager {
 
                     switch (shareType) {
                         case SMS:
-                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getShortCode()).toString());
+                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getReferrerShortCode()).toString());
                             break;
                         case EMAIL:
-                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getShortCode()).toString());
+                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getReferrerShortCode()).toString());
                             break;
                         default:
-                            oStream.writeBytes(BulkShareHelper.contactArray(shareType, ambassadorConfig.getShortCode()).toString());
+                            oStream.writeBytes(BulkShareHelper.contactArray(shareType, ambassadorConfig.getReferrerShortCode()).toString());
                     }
 
                     oStream.flush();

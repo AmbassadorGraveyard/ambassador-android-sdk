@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
@@ -20,20 +21,40 @@ public class MainActivity extends AppCompatActivity {
 
         final Context context = this;
 
-        //dev
-        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
-
-        //prod
+        //dev - run
         //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
+
+        //dev - run and convert on install
+        ConversionParameters conversionParameters = new ConversionParameters();
+        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_campaign = 305;
+        conversionParameters.mbsy_revenue = 200;
+        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***", conversionParameters);
+
+        //prod - run
+        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
+
+        //prod - run and convert on install
+        /*ConversionParameters conversionParameters = new ConversionParameters();
+        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_campaign = 305;
+        conversionParameters.mbsy_revenue = 200;
+        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***", conversionParameters);*/
 
         AmbassadorSDK.identify("jake@getambassador.com");
 
-        Button btnRAF = (Button)findViewById(R.id.btnShowRAF);
-        btnRAF.setOnClickListener(new View.OnClickListener() {
+        Button btnPresentRAF = (Button)findViewById(R.id.btnPresentRAF);
+        btnPresentRAF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AmbassadorSDK.presentRAF(context, "260");
+            }
+        });
 
+        Button btnPurchase = (Button)findViewById(R.id.btnPurchase);
+        btnPurchase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 ConversionParameters conversionParameters = new ConversionParameters();
                 conversionParameters.mbsy_first_name = "Jake";
                 conversionParameters.mbsy_last_name = "Dunahee";
@@ -42,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 conversionParameters.mbsy_revenue = 200;
 
                 AmbassadorSDK.registerConversion(conversionParameters);
+
+                Toast.makeText(getApplicationContext(), "Cool! (Conversion)", Toast.LENGTH_SHORT).show();
             }
         });
     }

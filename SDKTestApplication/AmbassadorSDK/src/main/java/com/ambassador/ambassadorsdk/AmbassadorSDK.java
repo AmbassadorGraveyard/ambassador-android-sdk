@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -44,11 +45,17 @@ public class AmbassadorSDK {
         ambassadorSDK.localRunWithKeys(universalToken, universalID);
     }
 
-    public static void runWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
+    public static void runWithKeysAndConvertOnInstall(Context context, String universalToken, String universalID, ConversionParameters parameters) {
+        AmbassadorSingleton.getInstance().init(context);
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
+
+        context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
+
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
         ambassadorSDK.localRunWithKeysAndConvertOnInstall(universalToken, universalID, parameters);
     }
-
 
     // Package-private local functions
     void localPresentRAF(Context context, String campaignID) {
@@ -60,7 +67,7 @@ public class AmbassadorSDK {
     void localIdentify(String identifier) {
         ambassadorConfig.setUserEmail(identifier);
 
-        IIdentify identify = new Identify();
+        IIdentify identify = new IdentifyAugurSDK();
         identify.getIdentity();
 
         PusherSDK pusher = new PusherSDK();
@@ -82,10 +89,10 @@ public class AmbassadorSDK {
         ambassadorConfig.setUniversalID(universalID);
         startConversionTimer();
 
-        // Checks boolean from sharedpreferences to see if this the first launch and registers conversion if it is
+        // Checks boolean from shared preferences to see if this the first launch and registers conversion if it is
         if (!ambassadorConfig.convertedOnInstall()) {
             registerConversion(parameters);
-            ambassadorConfig.setConvertForInstall();
+            ambassadorConfig.setConvertOnInstall();
         }
     }
 
