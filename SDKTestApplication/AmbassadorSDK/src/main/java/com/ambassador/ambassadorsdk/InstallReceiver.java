@@ -6,14 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -26,21 +23,43 @@ public class InstallReceiver extends BroadcastReceiver {
 
     public InstallReceiver() {
         AmbassadorSingleton.getComponent().inject(this);
+    }
 
-        final Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Bundle b = intent.getExtras();
+        final String qstring = b.getString("referrer"); //"mbsy_cookie_code%3DjwnZ%26device_id%3Dtest1234";
+        //Toast.makeText(context, qstring, Toast.LENGTH_LONG).show();
+
+        final String hit = "http://104.131.52.60:3000/hit/{name}".replace("{name}", b.getString("referrer"));
+
+        Runnable r = new Runnable() {
             @Override
             public void run() {
-                timer.cancel();
-                //TESTING - MODIFY THESE LINES TO RECEIVE PARAMETERS FROM INTENT
-                //if (false) {
-                String webDeviceId = "web1234";
-                String referralShortCode = "mbsy1234";
+                Looper.prepare();
+                RequestManager rm = new RequestManager();
+                HttpURLConnection connection = rm.setUpConnection("GET", hit);
+                String resp = rm.getResponse(connection, 200);
+                Log.v("RESPONSE", resp);
+
+                String[] param1, param2;
+                String webDeviceId, referralShortCode;
+
+                try {
+                    String[] qSplit = qstring.split("%26");
+                    param1 = qSplit[0].split("%3D"); //mbsy_cookie_code%3DjwnZ
+                    param2 = qSplit[1].split("%3D"); //device_id%3Dtest1234
+                    referralShortCode = param1[0].equals("mbsy_cookie_code") ? param1[1] : param2[1];
+                    webDeviceId = param2[0].equals("device_id") ? param2[1] : param1[1];
+                }
+                catch (ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
                 ambassadorConfig.setWebDeviceId(webDeviceId);
                 ambassadorConfig.setReferralShortCode(referralShortCode);
-                //END TESTING
 
-                //TESTING - THIS CODE SHOULD BE MOVED TO THE BOTTOM OF THE RUN BLOCK WHEN INTENT IS READY
                 //if augur came back first, update our device id
                 JSONObject identity;
                 if (ambassadorConfig.getIdentifyObject() != null) {
@@ -79,28 +98,6 @@ public class InstallReceiver extends BroadcastReceiver {
                         e.printStackTrace();
                     }
                 }*/
-                //}
-                //END TESTING
-            }
-        }, 0, 1);
-
-    }
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        Bundle b = intent.getExtras();
-        Toast.makeText(context, b.getString("referrer"), Toast.LENGTH_LONG).show();
-
-        final String hit = "http://104.131.52.60:3000/hit/{name}".replace("{name}", b.getString("referrer"));
-
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                Looper.prepare();
-                RequestManager rm = new RequestManager();
-                HttpURLConnection connection = rm.setUpConnection("GET", hit);
-                String resp = rm.getResponse(connection, 200);
-                Log.v("RESPONSE", resp);
             }
         };
 
