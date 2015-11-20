@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.google.gms.google-services'
 
 repositories {
     jcenter()
@@ -10,29 +11,38 @@ repositories {
     }
 }
 
-dependencies {
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.google.gms:google-services:1.5.0-beta2'
+    }
+}
 
+dependencies {
     //classpath 'com.android.tools.build:gradle:1.1.0'
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.google.android.gms:play-services-analytics:8.3.0'
     compile 'org.twitter4j:twitter4j-core:4.0.4'
     compile 'com.google.guava:guava:19.0-rc1'
     compile 'com.pusher:pusher-java-client:0.3.3'
-    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
-    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'org.slf4j:slf4j-android:1.7.12'
-    compile(name: 'augur-v1.2.0', ext: 'aar')
+    compile(name: 'augur-v1.2.2-stable', ext: 'aar')
     compile 'com.google.dagger:dagger:2.0'
     compile 'org.mockito:mockito-core:1.10.19'
+    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
+    compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     apt "com.google.dagger:dagger-compiler:2.0"
     provided 'org.glassfish:javax.annotation:10.0-b28'
+
     //Unit testing dependencies
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.powermock:powermock-module-test-mockito-junit4:1.6.2'
     testCompile 'org.powermock:powermock-module-junit4:1.6.2'
-    testCompile 'org.json:json:20150729'
-    testApt "com.google.dagger:dagger-compiler:2.0"
+
     //Automated UI testing dependencies
     androidTestCompile 'com.facebook.android:facebook-android-sdk:4.5.0'
     androidTestCompile 'com.android.support.test:runner:0.3'
@@ -45,8 +55,6 @@ dependencies {
     androidTestApt "com.google.dagger:dagger-compiler:2.0"
     //androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2'
 }
-
-
 
 android {
 /*
@@ -65,8 +73,8 @@ android {
     }
 */
 
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
     publishNonDefault true
 
     lintOptions {
@@ -76,7 +84,7 @@ android {
     defaultConfig {
         multiDexEnabled true
         minSdkVersion 16
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -102,6 +110,7 @@ buildscript {
 
     dependencies {
         classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.0.2'
+        classpath 'com.google.gms:google-services:1.5.0-beta2'
     }
 }
 
@@ -111,4 +120,3 @@ spoon {
     // for debug output
     debug = true
 }
-
