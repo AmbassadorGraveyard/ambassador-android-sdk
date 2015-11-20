@@ -123,6 +123,10 @@ public class AmbassadorConfig {
         sharePrefs.edit().putString("referralShortCode", shortCode).apply();
     }
 
+    public void setWebDeviceId(String deviceId) {
+        sharePrefs.edit().putString("webDeviceId", deviceId).apply();
+    }
+
     public void setUserFullName(String firstName, String lastName) {
         sharePrefs.edit().putString("fullName", firstName + " " + lastName).apply();
     }
@@ -178,6 +182,10 @@ public class AmbassadorConfig {
     String getReferrerShortCode() { return sharePrefs.getString("referrerShortCode", null); }
 
     String getReferralShortCode() { return sharePrefs.getString("referralShortCode", null); }
+
+    String getWebDeviceId() {
+        return sharePrefs.getString("webDeviceId", null);
+    }
 
     String getFullName() {
         return sharePrefs.getString("fullName", null);

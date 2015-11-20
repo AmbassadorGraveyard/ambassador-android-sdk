@@ -119,6 +119,10 @@ class ConversionUtility {
 
     // Attempts to register conversions stored in database
     public void readAndSaveDatabaseEntries() {
+        //if we don't have an identify object yet, that means neither the intent nor augur has returned
+        //so bail out and try again later
+        if (ambassadorConfig.getIdentifyObject() == null || ambassadorConfig.getReferralShortCode() == null) return;
+
         String[] projection = {
                 ConversionSQLStrings.ConversionSQLEntry._ID,
                 ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN,
