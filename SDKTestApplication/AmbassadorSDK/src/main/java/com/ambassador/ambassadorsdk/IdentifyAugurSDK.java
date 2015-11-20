@@ -54,6 +54,13 @@ class IdentifyAugurSDK implements IIdentify {
                     // Alter the device 'type' to be "SmartPhone" or "Tablet" instead of "Android"
                     JSONObject jsonObject = new JSONObject(json);
                     JSONObject device = jsonObject.getJSONObject("device");
+
+                    //if the webDeviceId has been received on the querystring and it's different than what augur returns, override augur deviceId
+                    if (ambassadorConfig.getWebDeviceId() != null && !device.getString("ID").equals(ambassadorConfig.getWebDeviceId())) {
+                        device.remove("ID");
+                        device.put("ID", ambassadorConfig.getWebDeviceId());
+                    }
+
                     device.put("type", Utilities.deviceType(AmbassadorSingleton.get()));
                     jsonObject.put("device", device);
 
