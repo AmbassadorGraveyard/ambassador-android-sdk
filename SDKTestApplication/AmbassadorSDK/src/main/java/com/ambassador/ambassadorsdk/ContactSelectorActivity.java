@@ -268,7 +268,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             String type = types[rand.nextInt(types.length)];
             String phoneNumber = "";
             for (int j = 0; j < 12; j++) {
-                if (j == 3 || j == 6) {
+                if (j == 3 || j == 7) {
                     phoneNumber += "-";
                 } else {
                     phoneNumber += numbers[rand.nextInt(numbers.length)];
