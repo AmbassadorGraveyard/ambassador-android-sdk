@@ -85,7 +85,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     @Override
     public int getItemCount() {
-        return contacts.size();
+        return filteredContacts.size();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     @Override
     public void onBindViewHolder(ContactViewHolder holder, int position) {
-        ContactObject contact = contacts.get(position);
+        ContactObject contact = filteredContacts.get(position);
 
         float widthInDp = Utilities.getTextWidthDp(contact.getName(), holder.tvName);
 
