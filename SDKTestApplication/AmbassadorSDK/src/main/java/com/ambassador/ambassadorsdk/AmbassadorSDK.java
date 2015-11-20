@@ -67,6 +67,12 @@ public class AmbassadorSDK {
         pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
             @Override
             public void pusherSubscribed() {
+
+            }
+
+            @Override
+            public void pusherFailed() {
+
             }
         });
     }
