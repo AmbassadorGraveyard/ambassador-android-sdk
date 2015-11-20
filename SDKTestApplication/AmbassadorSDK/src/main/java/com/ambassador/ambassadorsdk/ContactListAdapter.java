@@ -238,6 +238,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 return MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(params[0]));
             } catch (IOException e) {
                 return null;
+            } catch (OutOfMemoryError e) {
+                return null;
             }
         }
 
