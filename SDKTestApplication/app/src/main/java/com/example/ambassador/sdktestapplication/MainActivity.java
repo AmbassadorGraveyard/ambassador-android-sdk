@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
@@ -20,20 +21,40 @@ public class MainActivity extends AppCompatActivity {
 
         final Context context = this;
 
-        //dev
-        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
+        //dev - run
+        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
 
-        //prod
+        //dev - run and convert on install
+        ConversionParameters conversionParameters = new ConversionParameters();
+        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_campaign = 305;
+        conversionParameters.mbsy_revenue = 200;
+        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32", conversionParameters);
+
+        //prod - run
         //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
+
+        //prod - run and convert on install
+        /*ConversionParameters conversionParameters = new ConversionParameters();
+        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_campaign = 305;
+        conversionParameters.mbsy_revenue = 200;
+        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b", conversionParameters);*/
 
         AmbassadorSDK.identify("jake@getambassador.com");
 
-        Button btnRAF = (Button)findViewById(R.id.btnShowRAF);
-        btnRAF.setOnClickListener(new View.OnClickListener() {
+        Button btnPresentRAF = (Button)findViewById(R.id.btnPresentRAF);
+        btnPresentRAF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AmbassadorSDK.presentRAF(context, "260");
+            }
+        });
 
+        Button btnPurchase = (Button)findViewById(R.id.btnPurchase);
+        btnPurchase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 ConversionParameters conversionParameters = new ConversionParameters();
                 conversionParameters.mbsy_first_name = "Jake";
                 conversionParameters.mbsy_last_name = "Dunahee";
@@ -42,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
                 conversionParameters.mbsy_revenue = 200;
 
                 AmbassadorSDK.registerConversion(conversionParameters);
+
+                Toast.makeText(getApplicationContext(), "Cool! (Conversion)", Toast.LENGTH_SHORT).show();
             }
         });
     }

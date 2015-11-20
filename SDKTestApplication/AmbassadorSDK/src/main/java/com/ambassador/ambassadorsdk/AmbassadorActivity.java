@@ -17,10 +17,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -40,6 +41,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -53,15 +56,15 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * Created by JakeDunahee on 7/22/15.
  */
 public class AmbassadorActivity extends AppCompatActivity {
+
     CustomEditText etShortUrl;
     private ProgressDialog pd;
+    private LockableScrollView scrollView;
     private LinearLayout llMainLayout;
     private Timer networkTimer;
     private CallbackManager callbackManager;
     private final android.os.Handler timerHandler = new android.os.Handler();
-    private final String[] gridTitles = new String[]{"FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS"};
-    private final Integer[] gridDrawables = new Integer[]{R.drawable.facebook_icon, R.drawable.twitter_icon, R.drawable.linkedin_icon,
-            R.drawable.email_icon, R.drawable.sms_icon};
+    private ArrayList<SocialGridModel> gridModels;
 
     final private Runnable myRunnable = new Runnable() {
         @Override
@@ -102,7 +105,32 @@ public class AmbassadorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_ambassador);
+        if (!AmbassadorSingleton.isValid()) {
+            finish();
+            return;
+        }
+
+        /** Apparently the content view has to be inflated like this for the ViewTreeObserver to work */
+        final View view = LayoutInflater.from(this).inflate(R.layout.activity_ambassador, null, false);
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (view.getViewTreeObserver().isAlive()) {
+                    view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+
+                int parentHeight = scrollView.getHeight();
+                int childHeight = llMainLayout.getHeight();
+
+                if (childHeight - parentHeight > 0 && childHeight - parentHeight < Utilities.getPixelSizeForDimension(R.dimen.ambassador_activity_scroll_lock_buffer)) {
+                    scrollView.lock();
+                }
+            }
+        });
+
+        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.homeToolBar));
+
+        setContentView(view);
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                         .setDefaultFontPath("fonts/Roboto-RobotoRegular.ttf")
@@ -125,8 +153,9 @@ public class AmbassadorActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
         // UI Components
+        scrollView = (LockableScrollView) findViewById(R.id.scrollView);
         llMainLayout = (LinearLayout) findViewById(R.id.llMainLayout);
-        GridView gvSocialGrid = (GridView) findViewById(R.id.gvSocialGrid);
+        StaticGridView gvSocialGrid = (StaticGridView) findViewById(R.id.gvSocialGrid);
         ImageButton btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
         TextView tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
         TextView tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
@@ -147,12 +176,14 @@ public class AmbassadorActivity extends AppCompatActivity {
         btnCopyPaste.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
         // Sets up social gridView
-        SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridTitles, gridDrawables);
+        _instantiateGridModelsIntoArray();
+        final SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridModels);
         gvSocialGrid.setAdapter(gridAdapter);
         gvSocialGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                respondToGridViewClick(position);
+                SocialGridModel model = gridAdapter.getItem(position);
+                model.click();
             }
         });
 
@@ -245,31 +276,6 @@ public class AmbassadorActivity extends AppCompatActivity {
         return clip.toString();
     }
 
-    int respondToGridViewClick(int position) {
-        // Functionality: Handles items being clicked in the gridview
-        switch (position) {
-            case 0:
-                shareWithFacebook();
-                break;
-            case 1:
-                shareWithTwitter();
-                break;
-            case 2:
-                shareWithLinkedIn();
-                break;
-            case 3:
-                goToContactsPage(false);
-                break;
-            case 4:
-                goToContactsPage(true);
-                break;
-            default:
-                return -1;
-        }
-
-        return position;
-    }
-
     void loadCustomImages() {
         //first check if an image exists
         int drawableId = getResources().getIdentifier("raf_logo", "drawable", getPackageName());
@@ -311,8 +317,10 @@ public class AmbassadorActivity extends AppCompatActivity {
         fbDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
-                Toast.makeText(getApplicationContext(), "Posted successfully!", Toast.LENGTH_SHORT).show();
-                requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+                if (result.getPostId() != null) {
+                    Toast.makeText(getApplicationContext(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+                    requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+                }
             }
 
             @Override
@@ -375,7 +383,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 if (campID == myUID) {
                     etShortUrl.setText(urlObj.getString("url"));
                     ambassadorConfig.setURL(urlObj.getString("url"));
-                    ambassadorConfig.setShortCode(urlObj.getString("short_code"));
+                    ambassadorConfig.setReferrerShortCode(urlObj.getString("short_code"));
                     ambassadorConfig.setEmailSubject(urlObj.getString("subject"));
 
                     //check for weird multiple URL issue seen occasionally
@@ -409,4 +417,82 @@ public class AmbassadorActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(getResources().getColor(R.color.homeToolBarText));
     }
     // END UI SETTER METHODS
+
+    /**
+     * Instantiates a model object for each social grid item and binds a passthrough
+     * onclick method that calls the existing method handler, eg. shareWithFacebook();
+     */
+    private void _instantiateGridModelsIntoArray() {
+        SocialGridModel modelFacebook = new SocialGridModel("FACEBOOK", R.drawable.facebook_icon, getResources().getColor(R.color.facebook_blue));
+        modelFacebook.setDisabled(!getResources().getBoolean(R.bool.showFacebook));
+        modelFacebook.setWeight(getResources().getInteger(R.integer.weightFacebook));
+        modelFacebook.setOnClickListener(new SocialGridModel.OnClickListener() {
+            @Override
+            public void onClick() {
+                shareWithFacebook();
+            }
+        });
+
+        SocialGridModel modelTwitter = new SocialGridModel("TWITTER", R.drawable.twitter_icon, getResources().getColor(R.color.twitter_blue));
+        modelTwitter.setDisabled(!getResources().getBoolean(R.bool.showTwitter));
+        modelTwitter.setWeight(getResources().getInteger(R.integer.weightTwitter));
+        modelTwitter.setOnClickListener(new SocialGridModel.OnClickListener() {
+            @Override
+            public void onClick() {
+                shareWithTwitter();
+            }
+        });
+
+        SocialGridModel modelLinkedIn = new SocialGridModel("LINKEDIN", R.drawable.linkedin_icon, getResources().getColor(R.color.linkedin_blue));
+        modelLinkedIn.setDisabled(!getResources().getBoolean(R.bool.showLinkedIn));
+        modelLinkedIn.setWeight(getResources().getInteger(R.integer.weightLinkedIn));
+        modelLinkedIn.setOnClickListener(new SocialGridModel.OnClickListener() {
+            @Override
+            public void onClick() {
+                shareWithLinkedIn();
+            }
+        });
+
+        SocialGridModel modelEmail = new SocialGridModel("EMAIL", R.drawable.email_icon, getResources().getColor(android.R.color.white), true);
+        modelEmail.setDisabled(!getResources().getBoolean(R.bool.showEmail));
+        modelEmail.setWeight(getResources().getInteger(R.integer.weightEmail));
+        modelEmail.setOnClickListener(new SocialGridModel.OnClickListener() {
+            @Override
+            public void onClick() {
+                goToContactsPage(false);
+            }
+        });
+
+        SocialGridModel modelSms = new SocialGridModel("SMS", R.drawable.sms_icon, getResources().getColor(android.R.color.white), true);
+        modelSms.setDisabled(!getResources().getBoolean(R.bool.showSMS));
+        modelSms.setWeight(getResources().getInteger(R.integer.weightSMS));
+        modelSms.setOnClickListener(new SocialGridModel.OnClickListener() {
+            @Override
+            public void onClick() {
+                goToContactsPage(true);
+            }
+        });
+
+        ArrayList<SocialGridModel> tmpGridModels = new ArrayList<>();
+
+        tmpGridModels.add(modelFacebook);
+        tmpGridModels.add(modelTwitter);
+        tmpGridModels.add(modelLinkedIn);
+        tmpGridModels.add(modelEmail);
+        tmpGridModels.add(modelSms);
+
+        _handleDisablingAndSorting(tmpGridModels);
+    }
+
+    private void _handleDisablingAndSorting(ArrayList<SocialGridModel> tmpGridModels) {
+        gridModels = new ArrayList<>();
+
+        for (SocialGridModel model : tmpGridModels) {
+            if (!model.isDisabled()) {
+                gridModels.add(model);
+            }
+        }
+
+        Collections.sort(gridModels);
+    }
 }

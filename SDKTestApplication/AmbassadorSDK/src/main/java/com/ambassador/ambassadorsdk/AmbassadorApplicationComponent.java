@@ -15,6 +15,7 @@ public interface AmbassadorApplicationComponent {
     void inject(RequestManager requestManager);
     void inject(AmbassadorSDK ambassadorSDK);
     void inject(ContactNameDialog contactNameDialog);
-    void inject(Identify identify);
+    void inject(IdentifyAugurSDK identify);
     void inject(PusherSDK pusherSDK);
+    void inject(InstallReceiver installReceiver);
 }

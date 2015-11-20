@@ -63,4 +63,8 @@ public class AmbassadorSingleton {
     public static AmbassadorSingleton getInstance() {
         return instance == null ? (instance = new AmbassadorSingleton()) : instance;
     }
+
+    public static boolean isValid() {
+        return component != null && amb != null;
+    }
 }

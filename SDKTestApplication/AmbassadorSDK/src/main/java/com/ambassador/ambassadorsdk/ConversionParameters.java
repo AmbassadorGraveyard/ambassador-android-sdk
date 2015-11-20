@@ -22,6 +22,7 @@ public class ConversionParameters {
     public String mbsy_event_data2;
     public String mbsy_event_data3;
     public int mbsy_is_approved;
+    protected String mbsy_short_code; //package-private - not modifiable by sdk users
 
     // Sets up default constructor for parameters
     public ConversionParameters() {
@@ -43,6 +44,7 @@ public class ConversionParameters {
         mbsy_event_data2 = "";
         mbsy_event_data3 = "";
         mbsy_is_approved = 1;
+        mbsy_short_code = "";
     }
 
     // Boolean that checks if the conversion parameters are valid

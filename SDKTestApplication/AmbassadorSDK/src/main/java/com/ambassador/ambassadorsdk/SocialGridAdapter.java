@@ -1,7 +1,6 @@
 package com.ambassador.ambassadorsdk;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
@@ -13,21 +12,22 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by JakeDunahee on 7/22/15.
  */
 class SocialGridAdapter extends BaseAdapter {
     private Context context;
-    private String[] nameArray;
-    private Integer[] drawablesArray;
+    private ArrayList<SocialGridModel> models;
     LayoutInflater inflater;
     private ShapeDrawable rectShapeDrawable;
 
-    public SocialGridAdapter(Context context, String[] gridNames, Integer[] gridImages) {
+    public SocialGridAdapter(Context context, ArrayList<SocialGridModel> models) {
         this.context = context;
-        this.nameArray = gridNames;
-        this.drawablesArray = gridImages;
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        this.models = models;
 
         //create drawable to use as border around non-filled grid cells
         RectShape rect = new RectShape();
@@ -40,12 +40,12 @@ class SocialGridAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return drawablesArray.length;
+        return models.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public SocialGridModel getItem(int position) {
+        return models.get(position);
     }
 
     @Override
@@ -59,30 +59,21 @@ class SocialGridAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.custom_social_cell, parent, false);
         }
 
+        SocialGridModel model = getItem(position);
+
         ImageView gridImage = (ImageView) convertView.findViewById(R.id.ivGridImage);
         TextView gridTitle = (TextView) convertView.findViewById(R.id.tvGridTitle);
         RelativeLayout backgroundView = (RelativeLayout) convertView.findViewById(R.id.rlBackground);
 
-        gridImage.setImageResource(drawablesArray[position]);
-        gridTitle.setText(nameArray[position]);
-        backgroundView.setBackgroundColor(_getCorrectBackgroundColor(position));
-        if (position == 3 || position == 4) {
+        gridImage.setImageResource(model.getDrawable());
+        gridTitle.setText(model.getTitle());
+        backgroundView.setBackgroundColor(model.getColor());
+
+        if (model.isDrawBorder()) {
             backgroundView.setBackground(rectShapeDrawable);
         }
 
         return convertView;
     }
 
-    private int _getCorrectBackgroundColor(int position) {
-        switch (position) {
-            case 0:
-                return context.getResources().getColor(R.color.facebook_blue);
-            case 1:
-                return context.getResources().getColor(R.color.twitter_blue);
-            case 2:
-                return context.getResources().getColor(R.color.linkedin_blue);
-            default:
-                return Color.WHITE;
-        }
-    }
 }
