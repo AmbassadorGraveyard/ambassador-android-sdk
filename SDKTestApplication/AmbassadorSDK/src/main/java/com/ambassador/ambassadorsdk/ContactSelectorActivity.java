@@ -36,7 +36,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -46,9 +48,11 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * Created by JakeDunahee on 7/31/15.
  */
 public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener {
+
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
 
     private RecyclerView rvContacts;
+    private Button btnDoneSearch;
     private Button btnSend;
     private ImageButton btnEdit;
     private Button btnDone;
@@ -70,6 +74,14 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     @Inject
     AmbassadorConfig ambassadorConfig;
 
+    private static HashMap<Integer, String> phoneTypeMap;
+    static {
+        phoneTypeMap = new HashMap<>();
+        phoneTypeMap.put(ContactsContract.CommonDataKinds.Phone.TYPE_HOME, "Home");
+        phoneTypeMap.put(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE, "Mobile");
+        phoneTypeMap.put(ContactsContract.CommonDataKinds.Phone.TYPE_WORK, "Work");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,7 +98,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         AmbassadorSingleton.getComponent().inject(this);
 
         rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
-        Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
+        btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
         btnDone = (Button)findViewById(R.id.btnDone);
         btnSend = (Button)findViewById(R.id.btnSend);
@@ -159,19 +171,21 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         //get and store pusher data
         try {
             pusherData = new JSONObject(ambassadorConfig.getPusherInfo());
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
     @Override
     protected void onPause() {
-        if (cnd != null) { cnd.dismiss(); }
+        if (cnd != null) {
+            cnd.dismiss();
+        }
         super.onPause();
     }
 
-    //region TOOLBAR MENU
+    /** Toolbar menu methods **/
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ambassador_menu, menu);
@@ -199,122 +213,119 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
-    //endregion
 
 
-    //region CONTACT FUNCTIONS
+    /** Contact methods **/
+
     private void _getContactPhoneList() {
         contactList = new ArrayList<>();
+        Cursor phoneCursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
-        Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        if (phoneCursor == null) {
+            return;
+        }
 
-        if (phones.moveToFirst()) {
+        if (phoneCursor.moveToFirst()) {
             do {
-                String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                String picUri = phones.getString(phones.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                String typeNum = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
+                String name = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String picUri = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String typeNum = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
 
-                String type;
-                switch (Integer.parseInt(typeNum)) {
-                    case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
-                        type = "Home";
-                        break;
-                    case ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE:
-                        type = "Mobile";
-                        break;
-                    case ContactsContract.CommonDataKinds.Phone.TYPE_WORK:
-                        type = "Work";
-                        break;
-                    default:
-                        type = "Other";
-                        break;
+                String type = "Other";
+                if (phoneTypeMap.containsKey(Integer.parseInt(typeNum))) {
+                    type = phoneTypeMap.get(Integer.parseInt(typeNum));
                 }
 
                 ContactObject object = new ContactObject(name, picUri, type, phoneNumber);
-
                 contactList.add(object);
-            } while (phones.moveToNext());
+            } while (phoneCursor.moveToNext());
         }
 
-        if (!AmbassadorConfig.isReleaseBuild && contactList.size() < 2) {
-            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
-            contactList.add(new ContactObject("Cool Guy", null, "Mobile", "123-345-9999"));
+        phoneCursor.close();
+
+        if (!AmbassadorConfig.isReleaseBuild && contactList.size() <= 0) {
+            _addDummyPhoneData(contactList);
         }
 
-        if (contactList.size() < 1) {
+        if (contactList.size() <= 0) {
             tvNoContacts.setVisibility(View.VISIBLE);
         }
 
-        phones.close();
-        _sortContactsAlphabetically();
+        Collections.sort(contactList);
+    }
+
+    private void _addDummyPhoneData(List<ContactObject> contactList) {
+        String[] firstNames = new String[]{"Dylan", "Jake", "Corey", "Mitch", "Matt", "Brian", "Amanada", "Brandon"};
+        String[] lastNames = new String[]{"Smith", "Johnson", "Stevens"};
+        String[] types = new String[]{"Home", "Mobile", "Work"};
+        String[] numbers = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9"};
+
+        Random rand = new Random();
+        for (int i = 0; i < 100; i++) {
+            String name = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
+            String type = types[rand.nextInt(types.length)];
+            String phoneNumber = "";
+            for (int j = 0; j < 12; j++) {
+                if (j == 3 || j == 6) {
+                    phoneNumber += "-";
+                } else {
+                    phoneNumber += numbers[rand.nextInt(numbers.length)];
+                }
+            }
+
+            contactList.add(new ContactObject(name, null, type, phoneNumber));
+        }
     }
 
     private void _getContactEmailList() {
         contactList = new ArrayList<>();
+        Cursor emailCursor = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
 
+        if (emailCursor == null) {
+            return;
+        }
 
-
-        Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                null, null, null, null);
-
-        if (emails.moveToFirst()) {
+        if (emailCursor.moveToFirst()) {
             do  {
-                String name = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                String picUri = emails.getString(emails.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                String emailAddress = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                String name = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                String picUri = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                String emailAddress = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                 ContactObject object = new ContactObject(name, picUri, emailAddress);
                 contactList.add(object);
             }
-            while (emails.moveToNext());
+            while (emailCursor.moveToNext());
         }
 
-        if (!AmbassadorConfig.isReleaseBuild && contactList.size() < 2) {
-            contactList.add(new ContactObject("John Jones", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Cool Guy", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Friend One", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("John Doe", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Greg Lastname", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Mike Ambassador", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Cool Friend", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Brian Davidson", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Jim Harbaugh", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Ambassador Diplomat", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Cool Guy", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Friend One", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("John Doe", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Greg Lastname", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Mike Ambassador", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Cool Friend", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Brian Davidson", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Jim Harbaugh", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Ambassador Diplomat", null, "corey@getambassador.com"));
-            contactList.add(new ContactObject("Ambassador Diplomat2", null, "corey@getambassador.com"));
+        emailCursor.close();
+
+        if (!AmbassadorConfig.isReleaseBuild && contactList.size() <= 0) {
+            _addDummyEmailData(contactList);
         }
 
-        if (contactList.size() < 1) {
+        if (contactList.size() <= 0) {
             tvNoContacts.setVisibility(View.VISIBLE);
         }
 
-        emails.close();
-        _sortContactsAlphabetically();
-    }
-
-    private void _sortContactsAlphabetically() {
         Collections.sort(contactList);
     }
-    //endregion
 
+    private void _addDummyEmailData(List<ContactObject> contactList) {
+        String[] firstNames = new String[]{"Dylan", "Jake", "Corey", "Mitch", "Matt", "Brian", "Amanada", "Brandon"};
+        String[] lastNames = new String[]{"Smith", "Johnson", "Stevens"};
 
-    // BUTTON METHODS
+        Random rand = new Random();
+        for (int i = 0; i < 100; i++) {
+            String name = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
+            String email = name.substring(0, name.indexOf(" ")) + "@getambassador.com";
+
+            contactList.add(new ContactObject(name, null, email));
+        }
+    }
+
+    /** Button methods **/
+
     private void _editBtnTapped() {
         btnSend.setEnabled(false);
         btnEdit.setVisibility(View.GONE);
@@ -322,7 +333,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         etShareMessage.setEnabled(true);
         etShareMessage.requestFocus();
         etShareMessage.setSelection(0);
-        inputManager.showSoftInput(etShareMessage, 0); // Presents keyboard
+        inputManager.showSoftInput(etShareMessage, 0);
     }
 
     private void _doneEditingMessage() {
@@ -333,9 +344,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     private void _displayOrHideSearch() {
-        // Float that helps converts dp to pixels based on device
         final float scale = Utilities.getScreenDensity();
-
         int finalHeight = (rlSearch.getHeight() > 0) ? 0 : (int) (50 * scale + 0.5f);
 
         ValueAnimator anim = ValueAnimator.ofInt(rlSearch.getMeasuredHeight(), finalHeight);
@@ -350,12 +359,12 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         });
 
         if (finalHeight != 0) {
-            // If SHOWING search
+            /** Showing search **/
             _shrinkSendView(true);
             etSearch.requestFocus();
             inputManager.showSoftInput(etSearch, 0);
         } else {
-            // If HIDING search
+            /** Hiding search **/
             etSearch.setText("");
             _shrinkSendView(false);
             etSearch.clearFocus();
@@ -366,8 +375,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         anim.start();
     }
 
+    /** Shrinks or inflates the send button while the user is searching, to make more room **/
     private void _shrinkSendView(Boolean shouldShrink) {
-        // Functionality: Hides the send view while user is searching.  Mainly to make more room to see listview
         if (shouldShrink) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)llSendView.getLayoutParams();
             params.height = 0;
@@ -378,7 +387,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             llSendView.setLayoutParams(params);
         }
     }
-    // END BUTTON METHODS
 
     // Adds and styles toolbar in place of the actionbar
     private void _setUpToolbar(String toolbarTitle) {
@@ -468,7 +476,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         });
     }
 
-    // Interface call from ContactNameDialog
     @Override
     public void namesHaveBeenUpdated() {
         _initiateSend();
