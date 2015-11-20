@@ -228,8 +228,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         private final WeakReference<ContactObject> contactObjectWeakReference;
 
         public BitmapLoaderTask(ImageView imageView, ContactObject contact) {
-            imageViewWeakReference = new WeakReference<ImageView>(imageView);
-            contactObjectWeakReference = new WeakReference<ContactObject>(contact);
+            imageViewWeakReference = new WeakReference<>(imageView);
+            contactObjectWeakReference = new WeakReference<>(contact);
         }
 
         @Override
