@@ -68,10 +68,10 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     private boolean shouldShowPhoneNumbers;
     private float maxNameWidth;
     private float checkmarkXPos;
-
     private int itemWidth;
-
     private Bitmap noPicBmp;
+
+    private OnSelectedContactsChangedListener onSelectedContactsChangedListener;
 
     public ContactListAdapter(Context context, List<ContactObject> contacts, boolean shouldShowPhoneNumbers) {
         this.context = context;
@@ -104,6 +104,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             @Override
             public void onClick(View view, int position) {
                 updateArrays(view, position);
+                if (onSelectedContactsChangedListener != null) {
+                    onSelectedContactsChangedListener.onSelectedContactsChanged(selectedContacts.size());
+                }
             }
         });
 
@@ -262,6 +265,14 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             }
         }
 
+    }
+
+    public interface OnSelectedContactsChangedListener {
+        void onSelectedContactsChanged(int selected);
+    }
+
+    public void setOnSelectedContactsChangedListener(OnSelectedContactsChangedListener onSelectedContactsChangedListener) {
+        this.onSelectedContactsChangedListener = onSelectedContactsChangedListener;
     }
 
 }

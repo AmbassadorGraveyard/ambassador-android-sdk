@@ -403,7 +403,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         toolbar.setTitleTextColor(getResources().getColor(R.color.contactsToolBarText));
     }
 
-    private void _updateSendButton(int numOfContacts) {
+    public void _updateSendButton(int numOfContacts) {
         if (numOfContacts == 0) {
             btnSend.setText("NO CONTACTS SELECTED");
             btnSend.setEnabled(false);
@@ -490,6 +490,13 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
+        adapter.setOnSelectedContactsChangedListener(new ContactListAdapter.OnSelectedContactsChangedListener() {
+            @Override
+            public void onSelectedContactsChanged(int selected) {
+                _updateSendButton(selected);
+            }
+        });
+
         rvContacts.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rvContacts.setLayoutManager(llm);
