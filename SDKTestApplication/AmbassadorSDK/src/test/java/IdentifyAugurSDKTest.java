@@ -27,7 +27,7 @@ import static org.mockito.Mockito.spy;
 @RunWith(MockitoJUnitRunner.class)
 public class IdentifyAugurSDKTest extends TestCase {
     private String data;
-    private Identify identify, idSpy;
+    private IdentifyAugurSDK identify, idSpy;
 
     @Inject
     AmbassadorConfig ambassadorConfig;
@@ -35,7 +35,7 @@ public class IdentifyAugurSDKTest extends TestCase {
     @Before
     public void setup() {
         //Context context = mock(Context.class);
-        //idSpy = spy(new Identify());
+        idSpy = spy(new IdentifyAugurSDK());
     }
 
     @Test
