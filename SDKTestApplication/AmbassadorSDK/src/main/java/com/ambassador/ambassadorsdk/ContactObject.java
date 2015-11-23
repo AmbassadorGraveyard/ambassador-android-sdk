@@ -91,7 +91,7 @@ class ContactObject implements Comparable<ContactObject> {
     }
 
     public ContactObject clone() {
-        return new ContactObject(name, pictureUri, emailAddress, type, phoneNumber);
+        return new ContactObject(name, thumbnailUri, pictureUri, emailAddress, type, phoneNumber);
     }
 
 }
