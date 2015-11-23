@@ -9,9 +9,11 @@ class ContactObject implements Comparable<ContactObject> {
 
     private String name;
     private String pictureUri;
+    private String thumbnailUri;
     private String phoneNumber;
     private String emailAddress;
     private String type;
+    private Bitmap thumbBmp;
     private Bitmap picBmp;
 
     public ContactObject() {
@@ -21,21 +23,24 @@ class ContactObject implements Comparable<ContactObject> {
         type = "Not available";
     }
 
-    public ContactObject(String name, String pictureUri, String emailAddress) {
+    public ContactObject(String name, String thumbnailUri, String pictureUri, String emailAddress) {
         this.name = name;
+        this.thumbnailUri = thumbnailUri;
         this.pictureUri = pictureUri;
         this.emailAddress = emailAddress;
     }
 
-    public ContactObject(String name, String pictureUri, String type, String phoneNumber) {
+    public ContactObject(String name, String thumbnailUri, String pictureUri, String type, String phoneNumber) {
         this.name = name;
+        this.thumbnailUri = thumbnailUri;
         this.pictureUri = pictureUri;
         this.type = type;
         this.phoneNumber = phoneNumber;
     }
 
-    public ContactObject(String name, String pictureUri, String emailAddress, String type, String phoneNumber) {
+    public ContactObject(String name, String thumbnailUri, String pictureUri, String emailAddress, String type, String phoneNumber) {
         this.name = name;
+        this.thumbnailUri = thumbnailUri;
         this.pictureUri = pictureUri;
         this.emailAddress = emailAddress;
         this.type = type;
@@ -45,6 +50,8 @@ class ContactObject implements Comparable<ContactObject> {
     public String getName() {
         return name;
     }
+
+    public String getThumbnailUri() { return thumbnailUri; }
 
     public String getPictureUri() {
         return pictureUri;
@@ -62,8 +69,16 @@ class ContactObject implements Comparable<ContactObject> {
         return type;
     }
 
+    public Bitmap getThumbBmp() {
+        return thumbBmp;
+    }
+
     public Bitmap getPicBmp() {
         return picBmp;
+    }
+
+    public void setThumbBmp(Bitmap bitmap) {
+        this.thumbBmp = bitmap;
     }
 
     public void setPicBmp(Bitmap bitmap) {

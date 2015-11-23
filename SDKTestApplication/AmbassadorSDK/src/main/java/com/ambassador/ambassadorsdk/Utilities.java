@@ -54,7 +54,7 @@ class Utilities {
     }
 
     public static String deviceType(Context context) {
-        return (Utilities.isTablet(context)) ? "Tablet" : "SmartPhone";
+        return (isTablet(context)) ? "Tablet" : "SmartPhone";
     }
 
     public static void presentUrlDialog(Context context, final EditText editText, final String url, final UrlAlertInterface alertInterface) {
@@ -157,7 +157,7 @@ class Utilities {
         Rect bounds = new Rect();
         Paint textPaint = tv.getPaint();
         textPaint.getTextBounds(text, 0, text.length(), bounds);
-        float width = Utilities.getDpSizeForPixels(bounds.width());
+        float width = getDpSizeForPixels(bounds.width());
         return width;
     }
 
@@ -165,7 +165,7 @@ class Utilities {
         String cut;
         for (int i = 0; i < text.length() + 1; i++) {
             cut = text.substring(0, i);
-            if (Utilities.getTextWidthDp(cut, tv) > maxWidth) {
+            if (getTextWidthDp(cut, tv) > maxWidth) {
                 return cut.substring(0, cut.length() - 1);
             }
         }

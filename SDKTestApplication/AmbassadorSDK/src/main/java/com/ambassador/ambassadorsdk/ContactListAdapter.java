@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
 
-    public static class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public static class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         TextView tvName, tvDots;
         TextView tvNumberOrEmail;
@@ -48,6 +48,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
             this.listener = listener;
             itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -55,8 +56,15 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             this.listener.onClick(v, getPosition());
         }
 
+        @Override
+        public boolean onLongClick(View v) {
+            this.listener.onLongClick(v, getPosition());
+            return true;
+        }
+
         public interface OnContactClickListener {
             void onClick(View view, int position);
+            void onLongClick(View view, int position);
         }
 
     }
@@ -108,6 +116,15 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                     onSelectedContactsChangedListener.onSelectedContactsChanged(selectedContacts.size());
                 }
             }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                ContactInfoDialog cid = new ContactInfoDialog(context);
+                cid.setCancelable(true);
+                cid.setCanceledOnTouchOutside(true);
+                cid.show();
+                cid.setContactObject(filteredContacts.get(position), shouldShowPhoneNumbers);
+            }
         });
 
         _setOtherFields(cvh);
@@ -142,14 +159,13 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             holder.ivCheckMark.setX(itemWidth);
         }
 
-        if (contact.getPicBmp() != null) {
-            holder.ivPic.setImageBitmap(contact.getPicBmp());
+        if (contact.getThumbBmp() != null) {
+            holder.ivPic.setImageBitmap(contact.getThumbBmp());
+        } else if (contact.getThumbnailUri() != null) {
+            new BitmapLoaderTask(holder.ivPic, contact).execute(contact.getThumbnailUri());
         } else {
-            if (contact.getPictureUri() != null) {
-                new BitmapLoaderTask(holder.ivPic, contact).execute(contact.getPictureUri());
-            } else {
-                holder.ivPic.setImageBitmap(noPicBmp);
-            }
+            holder.ivPic.setImageBitmap(noPicBmp);
+            contact.setThumbBmp(noPicBmp);
         }
     }
 
@@ -254,7 +270,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                     imageView.setImageBitmap(bitmap);
                     final ContactObject contact = contactObjectWeakReference.get();
                     if (contact != null) {
-                        contact.setPicBmp(bitmap);
+                        contact.setThumbBmp(bitmap);
                     }
                 }
             } else if (imageViewWeakReference != null) {
