@@ -227,7 +227,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     private Bitmap generateNoPicBitmap(Context context) {
-        Bitmap tmp = Bitmap.createBitmap(192, 192, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_person_white_48dp);
+        Bitmap tmp = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getWidth(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(tmp);
 
         Paint paint = new Paint();
@@ -235,8 +236,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPaint(paint);
 
-        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_person_white);
-        canvas.drawBitmap(bitmap, null, new Rect(0, 0, 192, 192), new Paint(Paint.ANTI_ALIAS_FLAG));
+        canvas.drawBitmap(bitmap, null, new Rect(0, 0, bitmap.getWidth(), bitmap.getWidth()), new Paint(Paint.ANTI_ALIAS_FLAG));
 
         return tmp;
     }
