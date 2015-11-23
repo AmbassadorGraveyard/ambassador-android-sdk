@@ -104,6 +104,31 @@ public class UtilitiesTest {
     }
 
     @Test
+    public void getDpSizeForPixelsTest() {
+        //ARRANGE
+        int parameter = 200;
+        Resources mockResources = mock(Resources.class);
+        PowerMockito.when(AmbassadorSingleton.get()).thenReturn(mockContext);
+        when(mockContext.getResources()).thenReturn(mockResources);
+        when(mockResources.getDisplayMetrics().densityDpi).thenReturn(320);
+
+        //ACT
+        float ret = Utilities.getDpSizeForPixels(parameter);
+
+        //ASSERT
+        assertEquals(100, ret);
+    }
+
+    /*
+    public static float getDpSizeForPixels(int pixels) {
+        Context cxt = AmbassadorSingleton.get();
+        Resources resources = cxt.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = pixels / (metrics.densityDpi / 160f);
+        return dp;
+    }*/
+
+    @Test
     public void containsURLTest() {
         // ARRANGE
         String url = "google.com";
@@ -200,4 +225,8 @@ public class UtilitiesTest {
         assertEquals(density, ret);
     }
 
+    @Test
+    public void setStatusBarTest() throws Exception {
+
+    }
 }
