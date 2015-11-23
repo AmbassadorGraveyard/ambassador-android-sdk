@@ -228,7 +228,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         if (phoneCursor.moveToFirst()) {
             do {
                 String name = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                String picUri = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                String thumbUri = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                String picUri = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
                 String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 String typeNum = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
 
@@ -237,7 +238,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                     type = phoneTypeMap.get(Integer.parseInt(typeNum));
                 }
 
-                ContactObject object = new ContactObject(name, picUri, type, phoneNumber);
+                ContactObject object = new ContactObject(name, thumbUri, picUri, type, phoneNumber);
                 contactList.add(object);
             } while (phoneCursor.moveToNext());
         }
@@ -267,14 +268,14 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             String type = types[rand.nextInt(types.length)];
             String phoneNumber = "";
             for (int j = 0; j < 12; j++) {
-                if (j == 3 || j == 6) {
+                if (j == 3 || j == 7) {
                     phoneNumber += "-";
                 } else {
                     phoneNumber += numbers[rand.nextInt(numbers.length)];
                 }
             }
 
-            contactList.add(new ContactObject(name, null, type, phoneNumber));
+            contactList.add(new ContactObject(name, null, null, type, phoneNumber));
         }
     }
 
@@ -289,10 +290,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         if (emailCursor.moveToFirst()) {
             do  {
                 String name = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                String picUri = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                String thumbUri = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
+                String picUri = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
                 String emailAddress = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                ContactObject object = new ContactObject(name, picUri, emailAddress);
+                ContactObject object = new ContactObject(name, thumbUri, picUri, emailAddress);
                 contactList.add(object);
             }
             while (emailCursor.moveToNext());
@@ -320,7 +322,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             String name = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
             String email = name.substring(0, name.indexOf(" ")).toLowerCase() + "@getambassador.com";
 
-            contactList.add(new ContactObject(name, null, email));
+            contactList.add(new ContactObject(name, null, null, email));
         }
     }
 
