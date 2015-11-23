@@ -320,7 +320,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         Random rand = new Random();
         for (int i = 0; i < 100; i++) {
             String name = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
-            String email = name.substring(0, name.indexOf(" ")) + "@getambassador.com";
+            String email = name.substring(0, name.indexOf(" ")).toLowerCase() + "@getambassador.com";
 
             contactList.add(new ContactObject(name, null, null, email));
         }

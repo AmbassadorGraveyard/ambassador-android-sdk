@@ -4,8 +4,8 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.assertion.ViewAssertions;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -67,7 +67,7 @@ import static org.mockito.Mockito.when;
 public class AmbassadorActivityTest {
     private ServiceSelectorPreferences parameters;
     private static final String EMAIL_PATTERN = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\\b";
-    private static final String SMS_PATTERN = "(Home|Work|Mobile) (.*)";
+    private static final String SMS_PATTERN = "(Home|Work|Mobile|Other) (.*)";
     private Context context;
 
     //tell Dagger this code will participate in dependency injection
@@ -221,7 +221,7 @@ public class AmbassadorActivityTest {
         //make sure after we backed out that expected views are there
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
-        onView(withId(R.id.lvContacts)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.rvContacts)).check(ViewAssertions.doesNotExist());
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(3).perform(click());
 
@@ -229,7 +229,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.rlSearch)).check(matches(not(isDisplayed())));
         onView(withId(R.id.etSearch)).check(matches(not(isDisplayed())));
         onView(withId(R.id.btnDoneSearch)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.lvContacts)).check(matches(isDisplayed()));
+        onView(withId(R.id.rvContacts)).check(matches(isDisplayed()));
         onView(withId(R.id.llSendView)).check(matches(isDisplayed()));
         onView(withId(R.id.etShareMessage)).check(matches(isDisplayed()));
         onView(withId(R.id.etShareMessage)).check(matches(withText(containsString("http://staging.mbsy.co/jHjl"))));
@@ -260,21 +260,22 @@ public class AmbassadorActivityTest {
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
         //test to make sure you're seeing email and not SMS
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(EMAIL_PATTERN)));
+        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(1, R.id.tvNumberOrEmail)).check(matches(_withRegex(EMAIL_PATTERN)));
 
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
-        //onData(is(instanceOf(ContactObject.class))).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
+        onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        //onData(is(instanceOf(ContactObject.class))).inAdapterView(withId(R.id.rvContacts)).atPosition(0).perform(click());
+        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
         onView(withId(R.id.btnSend)).check(matches(isEnabled()));
 
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(not(isDisplayed())));
         onView(withId(R.id.btnSend)).check(matches(not(isEnabled())));
 
         //select a contact
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(1).perform(click());
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(1).onChildView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+
+        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(1, R.id.ivCheckMark)).check(matches(isDisplayed()));
+        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(not(isDisplayed())));
         onView(withId(R.id.etShareMessage)).check(matches(not(isEnabled())));
         onView(withId(R.id.btnEdit)).perform(click());
         onView(withId(R.id.etShareMessage)).check(matches(isEnabled()));
@@ -337,19 +338,21 @@ public class AmbassadorActivityTest {
         //make sure after we backed out that expected views are there
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
-        onView(withId(R.id.lvContacts)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.rvContacts)).check(ViewAssertions.doesNotExist());
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(4).perform(click());
 
         //test to make sure you're seeing SMS and not email
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
+        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(1, R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
 
         //this email will force the contact name dialog to come up when submitting
         String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
         when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
 
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).perform(click());
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
+        onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+
+        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
+
         onView(withId(R.id.btnSend)).check(matches(isEnabled()));
 
         onView(withId(R.id.btnSend)).perform(click());
@@ -365,8 +368,8 @@ public class AmbassadorActivityTest {
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
         onView(withId(R.id.btnCancel)).perform(click());
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
-        onData(anything()).inAdapterView(withId(R.id.lvContacts)).atPosition(0).onChildView(withId(R.id.ivCheckMark)).check(matches(isDisplayed()));
+        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
+        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
         onView(withId(R.id.btnSend)).check(matches(isEnabled()));
         onView(withId(R.id.btnSend)).perform(click());
 
@@ -422,7 +425,7 @@ public class AmbassadorActivityTest {
         verify(requestManager, times(2)).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
-        onView(withId(R.id.lvContacts)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.rvContacts)).check(ViewAssertions.doesNotExist());
     }
 
     @Test
