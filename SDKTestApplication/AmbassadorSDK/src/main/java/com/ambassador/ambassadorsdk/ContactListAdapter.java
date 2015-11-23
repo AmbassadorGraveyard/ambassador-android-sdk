@@ -12,7 +12,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -162,13 +161,11 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
         if (contact.getThumbBmp() != null) {
             holder.ivPic.setImageBitmap(contact.getThumbBmp());
+        } else if (contact.getThumbnailUri() != null) {
+            new BitmapLoaderTask(holder.ivPic, contact).execute(contact.getThumbnailUri());
         } else {
-            if (contact.getThumbnailUri() != null) {
-                new BitmapLoaderTask(holder.ivPic, contact).execute(contact.getThumbnailUri());
-            } else {
-                holder.ivPic.setImageBitmap(noPicBmp);
-                contact.setThumbBmp(noPicBmp);
-            }
+            holder.ivPic.setImageBitmap(noPicBmp);
+            contact.setThumbBmp(noPicBmp);
         }
     }
 
