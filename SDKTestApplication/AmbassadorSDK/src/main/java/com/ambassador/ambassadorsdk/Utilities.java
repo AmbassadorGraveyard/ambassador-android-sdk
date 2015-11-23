@@ -116,6 +116,17 @@ class Utilities {
         }
     }
 
+    public static void debugLog(String logMessage) {
+        if (!AmbassadorConfig.isReleaseBuild) {
+            StackTraceElement stackTrace = new Exception().getStackTrace()[1];
+            String tag = stackTrace.getClassName()
+                    .substring(stackTrace.getClassName().lastIndexOf(".") + 1)
+                    + "." + stackTrace.getMethodName() + "():"
+                    + stackTrace.getLineNumber();
+            Log.d(tag, logMessage);
+        }
+    }
+
     public static float getScreenDensity() {
         return AmbassadorSingleton.get().getResources().getDisplayMetrics().density;
     }
