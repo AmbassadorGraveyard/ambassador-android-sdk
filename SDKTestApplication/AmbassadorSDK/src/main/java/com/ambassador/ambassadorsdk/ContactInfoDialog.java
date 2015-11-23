@@ -65,20 +65,18 @@ public class ContactInfoDialog extends Dialog {
         this.contactObject = contactObject;
         if (contactObject.getPicBmp() != null) {
             ivPhoto.setImageBitmap(contactObject.getPicBmp());
-        } else {
-            if (contactObject.getPictureUri() != null) {
-                Bitmap bmp = loadBmp(contactObject.getPictureUri());
-                if (bmp != null) {
-                    contactObject.setPicBmp(bmp);
-                    ivPhoto.setImageBitmap(bmp);
-                } else {
-                    ivPhoto.setBackground(new ColorDrawable(getOwnerActivity().getResources().getColor(R.color.contactsToolBar)));
-                    ivPhoto.setImageDrawable(getOwnerActivity().getResources().getDrawable(R.drawable.big_no_contact));
-                }
+        } else if (contactObject.getPictureUri() != null) {
+            Bitmap bmp = loadBmp(contactObject.getPictureUri());
+            if (bmp != null) {
+                contactObject.setPicBmp(bmp);
+                ivPhoto.setImageBitmap(bmp);
             } else {
                 ivPhoto.setBackground(new ColorDrawable(getOwnerActivity().getResources().getColor(R.color.contactsToolBar)));
                 ivPhoto.setImageDrawable(getOwnerActivity().getResources().getDrawable(R.drawable.big_no_contact));
             }
+        } else {
+            ivPhoto.setBackground(new ColorDrawable(getOwnerActivity().getResources().getColor(R.color.contactsToolBar)));
+            ivPhoto.setImageDrawable(getOwnerActivity().getResources().getDrawable(R.drawable.big_no_contact));
         }
         tvName.setText(contactObject.getName());
 
