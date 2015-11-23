@@ -42,6 +42,7 @@ dependencies {
     //androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
+    compile 'com.android.support:recyclerview-v7:23.0.0'
 }
 
 
