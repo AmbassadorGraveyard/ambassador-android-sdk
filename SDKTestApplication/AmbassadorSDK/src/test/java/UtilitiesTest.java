@@ -119,15 +119,6 @@ public class UtilitiesTest {
         assertEquals(100, ret);
     }
 
-    /*
-    public static float getDpSizeForPixels(int pixels) {
-        Context cxt = AmbassadorSingleton.get();
-        Resources resources = cxt.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = pixels / (metrics.densityDpi / 160f);
-        return dp;
-    }*/
-
     @Test
     public void containsURLTest() {
         // ARRANGE
