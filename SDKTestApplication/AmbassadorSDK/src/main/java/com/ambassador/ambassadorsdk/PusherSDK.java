@@ -29,6 +29,7 @@ import javax.inject.Inject;
 public class PusherSDK {
     interface PusherSubscribeCallback {
         void pusherSubscribed();
+        void pusherFailed();
     }
 
     @Inject
@@ -58,6 +59,7 @@ public class PusherSDK {
 
             @Override
             public void onFailure(Object failureResponse) {
+                pusherSubscribeCallback.pusherFailed();
                 Utilities.debugLog("createPusher", "CREATE PUSHER failed with Response = " + failureResponse);
             }
         });
