@@ -7,7 +7,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
 import android.widget.EditText;
@@ -33,8 +32,8 @@ class Utilities {
     public static float getDpSizeForPixels(int pixels) {
         Context cxt = AmbassadorSingleton.get();
         Resources resources = cxt.getResources();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        float dp = pixels / (metrics.densityDpi / 160f);
+        int densityDpi = resources.getDisplayMetrics().densityDpi;
+        float dp = pixels / (densityDpi / 160f);
         return dp;
     }
 

@@ -25,7 +25,7 @@ import static org.mockito.Mockito.spy;
  * Created by JakeDunahee on 9/8/15.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class IdentifyTest extends TestCase {
+public class IdentifyAugurSDKTest extends TestCase {
     private String data;
     private Identify identify, idSpy;
 
