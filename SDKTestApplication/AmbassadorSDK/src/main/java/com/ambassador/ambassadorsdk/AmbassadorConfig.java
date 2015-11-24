@@ -173,7 +173,7 @@ public class AmbassadorConfig {
 
     String getShortCode() { return sharePrefs.getString("shortCode", null); }
 
-    String getFullName() {
+    String getUserFullName() {
         return sharePrefs.getString("fullName", null);
     }
 

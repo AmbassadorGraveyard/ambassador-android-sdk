@@ -196,7 +196,7 @@ public class BulkShareHelperTest {
         PowerMockito.whenNew(JSONObject.class).withAnyArguments().thenReturn(mockObject);
         when(AmbassadorConfig.getInstance()).thenReturn(mockSingleton);
         when(mockObject.put(anyString(), any())).thenReturn(mockObject);
-        when(mockSingleton.getFullName()).thenReturn("fakeName");
+        when(mockSingleton.getUserFullName()).thenReturn("fakeName");
         BulkShareHelper.payloadObjectForSMS(phoneNumberList, "test message");
 
         // ASSERT
