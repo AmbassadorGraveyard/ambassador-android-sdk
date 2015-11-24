@@ -1,4 +1,4 @@
-package com.example.ambassador.aartestproject;
+package com.ambassador.aartestproject;
 
 import android.app.Application;
 
