@@ -217,10 +217,16 @@ public class AmbassadorActivity extends AppCompatActivity {
         //if we have a channel and it's not expired but it's not currently connected, subscribe to the existing channel
         if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() != ConnectionState.CONNECTED) {
             pusher.subscribePusher(new PusherSDK.PusherSubscribeCallback() {
-               @Override
-               public void pusherSubscribed() {
+                @Override
+                public void pusherSubscribed() {
                    requestManager.identifyRequest();
-               }
+                }
+
+                @Override
+                public void pusherFailed() {
+                    Toast.makeText(getApplicationContext(), getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             });
 
             return;
@@ -236,12 +242,19 @@ public class AmbassadorActivity extends AppCompatActivity {
             public void pusherSubscribed() {
                 requestManager.identifyRequest();
             }
+
+            @Override
+            public void pusherFailed() {
+                Toast.makeText(getApplicationContext(), getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                finish();
+            }
         });
     }
 
     @Override
     protected void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        if (pd != null) pd.dismiss();
         if (networkTimer != null) { networkTimer.cancel(); }
         super.onDestroy();
     }
