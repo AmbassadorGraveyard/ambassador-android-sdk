@@ -41,20 +41,17 @@ public class AmbassadorSDK {
     public static void runWithKeys(Context context, String universalToken, String universalID) {
         AmbassadorSingleton.getInstance().init(context);
 
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
+        context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
+
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
         ambassadorSDK.localRunWithKeys(universalToken, universalID);
     }
 
-    public static void runWithKeysAndConvertOnInstall(Context context, String universalToken, String universalID, ConversionParameters parameters) {
-        AmbassadorSingleton.getInstance().init(context);
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
-
-        context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
-
+    public static void convertOnInstall(ConversionParameters parameters) {
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
-        ambassadorSDK.localRunWithKeysAndConvertOnInstall(universalToken, universalID, parameters);
+        ambassadorSDK.localConvertOnInstall(parameters);
     }
 
     // Package-private local functions
@@ -84,11 +81,7 @@ public class AmbassadorSDK {
         startConversionTimer();
     }
 
-    void localRunWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
-        ambassadorConfig.setUniversalToken(universalToken);
-        ambassadorConfig.setUniversalID(universalID);
-        startConversionTimer();
-
+    void localConvertOnInstall(ConversionParameters parameters) {
         // Checks boolean from shared preferences to see if this the first launch and registers conversion if it is
         if (!ambassadorConfig.convertedOnInstall()) {
             registerConversion(parameters);
