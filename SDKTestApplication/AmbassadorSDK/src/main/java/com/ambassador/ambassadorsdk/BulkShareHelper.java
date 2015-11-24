@@ -157,7 +157,6 @@ public class BulkShareHelper {
     }
 
     static JSONObject payloadObjectForEmail(List<String> emails, String shortCode, String emailSubject, String message) {
-        // Functionality: Creats an email payload object for bulk sharing
         JSONObject object = new JSONObject();
         try {
             object.put("to_emails", new JSONArray(emails));
@@ -172,11 +171,10 @@ public class BulkShareHelper {
     }
 
     static JSONObject payloadObjectForSMS(List<String> numbers, String fullName, String smsMessage) {
-        // Funcionality: Ceates a json payload for SMS sharing with all the validated numbers included
         JSONObject object = new JSONObject();
         try {
-            object.put("to", numbers);
-            object.put("from", fullName);
+            object.put("to", new JSONArray(numbers));
+            object.put("name", fullName);
             object.put("message", smsMessage);
         } catch (JSONException e) {
             e.printStackTrace();
