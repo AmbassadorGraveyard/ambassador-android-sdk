@@ -22,26 +22,19 @@ public class MainActivity extends AppCompatActivity {
         final Context context = this;
 
         //dev - run
-        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
-
-        //dev - run and convert on install
-        ConversionParameters conversionParameters = new ConversionParameters();
-        conversionParameters.mbsy_email = "jake@getambassador.com";
-        conversionParameters.mbsy_campaign = 305;
-        conversionParameters.mbsy_revenue = 200;
-        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***", conversionParameters);
+        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
 
         //prod - run
         //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
 
-        //prod - run and convert on install
-        /*ConversionParameters conversionParameters = new ConversionParameters();
+        AmbassadorSDK.identify("jake@getambassador.com");
+
+        //convert on install - this would normally happen after a user is authenticated because email is required on all conversions
+        ConversionParameters conversionParameters = new ConversionParameters();
         conversionParameters.mbsy_email = "jake@getambassador.com";
         conversionParameters.mbsy_campaign = 305;
         conversionParameters.mbsy_revenue = 200;
-        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***", conversionParameters);*/
-
-        AmbassadorSDK.identify("jake@getambassador.com");
+        AmbassadorSDK.convertOnInstall(conversionParameters);
 
         Button btnPresentRAF = (Button)findViewById(R.id.btnPresentRAF);
         btnPresentRAF.setOnClickListener(new View.OnClickListener() {
