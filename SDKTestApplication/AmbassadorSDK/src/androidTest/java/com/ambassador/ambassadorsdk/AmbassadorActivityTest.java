@@ -38,6 +38,7 @@ import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.clearText;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
@@ -271,6 +272,16 @@ public class AmbassadorActivityTest {
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(not(isDisplayed())));
         onView(withId(R.id.btnSend)).check(matches(not(isEnabled())));
 
+        // long press dialog
+        onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, longClick()));
+        onView(withId(R.id.dialog_contact_info)).check(matches(isDisplayed()));
+        pressBack();
+        onView(withId(R.id.dialog_contact_info)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, longClick()));
+        onView(withId(R.id.dialog_contact_info)).check(matches(isDisplayed()));
+        onView(withId(R.id.ivExit)).perform(click());
+        onView(withId(R.id.dialog_contact_info)).check(ViewAssertions.doesNotExist());
+
         //select a contact
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
 
@@ -344,6 +355,16 @@ public class AmbassadorActivityTest {
 
         //test to make sure you're seeing SMS and not email
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(1, R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
+
+        // long press dialog
+        onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, longClick()));
+        onView(withId(R.id.dialog_contact_info)).check(matches(isDisplayed()));
+        pressBack();
+        onView(withId(R.id.dialog_contact_info)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, longClick()));
+        onView(withId(R.id.dialog_contact_info)).check(matches(isDisplayed()));
+        onView(withId(R.id.ivExit)).perform(click());
+        onView(withId(R.id.dialog_contact_info)).check(ViewAssertions.doesNotExist());
 
         //this email will force the contact name dialog to come up when submitting
         String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
