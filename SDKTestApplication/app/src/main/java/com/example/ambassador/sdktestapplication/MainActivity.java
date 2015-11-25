@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
         //convert on install - this would normally happen after a user is authenticated because email is required on all conversions
         ConversionParameters conversionParameters = new ConversionParameters();
         conversionParameters.mbsy_email = "jake@getambassador.com";
-        conversionParameters.mbsy_campaign = 305;
-        conversionParameters.mbsy_revenue = 200;
+        conversionParameters.mbsy_campaign = 260;
+        conversionParameters.mbsy_revenue = 100;
         AmbassadorSDK.convertOnInstall(conversionParameters);
 
         Button btnPresentRAF = (Button)findViewById(R.id.btnPresentRAF);
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 conversionParameters.mbsy_first_name = "Jake";
                 conversionParameters.mbsy_last_name = "Dunahee";
                 conversionParameters.mbsy_email = "jake@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
-                conversionParameters.mbsy_campaign = 305;
+                conversionParameters.mbsy_campaign = 260;
                 conversionParameters.mbsy_revenue = 200;
 
                 AmbassadorSDK.registerConversion(conversionParameters);
