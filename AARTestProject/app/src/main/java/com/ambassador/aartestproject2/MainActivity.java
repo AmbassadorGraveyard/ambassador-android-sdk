@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
         ConversionParameters conversionParameters = new ConversionParameters();
         conversionParameters.mbsy_email = "jake@getambassador.com";
         conversionParameters.mbsy_campaign = 260;
-        conversionParameters.mbsy_revenue = 200;
-        AmbassadorSDK.convertOnInstall(conversionParameters);
+        conversionParameters.mbsy_revenue = 100;
+        AmbassadorSDK.registerConversion(conversionParameters, true);
 
         Button btnRaf = (Button) findViewById(R.id.btnRAF2);
         final Context context = this;
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 conversionParameters.mbsy_campaign = 260;
                 conversionParameters.mbsy_revenue = 200;
 
-                AmbassadorSDK.registerConversion(conversionParameters);
+                AmbassadorSDK.registerConversion(conversionParameters, false);
 
                 Toast.makeText(getApplicationContext(), "Cool! (Conversion)", Toast.LENGTH_SHORT).show();
             }
