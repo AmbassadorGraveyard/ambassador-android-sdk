@@ -113,12 +113,12 @@ public class AmbassadorSDKTest {
         // ACT
         doNothing().when(mockSingleton).setUniversalToken(fakeUniversalToken);
         doNothing().when(mockSingleton).startConversionTimer();
-        when(mockSingleton.convertedOnInstall()).thenReturn(false);
+        when(mockSingleton.getConvertedOnInstall()).thenReturn(false);
         doNothing().when(mockSingleton).convertForInstallation(mockParameters);
         AmbassadorSDK.runWithKeysAndConvertOnInstall(fakeUniversalToken, fakeUniversalToken, mockParameters);
 
         // ASSERT
-        assertEquals(false, mockSingleton.convertedOnInstall());
+        assertEquals(false, mockSingleton.getConvertedOnInstall());
         verify(mockSingleton).setUniversalToken(fakeUniversalToken);
         verify(mockSingleton).startConversionTimer();
         verify(mockSingleton).convertForInstallation(mockParameters);

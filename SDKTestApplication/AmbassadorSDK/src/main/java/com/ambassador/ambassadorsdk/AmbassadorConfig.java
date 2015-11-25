@@ -199,7 +199,7 @@ public class AmbassadorConfig {
         return sharePrefs.getString("userEmail", null);
     }
 
-    boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
+    boolean getConvertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
 
     void setConvertOnInstall() {
         sharePrefs.edit().putBoolean("installConversion", true).apply();

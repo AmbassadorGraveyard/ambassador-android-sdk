@@ -33,9 +33,16 @@ public class AmbassadorSDK {
         ambassadorSDK.localIdentify(emailAddress);
     }
 
-    public static void registerConversion(ConversionParameters conversionParameters) {
-        ConversionUtility conversionUtility = new ConversionUtility(AmbassadorSingleton.get(), conversionParameters);
-        conversionUtility.registerConversion();
+    public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
+        AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
+
+        //do conversion if it's not an install conversion, or if it is, make sure that we haven't already converted on install by checking sharedprefs
+        if (!restrictToInstall || !ambassadorSDK.getConvertedOnInstall()) {
+            ConversionUtility conversionUtility = new ConversionUtility(AmbassadorSingleton.get(), conversionParameters);
+            conversionUtility.registerConversion();
+        }
+
+        if (restrictToInstall) ambassadorSDK.setConvertedOnInstall();
     }
 
     public static void runWithKeys(Context context, String universalToken, String universalID) {
@@ -47,11 +54,6 @@ public class AmbassadorSDK {
 
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
         ambassadorSDK.localRunWithKeys(universalToken, universalID);
-    }
-
-    public static void convertOnInstall(ConversionParameters parameters) {
-        AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
-        ambassadorSDK.localConvertOnInstall(parameters);
     }
 
     // Package-private local functions
@@ -81,10 +83,12 @@ public class AmbassadorSDK {
         startConversionTimer();
     }
 
-    void localConvertOnInstall(ConversionParameters parameters) {
-        // Checks boolean from shared preferences to see if this the first launch and registers conversion if it is
-        if (!ambassadorConfig.convertedOnInstall()) {
-            registerConversion(parameters);
+    Boolean getConvertedOnInstall() {
+        return ambassadorConfig.getConvertedOnInstall();
+    }
+
+    void setConvertedOnInstall() {
+        if (!ambassadorConfig.getConvertedOnInstall()) {
             ambassadorConfig.setConvertOnInstall();
         }
     }

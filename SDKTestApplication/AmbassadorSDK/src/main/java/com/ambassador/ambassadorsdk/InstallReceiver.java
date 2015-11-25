@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
-import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.net.HttpURLConnection;
 
 import javax.inject.Inject;
 
@@ -29,22 +27,15 @@ public class InstallReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle b = intent.getExtras();
         final String qstring = b.getString("referrer"); //"mbsy_cookie_code%3DjwnZ%26device_id%3Dtest1234";
-        //Toast.makeText(context, qstring, Toast.LENGTH_LONG).show();
-
-        final String hit = "http://104.131.52.60:3000/hit/{name}".replace("{name}", b.getString("referrer"));
+        Toast.makeText(context, qstring, Toast.LENGTH_LONG).show();
 
         Runnable r = new Runnable() {
             @Override
             public void run() {
                 Looper.prepare();
-                RequestManager rm = new RequestManager();
-                HttpURLConnection connection = rm.setUpConnection("GET", hit);
-                String resp = rm.getResponse(connection, 200);
-                Log.v("RESPONSE", resp);
 
                 String[] param1, param2;
                 String webDeviceId, referralShortCode;
-
                 try {
                     String[] qSplit = qstring.split("%26");
                     param1 = qSplit[0].split("%3D"); //mbsy_cookie_code%3DjwnZ
