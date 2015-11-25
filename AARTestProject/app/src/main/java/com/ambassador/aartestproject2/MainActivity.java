@@ -1,4 +1,4 @@
-package com.ambassador.aartestproject;
+package com.ambassador.aartestproject2;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         ConversionParameters conversionParameters = new ConversionParameters();
         conversionParameters.mbsy_email = "jake@getambassador.com";
         conversionParameters.mbsy_campaign = 260;
-        conversionParameters.mbsy_revenue = 100;
+        conversionParameters.mbsy_revenue = 200;
         AmbassadorSDK.convertOnInstall(conversionParameters);
 
         Button btnRaf = (Button) findViewById(R.id.btnRAF2);
