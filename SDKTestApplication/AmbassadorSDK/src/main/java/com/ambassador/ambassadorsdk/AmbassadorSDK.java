@@ -38,6 +38,8 @@ public class AmbassadorSDK {
 
         //do conversion if it's not an install conversion, or if it is, make sure that we haven't already converted on install by checking sharedprefs
         if (!restrictToInstall || !ambassadorSDK.getConvertedOnInstall()) {
+            Utilities.debugLog("Conversion", "restrictToInstall: " + restrictToInstall);
+
             ConversionUtility conversionUtility = new ConversionUtility(AmbassadorSingleton.get(), conversionParameters);
             conversionUtility.registerConversion();
         }
@@ -101,6 +103,6 @@ public class AmbassadorSDK {
             public void run() {
                 utility.readAndSaveDatabaseEntries();
             }
-        }, 0, 10000);
+        }, 10000, 10000);
     }
 }
