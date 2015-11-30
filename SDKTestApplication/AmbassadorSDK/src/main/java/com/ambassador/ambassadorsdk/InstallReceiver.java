@@ -26,7 +26,7 @@ public class InstallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle b = intent.getExtras();
-        final String qstring = b.getString("referrer"); //"mbsy_cookie_code%3DjwnZ%26device_id%3Dtest1234";
+        final String qstring = b.getString("referrer"); //"mbsy_cookie_code=jwnZ&device_id=test1234";
         Toast.makeText(context, qstring, Toast.LENGTH_LONG).show();
 
         Runnable r = new Runnable() {
@@ -37,9 +37,9 @@ public class InstallReceiver extends BroadcastReceiver {
                 String[] param1, param2;
                 String webDeviceId, referralShortCode;
                 try {
-                    String[] qSplit = qstring.split("%26");
-                    param1 = qSplit[0].split("%3D"); //mbsy_cookie_code%3DjwnZ
-                    param2 = qSplit[1].split("%3D"); //device_id%3Dtest1234
+                    String[] qSplit = qstring.split("&");
+                    param1 = qSplit[0].split("="); //mbsy_cookie_code=jwnZ
+                    param2 = qSplit[1].split("="); //device_id=test1234
                     referralShortCode = param1[0].equals("mbsy_cookie_code") ? param1[1] : param2[1];
                     webDeviceId = param2[0].equals("device_id") ? param2[1] : param1[1];
                 }
@@ -50,6 +50,8 @@ public class InstallReceiver extends BroadcastReceiver {
 
                 ambassadorConfig.setWebDeviceId(webDeviceId);
                 ambassadorConfig.setReferralShortCode(referralShortCode);
+                Utilities.debugLog("Conversion", "webDeviceId: " + webDeviceId);
+                Utilities.debugLog("Conversion", "referralShortCode: " + referralShortCode);
 
                 //if augur came back first, update our device id
                 JSONObject identity;
