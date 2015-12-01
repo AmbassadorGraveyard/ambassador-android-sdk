@@ -219,7 +219,7 @@ public class RequestManager {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.conversionURL());
+                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.conversionURL() + ambassadorConfig.getUniversalID());
                 connection.setRequestProperty("Content-Type", "application/json");
 
                 try {
