@@ -24,10 +24,12 @@ public class InstallReceiver extends BroadcastReceiver {
     }
 
     @Override
-    public void onReceive(final Context context, Intent intent) {
+    public void onReceive(Context context, Intent intent) {
         Bundle b = intent.getExtras();
         final String qstring = b.getString("referrer"); //"mbsy_cookie_code=jwnZ&device_id=test1234";
         Toast.makeText(context, qstring, Toast.LENGTH_LONG).show();
+
+        if (qstring == null) return;
 
         String[] param1, param2;
         String webDeviceId, referralShortCode;
