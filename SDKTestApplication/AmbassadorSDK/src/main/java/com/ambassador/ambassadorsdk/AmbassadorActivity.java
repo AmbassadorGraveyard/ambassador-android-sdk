@@ -396,7 +396,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 if (campID == myUID) {
                     etShortUrl.setText(urlObj.getString("url"));
                     ambassadorConfig.setURL(urlObj.getString("url"));
-                    ambassadorConfig.setShortCode(urlObj.getString("short_code"));
+                    ambassadorConfig.setReferrerShortCode(urlObj.getString("short_code"));
                     ambassadorConfig.setEmailSubject(urlObj.getString("subject"));
 
                     //check for weird multiple URL issue seen occasionally

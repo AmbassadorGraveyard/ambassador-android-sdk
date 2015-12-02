@@ -119,7 +119,7 @@ public class AmbassadorActivityTest {
         String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
         doNothing().when(ambassadorConfig).setRafParameters(anyString(), anyString(), anyString(), anyString());
         doNothing().when(ambassadorConfig).setURL(anyString());
-        doNothing().when(ambassadorConfig).setShortCode(anyString());
+        doNothing().when(ambassadorConfig).setReferrerShortCode(anyString());
         doNothing().when(ambassadorConfig).setEmailSubject(anyString());
 
         doAnswer(new Answer<Void>() {

@@ -172,7 +172,7 @@ public class AmbassadorSDKUnitTest {
         ConversionParameters mockParameters = mock(ConversionParameters.class);
 
         // ACT
-        when(ambassadorSingleton.convertedOnInstall()).thenReturn(false);
+        when(ambassadorSingleton.getConvertedOnInstall()).thenReturn(false);
         doNothing().when(ambassadorSingleton).convertForInstallation(mockParameters);
         doNothing().when(ambassadorSingleton).startConversionTimer();
         ambassadorSDK.localRunWithKeysAndConvertOnInstall(mockToken, mockID, mockParameters);
