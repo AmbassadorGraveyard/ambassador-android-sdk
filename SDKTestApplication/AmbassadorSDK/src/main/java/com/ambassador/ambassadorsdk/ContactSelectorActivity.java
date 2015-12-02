@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -368,25 +369,45 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         } else {
             /** Hiding search **/
             etSearch.setText("");
-            _shrinkSendView(false);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    _shrinkSendView(false);
+                }
+            }, 250);
             etSearch.clearFocus();
             inputManager.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+
         }
 
         anim.setDuration(300);
         anim.start();
     }
 
+    float lastSendHeight;
+
     /** Shrinks or inflates the send button while the user is searching, to make more room **/
     private void _shrinkSendView(Boolean shouldShrink) {
         if (shouldShrink) {
+            lastSendHeight = llSendView.getHeight();
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)llSendView.getLayoutParams();
             params.height = 0;
             llSendView.setLayoutParams(params);
         } else {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)llSendView.getLayoutParams();
-            params.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
-            llSendView.setLayoutParams(params);
+            ValueAnimator anim = ValueAnimator.ofInt(0, (int) lastSendHeight);
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int val = (Integer) animation.getAnimatedValue();
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) llSendView.getLayoutParams();
+                    layoutParams.height = val;
+                    llSendView.setLayoutParams(layoutParams);
+                }
+            });
+
+            anim.setDuration(250);
+            anim.start();
         }
     }
 
