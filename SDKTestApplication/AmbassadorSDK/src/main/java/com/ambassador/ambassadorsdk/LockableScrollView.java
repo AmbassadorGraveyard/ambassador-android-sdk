@@ -8,7 +8,7 @@ import android.widget.ScrollView;
 /**
  * Created by dylan on 11/11/15.
  */
-public class LockableScrollView extends ScrollView {
+class LockableScrollView extends ScrollView {
 
     private boolean isLocked = false;
 
