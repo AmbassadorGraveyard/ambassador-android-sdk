@@ -16,7 +16,7 @@ import static org.mockito.Mockito.mock;
  * Created by coreyfields on 9/14/15.
  */
 @Module
-public class AmbassadorApplicationModule {
+class AmbassadorApplicationModule {
     private Context context;
     private Boolean mockMode = false;
 

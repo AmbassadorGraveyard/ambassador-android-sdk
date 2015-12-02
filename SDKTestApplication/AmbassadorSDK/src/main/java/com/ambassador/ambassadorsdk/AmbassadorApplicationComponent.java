@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk;
 /**
  * Created by coreyfields on 9/16/15.
  */
-public interface AmbassadorApplicationComponent {
+interface AmbassadorApplicationComponent {
     void inject(AmbassadorActivity ambassadorActivity);
     void inject(TweetDialog tweetDialog);
     void inject(TwitterLoginActivity twitterLoginActivity);
