@@ -14,8 +14,10 @@ repositories {
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
     dependencies {
+        classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.0.2'
         classpath 'com.google.gms:google-services:1.5.0-beta2'
     }
 }
@@ -108,17 +110,6 @@ android {
     packagingOptions {
         exclude 'LICENSE.txt'
         exclude 'META-INF/LICENSE.txt'
-    }
-}
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.0.2'
-        classpath 'com.google.gms:google-services:1.5.0-beta2'
     }
 }
 
