@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by coreyfields on 10/15/15.
  */
-public class PusherChannel {
+class PusherChannel {
     private static String sessionId;
     private static String channelName;
     private static Date expiresAt;

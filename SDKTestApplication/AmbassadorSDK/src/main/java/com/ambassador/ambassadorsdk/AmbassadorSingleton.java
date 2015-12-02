@@ -9,7 +9,7 @@ import dagger.Component;
 /**
  * Created by coreyfields on 10/7/15.
  */
-public class AmbassadorSingleton {
+class AmbassadorSingleton {
     private Context appContext;
     private static AmbassadorApplicationComponent component = null;
     public static AmbassadorApplicationModule amb;
