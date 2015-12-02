@@ -5,13 +5,24 @@ import android.os.Message;
 
 import org.json.JSONObject;
 
+import javax.inject.Inject;
+
 import io.augur.wintermute.Augur;
 
 /**
  * Created by JakeDunahee on 9/1/15.
  */
-class IdentifyAugurSDK {
-    public void getAugur(final AmbassadorConfig ambassadorConfig) {
+class IdentifyAugurSDK implements IIdentify {
+
+    @Inject
+    AmbassadorConfig ambassadorConfig;
+
+    public IdentifyAugurSDK() {
+        AmbassadorSingleton.getComponent().inject(this);
+    }
+
+    @Override
+    public void getIdentity() {
         JSONObject augurConfig = new JSONObject();
 
         try {
@@ -43,6 +54,13 @@ class IdentifyAugurSDK {
                     // Alter the device 'type' to be "SmartPhone" or "Tablet" instead of "Android"
                     JSONObject jsonObject = new JSONObject(json);
                     JSONObject device = jsonObject.getJSONObject("device");
+
+                    //if the webDeviceId has been received on the querystring and it's different than what augur returns, override augur deviceId
+                    if (ambassadorConfig.getWebDeviceId() != null && !device.getString("ID").equals(ambassadorConfig.getWebDeviceId())) {
+                        device.remove("ID");
+                        device.put("ID", ambassadorConfig.getWebDeviceId());
+                    }
+
                     device.put("type", Utilities.deviceType(AmbassadorSingleton.get()));
                     jsonObject.put("device", device);
 

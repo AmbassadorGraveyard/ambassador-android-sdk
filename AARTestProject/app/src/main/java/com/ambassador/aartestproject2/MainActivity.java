@@ -1,4 +1,4 @@
-package com.example.ambassador.aartestproject;
+package com.ambassador.aartestproject2;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,8 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.ConversionParameters;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
 
         AmbassadorSDK.identify("jake@getambassador.com");
 
+        //convert on install - this would normally happen after a user is authenticated because email is required on all conversions
+        ConversionParameters conversionParameters = new ConversionParameters();
+        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_campaign = 260;
+        conversionParameters.mbsy_revenue = 100;
+        AmbassadorSDK.registerConversion(conversionParameters, true);
+
         Button btnRaf = (Button) findViewById(R.id.btnRAF2);
         final Context context = this;
 
@@ -33,6 +42,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AmbassadorSDK.presentRAF(context, "260");
+            }
+        });
+
+        Button btnPurchase = (Button)findViewById(R.id.btnPurchase);
+        btnPurchase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ConversionParameters conversionParameters = new ConversionParameters();
+                conversionParameters.mbsy_first_name = "Jake";
+                conversionParameters.mbsy_last_name = "Dunahee";
+                conversionParameters.mbsy_email = "jake@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
+                conversionParameters.mbsy_campaign = 260;
+                conversionParameters.mbsy_revenue = 200;
+
+                AmbassadorSDK.registerConversion(conversionParameters, false);
+
+                Toast.makeText(getApplicationContext(), "Cool! (Conversion)", Toast.LENGTH_SHORT).show();
             }
         });
     }
