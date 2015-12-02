@@ -36,7 +36,7 @@ public class PusherSDK {
     AmbassadorConfig ambassadorConfig;
 
     @Inject
-    RequestManagerDelegate requestManager;
+    RequestManager requestManager;
 
     public PusherSDK() {
         AmbassadorSingleton.getComponent().inject(this);

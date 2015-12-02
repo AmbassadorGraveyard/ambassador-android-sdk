@@ -92,7 +92,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     ShareDialog fbDialog;
 
     @Inject
-    RequestManagerDelegate requestManager;
+    RequestManager requestManager;
 
     @Inject
     AmbassadorConfig ambassadorConfig;

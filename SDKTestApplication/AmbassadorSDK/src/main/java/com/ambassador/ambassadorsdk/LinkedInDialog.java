@@ -22,7 +22,7 @@ class LinkedInDialog extends Dialog  {
     ProgressBar loader;
 
     @Inject
-    RequestManagerDelegate requestManager;
+    RequestManager requestManager;
 
     @Inject
     AmbassadorConfig ambassadorConfig;

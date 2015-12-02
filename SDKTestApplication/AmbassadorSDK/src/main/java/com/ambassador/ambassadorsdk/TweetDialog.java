@@ -22,7 +22,7 @@ class TweetDialog extends Dialog {
     private ProgressBar loader;
 
     @Inject
-    RequestManagerDelegate requestManager;
+    RequestManager requestManager;
 
     @Inject
     AmbassadorConfig ambassadorConfig;

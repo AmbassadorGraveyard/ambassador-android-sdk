@@ -28,7 +28,7 @@ import twitter4j.auth.RequestToken;
 /**
  * Created by JakeDunahee on 9/29/15.
  */
-class RequestManager implements RequestManagerDelegate {
+public class RequestManager {
     final Handler mHandler = new Handler();
 
     @Inject
@@ -87,7 +87,7 @@ class RequestManager implements RequestManagerDelegate {
 
 
     // region BULK SHARE
-    public void bulkShareSms(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
+    void bulkShareSms(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -128,7 +128,7 @@ class RequestManager implements RequestManagerDelegate {
         new Thread(runnable).start();
     }
 
-    public void bulkShareEmail(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
+    void bulkShareEmail(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -172,7 +172,7 @@ class RequestManager implements RequestManagerDelegate {
         new Thread(runnable).start();
     }
 
-    public void bulkShareTrack(final List<ContactObject> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
+    void bulkShareTrack(final List<ContactObject> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -215,7 +215,7 @@ class RequestManager implements RequestManagerDelegate {
     // endregion BULK SHARE
 
     // region CONVERSIONS
-    public void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
+    void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -367,7 +367,7 @@ class RequestManager implements RequestManagerDelegate {
         new Thread(runnable).start();
     }
 
-    public void createPusherChannel(final RequestCompletion completion) {
+    void createPusherChannel(final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -403,7 +403,7 @@ class RequestManager implements RequestManagerDelegate {
         new Thread(runnable).start();
     }
 
-    public void externalPusherRequest(final String url, final RequestCompletion completion) {
+    void externalPusherRequest(final String url, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -474,7 +474,7 @@ class RequestManager implements RequestManagerDelegate {
         new Thread(runnable).start();
     }
 
-    public void twitterAccessTokenRequest(final String oauthSecret, final RequestToken requestToken, final RequestCompletion completion) {
+    void twitterAccessTokenRequest(final String oauthSecret, final RequestToken requestToken, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -550,7 +550,7 @@ class RequestManager implements RequestManagerDelegate {
     // endregion TWITTER REQUESTS
 
     // region LINKEDIN REQUESTS
-    public void linkedInLoginRequest(final String code, final RequestCompletion completion) {
+    void linkedInLoginRequest(final String code, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

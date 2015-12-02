@@ -30,10 +30,8 @@ class AmbassadorApplicationModule {
 
     @Provides
     @Singleton
-    RequestManagerDelegate provideRequestManager() {
-        if (mockMode) {
-            return mock(RequestManagerDelegateImplementation.class);
-        }
+    RequestManager provideRequestManager() {
+        if (mockMode) return mock(RequestManager.class);
         return new RequestManager();
     }
 

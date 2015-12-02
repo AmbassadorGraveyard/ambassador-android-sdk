@@ -30,7 +30,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
     private RequestToken requestToken;
 
     @Inject
-    RequestManagerDelegate requestManager;
+    RequestManager requestManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

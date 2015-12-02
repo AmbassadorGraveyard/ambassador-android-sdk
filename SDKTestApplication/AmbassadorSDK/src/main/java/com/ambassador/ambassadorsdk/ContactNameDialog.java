@@ -27,7 +27,7 @@ class ContactNameDialog extends Dialog {
     AmbassadorConfig ambassadorConfig;
 
     @Inject
-    RequestManagerDelegate requestManager;
+    RequestManager requestManager;
 
     public interface ContactNameListener {
         void namesHaveBeenUpdated();
