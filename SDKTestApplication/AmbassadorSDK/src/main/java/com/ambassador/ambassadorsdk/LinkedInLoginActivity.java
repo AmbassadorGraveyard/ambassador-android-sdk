@@ -25,7 +25,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
     ProgressBar loader;
 
     @Inject
-    RequestManager requestManager;
+    RequestManagerDelegate requestManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

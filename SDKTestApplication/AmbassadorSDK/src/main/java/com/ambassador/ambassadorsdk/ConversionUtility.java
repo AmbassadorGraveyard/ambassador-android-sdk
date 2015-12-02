@@ -21,7 +21,7 @@ class ConversionUtility {
     private SQLiteDatabase db;
 
     @Inject
-    RequestManager requestManager;
+    RequestManagerDelegate requestManager;
 
     @Inject
     AmbassadorConfig ambassadorConfig;

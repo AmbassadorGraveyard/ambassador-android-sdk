@@ -17,7 +17,7 @@ import javax.inject.Inject;
 public class BulkShareHelper {
 
     @Inject
-    RequestManager requestManager;
+    RequestManagerDelegate requestManager;
 
     interface BulkShareCompletion {
         void bulkShareSuccess();

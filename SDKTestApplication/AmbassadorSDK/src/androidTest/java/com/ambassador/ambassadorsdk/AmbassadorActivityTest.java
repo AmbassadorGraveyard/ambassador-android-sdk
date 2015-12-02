@@ -73,7 +73,7 @@ public class AmbassadorActivityTest {
 
     //tell Dagger this code will participate in dependency injection
     @Inject
-    RequestManager requestManager;
+    RequestManagerDelegate requestManager;
 
     @Inject
     BulkShareHelper bulkShareHelper;
