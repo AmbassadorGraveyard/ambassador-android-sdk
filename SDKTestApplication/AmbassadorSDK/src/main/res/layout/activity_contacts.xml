@@ -79,6 +79,7 @@
                 android:id="@+id/etShareMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:maxHeight="120dp"
                 android:background="@color/transparent"
                 android:text="Check out this company! www.mbsy.co/jkas4"
                 android:textSize="16sp"
