@@ -402,6 +402,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                     int val = (Integer) animation.getAnimatedValue();
                     RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) llSendView.getLayoutParams();
                     layoutParams.height = val;
+
+                    if (val >= lastSendHeight) {
+                        layoutParams.height = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                    }
+
                     llSendView.setLayoutParams(layoutParams);
                 }
             });
