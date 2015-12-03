@@ -391,7 +391,12 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Presents twitter login screen if user has not logged in yet
         if (ambassadorConfig.getTwitterAccessToken() != null) {
             tweetDialog.setOwnerActivity(this);
-            tweetDialog.show();
+            try {
+                tweetDialog.show();
+            } catch (Exception e) {
+                tweetDialog = new TweetDialog(this);
+                tweetDialog.show();
+            }
         } else {
             twitterAuthClient = new TwitterAuthClient();
             twitterAuthClient.authorize(this, new Callback<TwitterSession>() {
@@ -413,7 +418,12 @@ public class AmbassadorActivity extends AppCompatActivity {
         // Presents login screen if user hasn't signed in yet
         if (ambassadorConfig.getLinkedInToken() != null) {
             linkedInDialog.setOwnerActivity(this);
-            linkedInDialog.show();
+            try {
+                linkedInDialog.show();
+            } catch (Exception e) {
+                linkedInDialog = new LinkedInDialog(this);
+                linkedInDialog.show();
+            }
         } else {
             Intent intent = new Intent(this, LinkedInLoginActivity.class);
             startActivity(intent);
