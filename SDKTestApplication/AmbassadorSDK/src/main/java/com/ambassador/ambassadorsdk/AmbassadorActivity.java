@@ -389,8 +389,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         launchedSocial = LaunchedSocial.TWITTER;
 
         // Presents twitter login screen if user has not logged in yet
-        TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        if (twitterSession != null) {
+        if (ambassadorConfig.getTwitterAccessToken() != null) {
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
         } else {
