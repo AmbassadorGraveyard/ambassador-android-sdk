@@ -78,7 +78,8 @@
             <EditText
                 android:id="@+id/etShareMessage"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:maxHeight="120dp"
                 android:background="@color/transparent"
                 android:text="Check out this company! www.mbsy.co/jkas4"
                 android:textSize="16sp"
@@ -121,13 +122,14 @@
         <Button
             android:id="@+id/btnSend"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:text="NO CONTACTS SELECTED"
             android:layout_marginTop="10dp"
             android:textColor="@color/contactsSendButtonText"
             android:background="@color/contactsSendButton"
             android:enabled="false"
             android:onClick="sendToContacts"/>
+
     </LinearLayout>
 
     <TextView
