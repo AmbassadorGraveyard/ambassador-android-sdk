@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="RAFdefaultShareMessage">Check out this company!</string>
-    <string name="RAFtitleText">RAF Params Welcome Title</string>
-    <string name="RAFdescriptionText">RAF Params Welcome Description</string>
-    <string name="RAFtoolbarTitle">RAF Params Toolbar Title</string>
-    <string name="RAFLogoPosition">0</string>
-    <color name="homeBackground">@android:color/white</color>
+    <string name="RAFdefaultShareMessage">Casheck out this company!</string>
+    <string name="RAFtitleText">RAF ParamsASas Welcome Title</string>
+    <string name="RAFdescriptionText">RAF PaASrams Welcome Description</string>
+    <string name="RAFtoolbarTitle">RAF ParamASass Toolbar Title</string>
+    <string name="RAFLogoPosition">3</string>
+    <color name="homeBackground">@android:color/holo_red_dark</color>
     <color name="homeWelcomeTitle">@color/lightGray</color>
     <dimen name="homeWelcomeTitle">22sp</dimen>
     <string name="homeWelcomeTitle">fonts/Roboto-RobotoRegular.ttf</string>
@@ -36,9 +36,7 @@
     <color name="contactsDoneButtonText">@color/ambassador_blue</color>
     <color name="contactsSearchBar">@android:color/transparent</color>
     <color name="contactsSearchIcon">@android:color/white</color>
-    <color name="twitterToolBar">@color/twitter_blue</color>
-    <color name="twitterToolBarText">@android:color/white</color>
-    <color name="twitterToolBarArrow">@android:color/white</color>
+    <color name="contactNoPhotoAvailableBackground">@color/ambassador_blue</color>
     <color name="linkedinToolBar">@color/linkedin_blue</color>
     <color name="linkedinToolBarText">@android:color/white</color>
     <color name="linkedinToolBarArrow">@android:color/white</color>

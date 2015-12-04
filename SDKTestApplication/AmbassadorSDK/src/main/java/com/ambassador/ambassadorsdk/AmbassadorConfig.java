@@ -19,7 +19,7 @@ public class AmbassadorConfig {
     static final String PUSHER_KEY_DEV = "***REMOVED***";
     static final String PUSHER_KEY_PROD = "***REMOVED***";
     //static final String PUSHER_SECRET = "***REMOVED***";
-    static final Boolean isReleaseBuild = false;
+    static final Boolean isReleaseBuild = true;
 
     private Context context = AmbassadorSingleton.get();
     private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
