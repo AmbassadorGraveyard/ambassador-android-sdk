@@ -100,6 +100,10 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                 loader.setVisibility(View.GONE);
             } else if (LinkedInApi.isSuccessUrl(url)) {
                 String requestToken = LinkedInApi.extractToken(url);
+                if (requestToken == null ) {
+                    finish();
+                    return;
+                }
                 requestManager.linkedInLoginRequest(requestToken, new RequestManager.RequestCompletion() {
                     @Override
                     public void onSuccess(Object successResponse) {
