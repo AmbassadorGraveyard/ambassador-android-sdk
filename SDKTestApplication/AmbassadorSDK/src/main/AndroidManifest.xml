@@ -28,13 +28,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".LinkedInLoginActivity"
-
             android:label="LinkedInLogin"
-            android:screenOrientation="portrait"
-            android:theme="@style/ActivityTheme"/>
-        <activity
-            android:name=".TwitterLoginActivity"
-            android:label="TwitterLoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme"/>
         <activity
@@ -56,6 +50,10 @@
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="f37bb68c5b927a94a1c10fd005732a15f578eb2d" />
 
     </application>
 </manifest>

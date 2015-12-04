@@ -3,6 +3,13 @@ package com.ambassador.ambassadorsdk;
 import android.os.Handler;
 import android.util.Log;
 
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterApiClient;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.Tweet;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -18,12 +25,6 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import twitter4j.Twitter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 
 /**
  * Created by JakeDunahee on 9/29/15.
@@ -437,110 +438,21 @@ public class RequestManager {
     // endregion IDENTIFY REQUESTS
 
     // region TWITTER REQUESTS
-    public void twitterLoginRequest(final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                Twitter twitter = new TwitterFactory().getInstance();
-                twitter.setOAuthConsumer(AmbassadorConfig.TWITTER_KEY, AmbassadorConfig.TWITTER_SECRET);
-                RequestToken requestToken = null;
-                int responseCode;
-
-                try {
-                    requestToken = twitter.getOAuthRequestToken(AmbassadorConfig.CALLBACK_URL);
-                    Utilities.debugLog("Twitter", "TWITTER LOGIN Request Token Successfully created!");
-                    responseCode = 200;
-                } catch (TwitterException e) {
-                    e.printStackTrace();
-                    Utilities.debugLog("Twitter", "TWITTER LOGIN Request Token Failure due to TwitterException - " + e.getMessage());
-                    responseCode = 400;
-                }
-
-                final int finalResponseCode = responseCode;
-                final RequestToken finalRequestToken = requestToken;
-
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (Utilities.isSuccessfulResponseCode(finalResponseCode)) {
-                            completion.onSuccess(finalRequestToken);
-                        } else {
-                            completion.onFailure("TWITTER LOGIN Request Token Failed with exception.");
-                        }
-                    }
-                });
-            }
-        };
-        new Thread(runnable).start();
-    }
-
-    void twitterAccessTokenRequest(final String oauthSecret, final RequestToken requestToken, final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                Twitter twitter = new TwitterFactory().getInstance();
-                twitter.setOAuthConsumer(AmbassadorConfig.TWITTER_KEY, AmbassadorConfig.TWITTER_SECRET);
-
-                int responseCode;
-
-                try {
-                    AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, oauthSecret);
-                    ambassadorConfig.setTwitterAccessToken(accessToken.getToken());
-                    ambassadorConfig.setTwitterAccessTokenSecret(accessToken.getTokenSecret());
-                    responseCode = 200;
-                } catch (twitter4j.TwitterException e) {
-                    e.printStackTrace();
-                    responseCode = 400;
-                }
-
-                final int finalResponseCode = responseCode;
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (Utilities.isSuccessfulResponseCode(finalResponseCode)) {
-                            completion.onSuccess("Successfully logged into Twitter!");
-                        } else {
-                            completion.onFailure("Failed to log into Twitter!");
-                        }
-                    }
-                });
-            }
-        };
-        new Thread(runnable).start();
-
-    }
-
     public void postToTwitter(final String tweetString, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                AccessToken accessToken = new AccessToken(ambassadorConfig.getTwitterAccessToken(),
-                        ambassadorConfig.getTwitterAccessTokenSecret());
-                final Twitter twitter = new TwitterFactory().getInstance();
-                twitter.setOAuthConsumer(AmbassadorConfig.TWITTER_KEY, AmbassadorConfig.TWITTER_SECRET);
-                twitter.setOAuthAccessToken(accessToken);
-
-                int responseCode;
-
-                try {
-                    twitter.updateStatus(tweetString);
-                    responseCode = 200;
-                } catch (TwitterException e) {
-                    e.printStackTrace();
-                    Utilities.debugLog("Twitter", "Failed to send Tweet due to TwitterException - " + e.getMessage());
-                    responseCode = 400;
-                }
-
-                final int finalResponseCode = responseCode;
-
-                mHandler.post(new Runnable() {
+                TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+                TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient(twitterSession);
+                twitterApiClient.getStatusesService().update(tweetString, null, null, null, null, null, null, null, new Callback<Tweet>() {
                     @Override
-                    public void run() {
-                       if (Utilities.isSuccessfulResponseCode(finalResponseCode)) {
-                           completion.onSuccess("Successfully Posted to Twitter");
-                       } else {
-                           completion.onFailure("Failure Postring to Twitter");
-                       }
+                    public void success(Result<Tweet> result) {
+                        completion.onSuccess("Successfully posted to Twitter");
+                    }
+
+                    @Override
+                    public void failure(com.twitter.sdk.android.core.TwitterException e) {
+                        completion.onFailure("Failure Postring to Twitter");
                     }
                 });
             }
