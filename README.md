@@ -65,7 +65,7 @@ desktop or another place that you can easily access.
 
  <img src="screenshots/openAppGradle.png" width="600" />
 
-* Add the **repositories** code to your Gradle file with the following code:
+* Add the **repositories** code and the **ambassador module** to your Gradle file with the following code:
 
  ```java
  repositories {
@@ -73,15 +73,16 @@ desktop or another place that you can easily access.
      flatDir { dirs '../ambassador/libs' }
  }
  ```
+
+  ```java
+  compile project(':ambassador')
+  ```
+
  <img src="screenshots/addRepo.png" width="600" />
 
-* Now add the **ambassador module** as a dependency to your project by inserting the following code:
+* You will want to make sure your compileSdkVersion and buildToolsVersion are set to the latest API version. While our SDK requires this to be a minimum of 23, this is also a best practice for Android development.
 
- ```java
- compile project(':ambassador')
- ```
- <img src="screenshots/addAmbAsDependency.png" width="600" />
-
+* Now sync your project's gradle.
 
  ## Initializing Ambassador
 
