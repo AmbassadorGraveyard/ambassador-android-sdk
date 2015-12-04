@@ -67,6 +67,8 @@ desktop or another place that you can easily access.
 
 * Add the **repositories** code and the **ambassador module** to your Gradle file with the following code:
 
+* You will want to make sure your compileSdkVersion and buildToolsVersion are set to the latest API version. While our SDK requires this to be a minimum of 23, this is also a best practice for Android development.
+
  ```java
  repositories {
      maven { url 'http://clojars.org/repo'}
@@ -79,8 +81,6 @@ desktop or another place that you can easily access.
   ```
 
  <img src="screenshots/addRepo.png" width="600" />
-
-* You will want to make sure your compileSdkVersion and buildToolsVersion are set to the latest API version. While our SDK requires this to be a minimum of 23, this is also a best practice for Android development.
 
 * Now sync your project's gradle.
 
