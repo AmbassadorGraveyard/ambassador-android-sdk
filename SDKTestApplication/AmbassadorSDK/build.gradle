@@ -28,14 +28,6 @@ repositories {
     }
 }
 
-
-Properties props = new Properties()
-try {
-    props.load(file('./fabric.properties').newDataInputStream())
-} catch (Exception ex) {
-    throw new GradleException("Missing fabric.properties, check the fabric.properties file.");
-}
-
 android {
 /*
     productFlavors {
@@ -75,12 +67,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             consumerProguardFiles 'proguard-rules.pro'
-            buildConfigField "String", "QmXl03hbQEKSLLiDY4e6vpIjP", "\"${props.getProperty("twitterConsumerKey")}\""
-            buildConfigField "String", "IfIbOuVbKwPkfJQW0zknChNMBbqhmpkuuK8FJmqkQqBqCGa4dW", "\"${props.getProperty("twitterConsumerSecret")}\""
-        }
-        debug {
-            buildConfigField "String", "QmXl03hbQEKSLLiDY4e6vpIjP", "\"${props.getProperty("twitterConsumerKey")}\""
-            buildConfigField "String", "IfIbOuVbKwPkfJQW0zknChNMBbqhmpkuuK8FJmqkQqBqCGa4dW", "\"${props.getProperty("twitterConsumerSecret")}\""
         }
     }
     packagingOptions {
