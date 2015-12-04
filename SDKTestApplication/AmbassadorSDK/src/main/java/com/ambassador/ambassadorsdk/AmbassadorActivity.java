@@ -104,12 +104,6 @@ public class AmbassadorActivity extends AppCompatActivity {
     TwitterAuthClient twitterAuthClient;
 
     @Inject
-    TweetDialog tweetDialog;
-
-    @Inject
-    LinkedInDialog linkedInDialog;
-
-    @Inject
     ShareDialog fbDialog;
 
     @Inject
@@ -390,13 +384,9 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         // Presents twitter login screen if user has not logged in yet
         if (ambassadorConfig.getTwitterAccessToken() != null) {
+            TweetDialog tweetDialog = new TweetDialog(this);
             tweetDialog.setOwnerActivity(this);
-            try {
-                tweetDialog.show();
-            } catch (Exception e) {
-                tweetDialog = new TweetDialog(this);
-                tweetDialog.show();
-            }
+            tweetDialog.show();
         } else {
             twitterAuthClient = new TwitterAuthClient();
             twitterAuthClient.authorize(this, new Callback<TwitterSession>() {
@@ -417,13 +407,9 @@ public class AmbassadorActivity extends AppCompatActivity {
     void shareWithLinkedIn() {
         // Presents login screen if user hasn't signed in yet
         if (ambassadorConfig.getLinkedInToken() != null) {
+            LinkedInDialog linkedInDialog = new LinkedInDialog(this);
             linkedInDialog.setOwnerActivity(this);
-            try {
-                linkedInDialog.show();
-            } catch (Exception e) {
-                linkedInDialog = new LinkedInDialog(this);
-                linkedInDialog.show();
-            }
+            linkedInDialog.show();
         } else {
             Intent intent = new Intent(this, LinkedInLoginActivity.class);
             startActivity(intent);
