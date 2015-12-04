@@ -1,5 +1,6 @@
 package com.ambassador.ambassadorsdk;
 
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -30,6 +31,8 @@ public class LinkedInLoginActivity extends AppCompatActivity {
     @Inject
     RequestManager requestManager;
 
+    private boolean popupIsOpen = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +55,6 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         }
 
         _setUpToolbar();
-
 
         loader = (ProgressBar) findViewById(R.id.loadingPanel);
 
@@ -90,7 +92,23 @@ public class LinkedInLoginActivity extends AppCompatActivity {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            return true;
+            if (!isHandled(url) && !popupIsOpen) {
+                view.stopLoading();
+                WebPopupDialog dialog = new WebPopupDialog(LinkedInLoginActivity.this);
+                dialog.setOwnerActivity(LinkedInLoginActivity.this);
+                dialog.load(url);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.setCancelable(true);
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        popupIsOpen = false;
+                    }
+                });
+                dialog.show();
+                popupIsOpen = true;
+            }
+            return false;
         }
 
         @Override
@@ -119,6 +137,15 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                 });
             }
         }
+
+        private boolean isHandled(String url) {
+            Uri uri = Uri.parse(url);
+            if (uri != null) {
+                return uri.getHost().equals("localhost");
+            }
+            return false;
+        }
+
     }
 
     static class LinkedInApi {
