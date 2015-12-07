@@ -36,6 +36,13 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.pusher.client.connection.ConnectionState;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +55,7 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import io.fabric.sdk.android.Fabric;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -82,11 +90,18 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     };
 
-    @Inject
-    TweetDialog tweetDialog;
+    /**
+     * It's really stupid that this has to be here.  Facebook and Twitter want to use OnActivityResult
+     * but they don't use or handle the requestCode's.  So we have to keep track of who to pass the callback
+     * to.
+     */
+    private enum LaunchedSocial {
+        FACEBOOK, TWITTER
+    };
 
-    @Inject
-    LinkedInDialog linkedInDialog;
+    LaunchedSocial launchedSocial = null;
+
+    TwitterAuthClient twitterAuthClient;
 
     @Inject
     ShareDialog fbDialog;
@@ -139,6 +154,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         );
 
         FacebookSdk.sdkInitialize(getApplicationContext());
+        TwitterAuthConfig twitterAuthConfig = new TwitterAuthConfig("QmXl03hbQEKSLLiDY4e6vpIjP","IfIbOuVbKwPkfJQW0zknChNMBbqhmpkuuK8FJmqkQqBqCGa4dW");
+        Fabric.with(this, new TwitterCore(twitterAuthConfig));
 
         //tell Dagger to inject dependencies
         AmbassadorSingleton.getAmbModule().setContext(this);
@@ -273,7 +290,18 @@ public class AmbassadorActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        switch (launchedSocial) {
+            case FACEBOOK:
+                callbackManager.onActivityResult(requestCode, resultCode, data);
+                break;
+            case TWITTER:
+                twitterAuthClient.onActivityResult(requestCode, resultCode, data);
+                break;
+
+        }
+
+        launchedSocial = null;
     }
 
     // END ACTIVITY OVERRIDE METHODS
@@ -321,6 +349,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     void shareWithFacebook() {
+        launchedSocial = LaunchedSocial.FACEBOOK;
         ShareLinkContent content = new ShareLinkContent.Builder()
                 .setContentTitle(ambassadorConfig.getRafParameters().defaultShareMessage)
                 .setContentUrl(Uri.parse(ambassadorConfig.getURL()))
@@ -351,19 +380,34 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     void shareWithTwitter() {
+        launchedSocial = LaunchedSocial.TWITTER;
+
         // Presents twitter login screen if user has not logged in yet
         if (ambassadorConfig.getTwitterAccessToken() != null) {
+            TweetDialog tweetDialog = new TweetDialog(this);
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
         } else {
-            Intent i = new Intent(this, TwitterLoginActivity.class);
-            startActivity(i);
+            twitterAuthClient = new TwitterAuthClient();
+            twitterAuthClient.authorize(this, new Callback<TwitterSession>() {
+                @Override
+                public void success(Result<TwitterSession> result) {
+                    ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
+                    ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
+                }
+
+                @Override
+                public void failure(TwitterException e) {
+
+                }
+            });
         }
     }
 
     void shareWithLinkedIn() {
         // Presents login screen if user hasn't signed in yet
         if (ambassadorConfig.getLinkedInToken() != null) {
+            LinkedInDialog linkedInDialog = new LinkedInDialog(this);
             linkedInDialog.setOwnerActivity(this);
             linkedInDialog.show();
         } else {
