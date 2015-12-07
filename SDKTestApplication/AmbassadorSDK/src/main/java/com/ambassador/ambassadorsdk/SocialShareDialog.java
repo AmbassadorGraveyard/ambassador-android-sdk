@@ -177,7 +177,7 @@ class SocialShareDialog extends Dialog {
         @Override
         public void onFailure(Object failureResponse) {
             loader.setVisibility(View.GONE);
-            if ((failureResponse).equals("auth")) {
+            if (((String) failureResponse).equals("auth")) {
                 dismiss();
                 attemptNotifyReauth();
             } else {
@@ -200,8 +200,13 @@ class SocialShareDialog extends Dialog {
         @Override
         public void onFailure(Object failureResponse) {
             loader.setVisibility(View.GONE);
-            Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
-            attemptNotifyFailed();
+            if (((String) failureResponse).contains("No authentication")) {
+                dismiss();
+                attemptNotifyReauth();
+            } else {
+                Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
+                attemptNotifyFailed();
+            }
         }
     };
 
