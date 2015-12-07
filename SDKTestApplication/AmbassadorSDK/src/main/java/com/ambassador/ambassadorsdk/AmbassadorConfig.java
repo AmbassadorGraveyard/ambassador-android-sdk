@@ -233,7 +233,6 @@ public class AmbassadorConfig {
                 String secret = activeSession.getAuthToken().secret;
                 setTwitterAccessToken(key);
                 setTwitterAccessTokenSecret(secret);
-                listener.nullifyComplete();
             }
 
             if (getTwitterAccessToken() != null && getTwitterAccessTokenSecret() != null) {
@@ -254,10 +253,13 @@ public class AmbassadorConfig {
                         listener.nullifyComplete();
                     }
                 });
-            }
-        }
+            } else {
+                listener.nullifyComplete();
 
-        listener.nullifyComplete();
+            }
+        } else {
+            listener.nullifyComplete();
+        }
     }
 
     public void nullifyLinkedInIfInvalid(final NullifyCompleteListener listener) {

@@ -387,8 +387,30 @@ public class AmbassadorActivity extends AppCompatActivity {
                 // Presents twitter login screen if user has not logged in yet
                 pd.hide();
                 if (ambassadorConfig.getTwitterAccessToken() != null) {
-                    TweetDialog tweetDialog = new TweetDialog(AmbassadorActivity.this);
+                    SocialShareDialog tweetDialog = new SocialShareDialog(AmbassadorActivity.this);
+                    tweetDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.TWITTER);
                     tweetDialog.setOwnerActivity(AmbassadorActivity.this);
+                    tweetDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
+                        @Override
+                        public void postSuccess() {
+
+                        }
+
+                        @Override
+                        public void postFailed() {
+
+                        }
+
+                        @Override
+                        public void postCancelled() {
+
+                        }
+
+                        @Override
+                        public void needAuth() {
+                            shareWithTwitter();
+                        }
+                    });
                     tweetDialog.show();
                 } else {
                     launchedSocial = LaunchedSocial.TWITTER;
@@ -418,8 +440,30 @@ public class AmbassadorActivity extends AppCompatActivity {
                 pd.hide();
                 // Presents login screen if user hasn't signed in yet
                 if (ambassadorConfig.getLinkedInToken() != null) {
-                    LinkedInDialog linkedInDialog = new LinkedInDialog(AmbassadorActivity.this);
+                    SocialShareDialog linkedInDialog = new SocialShareDialog(AmbassadorActivity.this);
+                    linkedInDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.LINKEDIN);
                     linkedInDialog.setOwnerActivity(AmbassadorActivity.this);
+                    linkedInDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
+                        @Override
+                        public void postSuccess() {
+
+                        }
+
+                        @Override
+                        public void postFailed() {
+
+                        }
+
+                        @Override
+                        public void postCancelled() {
+
+                        }
+
+                        @Override
+                        public void needAuth() {
+                            shareWithTwitter();
+                        }
+                    });
                     linkedInDialog.show();
                 } else {
                     Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);

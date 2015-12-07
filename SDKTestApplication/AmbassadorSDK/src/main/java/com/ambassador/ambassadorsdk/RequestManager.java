@@ -415,7 +415,7 @@ public class RequestManager {
                     final int responseCode = connection.getResponseCode();
                     String response = getResponse(connection, responseCode);
                     Utilities.debugLog("PusherSDK", "EXTERNAL PUSHER CALL Response Code = " + responseCode +
-                                                                " and Response = " + response);
+                            " and Response = " + response);
 
                     if (Utilities.isSuccessfulResponseCode(responseCode)) {
                         completion.onSuccess(response);
@@ -452,7 +452,11 @@ public class RequestManager {
 
                     @Override
                     public void failure(com.twitter.sdk.android.core.TwitterException e) {
-                        completion.onFailure("Failure Postring to Twitter");
+                        if (e.toString().toLowerCase().contains("no authentication")) {
+                            completion.onFailure("auth");
+                        } else {
+                            completion.onFailure("Failure Postring to Twitter");
+                        }
                     }
                 });
             }
