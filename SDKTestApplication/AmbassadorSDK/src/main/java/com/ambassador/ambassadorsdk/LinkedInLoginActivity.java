@@ -99,6 +99,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(Uri.parse(url));
                     startActivity(i);
+                    return false;
                 }
 
                 view.stopLoading();
