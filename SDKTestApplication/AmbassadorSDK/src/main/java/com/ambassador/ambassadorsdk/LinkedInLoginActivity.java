@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -93,6 +94,13 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if (!isHandled(url) && !popupIsOpen) {
+                Uri uri = Uri.parse(url);
+                if (uri != null && uri.getPath().equals("/uas/request-password-reset")) {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(Uri.parse(url));
+                    startActivity(i);
+                }
+
                 view.stopLoading();
                 WebPopupDialog dialog = new WebPopupDialog(LinkedInLoginActivity.this);
                 dialog.setOwnerActivity(LinkedInLoginActivity.this);
