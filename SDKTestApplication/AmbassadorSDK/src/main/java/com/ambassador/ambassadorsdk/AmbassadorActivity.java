@@ -394,6 +394,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 public void success(Result<TwitterSession> result) {
                     ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
                     ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
+                    Toast.makeText(getApplicationContext(), "Logged in successfully!", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
