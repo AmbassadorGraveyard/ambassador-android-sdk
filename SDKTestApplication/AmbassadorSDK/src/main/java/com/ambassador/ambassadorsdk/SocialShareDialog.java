@@ -178,6 +178,7 @@ class SocialShareDialog extends Dialog {
         public void onFailure(Object failureResponse) {
             loader.setVisibility(View.GONE);
             if ((failureResponse).equals("auth")) {
+                dismiss();
                 attemptNotifyReauth();
             } else {
                 Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
