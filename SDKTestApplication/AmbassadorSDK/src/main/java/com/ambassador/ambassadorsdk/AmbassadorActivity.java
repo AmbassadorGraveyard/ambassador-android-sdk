@@ -483,7 +483,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
                         @Override
                         public void needAuth() {
-                            shareWithLinkedIn();
+                            requestReauthLinkedIn();
                         }
                     });
                     linkedInDialog.show();
@@ -494,6 +494,28 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void requestReauthLinkedIn() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage("We need you to re-authenticate LinkedIn. Continue?")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        shareWithLinkedIn();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+    }
+
     // END ONCLICK METHODS
 
 
