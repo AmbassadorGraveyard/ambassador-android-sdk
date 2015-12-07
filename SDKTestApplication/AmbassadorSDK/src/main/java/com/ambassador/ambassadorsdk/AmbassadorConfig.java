@@ -2,7 +2,6 @@ package com.ambassador.ambassadorsdk;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.widget.Toast;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -223,32 +222,66 @@ public class AmbassadorConfig {
         sharePrefs.edit().putBoolean("installConversion", true).apply();
     }
 
-    public void nullifyTwitterIfInvalid() {
+    public void nullifyTwitterIfInvalid(final NullifyCompleteListener listener) {
         if (TwitterCore.getInstance() != null && TwitterCore.getInstance().getSessionManager() != null) {
-            SessionManager sm = TwitterCore.getInstance().getSessionManager();
+            final SessionManager sm = TwitterCore.getInstance().getSessionManager();
             TwitterSession activeSession = (TwitterSession) sm.getActiveSession();
+
+            /** if TwitterSDK has an active session, store it in place of what we have */
             if (activeSession != null) {
                 String key = activeSession.getAuthToken().token;
                 String secret = activeSession.getAuthToken().secret;
                 setTwitterAccessToken(key);
                 setTwitterAccessTokenSecret(secret);
-            } else if (getTwitterAccessToken() != null && getTwitterAccessTokenSecret() != null) {
+                listener.nullifyComplete();
+            }
+
+            if (getTwitterAccessToken() != null && getTwitterAccessTokenSecret() != null) {
                 TwitterAuthToken tat = new TwitterAuthToken(getTwitterAccessToken(), getTwitterAccessTokenSecret());
                 TwitterSession twitterSession = new TwitterSession(tat, -1, null);
                 sm.setActiveSession(twitterSession);
                 TwitterCore.getInstance().getApiClient().getAccountService().verifyCredentials(null, null, new Callback<User>() {
                     @Override
                     public void success(Result<User> result) {
-                        Toast.makeText(AmbassadorSingleton.get(), result.data.email, Toast.LENGTH_SHORT).show();
+                        listener.nullifyComplete();
                     }
 
                     @Override
                     public void failure(TwitterException e) {
-                        Toast.makeText(AmbassadorSingleton.get(), e.toString(), Toast.LENGTH_SHORT).show();
+                        setTwitterAccessToken(null);
+                        setTwitterAccessTokenSecret(null);
+                        sm.clearActiveSession();
+                        listener.nullifyComplete();
                     }
                 });
             }
         }
+
+        listener.nullifyComplete();
+    }
+
+    public void nullifyLinkedInIfInvalid(final NullifyCompleteListener listener) {
+        if (getLinkedInToken() != null) {
+            RequestManager rm = new RequestManager();
+            rm.getProfileLinkedIn(new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(Object successResponse) {
+                    listener.nullifyComplete();
+                }
+
+                @Override
+                public void onFailure(Object failureResponse) {
+                    setLinkedInToken(null);
+                    listener.nullifyComplete();
+                }
+            });
+        } else {
+            listener.nullifyComplete();
+        }
+    }
+
+    public interface NullifyCompleteListener {
+        void nullifyComplete();
     }
 
 }
