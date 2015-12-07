@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -408,7 +409,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
                         @Override
                         public void needAuth() {
-                            shareWithTwitter();
+                            requestReauthTwitter();
                         }
                     });
                     tweetDialog.show();
@@ -430,6 +431,27 @@ public class AmbassadorActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void requestReauthTwitter() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage("We need you to re-authenticate Twitter. Continue?")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        shareWithTwitter();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
     }
 
     void shareWithLinkedIn() {
@@ -461,7 +483,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
                         @Override
                         public void needAuth() {
-                            shareWithTwitter();
+                            shareWithLinkedIn();
                         }
                     });
                     linkedInDialog.show();
