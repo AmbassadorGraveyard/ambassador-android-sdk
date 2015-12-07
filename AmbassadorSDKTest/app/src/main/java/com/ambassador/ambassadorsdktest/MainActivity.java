@@ -25,11 +25,11 @@ public class MainActivity extends AppCompatActivity {
         //prod
         AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
 
-        AmbassadorSDK.identify("jake@getambassador.com");
+        AmbassadorSDK.identify("test12345@getambassador.com");
 
         //convert on install - this would normally happen after a user is authenticated because email is required on all conversions
         ConversionParameters conversionParameters = new ConversionParameters();
-        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_email = "test12345@getambassador.com";
         conversionParameters.mbsy_campaign = 260;
         conversionParameters.mbsy_revenue = 100;
         AmbassadorSDK.registerConversion(conversionParameters, true);
@@ -49,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ConversionParameters conversionParameters = new ConversionParameters();
-                conversionParameters.mbsy_first_name = "Jake";
-                conversionParameters.mbsy_last_name = "Dunahee";
-                conversionParameters.mbsy_email = "jake@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
+                conversionParameters.mbsy_first_name = "ATest";
+                conversionParameters.mbsy_last_name = "User";
+                conversionParameters.mbsy_email = "test12345@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
                 conversionParameters.mbsy_campaign = 260;
                 conversionParameters.mbsy_revenue = 200;
 
