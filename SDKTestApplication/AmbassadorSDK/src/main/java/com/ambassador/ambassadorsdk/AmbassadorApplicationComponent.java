@@ -6,8 +6,6 @@ package com.ambassador.ambassadorsdk;
 public interface AmbassadorApplicationComponent {
     void inject(AmbassadorActivity ambassadorActivity);
     void inject(SocialShareDialog socialShareDialog);
-    void inject(TweetDialog tweetDialog);
-    void inject(LinkedInDialog linkedInDialog);
     void inject(LinkedInLoginActivity linkedInLoginActivity);
     void inject(ContactSelectorActivity contactSelectorActivity);
     void inject(BulkShareHelper bulkShareHelper);
