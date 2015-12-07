@@ -380,41 +380,53 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     void shareWithTwitter() {
-        ambassadorConfig.nullifyTwitterIfInvalid();
+        pd.show();
+        ambassadorConfig.nullifyTwitterIfInvalid(new AmbassadorConfig.NullifyCompleteListener() {
+            @Override
+            public void nullifyComplete() {
+                // Presents twitter login screen if user has not logged in yet
+                pd.hide();
+                if (ambassadorConfig.getTwitterAccessToken() != null) {
+                    TweetDialog tweetDialog = new TweetDialog(AmbassadorActivity.this);
+                    tweetDialog.setOwnerActivity(AmbassadorActivity.this);
+                    tweetDialog.show();
+                } else {
+                    launchedSocial = LaunchedSocial.TWITTER;
+                    twitterAuthClient = new TwitterAuthClient();
+                    twitterAuthClient.authorize(AmbassadorActivity.this, new Callback<TwitterSession>() {
+                        @Override
+                        public void success(Result<TwitterSession> result) {
+                            ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
+                            ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
+                        }
 
-        // Presents twitter login screen if user has not logged in yet
-        if (ambassadorConfig.getTwitterAccessToken() != null) {
-            TweetDialog tweetDialog = new TweetDialog(this);
-            tweetDialog.setOwnerActivity(this);
-            tweetDialog.show();
-        } else {
-            launchedSocial = LaunchedSocial.TWITTER;
-            twitterAuthClient = new TwitterAuthClient();
-            twitterAuthClient.authorize(this, new Callback<TwitterSession>() {
-                @Override
-                public void success(Result<TwitterSession> result) {
-                    ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
-                    ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
+                        @Override
+                        public void failure(TwitterException e) {
+
+                        }
+                    });
                 }
-
-                @Override
-                public void failure(TwitterException e) {
-
-                }
-            });
-        }
+            }
+        });
     }
 
     void shareWithLinkedIn() {
-        // Presents login screen if user hasn't signed in yet
-        if (ambassadorConfig.getLinkedInToken() != null) {
-            LinkedInDialog linkedInDialog = new LinkedInDialog(this);
-            linkedInDialog.setOwnerActivity(this);
-            linkedInDialog.show();
-        } else {
-            Intent intent = new Intent(this, LinkedInLoginActivity.class);
-            startActivity(intent);
-        }
+        pd.show();
+        ambassadorConfig.nullifyLinkedInIfInvalid(new AmbassadorConfig.NullifyCompleteListener() {
+            @Override
+            public void nullifyComplete() {
+                pd.hide();
+                // Presents login screen if user hasn't signed in yet
+                if (ambassadorConfig.getLinkedInToken() != null) {
+                    LinkedInDialog linkedInDialog = new LinkedInDialog(AmbassadorActivity.this);
+                    linkedInDialog.setOwnerActivity(AmbassadorActivity.this);
+                    linkedInDialog.show();
+                } else {
+                    Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
     }
     // END ONCLICK METHODS
 
