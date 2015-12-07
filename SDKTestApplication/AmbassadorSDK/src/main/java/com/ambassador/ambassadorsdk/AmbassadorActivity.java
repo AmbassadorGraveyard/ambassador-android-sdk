@@ -380,7 +380,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     void shareWithTwitter() {
-        launchedSocial = LaunchedSocial.TWITTER;
+        ambassadorConfig.nullifyTwitterIfInvalid();
 
         // Presents twitter login screen if user has not logged in yet
         if (ambassadorConfig.getTwitterAccessToken() != null) {
@@ -388,6 +388,7 @@ public class AmbassadorActivity extends AppCompatActivity {
             tweetDialog.setOwnerActivity(this);
             tweetDialog.show();
         } else {
+            launchedSocial = LaunchedSocial.TWITTER;
             twitterAuthClient = new TwitterAuthClient();
             twitterAuthClient.authorize(this, new Callback<TwitterSession>() {
                 @Override
