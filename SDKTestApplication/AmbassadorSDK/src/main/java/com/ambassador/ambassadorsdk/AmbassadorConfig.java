@@ -2,8 +2,16 @@ package com.ambassador.ambassadorsdk;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.SessionManager;
+import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.User;
 
 /**
  * Created by JakeDunahee on 7/29/15.
@@ -214,4 +222,33 @@ public class AmbassadorConfig {
     void setConvertOnInstall() {
         sharePrefs.edit().putBoolean("installConversion", true).apply();
     }
+
+    public void nullifyTwitterIfInvalid() {
+        if (TwitterCore.getInstance() != null && TwitterCore.getInstance().getSessionManager() != null) {
+            SessionManager sm = TwitterCore.getInstance().getSessionManager();
+            TwitterSession activeSession = (TwitterSession) sm.getActiveSession();
+            if (activeSession != null) {
+                String key = activeSession.getAuthToken().token;
+                String secret = activeSession.getAuthToken().secret;
+                setTwitterAccessToken(key);
+                setTwitterAccessTokenSecret(secret);
+            } else if (getTwitterAccessToken() != null && getTwitterAccessTokenSecret() != null) {
+                TwitterAuthToken tat = new TwitterAuthToken(getTwitterAccessToken(), getTwitterAccessTokenSecret());
+                TwitterSession twitterSession = new TwitterSession(tat, -1, null);
+                sm.setActiveSession(twitterSession);
+                TwitterCore.getInstance().getApiClient().getAccountService().verifyCredentials(null, null, new Callback<User>() {
+                    @Override
+                    public void success(Result<User> result) {
+                        Toast.makeText(AmbassadorSingleton.get(), result.data.email, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void failure(TwitterException e) {
+                        Toast.makeText(AmbassadorSingleton.get(), e.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+    }
+
 }
