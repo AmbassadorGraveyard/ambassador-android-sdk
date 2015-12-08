@@ -458,6 +458,16 @@ public class AmbassadorActivityTest {
 
         when(ambassadorConfig.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
 
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] object = invocation.getArguments();
+                AmbassadorConfig.NullifyCompleteListener completion = (AmbassadorConfig.NullifyCompleteListener) object[0];
+                completion.nullifyComplete();
+                return null;
+            }
+        }).when(ambassadorConfig).nullifyLinkedInIfInvalid(any(AmbassadorConfig.NullifyCompleteListener.class));
+
         onView(withText("LINKEDIN")).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.etMessage)).check(matches(isDisplayed()));
@@ -582,6 +592,15 @@ public class AmbassadorActivityTest {
 
         when(ambassadorConfig.getTwitterAccessToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
 
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] object = invocation.getArguments();
+                AmbassadorConfig.NullifyCompleteListener completion = (AmbassadorConfig.NullifyCompleteListener) object[0];
+                completion.nullifyComplete();
+                return null;
+            }
+        }).when(ambassadorConfig).nullifyTwitterIfInvalid(any(AmbassadorConfig.NullifyCompleteListener.class));
 
         onView(withText("TWITTER")).perform(click());
 
