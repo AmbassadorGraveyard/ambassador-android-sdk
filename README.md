@@ -84,7 +84,7 @@ desktop or another place that you can easily access.
 
 * Now sync your project's gradle.
 
- ## Initializing Ambassador
+## Initializing Ambassador
 
  You will want to run Ambassador in your application as early in the application lifecycle as possible.  The ideal place to run would be in the **onCreate()** method of your **MainActivity**.  You will have the option to register a **conversion** the first time the app is launched.  You can read more on **conversions** and setting their parameters in [Conversions](#conversions).
 
