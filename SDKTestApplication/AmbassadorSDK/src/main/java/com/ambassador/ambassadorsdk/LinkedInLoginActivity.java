@@ -99,11 +99,13 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(uri);
                     startActivity(i);
+                    view.stopLoading();
                     return false;
                 } else if (uri != null && uri.getPath().equals("/start/join")) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
                     i.setData(uri);
                     startActivity(i);
+                    view.stopLoading();
                     return false;
                 }
 
