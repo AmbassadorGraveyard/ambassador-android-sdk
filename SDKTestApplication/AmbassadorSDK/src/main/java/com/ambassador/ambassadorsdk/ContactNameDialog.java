@@ -85,6 +85,9 @@ class ContactNameDialog extends Dialog {
     }
 
     void handleNameInput(String firstName, String lastName) {
+        //this shouldn't happen because UI enforces entry, but check anyway in case UI validation is removed
+        if (firstName == null || lastName == null) return;
+
         JSONObject pusherData;
         try {
             pusherData = new JSONObject(ambassadorConfig.getPusherInfo());
@@ -94,9 +97,6 @@ class ContactNameDialog extends Dialog {
             e.printStackTrace();
             return;
         }
-
-        //this shouldn't happen because UI enforces entry, but check anyway in case UI validation is removed
-        if (firstName == null || lastName == null) return;
 
         pd.show();
         ambassadorConfig.setPusherInfo(pusherData.toString());

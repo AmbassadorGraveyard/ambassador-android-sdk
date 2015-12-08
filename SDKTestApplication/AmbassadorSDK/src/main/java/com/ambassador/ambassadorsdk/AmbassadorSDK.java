@@ -33,28 +33,29 @@ public class AmbassadorSDK {
         ambassadorSDK.localIdentify(emailAddress);
     }
 
-    public static void registerConversion(ConversionParameters conversionParameters) {
-        ConversionUtility conversionUtility = new ConversionUtility(AmbassadorSingleton.get(), conversionParameters);
-        conversionUtility.registerConversion();
+    public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
+        AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
+
+        //do conversion if it's not an install conversion, or if it is, make sure that we haven't already converted on install by checking sharedprefs
+        if (!restrictToInstall || !ambassadorSDK.getConvertedOnInstall()) {
+            Utilities.debugLog("Conversion", "restrictToInstall: " + restrictToInstall);
+
+            ConversionUtility conversionUtility = new ConversionUtility(AmbassadorSingleton.get(), conversionParameters);
+            conversionUtility.registerConversion();
+        }
+
+        if (restrictToInstall) ambassadorSDK.setConvertedOnInstall();
     }
 
     public static void runWithKeys(Context context, String universalToken, String universalID) {
         AmbassadorSingleton.getInstance().init(context);
 
-        AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
-        ambassadorSDK.localRunWithKeys(universalToken, universalID);
-    }
-
-    public static void runWithKeysAndConvertOnInstall(Context context, String universalToken, String universalID, ConversionParameters parameters) {
-        AmbassadorSingleton.getInstance().init(context);
-
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
-
         context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
 
         AmbassadorSDK ambassadorSDK = new AmbassadorSDK();
-        ambassadorSDK.localRunWithKeysAndConvertOnInstall(universalToken, universalID, parameters);
+        ambassadorSDK.localRunWithKeys(universalToken, universalID);
     }
 
     // Package-private local functions
@@ -74,6 +75,12 @@ public class AmbassadorSDK {
         pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
             @Override
             public void pusherSubscribed() {
+
+            }
+
+            @Override
+            public void pusherFailed() {
+
             }
         });
     }
@@ -84,14 +91,12 @@ public class AmbassadorSDK {
         startConversionTimer();
     }
 
-    void localRunWithKeysAndConvertOnInstall(String universalToken, String universalID, ConversionParameters parameters) {
-        ambassadorConfig.setUniversalToken(universalToken);
-        ambassadorConfig.setUniversalID(universalID);
-        startConversionTimer();
+    Boolean getConvertedOnInstall() {
+        return ambassadorConfig.getConvertedOnInstall();
+    }
 
-        // Checks boolean from shared preferences to see if this the first launch and registers conversion if it is
-        if (!ambassadorConfig.convertedOnInstall()) {
-            registerConversion(parameters);
+    void setConvertedOnInstall() {
+        if (!ambassadorConfig.getConvertedOnInstall()) {
             ambassadorConfig.setConvertOnInstall();
         }
     }
@@ -104,6 +109,6 @@ public class AmbassadorSDK {
             public void run() {
                 utility.readAndSaveDatabaseEntries();
             }
-        }, 0, 10000);
+        }, 10000, 10000);
     }
 }

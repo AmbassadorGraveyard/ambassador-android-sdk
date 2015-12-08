@@ -49,7 +49,6 @@ class ConversionUtility {
             return;
         }
 
-        parameters.mbsy_short_code = ambassadorConfig.getReferralShortCode();
         try {
             if (parameters.isValid()) {
                 makeConversionRequest(parameters);
@@ -170,6 +169,10 @@ class ConversionUtility {
     }
 
     public void makeConversionRequest(final ConversionParameters newParameters) {
+        //in the case of an install conversion, we didn't have the shortCode right away, so that conversion got stored in the database.
+        //now that we know we have it (wouldn't have gotten this far if we didn't) set that parameter value.
+        newParameters.mbsy_short_code = ambassadorConfig.getReferralShortCode();
+
         requestManager.registerConversionRequest(newParameters, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {

@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/rlMaster">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlMaster"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/rlSearch"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/rlSearch"
         android:background="@color/contactsSearchBar"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true">
 
         <EditText
+            android:id="@+id/etSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/etSearch"
             android:hint="Search"
             android:textSize="16sp"
             android:background="@color/transparent"
@@ -33,11 +35,11 @@
             android:singleLine="true" />
 
         <Button
+            android:id="@+id/btnDoneSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="DONE"
             android:background="?android:attr/selectableItemBackground"
-            android:id="@+id/btnDoneSearch"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
@@ -47,16 +49,17 @@
 
     </RelativeLayout>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/lvContacts"
         android:layout_below="@+id/rlSearch"
         android:layout_centerHorizontal="true"
         android:layout_above="@+id/llSendView"
-        android:background="@color/contactsListViewBackground" />
+        android:background="@color/contactsListViewBackground"/>
 
     <LinearLayout
+        android:id="@+id/llSendView"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -64,7 +67,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:padding="15dp"
-        android:id="@+id/llSendView"
         android:background="@color/contactsSendBackground">
 
         <LinearLayout
@@ -74,9 +76,10 @@
             android:layout_gravity="center_horizontal">
 
             <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
                 android:id="@+id/etShareMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxHeight="120dp"
                 android:background="@color/transparent"
                 android:text="Check out this company! www.mbsy.co/jkas4"
                 android:textSize="16sp"
@@ -91,10 +94,10 @@
                 fontPath="@string/contactSendMessageText"/>
 
             <ImageButton
+                android:id="@+id/btnEdit"
                 android:layout_width="60dp"
                 android:layout_height="40dp"
                 android:background="?android:attr/selectableItemBackground"
-                android:id="@+id/btnEdit"
                 android:layout_weight="0"
                 android:padding="10dp"
                 android:layout_gravity="center_vertical"
@@ -103,9 +106,9 @@
                 android:layout_marginEnd="5dp" />
 
             <Button
+                android:id="@+id/btnDone"
                 android:layout_width="60dp"
                 android:layout_height="40dp"
-                android:id="@+id/btnDone"
                 android:background="?android:attr/selectableItemBackground"
                 android:layout_weight="0"
                 android:visibility="gone"
@@ -117,26 +120,27 @@
         </LinearLayout>
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="NO CONTACTS SELECTED"
             android:id="@+id/btnSend"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="NO CONTACTS SELECTED"
             android:layout_marginTop="10dp"
             android:textColor="@color/contactsSendButtonText"
             android:background="@color/contactsSendButton"
             android:enabled="false"
             android:onClick="sendToContacts"/>
+
     </LinearLayout>
 
     <TextView
+        android:id="@+id/tvNoContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Contact list empty"
         android:textColor="@color/darkGray"
-        android:id="@+id/tvNoContacts"
         android:layout_below="@+id/rlSearch"
-        android:layout_alignBottom="@+id/lvContacts"
+        android:layout_alignBottom="@+id/rvContacts"
         android:gravity="center"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"

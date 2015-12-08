@@ -22,26 +22,19 @@ public class MainActivity extends AppCompatActivity {
         final Context context = this;
 
         //dev - run
-        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
-
-        //dev - run and convert on install
-        ConversionParameters conversionParameters = new ConversionParameters();
-        conversionParameters.mbsy_email = "jake@getambassador.com";
-        conversionParameters.mbsy_campaign = 305;
-        conversionParameters.mbsy_revenue = 200;
-        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32", conversionParameters);
+        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
 
         //prod - run
         //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
 
-        //prod - run and convert on install
-        /*ConversionParameters conversionParameters = new ConversionParameters();
-        conversionParameters.mbsy_email = "jake@getambassador.com";
-        conversionParameters.mbsy_campaign = 305;
-        conversionParameters.mbsy_revenue = 200;
-        AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b", conversionParameters);*/
+        AmbassadorSDK.identify("atestuser@getambassador.com");
 
-        AmbassadorSDK.identify("jake@getambassador.com");
+        //convert on install - this would normally happen after a user is authenticated because email is required on all conversions
+        ConversionParameters conversionParameters = new ConversionParameters();
+        conversionParameters.mbsy_email = "atestuser@getambassador.com";
+        conversionParameters.mbsy_campaign = 260;
+        conversionParameters.mbsy_revenue = 100;
+        AmbassadorSDK.registerConversion(conversionParameters, true);
 
         Button btnPresentRAF = (Button)findViewById(R.id.btnPresentRAF);
         btnPresentRAF.setOnClickListener(new View.OnClickListener() {
@@ -56,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ConversionParameters conversionParameters = new ConversionParameters();
-                conversionParameters.mbsy_first_name = "Jake";
-                conversionParameters.mbsy_last_name = "Dunahee";
-                conversionParameters.mbsy_email = "jake@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
-                conversionParameters.mbsy_campaign = 305;
+                conversionParameters.mbsy_first_name = "ATest";
+                conversionParameters.mbsy_last_name = "User";
+                conversionParameters.mbsy_email = "atestuser@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
+                conversionParameters.mbsy_campaign = 260;
                 conversionParameters.mbsy_revenue = 200;
 
-                AmbassadorSDK.registerConversion(conversionParameters);
+                AmbassadorSDK.registerConversion(conversionParameters, false);
 
                 Toast.makeText(getApplicationContext(), "Cool! (Conversion)", Toast.LENGTH_SHORT).show();
             }
