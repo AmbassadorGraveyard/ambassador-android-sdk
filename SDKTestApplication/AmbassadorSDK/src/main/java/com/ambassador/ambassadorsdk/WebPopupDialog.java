@@ -11,7 +11,6 @@ import android.view.WindowManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 /**
  * Created by dylan on 12/4/15.
@@ -56,19 +55,6 @@ public class WebPopupDialog extends Dialog {
             super.onPageFinished(view, url);
             progressBar.setVisibility(View.GONE);
         }
-
-        @Override
-        public void onLoadResource(WebView view, String url) {
-            super.onLoadResource(view, url);
-            Uri uri = Uri.parse(url);
-            if (uri != null) {
-                if (uri.getPath().equals("/start/reg/api/createAccount")) {
-                    WebPopupDialog.this.dismiss();
-                    Toast.makeText(getContext(), "Account Registered", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-
 
     }
 
