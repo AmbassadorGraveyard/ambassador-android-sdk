@@ -97,7 +97,12 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                 Uri uri = Uri.parse(url);
                 if (uri != null && uri.getPath().equals("/uas/request-password-reset")) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
-                    i.setData(Uri.parse(url));
+                    i.setData(uri);
+                    startActivity(i);
+                    return false;
+                } else if (uri != null && uri.getPath().equals("/start/join")) {
+                    Intent i = new Intent(Intent.ACTION_VIEW);
+                    i.setData(uri);
                     startActivity(i);
                     return false;
                 }
