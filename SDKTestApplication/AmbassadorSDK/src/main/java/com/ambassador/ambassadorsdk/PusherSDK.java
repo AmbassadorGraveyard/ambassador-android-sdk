@@ -29,6 +29,7 @@ import javax.inject.Inject;
 public class PusherSDK {
     interface PusherSubscribeCallback {
         void pusherSubscribed();
+        void pusherFailed();
     }
 
     @Inject
@@ -58,6 +59,7 @@ public class PusherSDK {
 
             @Override
             public void onFailure(Object failureResponse) {
+                pusherSubscribeCallback.pusherFailed();
                 Utilities.debugLog("createPusher", "CREATE PUSHER failed with Response = " + failureResponse);
             }
         });
@@ -189,13 +191,15 @@ public class PusherSDK {
 
         try {
             JSONObject pusherObject = new JSONObject(jsonObject);
-
             pusherSave.put("email", pusherObject.getString("email"));
             pusherSave.put("firstName", pusherObject.getString("first_name"));
             pusherSave.put("lastName", pusherObject.getString("last_name"));
             pusherSave.put("phoneNumber", pusherObject.getString("phone"));
             pusherSave.put("urls", pusherObject.getJSONArray("urls"));
             ambassadorConfig.setPusherInfo(pusherSave.toString());
+
+            //update full name for SMS sending "from" name
+            ambassadorConfig.setUserFullName(pusherObject.getString("first_name"), pusherObject.getString("last_name"));
 
             //tell MainActivity to update edittext with url
             Intent intent = new Intent("pusherData");

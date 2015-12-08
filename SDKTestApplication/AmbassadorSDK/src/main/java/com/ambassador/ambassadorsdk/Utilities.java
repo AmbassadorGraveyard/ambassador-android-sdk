@@ -8,7 +8,10 @@ import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
 import android.widget.EditText;
@@ -35,8 +38,8 @@ class Utilities {
     public static float getDpSizeForPixels(int pixels) {
         Context cxt = AmbassadorSingleton.get();
         Resources resources = cxt.getResources();
-        int densityDpi = resources.getDisplayMetrics().densityDpi;
-        float dp = pixels / (densityDpi / 160f);
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = pixels / (metrics.densityDpi / 160f);
         return dp;
     }
 
@@ -51,7 +54,7 @@ class Utilities {
     }
 
     public static String deviceType(Context context) {
-        return (Utilities.isTablet(context)) ? "Tablet" : "SmartPhone";
+        return (isTablet(context)) ? "Tablet" : "SmartPhone";
     }
 
     public static void presentUrlDialog(Context context, final EditText editText, final String url, final UrlAlertInterface alertInterface) {
@@ -113,8 +116,31 @@ class Utilities {
         }
     }
 
+    public static void debugLog(String logMessage) {
+        if (!AmbassadorConfig.isReleaseBuild) {
+            StackTraceElement stackTrace = new Exception().getStackTrace()[1];
+            String tag = stackTrace.getClassName()
+                    .substring(stackTrace.getClassName().lastIndexOf(".") + 1)
+                    + "." + stackTrace.getMethodName() + "():"
+                    + stackTrace.getLineNumber();
+            Log.d(tag, logMessage);
+        }
+    }
+
     public static float getScreenDensity() {
         return AmbassadorSingleton.get().getResources().getDisplayMetrics().density;
+    }
+
+    public static boolean isConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo[] networkInfos = cm.getAllNetworkInfo();
+        for (NetworkInfo networkInfo : networkInfos) {
+            if (networkInfo.isConnected()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static void setStatusBar(Window window, int primaryColor) {
@@ -131,7 +157,7 @@ class Utilities {
         Rect bounds = new Rect();
         Paint textPaint = tv.getPaint();
         textPaint.getTextBounds(text, 0, text.length(), bounds);
-        float width = Utilities.getDpSizeForPixels(bounds.width());
+        float width = getDpSizeForPixels(bounds.width());
         return width;
     }
 
@@ -146,4 +172,5 @@ class Utilities {
 
         return "";
     }
+
 }

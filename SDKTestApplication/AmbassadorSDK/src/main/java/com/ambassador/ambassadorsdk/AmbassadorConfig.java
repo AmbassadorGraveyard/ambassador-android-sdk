@@ -3,6 +3,8 @@ package com.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.twitter.sdk.android.core.TwitterCore;
+
 /**
  * Created by JakeDunahee on 7/29/15.
  */
@@ -156,10 +158,18 @@ public class AmbassadorConfig {
     public String getLinkedInToken() { return sharePrefs.getString("linkedInToken", null); }
 
     public String getTwitterAccessToken() {
-        return sharePrefs.getString("twitterToken", null);
+        if (TwitterCore.getInstance().getSessionManager().getActiveSession() == null) {
+            return null;
+        }
+        return TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().token;
     }
 
-    String getTwitterAccessTokenSecret() { return sharePrefs.getString("twitterTokenSecret", null); }
+    String getTwitterAccessTokenSecret() {
+        if (TwitterCore.getInstance().getSessionManager().getActiveSession() == null) {
+            return null;
+        }
+        return TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().secret;
+    }
 
     String getIdentifyObject() { return sharePrefs.getString("identifyObject", null); }
 
@@ -187,7 +197,7 @@ public class AmbassadorConfig {
         return sharePrefs.getString("webDeviceId", null);
     }
 
-    String getFullName() {
+    String getUserFullName() {
         return sharePrefs.getString("fullName", null);
     }
 
@@ -199,7 +209,7 @@ public class AmbassadorConfig {
         return sharePrefs.getString("userEmail", null);
     }
 
-    boolean convertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
+    boolean getConvertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
 
     void setConvertOnInstall() {
         sharePrefs.edit().putBoolean("installConversion", true).apply();

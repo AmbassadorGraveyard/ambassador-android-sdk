@@ -83,7 +83,7 @@ public class BulkShareHelper {
     static ArrayList<String> verifiedSMSList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
-            String strippedNum = contact.phoneNumber.replaceAll("[^0-9]", "");
+            String strippedNum = contact.getPhoneNumber().replaceAll("[^0-9]", "");
             if (strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7 && !verifiedNumbers.contains(strippedNum)) {
                 verifiedNumbers.add(strippedNum);
             }
@@ -95,7 +95,7 @@ public class BulkShareHelper {
     static ArrayList<String> verifiedEmailList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
-            if (BulkShareHelper.isValidEmail(contact.emailAddress)) { verifiedEmails.add(contact.emailAddress); }
+            if (BulkShareHelper.isValidEmail(contact.getEmailAddress())) { verifiedEmails.add(contact.getEmailAddress()); }
         }
 
         return verifiedEmails;
@@ -157,7 +157,6 @@ public class BulkShareHelper {
     }
 
     static JSONObject payloadObjectForEmail(List<String> emails, String shortCode, String emailSubject, String message) {
-        // Functionality: Creates an email payload object for bulk sharing
         JSONObject object = new JSONObject();
         try {
             object.put("to_emails", new JSONArray(emails));
@@ -172,11 +171,10 @@ public class BulkShareHelper {
     }
 
     static JSONObject payloadObjectForSMS(List<String> numbers, String fullName, String smsMessage) {
-        // Functionality: Creates a json payload for SMS sharing with all the validated numbers included
         JSONObject object = new JSONObject();
         try {
             object.put("to", new JSONArray(numbers));
-            object.put("from", fullName);
+            object.put("name", fullName);
             object.put("message", smsMessage);
         } catch (JSONException e) {
             e.printStackTrace();

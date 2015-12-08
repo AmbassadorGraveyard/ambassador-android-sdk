@@ -290,6 +290,17 @@ public class AmbassadorSDKTest {
 
         // ASSERT
         verify(mockTimer).scheduleAtFixedRate(any(TimerTask.class), anyInt(), anyInt());
+        doNothing().when(mockSingleton).setUniversalToken(fakeUniversalToken);
+        doNothing().when(mockSingleton).startConversionTimer();
+        when(mockSingleton.getConvertedOnInstall()).thenReturn(false);
+        doNothing().when(mockSingleton).convertForInstallation(mockParameters);
+        AmbassadorSDK.runWithKeysAndConvertOnInstall(fakeUniversalToken, fakeUniversalToken, mockParameters);
+
+        // ASSERT
+        assertEquals(false, mockSingleton.getConvertedOnInstall());
+        verify(mockSingleton).setUniversalToken(fakeUniversalToken);
+        verify(mockSingleton).startConversionTimer();
+        verify(mockSingleton).convertForInstallation(mockParameters);
     }
 
 }

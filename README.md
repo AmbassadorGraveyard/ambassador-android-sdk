@@ -31,7 +31,7 @@ desktop or another place that you can easily access.
   ```
   <img src="screenshots/daggerDependency.png" width="600" />
 
-* Open your project's stucture by selecting **File -> Project Stucture** in the Menu Bar to bring up a dialog in Android Studio.
+* Open your project's structure by selecting **File -> Project Stucture** in the Menu Bar to bring up a dialog in Android Studio.
 
  <img src="screenshots/projStructureClick.png" width="500" />
 
@@ -65,7 +65,9 @@ desktop or another place that you can easily access.
 
  <img src="screenshots/openAppGradle.png" width="600" />
 
-* Add the **repositories** code to your Gradle file with the following code:
+* Add the **repositories** code and the **ambassador module** to your Gradle file with the following code:
+
+* You will want to make sure your compileSdkVersion and buildToolsVersion are set to the latest API version. While our SDK requires this to be a minimum of 23, this is also a best practice for Android development.
 
  ```java
  repositories {
@@ -73,17 +75,16 @@ desktop or another place that you can easily access.
      flatDir { dirs '../ambassador/libs' }
  }
  ```
+
+  ```java
+  compile project(':ambassador')
+  ```
+
  <img src="screenshots/addRepo.png" width="600" />
 
-* Now add the **ambassador module** as a dependency to your project by inserting the following code:
+* Now sync your project's gradle.
 
- ```java
- compile project(':ambassador')
- ```
- <img src="screenshots/addAmbAsDependency.png" width="600" />
-
-
- ## Initializing Ambassador
+## Initializing Ambassador
 
  You will want to run Ambassador in your application as early in the application lifecycle as possible.  The ideal place to run would be in the **onCreate()** method of your **MainActivity**.  You will have the option to register a **conversion** the first time the app is launched.  You can read more on **conversions** and setting their parameters in [Conversions](#conversions).
 
@@ -95,25 +96,14 @@ desktop or another place that you can easily access.
           super.onCreate(savedInstanceState);
           setContentView(R.layout.activity_main);
 
-          // Use this 'run' method if you DON'T want to
-          // register a conversion on the first launch of your app.
-          // You will need to pass in your application's context as the first
-          // parameter so that our SDK can access it
+          // Pass in your application's context as the first parameter
           AmbassadorSDK.runWithKeys(getApplicationContext(), "your_universal_key", "your_universal_ID");
-
-          // -- OR --
-
-          //  If you DO want to register a conversion on the first launch
-          // then create a ConversionParameters object to pass to the method below
-          ConversionParameters parameters = new ConversionParameters();
-          // ** Set the parameter properties here (find out more in 'Conversions' section)
-          AmbassadorSDK.runWithKeysAndConvertOnInstall(getApplicationContext(), "your_universal_key", "your_universal_ID", parameters);
       }
    ```
 
 ## Identifying a User
 
- In order to track referrals and provide users with custom share links, Ambassador only needs the **email address** of the user. The call to identify a user should be done early in the app to make sure all Ambassador services can be provided as soon as possible. We recommend putting it on a **login screen** or **after the initial call to run Ambassador** if you have the user's email stored.
+ In order to track referrals and provide users with custom share links, Ambassador only needs the **email address** of the user. The call to identify a user should be done early in the app to make sure all Ambassador services can be provided as soon as possible. We recommend calling it **after a successful login** or **after the initial call to run Ambassador** if you have the user's email stored.
 
  ```java
  AmbassadorSDK.identify("user@example.com");
@@ -121,7 +111,7 @@ desktop or another place that you can easily access.
 
 ## Conversions
 
-Conversions can be triggered from anywhere.  Common places could be an Activity's **onCreate()** method or on a **button click**.
+Conversions can be triggered from anywhere.  Common places are an Activity's **onCreate()** method or on a **button click**.
 
  ```java
 // STEP ONE: Create a ConversionParameters object
@@ -149,8 +139,13 @@ conversionParameters.mbsy_event_data2 = "eventData2";
 conversionParameters.mbsy_event_data3 = "eventData3";
 conversionParameters.mbsy_is_approved = 1; // Boolean represented by int (Defaults to true);
 
-// STEP FOUR: Register the conversion with the ConversionParameters object
-AmbassadorSDK.registerConversion(conversionParameters);
+// STEP FOUR: Register the conversion with the ConversionParameters object.
+// The second parameter indicates that the conversion should be restricted to a user first installing your application.
+AmbassadorSDK.registerConversion(conversionParameters, false);
+
+// To register a conversion for the application's installation, the call to registerConversion would be:
+AmbassadorSDK.registerConversion(conversionParameters, true);
+// Note that the installation conversion will only happen once. Any subsequent usages of the app will not register this conversion.
  ```
 
 ## Present the 'Refer a Friend' Screen (RAF)
@@ -166,7 +161,7 @@ AmbassadorSDK.presentRAF(context, "877");
 ```
 Example usage in a MainActivity:
 ```java
-Button btnRaf = (Button) findViewById(R.id.btnRAF);
+Button btnRaf = (Button)findViewById(R.id.btnRAF);
 final Context context = this;
 btnRaf.setOnClickListener(new View.OnClickListener() {
     @Override
