@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -108,15 +109,17 @@ public class UtilitiesTest {
         //ARRANGE
         int parameter = 200;
         Resources mockResources = mock(Resources.class);
+        DisplayMetrics mockDisplayMetrics = mock(DisplayMetrics.class);
         PowerMockito.when(AmbassadorSingleton.get()).thenReturn(mockContext);
         when(mockContext.getResources()).thenReturn(mockResources);
-        when(mockResources.getDisplayMetrics().densityDpi).thenReturn(320);
+        when(mockResources.getDisplayMetrics()).thenReturn(mockDisplayMetrics);
+        mockDisplayMetrics.densityDpi = 320;
 
         //ACT
         float ret = Utilities.getDpSizeForPixels(parameter);
 
         //ASSERT
-        assertEquals(100, ret);
+        assertEquals(100f, ret);
     }
 
     @Test
