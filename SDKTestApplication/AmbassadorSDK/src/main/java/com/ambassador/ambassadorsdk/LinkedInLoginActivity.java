@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -130,13 +129,13 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
-            Log.v("ERROR", errorCode + "");
+            Utilities.debugLog("ERROR", errorCode + "");
+
             if (errorOccurred) {
-                Toast.makeText(LinkedInLoginActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                if (errorCode != -6) Toast.makeText(LinkedInLoginActivity.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                 finish();
             }
         }
-
     }
 }
 

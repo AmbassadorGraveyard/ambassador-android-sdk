@@ -1,8 +1,8 @@
 package com.ambassador.ambassadorsdktest;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,13 +19,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //dev
+        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
+
+        //prod
         AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
 
-        AmbassadorSDK.identify("jake@getambassador.com");
+        AmbassadorSDK.identify("test12345@getambassador.com");
 
         //convert on install - this would normally happen after a user is authenticated because email is required on all conversions
         ConversionParameters conversionParameters = new ConversionParameters();
-        conversionParameters.mbsy_email = "jake@getambassador.com";
+        conversionParameters.mbsy_email = "test12345@getambassador.com";
         conversionParameters.mbsy_campaign = 260;
         conversionParameters.mbsy_revenue = 100;
         AmbassadorSDK.registerConversion(conversionParameters, true);
@@ -45,9 +49,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ConversionParameters conversionParameters = new ConversionParameters();
-                conversionParameters.mbsy_first_name = "Jake";
-                conversionParameters.mbsy_last_name = "Dunahee";
-                conversionParameters.mbsy_email = "jake@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
+                conversionParameters.mbsy_first_name = "ATest";
+                conversionParameters.mbsy_last_name = "User";
+                conversionParameters.mbsy_email = "test12345@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
                 conversionParameters.mbsy_campaign = 260;
                 conversionParameters.mbsy_revenue = 200;
 

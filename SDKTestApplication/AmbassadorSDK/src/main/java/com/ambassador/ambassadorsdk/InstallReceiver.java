@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +26,7 @@ public class InstallReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle b = intent.getExtras();
         final String qstring = b.getString("referrer"); //"mbsy_cookie_code=jwnZ&device_id=test1234";
-        Toast.makeText(context, qstring, Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, qstring, Toast.LENGTH_LONG).show();
 
         if (qstring == null) return;
 
@@ -41,7 +40,7 @@ public class InstallReceiver extends BroadcastReceiver {
             webDeviceId = param2[0].equals("device_id") ? param2[1] : param1[1];
         }
         catch (ArrayIndexOutOfBoundsException e) {
-            Toast.makeText(context, "parse exception" + e.toString(), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "parse exception" + e.toString(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
             return;
         }
@@ -50,12 +49,12 @@ public class InstallReceiver extends BroadcastReceiver {
         ambassadorConfig.setReferralShortCode(referralShortCode);
         Utilities.debugLog("Conversion", "webDeviceId: " + webDeviceId);
         Utilities.debugLog("Conversion", "referralShortCode: " + referralShortCode);
-        Toast.makeText(context, "webDeviceId: " + webDeviceId + " referralShortCode: " + referralShortCode, Toast.LENGTH_LONG).show();
+        //Toast.makeText(context, "webDeviceId: " + webDeviceId + " referralShortCode: " + referralShortCode, Toast.LENGTH_LONG).show();
 
         //if augur came back first, update our device id
         JSONObject identity;
         if (ambassadorConfig.getIdentifyObject() != null) {
-            Toast.makeText(context, "augur", Toast.LENGTH_LONG).show();
+            //Toast.makeText(context, "augur", Toast.LENGTH_LONG).show();
             try {
                 identity = new JSONObject(ambassadorConfig.getIdentifyObject());
                 JSONObject device = identity.getJSONObject("device");
