@@ -22,10 +22,10 @@ public class MainActivity extends AppCompatActivity {
         final Context context = this;
 
         //dev - run
-        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
+        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
 
         //prod - run
-        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
+        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
 
         AmbassadorSDK.identify("atestuser@getambassador.com");
 
