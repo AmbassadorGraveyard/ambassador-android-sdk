@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -23,6 +24,9 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,9 +56,16 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
 
+    private static final int MAX_TEXT_LENGTH = 160;
+    private static final int lengthBadColor = Color.parseColor("#800000");
+    private static final int lengthGoodColor = Color.parseColor("#ffffff");
+
     private RecyclerView rvContacts;
     private Button btnDoneSearch;
-    private Button btnSend;
+
+    private RelativeLayout btnSend;
+    private TextView btnSendContacts, btnSendCount;
+
     private ImageButton btnEdit;
     private Button btnDone;
     private EditText etShareMessage, etSearch;
@@ -102,7 +113,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
         btnDone = (Button)findViewById(R.id.btnDone);
-        btnSend = (Button)findViewById(R.id.btnSend);
+
+        btnSend = (RelativeLayout) findViewById(R.id.btnSend);
+        btnSendContacts = (TextView) findViewById(R.id.btnSendContacts);
+        btnSendCount = (TextView) findViewById(R.id.btnSendCount);
+
         etShareMessage = (EditText) findViewById(R.id.etShareMessage);
         rlSearch = (RelativeLayout)findViewById(R.id.rlSearch);
         etSearch = (EditText) findViewById(R.id.etSearch);
@@ -111,6 +126,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         _setUpToolbar(ambassadorConfig.getRafParameters().toolbarTitle);
+
+        showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
 
         //setup progress dialog only once
         pd = new ProgressDialog(this);
@@ -125,10 +142,49 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         // Sets share message to default message from RAF Parameters
         etShareMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
 
+        if (showPhoneNumbers) {
+            updateCharCounter(etShareMessage.getText().toString().length());
+            etShareMessage.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    String text = etShareMessage.getText().toString();
+                    updateCharCounter(text.length());
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
+        } else {
+            btnSendCount.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) btnSendContacts.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+            params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
+            btnSendContacts.setLayoutParams(params);
+        }
+
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _sendToContacts();
+                boolean goodToGo = true;
+                if (showPhoneNumbers && !(etShareMessage.getText().length() <= MAX_TEXT_LENGTH)) {
+                    negativeTextViewFeedback(btnSendCount);
+                    goodToGo = false;
+                }
+                if (adapter.getSelectedContacts().size() <= 0) {
+                    negativeTextViewFeedback(btnSendContacts);
+                    goodToGo = false;
+                }
+
+                if (goodToGo) {
+                    _sendToContacts();
+                }
             }
         });
 
@@ -153,7 +209,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
                 _doneEditingMessage();
             }
         });
-
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -175,6 +230,26 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateCharCounter(int length) {
+        btnSendCount.setText("(" + length + "/" + MAX_TEXT_LENGTH + ")");
+        if (length > MAX_TEXT_LENGTH) {
+            btnSendCount.setShadowLayer(2, -1, 0, Color.WHITE);
+            btnSendCount.setTextColor(lengthBadColor);
+        } else {
+            btnSendCount.setShadowLayer(2, -1, 0, Color.TRANSPARENT);
+            btnSendCount.setTextColor(lengthGoodColor);
+        }
+    }
+
+    private void negativeTextViewFeedback(TextView textView) {
+        Animation shake = new TranslateAnimation(-3, 3, 0, 0);
+        shake.setInterpolator(new CycleInterpolator(3));
+        shake.setDuration(500);
+
+        textView.clearAnimation();
+        textView.startAnimation(shake);
     }
 
     @Override
@@ -340,7 +415,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     private void _doneEditingMessage() {
-        if (adapter.getSelectedSize() > 0) btnSend.setEnabled(true);
+        btnSend.setEnabled(true);
         btnEdit.setVisibility(View.VISIBLE);
         btnDone.setVisibility(View.GONE);
         etShareMessage.setEnabled(false);
@@ -433,7 +508,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     public void _updateSendButton(int numOfContacts) {
         if (numOfContacts == 0) {
-            btnSend.setText("NO CONTACTS SELECTED");
+            btnSendContacts.setText("NO CONTACTS SELECTED");
             btnSend.setEnabled(false);
             return;
         }
@@ -441,7 +516,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         if (!etShareMessage.isEnabled() && !btnSend.isEnabled()) btnSend.setEnabled(true);
         String btnSendText = "SEND TO " + numOfContacts;
         btnSendText += (numOfContacts > 1) ? " CONTACTS" : " CONTACT";
-        btnSend.setText(btnSendText);
+        btnSendContacts.setText(btnSendText);
     }
 
     private void _sendToContacts() {
