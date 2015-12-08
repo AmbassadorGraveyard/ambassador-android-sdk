@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -35,6 +36,15 @@ public class WebPopupDialog extends Dialog {
         webView.setWebViewClient(new Client());
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        /** This works for dismiss on margin click */
+        getWindow().getDecorView().setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                dismiss();
+                return false;
+            }
+        });
     }
 
     private class Client extends WebViewClient {
