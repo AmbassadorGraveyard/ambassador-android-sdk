@@ -119,16 +119,35 @@
 
         </LinearLayout>
 
-        <Button
+        <RelativeLayout
             android:id="@+id/btnSend"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="NO CONTACTS SELECTED"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/contactsSendButtonText"
             android:background="@color/contactsSendButton"
-            android:enabled="false"
-            android:onClick="sendToContacts"/>
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/btnSendContacts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:paddingLeft="10dp"
+                android:textColor="@color/contactsSendButtonText"
+                android:text="NO CONTACTS SELECTED"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/btnSendCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:paddingRight="10dp"
+                android:textColor="@color/contactsSendButtonText"
+                android:text="(0/160)"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
