@@ -5,7 +5,7 @@ dependencies:
 
 test:
   override:
-    - ./gradlew -p SDKTestApplication assembleDebugUnitTest
+    - ./gradlew -p SDKTestApplication test
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     - cp -r SDKTestApplication/AmbassadorSDK/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
    
