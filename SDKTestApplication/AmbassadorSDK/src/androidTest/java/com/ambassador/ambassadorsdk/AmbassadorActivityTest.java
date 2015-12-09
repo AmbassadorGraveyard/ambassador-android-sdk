@@ -299,7 +299,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnDone)).perform(click());
         onView(withId(R.id.rlSend)).perform(click());
         //dialog "url not entered" should be showing at this point - since I can't check that programmatically-created dialog, just check that underlying views are not present
-        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
         pressBack();
         onView(withId(R.id.btnEdit)).perform(click());
         onView(withId(R.id.etShareMessage)).perform(typeText("http://staging.mbsy.co/jHjl"), closeSoftKeyboard());
@@ -452,43 +452,53 @@ public class AmbassadorActivityTest {
 
         when(ambassadorConfig.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
 
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] object = invocation.getArguments();
+                AmbassadorConfig.NullifyCompleteListener completion = (AmbassadorConfig.NullifyCompleteListener) object[0];
+                completion.nullifyComplete();
+                return null;
+            }
+        }).when(ambassadorConfig).nullifyLinkedInIfInvalid(any(AmbassadorConfig.NullifyCompleteListener.class));
+
         onView(withText("LINKEDIN")).perform(click());
-        onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
-        onView(withId(R.id.etLinkedInMessage)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvLinkedInHeaderText)).check(matches(isDisplayed()));
-        onView(withId(R.id.ivLinkedInHeaderImg)).check(matches(isDisplayed()));
+        onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.etMessage)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvHeaderText)).check(matches(isDisplayed()));
+        onView(withId(R.id.ivHeaderImg)).check(matches(isDisplayed()));
         onView(withId(R.id.btnCancel)).check(matches(isDisplayed()));
-        onView(withId(R.id.btnPost)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
         pressBack();
         verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
         //ensure dialog fields not visible now that we've backed out
-        onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
 
         //click linkedin icon
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
         //enter blank text and make sure dialog is still visible
-        onView(withId(R.id.etLinkedInMessage)).perform(clearText(), closeSoftKeyboard());
-        onView(withId(R.id.btnPost)).perform(click());
+        onView(withId(R.id.etMessage)).perform(clearText(), closeSoftKeyboard());
+        onView(withId(R.id.btnSend)).perform(click());
         verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
         //since text was cleared, ensure dialog is present, then click "send anyway"
         onView(withText("Hold on!")).check(matches(isDisplayed()));
         onView(withId(android.R.id.button1)).perform(click());
-        onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         pressBack();
         verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
         //test sending a successful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
         //make sure message has been restored
-        onView(withId(R.id.etLinkedInMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
+        onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         String linkedInText = _getRandomNumber();
-        onView(withId(R.id.etLinkedInMessage)).perform(typeText(linkedInText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeText(linkedInText), closeSoftKeyboard());
 
         doNothing().when(requestManager).bulkShareTrack(any(BulkShareHelper.SocialServiceTrackType.class));
         doAnswer(new Answer<Void>() {
@@ -509,25 +519,25 @@ public class AmbassadorActivityTest {
         })
         .when(requestManager).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
-        onView(withId(R.id.btnPost)).perform(click());
-        onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
 
         //test sending an unsuccessful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
         //make sure message has been restored
-        onView(withId(R.id.etLinkedInMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
+        onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
-        onView(withId(R.id.etLinkedInMessage)).perform(typeText(linkedInText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeText(linkedInText), closeSoftKeyboard());
 
-        onView(withId(R.id.btnPost)).perform(click());
+        onView(withId(R.id.btnSend)).perform(click());
         //failure shouldn't dismiss the dialog
-        onView(withId(R.id.dialog_linkedin_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         verify(requestManager, times(2)).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnCancel)).perform(click());
-        onView(withId(R.id.dialog_linkedin_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
@@ -576,44 +586,54 @@ public class AmbassadorActivityTest {
 
         when(ambassadorConfig.getTwitterAccessToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
 
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Object[] object = invocation.getArguments();
+                AmbassadorConfig.NullifyCompleteListener completion = (AmbassadorConfig.NullifyCompleteListener) object[0];
+                completion.nullifyComplete();
+                return null;
+            }
+        }).when(ambassadorConfig).nullifyTwitterIfInvalid(any(AmbassadorConfig.NullifyCompleteListener.class));
+
         onView(withText("TWITTER")).perform(click());
 
-        onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
-        onView(withId(R.id.etTweetMessage)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvTwitterHeaderText)).check(matches(isDisplayed()));
-        onView(withId(R.id.ivTwitterHeaderImg)).check(matches(isDisplayed()));
+        onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.etMessage)).check(matches(isDisplayed()));
+        onView(withId(R.id.tvHeaderText)).check(matches(isDisplayed()));
+        onView(withId(R.id.ivHeaderImg)).check(matches(isDisplayed()));
         onView(withId(R.id.btnCancel)).check(matches(isDisplayed()));
-        onView(withId(R.id.btnTweet)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("Twitter Post")).check(matches(isDisplayed()));
         pressBack();
         verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
         //ensure dialog fields not visible now that we've backed out
-        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
 
         //click twitter icon
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         //enter blank text and make sure dialog is still visible
-        onView(withId(R.id.etTweetMessage)).perform(clearText(), closeSoftKeyboard());
-        onView(withId(R.id.btnTweet)).perform(click());
+        onView(withId(R.id.etMessage)).perform(clearText(), closeSoftKeyboard());
+        onView(withId(R.id.btnSend)).perform(click());
         verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
         //since text was cleared, ensure dialog is present, then click "send anyway"
         onView(withText("Hold on!")).check(matches(isDisplayed()));
         onView(withId(android.R.id.button1)).perform(click());
-        onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         pressBack();
         verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
         //test sending a successful (mocked) tweet
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         //make sure message has been restored
-        onView(withId(R.id.etTweetMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
+        onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         String tweetText = _getRandomNumber();
-        onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeText(tweetText), closeSoftKeyboard());
 
         doNothing().when(requestManager).bulkShareTrack(any(BulkShareHelper.SocialServiceTrackType.class));
         doAnswer(new Answer<Void>() {
@@ -634,26 +654,26 @@ public class AmbassadorActivityTest {
         })
         .when(requestManager).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
-        onView(withId(R.id.btnTweet)).perform(click());
-        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
 
         //test sending an unsuccessful (mocked) tweet
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         //make sure message has been restored
-        onView(withId(R.id.etTweetMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
+        onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
-        onView(withId(R.id.etTweetMessage)).perform(typeText(tweetText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeText(tweetText), closeSoftKeyboard());
 
-        onView(withId(R.id.btnTweet)).perform(click());
+        onView(withId(R.id.btnSend)).perform(click());
         //failure shouldn't dismiss the dialog
-        onView(withId(R.id.dialog_twitter_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         verify(requestManager, times(2)).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnCancel)).perform(click());
-        onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));

@@ -415,7 +415,7 @@ public class RequestManager {
                     final int responseCode = connection.getResponseCode();
                     String response = getResponse(connection, responseCode);
                     Utilities.debugLog("PusherSDK", "EXTERNAL PUSHER CALL Response Code = " + responseCode +
-                                                                " and Response = " + response);
+                            " and Response = " + response);
 
                     if (Utilities.isSuccessfulResponseCode(responseCode)) {
                         completion.onSuccess(response);
@@ -452,7 +452,11 @@ public class RequestManager {
 
                     @Override
                     public void failure(com.twitter.sdk.android.core.TwitterException e) {
-                        completion.onFailure("Failure Postring to Twitter");
+                        if (e.toString().toLowerCase().contains("no authentication")) {
+                            completion.onFailure("auth");
+                        } else {
+                            completion.onFailure("Failure Postring to Twitter");
+                        }
                     }
                 });
             }
@@ -546,6 +550,47 @@ public class RequestManager {
                     oStream.writeBytes(objectToPost.toString());
                     oStream.flush();
                     oStream.close();
+
+                    final int responseCode = connection.getResponseCode();
+                    final String response = getResponse(connection, responseCode);
+                    Utilities.debugLog("LinkedIn", "LINKEDIN POST ResponseCode = " + responseCode + " and Response = " + response);
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
+                                completion.onSuccess("Success!");
+                            } else {
+                                completion.onFailure("Failure");
+                            }
+                        }
+                    });
+                } catch (final IOException e) {
+                    e.printStackTrace();
+
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            completion.onFailure("Linkedin Post FAILED due to IOException - " + e.getMessage());
+                        }
+                    });
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    public void getProfileLinkedIn(final RequestCompletion completion) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                String url = "https://api.linkedin.com/v1/people/~?format=json";
+
+                try {
+                    HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+                    connection.setDoInput(true);
+                    connection.setRequestMethod("GET");
+                    connection.setRequestProperty("Authorization", "Bearer " + ambassadorConfig.getLinkedInToken());
 
                     final int responseCode = connection.getResponseCode();
                     final String response = getResponse(connection, responseCode);

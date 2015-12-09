@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -225,6 +226,9 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         }, 30000);
 
+        ambassadorConfig.nullifyTwitterIfInvalid(null);
+        ambassadorConfig.nullifyLinkedInIfInvalid(null);
+
         //if we have a channel and it's not expired and connected, call API Identify
         if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() == ConnectionState.CONNECTED) {
             requestManager.identifyRequest();
@@ -380,16 +384,40 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     void shareWithTwitter() {
-        launchedSocial = LaunchedSocial.TWITTER;
-
         // Presents twitter login screen if user has not logged in yet
         if (ambassadorConfig.getTwitterAccessToken() != null) {
-            TweetDialog tweetDialog = new TweetDialog(this);
-            tweetDialog.setOwnerActivity(this);
+            SocialShareDialog tweetDialog = new SocialShareDialog(AmbassadorActivity.this);
+            tweetDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.TWITTER);
+            tweetDialog.setOwnerActivity(AmbassadorActivity.this);
+            tweetDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
+                @Override
+                public void postSuccess() {
+
+                }
+
+                @Override
+                public void postFailed() {
+
+                }
+
+                @Override
+                public void postCancelled() {
+
+                }
+
+                @Override
+                public void needAuth() {
+                    ambassadorConfig.setTwitterAccessTokenSecret(null);
+                    ambassadorConfig.setTwitterAccessToken(null);
+                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
+                    requestReauthTwitter();
+                }
+            });
             tweetDialog.show();
         } else {
+            launchedSocial = LaunchedSocial.TWITTER;
             twitterAuthClient = new TwitterAuthClient();
-            twitterAuthClient.authorize(this, new Callback<TwitterSession>() {
+            twitterAuthClient.authorize(AmbassadorActivity.this, new Callback<TwitterSession>() {
                 @Override
                 public void success(Result<TwitterSession> result) {
                     ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
@@ -405,17 +433,83 @@ public class AmbassadorActivity extends AppCompatActivity {
         }
     }
 
+    private void requestReauthTwitter() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage("We need you to re-authenticate Twitter. Continue?")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        shareWithTwitter();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+    }
+
     void shareWithLinkedIn() {
         // Presents login screen if user hasn't signed in yet
         if (ambassadorConfig.getLinkedInToken() != null) {
-            LinkedInDialog linkedInDialog = new LinkedInDialog(this);
-            linkedInDialog.setOwnerActivity(this);
+            SocialShareDialog linkedInDialog = new SocialShareDialog(AmbassadorActivity.this);
+            linkedInDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.LINKEDIN);
+            linkedInDialog.setOwnerActivity(AmbassadorActivity.this);
+            linkedInDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
+                @Override
+                public void postSuccess() {
+
+                }
+
+                @Override
+                public void postFailed() {
+
+                }
+
+                @Override
+                public void postCancelled() {
+
+                }
+
+                @Override
+                public void needAuth() {
+                    ambassadorConfig.setLinkedInToken(null);
+                    requestReauthLinkedIn();
+                }
+            });
             linkedInDialog.show();
         } else {
-            Intent intent = new Intent(this, LinkedInLoginActivity.class);
+            Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);
             startActivity(intent);
         }
     }
+
+    private void requestReauthLinkedIn() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage("We need you to re-authenticate LinkedIn. Continue?")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        shareWithLinkedIn();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+    }
+
     // END ONCLICK METHODS
 
 
