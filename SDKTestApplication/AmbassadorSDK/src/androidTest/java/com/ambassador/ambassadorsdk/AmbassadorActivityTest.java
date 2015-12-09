@@ -255,7 +255,7 @@ public class AmbassadorActivityTest {
         //TODO: test by using a mock list of contacts instead of phone contacts - these tests are dependent on there actually being contacts stored on the device
 
         //nothing should happen when no contacts selected
-        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.rlSend)).perform(click());
         //make sure mock didn't get got fired
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
@@ -288,7 +288,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnEdit)).perform(click());
         onView(withId(R.id.etShareMessage)).check(matches(isEnabled()));
         //nothing should happen when no contacts selected
-        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.rlSend)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
         onView(withId(R.id.btnDone)).perform(click());
         //share message should not be editable after done button clicked
@@ -297,7 +297,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.etShareMessage)).perform(clearText());
         onView(withId(R.id.etShareMessage)).perform(typeText("test"), closeSoftKeyboard());
         onView(withId(R.id.btnDone)).perform(click());
-        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.rlSend)).perform(click());
         //dialog "url not entered" should be showing at this point - since I can't check that programmatically-created dialog, just check that underlying views are not present
         onView(withId(R.id.dialog_twitter_layout)).check(ViewAssertions.doesNotExist());
         pressBack();
@@ -323,9 +323,9 @@ public class AmbassadorActivityTest {
         })
         .when(bulkShareHelper).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
-        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.rlSend)).perform(click());
         onView(withId(R.id.rlMaster)).check(matches(isDisplayed()));
-        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.rlSend)).perform(click());
         verify(bulkShareHelper, times(2)).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
         //TODO: after figuring out how to use mock list of contacts, test deleting one to make sure NO CONTACTS textview is shown
@@ -371,13 +371,13 @@ public class AmbassadorActivityTest {
 
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.rlSend)).perform(click());
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
         pressBack();
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
 
-        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.rlSend)).perform(click());
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
         onView(withId(R.id.btnContinue)).perform(click());
@@ -386,7 +386,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnCancel)).perform(click());
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
-        onView(withId(R.id.btnSend)).perform(click());
+        onView(withId(R.id.rlSend)).perform(click());
 
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
