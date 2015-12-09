@@ -103,8 +103,11 @@ class Utilities {
             return;
         }
 
-        if (editText.getText().toString().charAt(editText.getText().toString().length() - 1) != ' ') {
+        if (editText.getText().toString().length() != 0 && editText.getText().toString().charAt(editText.getText().toString().length() - 1) != ' ') {
             appendingLink = " " + url;
+            editText.setText(editText.getText().append(appendingLink));
+        } else {
+            appendingLink = url;
             editText.setText(editText.getText().append(appendingLink));
         }
     }
