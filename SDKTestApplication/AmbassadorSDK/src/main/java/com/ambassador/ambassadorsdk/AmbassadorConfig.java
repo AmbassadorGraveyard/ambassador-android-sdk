@@ -268,16 +268,22 @@ public class AmbassadorConfig {
             rm.getProfileLinkedIn(new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    listener.nullifyComplete();
+                    callNullifyComplete(listener);
                 }
 
                 @Override
                 public void onFailure(Object failureResponse) {
                     setLinkedInToken(null);
-                    listener.nullifyComplete();
+                    callNullifyComplete(listener);
                 }
             });
         } else {
+            callNullifyComplete(listener);
+        }
+    }
+
+    private void callNullifyComplete(NullifyCompleteListener listener) {
+        if (listener != null) {
             listener.nullifyComplete();
         }
     }
