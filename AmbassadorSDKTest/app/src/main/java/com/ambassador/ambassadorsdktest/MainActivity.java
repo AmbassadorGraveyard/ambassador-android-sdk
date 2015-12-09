@@ -1,8 +1,8 @@
-package com.example.ambassador.sdktestapplication;
+package com.ambassador.ambassadorsdktest;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,32 +12,32 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 
-
 public class MainActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final Context context = this;
-
-        //dev - run
-        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
-
-        //prod - run
+        //dev
         //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
 
-        AmbassadorSDK.identify("atestuser@getambassador.com");
+        //prod
+        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
+
+        AmbassadorSDK.identify("test12345@getambassador.com");
 
         //convert on install - this would normally happen after a user is authenticated because email is required on all conversions
         ConversionParameters conversionParameters = new ConversionParameters();
-        conversionParameters.mbsy_email = "atestuser@getambassador.com";
+        conversionParameters.mbsy_email = "test12345@getambassador.com";
         conversionParameters.mbsy_campaign = 260;
         conversionParameters.mbsy_revenue = 100;
         AmbassadorSDK.registerConversion(conversionParameters, true);
 
-        Button btnPresentRAF = (Button)findViewById(R.id.btnPresentRAF);
-        btnPresentRAF.setOnClickListener(new View.OnClickListener() {
+        Button btnRaf = (Button) findViewById(R.id.btnRAF2);
+        final Context context = this;
+
+        btnRaf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AmbassadorSDK.presentRAF(context, "260");
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 ConversionParameters conversionParameters = new ConversionParameters();
                 conversionParameters.mbsy_first_name = "ATest";
                 conversionParameters.mbsy_last_name = "User";
-                conversionParameters.mbsy_email = "atestuser@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
+                conversionParameters.mbsy_email = "test12345@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
                 conversionParameters.mbsy_campaign = 260;
                 conversionParameters.mbsy_revenue = 200;
 
