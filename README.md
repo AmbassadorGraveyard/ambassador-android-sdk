@@ -67,8 +67,6 @@ desktop or another place that you can easily access.
 
 * Add the **repositories** code and the **ambassador module** to your Gradle file with the following code:
 
-* You will want to make sure your compileSdkVersion and buildToolsVersion are set to the latest API version. While our SDK requires this to be a minimum of 23, this is also a best practice for Android development.
-
  ```java
  repositories {
      maven { url 'http://clojars.org/repo'}
@@ -79,6 +77,8 @@ desktop or another place that you can easily access.
   ```java
   compile project(':ambassador')
   ```
+
+* You will want to make sure your compileSdkVersion and buildToolsVersion are set to the latest API version. While our SDK requires this to be a minimum of 23, this is also a best practice for Android development.
 
  <img src="screenshots/addRepo.png" width="600" />
 
@@ -92,13 +92,13 @@ desktop or another place that you can easily access.
 
   ```java
   @Override
-      protected void onCreate(Bundle savedInstanceState) {
-          super.onCreate(savedInstanceState);
-          setContentView(R.layout.activity_main);
+  protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main);
 
-          // Pass in your application's context as the first parameter
-          AmbassadorSDK.runWithKeys(getApplicationContext(), "your_universal_key", "your_universal_ID");
-      }
+      // Pass in your application's context as the first parameter
+      AmbassadorSDK.runWithKeys(getApplicationContext(), "your_universal_key", "your_universal_ID");
+  }
    ```
 
 ## Identifying a User
