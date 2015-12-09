@@ -509,7 +509,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     public void _updateSendButton(int numOfContacts) {
         if (numOfContacts == 0) {
             btnSendContacts.setText("NO CONTACTS SELECTED");
-            btnSend.setEnabled(false);
             return;
         }
 
