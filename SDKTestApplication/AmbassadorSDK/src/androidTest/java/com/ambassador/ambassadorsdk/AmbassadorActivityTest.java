@@ -236,7 +236,6 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.etShareMessage)).check(matches(withText(containsString("http://staging.mbsy.co/jHjl"))));
         onView(withId(R.id.btnEdit)).check(matches(isDisplayed()));
         onView(withId(R.id.btnDone)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.btnSend)).check(matches(not(isEnabled())));
         onView(withId(R.id.tvNoContacts)).check(matches(not(isDisplayed())));
 
         //TODO: test search bar
@@ -266,11 +265,9 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         //onData(is(instanceOf(ContactObject.class))).inAdapterView(withId(R.id.rvContacts)).atPosition(0).perform(click());
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
-        onView(withId(R.id.btnSend)).check(matches(isEnabled()));
 
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.btnSend)).check(matches(not(isEnabled())));
 
         // long press dialog
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, longClick()));
@@ -374,8 +371,6 @@ public class AmbassadorActivityTest {
 
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
 
-        onView(withId(R.id.btnSend)).check(matches(isEnabled()));
-
         onView(withId(R.id.btnSend)).perform(click());
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
@@ -391,7 +386,6 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnCancel)).perform(click());
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.tvNumberOrEmail)).check(matches(_withRegex(SMS_PATTERN)));
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
-        onView(withId(R.id.btnSend)).check(matches(isEnabled()));
         onView(withId(R.id.btnSend)).perform(click());
 
         //contact name dialog should be displayed
