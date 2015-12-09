@@ -3,14 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="8dp"
-    android:id="@+id/dialog_twitter_layout"
+    android:id="@+id/dialog_social_share_layout"
     android:background="@android:color/white">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:text="Twitter Post"
-        android:id="@+id/tvTwitterHeaderText"
+        android:id="@+id/tvHeaderText"
         android:layout_alignParentTop="true"
         android:textSize="20sp"
         android:textColor="@android:color/white"
@@ -26,12 +25,12 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/ivTwitterHeaderImg"
+        android:id="@+id/ivHeaderImg"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:src="@drawable/twitter_icon"
-        android:layout_alignBottom="@+id/tvTwitterHeaderText"
+        android:layout_alignBottom="@+id/tvHeaderText"
         android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="10dp"
@@ -42,8 +41,8 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="Tweet"
-        android:id="@+id/tvTweet"
-        android:layout_below="@+id/ivTwitterHeaderImg"
+        android:id="@+id/tvSend"
+        android:layout_below="@+id/ivHeaderImg"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="20dp"
@@ -53,13 +52,13 @@
     <com.ambassador.ambassadorsdk.CustomEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/etTweetMessage"
+        android:id="@+id/etMessage"
         android:backgroundTint="@color/twitter_blue"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="24dp"
         android:editable="true"
-        android:layout_below="@+id/tvTweet"
+        android:layout_below="@+id/tvSend"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp"
         android:textCursorDrawable="@null"/>
@@ -71,9 +70,9 @@
         android:text="Cancel"
         android:id="@+id/btnCancel"
         android:textColor="@color/ambassador_blue"
-        android:layout_alignTop="@+id/btnTweet"
-        android:layout_toStartOf="@+id/btnTweet"
-        android:layout_toLeftOf="@+id/btnTweet"
+        android:layout_alignTop="@+id/btnSend"
+        android:layout_toStartOf="@+id/btnSend"
+        android:layout_toLeftOf="@+id/btnSend"
         android:layout_marginBottom="8dp" />
 
     <Button
@@ -81,10 +80,10 @@
         android:layout_height="36dp"
         android:background="?android:attr/selectableItemBackground"
         android:text="Tweet"
-        android:id="@+id/btnTweet"
-        android:layout_below="@+id/etTweetMessage"
-        android:layout_alignEnd="@+id/etTweetMessage"
-        android:layout_alignRight="@+id/etTweetMessage"
+        android:id="@+id/btnSend"
+        android:layout_below="@+id/etMessage"
+        android:layout_alignEnd="@+id/etMessage"
+        android:layout_alignRight="@+id/etMessage"
         android:textColor="@color/ambassador_blue"
         android:layout_marginBottom="8dp" />
 
