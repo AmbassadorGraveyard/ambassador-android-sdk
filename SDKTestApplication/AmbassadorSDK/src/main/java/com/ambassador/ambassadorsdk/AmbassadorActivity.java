@@ -409,6 +409,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 public void needAuth() {
                     ambassadorConfig.setTwitterAccessTokenSecret(null);
                     ambassadorConfig.setTwitterAccessToken(null);
+                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
                     requestReauthTwitter();
                 }
             });
