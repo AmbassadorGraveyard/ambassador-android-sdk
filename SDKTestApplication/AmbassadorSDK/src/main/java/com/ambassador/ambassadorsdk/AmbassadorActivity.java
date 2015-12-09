@@ -226,6 +226,9 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         }, 30000);
 
+        ambassadorConfig.nullifyTwitterIfInvalid(null);
+        ambassadorConfig.nullifyLinkedInIfInvalid(null);
+
         //if we have a channel and it's not expired and connected, call API Identify
         if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() == ConnectionState.CONNECTED) {
             requestManager.identifyRequest();
@@ -381,56 +384,49 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     void shareWithTwitter() {
-        pd.show();
-        ambassadorConfig.nullifyTwitterIfInvalid(new AmbassadorConfig.NullifyCompleteListener() {
-            @Override
-            public void nullifyComplete() {
-                // Presents twitter login screen if user has not logged in yet
-                pd.hide();
-                if (ambassadorConfig.getTwitterAccessToken() != null) {
-                    SocialShareDialog tweetDialog = new SocialShareDialog(AmbassadorActivity.this);
-                    tweetDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.TWITTER);
-                    tweetDialog.setOwnerActivity(AmbassadorActivity.this);
-                    tweetDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
-                        @Override
-                        public void postSuccess() {
+        // Presents twitter login screen if user has not logged in yet
+        if (ambassadorConfig.getTwitterAccessToken() != null) {
+            SocialShareDialog tweetDialog = new SocialShareDialog(AmbassadorActivity.this);
+            tweetDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.TWITTER);
+            tweetDialog.setOwnerActivity(AmbassadorActivity.this);
+            tweetDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
+                @Override
+                public void postSuccess() {
 
-                        }
-
-                        @Override
-                        public void postFailed() {
-
-                        }
-
-                        @Override
-                        public void postCancelled() {
-
-                        }
-
-                        @Override
-                        public void needAuth() {
-                            requestReauthTwitter();
-                        }
-                    });
-                    tweetDialog.show();
-                } else {
-                    launchedSocial = LaunchedSocial.TWITTER;
-                    twitterAuthClient = new TwitterAuthClient();
-                    twitterAuthClient.authorize(AmbassadorActivity.this, new Callback<TwitterSession>() {
-                        @Override
-                        public void success(Result<TwitterSession> result) {
-                            ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
-                            ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
-                        }
-
-                        @Override
-                        public void failure(TwitterException e) {
-
-                        }
-                    });
                 }
-            }
-        });
+
+                @Override
+                public void postFailed() {
+
+                }
+
+                @Override
+                public void postCancelled() {
+
+                }
+
+                @Override
+                public void needAuth() {
+                    requestReauthTwitter();
+                }
+            });
+            tweetDialog.show();
+        } else {
+            launchedSocial = LaunchedSocial.TWITTER;
+            twitterAuthClient = new TwitterAuthClient();
+            twitterAuthClient.authorize(AmbassadorActivity.this, new Callback<TwitterSession>() {
+                @Override
+                public void success(Result<TwitterSession> result) {
+                    ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
+                    ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
+                }
+
+                @Override
+                public void failure(TwitterException e) {
+
+                }
+            });
+        }
     }
 
     private void requestReauthTwitter() {
@@ -455,44 +451,37 @@ public class AmbassadorActivity extends AppCompatActivity {
     }
 
     void shareWithLinkedIn() {
-        pd.show();
-        ambassadorConfig.nullifyLinkedInIfInvalid(new AmbassadorConfig.NullifyCompleteListener() {
-            @Override
-            public void nullifyComplete() {
-                pd.hide();
-                // Presents login screen if user hasn't signed in yet
-                if (ambassadorConfig.getLinkedInToken() != null) {
-                    SocialShareDialog linkedInDialog = new SocialShareDialog(AmbassadorActivity.this);
-                    linkedInDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.LINKEDIN);
-                    linkedInDialog.setOwnerActivity(AmbassadorActivity.this);
-                    linkedInDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
-                        @Override
-                        public void postSuccess() {
+        // Presents login screen if user hasn't signed in yet
+        if (ambassadorConfig.getLinkedInToken() != null) {
+            SocialShareDialog linkedInDialog = new SocialShareDialog(AmbassadorActivity.this);
+            linkedInDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.LINKEDIN);
+            linkedInDialog.setOwnerActivity(AmbassadorActivity.this);
+            linkedInDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
+                @Override
+                public void postSuccess() {
 
-                        }
-
-                        @Override
-                        public void postFailed() {
-
-                        }
-
-                        @Override
-                        public void postCancelled() {
-
-                        }
-
-                        @Override
-                        public void needAuth() {
-                            requestReauthLinkedIn();
-                        }
-                    });
-                    linkedInDialog.show();
-                } else {
-                    Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);
-                    startActivity(intent);
                 }
-            }
-        });
+
+                @Override
+                public void postFailed() {
+
+                }
+
+                @Override
+                public void postCancelled() {
+
+                }
+
+                @Override
+                public void needAuth() {
+                    requestReauthLinkedIn();
+                }
+            });
+            linkedInDialog.show();
+        } else {
+            Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);
+            startActivity(intent);
+        }
     }
 
     private void requestReauthLinkedIn() {
