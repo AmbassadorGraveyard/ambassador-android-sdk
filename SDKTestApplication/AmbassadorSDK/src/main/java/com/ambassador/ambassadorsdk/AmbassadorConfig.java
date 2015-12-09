@@ -165,17 +165,11 @@ public class AmbassadorConfig {
     public String getLinkedInToken() { return sharePrefs.getString("linkedInToken", null); }
 
     public String getTwitterAccessToken() {
-        if (TwitterCore.getInstance().getSessionManager().getActiveSession() == null) {
-            return null;
-        }
-        return TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().token;
+        return sharePrefs.getString("twitterToken", null);
     }
 
     String getTwitterAccessTokenSecret() {
-        if (TwitterCore.getInstance().getSessionManager().getActiveSession() == null) {
-            return null;
-        }
-        return TwitterCore.getInstance().getSessionManager().getActiveSession().getAuthToken().secret;
+        return sharePrefs.getString("twitterTokenSecret", null);
     }
 
     String getIdentifyObject() { return sharePrefs.getString("identifyObject", null); }
