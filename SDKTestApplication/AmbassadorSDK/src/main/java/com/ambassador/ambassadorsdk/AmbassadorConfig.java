@@ -242,7 +242,7 @@ public class AmbassadorConfig {
                 TwitterCore.getInstance().getApiClient().getAccountService().verifyCredentials(null, null, new Callback<User>() {
                     @Override
                     public void success(Result<User> result) {
-                        listener.nullifyComplete();
+                        callNullifyComplete(listener);
                     }
 
                     @Override
@@ -250,15 +250,15 @@ public class AmbassadorConfig {
                         setTwitterAccessToken(null);
                         setTwitterAccessTokenSecret(null);
                         sm.clearActiveSession();
-                        listener.nullifyComplete();
+                        callNullifyComplete(listener);
                     }
                 });
             } else {
-                listener.nullifyComplete();
+                callNullifyComplete(listener);
 
             }
         } else {
-            listener.nullifyComplete();
+            callNullifyComplete(listener);
         }
     }
 
