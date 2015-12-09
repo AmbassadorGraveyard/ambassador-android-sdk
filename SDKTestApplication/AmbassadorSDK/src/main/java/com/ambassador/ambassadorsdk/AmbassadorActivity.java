@@ -407,6 +407,8 @@ public class AmbassadorActivity extends AppCompatActivity {
 
                 @Override
                 public void needAuth() {
+                    ambassadorConfig.setTwitterAccessTokenSecret(null);
+                    ambassadorConfig.setTwitterAccessToken(null);
                     requestReauthTwitter();
                 }
             });
@@ -474,6 +476,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
                 @Override
                 public void needAuth() {
+                    ambassadorConfig.setLinkedInToken(null);
                     requestReauthLinkedIn();
                 }
             });
