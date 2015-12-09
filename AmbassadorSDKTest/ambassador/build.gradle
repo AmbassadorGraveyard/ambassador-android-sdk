@@ -1,8 +1,8 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:1.3.0'
@@ -19,10 +19,10 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.google.gms.google-services'
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
     jcenter()
     mavenCentral()
     maven { url 'http://clojars.org/repo' }
+    maven { url 'https://maven.fabric.io/repo' }
     flatDir {
         dirs 'libs'
     }
@@ -82,12 +82,13 @@ dependencies {
     compile 'com.google.guava:guava:19.0-rc1'
     compile 'com.pusher:pusher-java-client:0.3.3'
     compile 'org.slf4j:slf4j-android:1.7.12'
-    compile(name: 'augur', ext: 'aar')
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.google.code.gson:gson:2.3.1'
     compile(name: 'fabric', ext: 'aar')
     compile(name: 'twitter-core', ext: 'aar')
+    compile(name: 'augur', ext: 'aar')
+    compile(name:'AmbassadorSDK-release', ext:'aar')
     compile 'com.google.dagger:dagger:2.0'
     compile 'org.mockito:mockito-core:1.10.19'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
@@ -128,4 +129,3 @@ spoon {
     // for debug output
     debug = true
 }
-
