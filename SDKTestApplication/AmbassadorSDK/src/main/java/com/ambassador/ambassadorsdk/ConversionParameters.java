@@ -48,7 +48,16 @@ public class ConversionParameters {
     }
 
     // Boolean that checks if the conversion parameters are valid
-    boolean isValid() {
+    public boolean isValid() {
         return mbsy_campaign > -1 && !mbsy_email.equals("") && mbsy_revenue > -1;
     }
+
+    public void setShortCode(String shortCode) {
+       this.mbsy_short_code = shortCode;
+    }
+
+    public String getShortCode() {
+        return mbsy_short_code;
+    }
+
 }

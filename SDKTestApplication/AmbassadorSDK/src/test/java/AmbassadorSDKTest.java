@@ -3,6 +3,8 @@ package com.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.content.Intent;
 
+import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
 import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.example.ambassador.ambassadorsdk.ServiceSelectorPreferences;
 
