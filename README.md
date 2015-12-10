@@ -240,13 +240,13 @@ The following image shows the logo in the various positions set in the custom va
 
 ### Modifying Sharing Options
 
-Any sharing method can be disabled or reordered. An array is stored in customValues.xml for you to do this.  The keys allowed are Facebook, Twitter, LinkedIn, Email, and SMS.  Keys are _not_ case sensitive.
+Any sharing method can be disabled or reordered in customValues.xml. The share methods allowed are Facebook, Twitter, LinkedIn, Email, and SMS. These strings are _not_ case sensitive.
 
 <img src="screenshots/socialArray.png" />
 
 #### Disabling Sharing Options
 
-To disable a social option, remove it from the array.
+To disable a sharing method, remove it from the array.
 
 <img src="screenshots/disableIconValues.png" />
 
@@ -260,7 +260,7 @@ This is the standard ordering with Facebook appearing first and SMS last.
 
 <img src="screenshots/standardIconOrder.png" width="250" />
 
-Reordering the SMS item to the first position will move the icon in front.
+Reordering the SMS item to the first position will move the icon to the front.
 
 <img src="screenshots/reorderIconValuesModified.png" />
 
