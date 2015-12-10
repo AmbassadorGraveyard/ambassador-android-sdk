@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="RAFdefaultShareMessage">Casheck out this company!</string>
-    <string name="RAFtitleText">RAF ParamsASas Welcome Title</string>
-    <string name="RAFdescriptionText">RAF PaASrams Welcome Description</string>
-    <string name="RAFtoolbarTitle">RAF ParamASass Toolbar Title</string>
-    <string name="RAFLogoPosition">5</string>
-    <color name="homeBackground">@android:color/holo_red_dark</color>
+    <string name="RAFdefaultShareMessage">Check out this company!</string>
+    <string name="RAFtitleText">RAF Params Welcome Title</string>
+    <string name="RAFdescriptionText">RAF Params Welcome Description</string>
+    <string name="RAFtoolbarTitle">RAF Params Toolbar Title</string>
+    <string name="RAFLogoPosition">0</string>
+    <color name="homeBackground">@android:color/white</color>
     <color name="homeWelcomeTitle">@color/lightGray</color>
     <dimen name="homeWelcomeTitle">22sp</dimen>
     <string name="homeWelcomeTitle">fonts/Roboto-RobotoRegular.ttf</string>
@@ -40,14 +40,11 @@
     <color name="linkedinToolBar">@color/linkedin_blue</color>
     <color name="linkedinToolBarText">@android:color/white</color>
     <color name="linkedinToolBarArrow">@android:color/white</color>
-    <bool name="showFacebook">true</bool>
-    <bool name="showTwitter">true</bool>
-    <bool name="showLinkedIn">true</bool>
-    <bool name="showEmail">true</bool>
-    <bool name="showSMS">true</bool>
-    <integer name="weightFacebook">10</integer>
-    <integer name="weightTwitter">20</integer>
-    <integer name="weightLinkedIn">30</integer>
-    <integer name="weightEmail">40</integer>
-    <integer name="weightSMS">50</integer>
+    <array name="channels">
+        <item>Facebook</item>
+        <item>Twitter</item>
+        <item>LinkedIn</item>
+        <item>Email</item>
+        <item>SMS</item>
+    </array>
 </resources>
