@@ -20,7 +20,7 @@ import java.io.IOException;
 /**
  * Created by dylan on 11/20/15.
  */
-public class ContactInfoDialog extends Dialog {
+class ContactInfoDialog extends Dialog {
 
     private ContactObject contactObject;
 

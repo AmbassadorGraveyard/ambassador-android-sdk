@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk;
 /**
  * Created by dylan on 11/6/15.
  */
-public class SocialGridModel implements Comparable<SocialGridModel> {
+class SocialGridModel implements Comparable<SocialGridModel> {
 
     interface OnClickListener {
         void onClick();
