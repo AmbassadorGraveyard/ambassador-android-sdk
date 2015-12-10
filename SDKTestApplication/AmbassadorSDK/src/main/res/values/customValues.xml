@@ -41,10 +41,10 @@
     <color name="linkedinToolBarText">@android:color/white</color>
     <color name="linkedinToolBarArrow">@android:color/white</color>
     <array name="channels">
-        <item>SMS</item>
         <item>Facebook</item>
         <item>Twitter</item>
         <item>LinkedIn</item>
         <item>Email</item>
+        <item>SMS</item>
     </array>
 </resources>
