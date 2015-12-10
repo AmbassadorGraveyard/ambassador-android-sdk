@@ -238,23 +238,23 @@ The following image shows the logo in the various positions set in the custom va
 
 <img src="screenshots/rafLogoPosition1.png" />
 
-### Modifying Sharing Options
+### Modifying Share Options
 
-The share methods can be disabled or reordered in customValues.xml. The share methods allowed are Facebook, Twitter, LinkedIn, Email, and SMS. These strings are _not_ case sensitive.
+The share options can be disabled or reordered in customValues.xml. The share options allowed are Facebook, Twitter, LinkedIn, Email, and SMS. These strings are _not_ case sensitive.
 
 <img src="screenshots/socialArray.png" />
 
-#### Disabling Sharing Options
+#### Disabling Share Options
 
-To disable a sharing method, remove it from the array.
+To disable a share option, remove it from the array.
 
 <img src="screenshots/disableIconValues.png" />
 
 <img src="screenshots/disableIconExample.png" width="250" />
 
-#### Reordering Sharing Options
+#### Reordering Share Options
 
-To reorder share methods, rearrange their positions in the array.
+To reorder share options, rearrange their positions in the array.
 
 This is the standard ordering with Facebook appearing first and SMS last.
 
