@@ -240,7 +240,7 @@ The following image shows the logo in the various positions set in the custom va
 
 ### Modifying Sharing Options
 
-Any sharing method can be disabled or reordered in customValues.xml. The share methods allowed are Facebook, Twitter, LinkedIn, Email, and SMS. These strings are _not_ case sensitive.
+The share methods can be disabled or reordered in customValues.xml. The share methods allowed are Facebook, Twitter, LinkedIn, Email, and SMS. These strings are _not_ case sensitive.
 
 <img src="screenshots/socialArray.png" />
 
@@ -254,7 +254,7 @@ To disable a sharing method, remove it from the array.
 
 #### Reordering Sharing Options
 
-To reorder social options, rearrange their positions in the array.
+To reorder share methods, rearrange their positions in the array.
 
 This is the standard ordering with Facebook appearing first and SMS last.
 
