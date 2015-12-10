@@ -238,27 +238,29 @@ The following image shows the logo in the various positions set in the custom va
 
 <img src="screenshots/rafLogoPosition1.png" />
 
+### Modifying Sharing Options
+
+The share methods can be disabled or reordered in customValues.xml. The share methods allowed are Facebook, Twitter, LinkedIn, Email, and SMS. These strings are _not_ case sensitive.
+
+<img src="screenshots/socialArray.png" />
+
 #### Disabling Sharing Options
 
-Any sharing method can be disabled if it is irrelevant to your campaign. The values are stored as booleans in the customValues.xml file.
+To disable a sharing method, remove it from the array.
 
 <img src="screenshots/disableIconValues.png" />
-
-Setting the showLinkedIn boolean to false, as in the screenshot above, would result in the LinkedIn share option not displaying in your app.
 
 <img src="screenshots/disableIconExample.png" width="250" />
 
 #### Reordering Sharing Options
 
-Any of the sharing methods can be reordered. The values are stored as integers in the customValues.xml file.  The options are sorted based on weight, with lower weights appearing first.
-
-<img src="screenshots/reorderIconValues.png" />
+To reorder share methods, rearrange their positions in the array.
 
 This is the standard ordering with Facebook appearing first and SMS last.
 
 <img src="screenshots/standardIconOrder.png" width="250" />
 
-Modifying the weights to give SMS the lowest weight will result in it being moved to the first position.
+Reordering the SMS item to the first position will move the icon to the front.
 
 <img src="screenshots/reorderIconValuesModified.png" />
 
