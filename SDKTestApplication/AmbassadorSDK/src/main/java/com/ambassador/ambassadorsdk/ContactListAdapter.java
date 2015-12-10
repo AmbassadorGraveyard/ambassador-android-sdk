@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by dylan on 11/19/15.
  */
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
+class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
 
     public static class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 

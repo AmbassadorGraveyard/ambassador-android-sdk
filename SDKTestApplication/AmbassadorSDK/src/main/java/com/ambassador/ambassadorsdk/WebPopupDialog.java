@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 /**
  * Created by dylan on 12/4/15.
  */
-public class WebPopupDialog extends Dialog {
+class WebPopupDialog extends Dialog {
 
     private WebView webView;
     private ProgressBar progressBar;
