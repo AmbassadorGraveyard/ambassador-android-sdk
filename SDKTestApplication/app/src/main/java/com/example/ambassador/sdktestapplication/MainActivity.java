@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
-import com.ambassador.ambassadorsdk.conversions.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 
 
 public class MainActivity extends AppCompatActivity {

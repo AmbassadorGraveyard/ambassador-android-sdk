@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.conversions;
+package com.ambassador.ambassadorsdk.internal;
 
 import android.provider.BaseColumns;
 

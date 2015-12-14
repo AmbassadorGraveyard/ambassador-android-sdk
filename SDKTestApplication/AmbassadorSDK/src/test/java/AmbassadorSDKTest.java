@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.content.Intent;
 
-import com.ambassador.ambassadorsdk.conversions.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
 import com.example.ambassador.ambassadorsdk.AmbassadorSDK;
