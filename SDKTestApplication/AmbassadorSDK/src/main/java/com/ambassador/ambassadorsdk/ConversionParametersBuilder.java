@@ -1,11 +1,15 @@
 package com.ambassador.ambassadorsdk;
 
+import android.util.Log;
+
 /**
  * Created by dylan on 12/14/15.
  */
 public class ConversionParametersBuilder {
 
-    public int mbsy_campaign;
+    private static final String TAG = ConversionParametersBuilder.class.getSimpleName();
+
+    public int mbsy_campaign = -1;
     public String mbsy_email;
     public String mbsy_first_name;
     public String mbsy_last_name;
@@ -15,7 +19,7 @@ public class ConversionParametersBuilder {
     public String mbsy_custom2;
     public String mbsy_custom3;
     public int mbsy_auto_create;
-    public int mbsy_revenue;
+    public int mbsy_revenue = -1;
     public int mbsy_deactivate_new_ambassador;
     public String mbsy_transaction_uid;
     public String mbsy_add_to_group_id;
@@ -24,17 +28,19 @@ public class ConversionParametersBuilder {
     public String mbsy_event_data3;
     public int mbsy_is_approved;
 
-    public ConversionParametersBuilder() {
-        
-    }
+    private boolean revenueCheck = false, campaignCheck = false, emailCheck = false;
+
+    public ConversionParametersBuilder() {}
 
     public ConversionParametersBuilder setMbsy_campaign(int mbsy_campaign) {
         this.mbsy_campaign = mbsy_campaign;
+        this.campaignCheck = true;
         return this;
     }
 
     public ConversionParametersBuilder setMbsy_email(String mbsy_email) {
         this.mbsy_email = mbsy_email;
+        this.emailCheck = true;
         return this;
     }
 
@@ -80,6 +86,7 @@ public class ConversionParametersBuilder {
 
     public ConversionParametersBuilder setMbsy_revenue(int mbsy_revenue) {
         this.mbsy_revenue = mbsy_revenue;
+        this.revenueCheck = true;
         return this;
     }
 
@@ -119,6 +126,8 @@ public class ConversionParametersBuilder {
     }
 
     public ConversionParameters build() {
+        validateRequiredFields();
+
         ConversionParameters out = new ConversionParameters();
         out.mbsy_campaign = mbsy_campaign;
         out.mbsy_email = mbsy_email;
@@ -139,6 +148,18 @@ public class ConversionParametersBuilder {
         out.mbsy_event_data3 = mbsy_event_data3;
         out.mbsy_is_approved = mbsy_is_approved;
         return out;
+    }
+
+    private void validateRequiredFields() {
+        if (!revenueCheck || mbsy_revenue == -1) {
+            Log.w(TAG, "Warning: you must set mbsy_revenue!");
+        }
+        if (!campaignCheck || mbsy_revenue == -1) {
+            Log.w(TAG, "Warning: you must set mbsy_campaign!");
+        }
+        if (!emailCheck || mbsy_email == null) {
+            Log.w(TAG, "Warning: you must set mbsy_email!");
+        }
     }
 
 }
