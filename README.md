@@ -143,7 +143,11 @@ builder.setIsApproved(1); // Boolean represented by int (Defaults to true);
 ConversionParameters conversionParameters = builder.build();
 
 // (Also: you can chain the builder methods which is way easier)
-conversionParameters = new ConversionParametersBuilder().setRevenue(10).setCampaign(101).setEmail("user@example.com").build();
+conversionParameters = new ConversionParametersBuilder()
+        .setRevenue(10)
+        .setCampaign(101)
+        .setEmail("user@example.com")
+        .build();
 
 // STEP FIVE: Register the conversion with the ConversionParameters object.
 // The second parameter indicates that the conversion should be restricted to a user first installing your application.
