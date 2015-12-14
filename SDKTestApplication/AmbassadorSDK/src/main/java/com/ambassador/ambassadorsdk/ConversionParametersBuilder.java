@@ -2,6 +2,8 @@ package com.ambassador.ambassadorsdk;
 
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.internal.ConversionParameters;
+
 /**
  * Created by dylan on 12/14/15.
  */
