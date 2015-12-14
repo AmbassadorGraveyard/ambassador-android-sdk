@@ -1,4 +1,4 @@
-<com.ambassador.ambassadorsdk.LockableScrollView
+<com.ambassador.ambassadorsdk.internal.LockableScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -50,7 +50,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
-            <com.ambassador.ambassadorsdk.CustomEditText
+            <com.ambassador.ambassadorsdk.internal.CustomEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/homeShareTextBar"
@@ -78,7 +78,7 @@
 
         </FrameLayout>
 
-        <com.ambassador.ambassadorsdk.StaticGridView
+        <com.ambassador.ambassadorsdk.internal.StaticGridView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -97,4 +97,4 @@
 
     </LinearLayout>
 
-</com.ambassador.ambassadorsdk.LockableScrollView>
+</com.ambassador.ambassadorsdk.internal.LockableScrollView>

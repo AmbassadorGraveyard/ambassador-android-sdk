@@ -14,6 +14,17 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationModule;
+import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.PusherSDK;
+import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
