@@ -10,9 +10,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
-import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.ConversionParametersBuilder;
-
+import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 
 public class MainActivity extends AppCompatActivity {
     @Override
