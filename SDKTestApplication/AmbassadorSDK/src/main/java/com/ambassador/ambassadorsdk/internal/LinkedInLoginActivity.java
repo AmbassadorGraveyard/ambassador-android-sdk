@@ -64,9 +64,18 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         String authUrl = LinkedInApi.getAuthorizationUrl("code", "777z4czm3edaef", "http://localhost:2999", "987654321", "r_basicprofile", "w_share");
 
         WebView webView = (WebView)findViewById(R.id.wvSocial);
-        webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        WebSettings settings = webView.getSettings();
+
+        settings.setAllowFileAccess(false);
+        settings.setJavaScriptEnabled(false);
+        settings.setSaveFormData(false);
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(true);
+
         webView.setWebViewClient(new LinkedInClient());
         webView.loadUrl(authUrl);
     }
