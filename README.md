@@ -115,7 +115,7 @@ Conversions can be triggered from anywhere.  Common places are an Activity's **o
 
  ```java
 // STEP ONE: Create a ConversionParametersBuilder object
-ConversionParametersBuilder builder = new ConversionParametersBuilder()
+ConversionParametersBuilder builder = new ConversionParametersBuilder();
 
 // STEP TWO: Set the REQUIRED properties
 builder.setRevenue(10);
