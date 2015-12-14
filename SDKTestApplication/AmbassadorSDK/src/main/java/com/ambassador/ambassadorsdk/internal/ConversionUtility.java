@@ -1,14 +1,10 @@
-package com.ambassador.ambassadorsdk.conversions;
+package com.ambassador.ambassadorsdk.internal;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
-
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.RequestManager;
-import com.ambassador.ambassadorsdk.internal.Utilities;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +25,7 @@ public class ConversionUtility {
     RequestManager requestManager;
 
     @Inject
-    ConversionConfig conversionConfig;
+    AmbassadorConfig ambassadorConfig;
 
     // Constructors for ConversionUtility
     public ConversionUtility(Context context) {
@@ -47,7 +43,7 @@ public class ConversionUtility {
 
     public void registerConversion() {
         //if either augur identify or install intent hasn't come back yet, insert into DB for later retry
-        if (conversionConfig.getIdentifyObject() == null || conversionConfig.getReferralShortCode() == null) {
+        if (ambassadorConfig.getIdentifyObject() == null || ambassadorConfig.getReferralShortCode() == null) {
             ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
             db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
             Utilities.debugLog("Conversion", "Inserted row into table");
@@ -125,7 +121,7 @@ public class ConversionUtility {
     public void readAndSaveDatabaseEntries() {
         //if we don't have an identify object yet, that means neither the intent nor augur has returned
         //so bail out and try again later
-        if (conversionConfig.getIdentifyObject() == null || conversionConfig.getReferralShortCode() == null) return;
+        if (ambassadorConfig.getIdentifyObject() == null || ambassadorConfig.getReferralShortCode() == null) return;
 
         String[] projection = {
                 ConversionSQLStrings.ConversionSQLEntry._ID,
@@ -176,7 +172,7 @@ public class ConversionUtility {
     public void makeConversionRequest(final ConversionParameters newParameters) {
         //in the case of an install conversion, we didn't have the shortCode right away, so that conversion got stored in the database.
         //now that we know we have it (wouldn't have gotten this far if we didn't) set that parameter value.
-        newParameters.mbsy_short_code = conversionConfig.getReferralShortCode();
+        newParameters.mbsy_short_code = ambassadorConfig.getReferralShortCode();
 
         requestManager.registerConversionRequest(newParameters, new RequestManager.RequestCompletion() {
             @Override
@@ -199,4 +195,6 @@ public class ConversionUtility {
                     "'mbsy_campaign', and 'mbsy_email.");
         }
     }
+
+
 }

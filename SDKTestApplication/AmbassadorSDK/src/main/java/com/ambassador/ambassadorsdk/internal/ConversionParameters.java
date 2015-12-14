@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.conversions;
+package com.ambassador.ambassadorsdk.internal;
 
 /**
  * Created by JakeDunahee on 8/21/15.

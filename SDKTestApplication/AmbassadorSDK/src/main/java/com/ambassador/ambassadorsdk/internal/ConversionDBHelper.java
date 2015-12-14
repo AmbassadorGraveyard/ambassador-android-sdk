@@ -1,12 +1,10 @@
-package com.ambassador.ambassadorsdk.conversions;
+package com.ambassador.ambassadorsdk.internal;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.ambassador.ambassadorsdk.internal.Utilities;
 
 /**
  * Created by JakeDunahee on 8/21/15.

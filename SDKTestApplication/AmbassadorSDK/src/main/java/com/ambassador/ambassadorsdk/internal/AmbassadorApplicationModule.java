@@ -3,7 +3,6 @@ package com.ambassador.ambassadorsdk.internal;
 import android.app.Activity;
 import android.content.Context;
 
-import com.ambassador.ambassadorsdk.conversions.ConversionConfig;
 import com.facebook.share.widget.ShareDialog;
 
 import javax.inject.Singleton;
@@ -61,13 +60,6 @@ public class AmbassadorApplicationModule {
     AmbassadorConfig provideAmbassadorConfig() {
         if (mockMode) return mock(AmbassadorConfig.class);
         return new AmbassadorConfig();
-    }
-
-    @Provides
-    @Singleton
-    ConversionConfig provideConversionConfig() {
-        if (mockMode) return mock(ConversionConfig.class);
-        return new ConversionConfig();
     }
 
     @Provides
