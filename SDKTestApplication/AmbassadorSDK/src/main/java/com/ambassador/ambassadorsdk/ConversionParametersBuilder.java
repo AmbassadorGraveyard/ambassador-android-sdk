@@ -11,24 +11,24 @@ public class ConversionParametersBuilder {
 
     private static final String TAG = ConversionParametersBuilder.class.getSimpleName();
 
-    public int mbsy_campaign = -1;
-    public String mbsy_email;
-    public String mbsy_first_name;
-    public String mbsy_last_name;
-    public int mbsy_email_new_ambassador;
-    public String mbsy_uid;
-    public String mbsy_custom1;
-    public String mbsy_custom2;
-    public String mbsy_custom3;
-    public int mbsy_auto_create;
-    public int mbsy_revenue = -1;
-    public int mbsy_deactivate_new_ambassador;
-    public String mbsy_transaction_uid;
-    public String mbsy_add_to_group_id;
-    public String mbsy_event_data1;
-    public String mbsy_event_data2;
-    public String mbsy_event_data3;
-    public int mbsy_is_approved;
+    private int mbsy_campaign = -1;
+    private String mbsy_email;
+    private String mbsy_first_name;
+    private String mbsy_last_name;
+    private int mbsy_email_new_ambassador;
+    private String mbsy_uid;
+    private String mbsy_custom1;
+    private String mbsy_custom2;
+    private String mbsy_custom3;
+    private int mbsy_auto_create;
+    private int mbsy_revenue = -1;
+    private int mbsy_deactivate_new_ambassador;
+    private String mbsy_transaction_uid;
+    private String mbsy_add_to_group_id;
+    private String mbsy_event_data1;
+    private String mbsy_event_data2;
+    private String mbsy_event_data3;
+    private int mbsy_is_approved;
 
     private boolean revenueCheck = false, campaignCheck = false, emailCheck = false;
 
