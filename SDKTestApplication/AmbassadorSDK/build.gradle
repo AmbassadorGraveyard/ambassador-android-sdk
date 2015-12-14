@@ -81,50 +81,53 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+
+    /** Base Dependencies */
     compile 'com.android.support:appcompat-v7:23.1.0'
+    compile(name: 'augur', ext: 'aar')
+    compile(name: 'fabric', ext: 'aar')
+    compile(name: 'twitter-core', ext: 'aar')
     compile 'com.google.android.gms:play-services-analytics:8.3.0'
     compile 'com.google.guava:guava:19.0-rc1'
     compile 'com.pusher:pusher-java-client:0.3.3'
     compile 'org.slf4j:slf4j-android:1.7.12'
-    compile(name: 'augur', ext: 'aar')
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.google.code.gson:gson:2.3.1'
-    compile(name: 'fabric', ext: 'aar')
-    compile(name: 'twitter-core', ext: 'aar')
     compile 'com.google.dagger:dagger:2.0'
-    compile 'org.mockito:mockito-core:1.10.19'
     compile 'uk.co.chrisjenx:calligraphy:2.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
-    compile 'com.android.support:recyclerview-v7:23.0.0'
-    apt "com.google.dagger:dagger-compiler:2.0"
-    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compile 'com.android.support:recyclerview-v7:23.1.0'
+    compile 'org.mockito:mockito-core:1.10.19'
 
-    //Unit testing dependencies
+    apt 'com.google.dagger:dagger-compiler:2.0'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
+    /** ----- */
+
+    /** Unit Testing Dependencies */
     testCompile 'junit:junit:4.12'
     testCompile 'org.mockito:mockito-core:1.10.19'
     testCompile 'org.powermock:powermock-module-test-mockito-junit4:1.6.2'
     testCompile 'org.powermock:powermock-module-junit4:1.6.2'
+    /** ----- */
 
-    //Automated UI testing dependencies
-    androidTestCompile 'com.facebook.android:facebook-android-sdk:4.5.0'
+    /** UI Testing Dependencies */
+    androidTestCompile 'org.mockito:mockito-core:1.10.19'
+    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
+    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
     androidTestCompile 'com.android.support.test:runner:0.3'
     androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
     androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2'
     androidTestCompile('com.android.support.test.espresso:espresso-contrib:2.2') {
-        // Necessary to avoid version conflicts
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'support-annotations'
         exclude module: 'recyclerview-v7'
     }
-    androidTestCompile 'org.mockito:mockito-core:1.10.19'
-    androidTestCompile 'com.google.dexmaker:dexmaker:1.2'
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.2'
-    androidTestApt "com.google.dagger:dagger-compiler:2.0"
-    //androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2'
+
+    androidTestApt 'com.google.dagger:dagger-compiler:2.0'
+    /** ----- */
 }
 
 apply plugin: 'spoon'
