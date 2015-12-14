@@ -32,95 +32,95 @@ public class ConversionParametersBuilder {
 
     public ConversionParametersBuilder() {}
 
-    public ConversionParametersBuilder setMbsy_campaign(int mbsy_campaign) {
+    public ConversionParametersBuilder setCampaign(int mbsy_campaign) {
         this.mbsy_campaign = mbsy_campaign;
         this.campaignCheck = true;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_email(String mbsy_email) {
+    public ConversionParametersBuilder setEmail(String mbsy_email) {
         this.mbsy_email = mbsy_email;
         this.emailCheck = true;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_first_name(String mbsy_first_name) {
+    public ConversionParametersBuilder setFirstName(String mbsy_first_name) {
         this.mbsy_first_name = mbsy_first_name;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_last_name(String mbsy_last_name) {
+    public ConversionParametersBuilder setLastName(String mbsy_last_name) {
         this.mbsy_last_name = mbsy_last_name;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_email_new_ambassador(int mbsy_email_new_ambassador) {
+    public ConversionParametersBuilder setEmailNewAmbassador(int mbsy_email_new_ambassador) {
         this.mbsy_email_new_ambassador = mbsy_email_new_ambassador;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_uid(String mbsy_uid) {
+    public ConversionParametersBuilder setUid(String mbsy_uid) {
         this.mbsy_uid = mbsy_uid;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_custom1(String mbsy_custom1) {
+    public ConversionParametersBuilder setCustom1(String mbsy_custom1) {
         this.mbsy_custom1 = mbsy_custom1;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_custom2(String mbsy_custom2) {
+    public ConversionParametersBuilder setCustom2(String mbsy_custom2) {
         this.mbsy_custom2 = mbsy_custom2;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_custom3(String mbsy_custom3) {
+    public ConversionParametersBuilder setCustom3(String mbsy_custom3) {
         this.mbsy_custom3 = mbsy_custom3;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_auto_create(int mbsy_auto_create) {
+    public ConversionParametersBuilder setAutoCreate(int mbsy_auto_create) {
         this.mbsy_auto_create = mbsy_auto_create;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_revenue(int mbsy_revenue) {
+    public ConversionParametersBuilder setRevenue(int mbsy_revenue) {
         this.mbsy_revenue = mbsy_revenue;
         this.revenueCheck = true;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_deactivate_new_ambassador(int mbsy_deactivate_new_ambassador) {
+    public ConversionParametersBuilder setDeactivateNewAmbassador(int mbsy_deactivate_new_ambassador) {
         this.mbsy_deactivate_new_ambassador = mbsy_deactivate_new_ambassador;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_transaction_uid(String mbsy_transaction_uid) {
+    public ConversionParametersBuilder setTransactionUid(String mbsy_transaction_uid) {
         this.mbsy_transaction_uid = mbsy_transaction_uid;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_add_to_group_id(String mbsy_add_to_group_id) {
+    public ConversionParametersBuilder setAddToGroupId(String mbsy_add_to_group_id) {
         this.mbsy_add_to_group_id = mbsy_add_to_group_id;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_event_data1(String mbsy_event_data1) {
+    public ConversionParametersBuilder setEventData1(String mbsy_event_data1) {
         this.mbsy_event_data1 = mbsy_event_data1;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_event_data2(String mbsy_event_data2) {
+    public ConversionParametersBuilder setEventData2(String mbsy_event_data2) {
         this.mbsy_event_data2 = mbsy_event_data2;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_event_data3(String mbsy_event_data3) {
+    public ConversionParametersBuilder setEventData3(String mbsy_event_data3) {
         this.mbsy_event_data3 = mbsy_event_data3;
         return this;
     }
 
-    public ConversionParametersBuilder setMbsy_is_approved(int mbsy_is_approved) {
+    public ConversionParametersBuilder setIsApproved(int mbsy_is_approved) {
         this.mbsy_is_approved = mbsy_is_approved;
         return this;
     }
