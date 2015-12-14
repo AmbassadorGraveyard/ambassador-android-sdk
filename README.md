@@ -114,32 +114,35 @@ desktop or another place that you can easily access.
 Conversions can be triggered from anywhere.  Common places are an Activity's **onCreate()** method or on a **button click**.
 
  ```java
-// STEP ONE: Create a ConversionParameters object
-ConversionParameters conversionParameters = new ConversionParameters();
+// STEP ONE: Create a ConversionParametersBuilder object
+ConversionParametersBuilder builder = new ConversionParametersBuilder()
 
 // STEP TWO: Set the REQUIRED properties
-conversionParameters.mbsy_revenue = 10;
-conversionParameters.mbsy_campaign = 101;
-conversionParameters.mbsy_email = "user@example.com";
+builder.setRevenue(10);
+builder.setCampaign(101);
+builder.setEmail("user@example.com");
 
 // STEP THREE: Set any optional properties that you want
-conversionParameters.mbsy_add_to_group_id = "123";
-conversionParameters.mbsy_first_name = "John";
-conversionParameters.mbsy_last_name = "Doe";
-conversionParameters.mbsy_email_new_ambassador = 0; // Boolean represented by int (Defaults to false)
-conversionParameters.mbsy_uid = "mbsy_uid";
-conversionParameters.mbsy_custom1 = "custom";
-conversionParameters.mbsy_custom2 = "custom";
-conversionParameters.mbsy_custom3 = "custom";
-conversionParameters.mbsy_auto_create = 1; // Boolean represented by int (Defaults to true);
-conversionParameters.mbsy_deactivate_new_ambassador = 0; // Boolean represented by int (Defaults to false)
-conversionParameters.mbsy_transaction_uid = "transaction_uid";
-conversionParameters.mbsy_event_data1 = "eventData1";
-conversionParameters.mbsy_event_data2 = "eventData2";
-conversionParameters.mbsy_event_data3 = "eventData3";
-conversionParameters.mbsy_is_approved = 1; // Boolean represented by int (Defaults to true);
+builder.setAddToGroupId("123");
+builder.setFirstName("John");
+builder.setLastName("Doe");
+builder.setEmailNewAmbassador(0); // Boolean represented by int (Defaults to false)
+builder.setUid("mbsy_uid");
+builder.setCustom1("custom");
+builder.setCustom2("custom");
+builder.setCustom3("custom");
+builder.setAutoCreate(1); // Boolean represented by int (Defaults to true);
+builder.setDeactivateNewAmbassador(0); // Boolean represented by int (Defaults to false)
+builder.setTransactionUid("transaction_uid");
+builder.setEventData1("eventData1");
+builder.setEventData2("eventData2");
+builder.setEventData3("eventData3");
+builder.setIsApproved(1); // Boolean represented by int (Defaults to true);
 
-// STEP FOUR: Register the conversion with the ConversionParameters object.
+// STEP FOUR: Build the object into a ConversionParameters object.
+ConversionParameters conversionParameters = builder.build();
+
+// STEP FIVE: Register the conversion with the ConversionParameters object.
 // The second parameter indicates that the conversion should be restricted to a user first installing your application.
 AmbassadorSDK.registerConversion(conversionParameters, false);
 
