@@ -156,7 +156,7 @@ public class ConversionParametersBuilder {
         if (!revenueCheck || mbsy_revenue == -1) {
             Log.w(TAG, "Warning: you must set mbsy_revenue!");
         }
-        if (!campaignCheck || mbsy_revenue == -1) {
+        if (!campaignCheck || mbsy_campaign == -1) {
             Log.w(TAG, "Warning: you must set mbsy_campaign!");
         }
         if (!emailCheck || mbsy_email == null) {
