@@ -159,9 +159,9 @@ public class PusherSDK {
 
                                 try {
                                     final JSONObject pusherUrlObject = new JSONObject(successResponse.toString());
+
                                     //make sure the request id coming back is for the one we sent off
-                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId())
-                                        return;
+                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId()) return;
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -175,8 +175,8 @@ public class PusherSDK {
                         });
                     } else {
                         //make sure the request id coming back is for the one we sent off
-                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId())
-                            return;
+                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId()) return;
+
                         setPusherInfo(data);
                     }
                 } catch (JSONException e) {
@@ -191,7 +191,8 @@ public class PusherSDK {
         JSONObject pusherSave = new JSONObject();
 
         try {
-            JSONObject pusherObject = new JSONObject(jsonObject);
+            JSONObject pusherRootObject = new JSONObject(jsonObject);
+            JSONObject pusherObject = new JSONObject(pusherRootObject.getString("body"));
             pusherSave.put("email", pusherObject.getString("email"));
             pusherSave.put("firstName", pusherObject.getString("first_name"));
             pusherSave.put("lastName", pusherObject.getString("last_name"));
