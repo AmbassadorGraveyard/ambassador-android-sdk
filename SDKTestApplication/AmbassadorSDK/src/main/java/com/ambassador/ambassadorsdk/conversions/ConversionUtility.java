@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.conversions;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +20,7 @@ import javax.inject.Inject;
  * Created by JakeDunahee on 8/21/15.
  */
 public class ConversionUtility {
+
     private ConversionParameters parameters;
     private ConversionDBHelper helper;
     private SQLiteDatabase db;
@@ -26,7 +29,7 @@ public class ConversionUtility {
     RequestManager requestManager;
 
     @Inject
-    AmbassadorConfig ambassadorConfig;
+    ConversionConfig conversionConfig;
 
     // Constructors for ConversionUtility
     public ConversionUtility(Context context) {
@@ -44,7 +47,7 @@ public class ConversionUtility {
 
     public void registerConversion() {
         //if either augur identify or install intent hasn't come back yet, insert into DB for later retry
-        if (ambassadorConfig.getIdentifyObject() == null || ambassadorConfig.getReferralShortCode() == null) {
+        if (conversionConfig.getIdentifyObject() == null || conversionConfig.getReferralShortCode() == null) {
             ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
             db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
             Utilities.debugLog("Conversion", "Inserted row into table");
@@ -63,7 +66,7 @@ public class ConversionUtility {
     }
 
     // Creates a JSON object from Conversion Params and some Augur data
-    static JSONObject createJSONConversion(ConversionParameters parameters, String identifyObject) {
+    public static JSONObject createJSONConversion(ConversionParameters parameters, String identifyObject) {
         JSONObject conversionObject = new JSONObject();
         JSONObject fp = new JSONObject();
         JSONObject consumerObject = new JSONObject();
@@ -103,7 +106,7 @@ public class ConversionUtility {
             fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA2, parameters.mbsy_event_data2);
             fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA3, parameters.mbsy_event_data3);
             fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED, parameters.mbsy_is_approved);
-            fieldObject.put("mbsy_short_code", parameters.getShortCode());
+            fieldObject.put("mbsy_short_code", parameters.mbsy_short_code);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -122,7 +125,7 @@ public class ConversionUtility {
     public void readAndSaveDatabaseEntries() {
         //if we don't have an identify object yet, that means neither the intent nor augur has returned
         //so bail out and try again later
-        if (ambassadorConfig.getIdentifyObject() == null || ambassadorConfig.getReferralShortCode() == null) return;
+        if (conversionConfig.getIdentifyObject() == null || conversionConfig.getReferralShortCode() == null) return;
 
         String[] projection = {
                 ConversionSQLStrings.ConversionSQLEntry._ID,
@@ -173,7 +176,7 @@ public class ConversionUtility {
     public void makeConversionRequest(final ConversionParameters newParameters) {
         //in the case of an install conversion, we didn't have the shortCode right away, so that conversion got stored in the database.
         //now that we know we have it (wouldn't have gotten this far if we didn't) set that parameter value.
-        newParameters.setShortCode(ambassadorConfig.getReferralShortCode());
+        newParameters.mbsy_short_code = conversionConfig.getReferralShortCode();
 
         requestManager.registerConversionRequest(newParameters, new RequestManager.RequestCompletion() {
             @Override

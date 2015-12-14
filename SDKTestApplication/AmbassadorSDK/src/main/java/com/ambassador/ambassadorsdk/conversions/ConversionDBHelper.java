@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.conversions;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -6,12 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 
 /**
  * Created by JakeDunahee on 8/21/15.
  */
-class ConversionDBHelper extends SQLiteOpenHelper {
+public class ConversionDBHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Conversion.db";
 

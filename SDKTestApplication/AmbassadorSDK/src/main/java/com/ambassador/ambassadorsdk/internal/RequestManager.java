@@ -3,7 +3,8 @@ package com.ambassador.ambassadorsdk.internal;
 import android.os.Handler;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.conversions.ConversionParameters;
+import com.ambassador.ambassadorsdk.conversions.ConversionUtility;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
@@ -217,7 +218,7 @@ public class RequestManager {
     // endregion BULK SHARE
 
     // region CONVERSIONS
-    void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
+    public void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

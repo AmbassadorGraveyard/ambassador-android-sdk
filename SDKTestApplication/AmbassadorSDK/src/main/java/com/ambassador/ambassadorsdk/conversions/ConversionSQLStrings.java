@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.conversions;
 
 import android.provider.BaseColumns;
 
@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
  */
 
 // Class with strings to use with SQL database
-final class ConversionSQLStrings {
+public final class ConversionSQLStrings {
     public static final String TEXT_TYPE = " TEXT";
     public static final String INT_TYPE = " INTEGER";
     public static final String COMMA_SEP = ",";

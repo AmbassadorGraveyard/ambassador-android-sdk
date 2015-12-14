@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.conversions.ConversionUtility;
 
 /**
  * Created by coreyfields on 9/16/15.
