@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
@@ -35,6 +36,18 @@ public class WebPopupDialog extends Dialog {
         layoutParams.dimAmount = 0.85f;
 
         webView = (WebView) findViewById(R.id.webView);
+        WebSettings settings = webView.getSettings();
+
+        settings.setAllowFileAccess(false);
+        settings.setJavaScriptEnabled(false);
+        settings.setSaveFormData(false);
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setHorizontalScrollBarEnabled(true);
+
         webView.setWebViewClient(new Client());
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
