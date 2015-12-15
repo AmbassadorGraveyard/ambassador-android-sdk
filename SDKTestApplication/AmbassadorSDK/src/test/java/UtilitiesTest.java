@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk;
+package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 import android.content.res.Configuration;

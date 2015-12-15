@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk;
+package com.ambassador.ambassadorsdk.internal;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -19,15 +19,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Random;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import dagger.Component;
 
-import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
