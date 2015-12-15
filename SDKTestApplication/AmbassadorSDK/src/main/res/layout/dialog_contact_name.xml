@@ -28,7 +28,7 @@
         android:textColor="@android:color/darker_gray"
         android:gravity="start" />
 
-    <com.ambassador.ambassadorsdk.CustomEditText
+    <com.ambassador.ambassadorsdk.internal.CustomEditText
         android:id="@+id/etFirstName"
         android:layout_below="@id/explanation"
         android:layout_width="match_parent"
@@ -41,7 +41,7 @@
         android:layout_centerHorizontal="true"
         android:textCursorDrawable="@null" />
 
-    <com.ambassador.ambassadorsdk.CustomEditText
+    <com.ambassador.ambassadorsdk.internal.CustomEditText
         android:id="@+id/etLastName"
         android:layout_below="@id/etFirstName"
         android:layout_width="match_parent"
@@ -61,8 +61,8 @@
         android:layout_height="wrap_content"
         android:text="Cancel"
         android:layout_below="@+id/etLastName"
-        android:layout_toLeftOf="@+id/btnSend"
-        android:layout_toStartOf="@+id/btnSend"
+        android:layout_toLeftOf="@+id/btnContinue"
+        android:layout_toStartOf="@+id/btnContinue"
         android:layout_marginBottom="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginEnd="8dp"

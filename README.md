@@ -67,8 +67,6 @@ desktop or another place that you can easily access.
 
 * Add the **repositories** code and the **ambassador module** to your Gradle file with the following code:
 
-* You will want to make sure your compileSdkVersion and buildToolsVersion are set to the latest API version. While our SDK requires this to be a minimum of 23, this is also a best practice for Android development.
-
  ```java
  repositories {
      maven { url 'http://clojars.org/repo'}
@@ -79,6 +77,8 @@ desktop or another place that you can easily access.
   ```java
   compile project(':ambassador')
   ```
+
+* You will want to make sure your compileSdkVersion and buildToolsVersion are set to the latest API version. While our SDK requires this to be a minimum of 23, this is also a best practice for Android development.
 
  <img src="screenshots/addRepo.png" width="600" />
 
@@ -92,13 +92,13 @@ desktop or another place that you can easily access.
 
   ```java
   @Override
-      protected void onCreate(Bundle savedInstanceState) {
-          super.onCreate(savedInstanceState);
-          setContentView(R.layout.activity_main);
+  protected void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
+      setContentView(R.layout.activity_main);
 
-          // Pass in your application's context as the first parameter
-          AmbassadorSDK.runWithKeys(getApplicationContext(), "your_universal_key", "your_universal_ID");
-      }
+      // Pass in your application's context as the first parameter
+      AmbassadorSDK.runWithKeys(getApplicationContext(), "your_universal_key", "your_universal_ID");
+  }
    ```
 
 ## Identifying a User
@@ -114,32 +114,42 @@ desktop or another place that you can easily access.
 Conversions can be triggered from anywhere.  Common places are an Activity's **onCreate()** method or on a **button click**.
 
  ```java
-// STEP ONE: Create a ConversionParameters object
-ConversionParameters conversionParameters = new ConversionParameters();
+// STEP ONE: Create a ConversionParametersBuilder object
+ConversionParametersBuilder builder = new ConversionParametersBuilder();
 
 // STEP TWO: Set the REQUIRED properties
-conversionParameters.mbsy_revenue = 10;
-conversionParameters.mbsy_campaign = 101;
-conversionParameters.mbsy_email = "user@example.com";
+builder.setRevenue(10);
+builder.setCampaign(101);
+builder.setEmail("user@example.com");
 
 // STEP THREE: Set any optional properties that you want
-conversionParameters.mbsy_add_to_group_id = "123";
-conversionParameters.mbsy_first_name = "John";
-conversionParameters.mbsy_last_name = "Doe";
-conversionParameters.mbsy_email_new_ambassador = 0; // Boolean represented by int (Defaults to false)
-conversionParameters.mbsy_uid = "mbsy_uid";
-conversionParameters.mbsy_custom1 = "custom";
-conversionParameters.mbsy_custom2 = "custom";
-conversionParameters.mbsy_custom3 = "custom";
-conversionParameters.mbsy_auto_create = 1; // Boolean represented by int (Defaults to true);
-conversionParameters.mbsy_deactivate_new_ambassador = 0; // Boolean represented by int (Defaults to false)
-conversionParameters.mbsy_transaction_uid = "transaction_uid";
-conversionParameters.mbsy_event_data1 = "eventData1";
-conversionParameters.mbsy_event_data2 = "eventData2";
-conversionParameters.mbsy_event_data3 = "eventData3";
-conversionParameters.mbsy_is_approved = 1; // Boolean represented by int (Defaults to true);
+builder.setAddToGroupId("123");
+builder.setFirstName("John");
+builder.setLastName("Doe");
+builder.setEmailNewAmbassador(0); // Boolean represented by int (Defaults to false)
+builder.setUid("mbsy_uid");
+builder.setCustom1("custom");
+builder.setCustom2("custom");
+builder.setCustom3("custom");
+builder.setAutoCreate(1); // Boolean represented by int (Defaults to true);
+builder.setDeactivateNewAmbassador(0); // Boolean represented by int (Defaults to false)
+builder.setTransactionUid("transaction_uid");
+builder.setEventData1("eventData1");
+builder.setEventData2("eventData2");
+builder.setEventData3("eventData3");
+builder.setIsApproved(1); // Boolean represented by int (Defaults to true);
 
-// STEP FOUR: Register the conversion with the ConversionParameters object.
+// STEP FOUR: Build the object into a ConversionParameters object.
+ConversionParameters conversionParameters = builder.build();
+
+// (Also: you can chain the builder methods which is way easier)
+conversionParameters = new ConversionParametersBuilder()
+        .setRevenue(10)
+        .setCampaign(101)
+        .setEmail("user@example.com")
+        .build();
+
+// STEP FIVE: Register the conversion with the ConversionParameters object.
 // The second parameter indicates that the conversion should be restricted to a user first installing your application.
 AmbassadorSDK.registerConversion(conversionParameters, false);
 
@@ -238,27 +248,29 @@ The following image shows the logo in the various positions set in the custom va
 
 <img src="screenshots/rafLogoPosition1.png" />
 
-#### Disabling Sharing Options
+### Modifying Share Options
 
-Any sharing method can be disabled if it is irrelevant to your campaign. The values are stored as booleans in the customValues.xml file.
+The share options can be disabled or reordered in customValues.xml. The share options allowed are Facebook, Twitter, LinkedIn, Email, and SMS. These strings are _not_ case sensitive.
+
+<img src="screenshots/socialArray.png" />
+
+#### Disabling Share Options
+
+To disable a share option, remove it from the array.
 
 <img src="screenshots/disableIconValues.png" />
 
-Setting the showLinkedIn boolean to false, as in the screenshot above, would result in the LinkedIn share option not displaying in your app.
-
 <img src="screenshots/disableIconExample.png" width="250" />
 
-#### Reordering Sharing Options
+#### Reordering Share Options
 
-Any of the sharing methods can be reordered. The values are stored as integers in the customValues.xml file.  The options are sorted based on weight, with lower weights appearing first.
-
-<img src="screenshots/reorderIconValues.png" />
+To reorder share options, rearrange their positions in the array.
 
 This is the standard ordering with Facebook appearing first and SMS last.
 
 <img src="screenshots/standardIconOrder.png" width="250" />
 
-Modifying the weights to give SMS the lowest weight will result in it being moved to the first position.
+Reordering the SMS item to the first position will move the icon to the front.
 
 <img src="screenshots/reorderIconValuesModified.png" />
 

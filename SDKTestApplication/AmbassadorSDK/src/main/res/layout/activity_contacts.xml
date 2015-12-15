@@ -100,7 +100,7 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:layout_weight="0"
                 android:padding="10dp"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="bottom"
                 android:src="@drawable/pencil_edit"
                 android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp" />
@@ -113,22 +113,42 @@
                 android:layout_weight="0"
                 android:visibility="gone"
                 android:text="DONE"
+                android:layout_gravity="bottom"
                 android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
                 android:textColor="@color/contactsDoneButtonText" />
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btnSend"
+        <RelativeLayout
+            android:id="@+id/rlSend"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="NO CONTACTS SELECTED"
-            android:layout_marginTop="10dp"
-            android:textColor="@color/contactsSendButtonText"
             android:background="@color/contactsSendButton"
-            android:enabled="false"
-            android:onClick="sendToContacts"/>
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:id="@+id/tvSendContacts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:textColor="@color/contactsSendButtonText"
+                android:text="NO CONTACTS SELECTED"
+                android:textStyle="bold"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/tvSendCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:paddingRight="10dp"
+                android:textColor="@color/contactsSendButtonText"
+                android:text="(0/160)"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 
