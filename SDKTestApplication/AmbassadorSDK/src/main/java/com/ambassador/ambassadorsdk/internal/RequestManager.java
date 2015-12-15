@@ -374,39 +374,40 @@ public class RequestManager {
     }
 
     void createPusherChannel(final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.pusherChannelNameURL());
-                connection.setRequestProperty("Content-Type", "application/json");
-
-                try {
-                    final int responseCode = connection.getResponseCode();
-                    final String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("createPusherChannel", "CREATE PUSHER CHANNEL Response Code = " + responseCode + " and Response = " + response);
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                                completion.onSuccess(response);
-                            } else {
-                                completion.onFailure(response);
-                            }
-                        }
-                    });
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            completion.onFailure("Create PusherSDK Channel Failure due to IOException - " + e.getMessage());
-                        }
-                    });
-                }
-            }
-        };
-        new Thread(runnable).start();
+        IdentifyApi.createPusherChannel(completion);
+//        Runnable runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.pusherChannelNameURL());
+//                connection.setRequestProperty("Content-Type", "application/json");
+//
+//                try {
+//                    final int responseCode = connection.getResponseCode();
+//                    final String response = getResponse(connection, responseCode);
+//                    Utilities.debugLog("createPusherChannel", "CREATE PUSHER CHANNEL Response Code = " + responseCode + " and Response = " + response);
+//
+//                    mHandler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
+//                                completion.onSuccess(response);
+//                            } else {
+//                                completion.onFailure(response);
+//                            }
+//                        }
+//                    });
+//                } catch (final IOException e) {
+//                    e.printStackTrace();
+//                    mHandler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            completion.onFailure("Create PusherSDK Channel Failure due to IOException - " + e.getMessage());
+//                        }
+//                    });
+//                }
+//            }
+//        };
+//        new Thread(runnable).start();
     }
 
     void externalPusherRequest(final String url, final RequestCompletion completion) {
@@ -440,190 +441,58 @@ public class RequestManager {
         };
         new Thread(runnable).start();
     }
-    // endregion IDENTIFY REQUESTS
 
-    // region TWITTER REQUESTS
     public void postToTwitter(final String tweetString, final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
+        TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+        TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient(twitterSession);
+        twitterApiClient.getStatusesService().update(tweetString, null, null, null, null, null, null, null, new Callback<Tweet>() {
             @Override
-            public void run() {
-                TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-                TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient(twitterSession);
-                twitterApiClient.getStatusesService().update(tweetString, null, null, null, null, null, null, null, new Callback<Tweet>() {
-                    @Override
-                    public void success(Result<Tweet> result) {
-                        completion.onSuccess("Successfully posted to Twitter");
-                    }
-
-                    @Override
-                    public void failure(com.twitter.sdk.android.core.TwitterException e) {
-                        if (e.toString().toLowerCase().contains("no authentication")) {
-                            completion.onFailure("auth");
-                        } else {
-                            completion.onFailure("Failure Postring to Twitter");
-                        }
-                    }
-                });
+            public void success(Result<Tweet> result) {
+                completion.onSuccess("Successfully posted to Twitter");
             }
-        };
-        new Thread(runnable).start();
-    }
-    // endregion TWITTER REQUESTS
 
-    // region LINKEDIN REQUESTS
-    void linkedInLoginRequest(final String code, final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
             @Override
-            public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", "https://www.linkedin.com/uas/oauth2/accessToken");
-
-                String charset = "UTF-8";
-                String urlParams = null;
-
-                // Create params to send for Access Token
-                try {
-                    urlParams = "grant_type=authorization_code&code=" + URLEncoder.encode(code, charset) +
-                            "&redirect_uri=" + URLEncoder.encode(AmbassadorConfig.CALLBACK_URL, charset) +
-                            "&client_id=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_ID, charset) +
-                            "&client_secret=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_SECRET, charset);
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                    Utilities.debugLog("LinkedIn", "LinkedIn Login Request failed due to UnsupportedEncodingException -" + e.getMessage());
-                }
-
-                try {
-                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(urlParams);
-                    oStream.flush();
-                    oStream.close();
-
-                    final int responseCode = connection.getResponseCode();
-                    final String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("LinkedIn", "LINKEDIN LOGIN ResponseCode = " + responseCode + " and Response = " + response);
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                                try {
-                                    JSONObject json = new JSONObject(response);
-                                    String accessToken = json.getString("access_token");
-                                    ambassadorConfig.setLinkedInToken(accessToken);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                    completion.onFailure("Failure with JSONException - " + e.getMessage());
-                                }
-
-                                completion.onSuccess("Success logging into LinkedIn");
-                            } else {
-                                completion.onFailure("Failure logging into LinkedIn");
-                            }
-                        }
-                    });
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            completion.onFailure("Failure with IOException - " + e.getMessage());
-                        }
-                    });
+            public void failure(com.twitter.sdk.android.core.TwitterException e) {
+                if (e.toString().toLowerCase().contains("no authentication")) {
+                    completion.onFailure("auth");
+                } else {
+                    completion.onFailure("Failure Postring to Twitter");
                 }
             }
-        };
-        new Thread(runnable).start();
+        });
     }
 
-    public void postToLinkedIn(final JSONObject objectToPost, final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
+    public void linkedInLoginRequest(final String code, final RequestCompletion completion) {
+        String charset = "UTF-8";
+        String urlParams = null;
+
+        try {
+            urlParams = "grant_type=authorization_code&code=" + URLEncoder.encode(code, charset) +
+                    "&redirect_uri=" + URLEncoder.encode(AmbassadorConfig.CALLBACK_URL, charset) +
+                    "&client_id=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_ID, charset) +
+                    "&client_secret=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_SECRET, charset);
+        } catch (UnsupportedEncodingException e) {
+            Utilities.debugLog("LinkedIn", "LinkedIn Login Request failed due to UnsupportedEncodingException -" + e.getMessage());
+        }
+
+        LinkedInApi.login(urlParams, completion, new LinkedInAuthorizedListener() {
             @Override
-            public void run() {
-                String url  = "https://api.linkedin.com/v1/people/~/shares?format=json";
-
-                try {
-                    HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                    connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                    connection.setDoOutput(true);
-                    connection.setDoInput(true);
-                    connection.setRequestMethod("POST");
-                    connection.setRequestProperty("Host", "api.linkedin.com");
-                    connection.setRequestProperty("Content-Type", "application/json");
-                    connection.setRequestProperty("Authorization", "Bearer " + ambassadorConfig.getLinkedInToken());
-                    connection.setRequestProperty("x-li-format", "json");
-
-                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(objectToPost.toString());
-                    oStream.flush();
-                    oStream.close();
-
-                    final int responseCode = connection.getResponseCode();
-                    final String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("LinkedIn", "LINKEDIN POST ResponseCode = " + responseCode + " and Response = " + response);
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                                completion.onSuccess("Success!");
-                            } else {
-                                completion.onFailure("Failure");
-                            }
-                        }
-                    });
-                } catch (final IOException e) {
-                    e.printStackTrace();
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            completion.onFailure("Linkedin Post FAILED due to IOException - " + e.getMessage());
-                        }
-                    });
-                }
+            public void linkedInAuthorized(String accessToken) {
+                ambassadorConfig.setLinkedInToken(accessToken);
             }
-        };
-        new Thread(runnable).start();
+        });
+    }
+
+    public interface LinkedInAuthorizedListener {
+        void linkedInAuthorized(String accessToken);
+    }
+
+    public void postToLinkedIn(LinkedInApi.LinkedInPostRequest requestBody, final RequestCompletion completion) {
+        LinkedInApi.post(ambassadorConfig.getLinkedInToken(), requestBody, completion);
     }
 
     public void getProfileLinkedIn(final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                String url = "https://api.linkedin.com/v1/people/~?format=json";
-
-                try {
-                    HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
-                    connection.setDoInput(true);
-                    connection.setRequestMethod("GET");
-                    connection.setRequestProperty("Authorization", "Bearer " + ambassadorConfig.getLinkedInToken());
-
-                    final int responseCode = connection.getResponseCode();
-                    final String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("LinkedIn", "LINKEDIN POST ResponseCode = " + responseCode + " and Response = " + response);
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                                completion.onSuccess("Success!");
-                            } else {
-                                completion.onFailure("Failure");
-                            }
-                        }
-                    });
-                } catch (final IOException e) {
-                    e.printStackTrace();
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            completion.onFailure("Linkedin Post FAILED due to IOException - " + e.getMessage());
-                        }
-                    });
-                }
-            }
-        };
-        new Thread(runnable).start();
+        LinkedInApi.getProfile(ambassadorConfig.getLinkedInToken(), completion);
     }
-    // region LINKEDIN REQUESTS
+
 }
