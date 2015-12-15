@@ -1,10 +1,10 @@
 package com.ambassador.ambassadorsdk;
 
 import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.util.DisplayMetrics;
-import android.util.Log;
+
+import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationModule;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,11 +19,7 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 /**
