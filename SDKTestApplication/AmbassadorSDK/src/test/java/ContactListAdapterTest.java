@@ -1,12 +1,10 @@
-package com.ambassador.ambassadorsdk;
+package com.ambassador.ambassadorsdk.internal;
 
 import android.animation.Animator;
 import android.animation.TimeInterpolator;
 import android.app.Activity;
-import android.content.Context;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 
 import org.junit.Before;
@@ -27,7 +25,6 @@ import java.util.List;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import javassist.bytecode.analysis.Util;
 
 import static junit.framework.Assert.assertTrue;
 
@@ -63,14 +60,14 @@ public class ContactListAdapterTest {
         // ARRANGE
         Activity mockActivity = mock(Activity.class);
         List<ContactObject> contactObjects = new ArrayList<>();
-        contactObjects.add(new ContactObject("1", "1"));
-        contactObjects.add(new ContactObject("catdog", "2"));
-        contactObjects.add(new ContactObject("cadog", "ca"));
-        contactObjects.add(new ContactObject("cat", "4"));
+        contactObjects.add(new ContactObject("1", "1", "test", "test"));
+        contactObjects.add(new ContactObject("catdog", "2", "test", "test"));
+        contactObjects.add(new ContactObject("cadog", "ca", "test", "test"));
+        contactObjects.add(new ContactObject("cat", "4", "test", "test"));
 
         ContactListAdapter contactListAdapter = new ContactListAdapter(mockActivity, contactObjects, false);
         ContactListAdapter spy = Mockito.spy(contactListAdapter);
-        List<ContactObject> selectedContacts = spy.selectedContacts;
+        //List<ContactObject> selectedContacts = spy.getSelectedContacts();
         doNothing().when(spy).notifyDataSetChanged();
 
         Field f = contactListAdapter.getClass().getDeclaredField("filteredContactList");
@@ -113,9 +110,9 @@ public class ContactListAdapterTest {
         ImageView mockImageView = Mockito.mock(ImageView.class);
         Activity mockActivity = Mockito.mock(Activity.class);
 
-        ContactObject c1 = new ContactObject("1", "1");
-        ContactObject c2 = new ContactObject("2", "2");
-        ContactObject c3 = new ContactObject("3", "3");
+        ContactObject c1 = new ContactObject("1", "1", "test", "test");
+        ContactObject c2 = new ContactObject("2", "2", "test", "test");
+        ContactObject c3 = new ContactObject("3", "3", "test", "test");
 
         List<ContactObject> contactObjects = new ArrayList<>();
         contactObjects.add(c1);
@@ -136,21 +133,21 @@ public class ContactListAdapterTest {
         doNothing().when(mockImageView).setVisibility(View.VISIBLE);
 
         ContactListAdapter contactListAdapter = new ContactListAdapter(mockActivity, contactObjects, false);
-        List<ContactObject> selectedContacts = contactListAdapter.selectedContacts;
+        List<ContactObject> selectedContacts = contactListAdapter.getSelectedContacts();
         selectedContacts.add(c1);
 
         // ACT
-        contactListAdapter.updateArrays(0, mockView);
+        contactListAdapter.updateArrays(mockView, 0);
 
         // ASSERT
         assertTrue(!selectedContacts.contains(contactObjects.get(0)));
 
         // ARRANGE
         contactListAdapter = new ContactListAdapter(mockActivity, contactObjects, false);
-        selectedContacts = contactListAdapter.selectedContacts;
+        selectedContacts = contactListAdapter.getSelectedContacts();
 
         // ACT
-        contactListAdapter.updateArrays(0, mockView);
+        contactListAdapter.updateArrays(mockView, 0);
 
         // ASSERT
         assertTrue(selectedContacts.contains(contactObjects.get(0)));
