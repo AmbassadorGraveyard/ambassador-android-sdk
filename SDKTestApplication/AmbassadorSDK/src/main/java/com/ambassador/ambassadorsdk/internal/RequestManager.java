@@ -3,6 +3,8 @@ package com.ambassador.ambassadorsdk.internal;
 import android.os.Handler;
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
+import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
@@ -30,6 +32,7 @@ import javax.inject.Inject;
  * Created by JakeDunahee on 9/29/15.
  */
 public class RequestManager {
+
     final Handler mHandler = new Handler();
 
     @Inject
@@ -42,6 +45,8 @@ public class RequestManager {
 
     public RequestManager() {
         AmbassadorSingleton.getComponent().inject(this);
+        IdentifyApi.init();
+        LinkedInApi.init();
     }
 
     // region Helper Setup Functions
