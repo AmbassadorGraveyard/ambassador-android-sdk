@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk;
+package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 import android.content.Intent;
@@ -59,7 +59,7 @@ public class PusherSDKTest {
     @Singleton
     @Component(modules = {AmbassadorApplicationModule.class})
     public interface TestComponent {
-        void inject(com.ambassador.ambassadorsdk.PusherSDKTest pusherSDKTest);
+        void inject(PusherSDKTest pusherSDKTest);
     }
 
     @Before

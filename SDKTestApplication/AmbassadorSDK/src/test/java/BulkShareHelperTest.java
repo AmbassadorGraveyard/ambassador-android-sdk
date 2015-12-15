@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk;
+package com.ambassador.ambassadorsdk.internal;
 
 import android.widget.Toast;
 
@@ -23,7 +23,6 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 import static junit.framework.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
@@ -156,11 +155,11 @@ public class BulkShareHelperTest {
     public void verifiedSMSListTest() {
         // ARRANGE
         ArrayList<ContactObject> mockContacts = new ArrayList<>();
-        ContactObject passObject1 = new ContactObject("Success1", "Mobile", "815-555-4562");
-        ContactObject failObject1 = new ContactObject("Failure1", "Mobile", "4578-5648-1213");
-        ContactObject passObject2 = new ContactObject("Success2", "Mobile", "555-1234");
-        ContactObject failObject2 = new ContactObject("Failure2", "Mobile", "4567");
-        ContactObject passObject3 = new ContactObject("Success3", "Mobile", "+1-123-555-4561");
+        ContactObject passObject1 = new ContactObject("Success1", "Mobile", "815-555-4562", "test");
+        ContactObject failObject1 = new ContactObject("Failure1", "Mobile", "4578-5648-1213", "test");
+        ContactObject passObject2 = new ContactObject("Success2", "Mobile", "555-1234", "test");
+        ContactObject failObject2 = new ContactObject("Failure2", "Mobile", "4567", "test");
+        ContactObject passObject3 = new ContactObject("Success3", "Mobile", "+1-123-555-4561", "test");
 
         // ACT
         mockContacts.add(passObject1);
@@ -177,8 +176,8 @@ public class BulkShareHelperTest {
     public void verifiedEmailListTest() {
         // ARRANGE
         ArrayList<ContactObject> mockContacts = new ArrayList<>();
-        ContactObject object1 = new ContactObject("Success1", "test@test.com");
-        ContactObject object2 = new ContactObject("Success2", "test@test1.com");
+        ContactObject object1 = new ContactObject("Success1", "test@test.com", "test", "test");
+        ContactObject object2 = new ContactObject("Success2", "test@test1.com", "test", "test");
 
         // ACT
         mockContacts.add(object1);
