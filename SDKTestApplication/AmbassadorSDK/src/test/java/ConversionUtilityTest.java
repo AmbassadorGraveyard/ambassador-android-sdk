@@ -1,5 +1,3 @@
-package com.ambassador.ambassadorsdk;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
