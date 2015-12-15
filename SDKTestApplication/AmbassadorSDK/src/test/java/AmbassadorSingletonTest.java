@@ -1,10 +1,6 @@
-package com.ambassador.ambassadorsdk;
+package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
-
-import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationModule;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +32,7 @@ public class AmbassadorSingletonTest {
     @Singleton
     @Component(modules = {AmbassadorApplicationModule.class})
     public interface TestComponent {
-        void inject(com.ambassador.ambassadorsdk.AmbassadorSingletonTest ambassadorSingletonTest);
+        void inject(AmbassadorSingletonTest ambassadorSingletonTest);
     }
 
     @Before
