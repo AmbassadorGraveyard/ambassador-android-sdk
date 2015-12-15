@@ -32,6 +32,14 @@ public class AmbassadorConfig {
     private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     private ServiceSelectorPreferences rafParameters;
 
+    public static String ambassadorApiUrl() {
+        if (AmbassadorConfig.isReleaseBuild) {
+            return "https://api.getambassador.com";
+        } else {
+            return "https://dev-ambassador-api.herokuapp.com";
+        }
+    }
+
     static String identifyURL() {
         if (AmbassadorConfig.isReleaseBuild) {
             return "https://api.getambassador.com/universal/action/identify/?u=";
