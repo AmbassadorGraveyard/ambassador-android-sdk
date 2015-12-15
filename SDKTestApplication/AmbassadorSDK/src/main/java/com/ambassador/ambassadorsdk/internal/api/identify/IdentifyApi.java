@@ -26,6 +26,24 @@ public class IdentifyApi {
 
     /**
      *
+     */
+    public static void identifyRequest() {
+
+    }
+
+    /**
+     *
+     * @param email
+     * @param firstName
+     * @param lastName
+     * @param completion
+     */
+    public static void updateNameRequest(String email, String firstName, String lastName, RequestManager.RequestCompletion completion) {
+
+    }
+
+    /**
+     *
      * @param completion
      */
     public static void createPusherChannel(final RequestManager.RequestCompletion completion) {
@@ -42,6 +60,15 @@ public class IdentifyApi {
                 completion.onFailure("failure");
             }
         });
+    }
+
+    /**
+     * 
+     * @param url
+     * @param completion
+     */
+    public static void externalPusherRequest(String url, RequestManager.RequestCompletion completion) {
+
     }
 
 }
