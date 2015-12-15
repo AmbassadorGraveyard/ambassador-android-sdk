@@ -10,8 +10,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
-import com.ambassador.ambassadorsdk.ConversionParameters;
-
+import com.ambassador.ambassadorsdk.ConversionParametersBuilder;
+import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -34,6 +34,38 @@ public class MainActivity extends AppCompatActivity {
         conversionParameters.mbsy_email = "atestuser@getambassador.com";
         conversionParameters.mbsy_campaign = 260;
         conversionParameters.mbsy_revenue = 100;
+
+        /** Testing ConversionParametersBuilder */
+        // STEP ONE: Create a ConversionParametersBuilder object
+        ConversionParametersBuilder builder = new ConversionParametersBuilder();
+
+        // STEP TWO: Set the REQUIRED properties
+        builder.setRevenue(10);
+        builder.setCampaign(101);
+        builder.setEmail("user@example.com");
+
+        // STEP THREE: Set any optional properties that you want
+        builder.setAddToGroupId("123");
+        builder.setFirstName("John");
+        builder.setLastName("Doe");
+        builder.setEmailNewAmbassador(0); // Boolean represented by int (Defaults to false)
+        builder.setUid("mbsy_uid");
+        builder.setCustom1("custom");
+        builder.setCustom2("custom");
+        builder.setCustom3("custom");
+        builder.setAutoCreate(1); // Boolean represented by int (Defaults to true);
+        builder.setDeactivateNewAmbassador(0); // Boolean represented by int (Defaults to false)
+        builder.setTransactionUid("transaction_uid");
+        builder.setEventData1("eventData1");
+        builder.setEventData2("eventData2");
+        builder.setEventData3("eventData3");
+        builder.setIsApproved(1); // Boolean represented by int (Defaults to true);
+
+        // STEP FOUR: Build the object into a ConversionParameters object.
+        ConversionParameters conversionParameters1 = builder.build();
+        /** ------ */
+
+
         AmbassadorSDK.registerConversion(conversionParameters, true);
 
         Button btnPresentRAF = (Button)findViewById(R.id.btnPresentRAF);

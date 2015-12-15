@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="8dp"
+    android:id="@+id/dialog_social_share_layout"
+    android:background="@android:color/white">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:id="@+id/tvHeaderText"
+        android:layout_alignParentTop="true"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:background="@color/twitter_blue" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivHeaderImg"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/twitter_icon"
+        android:layout_alignBottom="@+id/tvHeaderText"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Tweet"
+        android:id="@+id/tvSend"
+        android:layout_below="@+id/ivHeaderImg"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp" />
+
+    <com.ambassador.ambassadorsdk.internal.CustomEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/etMessage"
+        android:backgroundTint="@color/twitter_blue"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="24dp"
+        android:editable="true"
+        android:layout_below="@+id/tvSend"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:textCursorDrawable="@null"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:text="Cancel"
+        android:id="@+id/btnCancel"
+        android:textColor="@color/ambassador_blue"
+        android:layout_alignTop="@+id/btnSend"
+        android:layout_toStartOf="@+id/btnSend"
+        android:layout_toLeftOf="@+id/btnSend"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:text="Tweet"
+        android:id="@+id/btnSend"
+        android:layout_below="@+id/etMessage"
+        android:layout_alignEnd="@+id/etMessage"
+        android:layout_alignRight="@+id/etMessage"
+        android:textColor="@color/ambassador_blue"
+        android:layout_marginBottom="8dp" />
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loadingPanel"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        android:backgroundTint="@color/twitter_blue" />
+
+</RelativeLayout>
