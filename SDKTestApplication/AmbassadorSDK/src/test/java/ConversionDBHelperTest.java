@@ -1,12 +1,8 @@
-package com.ambassador.ambassadorsdk;
+package com.ambassador.ambassadorsdk.internal;
 
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.DisplayMetrics;
 import android.util.Log;
 
 import org.junit.Before;
@@ -17,26 +13,18 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.HashMap;
-
 import javax.inject.Singleton;
 
 import dagger.Component;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anySet;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.whenNew;
 
 /**
  * Created by dylan on 11/05/15.
@@ -48,7 +36,7 @@ public class ConversionDBHelperTest {
     @Singleton
     @Component(modules = {AmbassadorApplicationModule.class})
     public interface TestComponent {
-        void inject(com.ambassador.ambassadorsdk.ConversionDBHelperTest conversionDBHelperTest);
+        void inject(ConversionDBHelperTest conversionDBHelperTest);
     }
 
     @Before
