@@ -80,17 +80,17 @@ public class AmbassadorSDK {
     }
 
 
-    static Boolean getConvertedOnInstall() {
+    private static Boolean getConvertedOnInstall() {
         return ambassadorConfig.getConvertedOnInstall();
     }
 
-    static void setConvertedOnInstall() {
+    private static void setConvertedOnInstall() {
         if (!ambassadorConfig.getConvertedOnInstall()) {
             ambassadorConfig.setConvertOnInstall();
         }
     }
 
-    static void startConversionTimer() {
+    private static void startConversionTimer() {
         final ConversionUtility utility = new ConversionUtility(AmbassadorSingleton.get());
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
