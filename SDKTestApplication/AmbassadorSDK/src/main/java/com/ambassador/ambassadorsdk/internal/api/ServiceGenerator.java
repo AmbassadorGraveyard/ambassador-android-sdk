@@ -46,7 +46,7 @@ public class ServiceGenerator {
      * @return the String value of the field
      * @throws NoEndpointFoundException when the field is not declared in serviceClass
      */
-    private static String extractEndpoint(Class<?> serviceClass) throws NoEndpointFoundException {
+    static String extractEndpoint(Class<?> serviceClass) throws NoEndpointFoundException {
         try {
            return (String) serviceClass.getField("ENDPOINT").get(null);
         } catch (Exception e) {
