@@ -22,7 +22,17 @@ public class BulkShareApi {
      *
      */
     public BulkShareApi() {
-        init();
+        this(true);
+    }
+
+    /**
+     *
+     * @param doInit
+     */
+    public BulkShareApi(boolean doInit) {
+        if (doInit) {
+            init();
+        }
     }
 
     /**

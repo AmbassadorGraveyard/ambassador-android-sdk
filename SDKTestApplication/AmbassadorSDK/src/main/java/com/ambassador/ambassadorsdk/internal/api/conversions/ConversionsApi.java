@@ -21,7 +21,17 @@ public class ConversionsApi {
      *
      */
     public ConversionsApi() {
-        init();
+        this(true);
+    }
+
+    /**
+     *
+     * @param doInit
+     */
+    public ConversionsApi(boolean doInit) {
+        if (doInit) {
+            init();
+        }
     }
 
     /**

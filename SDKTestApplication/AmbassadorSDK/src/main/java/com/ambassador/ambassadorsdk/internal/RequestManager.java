@@ -57,29 +57,37 @@ public class RequestManager {
      */
     public RequestManager() {
         AmbassadorSingleton.getComponent().inject(this);
-        bulkShareApi = createBulkShareApi();
-        conversionsApi = createConversionsApi();
-        identifyApi = createIdentifyApi();
-        linkedInApi = createLinkedInApi();
+
+        bulkShareApi = new BulkShareApi(false);
+        bulkShareApi.init();
+
+        conversionsApi = new ConversionsApi(false);
+        conversionsApi.init();
+
+        identifyApi = new IdentifyApi(false);
+        identifyApi.init();
+
+        linkedInApi = new LinkedInApi(false);
+        linkedInApi.init();
     }
 
     /** Instantiates and returns a new BulkShareApi */
-    private BulkShareApi createBulkShareApi() {
+    BulkShareApi createBulkShareApi() {
         return new BulkShareApi();
     }
 
     /** Instantiates and returns a new ConversionsApi */
-    private ConversionsApi createConversionsApi() {
+    ConversionsApi createConversionsApi() {
         return new ConversionsApi();
     }
 
     /** Instantiates and returns a new IdentifyApi */
-    private IdentifyApi createIdentifyApi() {
+    IdentifyApi createIdentifyApi() {
         return new IdentifyApi();
     }
 
     /** Instantiates and returns a new LinkedInApi */
-    private LinkedInApi createLinkedInApi() {
+    LinkedInApi createLinkedInApi() {
         return new LinkedInApi();
     }
 
