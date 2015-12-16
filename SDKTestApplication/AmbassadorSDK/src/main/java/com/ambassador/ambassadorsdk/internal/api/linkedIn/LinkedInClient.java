@@ -10,7 +10,7 @@ import retrofit.http.POST;
 /**
  *
  */
-public interface LinkedInClient {
+interface LinkedInClient {
 
     /** */
     String ENDPOINT = "https://api.linkedin.com";
