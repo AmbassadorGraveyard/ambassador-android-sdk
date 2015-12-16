@@ -32,12 +32,16 @@ import retrofit.mime.TypedByteArray;
 public class IdentifyApi {
 
     /** */
-    private static IdentifyClient identifyClient;
+    private IdentifyClient identifyClient;
+
+    public IdentifyApi() {
+        init();
+    }
 
     /**
      *
      */
-    public static void init() {
+    public void init() {
         identifyClient = ServiceGenerator.createService(IdentifyClient.class);
     }
 
@@ -49,7 +53,7 @@ public class IdentifyApi {
      * @param auth
      * @param request
      */
-    public static void identifyRequest(String sessionId, String requestId, String uid, String auth, IdentifyRequestBody request) {
+    public void identifyRequest(String sessionId, String requestId, String uid, String auth, IdentifyRequestBody request) {
         identifyClient.identifyRequest(sessionId, requestId, uid, auth, uid, request, new Callback<IdentifyRequestResponse>() {
             @Override
             public void success(IdentifyRequestResponse identifyRequestResponse, Response response) {
@@ -76,7 +80,7 @@ public class IdentifyApi {
      * @param request
      * @param completion
      */
-    public static void updateNameRequest(String sessionId, String requestId, String uid, String auth, UpdateNameRequestBody request, final RequestManager.RequestCompletion completion) {
+    public void updateNameRequest(String sessionId, String requestId, String uid, String auth, UpdateNameRequestBody request, final RequestManager.RequestCompletion completion) {
         identifyClient.updateNameRequest(sessionId, requestId, uid, auth, uid, request, new Callback<UpdateNameRequestResponse>() {
             @Override
             public void success(UpdateNameRequestResponse updateNameRequestResponse, Response response) {
@@ -101,7 +105,7 @@ public class IdentifyApi {
      * @param auth
      * @param completion
      */
-    public static void createPusherChannel(String uid, String auth, final RequestManager.RequestCompletion completion) {
+    public void createPusherChannel(String uid, String auth, final RequestManager.RequestCompletion completion) {
         identifyClient.createPusherChannel(uid, auth, new Object(), new Callback<CreatePusherChannelResponse>() {
             @Override
             public void success(CreatePusherChannelResponse createPusherChannelResponse, Response response) {
@@ -120,8 +124,7 @@ public class IdentifyApi {
      * @param url
      * @param completion
      */
-    public static void externalPusherRequest(final String url, final String uid, final String auth, final RequestManager.RequestCompletion completion) {
-        final Handler mHandler = new Handler();
+    public void externalPusherRequest(final String url, final String uid, final String auth, final RequestManager.RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
