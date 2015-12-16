@@ -3,6 +3,8 @@ package com.ambassador.ambassadorsdk.internal;
 import android.os.Handler;
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
+import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
 import com.twitter.sdk.android.core.Callback;
@@ -29,419 +31,171 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- * Created by JakeDunahee on 9/29/15.
+ *
  */
 public class RequestManager {
 
-    final Handler mHandler = new Handler();
-
+    /** */
     @Inject
     AmbassadorConfig ambassadorConfig;
 
+    /**
+     *
+     */
     public interface RequestCompletion {
         void onSuccess(Object successResponse);
         void onFailure(Object failureResponse);
     }
 
+    /**
+     *
+     */
     public RequestManager() {
         AmbassadorSingleton.getComponent().inject(this);
+        BulkShareApi.init();
+        ConversionsApi.init();
         IdentifyApi.init();
         LinkedInApi.init();
     }
 
-    // region Helper Setup Functions
-    HttpURLConnection setUpConnection(String methodType, String url) {
-        HttpURLConnection connection = null;
+    /**
+     *
+     * @param contacts
+     * @param messageToShare
+     * @param completion
+     */
+    public void bulkShareSms(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
+        String uid = ambassadorConfig.getUniversalID();
+        String auth = ambassadorConfig.getUniversalKey();
+        List<String> numberList = BulkShareHelper.verifiedSMSList(contacts);
+        String name = ambassadorConfig.getUserFullName();
+        BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numberList, name, messageToShare);
 
-        try {
-            connection = (HttpURLConnection) new URL(url).openConnection();
-            connection.setDoInput(true);
-            if (methodType.equals("POST")) { connection.setDoOutput(true); }
-            connection.setRequestMethod(methodType);
-            connection.setRequestProperty("MBSY_UNIVERSAL_ID", ambassadorConfig.getUniversalID());
-            connection.setRequestProperty("Authorization", ambassadorConfig.getUniversalKey());
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e("IOException", e.toString());
-        }
-
-        return connection;
+        BulkShareApi.bulkShareSms(uid, auth, body, completion);
     }
 
-    String getResponse(HttpURLConnection connection, int responseCode) {
-        InputStream iStream = null;
-        try {
-            iStream = (Utilities.isSuccessfulResponseCode(responseCode)) ? connection.getInputStream() : connection.getErrorStream();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        BufferedReader rd = new BufferedReader(new InputStreamReader(iStream));
-        String line;
-        StringBuilder response = new StringBuilder();
+    /**
+     *
+     * @param contacts
+     * @param messageToShare
+     * @param completion
+     */
+    public void bulkShareEmail(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
+        String uid = ambassadorConfig.getUniversalID();
+        String auth = ambassadorConfig.getUniversalKey();
+        List<String> emailList = BulkShareHelper.verifiedEmailList(contacts);
+        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emailList, ambassadorConfig.getReferralShortCode(), ambassadorConfig.getEmailSubjectLine(), messageToShare);
 
-        try {
-            while ((line = rd.readLine()) != null) {
-                response.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return response.toString();
-    }
-    // endregion Helper Setup Functions
-
-
-    // region BULK SHARE
-    void bulkShareSms(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkSMSShareURL());
-                connection.setRequestProperty("Content-Type", "application/json");
-
-                try {
-                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts), ambassadorConfig.getUserFullName(), messageToShare).toString());
-                    oStream.flush();
-                    oStream.close();
-
-                    final int responseCode = connection.getResponseCode();
-                    final String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("BulkShare", "BULK SHARE SMS Response Code = " + responseCode + " and Response = " + response);
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                                completion.onSuccess(response);
-                            } else {
-                                completion.onFailure(response);
-                            }
-                        }
-                    });
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            completion.onFailure("Bulk SMS Share Failure due to IOExceiption - " + e.getMessage());
-                        }
-                    });
-                }
-            }
-        };
-        new Thread(runnable).start();
+        BulkShareApi.bulkShareEmail(uid, auth, body, completion);
     }
 
-    void bulkShareEmail(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.bulkEmailShareURL());
-                connection.setRequestProperty("Content-Type", "application/json");
-
-                try {
-                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(BulkShareHelper.payloadObjectForEmail(BulkShareHelper.verifiedEmailList(contacts),
-                            ambassadorConfig.getReferrerShortCode(),
-                            ambassadorConfig.getEmailSubjectLine(),
-                            messageToShare).toString());
-                    oStream.flush();
-                    oStream.close();
-
-                    final int responseCode = connection.getResponseCode();
-                    final String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("BulkShare", "BULK SHARE EMAIL Response Code = " + responseCode + " and Response = " + response);
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                                completion.onSuccess(response);
-                            } else {
-                                completion.onFailure(response);
-                            }
-                        }
-                    });
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            completion.onFailure("Bulk Share Email Failure due to IOException - " + e.getMessage());
-                        }
-                    });
-                }
-            }
-        };
-        new Thread(runnable).start();
-    }
-
-    void bulkShareTrack(final List<ContactObject> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.shareTrackURL());
-                connection.setRequestProperty("Content-Type", "application/json");
-
-                try {
-                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-
-                    switch (shareType) {
-                        case SMS:
-                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getReferrerShortCode()).toString());
-                            break;
-                        case EMAIL:
-                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getReferrerShortCode()).toString());
-                            break;
-                        default:
-                            oStream.writeBytes(BulkShareHelper.contactArray(shareType, ambassadorConfig.getReferrerShortCode()).toString());
-                    }
-
-                    oStream.flush();
-                    oStream.close();
-
-                    final int responseCode = connection.getResponseCode();
-                    String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("BulkShare", "BULK SHARE TRACK for " + shareType.toString() + " Response Code = " + responseCode + " and Response = " + response);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Utilities.debugLog("BulkShare", "BULK SHARE TRACK Failure for " + shareType.toString() + " due to IOException - " + e.getMessage());
-                }
-            }
-        };
-        new Thread(runnable).start();
-    }
-
-    // Overloaded bulkShareTrack for instances where no contact list is passed
+    /**
+     *
+     * @param shareType
+     */
     public void bulkShareTrack(final BulkShareHelper.SocialServiceTrackType shareType) {
         bulkShareTrack(null, shareType);
     }
-    // endregion BULK SHARE
 
-    // region CONVERSIONS
+    /**
+     *
+     * @param contacts
+     * @param shareType
+     */
+    public void bulkShareTrack(final List<ContactObject> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
+        String uid = ambassadorConfig.getUniversalID();
+        String auth = ambassadorConfig.getUniversalKey();
+        BulkShareApi.BulkShareTrackBody[] body;
+        switch (shareType) {
+            case SMS:
+                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getReferrerShortCode());
+                break;
+            case EMAIL:
+                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getReferrerShortCode());
+                break;
+            default:
+                body = BulkShareHelper.contactArray(shareType, ambassadorConfig.getReferrerShortCode());
+                break;
+        }
+
+        BulkShareApi.bulkShareTrack(uid, auth, body);
+    }
+
+    /**
+     *
+     * @param conversionParameters
+     * @param completion
+     */
     public void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.conversionURL() + ambassadorConfig.getUniversalID());
-                connection.setRequestProperty("Content-Type", "application/json");
-
-                try {
-                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(ConversionUtility.createJSONConversion(conversionParameters, ambassadorConfig.getIdentifyObject()).toString());
-                    oStream.flush();
-                    oStream.close();
-
-                    final int responseCode = connection.getResponseCode();
-                    final String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("Conversion", "REGISTER CONVERSION Response Code = " + responseCode + " and Response = " + response);
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                                completion.onSuccess(response);
-                            } else {
-                                completion.onFailure(response);
-                            }
-                        }
-                    });
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            completion.onFailure("REGISTER CONVERSION Failure due to IOException - " + e.getMessage());
-                        }
-                    });
-                }
-            }
-        };
-        new Thread(runnable).start();
+        String uid = ambassadorConfig.getUniversalID();
+        String auth = ambassadorConfig.getUniversalKey();
+        ConversionsApi.RegisterConversionRequestBody body = ConversionUtility.createConversionRequestBody(conversionParameters, ambassadorConfig.getIdentifyObject());
+        ConversionsApi.registerConversionRequest(uid, auth, body, completion);
     }
-    // endregion CONVERSIONS
 
-
-    // region IDENTIFY REQUESTS
+    /**
+     *
+     */
     public void identifyRequest() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                PusherChannel.setRequestId(System.currentTimeMillis());
+        PusherChannel.setRequestId(System.currentTimeMillis());
 
-                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID());
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setRequestProperty("X-Mbsy-Client-Session-ID", PusherChannel.getSessionId());
-                connection.setRequestProperty("X-Mbsy-Client-Request-ID", String.valueOf(PusherChannel.getRequestId()));
+        String sessionId = PusherChannel.getSessionId();
+        String requestId = String.valueOf(PusherChannel.getRequestId());
+        String uid = ambassadorConfig.getUniversalID();
+        String auth = ambassadorConfig.getUniversalKey();
 
-                JSONObject identifyObject = new JSONObject();
-                try {
-                    JSONObject augurObject = null;
-                    try {
-                        augurObject = new JSONObject(ambassadorConfig.getIdentifyObject());
-                    }
-                    catch (NullPointerException e) {
-                        Utilities.debugLog("IdentifyRequest", "augurObject NULL");
-                    }
-                    identifyObject.put("enroll", true);
-                    identifyObject.put("campaign_id", ambassadorConfig.getCampaignID());
-                    identifyObject.put("email", ambassadorConfig.getUserEmail());
-                    identifyObject.put("source", "android_sdk_pilot");
-                    identifyObject.put("mbsy_source", "");
-                    identifyObject.put("mbsy_cookie_code", "");
-                    identifyObject.put("fp", augurObject);
+        String campaignId = ambassadorConfig.getCampaignID();
+        String userEmail = ambassadorConfig.getUserEmail();
+        String augur = ambassadorConfig.getIdentifyObject();
+        IdentifyApi.IdentifyRequestBody body = new IdentifyApi.IdentifyRequestBody(campaignId, userEmail, augur);
 
-                    Utilities.debugLog("Identify", "Identify JSON Object = " + identifyObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                try {
-                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(identifyObject.toString());
-                    oStream.flush();
-                    oStream.close();
-
-                    final int responseCode = connection.getResponseCode();
-                    String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Response Code = " + responseCode + " and Response = " + response);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Utilities.debugLog("Identify", "IDENTIFY CALL TO BACKEND Failure due to IOException - " + e.getMessage());
-                }
-            }
-        };
-        new Thread(runnable).start();
+        IdentifyApi.identifyRequest(sessionId, requestId, uid, auth, body);
     }
 
+    /**
+     *
+     * @param email
+     * @param firstName
+     * @param lastName
+     * @param completion
+     */
     public void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.identifyURL() + ambassadorConfig.getUniversalID());
-                connection.setRequestProperty("Content-Type", "application/json");
+        String sessionId = PusherChannel.getSessionId();
+        String requestId = String.valueOf(PusherChannel.getRequestId());
+        String uid = ambassadorConfig.getUniversalID();
+        String auth = ambassadorConfig.getUniversalKey();
+        IdentifyApi.UpdateNameRequestBody body = new IdentifyApi.UpdateNameRequestBody(email, firstName, lastName);
 
-                JSONObject dataObject = new JSONObject();
-                JSONObject nameObject = new JSONObject();
-
-                try {
-                    dataObject.put("email", email);
-                    nameObject.put("first_name", firstName);
-                    nameObject.put("last_name", lastName);
-                    dataObject.put("update_data", nameObject);
-
-                    DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(dataObject.toString());
-                    oStream.flush();
-                    oStream.close();
-
-                    final int responseCode = connection.getResponseCode();
-                    final String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("Identify", "UPDATING INFO IDENTIFY ResponseCode = " + responseCode + " and Response = " + response);
-
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                                completion.onSuccess(response);
-                            } else {
-                                completion.onFailure(response);
-                            }
-                        }
-                    });
-                } catch (final JSONException e) {
-                    e.printStackTrace();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            completion.onFailure("Update call failed with JSONException - " + e.getMessage());
-                        }
-                    });
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            completion.onFailure("Update call failed with IOException - " + e.getMessage());
-                        }
-                    });
-                }
-            }
-        };
-        new Thread(runnable).start();
+        IdentifyApi.updateNameRequest(sessionId, requestId, uid, auth, body, completion);
     }
 
+    /**
+     *
+     * @param completion
+     */
     void createPusherChannel(final RequestCompletion completion) {
-        IdentifyApi.createPusherChannel(completion);
-//        Runnable runnable = new Runnable() {
-//            @Override
-//            public void run() {
-//                final HttpURLConnection connection = setUpConnection("POST", AmbassadorConfig.pusherChannelNameURL());
-//                connection.setRequestProperty("Content-Type", "application/json");
-//
-//                try {
-//                    final int responseCode = connection.getResponseCode();
-//                    final String response = getResponse(connection, responseCode);
-//                    Utilities.debugLog("createPusherChannel", "CREATE PUSHER CHANNEL Response Code = " + responseCode + " and Response = " + response);
-//
-//                    mHandler.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            if (Utilities.isSuccessfulResponseCode(responseCode)) {
-//                                completion.onSuccess(response);
-//                            } else {
-//                                completion.onFailure(response);
-//                            }
-//                        }
-//                    });
-//                } catch (final IOException e) {
-//                    e.printStackTrace();
-//                    mHandler.post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            completion.onFailure("Create PusherSDK Channel Failure due to IOException - " + e.getMessage());
-//                        }
-//                    });
-//                }
-//            }
-//        };
-//        new Thread(runnable).start();
+        String uid = ambassadorConfig.getUniversalID();
+        String auth = ambassadorConfig.getUniversalKey();
+
+        IdentifyApi.createPusherChannel(uid, auth, completion);
     }
 
+    /**
+     *
+     * @param url
+     * @param completion
+     */
     void externalPusherRequest(final String url, final RequestCompletion completion) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final HttpURLConnection connection = setUpConnection("GET", url);
-                connection.setRequestProperty("Content-Type", "application/json");
-
-                try {
-                    final int responseCode = connection.getResponseCode();
-                    String response = getResponse(connection, responseCode);
-                    Utilities.debugLog("PusherSDK", "EXTERNAL PUSHER CALL Response Code = " + responseCode +
-                            " and Response = " + response);
-
-                    if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                        completion.onSuccess(response);
-                    } else {
-                        completion.onFailure(response);
-                    }
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            completion.onFailure("External PusherSDK Request failure due to IOException - " + e.getMessage());
-                        }
-                    });
-                }
-            }
-        };
-        new Thread(runnable).start();
+        String uid = ambassadorConfig.getUniversalID();
+        String auth = ambassadorConfig.getUniversalKey();
+        IdentifyApi.externalPusherRequest(url, uid, auth, completion);
     }
 
+    /**
+     *
+     * @param tweetString
+     * @param completion
+     */
     public void postToTwitter(final String tweetString, final RequestCompletion completion) {
         TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
         TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient(twitterSession);
@@ -462,6 +216,11 @@ public class RequestManager {
         });
     }
 
+    /**
+     *
+     * @param code
+     * @param completion
+     */
     public void linkedInLoginRequest(final String code, final RequestCompletion completion) {
         String charset = "UTF-8";
         String urlParams = null;
@@ -483,14 +242,26 @@ public class RequestManager {
         });
     }
 
+    /**
+     *
+     */
     public interface LinkedInAuthorizedListener {
         void linkedInAuthorized(String accessToken);
     }
 
+    /**
+     *
+     * @param requestBody
+     * @param completion
+     */
     public void postToLinkedIn(LinkedInApi.LinkedInPostRequest requestBody, final RequestCompletion completion) {
         LinkedInApi.post(ambassadorConfig.getLinkedInToken(), requestBody, completion);
     }
 
+    /**
+     *
+     * @param completion
+     */
     public void getProfileLinkedIn(final RequestCompletion completion) {
         LinkedInApi.getProfile(ambassadorConfig.getLinkedInToken(), completion);
     }

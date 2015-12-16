@@ -4,6 +4,7 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.PrivateChannelEventListener;
@@ -68,15 +69,22 @@ public class PusherSDK {
 
     void setupPusher(Object successResponse, PusherSubscribeCallback pusherSubscribeCallback) {
         String sessionId = null;
-        String expiresAt = null;
         String channelName = null;
+        String expiresAt = null;
+
+        IdentifyApi.CreatePusherChannelResponse resp = null;
         try {
-            JSONObject obj = new JSONObject(successResponse.toString());
-            sessionId = obj.getString("client_session_uid");
-            channelName = obj.getString("channel_name");
-            expiresAt = obj.getString("expires_at");
-        } catch (JSONException e) {
-            e.printStackTrace();
+            resp = (IdentifyApi.CreatePusherChannelResponse) successResponse;
+        } catch (ClassCastException e) {
+
+        }
+
+        if (resp != null) {
+            sessionId = resp.client_session_uid;
+            channelName = resp.channel_name;
+            expiresAt = resp.expires_at;
+        } else {
+            return;
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
