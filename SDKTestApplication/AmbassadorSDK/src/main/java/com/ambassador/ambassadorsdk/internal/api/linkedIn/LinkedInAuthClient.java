@@ -9,7 +9,7 @@ import retrofit.mime.TypedInput;
 /**
  *
  */
-public interface LinkedInAuthClient {
+interface LinkedInAuthClient {
 
     /** */
     String ENDPOINT = "https://www.linkedin.com";

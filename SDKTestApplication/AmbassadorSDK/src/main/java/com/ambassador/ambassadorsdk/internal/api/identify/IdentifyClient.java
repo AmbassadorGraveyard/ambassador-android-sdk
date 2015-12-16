@@ -14,7 +14,7 @@ import retrofit.http.Query;
 /**
  *
  */
-public interface IdentifyClient {
+interface IdentifyClient {
 
     /** */
     String ENDPOINT = AmbassadorConfig.ambassadorApiUrl();
