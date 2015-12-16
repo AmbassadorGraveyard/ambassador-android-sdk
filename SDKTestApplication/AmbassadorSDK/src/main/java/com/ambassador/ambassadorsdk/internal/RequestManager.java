@@ -56,19 +56,21 @@ public class RequestManager {
      *
      */
     public RequestManager() {
+        this(true);
+    }
+
+    RequestManager(boolean doInit) {
         AmbassadorSingleton.getComponent().inject(this);
-
         bulkShareApi = new BulkShareApi(false);
-        bulkShareApi.init();
-
         conversionsApi = new ConversionsApi(false);
-        conversionsApi.init();
-
         identifyApi = new IdentifyApi(false);
-        identifyApi.init();
-
         linkedInApi = new LinkedInApi(false);
-        linkedInApi.init();
+        if (doInit) {
+            bulkShareApi.init();
+            conversionsApi.init();
+            identifyApi.init();
+            linkedInApi.init();
+        }
     }
 
     /**
