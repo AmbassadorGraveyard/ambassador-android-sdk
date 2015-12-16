@@ -71,26 +71,6 @@ public class RequestManager {
         linkedInApi.init();
     }
 
-    /** Instantiates and returns a new BulkShareApi */
-    BulkShareApi createBulkShareApi() {
-        return new BulkShareApi();
-    }
-
-    /** Instantiates and returns a new ConversionsApi */
-    ConversionsApi createConversionsApi() {
-        return new ConversionsApi();
-    }
-
-    /** Instantiates and returns a new IdentifyApi */
-    IdentifyApi createIdentifyApi() {
-        return new IdentifyApi();
-    }
-
-    /** Instantiates and returns a new LinkedInApi */
-    LinkedInApi createLinkedInApi() {
-        return new LinkedInApi();
-    }
-
     /**
      *
      * @param contacts
