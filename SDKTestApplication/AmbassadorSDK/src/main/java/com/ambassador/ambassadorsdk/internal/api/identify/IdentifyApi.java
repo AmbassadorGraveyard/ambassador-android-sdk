@@ -35,7 +35,13 @@ public class IdentifyApi {
     private IdentifyClient identifyClient;
 
     public IdentifyApi() {
-        init();
+        this(true);
+    }
+
+    public IdentifyApi(boolean doInit) {
+        if (doInit) {
+            init();
+        }
     }
 
     /**

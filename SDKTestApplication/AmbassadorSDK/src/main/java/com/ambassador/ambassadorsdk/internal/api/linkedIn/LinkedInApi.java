@@ -23,6 +23,23 @@ public class LinkedInApi {
     private LinkedInAuthClient linkedInAuthClient;
 
     /**
+     *
+     */
+    public LinkedInApi() {
+        this(true);
+    }
+
+    /**
+     *
+     * @param doInit
+     */
+    public LinkedInApi(boolean doInit) {
+        if (doInit) {
+            init();
+        }
+    }
+
+    /**
      * Instantiates the LinkedIn client objects using the ServiceGenerator.
      */
     public void init() {
