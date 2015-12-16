@@ -6,6 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,60 +66,19 @@ public class ConversionUtility {
         }
     }
 
-    // Creates a JSON object from Conversion Params and some Augur data
-    public static JSONObject createJSONConversion(ConversionParameters parameters, String identifyObject) {
-        JSONObject conversionObject = new JSONObject();
-        JSONObject fp = new JSONObject();
-        JSONObject consumerObject = new JSONObject();
-        JSONObject deviceObject = new JSONObject();
-        JSONObject fieldObject = new JSONObject();
+    public static ConversionsApi.RegisterConversionRequestBody createConversionRequestBody(ConversionParameters parameters, String identifyObject) {
+        Gson gson = new Gson();
+        JsonObject augur = gson.fromJson(identifyObject, JsonElement.class).getAsJsonObject();
+        JsonObject augurConsumer = augur.getAsJsonObject("consumer");
+        JsonObject augurDevice = augur.getAsJsonObject("device");
 
-        try {
-            JSONObject identity = new JSONObject(identifyObject);
-            JSONObject consumer= identity.getJSONObject("consumer");
-            JSONObject device = identity.getJSONObject("device");
-            consumerObject.put("UID", consumer.getString("UID"));
-            deviceObject.put("type", device.getString("type"));
-            deviceObject.put("ID", device.getString("ID"));
+        String augurUid = augurConsumer.get("UID").getAsString();
+        String augurType = augurDevice.get("type").getAsString();
+        String augurId = augurDevice.get("ID").getAsString();
 
-            fp.put("consumer", consumerObject);
-            fp.put("device", deviceObject);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN, parameters.mbsy_campaign);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL, parameters.mbsy_email);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_FIRST_NAME, parameters.mbsy_first_name);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_LAST_NAME, parameters.mbsy_last_name);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL_NEW_AMBASSADOR, parameters.mbsy_email_new_ambassador);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_UID, parameters.mbsy_uid);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM1, parameters.mbsy_custom1);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM2, parameters.mbsy_custom2);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM3, parameters.mbsy_custom3);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_AUTO_CREATE, parameters.mbsy_auto_create);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_REVENUE, parameters.mbsy_revenue);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_DEACTIVATE_NEW_AMBASSADOR, parameters.mbsy_deactivate_new_ambassador);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_TRANSACTION_UID, parameters.mbsy_transaction_uid);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_ADD_TO_GROUP_ID, parameters.mbsy_add_to_group_id);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA1, parameters.mbsy_event_data1);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA2, parameters.mbsy_event_data2);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA3, parameters.mbsy_event_data3);
-            fieldObject.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED, parameters.mbsy_is_approved);
-            fieldObject.put("mbsy_short_code", parameters.mbsy_short_code);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            conversionObject.put("fp", fp);
-            conversionObject.put("fields", fieldObject);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return conversionObject;
+        ConversionsApi.RegisterConversionRequestBody.AugurObject augurObject = new ConversionsApi.RegisterConversionRequestBody.AugurObject(augurUid, augurType, augurId);
+        ConversionsApi.RegisterConversionRequestBody.FieldsObject fieldsObject = new ConversionsApi.RegisterConversionRequestBody.FieldsObject(parameters, parameters.mbsy_short_code);
+        return new ConversionsApi.RegisterConversionRequestBody(augurObject, fieldsObject);
     }
 
     // Attempts to register conversions stored in database

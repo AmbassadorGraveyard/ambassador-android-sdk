@@ -118,7 +118,6 @@ public class LinkedInApi {
             this.visibility =  new Visibility("anyone");
         }
 
-        /** Pojo for LinkedIn post visibility rule */
         public static class Visibility {
 
             String code;
