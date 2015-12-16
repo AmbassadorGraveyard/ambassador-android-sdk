@@ -16,12 +16,19 @@ import retrofit.client.Response;
 public class BulkShareApi {
 
     /** */
-    private static BulkShareClient bulkShareClient;
+    private BulkShareClient bulkShareClient;
 
     /**
      *
      */
-    public static void init() {
+    public BulkShareApi() {
+        init();
+    }
+
+    /**
+     *
+     */
+    public void init() {
         bulkShareClient = ServiceGenerator.createService(BulkShareClient.class);
     }
 
@@ -32,7 +39,7 @@ public class BulkShareApi {
      * @param body
      * @param completion
      */
-    public static void bulkShareSms(String uid, String auth, BulkShareSmsBody body, final RequestManager.RequestCompletion completion) {
+    public void bulkShareSms(String uid, String auth, BulkShareSmsBody body, final RequestManager.RequestCompletion completion) {
         bulkShareClient.bulkShareSms(uid, auth, body, new Callback<String>() {
             @Override
             public void success(String s, Response response) {
@@ -57,7 +64,7 @@ public class BulkShareApi {
      * @param body
      * @param completion
      */
-    public static void bulkShareEmail(String uid, String auth, BulkShareEmailBody body, final RequestManager.RequestCompletion completion) {
+    public void bulkShareEmail(String uid, String auth, BulkShareEmailBody body, final RequestManager.RequestCompletion completion) {
         bulkShareClient.bulkShareEmail(uid, auth, body, new Callback<String>() {
             @Override
             public void success(String s, Response response) {
@@ -81,7 +88,7 @@ public class BulkShareApi {
      * @param auth
      * @param body
      */
-    public static void bulkShareTrack(String uid, String auth, BulkShareTrackBody[] body) {
+    public void bulkShareTrack(String uid, String auth, BulkShareTrackBody[] body) {
         bulkShareClient.bulkShareTrack(uid, auth, body, new Callback<String>() {
             @Override
             public void success(String s, Response response) {

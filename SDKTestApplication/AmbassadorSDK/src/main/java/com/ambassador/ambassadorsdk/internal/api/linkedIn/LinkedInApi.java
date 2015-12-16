@@ -17,15 +17,15 @@ import retrofit.mime.TypedInput;
 public class LinkedInApi {
 
     /** Client for making authenticated requests such as posting */
-    private static LinkedInClient linkedInClient;
+    private LinkedInClient linkedInClient;
 
     /** Client for making unauthenticated requests such as logging in */
-    private static LinkedInAuthClient linkedInAuthClient;
+    private LinkedInAuthClient linkedInAuthClient;
 
     /**
      * Instantiates the LinkedIn client objects using the ServiceGenerator.
      */
-    public static void init() {
+    public void init() {
         linkedInClient = ServiceGenerator.createService(LinkedInClient.class);
         linkedInAuthClient = ServiceGenerator.createService(LinkedInAuthClient.class);
     }
@@ -36,7 +36,7 @@ public class LinkedInApi {
      * @param completion callback interface for request completion
      * @param listener callback interface for a valid access token being obtained
      */
-    public static void login(String urlParams, final RequestManager.RequestCompletion completion, final RequestManager.LinkedInAuthorizedListener listener) {
+    public void login(String urlParams, final RequestManager.RequestCompletion completion, final RequestManager.LinkedInAuthorizedListener listener) {
         TypedInput requestBody = new TypedByteArray("application/x-www-form-urlencoded", urlParams.getBytes(Charset.forName("UTF-8")));
         linkedInAuthClient.login(requestBody, new Callback<LinkedInLoginResponse>() {
             @Override
@@ -63,7 +63,7 @@ public class LinkedInApi {
      * @param requestBody the pojo containing the comment and visibility rule
      * @param completion callback interface for request completion
      */
-    public static void post(String token, LinkedInApi.LinkedInPostRequest requestBody, final RequestManager.RequestCompletion completion) {
+    public void post(String token, LinkedInApi.LinkedInPostRequest requestBody, final RequestManager.RequestCompletion completion) {
         linkedInClient.post("Bearer " + token, requestBody, new retrofit.Callback<Object>() {
             @Override
             public void success(Object linkedInPostResponse, Response response) {
@@ -82,7 +82,7 @@ public class LinkedInApi {
      * @param token the user's access token
      * @param completion callback interface for request completion
      */
-    public static void getProfile(String token, final RequestManager.RequestCompletion completion) {
+    public void getProfile(String token, final RequestManager.RequestCompletion completion) {
         linkedInClient.getProfile("Bearer " + token, new retrofit.Callback<LinkedInApi.LinkedInProfileResponse>() {
             @Override
             public void success(LinkedInApi.LinkedInProfileResponse linkedInProfileResponse, Response response) {

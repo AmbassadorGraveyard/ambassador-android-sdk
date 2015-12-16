@@ -15,12 +15,19 @@ import retrofit.client.Response;
 public class ConversionsApi {
 
     /** */
-    public static ConversionsClient conversionsClient;
+    public ConversionsClient conversionsClient;
 
     /**
      *
      */
-    public static void init() {
+    public ConversionsApi() {
+        init();
+    }
+
+    /**
+     *
+     */
+    public void init() {
         conversionsClient = ServiceGenerator.createService(ConversionsClient.class);
     }
 
@@ -31,7 +38,7 @@ public class ConversionsApi {
      * @param body
      * @param completion
      */
-    public static void registerConversionRequest(String uid, String auth, RegisterConversionRequestBody body, final RequestManager.RequestCompletion completion) {
+    public void registerConversionRequest(String uid, String auth, RegisterConversionRequestBody body, final RequestManager.RequestCompletion completion) {
         conversionsClient.registerConversionRequest(uid, auth, uid, body, new Callback<String>() {
             @Override
             public void success(String s, Response response) {

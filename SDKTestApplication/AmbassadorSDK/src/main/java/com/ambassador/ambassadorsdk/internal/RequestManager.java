@@ -39,6 +39,11 @@ public class RequestManager {
     @Inject
     AmbassadorConfig ambassadorConfig;
 
+    BulkShareApi bulkShareApi;
+    ConversionsApi conversionsApi;
+    IdentifyApi identifyApi;
+    LinkedInApi linkedInApi;
+
     /**
      *
      */
@@ -52,10 +57,10 @@ public class RequestManager {
      */
     public RequestManager() {
         AmbassadorSingleton.getComponent().inject(this);
-        BulkShareApi.init();
-        ConversionsApi.init();
-        IdentifyApi.init();
-        LinkedInApi.init();
+        bulkShareApi = new BulkShareApi();
+        conversionsApi = new ConversionsApi();
+        identifyApi = new IdentifyApi();
+        linkedInApi = new LinkedInApi();
     }
 
     /**
@@ -71,7 +76,7 @@ public class RequestManager {
         String name = ambassadorConfig.getUserFullName();
         BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numberList, name, messageToShare);
 
-        BulkShareApi.bulkShareSms(uid, auth, body, completion);
+        bulkShareApi.bulkShareSms(uid, auth, body, completion);
     }
 
     /**
@@ -86,7 +91,7 @@ public class RequestManager {
         List<String> emailList = BulkShareHelper.verifiedEmailList(contacts);
         BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emailList, ambassadorConfig.getReferralShortCode(), ambassadorConfig.getEmailSubjectLine(), messageToShare);
 
-        BulkShareApi.bulkShareEmail(uid, auth, body, completion);
+        bulkShareApi.bulkShareEmail(uid, auth, body, completion);
     }
 
     /**
@@ -118,7 +123,7 @@ public class RequestManager {
                 break;
         }
 
-        BulkShareApi.bulkShareTrack(uid, auth, body);
+        bulkShareApi.bulkShareTrack(uid, auth, body);
     }
 
     /**
@@ -130,7 +135,7 @@ public class RequestManager {
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
         ConversionsApi.RegisterConversionRequestBody body = ConversionUtility.createConversionRequestBody(conversionParameters, ambassadorConfig.getIdentifyObject());
-        ConversionsApi.registerConversionRequest(uid, auth, body, completion);
+        conversionsApi.registerConversionRequest(uid, auth, body, completion);
     }
 
     /**
@@ -149,7 +154,7 @@ public class RequestManager {
         String augur = ambassadorConfig.getIdentifyObject();
         IdentifyApi.IdentifyRequestBody body = new IdentifyApi.IdentifyRequestBody(campaignId, userEmail, augur);
 
-        IdentifyApi.identifyRequest(sessionId, requestId, uid, auth, body);
+        identifyApi.identifyRequest(sessionId, requestId, uid, auth, body);
     }
 
     /**
@@ -166,7 +171,7 @@ public class RequestManager {
         String auth = ambassadorConfig.getUniversalKey();
         IdentifyApi.UpdateNameRequestBody body = new IdentifyApi.UpdateNameRequestBody(email, firstName, lastName);
 
-        IdentifyApi.updateNameRequest(sessionId, requestId, uid, auth, body, completion);
+        identifyApi.updateNameRequest(sessionId, requestId, uid, auth, body, completion);
     }
 
     /**
@@ -177,7 +182,7 @@ public class RequestManager {
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
 
-        IdentifyApi.createPusherChannel(uid, auth, completion);
+        identifyApi.createPusherChannel(uid, auth, completion);
     }
 
     /**
@@ -188,7 +193,7 @@ public class RequestManager {
     void externalPusherRequest(final String url, final RequestCompletion completion) {
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
-        IdentifyApi.externalPusherRequest(url, uid, auth, completion);
+        identifyApi.externalPusherRequest(url, uid, auth, completion);
     }
 
     /**
@@ -234,7 +239,7 @@ public class RequestManager {
             Utilities.debugLog("LinkedIn", "LinkedIn Login Request failed due to UnsupportedEncodingException -" + e.getMessage());
         }
 
-        LinkedInApi.login(urlParams, completion, new LinkedInAuthorizedListener() {
+        linkedInApi.login(urlParams, completion, new LinkedInAuthorizedListener() {
             @Override
             public void linkedInAuthorized(String accessToken) {
                 ambassadorConfig.setLinkedInToken(accessToken);
@@ -255,7 +260,7 @@ public class RequestManager {
      * @param completion
      */
     public void postToLinkedIn(LinkedInApi.LinkedInPostRequest requestBody, final RequestCompletion completion) {
-        LinkedInApi.post(ambassadorConfig.getLinkedInToken(), requestBody, completion);
+        linkedInApi.post(ambassadorConfig.getLinkedInToken(), requestBody, completion);
     }
 
     /**
@@ -263,7 +268,7 @@ public class RequestManager {
      * @param completion
      */
     public void getProfileLinkedIn(final RequestCompletion completion) {
-        LinkedInApi.getProfile(ambassadorConfig.getLinkedInToken(), completion);
+        linkedInApi.getProfile(ambassadorConfig.getLinkedInToken(), completion);
     }
 
 }
