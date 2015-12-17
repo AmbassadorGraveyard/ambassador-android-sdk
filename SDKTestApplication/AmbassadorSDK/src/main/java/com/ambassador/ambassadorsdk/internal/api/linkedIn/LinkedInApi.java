@@ -40,11 +40,27 @@ public class LinkedInApi {
     }
 
     /**
-     * Instantiates the LinkedIn client objects using the ServiceGenerator.
+     * Instantiates and sets the LinkedIn client objects using the ServiceGenerator.
      */
     public void init() {
-        linkedInClient = ServiceGenerator.createService(LinkedInClient.class);
-        linkedInAuthClient = ServiceGenerator.createService(LinkedInAuthClient.class);
+        setLinkedInClient(ServiceGenerator.createService(LinkedInClient.class));
+        setLinkedInAuthClient(ServiceGenerator.createService(LinkedInAuthClient.class));
+    }
+
+    /**
+     * Sets the client for authenticated requests
+     * @param linkedInClient an instantiation of LinkedInClient for this LinkedInApi to use
+     */
+    public void setLinkedInClient(LinkedInClient linkedInClient) {
+        this.linkedInClient = linkedInClient;
+    }
+
+    /**
+     * Sets the client for un-authenticated requests
+     * @param linkedInAuthClient an instantiation of LinkedInAuthClient for this LinkedInApi to use
+     */
+    public void setLinkedInAuthClient(LinkedInAuthClient linkedInAuthClient) {
+        this.linkedInAuthClient = linkedInAuthClient;
     }
 
     /**
@@ -120,7 +136,7 @@ public class LinkedInApi {
     /** Pojo for login request response */
     public static class LinkedInLoginResponse {
 
-        String access_token;
+        public String access_token;
 
     }
 

@@ -10,7 +10,7 @@ import retrofit.http.POST;
 /**
  *
  */
-interface BulkShareClient {
+public interface BulkShareClient {
 
     /** */
     String ENDPOINT = AmbassadorConfig.ambassadorApiUrl();

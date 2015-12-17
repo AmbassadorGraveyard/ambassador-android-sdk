@@ -25,7 +25,7 @@ public class ServiceGenerator {
 
         if (!endpoint.equals("")) {
             OkHttpClient client = new OkHttpClient();
-            RestAdapter.Builder builder = new RestAdapter.Builder()
+            RestAdapter.Builder builder = getBuilder()
                     .setEndpoint(endpoint)
                     .setClient(new OkClient(client));
 
@@ -52,6 +52,14 @@ public class ServiceGenerator {
         } catch (Exception e) {
             throw new NoEndpointFoundException();
         }
+    }
+
+    /**
+     * Instantiates a new RestAdapter.Builder and returns it.
+     * @return a RestBuilder.Builder object
+     */
+    static RestAdapter.Builder getBuilder() {
+        return new RestAdapter.Builder();
     }
 
     /**
