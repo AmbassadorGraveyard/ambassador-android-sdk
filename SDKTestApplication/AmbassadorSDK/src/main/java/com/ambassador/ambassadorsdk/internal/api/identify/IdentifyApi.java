@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import retrofit.Callback;
@@ -134,47 +135,96 @@ public class IdentifyApi {
 
     /**
      *
-     * @param url
-     * @param completion
+     * @param url the String url to hit
+     * @param completion callback for request completion
      */
     public void externalPusherRequest(final String url, final String uid, final String auth, final RequestManager.RequestCompletion completion) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = null;
-                try {
-                    connection = (HttpURLConnection) new URL(url).openConnection();
-                    connection.setDoInput(true);
-                    connection.setRequestMethod("GET");
-                    connection.setRequestProperty("MBSY_UNIVERSAL_ID", uid);
-                    connection.setRequestProperty("Authorization", auth);
-                    connection.setRequestProperty("Content-Type", "application/json");
-
-                    final int responseCode = connection.getResponseCode();
-
-                    InputStream iStream = null;
-                    iStream = (Utilities.isSuccessfulResponseCode(responseCode)) ? connection.getInputStream() : connection.getErrorStream();
-                    BufferedReader rd = new BufferedReader(new InputStreamReader(iStream));
-                    String line;
-                    StringBuilder responseBuilder = new StringBuilder();
-
-                    while ((line = rd.readLine()) != null) {
-                        responseBuilder.append(line);
-                    }
-
-                    String response = responseBuilder.toString();
-
-                    if (Utilities.isSuccessfulResponseCode(responseCode)) {
-                        completion.onSuccess(response);
-                    } else {
-                        completion.onFailure(response);
-                    }
-                } catch (final IOException e) {
-                    completion.onFailure("External PusherSDK Request failure due to IOException - " + e.getMessage());
-                }
+                handleExternalPusherRequest(url, uid, auth, completion);
             }
         };
-        new Thread(runnable).start();
+        createThread(runnable).start();
+    }
+
+    /**
+     * Creates a URL object for a String url
+     * @param url String url to instantiate a URL object for
+     * @return an instantiated URL object for the parameter
+     * @throws MalformedURLException
+     */
+    URL createURL(String url) throws MalformedURLException {
+        return new URL(url);
+    }
+
+    /**
+     * Creates an HttpURLConnection object for a String url
+     * @param url the string url to open a connection to
+     * @return an instantiated HttpURLConnection object for the parameter
+     * @throws IOException
+     */
+    HttpURLConnection createConnection(String url) throws IOException {
+        return (HttpURLConnection) createURL(url).openConnection();
+    }
+
+    /**
+     * Handles the logic of externalPusherRequest, called within runnable
+     * @param url the String url to hit
+     * @param uid the universalId identifier
+     * @param auth the universalToken identifier
+     * @param completion callback for request completion
+     */
+    void handleExternalPusherRequest(String url, String uid, String auth, RequestManager.RequestCompletion completion) {
+        HttpURLConnection connection = null;
+        try {
+            connection = createConnection(url);
+            connection.setDoInput(true);
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("MBSY_UNIVERSAL_ID", uid);
+            connection.setRequestProperty("Authorization", auth);
+            connection.setRequestProperty("Content-Type", "application/json");
+
+            final int responseCode = connection.getResponseCode();
+
+            InputStream iStream = null;
+            iStream = (Utilities.isSuccessfulResponseCode(responseCode)) ? connection.getInputStream() : connection.getErrorStream();
+            BufferedReader rd = createBufferedReader(iStream);
+            String line;
+            StringBuilder responseBuilder = new StringBuilder();
+
+            while ((line = rd.readLine()) != null) {
+                responseBuilder.append(line);
+            }
+
+            String response = responseBuilder.toString();
+
+            if (Utilities.isSuccessfulResponseCode(responseCode)) {
+                completion.onSuccess(response);
+            } else {
+                completion.onFailure(response);
+            }
+        } catch (final IOException e) {
+            completion.onFailure("External PusherSDK Request failure due to IOException - " + e.getMessage());
+        }
+    }
+
+    /**
+     * Creates a Thread object for a Runnable
+     * @param runnable the runnable to place on the thread
+     * @return the instantiated Runnable object
+     */
+    Thread createThread(Runnable runnable) {
+        return new Thread(runnable);
+    }
+
+    /**
+     * Opens a BufferedReader for an InputStream
+     * @param is the InputStream to open a BufferedReader for
+     * @return the opened BufferedReader
+     */
+    BufferedReader createBufferedReader(InputStream is) {
+        return new BufferedReader(new InputStreamReader(is));
     }
 
     /**
