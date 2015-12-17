@@ -38,7 +38,15 @@ public class ConversionsApi {
      *
      */
     public void init() {
-        conversionsClient = ServiceGenerator.createService(ConversionsClient.class);
+        setConversionsClient(ServiceGenerator.createService(ConversionsClient.class));
+    }
+
+    /**
+     *Sets the client for conversions requests
+     * @param conversionsClient an instantiation of ConversionsClient for this ConversionsApi to use
+     */
+    public void setConversionsClient(ConversionsClient conversionsClient) {
+        this.conversionsClient = conversionsClient;
     }
 
     /**

@@ -39,7 +39,15 @@ public class BulkShareApi {
      *
      */
     public void init() {
-        bulkShareClient = ServiceGenerator.createService(BulkShareClient.class);
+        setBulkShareClient(ServiceGenerator.createService(BulkShareClient.class));
+    }
+
+    /**
+     * Sets the client for bulkshare requests
+     * @param bulkShareClient
+     */
+    public void setBulkShareClient(BulkShareClient bulkShareClient) {
+        this.bulkShareClient = bulkShareClient;
     }
 
     /**

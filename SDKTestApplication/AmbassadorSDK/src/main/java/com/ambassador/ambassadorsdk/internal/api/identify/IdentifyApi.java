@@ -34,10 +34,17 @@ public class IdentifyApi {
     /** */
     private IdentifyClient identifyClient;
 
+    /**
+     *
+     */
     public IdentifyApi() {
         this(true);
     }
 
+    /**
+     *
+     * @param doInit
+     */
     public IdentifyApi(boolean doInit) {
         if (doInit) {
             init();
@@ -48,7 +55,15 @@ public class IdentifyApi {
      *
      */
     public void init() {
-        identifyClient = ServiceGenerator.createService(IdentifyClient.class);
+        setIdentifyClient(ServiceGenerator.createService(IdentifyClient.class));
+    }
+
+    /**
+     * Sets the client for identify requests
+     * @param identifyClient an instantiation of IdentifyClient for this IdentifyApi to use
+     */
+    public void setIdentifyClient(IdentifyClient identifyClient) {
+        this.identifyClient = identifyClient;
     }
 
     /**
