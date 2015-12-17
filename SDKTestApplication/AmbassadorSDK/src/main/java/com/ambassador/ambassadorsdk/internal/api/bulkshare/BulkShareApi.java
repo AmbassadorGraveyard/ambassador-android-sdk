@@ -9,7 +9,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- *
+ * Handles Ambassador API bulkshare methods using Retrofit services and contains all relevant pojo classes.
  */
 public class BulkShareApi {
 
@@ -43,18 +43,19 @@ public class BulkShareApi {
 
     /**
      * Sets the client for bulkshare requests
-     * @param bulkShareClient
+     * @param bulkShareClient an instantiation of BulkShareClient for this BulkShareApi to use
      */
     public void setBulkShareClient(BulkShareClient bulkShareClient) {
         this.bulkShareClient = bulkShareClient;
     }
 
     /**
-     *
-     * @param uid
-     * @param auth
-     * @param body
-     * @param completion
+     * Passes parameters to the BulkShareClient and handles retrofit callback
+     * and calling back to RequestCompletion.
+     * @param uid the Ambassador universal id
+     * @param auth the Ambasador universal token
+     * @param body the request body as a BulkShareSms object
+     * @param completion callback for request completion
      */
     public void bulkShareSms(String uid, String auth, BulkShareSmsBody body, final RequestManager.RequestCompletion completion) {
         bulkShareClient.bulkShareSms(uid, auth, body, new Callback<String>() {
@@ -78,11 +79,12 @@ public class BulkShareApi {
     }
 
     /**
-     *
-     * @param uid
-     * @param auth
-     * @param body
-     * @param completion
+     * Passes parameters to the BulkShareClient and handles retrofit callback
+     * and calling back to RequestCompletion.
+     * @param uid the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param body the request body as a BulkShareEmailBody object
+     * @param completion callback for request completion
      */
     public void bulkShareEmail(String uid, String auth, BulkShareEmailBody body, final RequestManager.RequestCompletion completion) {
         bulkShareClient.bulkShareEmail(uid, auth, body, new Callback<String>() {
@@ -106,10 +108,11 @@ public class BulkShareApi {
     }
 
     /**
-     *
-     * @param uid
-     * @param auth
-     * @param body
+     * Passes parameters to the BulkShareClient and handles retrofit callback
+     * and calling back to RequestCompletion.
+     * @param uid the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param body the request body as a BulkShareTrackBody array
      */
     public void bulkShareTrack(String uid, String auth, BulkShareTrackBody[] body) {
         bulkShareClient.bulkShareTrack(uid, auth, body, new Callback<String>() {
@@ -129,9 +132,7 @@ public class BulkShareApi {
         });
     }
 
-    /**
-     *
-     */
+    /** Pojo for bulk share sms post request body */
     public static class BulkShareSmsBody {
 
         private String name;
@@ -146,9 +147,7 @@ public class BulkShareApi {
 
     }
 
-    /**
-     *
-     */
+    /** Pojo for bulk share email post request body */
     public static class BulkShareEmailBody {
 
         private String subject_line;
@@ -165,9 +164,7 @@ public class BulkShareApi {
 
     }
 
-    /**
-     *
-     */
+    /** Pojo for bulk share track post request body */
     public static class BulkShareTrackBody {
 
         private String short_code;
