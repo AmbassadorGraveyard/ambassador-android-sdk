@@ -1,8 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.api.identify;
 
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
-import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInAuthClient;
-import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInClient;
 
 import org.junit.Before;
 import org.junit.Test;
