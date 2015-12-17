@@ -1,7 +1,5 @@
 package com.ambassador.ambassadorsdk.internal.api.linkedin;
 
-import android.telecom.Call;
-
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
@@ -20,8 +18,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.mime.TypedByteArray;
 import retrofit.mime.TypedInput;
 
 @RunWith(PowerMockRunner.class)
