@@ -10,7 +10,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- *
+ * Handles Ambassador API conversion methods using Retrofit services and contains all relevant pojo classes.
  */
 public class ConversionsApi {
 
@@ -26,8 +26,8 @@ public class ConversionsApi {
     }
 
     /**
-     *
-     * @param doInit
+     * Optionally initializes client.
+     * @param doInit whether or not to automatically initialize client.
      */
     public ConversionsApi(boolean doInit) {
         if (doInit) {
@@ -36,14 +36,14 @@ public class ConversionsApi {
     }
 
     /**
-     *
+     * Instantiates and sets the Conversions client objects using the ServiceGenerator.
      */
     public void init() {
         setConversionsClient(ServiceGenerator.createService(ConversionsClient.class));
     }
 
     /**
-     *Sets the client for conversions requests
+     * Sets the client for conversions requests
      * @param conversionsClient an instantiation of ConversionsClient for this ConversionsApi to use
      */
     public void setConversionsClient(ConversionsClient conversionsClient) {
@@ -52,10 +52,10 @@ public class ConversionsApi {
 
     /**
      *
-     * @param uid
-     * @param auth
-     * @param body
-     * @param completion
+     * @param uid the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param body the request body as a RegisterConversionRequestBody object
+     * @param completion callback for request completion
      */
     public void registerConversionRequest(String uid, String auth, RegisterConversionRequestBody body, final RequestManager.RequestCompletion completion) {
         conversionsClient.registerConversionRequest(uid, auth, uid, body, new Callback<String>() {
@@ -78,9 +78,7 @@ public class ConversionsApi {
         });
     }
 
-    /**
-     *
-     */
+    /** Pojo for register conversion post request body */
     public static class RegisterConversionRequestBody {
 
         private AugurObject fp;
