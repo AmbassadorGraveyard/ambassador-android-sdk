@@ -13,19 +13,20 @@ import retrofit.client.Response;
  */
 public class BulkShareApi {
 
-    /** */
+    /** Client for making BulkShare requests to the Ambassador API */
     private BulkShareClient bulkShareClient;
 
     /**
-     *
+     * Default constructor.
+     * Instantiates BulkShareApi and automatically initializes client.
      */
     public BulkShareApi() {
         this(true);
     }
 
     /**
-     *
-     * @param doInit
+     * Instantiates BulkShareApi optionally initializing client.
+     * @param doInit whether or not to automatically initialize client.
      */
     public BulkShareApi(boolean doInit) {
         if (doInit) {
@@ -34,7 +35,7 @@ public class BulkShareApi {
     }
 
     /**
-     *
+     * Generates and sets the client.
      */
     public void init() {
         setBulkShareClient(ServiceGenerator.createService(BulkShareClient.class));
@@ -60,14 +61,17 @@ public class BulkShareApi {
             @Override
             public void success(String s, Response response) {
                 completion.onSuccess("success");
+                Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareSms(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (error.getResponse() != null && Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
                     completion.onSuccess("success");
+                    Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareSms(...)");
                 } else {
                     completion.onFailure("failure");
+                    Utilities.debugLog("amb-request", "FAILURE: BulkShareApi.bulkShareSms(...)");
                 }
             }
         });
@@ -85,14 +89,17 @@ public class BulkShareApi {
             @Override
             public void success(String s, Response response) {
                 completion.onSuccess("success");
+                Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareEmail(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (error.getResponse() != null && Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
                     completion.onSuccess("success");
+                    Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareEmail(...)");
                 } else {
                     completion.onFailure("failure");
+                    Utilities.debugLog("amb-request", "FAILURE: BulkShareApi.bulkShareEmail(...)");
                 }
             }
         });
@@ -108,12 +115,16 @@ public class BulkShareApi {
         bulkShareClient.bulkShareTrack(uid, auth, body, new Callback<String>() {
             @Override
             public void success(String s, Response response) {
-
+                Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareTrack(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                if (error.getResponse() != null && Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
+                    Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareTrack(...)");
+                } else {
+                    Utilities.debugLog("amb-request", "FAILURE: BulkShareApi.bulkShareTrack(...)");
+                }
             }
         });
     }

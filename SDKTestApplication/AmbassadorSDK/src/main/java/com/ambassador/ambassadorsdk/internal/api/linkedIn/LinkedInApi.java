@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.api.linkedIn;
 
 import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 
 import java.nio.charset.Charset;
@@ -78,8 +79,10 @@ public class LinkedInApi {
                 if (accessToken != null) {
                     completion.onSuccess(accessToken);
                     listener.linkedInAuthorized(accessToken);
+                    Utilities.debugLog("amb-request", "SUCCESS: LinkedInApi.login(...)");
                 } else {
                     completion.onFailure("failure");
+                    Utilities.debugLog("amb-request", "FAILURE: LinkedInApi.login(...)");
                 }
             }
 
@@ -101,11 +104,13 @@ public class LinkedInApi {
             @Override
             public void success(Object linkedInPostResponse, Response response) {
                 completion.onSuccess("success");
+                Utilities.debugLog("amb-request", "SUCCESS: LinkedInApi.post(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 completion.onFailure("failure");
+                Utilities.debugLog("amb-request", "FAILURE: LinkedInApi.post(...)");
             }
         });
     }
@@ -121,14 +126,17 @@ public class LinkedInApi {
             public void success(LinkedInApi.LinkedInProfileResponse linkedInProfileResponse, Response response) {
                 if (linkedInProfileResponse.firstName != null && linkedInProfileResponse.lastName != null) {
                     completion.onSuccess("success");
+                    Utilities.debugLog("amb-request", "SUCCESS: LinkedInApi.getProfile(...)");
                 } else {
                     completion.onFailure("failure");
+                    Utilities.debugLog("amb-request", "FAILURE: LinkedInApi.getProfile(...)");
                 }
             }
 
             @Override
             public void failure(RetrofitError error) {
                 completion.onFailure("failure");
+                Utilities.debugLog("amb-request", "FAILURE: LinkedInApi.getProfile(...)");
             }
         });
     }
