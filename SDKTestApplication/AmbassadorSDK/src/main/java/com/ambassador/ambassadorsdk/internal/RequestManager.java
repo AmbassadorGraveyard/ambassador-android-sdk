@@ -19,11 +19,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 /**
- *
+ * Handles all requests at the highest level. This is what all other internal classes use.
+ * Prepares parameters and calls the different Api classes.
  */
 public class RequestManager {
 
-    /** */
     @Inject
     AmbassadorConfig ambassadorConfig;
 
@@ -33,7 +33,7 @@ public class RequestManager {
     LinkedInApi linkedInApi;
 
     /**
-     *
+     * Standard callback used throughout the codebase.
      */
     public interface RequestCompletion {
         void onSuccess(Object successResponse);
@@ -41,12 +41,17 @@ public class RequestManager {
     }
 
     /**
-     *
+     * Default constructor.
+     * Instantiates the RequestManager and automatically initializes the APIs.
      */
     public RequestManager() {
         this(true);
     }
 
+    /**
+     * Constructor with parameter for optionally initializing APIs.
+     * @param doInit whether or not to initialize Api objects.
+     */
     RequestManager(boolean doInit) {
         AmbassadorSingleton.getComponent().inject(this);
         bulkShareApi = new BulkShareApi(false);
@@ -62,10 +67,11 @@ public class RequestManager {
     }
 
     /**
-     *
-     * @param contacts
-     * @param messageToShare
-     * @param completion
+     * Sends a request to the Ambassador backend which will deliver text messages
+     * to a list of contacts with a passed in message.
+     * @param contacts the list of ContactObjects to send the SMS to
+     * @param messageToShare the message to send in the SMS
+     * @param completion callback for request completion
      */
     public void bulkShareSms(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
         String uid = ambassadorConfig.getUniversalID();
@@ -78,10 +84,11 @@ public class RequestManager {
     }
 
     /**
-     *
-     * @param contacts
-     * @param messageToShare
-     * @param completion
+     * Sends a request to the Ambassador backend which will deliver emails
+     * to a list of contacts with a passed in message.
+     * @param contacts the list of ContactObjects to send the email to
+     * @param messageToShare the message to send in the email
+     * @param completion callback for request completion
      */
     public void bulkShareEmail(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
         String uid = ambassadorConfig.getUniversalID();
@@ -93,17 +100,18 @@ public class RequestManager {
     }
 
     /**
-     *
-     * @param shareType
+     * Method overload not requiring a list of contacts
+     * @param shareType enum that describes the source of the share: Facebook, SMS, etc.
      */
     public void bulkShareTrack(final BulkShareHelper.SocialServiceTrackType shareType) {
         bulkShareTrack(null, shareType);
     }
 
     /**
-     *
-     * @param contacts
-     * @param shareType
+     * Tells the Ambassador backend info about the share, like who it
+     * was sent to, how it was shared, etc.
+     * @param contacts the list of contacts that received the share
+     * @param shareType enum that describes the source of the share: Facebook, SMS, etc.
      */
     public void bulkShareTrack(final List<ContactObject> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
         String uid = ambassadorConfig.getUniversalID();
@@ -125,9 +133,9 @@ public class RequestManager {
     }
 
     /**
-     *
-     * @param conversionParameters
-     * @param completion
+     * Registers a conversion on the Ambassador backend.
+     * @param conversionParameters the ConversionParameters object storing all info about the conversion
+     * @param completion callback for request completion
      */
     public void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
         String uid = ambassadorConfig.getUniversalID();
@@ -137,7 +145,8 @@ public class RequestManager {
     }
 
     /**
-     *
+     * Identifies the user on the Ambassador backend using the session info
+     * and the identify info returned from augur.
      */
     public void identifyRequest() {
         PusherChannel.setRequestId(System.currentTimeMillis());
@@ -156,11 +165,11 @@ public class RequestManager {
     }
 
     /**
-     *
-     * @param email
-     * @param firstName
-     * @param lastName
-     * @param completion
+     * Associates an email + name with a session on the Ambassador backend
+     * @param email the new email to save in the Ambassador backend
+     * @param firstName the new first name to save in the Ambassador backend
+     * @param lastName the new last name to save in the Ambassador backend
+     * @param completion callback for request completion
      */
     public void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
         String sessionId = PusherChannel.getSessionId();
@@ -173,8 +182,9 @@ public class RequestManager {
     }
 
     /**
-     *
-     * @param completion
+     * Asks the Ambassador backend to open a Pusher channel.
+     * Stores the channel information when it receives back.
+     * @param completion callback for request completion
      */
     void createPusherChannel(final RequestCompletion completion) {
         String uid = ambassadorConfig.getUniversalID();
@@ -184,9 +194,9 @@ public class RequestManager {
     }
 
     /**
-     *
-     * @param url
-     * @param completion
+     * Hits a passed in url with authenticated headers
+     * @param url the url to hit
+     * @param completion callback for request completion
      */
     void externalPusherRequest(final String url, final RequestCompletion completion) {
         String uid = ambassadorConfig.getUniversalID();
@@ -195,9 +205,9 @@ public class RequestManager {
     }
 
     /**
-     *
-     * @param tweetString
-     * @param completion
+     * Attempts to post to Twitter on behalf of the user.
+     * @param tweetString the mesage to Tweet
+     * @param completion callback for request completion
      */
     public void postToTwitter(final String tweetString, final RequestCompletion completion) {
         TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
@@ -222,9 +232,9 @@ public class RequestManager {
     }
 
     /**
-     *
-     * @param code
-     * @param completion
+     * Trades a request code for an access token with the LinkedIn API.
+     * @param code the request code that the OAuth gave us
+     * @param completion callback for request completion
      */
     public void linkedInLoginRequest(final String code, final RequestCompletion completion) {
         String urlParams = createLinkedInLoginBody(code);
@@ -237,9 +247,9 @@ public class RequestManager {
     }
 
     /**
-     *
-     * @param code
-     * @return
+     * Creates String form urlencoded parameters to pass to LinkedIn login.
+     * @param code the request code that the OAuth gave us
+     * @return a String form of LinkedIn's required form urlencoded params
      */
     String createLinkedInLoginBody(String code) {
         String urlParams = "";
@@ -256,24 +266,25 @@ public class RequestManager {
     }
 
     /**
-     *
+     * Listens for LinkedIn to be authorized and takes an access token back
      */
     public interface LinkedInAuthorizedListener {
         void linkedInAuthorized(String accessToken);
     }
 
     /**
-     *
-     * @param requestBody
-     * @param completion
+     * Sends a request to LinkedIn for us to post on behalf of the user.
+     * @param requestBody the LinkedInPostRequest describing the post content
+     * @param completion callback for request completion
      */
     public void postToLinkedIn(LinkedInApi.LinkedInPostRequest requestBody, final RequestCompletion completion) {
         linkedInApi.post(ambassadorConfig.getLinkedInToken(), requestBody, completion);
     }
 
     /**
-     *
-     * @param completion
+     * Performs a GET request to grab the user's LinkedIn profile info.
+     * Doesn't return any information, only calls back with request status.
+     * @param completion callback for request completion
      */
     public void getProfileLinkedIn(final RequestCompletion completion) {
         linkedInApi.getProfile(ambassadorConfig.getLinkedInToken(), completion);
