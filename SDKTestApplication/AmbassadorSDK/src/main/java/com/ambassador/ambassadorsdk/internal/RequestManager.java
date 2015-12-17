@@ -237,24 +237,27 @@ public class RequestManager {
      * @param completion
      */
     public void linkedInLoginRequest(final String code, final RequestCompletion completion) {
-        String charset = "UTF-8";
-        String urlParams = null;
-
-        try {
-            urlParams = "grant_type=authorization_code&code=" + URLEncoder.encode(code, charset) +
-                    "&redirect_uri=" + URLEncoder.encode(AmbassadorConfig.CALLBACK_URL, charset) +
-                    "&client_id=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_ID, charset) +
-                    "&client_secret=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_SECRET, charset);
-        } catch (UnsupportedEncodingException e) {
-            Utilities.debugLog("LinkedIn", "LinkedIn Login Request failed due to UnsupportedEncodingException -" + e.getMessage());
-        }
-
+        String urlParams = createLinkedInLoginBody(code);
         linkedInApi.login(urlParams, completion, new LinkedInAuthorizedListener() {
             @Override
             public void linkedInAuthorized(String accessToken) {
                 ambassadorConfig.setLinkedInToken(accessToken);
             }
         });
+    }
+
+    String createLinkedInLoginBody(String code) {
+        String urlParams = "";
+        String charset = "UTF-8";
+        try {
+            urlParams = "grant_type=authorization_code&code=" + URLEncoder.encode(code, charset) +
+                    "&redirect_uri=" + URLEncoder.encode(AmbassadorConfig.CALLBACK_URL, charset) +
+                    "&client_id=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_ID, charset) +
+                    "&client_secret=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_SECRET, charset);
+        } catch (UnsupportedEncodingException e) {
+
+        }
+        return urlParams;
     }
 
     /**
