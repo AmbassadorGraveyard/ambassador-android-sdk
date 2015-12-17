@@ -14,11 +14,12 @@ import retrofit.client.Response;
  */
 public class ConversionsApi {
 
-    /** */
+    /** Client for making Conversions requests to the Ambassador API */
     public ConversionsClient conversionsClient;
 
     /**
-     *
+     * Default constructor.
+     * Instantiates ConversionsApi and automatically initializes client.
      */
     public ConversionsApi() {
         this(true);
@@ -61,14 +62,17 @@ public class ConversionsApi {
             @Override
             public void success(String s, Response response) {
                 completion.onSuccess("success");
+                Utilities.debugLog("amb-request", "SUCCESS: ConversionsApi.registerConversionRequest(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (error.getResponse() != null && Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
                     completion.onSuccess("success");
+                    Utilities.debugLog("amb-request", "SUCCESS: ConversionsApi.registerConversionRequest(...)");
                 } else {
                     completion.onFailure("failure");
+                    Utilities.debugLog("amb-request", "FAILURE: ConversionsApi.registerConversionRequest(...)");
                 }
             }
         });

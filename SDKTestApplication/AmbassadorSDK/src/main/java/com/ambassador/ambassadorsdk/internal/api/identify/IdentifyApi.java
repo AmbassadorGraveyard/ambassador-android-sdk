@@ -24,11 +24,12 @@ import retrofit.client.Response;
  */
 public class IdentifyApi {
 
-    /** */
+    /** Client for making Identify requests to the Ambassador API */
     private IdentifyClient identifyClient;
 
     /**
-     *
+     * Default constructor.
+     * Instantiates IdentifyApi and automatically initializes client.
      */
     public IdentifyApi() {
         this(true);
@@ -72,14 +73,17 @@ public class IdentifyApi {
             @Override
             public void success(IdentifyRequestResponse identifyRequestResponse, Response response) {
                 // This should never happen, this request is not returning JSON so it hits the failure
+                Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.identifyRequest(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
                     // successful
+                    Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.identifyRequest(...)");
                 } else {
                     // unsuccessful
+                    Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.identifyRequest(...)");
                 }
             }
         });
@@ -100,14 +104,17 @@ public class IdentifyApi {
             public void success(UpdateNameRequestResponse updateNameRequestResponse, Response response) {
                 // This should never happen, this request is not returning JSON so it hits the failure
                 completion.onSuccess("success");
+                Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
                     completion.onSuccess("success");
+                    Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
                 } else {
                     completion.onFailure("failure");
+                    Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.updateNameRequest(...)");
                 }
             }
         });
@@ -124,11 +131,13 @@ public class IdentifyApi {
             @Override
             public void success(CreatePusherChannelResponse createPusherChannelResponse, Response response) {
                 completion.onSuccess(createPusherChannelResponse);
+                Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.createPusherChannel(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 completion.onFailure("failure");
+                Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.createPusherChannel(...)");
             }
         });
     }
@@ -201,11 +210,14 @@ public class IdentifyApi {
 
             if (Utilities.isSuccessfulResponseCode(responseCode)) {
                 completion.onSuccess(response);
+                Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.externalPusherRequest(...)");
             } else {
                 completion.onFailure(response);
+                Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.externalPusherRequest(...)");
             }
         } catch (final IOException e) {
             completion.onFailure("External PusherSDK Request failure due to IOException - " + e.getMessage());
+            Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.externalPusherRequest(...)");
         }
     }
 

@@ -206,6 +206,7 @@ public class RequestManager {
             @Override
             public void success(Result<Tweet> result) {
                 completion.onSuccess("Successfully posted to Twitter");
+                Utilities.debugLog("amb-request", "SUCCESS: RequestManager.postToTwitter(...)");
             }
 
             @Override
@@ -215,6 +216,7 @@ public class RequestManager {
                 } else {
                     completion.onFailure("Failure Postring to Twitter");
                 }
+                Utilities.debugLog("amb-request", "FAILURE: RequestManager.postToTwitter(...)");
             }
         });
     }
@@ -234,6 +236,11 @@ public class RequestManager {
         });
     }
 
+    /**
+     *
+     * @param code
+     * @return
+     */
     String createLinkedInLoginBody(String code) {
         String urlParams = "";
         String charset = "UTF-8";
