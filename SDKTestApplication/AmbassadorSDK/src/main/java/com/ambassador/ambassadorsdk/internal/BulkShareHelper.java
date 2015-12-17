@@ -2,10 +2,6 @@ package com.ambassador.ambassadorsdk.internal;
 
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -158,11 +154,12 @@ public class BulkShareHelper {
         String short_code = shortCode;
         String social_name = trackType.toString();
 
-        BulkShareApi.BulkShareTrackBody[] objectsList = new BulkShareApi.BulkShareTrackBody[values.size()];
         if (values == null) {
             values = new ArrayList<>();
             values.add("");
         }
+
+        BulkShareApi.BulkShareTrackBody[] objectsList = new BulkShareApi.BulkShareTrackBody[values.size()];
 
         for (int i = 0; i < values.size(); i++) {
             String recipient_email = "";
