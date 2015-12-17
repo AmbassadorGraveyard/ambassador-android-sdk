@@ -24,15 +24,16 @@ public class LinkedInApi {
     private LinkedInAuthClient linkedInAuthClient;
 
     /**
-     *
+     * Default constructor.
+     * Instantiates BulkShareApi and automatically initializes client.
      */
     public LinkedInApi() {
         this(true);
     }
 
     /**
-     *
-     * @param doInit
+     * Optionally initializes clients.
+     * @param doInit whether or not to initialize clients automatically.
      */
     public LinkedInApi(boolean doInit) {
         if (doInit) {
