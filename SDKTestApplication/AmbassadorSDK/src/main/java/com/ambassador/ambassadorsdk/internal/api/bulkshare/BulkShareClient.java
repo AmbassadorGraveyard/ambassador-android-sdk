@@ -8,19 +8,20 @@ import retrofit.http.Header;
 import retrofit.http.POST;
 
 /**
- *
+ * Defines endpoints, parameters, callbacks for BulkShareApi methods
  */
 public interface BulkShareClient {
 
-    /** */
+    /** Base url for api methods */
     String ENDPOINT = AmbassadorConfig.ambassadorApiUrl();
 
     /**
-     *
-     * @param universalId
-     * @param auth
-     * @param request
-     * @param callback
+     * https://api.getambassador.com/share/sms/
+     * https://dev-ambassador-api.herokuapp.com/share/sms/
+     * @param universalId the Ambasasdor universal id
+     * @param auth the Ambasador universal token
+     * @param request the POST request body pojo
+     * @param callback the Retrofit callback
      */
     @POST("/share/sms/")
     void bulkShareSms(
@@ -31,11 +32,12 @@ public interface BulkShareClient {
     );
 
     /**
-     *
-     * @param universalId
-     * @param auth
-     * @param request
-     * @param callback
+     * https://api.getambassador.com/share/email/
+     * https://dev-ambassador-api.herokuapp.com/share/email/
+     * @param universalId the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param request the POST request body pojo
+     * @param callback the Retrofit callback
      */
     @POST("/share/email/")
     void bulkShareEmail(
@@ -46,11 +48,12 @@ public interface BulkShareClient {
     );
 
     /**
-     *
-     * @param universalId
-     * @param auth
-     * @param request
-     * @param callback
+     * https://api.getambassador.com/track/share/
+     * https://dev-ambassador-api.herokuapp.com/track/share/
+     * @param universalId the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param request the POST request body pojo
+     * @param callback the Retrofit callback
      */
     @POST("/track/share/")
     void bulkShareTrack(
