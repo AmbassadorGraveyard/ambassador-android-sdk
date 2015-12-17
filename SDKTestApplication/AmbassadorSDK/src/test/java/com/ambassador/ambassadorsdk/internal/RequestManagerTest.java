@@ -4,12 +4,24 @@ import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.SessionManager;
+import com.twitter.sdk.android.core.TwitterApiClient;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.core.services.StatusesService;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -23,7 +35,8 @@ import java.util.List;
         BulkShareHelper.class,
         ConversionUtility.class,
         PusherChannel.class,
-        IdentifyApi.IdentifyRequestBody.class
+        IdentifyApi.IdentifyRequestBody.class,
+        TwitterCore.class
 })
 public class RequestManagerTest {
 
@@ -46,6 +59,9 @@ public class RequestManagerTest {
     String sessionId = "sessionId";
     long requestId = 123L;
 
+    @Mock
+    SessionManager<TwitterSession> sessionManager;
+
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(
@@ -53,7 +69,8 @@ public class RequestManagerTest {
                 BulkShareHelper.class,
                 ConversionUtility.class,
                 PusherChannel.class,
-                IdentifyApi.IdentifyRequestBody.class
+                IdentifyApi.IdentifyRequestBody.class,
+                TwitterCore.class
         );
 
         AmbassadorApplicationComponent mockComponent = Mockito.mock(AmbassadorApplicationComponent.class);
@@ -199,19 +216,82 @@ public class RequestManagerTest {
     @Test
     public void postToTwitterTest() {
         // ARRANGE
+        String tweetString = "tweetString";
+        RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
+        TwitterCore twitterCore = Mockito.mock(TwitterCore.class);
+        Mockito.when(TwitterCore.getInstance()).thenReturn(twitterCore);
+        Mockito.when(twitterCore.getSessionManager()).thenReturn(sessionManager);
+        TwitterSession twitterSession = Mockito.mock(TwitterSession.class);
+        Mockito.when(sessionManager.getActiveSession()).thenReturn(twitterSession);
+        TwitterApiClient twitterApiClient = Mockito.mock(TwitterApiClient.class);
+        Mockito.when(twitterCore.getApiClient(twitterSession)).thenReturn(twitterApiClient);
+        StatusesService statusesService = Mockito.mock(StatusesService.class);
+        Mockito.when(twitterApiClient.getStatusesService()).thenReturn(statusesService);
 
-        // ACT
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback callback = (Callback) invocation.getArguments()[8];
+                Result result = Mockito.mock(Result.class);
+                callback.success(result);
+                return null;
+            }
+        }).doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback callback = (Callback) invocation.getArguments()[8];
+                TwitterException out = Mockito.mock(TwitterException.class);
+                Mockito.when(out.toString()).thenReturn("sad no authentication sadad");
+                callback.failure(out);
+                return null;
+            }
+        }).doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback callback = (Callback) invocation.getArguments()[8];
+                TwitterException out = Mockito.mock(TwitterException.class);
+                Mockito.when(out.toString()).thenReturn("asffa");
+                callback.failure(out);
+                return null;
+            }
+        }).when(statusesService).update(Mockito.anyString(), Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.any(Callback.class));
 
-        // ASSERT
+        // ACT & ASSERT
+        requestManager.postToTwitter(tweetString, requestCompletion);
+        Mockito.verify(requestCompletion).onSuccess("Successfully posted to Twitter");
+
+        // ACT & ASSERT
+        requestManager.postToTwitter(tweetString, requestCompletion);
+        Mockito.verify(requestCompletion).onFailure("auth");
+
+        requestManager.postToTwitter(tweetString, requestCompletion);
+        Mockito.verify(requestCompletion).onFailure("Failure Postring to Twitter");
     }
 
     @Test
     public void linkedInLoginRequestTest() {
         // ARRANGE
+        String code = "12345";
+        RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
+
+        String urlParams = "params";
+        Mockito.when(requestManager.createLinkedInLoginBody(code)).thenReturn(urlParams);
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.LinkedInAuthorizedListener listener = (RequestManager.LinkedInAuthorizedListener) invocation.getArguments()[2];
+                listener.linkedInAuthorized("accessToken");
+                return null;
+            }
+        }).when(linkedInApi).login(Mockito.eq(urlParams), Mockito.eq(requestCompletion), Mockito.any(RequestManager.LinkedInAuthorizedListener.class));
 
         // ACT
+        requestManager.linkedInLoginRequest(code, requestCompletion);
 
         // ASSERT
+        Mockito.verify(linkedInApi).login(Mockito.eq(urlParams), Mockito.eq(requestCompletion), Mockito.any(RequestManager.LinkedInAuthorizedListener.class));
+        Mockito.verify(ambassadorConfig).setLinkedInToken(Mockito.eq("accessToken"));
     }
 
     @Test
