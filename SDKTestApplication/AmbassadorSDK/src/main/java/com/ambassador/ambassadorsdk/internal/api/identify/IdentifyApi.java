@@ -20,7 +20,7 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- *
+ * Handles Ambassador API identify methods using Retrofit services and contains all relevant pojo classes.
  */
 public class IdentifyApi {
 
@@ -36,8 +36,8 @@ public class IdentifyApi {
     }
 
     /**
-     *
-     * @param doInit
+     * Optionally initializes client.
+     * @param doInit whether or not to automatically initialize client.
      */
     public IdentifyApi(boolean doInit) {
         if (doInit) {
@@ -46,7 +46,7 @@ public class IdentifyApi {
     }
 
     /**
-     *
+     * Instantiates and sets the Identify client objects using the ServiceGenerator.
      */
     public void init() {
         setIdentifyClient(ServiceGenerator.createService(IdentifyClient.class));
@@ -61,12 +61,12 @@ public class IdentifyApi {
     }
 
     /**
-     *
-     * @param sessionId
-     * @param requestId
-     * @param uid
-     * @param auth
-     * @param request
+     * Passes through to the identifyClient and handles the Retrofit callback.
+     * @param sessionId the Pusher session id
+     * @param requestId the Pusher request id
+     * @param uid the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param request the request body as an IdentifyRequestBody object
      */
     public void identifyRequest(String sessionId, String requestId, String uid, String auth, IdentifyRequestBody request) {
         identifyClient.identifyRequest(sessionId, requestId, uid, auth, uid, request, new Callback<IdentifyRequestResponse>() {
@@ -90,13 +90,14 @@ public class IdentifyApi {
     }
 
     /**
-     *
-     * @param sessionId
-     * @param requestId
-     * @param uid
-     * @param auth
-     * @param request
-     * @param completion
+     * Passes through to the identifyClient and handles the Retrofit callback and
+     * calling back to the RequestCompletion.
+     * @param sessionId the Pusher session id
+     * @param requestId the Pusher request id
+     * @param uid the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param request the request body as an UpdateNameRequestBody object
+     * @param completion the callback for request completion
      */
     public void updateNameRequest(String sessionId, String requestId, String uid, String auth, UpdateNameRequestBody request, final RequestManager.RequestCompletion completion) {
         identifyClient.updateNameRequest(sessionId, requestId, uid, auth, uid, request, new Callback<UpdateNameRequestResponse>() {
@@ -121,10 +122,11 @@ public class IdentifyApi {
     }
 
     /**
-     *
-     * @param uid
-     * @param auth
-     * @param completion
+     * Passes through to the identifyClient and handles the Retrofit callback and
+     * calling back to the RequestCompletion.
+     * @param uid the Ambassador universal id
+     * @param auth the ambassador universal token
+     * @param completion the callback for request completion
      */
     public void createPusherChannel(String uid, String auth, final RequestManager.RequestCompletion completion) {
         identifyClient.createPusherChannel(uid, auth, new Object(), new Callback<CreatePusherChannelResponse>() {
@@ -143,7 +145,8 @@ public class IdentifyApi {
     }
 
     /**
-     *
+     * Not handled with Retrofit. Creates a runnable and runs it in a new thread.
+     * Have to use low level connection stuff because this can hit any url.
      * @param url the String url to hit
      * @param completion callback for request completion
      */
@@ -239,9 +242,7 @@ public class IdentifyApi {
         return new BufferedReader(new InputStreamReader(is));
     }
 
-    /**
-     *
-     */
+    /** Pojo for identify post request body */
     public static class IdentifyRequestBody {
 
         private boolean enroll;
@@ -270,16 +271,12 @@ public class IdentifyApi {
 
     }
 
-    /**
-     *
-     */
+    /** */
     public static class IdentifyRequestResponse {
 
     }
 
-    /**
-     *
-     */
+    /** Pojo for update name post request body */
     public static class UpdateNameRequestBody {
 
         private String email;
@@ -304,16 +301,12 @@ public class IdentifyApi {
 
     }
 
-    /**
-     *
-     */
+    /** */
     public static class UpdateNameRequestResponse {
         
     }
 
-    /**
-     *
-     */
+    /** Pojo for create pusher channel response */
     public static class CreatePusherChannelResponse {
 
         public String client_session_uid;
