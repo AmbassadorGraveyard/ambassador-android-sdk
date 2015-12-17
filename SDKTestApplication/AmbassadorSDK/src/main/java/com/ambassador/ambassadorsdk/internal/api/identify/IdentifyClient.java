@@ -10,21 +10,22 @@ import retrofit.http.POST;
 import retrofit.http.Query;
 
 /**
- *
+ * Defines endpoints, parameters, callbacks for IdentifyApi methods
  */
 public interface IdentifyClient {
 
-    /** */
+    /** Base url for api methods */
     String ENDPOINT = AmbassadorConfig.ambassadorApiUrl();
 
     /**
-     *
-     * @param sessionId
-     * @param requestId
-     * @param request
-     * @param universalId
-     * @param uid
-     * @param callback
+     * https://api.getambassador.com/universal/action/identify/
+     * https://dev-ambassador-api.herokuapp.com/universal/action/identify/
+     * @param sessionId the Pusher session id
+     * @param requestId the Pusher request id
+     * @param universalId the Ambassador universal id
+     * @param uid the Ambassador universal id
+     * @param request the POST request body pojo
+     * @param callback the Retrofit callback
      */
     @POST("/universal/action/identify/")
     @Headers({"Content-Type: application/json"})
@@ -38,7 +39,17 @@ public interface IdentifyClient {
             Callback<IdentifyApi.IdentifyRequestResponse> callback
     );
 
-
+    /**
+     * https://api.getambassador.com/universal/action/identify/
+     * https://dev-ambassador-api.herokuapp.com/universal/action/identify/
+     * @param sessionId the Pusher session id
+     * @param requestId the Pusher request id
+     * @param universalId the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param uid the Ambassador universal id
+     * @param body the POST request body pojo
+     * @param callback the Retrofit callback
+     */
     @POST("/universal/action/identify/")
     void updateNameRequest(
             @Header("X-Mbsy-Client-Session-ID") String sessionId,
@@ -51,11 +62,12 @@ public interface IdentifyClient {
     );
 
     /**
-     *
-     * @param universalId
-     * @param auth
-     * @param body
-     * @param callback
+     * https://api.getambassador.com/auth/session/
+     * https://dev-ambassador-api.herokuapp.com/auth/session/
+     * @param universalId the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param body the POST request body pojo
+     * @param callback the Retrofit callback
      */
     @POST("/auth/session/")
     void createPusherChannel(
