@@ -1,7 +1,5 @@
 package com.ambassador.ambassadorsdk.internal.api.bulkshare;
 
-import android.util.Log;
-
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
