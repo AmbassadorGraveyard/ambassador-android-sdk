@@ -8,18 +8,18 @@ import retrofit.http.Headers;
 import retrofit.http.POST;
 
 /**
- *
+ * Defines endpoints, parameters, callbacks for LinkedInApi methods
  */
 public interface LinkedInClient {
 
-    /** */
+    /** Base url for api methods */
     String ENDPOINT = "https://api.linkedin.com";
 
     /**
-     *
-     * @param authorization
-     * @param body
-     * @param callback
+     * https://api.linkedin.com/v1/people/~/shares?format=json
+     * @param authorization String authorization header for LinkedIn
+     * @param body the POST request body pojo
+     * @param callback the Retrofit callback
      */
     @POST("/v1/people/~/shares?format=json")
     @Headers({"Content-Type: application/json", "Host: api.linkedin.com", "x-li-format: json"})
@@ -30,9 +30,9 @@ public interface LinkedInClient {
     );
 
     /**
-     *
-     * @param authorization
-     * @param callback
+     * https://api.linkedin.com/v1/people/~?format=json
+     * @param authorization String authorization header for LinkedIn
+     * @param callback the Retrofit callback
      */
     @GET("/v1/people/~?format=json")
     void getProfile(
