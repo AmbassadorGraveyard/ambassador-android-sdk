@@ -28,7 +28,7 @@ public interface BulkShareClient {
             @Header("MBSY_UNIVERSAL_ID") String universalId,
             @Header("Authorization") String auth,
             @Body BulkShareApi.BulkShareSmsBody request,
-            Callback<String> callback
+            Callback<BulkShareApi.BulkShareSmsResponse> callback
     );
 
     /**
@@ -44,7 +44,7 @@ public interface BulkShareClient {
             @Header("MBSY_UNIVERSAL_ID") String universalId,
             @Header("Authorization") String auth,
             @Body BulkShareApi.BulkShareEmailBody request,
-            Callback<String> callback
+            Callback<BulkShareApi.BulkShareEmailResponse> callback
     );
 
     /**
