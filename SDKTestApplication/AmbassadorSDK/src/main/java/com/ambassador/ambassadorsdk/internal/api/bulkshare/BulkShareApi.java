@@ -115,9 +115,9 @@ public class BulkShareApi {
      * @param body the request body as a BulkShareTrackBody array
      */
     public void bulkShareTrack(String uid, String auth, BulkShareTrackBody[] body) {
-        bulkShareClient.bulkShareTrack(uid, auth, body, new Callback<String>() {
+        bulkShareClient.bulkShareTrack(uid, auth, body, new Callback<BulkShareTrackResponse[]>() {
             @Override
-            public void success(String s, Response response) {
+            public void success(BulkShareTrackResponse[] bulkShareTrackResponses, Response response) {
                 Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareTrack(...)");
             }
 
@@ -192,6 +192,11 @@ public class BulkShareApi {
             this.recipient_email = recipient_email;
             this.recipient_username = recipient_username;
         }
+
+    }
+
+    /** Pojo for bulk share track post request response */
+    public static class BulkShareTrackResponse {
 
     }
 
