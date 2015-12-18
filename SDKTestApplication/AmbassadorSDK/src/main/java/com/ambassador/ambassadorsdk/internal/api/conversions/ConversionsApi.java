@@ -43,7 +43,7 @@ public class ConversionsApi {
     }
 
     /**
-     * Sets the client for conversions requests
+     * Sets the client for conversions requests.
      * @param conversionsClient an instantiation of ConversionsClient for this ConversionsApi to use
      */
     public void setConversionsClient(ConversionsClient conversionsClient) {
@@ -51,16 +51,16 @@ public class ConversionsApi {
     }
 
     /**
-     *
+     * Registers a conversion on the Ambassador backend associating an action to a referrer.
      * @param uid the Ambassador universal id
      * @param auth the Ambassador universal token
      * @param body the request body as a RegisterConversionRequestBody object
      * @param completion callback for request completion
      */
     public void registerConversionRequest(String uid, String auth, RegisterConversionRequestBody body, final RequestManager.RequestCompletion completion) {
-        conversionsClient.registerConversionRequest(uid, auth, uid, body, new Callback<String>() {
+        conversionsClient.registerConversionRequest(uid, auth, uid, body, new Callback<RegisterConversionRequestResponse>() {
             @Override
-            public void success(String s, Response response) {
+            public void success(RegisterConversionRequestResponse registerConversionRequestResponse, Response response) {
                 completion.onSuccess("success");
                 Utilities.debugLog("amb-request", "SUCCESS: ConversionsApi.registerConversionRequest(...)");
             }
@@ -168,6 +168,15 @@ public class ConversionsApi {
             }
 
         }
+
+    }
+
+    /** Pojo for register conversion post request response */
+    public static class RegisterConversionRequestResponse {
+
+        public String first_name;
+        public String last_name;
+        public int campaign_uid;
 
     }
 

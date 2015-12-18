@@ -31,7 +31,7 @@ public interface ConversionsClient {
             @Header("Authorization") String auth,
             @Query("u") String uid,
             @Body ConversionsApi.RegisterConversionRequestBody body,
-            Callback<String> callback
+            Callback<ConversionsApi.RegisterConversionRequestResponse> callback
     );
 
 }
