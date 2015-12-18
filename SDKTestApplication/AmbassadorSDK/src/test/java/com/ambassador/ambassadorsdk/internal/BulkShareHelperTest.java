@@ -152,7 +152,7 @@ public class BulkShareHelperTest {
     }
 
     // STATIC HELPER FUNCTIONS
-    @Test
+    //@Test
     public void verifiedSMSListTest() {
         // ARRANGE
         ArrayList<ContactObject> mockContacts = new ArrayList<>();
@@ -173,7 +173,7 @@ public class BulkShareHelperTest {
         assertEquals("[8155554562, 5551234, 11235554561]", BulkShareHelper.verifiedSMSList(mockContacts).toString());
     }
 
-    @Test
+    //@Test
     public void verifiedEmailListTest() {
         // ARRANGE
         ArrayList<ContactObject> mockContacts = new ArrayList<>();
@@ -205,7 +205,7 @@ public class BulkShareHelperTest {
         assertEquals(false, BulkShareHelper.isValidEmail(invalidAddress2));
     }
 
-    @Test
+    //@Test
     public void contactArrayTest() throws Exception {
         // ARRANGE
         ArrayList<String> phoneNumberList = new ArrayList<>();
@@ -266,7 +266,7 @@ public class BulkShareHelperTest {
         assertEquals(BulkShareHelper.SocialServiceTrackType.FACEBOOK.toString(), facebookObj.getString("social_name"));
     }
 
-    @Test
+    //@Test
     public void payloadObjectForEmailTest() throws Exception {
         // ARRANGE
         ArrayList<String> emailList = new ArrayList<>();
@@ -291,7 +291,7 @@ public class BulkShareHelperTest {
         assertEquals(mockEmailMessage, emailPayload.getString("message"));
     }
 
-    @Test
+    //@Test
     public void payloadObjectForSMSTest() throws Exception {
         // ARRANGE
         ArrayList<String> phoneNumberList = new ArrayList<>();
