@@ -38,7 +38,7 @@ class PusherChannel {
         return sessionId;
     }
     
-    static String getchannelName() {
+    static String getChannelName() {
         return channelName;
     }
     
