@@ -60,7 +60,7 @@ public interface BulkShareClient {
             @Header("MBSY_UNIVERSAL_ID") String universalId,
             @Header("Authorization") String auth,
             @Body BulkShareApi.BulkShareTrackBody[] request,
-            Callback<String> callback
+            Callback<BulkShareApi.BulkShareTrackResponse[]> callback
     );
 
 }
