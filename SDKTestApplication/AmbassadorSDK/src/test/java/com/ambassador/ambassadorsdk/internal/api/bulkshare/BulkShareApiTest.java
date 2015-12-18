@@ -1,5 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.api.bulkshare;
 
+import android.util.Log;
+
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 
@@ -23,7 +25,8 @@ import retrofit.mime.TypedString;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        ServiceGenerator.class
+        ServiceGenerator.class,
+        Log.class
 })
 public class BulkShareApiTest {
 
@@ -33,7 +36,8 @@ public class BulkShareApiTest {
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(
-                ServiceGenerator.class
+                ServiceGenerator.class,
+                Log.class
         );
 
         BulkShareApi bsa = new BulkShareApi(false);

@@ -53,7 +53,7 @@ public class BulkShareApi {
      * Passes parameters to the BulkShareClient and handles retrofit callback
      * and calling back to RequestCompletion.
      * @param uid the Ambassador universal id
-     * @param auth the Ambasador universal token
+     * @param auth the Ambassador universal token
      * @param body the request body as a BulkShareSms object
      * @param completion callback for request completion
      */

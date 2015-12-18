@@ -1,5 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.api.linkedin;
 
+import android.util.Log;
+
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
@@ -23,7 +25,8 @@ import retrofit.mime.TypedInput;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
         ServiceGenerator.class,
-        LinkedInApi.class
+        LinkedInApi.class,
+        Log.class
 })
 public class LinkedInApiTest {
 
@@ -34,7 +37,8 @@ public class LinkedInApiTest {
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(
-                ServiceGenerator.class
+                ServiceGenerator.class,
+                Log.class
         );
 
         LinkedInApi lia = new LinkedInApi(false);
