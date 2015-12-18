@@ -46,11 +46,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-/**
- * Created by JakeDunahee on 9/11/15.
- */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest ({AmbassadorSDK.class, AmbassadorSingleton.class, Utilities.class})
+@PrepareForTest ({
+        AmbassadorSDK.class,
+        AmbassadorSingleton.class,
+        Utilities.class
+})
 public class AmbassadorSDKTest {
 
     AmbassadorSDK ambassadorSDK;

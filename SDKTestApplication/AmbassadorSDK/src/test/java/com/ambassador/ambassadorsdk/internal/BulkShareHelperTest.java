@@ -32,12 +32,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-
-/**
- * Created by JakeDunahee on 9/9/15.
- */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({BulkShareHelper.class, Toast.class, AmbassadorSingleton.class, AmbassadorSingleton.class})
+@PrepareForTest({
+        BulkShareHelper.class,
+        Toast.class,
+        AmbassadorSingleton.class,
+        AmbassadorSingleton.class
+})
 public class BulkShareHelperTest {
     BulkShareHelper bulkShareHelper;
 
