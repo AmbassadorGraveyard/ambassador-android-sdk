@@ -29,13 +29,11 @@ import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -732,5 +730,5 @@ public class AmbassadorActivityTest {
             }
         };
     }
-    
+
 }
