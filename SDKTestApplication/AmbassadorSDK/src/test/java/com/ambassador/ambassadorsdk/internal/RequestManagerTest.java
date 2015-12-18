@@ -1,5 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import android.util.Log;
+
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
@@ -35,7 +37,8 @@ import java.util.List;
         ConversionUtility.class,
         PusherChannel.class,
         IdentifyApi.IdentifyRequestBody.class,
-        TwitterCore.class
+        TwitterCore.class,
+        Log.class
 })
 public class RequestManagerTest {
 
@@ -69,7 +72,8 @@ public class RequestManagerTest {
                 ConversionUtility.class,
                 PusherChannel.class,
                 IdentifyApi.IdentifyRequestBody.class,
-                TwitterCore.class
+                TwitterCore.class,
+                Log.class
         );
 
         AmbassadorApplicationComponent mockComponent = Mockito.mock(AmbassadorApplicationComponent.class);

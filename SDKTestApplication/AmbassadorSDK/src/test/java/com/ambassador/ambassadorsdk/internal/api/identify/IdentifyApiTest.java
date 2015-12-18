@@ -1,5 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.api.identify;
 
+import android.util.Log;
+
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 
@@ -23,7 +25,8 @@ import retrofit.mime.TypedString;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        ServiceGenerator.class
+        ServiceGenerator.class,
+        Log.class
 })
 public class IdentifyApiTest {
 
@@ -33,7 +36,8 @@ public class IdentifyApiTest {
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(
-                ServiceGenerator.class
+                ServiceGenerator.class,
+                Log.class
         );
         
         IdentifyApi ia = new IdentifyApi(false);
