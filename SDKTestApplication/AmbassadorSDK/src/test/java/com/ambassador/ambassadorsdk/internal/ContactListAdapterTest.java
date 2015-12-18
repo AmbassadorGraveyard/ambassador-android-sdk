@@ -16,8 +16,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.mockito.Mockito.*;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,13 +25,18 @@ import javax.inject.Singleton;
 import dagger.Component;
 
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyFloat;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-
-/**
- * Created by dylan on 11/09/15.
- */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Utilities.class})
+@PrepareForTest({
+        Utilities.class
+})
 public class ContactListAdapterTest {
 
     @Singleton

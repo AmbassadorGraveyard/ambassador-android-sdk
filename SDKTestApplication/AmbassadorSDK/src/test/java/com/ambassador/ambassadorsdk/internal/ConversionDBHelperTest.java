@@ -26,11 +26,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by dylan on 11/05/15.
- */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Log.class, ContentValues.class})
+@PrepareForTest({
+        Log.class,
+        ContentValues.class
+})
 public class ConversionDBHelperTest {
 
     @Singleton

@@ -11,15 +11,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.mock;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -27,13 +18,20 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-/**
- * Created by dylan on 11/4/15.
- */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({AmbassadorSingleton.class})
+@PrepareForTest({
+        AmbassadorSingleton.class
+})
 public class AmbassadorConfigTest {
     private SharedPreferences mockSharedPrefs;
     private SharedPreferences.Editor mockEditor;

@@ -15,12 +15,10 @@ import dagger.Component;
 
 import static org.mockito.Mockito.mock;
 
-
-/**
- * Created by dylan on 11/6/15.
- */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ConversionUtility.class})
+@PrepareForTest({
+        ConversionUtility.class
+})
 public class ConversionUtilityTest {
 
     Context mockContext;

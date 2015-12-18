@@ -25,12 +25,11 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
-/**
- * Created by JakeDunahee on 9/11/15.
- */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({AmbassadorSingleton.class, Log.class})
+@PrepareForTest({
+        AmbassadorSingleton.class,
+        Log.class
+})
 public class UtilitiesTest {
 
     Context mockContext;

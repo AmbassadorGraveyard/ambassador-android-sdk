@@ -27,13 +27,11 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.lang.reflect.Field;
 import java.util.HashMap;
 
 import javax.inject.Singleton;
 
 import dagger.Component;
-import javassist.bytecode.analysis.Util;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -45,11 +43,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by dylan on 11/6/15.
- */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({AmbassadorSingleton.class, PusherSDK.class, PusherChannel.class, LocalBroadcastManager.class, Context.class, AmbassadorConfig.class, Utilities.class})
+@PrepareForTest({
+        AmbassadorSingleton.class,
+        PusherSDK.class,
+        PusherChannel.class,
+        LocalBroadcastManager.class,
+        Context.class,
+        AmbassadorConfig.class,
+        Utilities.class
+})
 public class PusherSDKTest {
 
     PusherSDK pusherSDK;

@@ -34,11 +34,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.whenNew;
 
-/**
- * Created by JakeDunahee on 9/9/15.
- */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ClipData.class, Toast.class, AmbassadorActivity.class, Integer.class, AmbassadorSingleton.class})
+@PrepareForTest({
+        ClipData.class,
+        Toast.class,
+        AmbassadorActivity.class,
+        Integer.class,
+        AmbassadorSingleton.class
+})
 public class AmbassadorActivityTest extends TestCase {
 
     AmbassadorActivity ambassadorActivity;

@@ -17,12 +17,10 @@ import dagger.Component;
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
-
-/**
- * Created by dylan on 11/9/15.
- */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({AmbassadorApplicationModule.class})
+@PrepareForTest({
+        AmbassadorApplicationModule.class
+})
 public class AmbassadorSingletonTest {
 
     Context mockContext;
