@@ -24,6 +24,7 @@ import com.ambassador.ambassadorsdk.internal.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
+import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -65,7 +66,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
@@ -483,7 +483,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
         pressBack();
-        verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         //ensure dialog fields not visible now that we've backed out
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -493,14 +493,14 @@ public class AmbassadorActivityTest {
         //enter blank text and make sure dialog is still visible
         onView(withId(R.id.etMessage)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.btnSend)).perform(click());
-        verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         //since text was cleared, ensure dialog is present, then click "send anyway"
         onView(withText("Hold on!")).check(matches(isDisplayed()));
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         pressBack();
-        verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         //test sending a successful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
@@ -528,7 +528,7 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-        .when(requestManager).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
+        .when(requestManager).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnSend)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -545,7 +545,7 @@ public class AmbassadorActivityTest {
         //failure shouldn't dismiss the dialog
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
-        verify(requestManager, times(2)).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, times(2)).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnCancel)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -732,10 +732,5 @@ public class AmbassadorActivityTest {
             }
         };
     }
-
-    private static class IsJSONObject extends ArgumentMatcher<JSONObject> {
-        public boolean matches(Object jsonObject) {
-            return (jsonObject != null); //equivalent to (jsonObject instanceOf JSONObject)
-        }
-    }
+    
 }
