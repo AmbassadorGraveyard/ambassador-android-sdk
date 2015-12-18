@@ -58,9 +58,9 @@ public class BulkShareApi {
      * @param completion callback for request completion
      */
     public void bulkShareSms(String uid, String auth, BulkShareSmsBody body, final RequestManager.RequestCompletion completion) {
-        bulkShareClient.bulkShareSms(uid, auth, body, new Callback<String>() {
+        bulkShareClient.bulkShareSms(uid, auth, body, new Callback<BulkShareSmsResponse>() {
             @Override
-            public void success(String s, Response response) {
+            public void success(BulkShareSmsResponse bulkShareSmsResponse, Response response) {
                 completion.onSuccess("success");
                 Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareSms(...)");
             }
@@ -87,9 +87,9 @@ public class BulkShareApi {
      * @param completion callback for request completion
      */
     public void bulkShareEmail(String uid, String auth, BulkShareEmailBody body, final RequestManager.RequestCompletion completion) {
-        bulkShareClient.bulkShareEmail(uid, auth, body, new Callback<String>() {
+        bulkShareClient.bulkShareEmail(uid, auth, body, new Callback<BulkShareEmailResponse>() {
             @Override
-            public void success(String s, Response response) {
+            public void success(BulkShareEmailResponse bulkShareEmailResponse, Response response) {
                 completion.onSuccess("success");
                 Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareEmail(...)");
             }
@@ -147,6 +147,13 @@ public class BulkShareApi {
 
     }
 
+    /** Pojo for bulk share sms post request response */
+    public static class BulkShareSmsResponse {
+
+        public String short_code;
+
+    }
+
     /** Pojo for bulk share email post request body */
     public static class BulkShareEmailBody {
 
@@ -161,6 +168,13 @@ public class BulkShareApi {
             this.short_code = short_code;
             this.to_emails = to_emails;
         }
+
+    }
+
+    /** Pojo for bulk share email request response */
+    public static class BulkShareEmailResponse {
+
+        public String detail;
 
     }
 
