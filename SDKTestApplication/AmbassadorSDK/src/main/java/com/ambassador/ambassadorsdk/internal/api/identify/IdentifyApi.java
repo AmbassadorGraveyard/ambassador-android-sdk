@@ -280,11 +280,11 @@ public class IdentifyApi {
     public static class UpdateNameRequestBody {
 
         private String email;
-        private UpdateBody update_body;
+        private UpdateBody update_data;
 
         public UpdateNameRequestBody(String email, String firstName, String lastName) {
             this.email = email;
-            this.update_body = new UpdateBody(firstName, lastName);
+            this.update_data = new UpdateBody(firstName, lastName);
         }
 
         public static class UpdateBody {
