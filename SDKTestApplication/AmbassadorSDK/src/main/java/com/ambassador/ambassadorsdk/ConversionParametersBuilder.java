@@ -4,9 +4,6 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 
-/**
- * Created by dylan on 12/14/15.
- */
 public class ConversionParametersBuilder {
 
     private static final String TAG = ConversionParametersBuilder.class.getSimpleName();
@@ -154,7 +151,7 @@ public class ConversionParametersBuilder {
 
     private void validateRequiredFields() {
         if (!revenueCheck || mbsy_revenue == -1) {
-            Log.w(TAG, "Warning: you must set mbsy_revenue!");
+            //Log.w(TAG, "Warning: you must set mbsy_revenue!");
         }
         if (!campaignCheck || mbsy_campaign == -1) {
             Log.w(TAG, "Warning: you must set mbsy_campaign!");
