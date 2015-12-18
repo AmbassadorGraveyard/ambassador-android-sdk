@@ -117,7 +117,7 @@ public class PusherSDK {
 
         HashMap<String, String> queryParams = new HashMap<>();
         queryParams.put("auth_type", "private");
-        queryParams.put("channel", PusherChannel.getchannelName());
+        queryParams.put("channel", PusherChannel.getChannelName());
         authorizer.setQueryStringParameters(queryParams);
 
         PusherOptions options = new PusherOptions();
@@ -139,7 +139,7 @@ public class PusherSDK {
             }
         }, ConnectionState.ALL);
 
-        pusher.subscribePrivate(PusherChannel.getchannelName(), new PrivateChannelEventListener() {
+        pusher.subscribePrivate(PusherChannel.getChannelName(), new PrivateChannelEventListener() {
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
                 Utilities.debugLog("PusherSDK", "Failed to subscribe to PusherSDK because " + message + ". The " +
