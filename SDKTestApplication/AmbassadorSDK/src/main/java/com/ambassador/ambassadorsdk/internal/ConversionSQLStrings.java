@@ -2,13 +2,8 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.provider.BaseColumns;
 
-
-/**
- * Created by JakeDunahee on 8/21/15.
- */
-
-// Class with strings to use with SQL database
 public final class ConversionSQLStrings {
+
     public static final String TEXT_TYPE = " TEXT";
     public static final String INT_TYPE = " INTEGER";
     public static final String COMMA_SEP = ",";
@@ -34,7 +29,7 @@ public final class ConversionSQLStrings {
                     ConversionSQLEntry.MBSY_EVENT_DATA2 + TEXT_TYPE + COMMA_SEP +
                     ConversionSQLEntry.MBSY_EVENT_DATA3 + TEXT_TYPE + COMMA_SEP +
                     ConversionSQLEntry.MBSY_IS_APPROVED + INT_TYPE +
-                    ")";
+            ")";
 
     public static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + ConversionSQLEntry.TABLE_NAME;
@@ -61,4 +56,5 @@ public final class ConversionSQLStrings {
         public static final String MBSY_EVENT_DATA3 = "mbsy_event_data3";
         public static final String MBSY_IS_APPROVED = "mbsy_is_approved";
     }
+
 }
