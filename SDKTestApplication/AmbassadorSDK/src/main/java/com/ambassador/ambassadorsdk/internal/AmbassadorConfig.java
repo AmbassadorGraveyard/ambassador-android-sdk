@@ -28,6 +28,8 @@ public class AmbassadorConfig {
     private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     private ServiceSelectorPreferences rafParameters;
 
+    long lastIdentifyAction = 0;
+
     public static String ambassadorApiUrl() {
         if (AmbassadorConfig.isReleaseBuild) {
             return "https://api.getambassador.com";
