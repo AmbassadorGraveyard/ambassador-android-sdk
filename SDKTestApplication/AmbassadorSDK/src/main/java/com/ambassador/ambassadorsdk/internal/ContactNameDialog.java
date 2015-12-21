@@ -15,6 +15,9 @@ import com.ambassador.ambassadorsdk.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.inject.Inject;
 
 /**
@@ -86,7 +89,7 @@ public class ContactNameDialog extends Dialog {
         }
     }
 
-    void handleNameInput(String firstName, String lastName) {
+    void handleNameInput(final String firstName, final String lastName) {
         //this shouldn't happen because UI enforces entry, but check anyway in case UI validation is removed
         if (firstName == null || lastName == null) return;
 
@@ -107,9 +110,17 @@ public class ContactNameDialog extends Dialog {
             requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    mCallback.namesHaveBeenUpdated();
-                    ambassadorConfig.setUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
-                    hide();
+                    final long mark = System.currentTimeMillis();
+                    new Timer().scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            if (ambassadorConfig.lastIdentifyAction >= mark || System.currentTimeMillis() - mark >= 5000) {
+                                callbackNames();
+                                ambassadorConfig.setUserFullName(firstName, lastName);
+                                cancel();
+                            }
+                        }
+                    }, 0, 200);
                 }
 
                 @Override
@@ -122,4 +133,16 @@ public class ContactNameDialog extends Dialog {
             e.printStackTrace();
         }
     }
+
+    private void callbackNames() {
+        getOwnerActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ContactNameDialog.this.mCallback.namesHaveBeenUpdated();
+                ContactNameDialog.this.hide();
+            }
+        });
+
+    }
+
 }

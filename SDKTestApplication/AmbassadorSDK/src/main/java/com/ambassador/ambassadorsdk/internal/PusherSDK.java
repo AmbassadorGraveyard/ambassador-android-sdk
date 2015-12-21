@@ -156,6 +156,10 @@ public class PusherSDK {
             public void onEvent(String channelName, String eventName, String data) {
                 Utilities.debugLog("PusherSDK", "data = " + data);
 
+                if (eventName.equals("identify_action")) {
+                    ambassadorConfig.lastIdentifyAction = System.currentTimeMillis();
+                }
+
                 try {
                     final JSONObject pusherObject = new JSONObject(data);
 
