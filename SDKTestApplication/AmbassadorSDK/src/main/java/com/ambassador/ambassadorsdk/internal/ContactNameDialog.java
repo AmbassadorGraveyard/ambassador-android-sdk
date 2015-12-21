@@ -15,9 +15,6 @@ import com.ambassador.ambassadorsdk.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import javax.inject.Inject;
 
 /**
@@ -110,17 +107,9 @@ public class ContactNameDialog extends Dialog {
             requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    final long mark = System.currentTimeMillis();
-                    new Timer().scheduleAtFixedRate(new TimerTask() {
-                        @Override
-                        public void run() {
-                            if (ambassadorConfig.lastIdentifyAction >= mark || System.currentTimeMillis() - mark >= 5000) {
-                                callbackNames();
-                                ambassadorConfig.setUserFullName(firstName, lastName);
-                                cancel();
-                            }
-                        }
-                    }, 0, 200);
+                    mCallback.namesHaveBeenUpdated();
+                    ambassadorConfig.setUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
+                    hide();
                 }
 
                 @Override
@@ -134,15 +123,5 @@ public class ContactNameDialog extends Dialog {
         }
     }
 
-    private void callbackNames() {
-        getOwnerActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ContactNameDialog.this.mCallback.namesHaveBeenUpdated();
-                ContactNameDialog.this.hide();
-            }
-        });
-
-    }
 
 }
