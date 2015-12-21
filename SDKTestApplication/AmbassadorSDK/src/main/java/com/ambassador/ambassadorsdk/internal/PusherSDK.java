@@ -34,6 +34,12 @@ public class PusherSDK {
         void pusherFailed();
     }
 
+    public interface IdentifyListener {
+        void identified();
+    }
+
+    IdentifyListener identifyListener;
+
     @Inject
     AmbassadorConfig ambassadorConfig;
 
@@ -156,8 +162,8 @@ public class PusherSDK {
             public void onEvent(String channelName, String eventName, String data) {
                 Utilities.debugLog("PusherSDK", "data = " + data);
 
-                if (eventName.equals("identify_action")) {
-                    ambassadorConfig.lastIdentifyAction = System.currentTimeMillis();
+                if (eventName.equals("identify_action") && identifyListener != null) {
+                    identifyListener.identified();
                 }
 
                 try {
@@ -173,7 +179,8 @@ public class PusherSDK {
                                     final JSONObject pusherUrlObject = new JSONObject(successResponse.toString());
 
                                     //make sure the request id coming back is for the one we sent off
-                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId()) return;
+                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId())
+                                        return;
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -187,7 +194,8 @@ public class PusherSDK {
                         });
                     } else {
                         //make sure the request id coming back is for the one we sent off
-                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId()) return;
+                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId())
+                            return;
 
                         setPusherInfo(data);
                     }
@@ -222,4 +230,9 @@ public class PusherSDK {
             e.printStackTrace();
         }
     }
+
+    public void setIdentifyListener(IdentifyListener listener) {
+        this.identifyListener = listener;
+    }
+
 }

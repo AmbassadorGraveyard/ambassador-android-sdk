@@ -54,7 +54,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 /**
  * Created by JakeDunahee on 7/31/15.
  */
-public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener {
+public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener, PusherSDK.IdentifyListener {
 
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
 
@@ -78,11 +78,16 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private ContactNameDialog cnd;
     Boolean showPhoneNumbers;
 
+    private boolean sendReady = false;
+
     @Inject
     BulkShareHelper bulkShareHelper;
 
     @Inject
     AmbassadorConfig ambassadorConfig;
+
+    @Inject
+    PusherSDK pusherSDK;
 
     private static HashMap<Integer, String> phoneTypeMap;
     static {
@@ -132,6 +137,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         pd.setMessage("Sharing");
         pd.setOwnerActivity(this);
         pd.setCancelable(false);
+
+        pusherSDK.setIdentifyListener(this);
 
         if (_handleContactsPermission()) {
             _handleContactsPopulation();
@@ -493,7 +500,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     // Adds and styles toolbar in place of the actionbar
     private void _setUpToolbar(String toolbarTitle) {
-        if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(toolbarTitle); }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
         if (toolbar == null) return;
@@ -587,7 +595,15 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
 
     @Override
     public void namesHaveBeenUpdated() {
-        _initiateSend();
+        sendReady = true;
+    }
+
+    @Override
+    public void identified() {
+        if (sendReady) {
+            _initiateSend();
+            sendReady = false;
+        }
     }
 
     private void _handleContactsPopulation() {
