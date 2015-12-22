@@ -145,11 +145,19 @@ public class RequestManager {
     }
 
     /**
+     * Updates the PusherChannel request ID to the current time in
+     * milliseconds.
+     */
+    void updateRequestId() {
+        PusherChannel.setRequestId(System.currentTimeMillis());
+    }
+
+    /**
      * Identifies the user on the Ambassador backend using the session info
      * and the identify info returned from augur.
      */
     public void identifyRequest() {
-        PusherChannel.setRequestId(System.currentTimeMillis());
+        updateRequestId();
 
         String sessionId = PusherChannel.getSessionId();
         String requestId = String.valueOf(PusherChannel.getRequestId());
@@ -172,7 +180,7 @@ public class RequestManager {
      * @param completion callback for request completion
      */
     public void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
-        PusherChannel.setRequestId(System.currentTimeMillis());
+        updateRequestId();
 
         String sessionId = PusherChannel.getSessionId();
         String requestId = String.valueOf(PusherChannel.getRequestId());

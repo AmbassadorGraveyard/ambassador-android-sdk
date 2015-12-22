@@ -173,6 +173,7 @@ public class RequestManagerTest {
         requestManager.identifyRequest();
 
         // ASSERT
+        Mockito.verify(requestManager).updateRequestId();
         Mockito.verify(identifyApi).identifyRequest(Mockito.eq(sessionId), Mockito.eq(String.valueOf(requestId)), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.IdentifyRequestBody.class));
     }
 
@@ -188,6 +189,7 @@ public class RequestManagerTest {
         requestManager.updateNameRequest(email, firstName, lastName, requestCompletion);
 
         // ASSERT
+        Mockito.verify(requestManager).updateRequestId();
         Mockito.verify(identifyApi).updateNameRequest(Mockito.eq(sessionId), Mockito.eq(String.valueOf(requestId)), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.UpdateNameRequestBody.class), Mockito.eq(requestCompletion));
     }
 
