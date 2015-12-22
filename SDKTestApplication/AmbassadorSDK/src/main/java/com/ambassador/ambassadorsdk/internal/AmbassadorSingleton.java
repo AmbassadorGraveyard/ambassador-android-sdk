@@ -23,7 +23,7 @@ public class AmbassadorSingleton {
 
     public void init(Context context) {
         if (appContext == null) {
-            appContext = context;
+            setAppContext(context);
         }
 
         //get injected modules we need
@@ -34,12 +34,16 @@ public class AmbassadorSingleton {
         }
     }
 
-    public static AmbassadorApplicationComponent getComponent() {
-        return component;
+    void setAppContext(Context context) {
+        this.appContext = context;
     }
 
-    public static void setComponent(AmbassadorApplicationComponent comp) {
-        component = comp;
+    public void setComponent(AmbassadorApplicationComponent comp) {
+        this.component = comp;
+    }
+
+    public static AmbassadorApplicationComponent getComponent() {
+        return component;
     }
 
     public static AmbassadorApplicationModule getAmbModule() {
