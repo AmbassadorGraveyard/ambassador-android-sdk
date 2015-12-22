@@ -20,13 +20,13 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
-/**
- * Created by JakeDunahee on 7/22/15.
- */
 public class AmbassadorSDK {
 
     @Inject
     static AmbassadorConfig ambassadorConfig;
+
+    @Inject
+    static PusherSDK pusherSDK;
 
     public static void presentRAF(Context context, String campaignID) {
         Intent intent = new Intent(context, AmbassadorActivity.class);
@@ -40,8 +40,7 @@ public class AmbassadorSDK {
         IIdentify identify = new IdentifyAugurSDK();
         identify.getIdentity();
 
-        PusherSDK pusher = new PusherSDK();
-        pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
+        pusherSDK.createPusher(new PusherSDK.PusherSubscribeCallback() {
             @Override
             public void pusherSubscribed() {
 
