@@ -35,7 +35,7 @@ public class PusherSDK {
     }
 
     public interface IdentifyListener {
-        void identified();
+        void identified(long requestId);
     }
 
     IdentifyListener identifyListener;
@@ -194,7 +194,7 @@ public class PusherSDK {
                             return;
 
                         if (eventName.equals("identify_action") && identifyListener != null) {
-                            identifyListener.identified();
+                            identifyListener.identified(PusherChannel.getRequestId());
                         }
 
                         setPusherInfo(data);

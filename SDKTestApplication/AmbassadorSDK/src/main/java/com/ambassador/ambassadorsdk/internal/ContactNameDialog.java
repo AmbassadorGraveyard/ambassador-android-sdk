@@ -17,10 +17,8 @@ import org.json.JSONObject;
 
 import javax.inject.Inject;
 
-/**
- * Created by CoreyFields on 8/21/15.
- */
 public class ContactNameDialog extends Dialog {
+
     private CustomEditText etFirstName, etLastName;
     private ContactNameListener mCallback;
     private ProgressDialog pd;
@@ -32,7 +30,7 @@ public class ContactNameDialog extends Dialog {
     RequestManager requestManager;
 
     public interface ContactNameListener {
-        void namesHaveBeenUpdated();
+        void namesHaveBeenUpdated(long requestId);
     }
 
     public ContactNameDialog(Context context, ProgressDialog pd) {
@@ -107,7 +105,7 @@ public class ContactNameDialog extends Dialog {
             requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    mCallback.namesHaveBeenUpdated();
+                    mCallback.namesHaveBeenUpdated(Long.valueOf((String) successResponse));
                     ambassadorConfig.setUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
                     hide();
                 }
