@@ -258,7 +258,7 @@ public class AmbassadorConfig {
 
     public void nullifyLinkedInIfInvalid(final NullifyCompleteListener listener) {
         if (getLinkedInToken() != null) {
-            RequestManager rm = new RequestManager();
+            RequestManager rm = buildRequestManager();
             rm.getProfileLinkedIn(new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
@@ -276,7 +276,11 @@ public class AmbassadorConfig {
         }
     }
 
-    private void callNullifyComplete(NullifyCompleteListener listener) {
+    RequestManager buildRequestManager() {
+        return new RequestManager();
+    }
+
+    void callNullifyComplete(NullifyCompleteListener listener) {
         if (listener != null) {
             listener.nullifyComplete();
         }
