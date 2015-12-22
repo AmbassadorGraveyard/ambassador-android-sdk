@@ -2,19 +2,14 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
-import org.powermock.api.mockito.PowerMockito;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import javax.inject.Singleton;
-
-import dagger.Component;
-
-import static junit.framework.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 
 @RunWith(PowerMockRunner.class)
@@ -23,44 +18,40 @@ import static org.mockito.Mockito.mock;
 })
 public class AmbassadorSingletonTest {
 
-    Context mockContext;
-    AmbassadorApplicationComponent mockComponent;
-    AmbassadorApplicationModule mockModule;
-
-    @Singleton
-    @Component(modules = {AmbassadorApplicationModule.class})
-    public interface TestComponent {
-        void inject(AmbassadorSingletonTest ambassadorSingletonTest);
-    }
+    Context context;
+    AmbassadorApplicationComponent component;
+    AmbassadorApplicationModule module;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
-        amb.setMockMode(true);
-
-        TestComponent component = DaggerAmbassadorSingletonTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
-        component.inject(this);
-
-        mockContext = mock(Context.class);
-        mockComponent = mock(AmbassadorApplicationComponent.class);
-        mockModule = mock(AmbassadorApplicationModule.class);
-
-        PowerMockito.mock(AmbassadorApplicationModule.class);
+        context = mock(Context.class);
+        component = mock(AmbassadorApplicationComponent.class);
+        module = mock(AmbassadorApplicationModule.class);
     }
 
     @Test
-    public void initTest() throws Exception {
+    public void initTest() {
         // ARRANGE
-        AmbassadorSingleton.setComponent(mockComponent);
-        AmbassadorSingleton ambassadorSingleton = AmbassadorSingleton.getInstance();
-        PowerMockito.whenNew(AmbassadorApplicationModule.class).withAnyArguments().thenReturn(mockModule);
+        AmbassadorSingleton ambassadorSingleton = Mockito.spy(AmbassadorSingleton.getInstance());
 
         // ACT
-        ambassadorSingleton.init(mockContext);
+        ambassadorSingleton.init(context);
 
         // ASSERT
-        assertEquals(AmbassadorSingleton.get(), mockContext);
+        Mockito.verify(ambassadorSingleton).setAppContext(Mockito.eq(context));
+        Mockito.verify(ambassadorSingleton).setComponent(Mockito.any(AmbassadorApplicationComponent.class));
+    }
+
+    @Test
+    public void getInstanceTest() {
+        // ACT
+        AmbassadorSingleton singleton1 = AmbassadorSingleton.getInstance();
+        AmbassadorSingleton singleton2 = AmbassadorSingleton.getInstance();
+        AmbassadorSingleton singleton3 = AmbassadorSingleton.getInstance();
+
+        // ASSERT
+        Assert.assertEquals(singleton1, singleton2);
+        Assert.assertEquals(singleton2, singleton3);
     }
 
 }
