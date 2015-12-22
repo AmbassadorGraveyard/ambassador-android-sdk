@@ -162,10 +162,6 @@ public class PusherSDK {
             public void onEvent(String channelName, String eventName, String data) {
                 Utilities.debugLog("PusherSDK", "data = " + data);
 
-                if (eventName.equals("identify_action") && identifyListener != null) {
-                    identifyListener.identified();
-                }
-
                 try {
                     final JSONObject pusherObject = new JSONObject(data);
 
@@ -196,6 +192,10 @@ public class PusherSDK {
                         //make sure the request id coming back is for the one we sent off
                         if (pusherObject.getLong("request_id") != PusherChannel.getRequestId())
                             return;
+
+                        if (eventName.equals("identify_action") && identifyListener != null) {
+                            identifyListener.identified();
+                        }
 
                         setPusherInfo(data);
                     }
