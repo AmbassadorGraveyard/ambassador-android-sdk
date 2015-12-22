@@ -3,20 +3,28 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.SessionManager;
+import com.twitter.sdk.android.core.TwitterApiClient;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.User;
+import com.twitter.sdk.android.core.services.AccountService;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.inject.Singleton;
-
-import dagger.Component;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -30,40 +38,33 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class
+        AmbassadorSingleton.class,
+        TwitterCore.class,
+        RequestManager.class
 })
 public class AmbassadorConfigTest {
-    private SharedPreferences mockSharedPrefs;
-    private SharedPreferences.Editor mockEditor;
-
-    @Singleton
-    @Component(modules = {AmbassadorApplicationModule.class})
-    public interface TestComponent {
-        void inject(AmbassadorConfigTest ambassadorConfigTest);
-    }
+    
+    private SharedPreferences sharedPrefs;
+    private SharedPreferences.Editor editor;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
-        amb.setMockMode(true);
+        PowerMockito.mockStatic(
+                AmbassadorConfig.class,
+                AmbassadorSingleton.class,
+                TwitterCore.class
+        );
 
-        PowerMockito.mockStatic(AmbassadorConfig.class);
-        PowerMockito.mockStatic(AmbassadorSingleton.class);
+        Context context = mock(Context.class);
 
-        TestComponent component = DaggerAmbassadorConfigTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
-        component.inject(this);
+        sharedPrefs = mock(SharedPreferences.class);
+        editor = mock(SharedPreferences.Editor.class);
 
-        Context mockContext = mock(Context.class);
-
-        mockSharedPrefs = mock(SharedPreferences.class);
-        mockEditor = mock(SharedPreferences.Editor.class);
-
-        when(AmbassadorSingleton.get()).thenReturn(mockContext);
-        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(mockSharedPrefs);
-        when(mockSharedPrefs.edit()).thenReturn(mockEditor);
-        when(mockEditor.putString(anyString(), anyString())).thenReturn(mockEditor);
-        doNothing().when(mockEditor).apply();
+        when(AmbassadorSingleton.get()).thenReturn(context);
+        when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
+        when(sharedPrefs.edit()).thenReturn(editor);
+        when(editor.putString(anyString(), anyString())).thenReturn(editor);
+        doNothing().when(editor).apply();
     }
 
     @Test
@@ -126,8 +127,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setLinkedInToken(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("linkedInToken", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("linkedInToken", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -140,8 +141,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setTwitterAccessToken(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("twitterToken", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("twitterToken", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -154,8 +155,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setTwitterAccessTokenSecret(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("twitterTokenSecret", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("twitterTokenSecret", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -168,8 +169,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setIdentifyObject(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("identifyObject", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("identifyObject", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -182,8 +183,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setCampaignID(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("campaignID", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("campaignID", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -196,8 +197,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setPusherInfo(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("pusherObject", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("pusherObject", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -210,8 +211,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setURL(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("url", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("url", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -224,8 +225,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setUniversalToken(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("universalToken", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("universalToken", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -238,8 +239,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setUniversalID(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("universalID", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("universalID", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -253,9 +254,9 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setReferrerShortCode(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("referralShortCode", testValue);
-        verify(mockEditor).putString("referrerShortCode", testValue);
-        verify(mockEditor, times(2)).apply();
+        verify(editor).putString("referralShortCode", testValue);
+        verify(editor).putString("referrerShortCode", testValue);
+        verify(editor, times(2)).apply();
     }
 
     @Test
@@ -269,8 +270,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setUserFullName(testValue1, testValue2);
 
         // ASSERT
-        verify(mockEditor).putString("fullName", testValue1 + " " + testValue2);
-        verify(mockEditor).apply();
+        verify(editor).putString("fullName", testValue1 + " " + testValue2);
+        verify(editor).apply();
     }
 
     @Test
@@ -283,8 +284,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setEmailSubject(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("subjectLine", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("subjectLine", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -297,8 +298,8 @@ public class AmbassadorConfigTest {
         ambassadorConfig.setUserEmail(testValue);
 
         // ASSERT
-        verify(mockEditor).putString("userEmail", testValue);
-        verify(mockEditor).apply();
+        verify(editor).putString("userEmail", testValue);
+        verify(editor).apply();
     }
 
     @Test
@@ -332,7 +333,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getLinkedInToken();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("linkedInToken", null);
+        verify(sharedPrefs).getString("linkedInToken", null);
     }
 
     @Test
@@ -344,7 +345,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getTwitterAccessToken();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("twitterToken", null);
+        verify(sharedPrefs).getString("twitterToken", null);
     }
 
     @Test
@@ -356,7 +357,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getTwitterAccessTokenSecret();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("twitterTokenSecret", null);
+        verify(sharedPrefs).getString("twitterTokenSecret", null);
     }
 
     @Test
@@ -368,7 +369,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getIdentifyObject();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("identifyObject", null);
+        verify(sharedPrefs).getString("identifyObject", null);
     }
 
     @Test
@@ -380,7 +381,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getCampaignID();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("campaignID", null);
+        verify(sharedPrefs).getString("campaignID", null);
     }
 
     @Test
@@ -392,7 +393,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getPusherInfo();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("pusherObject", null);
+        verify(sharedPrefs).getString("pusherObject", null);
     }
 
     @Test
@@ -404,7 +405,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getURL();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("url", null);
+        verify(sharedPrefs).getString("url", null);
     }
 
     @Test
@@ -416,7 +417,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getUniversalKey();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("universalToken", null);
+        verify(sharedPrefs).getString("universalToken", null);
     }
 
     @Test
@@ -428,7 +429,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getUniversalID();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("universalID", null);
+        verify(sharedPrefs).getString("universalID", null);
     }
 
     @Test
@@ -440,7 +441,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getReferrerShortCode();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("referrerShortCode", null);
+        verify(sharedPrefs).getString("referrerShortCode", null);
     }
 
     @Test
@@ -452,7 +453,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getReferralShortCode();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("referralShortCode", null);
+        verify(sharedPrefs).getString("referralShortCode", null);
     }
 
     @Test
@@ -464,7 +465,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getUserFullName();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("fullName", null);
+        verify(sharedPrefs).getString("fullName", null);
     }
 
     @Test
@@ -476,7 +477,7 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getEmailSubjectLine();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("subjectLine", null);
+        verify(sharedPrefs).getString("subjectLine", null);
     }
 
     @Test
@@ -488,7 +489,168 @@ public class AmbassadorConfigTest {
         ambassadorConfig.getUserEmail();
 
         // ASSERT
-        verify(mockSharedPrefs).getString("userEmail", null);
+        verify(sharedPrefs).getString("userEmail", null);
+    }
+
+    @Test
+    public void nullifyTwitterIfInvalidNullSessionManagerTest() {
+        // ARRANGE
+        AmbassadorConfig ambassadorConfig = Mockito.spy(AmbassadorConfig.class);
+        TwitterCore twitterCore = Mockito.mock(TwitterCore.class);
+        Mockito.when(TwitterCore.getInstance()).thenReturn(twitterCore);
+        Mockito.when(twitterCore.getSessionManager()).thenReturn(null);
+        AmbassadorConfig.NullifyCompleteListener listener = Mockito.mock(AmbassadorConfig.NullifyCompleteListener.class);
+
+        // ACT
+        ambassadorConfig.nullifyTwitterIfInvalid(listener);
+
+        // ASSERT
+        Mockito.verify(ambassadorConfig).callNullifyComplete(Mockito.eq(listener));
+    }
+
+    @Test
+    public void nullifyTwitterInvalidTest() {
+        // ARRANGE
+        AmbassadorConfig.NullifyCompleteListener listener = Mockito.mock(AmbassadorConfig.NullifyCompleteListener.class);
+
+        String token = "token";
+        String secret = "secret";
+
+        AmbassadorConfig ambassadorConfig = Mockito.spy(AmbassadorConfig.class);
+        TwitterCore twitterCore = Mockito.mock(TwitterCore.class);
+        SessionManager sessionManager = Mockito.mock(SessionManager.class);
+        TwitterSession twitterSession = Mockito.mock(TwitterSession.class);
+        TwitterAuthToken authToken = Mockito.spy(new TwitterAuthToken("token", "secret"));
+
+        Mockito.when(TwitterCore.getInstance()).thenReturn(twitterCore);
+        Mockito.when(twitterCore.getSessionManager()).thenReturn(sessionManager);
+        Mockito.when(sessionManager.getActiveSession()).thenReturn(twitterSession);
+        Mockito.when(twitterSession.getAuthToken()).thenReturn(authToken);
+
+        Mockito.doNothing().when(sessionManager).clearActiveSession();
+
+        Mockito.doNothing().when(ambassadorConfig).setTwitterAccessToken(Mockito.anyString());
+        Mockito.doNothing().when(ambassadorConfig).setTwitterAccessTokenSecret(Mockito.anyString());
+        Mockito.when(ambassadorConfig.getTwitterAccessToken()).thenReturn(token);
+        Mockito.when(ambassadorConfig.getTwitterAccessTokenSecret()).thenReturn(secret);
+
+        Mockito.doNothing().when(sessionManager).setActiveSession(Mockito.any(TwitterSession.class));
+
+        TwitterApiClient apiClient = Mockito.mock(TwitterApiClient.class);
+        AccountService accountService = Mockito.mock(AccountService.class);
+        Mockito.when(twitterCore.getApiClient()).thenReturn(apiClient);
+        Mockito.when(apiClient.getAccountService()).thenReturn(accountService);
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<User> callback = (Callback<User>) invocation.getArguments()[2];
+                callback.success(null);
+                return null;
+            }
+        }).doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<User> callback = (Callback<User>) invocation.getArguments()[2];
+                callback.failure(new TwitterException("ex"));
+                return null;
+            }
+        }).when(accountService).verifyCredentials(Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.any(Callback.class));
+
+        // ACT
+        ambassadorConfig.nullifyTwitterIfInvalid(listener);
+
+        // ASSERT
+        Mockito.verify(ambassadorConfig).setTwitterAccessToken(Mockito.eq(token));
+        Mockito.verify(ambassadorConfig).setTwitterAccessTokenSecret(Mockito.eq(secret));
+        Mockito.verify(sessionManager).setActiveSession(Mockito.any(TwitterSession.class));
+        Mockito.verify(ambassadorConfig).callNullifyComplete(Mockito.eq(listener));
+
+        // ACT
+        ambassadorConfig.nullifyTwitterIfInvalid(listener);
+
+        // ASSERT
+        Mockito.verify(ambassadorConfig, Mockito.times(2)).setTwitterAccessToken(Mockito.eq(token));
+        Mockito.verify(ambassadorConfig, Mockito.times(2)).setTwitterAccessTokenSecret(Mockito.eq(secret));
+        Mockito.verify(sessionManager, Mockito.times(2)).setActiveSession(Mockito.any(TwitterSession.class));
+        Mockito.verify(sessionManager).clearActiveSession();
+        Mockito.verify(ambassadorConfig, Mockito.times(2)).callNullifyComplete(Mockito.eq(listener));
+    }
+
+    @Test
+    public void nullifyLinkedInIfInvalidNullTest() {
+        // ARRANGE
+        AmbassadorConfig.NullifyCompleteListener listener = Mockito.mock(AmbassadorConfig.NullifyCompleteListener.class);
+        AmbassadorConfig ambassadorConfig = Mockito.spy(AmbassadorConfig.class);
+        Mockito.when(ambassadorConfig.getLinkedInToken()).thenReturn(null);
+
+        // ACT
+        ambassadorConfig.nullifyLinkedInIfInvalid(listener);
+
+        // ASSERT
+        Mockito.verify(ambassadorConfig).callNullifyComplete(Mockito.eq(listener));
+    }
+
+    @Test
+    public void nullifyLinkedInIfInvalidTest() {
+        // ARRANGE
+        AmbassadorConfig.NullifyCompleteListener listener = Mockito.mock(AmbassadorConfig.NullifyCompleteListener.class);
+        AmbassadorConfig ambassadorConfig = Mockito.spy(AmbassadorConfig.class);
+        String token = "token";
+        Mockito.when(ambassadorConfig.getLinkedInToken()).thenReturn(token);
+        RequestManager requestManager = Mockito.mock(RequestManager.class);
+        Mockito.doReturn(requestManager).when(ambassadorConfig).buildRequestManager();
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocation.getArguments()[0];
+                completion.onSuccess(null);
+                return null;
+            }
+        }).doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocation.getArguments()[0];
+                completion.onFailure(null);
+                return null;
+            }
+        }).when(requestManager).getProfileLinkedIn(Mockito.any(RequestManager.RequestCompletion.class));
+
+        // ACT
+        ambassadorConfig.nullifyLinkedInIfInvalid(listener);
+        ambassadorConfig.nullifyLinkedInIfInvalid(listener);
+
+        // ASSERT
+        Mockito.verify(ambassadorConfig).setLinkedInToken(null);
+        Mockito.verify(ambassadorConfig, Mockito.times(2)).callNullifyComplete(Mockito.eq(listener));
+    }
+
+    @Test
+    public void callNullifyCompleteNotNullTest() {
+        // ARRANGE
+        AmbassadorConfig ambassadorConfig = Mockito.spy(AmbassadorConfig.class);
+        AmbassadorConfig.NullifyCompleteListener listener = Mockito.mock(AmbassadorConfig.NullifyCompleteListener.class);
+        Mockito.doNothing().when(listener).nullifyComplete();
+
+        // ACT
+        ambassadorConfig.callNullifyComplete(listener);
+
+        // ASSERT
+        Mockito.verify(listener).nullifyComplete();
+    }
+
+    @Test
+    public void callNullifyCompleteNullTest() {
+        // ARRANGE
+        AmbassadorConfig ambassadorConfig = Mockito.spy(AmbassadorConfig.class);
+        AmbassadorConfig.NullifyCompleteListener listener = null;
+
+        // ACT
+        ambassadorConfig.callNullifyComplete(listener);
+
+        // ASSERT
+        // If nothing happens (no thrown exception), all is good
     }
 
 }
