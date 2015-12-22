@@ -172,6 +172,8 @@ public class RequestManager {
      * @param completion callback for request completion
      */
     public void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
+        PusherChannel.setRequestId(System.currentTimeMillis());
+
         String sessionId = PusherChannel.getSessionId();
         String requestId = String.valueOf(PusherChannel.getRequestId());
         String uid = ambassadorConfig.getUniversalID();
