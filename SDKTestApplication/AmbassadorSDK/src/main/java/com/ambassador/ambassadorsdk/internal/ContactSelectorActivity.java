@@ -54,7 +54,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 /**
  * Created by JakeDunahee on 7/31/15.
  */
-public class ContactSelectorActivity extends AppCompatActivity implements ContactNameDialog.ContactNameListener, PusherSDK.IdentifyListener {
+public class ContactSelectorActivity extends AppCompatActivity implements PusherSDK.IdentifyListener, ContactNameDialog.ContactNameListener {
 
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
 
@@ -78,7 +78,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     private ContactNameDialog cnd;
     Boolean showPhoneNumbers;
 
-    private boolean sendReady = false;
+    long nameUpdateRequestId = -1L;
 
     @Inject
     BulkShareHelper bulkShareHelper;
@@ -111,6 +111,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
         }
 
         AmbassadorSingleton.getComponent().inject(this);
+
+        pusherSDK.setIdentifyListener(this);
 
         rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
         Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
@@ -594,16 +596,15 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
     }
 
     @Override
-    public void namesHaveBeenUpdated() {
-        sendReady = true;
+    public void identified(long requestId) {
+        if (requestId == nameUpdateRequestId) {
+            _initiateSend();
+        }
     }
 
     @Override
-    public void identified() {
-        if (sendReady) {
-            _initiateSend();
-            sendReady = false;
-        }
+    public void namesHaveBeenUpdated(long requestId) {
+        this.nameUpdateRequestId = requestId;
     }
 
     private void _handleContactsPopulation() {

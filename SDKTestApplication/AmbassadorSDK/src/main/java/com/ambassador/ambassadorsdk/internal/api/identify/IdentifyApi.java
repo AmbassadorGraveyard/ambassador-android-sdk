@@ -99,19 +99,19 @@ public class IdentifyApi {
      * @param request the request body as an UpdateNameRequestBody object
      * @param completion the callback for request completion
      */
-    public void updateNameRequest(String sessionId, String requestId, String uid, String auth, UpdateNameRequestBody request, final RequestManager.RequestCompletion completion) {
+    public void updateNameRequest(String sessionId, final String requestId, String uid, String auth, final UpdateNameRequestBody request, final RequestManager.RequestCompletion completion) {
         identifyClient.updateNameRequest(sessionId, requestId, uid, auth, uid, request, new Callback<UpdateNameRequestResponse>() {
             @Override
             public void success(UpdateNameRequestResponse updateNameRequestResponse, Response response) {
                 // This should never happen, this request is not returning JSON so it hits the failure
-                completion.onSuccess("success");
+                completion.onSuccess(requestId + "");
                 Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
-                    completion.onSuccess("success");
+                    completion.onSuccess(requestId + "");
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
                 } else {
                     completion.onFailure("failure");
