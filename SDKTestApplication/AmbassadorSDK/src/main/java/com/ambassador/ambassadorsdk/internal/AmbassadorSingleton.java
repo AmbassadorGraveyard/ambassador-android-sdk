@@ -29,7 +29,7 @@ public class AmbassadorSingleton {
         if (component == null) {
             amb = new AmbassadorApplicationModule();
             ApplicationComponent component = DaggerAmbassadorSingleton_ApplicationComponent.builder().ambassadorApplicationModule(amb).build();
-            setComponent(component);
+            AmbassadorSingleton.setComponent(component);
         }
     }
 
@@ -37,8 +37,8 @@ public class AmbassadorSingleton {
         this.appContext = context;
     }
 
-    public void setComponent(AmbassadorApplicationComponent comp) {
-        this.component = comp;
+    public static void setComponent(AmbassadorApplicationComponent comp) {
+        AmbassadorSingleton.getInstance().component = comp;
     }
 
     public static AmbassadorApplicationComponent getComponent() {
