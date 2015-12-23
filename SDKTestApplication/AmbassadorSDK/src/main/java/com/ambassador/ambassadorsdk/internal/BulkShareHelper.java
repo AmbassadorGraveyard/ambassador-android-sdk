@@ -84,7 +84,7 @@ public class BulkShareHelper {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
             String strippedNum = contact.getPhoneNumber().replaceAll("[^0-9]", "");
-            if (strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7 && !verifiedNumbers.contains(strippedNum)) {
+            if ((strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7) && !verifiedNumbers.contains(strippedNum)) {
                 verifiedNumbers.add(strippedNum);
             }
         }
