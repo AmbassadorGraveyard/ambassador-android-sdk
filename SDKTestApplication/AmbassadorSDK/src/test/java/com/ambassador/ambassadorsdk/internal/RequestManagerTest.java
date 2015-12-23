@@ -15,6 +15,7 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.services.StatusesService;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -70,7 +71,6 @@ public class RequestManagerTest {
                 AmbassadorSingleton.class,
                 BulkShareHelper.class,
                 ConversionUtility.class,
-                PusherChannel.class,
                 IdentifyApi.IdentifyRequestBody.class,
                 TwitterCore.class,
                 Log.class
@@ -103,8 +103,9 @@ public class RequestManagerTest {
         requestManager.identifyApi = identifyApi;
         requestManager.linkedInApi = linkedInApi;
 
-        BDDMockito.given(PusherChannel.getSessionId()).willReturn(sessionId);
-        BDDMockito.given(PusherChannel.getRequestId()).willReturn(requestId);
+        PowerMockito.spy(PusherChannel.class);
+        PusherChannel.setRequestId(requestId);
+        PusherChannel.setSessionId(sessionId);
     }
 
     @Test
@@ -171,10 +172,11 @@ public class RequestManagerTest {
     public void identifyRequestTest() throws Exception {
         // ACT
         requestManager.identifyRequest();
+        String reqId = "" + PusherChannel.getRequestId();
 
         // ASSERT
-        Mockito.verify(requestManager).updateRequestId();
-        Mockito.verify(identifyApi).identifyRequest(Mockito.eq(sessionId), Mockito.eq(String.valueOf(requestId)), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.IdentifyRequestBody.class));
+        Assert.assertTrue((System.currentTimeMillis() - PusherChannel.getRequestId()) < 1000 * 60 * 60 * 24);
+        Mockito.verify(identifyApi).identifyRequest(Mockito.eq(sessionId), Mockito.eq(reqId), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.IdentifyRequestBody.class));
     }
 
     @Test
@@ -187,10 +189,11 @@ public class RequestManagerTest {
 
         // ACT
         requestManager.updateNameRequest(email, firstName, lastName, requestCompletion);
+        String reqId = "" + PusherChannel.getRequestId();
 
         // ASSERT
-        Mockito.verify(requestManager).updateRequestId();
-        Mockito.verify(identifyApi).updateNameRequest(Mockito.eq(sessionId), Mockito.eq(String.valueOf(requestId)), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.UpdateNameRequestBody.class), Mockito.eq(requestCompletion));
+        Assert.assertTrue((System.currentTimeMillis() - PusherChannel.getRequestId()) < 1000 * 60 * 60 * 24);
+        Mockito.verify(identifyApi).updateNameRequest(Mockito.eq(sessionId), Mockito.eq(reqId), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.UpdateNameRequestBody.class), Mockito.eq(requestCompletion));
     }
 
     @Test
