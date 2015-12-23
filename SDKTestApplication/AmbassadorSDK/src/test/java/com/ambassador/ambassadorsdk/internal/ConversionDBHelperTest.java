@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -22,13 +23,45 @@ import org.powermock.modules.junit4.PowerMockRunner;
 })
 public class ConversionDBHelperTest {
 
-
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
                 Utilities.class
         );
+
         PowerMockito.spy(ConversionDBHelper.class);
+    }
+
+    @Test
+    public void onCreateTest() {
+        // ARRANGE
+        Context context = Mockito.mock(Context.class);
+        ConversionDBHelper conversionDBHelper = Mockito.spy(new ConversionDBHelper(context));
+        SQLiteDatabase db = Mockito.mock(SQLiteDatabase.class);
+        Mockito.doNothing().when(db).execSQL(Mockito.anyString());
+
+        // ACT
+        conversionDBHelper.onCreate(db);
+
+        // ASSERT
+        Mockito.verify(db).execSQL(Mockito.eq(ConversionSQLStrings.SQL_CREATE_ENTRIES));
+    }
+
+    @Test
+    public void onUpgradeTest() {
+        // ARRANGE
+        Context context = Mockito.mock(Context.class);
+        ConversionDBHelper conversionDBHelper = Mockito.spy(new ConversionDBHelper(context));
+        Mockito.doNothing().when(conversionDBHelper).onCreate(Mockito.any(SQLiteDatabase.class));
+        SQLiteDatabase db = Mockito.mock(SQLiteDatabase.class);
+        Mockito.doNothing().when(db).execSQL(Mockito.anyString());
+
+        // ACT
+        conversionDBHelper.onUpgrade(db, 0, 1);
+
+        // ASSERT
+        Mockito.verify(conversionDBHelper).onCreate(Mockito.eq(db));
+        Mockito.verify(db).execSQL(Mockito.eq(ConversionSQLStrings.SQL_DELETE_ENTRIES));
     }
 
     @Test
