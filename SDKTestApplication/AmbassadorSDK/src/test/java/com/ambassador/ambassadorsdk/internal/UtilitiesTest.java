@@ -3,10 +3,12 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Window;
 
 import junit.framework.Assert;
 
@@ -27,8 +29,10 @@ import static org.mockito.Mockito.when;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
+        Utilities.class,
         AmbassadorSingleton.class,
-        Log.class
+        Log.class,
+        Color.class
 })
 public class UtilitiesTest {
 
@@ -37,8 +41,11 @@ public class UtilitiesTest {
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class
+                AmbassadorSingleton.class,
+                Color.class
         );
+
+        PowerMockito.spy(Utilities.class);
 
         context = mock(Context.class);
     }
@@ -238,12 +245,23 @@ public class UtilitiesTest {
     }
 
     @Test
+    @SuppressWarnings("all")
     public void setStatusBarTest() {
+        // ARRANGE
+        Window window = Mockito.mock(Window.class);
+        int primaryColor = 5555;
+        Mockito.when(Utilities.getSdkInt()).thenReturn(21);
+        Mockito.doNothing().when(window).setStatusBarColor(Mockito.anyInt());
 
+        // ACT
+        Utilities.setStatusBar(window, primaryColor);
+
+        // ASSERT
+        Mockito.verify(window).setStatusBarColor(Mockito.anyInt());
     }
 
     @Test
-    public void getTextWidthDpTest() {
+    public void getTextWidthDpTest() throws Exception {
 
     }
 

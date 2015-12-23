@@ -147,8 +147,9 @@ public class Utilities {
         return false;
     }
 
+    @SuppressWarnings("all")
     public static void setStatusBar(Window window, int primaryColor) {
-        if (Build.VERSION.SDK_INT >= 21) {
+        if (getSdkInt() >= 21) {
             float[] hsv = new float[3];
             Color.colorToHSV(primaryColor, hsv);
             hsv[2] *= 0.8f;
@@ -157,12 +158,20 @@ public class Utilities {
         }
     }
 
+    public static int getSdkInt() {
+        return Build.VERSION.SDK_INT;
+    }
+
     public static float getTextWidthDp(String text, TextView tv) {
-        Rect bounds = new Rect();
+        Rect bounds = buildRect();
         Paint textPaint = tv.getPaint();
         textPaint.getTextBounds(text, 0, text.length(), bounds);
         float width = getDpSizeForPixels(bounds.width());
         return width;
+    }
+
+    static Rect buildRect() {
+        return new Rect();
     }
 
     public static String cutTextToShow(String text, TextView tv, float maxWidth) {
