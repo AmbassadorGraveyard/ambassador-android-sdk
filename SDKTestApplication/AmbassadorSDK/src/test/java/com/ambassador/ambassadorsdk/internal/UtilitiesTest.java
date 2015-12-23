@@ -3,20 +3,20 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
 import android.util.Log;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import javax.inject.Singleton;
-
-import dagger.Component;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -32,27 +32,15 @@ import static org.mockito.Mockito.when;
 })
 public class UtilitiesTest {
 
-    Context mockContext;
-
-    @Singleton
-    @Component(modules = {AmbassadorApplicationModule.class})
-    public interface TestComponent {
-        void inject(UtilitiesTest utilitiesTest);
-    }
+    Context context;
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
-        amb.setMockMode(true);
+        PowerMockito.mockStatic(
+                AmbassadorSingleton.class
+        );
 
-        PowerMockito.mockStatic(Utilities.class);
-        PowerMockito.mockStatic(AmbassadorSingleton.class);
-
-        mockContext = mock(Context.class);
-
-        TestComponent component = DaggerUtilitiesTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
-        component.inject(this);
+        context = mock(Context.class);
     }
 
     @Test
@@ -85,8 +73,8 @@ public class UtilitiesTest {
         int parameter = android.R.dimen.app_icon_size;
         int expected = 25;
         Resources mockResources = mock(Resources.class);
-        PowerMockito.when(AmbassadorSingleton.get()).thenReturn(mockContext);
-        when(mockContext.getResources()).thenReturn(mockResources);
+        PowerMockito.when(AmbassadorSingleton.get()).thenReturn(context);
+        when(context.getResources()).thenReturn(mockResources);
         when(mockResources.getDimensionPixelSize(anyInt())).thenReturn(expected);
 
         // ACT
@@ -98,19 +86,19 @@ public class UtilitiesTest {
 
     @Test
     public void getDpSizeForPixelsTest() {
-        //ARRANGE
+        // ARRANGE
         int parameter = 200;
-        Resources mockResources = mock(Resources.class);
-        DisplayMetrics mockDisplayMetrics = mock(DisplayMetrics.class);
-        PowerMockito.when(AmbassadorSingleton.get()).thenReturn(mockContext);
-        when(mockContext.getResources()).thenReturn(mockResources);
-        when(mockResources.getDisplayMetrics()).thenReturn(mockDisplayMetrics);
-        mockDisplayMetrics.densityDpi = 320;
+        Resources resources = mock(Resources.class);
+        DisplayMetrics displayMetrics = mock(DisplayMetrics.class);
+        PowerMockito.when(AmbassadorSingleton.get()).thenReturn(context);
+        when(context.getResources()).thenReturn(resources);
+        when(resources.getDisplayMetrics()).thenReturn(displayMetrics);
+        displayMetrics.densityDpi = 320;
 
-        //ACT
+        // ACT
         float ret = Utilities.getDpSizeForPixels(parameter);
 
-        //ASSERT
+        // ASSERT
         assertEquals(100f, ret);
     }
 
@@ -125,31 +113,31 @@ public class UtilitiesTest {
         // ACT
         boolean successResult = Utilities.containsURL(successCase, url);
         boolean failResult = Utilities.containsURL(failCase, url);
-        //boolean nullResult = Utilities.containsURL(nullCase, url);
+        boolean nullResult = Utilities.containsURL(nullCase, url);
 
         // ASSERT
         assertTrue(successResult);
         assertFalse(failResult);
-        //assertFalse(nullResult);
+        assertFalse(nullResult);
     }
 
     @Test
     public void isTabletTest() {
         // ARRANGE
-        Resources mockResources = mock(Resources.class);
-        Configuration mockConfiguration = mock(Configuration.class);
-        when(mockContext.getResources()).thenReturn(mockResources);
-        when(mockResources.getConfiguration()).thenReturn(mockConfiguration);
+        Resources resources = mock(Resources.class);
+        Configuration configuration = mock(Configuration.class);
+        when(context.getResources()).thenReturn(resources);
+        when(resources.getConfiguration()).thenReturn(configuration);
 
         // ACT
-        mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
-        boolean smallCase = Utilities.isTablet(mockContext);
-        mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
-        boolean normalCase = Utilities.isTablet(mockContext);
-        mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_LARGE;
-        boolean largeCase = Utilities.isTablet(mockContext);
-        mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_XLARGE;
-        boolean xlargeCase = Utilities.isTablet(mockContext);
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
+        boolean smallCase = Utilities.isTablet(context);
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
+        boolean normalCase = Utilities.isTablet(context);
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_LARGE;
+        boolean largeCase = Utilities.isTablet(context);
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_XLARGE;
+        boolean xlargeCase = Utilities.isTablet(context);
 
         // ASSERT
         assertFalse(smallCase);
@@ -161,20 +149,20 @@ public class UtilitiesTest {
     @Test
     public void deviceTypeTest() {
         // ARRANGE
-        Resources mockResources = mock(Resources.class);
+        Resources resources = mock(Resources.class);
         Configuration mockConfiguration = mock(Configuration.class);
-        when(mockContext.getResources()).thenReturn(mockResources);
-        when(mockResources.getConfiguration()).thenReturn(mockConfiguration);
+        when(context.getResources()).thenReturn(resources);
+        when(resources.getConfiguration()).thenReturn(mockConfiguration);
 
         // ACT
         mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
-        String smallCase = Utilities.deviceType(mockContext);
+        String smallCase = Utilities.deviceType(context);
         mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
-        String normalCase = Utilities.deviceType(mockContext);
+        String normalCase = Utilities.deviceType(context);
         mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_LARGE;
-        String largeCase = Utilities.deviceType(mockContext);
+        String largeCase = Utilities.deviceType(context);
         mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_XLARGE;
-        String xlargeCase = Utilities.deviceType(mockContext);
+        String xlargeCase = Utilities.deviceType(context);
 
         // ASSERT
         assertEquals(smallCase, "SmartPhone");
@@ -184,25 +172,30 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void presentUrlDialogTest() throws Exception {
+    public void presentUrlDialogTest() {
 
     }
 
     @Test
-    public void debugLogTest() throws Exception {
+    public void presentNonCancelableMessageDialogTest() {
+
+    }
+
+    @Test
+    public void debugLogTest() {
 
     }
 
     @Test
     public void getScreenDensityTest() {
         // ARRANGE
-        Resources mockResources = mock(Resources.class);
-        DisplayMetrics mockDisplayMetrics = mock(DisplayMetrics.class);
+        Resources resources = mock(Resources.class);
+        DisplayMetrics displayMetrics = mock(DisplayMetrics.class);
         float density = 0.5f;
-        mockDisplayMetrics.density = density;
-        PowerMockito.when(AmbassadorSingleton.get()).thenReturn(mockContext);
-        when(mockContext.getResources()).thenReturn(mockResources);
-        when(mockResources.getDisplayMetrics()).thenReturn(mockDisplayMetrics);
+        displayMetrics.density = density;
+        PowerMockito.when(AmbassadorSingleton.get()).thenReturn(context);
+        when(context.getResources()).thenReturn(resources);
+        when(resources.getDisplayMetrics()).thenReturn(displayMetrics);
 
         // ACT
         float ret = Utilities.getScreenDensity();
@@ -212,7 +205,51 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void setStatusBarTest() throws Exception {
+    public void isConnectedTrueTest() {
+        // ARRANGE
+        ConnectivityManager connectivityManager = Mockito.mock(ConnectivityManager.class);
+        Mockito.when(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(connectivityManager);
+        NetworkInfo[] networkInfos = new NetworkInfo[1];
+        networkInfos[0] = Mockito.mock(NetworkInfo.class);
+        Mockito.when(networkInfos[0].isConnected()).thenReturn(true);
+        Mockito.when(connectivityManager.getAllNetworkInfo()).thenReturn(networkInfos);
+
+        // ACT
+        boolean connected = Utilities.isConnected(context);
+
+        // ASSERT
+        Assert.assertTrue(connected);
+    }
+
+    public void isConnectedFalseTest() {
+        // ARRANGE
+        ConnectivityManager connectivityManager = Mockito.mock(ConnectivityManager.class);
+        Mockito.when(context.getSystemService(Context.CONNECTIVITY_SERVICE)).thenReturn(connectivityManager);
+        NetworkInfo[] networkInfos = new NetworkInfo[1];
+        networkInfos[0] = Mockito.mock(NetworkInfo.class);
+        Mockito.when(networkInfos[0].isConnected()).thenReturn(false);
+        Mockito.when(connectivityManager.getAllNetworkInfo()).thenReturn(networkInfos);
+
+        // ACT
+        boolean connected = Utilities.isConnected(context);
+
+        // ASSERT
+        Assert.assertFalse(connected);
+    }
+
+    @Test
+    public void setStatusBarTest() {
 
     }
+
+    @Test
+    public void getTextWidthDpTest() {
+
+    }
+
+    @Test
+    public void cutTextToShowTest() {
+
+    }
+
 }
