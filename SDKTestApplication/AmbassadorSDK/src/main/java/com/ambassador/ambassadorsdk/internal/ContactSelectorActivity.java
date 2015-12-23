@@ -105,7 +105,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Contac
             return;
         }
 
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
 
         rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
         Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);

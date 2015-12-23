@@ -30,7 +30,7 @@ public class BulkShareHelperTest {
         );
 
         AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
-        Mockito.when(AmbassadorSingleton.getComponent()).thenReturn(component);
+        Mockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(component);
         Mockito.doNothing().when(component).inject(Mockito.any(BulkShareHelper.class));
 
         bulkShareHelper = Mockito.spy(new BulkShareHelper());

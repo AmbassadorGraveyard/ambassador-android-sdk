@@ -76,7 +76,7 @@ public class AmbassadorSDK {
     }
 
     static ConversionUtility buildConversionUtility(ConversionParameters conversionParameters) {
-        return new ConversionUtility(AmbassadorSingleton.get(), conversionParameters);
+        return new ConversionUtility(AmbassadorSingleton.getInstanceContext(), conversionParameters);
     }
 
     static Boolean getConvertedOnInstall() {
@@ -91,7 +91,7 @@ public class AmbassadorSDK {
 
     public static void runWithKeys(Context context, String universalToken, String universalID) {
         AmbassadorSingleton.getInstance().init(context);
-        AmbassadorSingleton.getComponent().inject(new AmbassadorSDK());
+        AmbassadorSingleton.getInstanceComponent().inject(new AmbassadorSDK());
 
         registerInstallReceiver(context);
 
@@ -101,7 +101,7 @@ public class AmbassadorSDK {
     }
 
     static void startConversionTimer() {
-        final ConversionUtility utility = new ConversionUtility(AmbassadorSingleton.get());
+        final ConversionUtility utility = new ConversionUtility(AmbassadorSingleton.getInstanceContext());
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override

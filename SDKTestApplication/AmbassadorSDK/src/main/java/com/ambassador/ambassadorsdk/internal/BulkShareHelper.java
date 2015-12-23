@@ -42,7 +42,7 @@ public class BulkShareHelper {
     }
 
     public BulkShareHelper() {
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
     }
 
     public void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {

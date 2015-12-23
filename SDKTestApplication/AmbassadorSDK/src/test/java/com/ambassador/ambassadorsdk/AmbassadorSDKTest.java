@@ -97,7 +97,7 @@ public class AmbassadorSDKTest {
         Mockito.doNothing().when(ambassadorSingleton).init(Mockito.eq(context));
 
         AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
-        Mockito.when(AmbassadorSingleton.getComponent()).thenReturn(component);
+        Mockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(component);
         Mockito.doNothing().when(component).inject(Mockito.any(AmbassadorSDK.class));
 
         PowerMockito.doNothing().when(AmbassadorSDK.class, "registerInstallReceiver", Mockito.any(Context.class));
