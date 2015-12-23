@@ -6,13 +6,13 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
-/**
- * Created by coreyfields on 10/7/15.
- */
 public class AmbassadorSingleton {
+
+    private static AmbassadorSingleton instance;
+
     private Context appContext;
-    private static AmbassadorApplicationComponent component = null;
-    public static AmbassadorApplicationModule amb;
+    private AmbassadorApplicationComponent component = null;
+    public AmbassadorApplicationModule amb;
 
     @Singleton
     @Component(modules=AmbassadorApplicationModule.class)
@@ -26,7 +26,6 @@ public class AmbassadorSingleton {
             setAppContext(context);
         }
 
-        //get injected modules we need
         if (component == null) {
             amb = new AmbassadorApplicationModule();
             ApplicationComponent component = DaggerAmbassadorSingleton_ApplicationComponent.builder().ambassadorApplicationModule(amb).build();
@@ -43,15 +42,15 @@ public class AmbassadorSingleton {
     }
 
     public static AmbassadorApplicationComponent getComponent() {
-        return component;
+        return getInstance().component;
     }
 
     public static AmbassadorApplicationModule getAmbModule() {
-        return amb;
+        return getInstance().amb;
     }
 
     public static void setAmbModule(AmbassadorApplicationModule ambModule) {
-        amb = ambModule;
+        getInstance().amb = ambModule;
     }
 
     private Context getContext() {
@@ -62,13 +61,12 @@ public class AmbassadorSingleton {
         return getInstance().getContext();
     }
 
-    private static AmbassadorSingleton instance;
+    public static boolean isValid() {
+        return getInstance().component != null && getInstance().amb != null;
+    }
 
     public static AmbassadorSingleton getInstance() {
         return instance == null ? (instance = new AmbassadorSingleton()) : instance;
     }
 
-    public static boolean isValid() {
-        return component != null && amb != null;
-    }
 }
