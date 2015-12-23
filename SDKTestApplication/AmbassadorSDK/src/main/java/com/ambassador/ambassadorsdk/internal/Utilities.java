@@ -19,9 +19,6 @@ import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.R;
 
-/**
- * Created by JakeDunahee on 8/31/15.
- */
 public class Utilities {
 
     interface UrlAlertInterface {
@@ -47,6 +44,7 @@ public class Utilities {
     }
 
     public static boolean containsURL(String message, String url) {
+        if (message == null) return false;
         return message.contains(url);
     }
 
