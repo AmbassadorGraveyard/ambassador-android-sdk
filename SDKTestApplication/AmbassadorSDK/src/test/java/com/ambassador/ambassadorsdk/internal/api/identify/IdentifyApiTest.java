@@ -120,7 +120,7 @@ public class IdentifyApiTest {
         identifyApi.updateNameRequest(sessionId, requestId, uid, auth, requestBody, requestCompletion);
 
         // ASSERT
-        Mockito.verify(requestCompletion, Mockito.times(2)).onSuccess(Mockito.eq("success"));
+        Mockito.verify(requestCompletion, Mockito.times(2)).onSuccess(Mockito.anyString());
         Mockito.verify(requestCompletion, Mockito.times(1)).onFailure(Mockito.eq("failure"));
     }
 
