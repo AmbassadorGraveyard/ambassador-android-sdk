@@ -189,14 +189,14 @@ public class PusherSDK {
                             }
                         });
                     } else {
-                        //make sure the request id coming back is for the one we sent off
-                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId())
-                            return;
-
                         if (eventName.equals("identify_action") && identifyListener != null) {
                             identifyListener.identified(PusherChannel.getRequestId());
                         }
 
+                        //make sure the request id coming back is for the one we sent off
+                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId())
+                            return;
+                        
                         setPusherInfo(data);
                     }
                 } catch (JSONException e) {
