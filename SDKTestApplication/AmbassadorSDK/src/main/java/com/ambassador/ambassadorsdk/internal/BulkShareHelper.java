@@ -105,7 +105,7 @@ public class BulkShareHelper {
 
     static boolean isValidEmail(String emailAddress) {
         // Functionality: Boolean that checks for legit email addressing using regex
-        Pattern emailRegex = Pattern.compile("^(.+)@(.+)$");
+        Pattern emailRegex = Pattern.compile("^(.+)@(.+)\\.(.+)$");
         Matcher matcher = emailRegex.matcher(emailAddress);
 
         return matcher.matches();
