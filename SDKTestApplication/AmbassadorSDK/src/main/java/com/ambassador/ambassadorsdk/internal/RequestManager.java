@@ -41,7 +41,7 @@ public class RequestManager {
     }
 
     public RequestManager() {
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
     }
 
     // region Helper Setup Functions

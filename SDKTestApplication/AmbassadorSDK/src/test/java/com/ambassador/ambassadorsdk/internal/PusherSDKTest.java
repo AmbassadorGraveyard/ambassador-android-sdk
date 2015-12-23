@@ -76,7 +76,7 @@ public class PusherSDKTest {
 
         PowerMockito.mockStatic(AmbassadorSingleton.class);
         AmbassadorApplicationComponent application = mock(AmbassadorApplicationComponent.class);
-        PowerMockito.when(AmbassadorSingleton.getComponent()).thenReturn(application);
+        PowerMockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(application);
         doNothing().when(application).inject(any(PusherSDK.class));
         pusherSDK = Mockito.spy(PusherSDK.class);
 
@@ -248,7 +248,7 @@ public class PusherSDKTest {
         PowerMockito.mockStatic(LocalBroadcastManager.class);
         PowerMockito.mockStatic(AmbassadorSingleton.class);
         Context mockContext = mock(Context.class);
-        Mockito.when(AmbassadorSingleton.get()).thenReturn(mockContext);
+        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(mockContext);
         LocalBroadcastManager mockLocalBroadcastManager = mock(LocalBroadcastManager.class);
         Mockito.when(LocalBroadcastManager.getInstance(mockContext)).thenReturn(mockLocalBroadcastManager);
         when(mockLocalBroadcastManager.sendBroadcast(any(Intent.class))).thenReturn(true);

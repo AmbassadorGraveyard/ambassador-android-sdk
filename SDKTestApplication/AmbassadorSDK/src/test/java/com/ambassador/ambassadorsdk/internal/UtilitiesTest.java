@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
+import android.widget.TextView;
 
 import junit.framework.Assert;
 
@@ -80,7 +81,7 @@ public class UtilitiesTest {
         int parameter = android.R.dimen.app_icon_size;
         int expected = 25;
         Resources mockResources = mock(Resources.class);
-        PowerMockito.when(AmbassadorSingleton.get()).thenReturn(context);
+        PowerMockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
         when(context.getResources()).thenReturn(mockResources);
         when(mockResources.getDimensionPixelSize(anyInt())).thenReturn(expected);
 
@@ -97,7 +98,7 @@ public class UtilitiesTest {
         int parameter = 200;
         Resources resources = mock(Resources.class);
         DisplayMetrics displayMetrics = mock(DisplayMetrics.class);
-        PowerMockito.when(AmbassadorSingleton.get()).thenReturn(context);
+        PowerMockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
         when(context.getResources()).thenReturn(resources);
         when(resources.getDisplayMetrics()).thenReturn(displayMetrics);
         displayMetrics.densityDpi = 320;
@@ -200,7 +201,7 @@ public class UtilitiesTest {
         DisplayMetrics displayMetrics = mock(DisplayMetrics.class);
         float density = 0.5f;
         displayMetrics.density = density;
-        PowerMockito.when(AmbassadorSingleton.get()).thenReturn(context);
+        PowerMockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
         when(context.getResources()).thenReturn(resources);
         when(resources.getDisplayMetrics()).thenReturn(displayMetrics);
 
@@ -267,7 +268,16 @@ public class UtilitiesTest {
 
     @Test
     public void cutTextToShowTest() {
+        // ARRANGE
+        String text = "ambassador";
+        TextView textView = Mockito.mock(TextView.class);
+        float maxWidth = 120f;
 
+
+        // ACT
+        //Utilities.cutTextToShow(text, textView, maxWidth);
+
+        // ASSERT
     }
 
 }

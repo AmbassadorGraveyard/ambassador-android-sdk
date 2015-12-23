@@ -28,7 +28,7 @@ public class AmbassadorConfig {
     //static final String PUSHER_SECRET = "35327adb59c3b567a44a";
     static final Boolean isReleaseBuild = false;
 
-    private Context context = AmbassadorSingleton.get();
+    private Context context = AmbassadorSingleton.getInstanceContext();
     private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     private ServiceSelectorPreferences rafParameters;
 

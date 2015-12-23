@@ -40,7 +40,7 @@ public class PusherSDK {
     RequestManager requestManager;
 
     public PusherSDK() {
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
     }
 
     public void createPusher(final PusherSubscribeCallback pusherSubscribeCallback) {
@@ -205,7 +205,7 @@ public class PusherSDK {
 
             //tell MainActivity to update edittext with url
             Intent intent = new Intent("pusherData");
-            LocalBroadcastManager.getInstance(AmbassadorSingleton.get()).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }

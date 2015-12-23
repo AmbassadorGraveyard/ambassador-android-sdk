@@ -49,7 +49,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
             return;
         }
 
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
 
         if (!Utilities.isConnected(this)) {
             Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();

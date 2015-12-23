@@ -42,7 +42,7 @@ public class ContactNameDialog extends Dialog {
             setOwnerActivity((Activity) context);
         }
 
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
         this.pd = pd;
         mCallback = (ContactNameListener)getOwnerActivity();
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar

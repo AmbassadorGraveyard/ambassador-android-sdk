@@ -121,7 +121,7 @@ public class AmbassadorActivityTest {
         AmbassadorSingleton.getInstance().init(context);
         AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
         amb.setMockMode(true);
-        AmbassadorSingleton.setAmbModule(amb);
+        AmbassadorSingleton.setInstanceAmbModule(amb);
         TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
         AmbassadorSingleton.setComponent(component);
         //perform injection
@@ -183,7 +183,7 @@ public class AmbassadorActivityTest {
 
     private void _sendPusherIntent() {
         Intent intent = new Intent("pusherData");
-        LocalBroadcastManager.getInstance(AmbassadorSingleton.get()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
     }
 
     @After

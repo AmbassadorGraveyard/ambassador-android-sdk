@@ -18,7 +18,7 @@ public class IdentifyAugurSDK implements IIdentify {
     AmbassadorConfig ambassadorConfig;
 
     public IdentifyAugurSDK() {
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class IdentifyAugurSDK implements IIdentify {
 
         try {
             // required
-            augurConfig.put("context", AmbassadorSingleton.get());
+            augurConfig.put("context", AmbassadorSingleton.getInstanceContext());
             augurConfig.put("apiKey","7g1a8dumog40o61y5irl1sscm4nu6g60");
             // optional
             //augurConfig.put("timeout", 1000); // default: 5000 (5 seconds)
@@ -61,7 +61,7 @@ public class IdentifyAugurSDK implements IIdentify {
                         device.put("ID", ambassadorConfig.getWebDeviceId());
                     }
 
-                    device.put("type", Utilities.deviceType(AmbassadorSingleton.get()));
+                    device.put("type", Utilities.deviceType(AmbassadorSingleton.getInstanceContext()));
                     jsonObject.put("device", device);
 
                     Utilities.debugLog("Augur", "Augur successfully received through SDK call");

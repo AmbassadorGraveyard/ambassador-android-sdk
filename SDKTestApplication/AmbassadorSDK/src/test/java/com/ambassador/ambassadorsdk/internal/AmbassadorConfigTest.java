@@ -60,7 +60,7 @@ public class AmbassadorConfigTest {
         sharedPrefs = mock(SharedPreferences.class);
         editor = mock(SharedPreferences.Editor.class);
 
-        when(AmbassadorSingleton.get()).thenReturn(context);
+        when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
         when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
         when(sharedPrefs.edit()).thenReturn(editor);
         when(editor.putString(anyString(), anyString())).thenReturn(editor);
