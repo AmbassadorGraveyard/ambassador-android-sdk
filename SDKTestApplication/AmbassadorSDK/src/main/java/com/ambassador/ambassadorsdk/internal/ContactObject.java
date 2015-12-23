@@ -51,7 +51,9 @@ class ContactObject implements Comparable<ContactObject> {
         return name;
     }
 
-    public String getThumbnailUri() { return thumbnailUri; }
+    public String getThumbnailUri() {
+        return thumbnailUri;
+    }
 
     public String getPictureUri() {
         return pictureUri;

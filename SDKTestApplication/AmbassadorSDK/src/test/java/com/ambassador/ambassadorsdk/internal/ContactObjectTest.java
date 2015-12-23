@@ -1,9 +1,12 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import android.graphics.Bitmap;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -16,6 +19,46 @@ import java.util.List;
 
 })
 public class ContactObjectTest {
+
+    @Test
+    public void emptyConstructorTest() {
+        // ACT
+        ContactObject contactObject = new ContactObject();
+
+        // ASSERT
+        Assert.assertNotNull(contactObject.getName());
+        Assert.assertNotNull(contactObject.getPhoneNumber());
+        Assert.assertNotNull(contactObject.getEmailAddress());
+        Assert.assertNotNull(contactObject.getType());
+    }
+
+    @Test
+    public void getterSetterTest() {
+        // ARRANGE
+        String name = "name";
+        String thumb = "thumb";
+        String pic = "pic";
+        String email = "email";
+        String type = "type";
+        String phone = "phone";
+        Bitmap thumbBmp = Mockito.mock(Bitmap.class);
+        Bitmap picBmp = Mockito.mock(Bitmap.class);
+
+        // ACT
+        ContactObject contactObject = new ContactObject(name, thumb, pic, email, type, phone);
+        contactObject.setThumbBmp(thumbBmp);
+        contactObject.setPicBmp(picBmp);
+
+        // ASSERT
+        Assert.assertEquals(name, contactObject.getName());
+        Assert.assertEquals(thumb, contactObject.getThumbnailUri());
+        Assert.assertEquals(pic, contactObject.getPictureUri());
+        Assert.assertEquals(email, contactObject.getEmailAddress());
+        Assert.assertEquals(type, contactObject.getType());
+        Assert.assertEquals(phone, contactObject.getPhoneNumber());
+        Assert.assertEquals(picBmp, contactObject.getPicBmp());
+        Assert.assertEquals(thumbBmp, contactObject.getThumbBmp());
+    }
 
     @Test
     public void sortTest() {
