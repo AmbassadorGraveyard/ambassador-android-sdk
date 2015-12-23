@@ -148,7 +148,7 @@ public class RequestManager {
      * Updates the PusherChannel request ID to the current time in
      * milliseconds.
      */
-    void updateRequestId() {
+    private void updateRequestId() {
         PusherChannel.setRequestId(System.currentTimeMillis());
     }
 
