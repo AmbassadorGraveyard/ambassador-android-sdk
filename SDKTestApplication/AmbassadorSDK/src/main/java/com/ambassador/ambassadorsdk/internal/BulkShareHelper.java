@@ -95,7 +95,9 @@ public class BulkShareHelper {
     static ArrayList<String> verifiedEmailList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
-            if (BulkShareHelper.isValidEmail(contact.getEmailAddress())) { verifiedEmails.add(contact.getEmailAddress()); }
+            if (BulkShareHelper.isValidEmail(contact.getEmailAddress()) && !verifiedEmails.contains(contact.getEmailAddress())) {
+                verifiedEmails.add(contact.getEmailAddress());
+            }
         }
 
         return verifiedEmails;
