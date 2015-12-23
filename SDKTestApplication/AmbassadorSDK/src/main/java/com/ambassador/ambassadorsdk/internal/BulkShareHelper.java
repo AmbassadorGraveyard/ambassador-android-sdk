@@ -11,9 +11,6 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-/**
- * Created by JakeDunahee on 8/11/15.
- */
 public class BulkShareHelper {
 
     @Inject
@@ -25,6 +22,7 @@ public class BulkShareHelper {
     }
 
     public enum SocialServiceTrackType {
+
         SMS("sms"),
         EMAIL("email"),
         TWITTER("twitter"),
@@ -40,6 +38,7 @@ public class BulkShareHelper {
         public String toString() {
             return stringValue;
         }
+
     }
 
     public BulkShareHelper() {
@@ -64,7 +63,7 @@ public class BulkShareHelper {
         } else {
             requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void onSuccess(Object successReponse) {
+                public void onSuccess(Object successResponse) {
                     requestManager.bulkShareTrack(contacts, SocialServiceTrackType.EMAIL);
                     completion.bulkShareSuccess();
                 }
