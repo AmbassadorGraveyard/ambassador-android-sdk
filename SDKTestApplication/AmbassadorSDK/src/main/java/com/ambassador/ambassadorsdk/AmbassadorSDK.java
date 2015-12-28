@@ -80,7 +80,7 @@ public class AmbassadorSDK {
     }
 
     public static void runWithKeys(Context context, String universalToken, String universalID) {
-        AmbassadorSingleton.getInstance().init(context);
+        AmbassadorSingleton.init(context);
         AmbassadorSingleton.getInstanceComponent().inject(new AmbassadorSDK());
 
         registerInstallReceiver(context);
