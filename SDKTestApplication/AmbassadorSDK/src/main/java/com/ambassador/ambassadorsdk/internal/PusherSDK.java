@@ -175,8 +175,9 @@ public class PusherSDK {
                                     final JSONObject pusherUrlObject = new JSONObject(successResponse.toString());
 
                                     //make sure the request id coming back is for the one we sent off
-                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId())
+                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId()) {
                                         return;
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
