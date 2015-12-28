@@ -1,8 +1,6 @@
 package com.ambassador.ambassadorsdk.internal;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,18 +10,25 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 /**
- * Created by JakeDunahee on 8/11/15.
+ *
  */
 public class BulkShareHelper {
 
+    /** */
     @Inject
     RequestManager requestManager;
 
+    /**
+     *
+     */
     public interface BulkShareCompletion {
         void bulkShareSuccess();
         void bulkShareFailure();
     }
 
+    /**
+     *
+     */
     public enum SocialServiceTrackType {
         SMS("sms"),
         EMAIL("email"),
@@ -42,12 +47,21 @@ public class BulkShareHelper {
         }
     }
 
+    /**
+     *
+     */
     public BulkShareHelper() {
         AmbassadorSingleton.getComponent().inject(this);
     }
 
+    /**
+     *
+     * @param messageToShare
+     * @param contacts
+     * @param phoneNumbers
+     * @param completion
+     */
     public void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
-        // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
@@ -64,7 +78,7 @@ public class BulkShareHelper {
         } else {
             requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
-                public void onSuccess(Object successReponse) {
+                public void onSuccess(Object successResponse) {
                     requestManager.bulkShareTrack(contacts, SocialServiceTrackType.EMAIL);
                     completion.bulkShareSuccess();
                 }
@@ -77,9 +91,11 @@ public class BulkShareHelper {
         }
     }
 
-
-    // STATIC HELPER FUNCTIONS
-    // VERIFIER FUNCTIONS
+    /**
+     *
+     * @param contactObjects
+     * @return
+     */
     static ArrayList<String> verifiedSMSList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
@@ -92,6 +108,11 @@ public class BulkShareHelper {
         return verifiedNumbers;
     }
 
+    /**
+     *
+     * @param contactObjects
+     * @return
+     */
     static ArrayList<String> verifiedEmailList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
@@ -101,87 +122,87 @@ public class BulkShareHelper {
         return verifiedEmails;
     }
 
-    static boolean isValidEmail(String emailAddress) {
-        // Functionality: Boolean that checks for legit email addressing using regex
+    /**
+     *
+     * @param emailAddress
+     * @return
+     */
+    private static boolean isValidEmail(String emailAddress) {
         Pattern emailRegex = Pattern.compile("^(.+)@(.+)$");
         Matcher matcher = emailRegex.matcher(emailAddress);
-
         return matcher.matches();
     }
-    // END VERIFIER FUNCTIONS
 
+    /**
+     *
+     * @param trackType
+     * @param shortCode
+     * @return
+     */
+    static BulkShareApi.BulkShareTrackBody[] contactArray(SocialServiceTrackType trackType, String shortCode) {
+        return contactArray(null, trackType, shortCode);
+    }
 
-    // JSON OBJECT MAKER
-    static JSONArray contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
-        // Functionality: Creates a jsonArray of jsonObjects created from validated phone numbers and email addresses
-        String socialName = trackType.toString();
-        JSONArray objectsList = new JSONArray();
+    /**
+     *
+     * @param values
+     * @param trackType
+     * @param shortCode
+     * @return
+     */
+    static BulkShareApi.BulkShareTrackBody[] contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
+        String short_code = shortCode;
+        String social_name = trackType.toString();
+
         if (values == null) {
-            values = new ArrayList<String>();
+            values = new ArrayList<>();
             values.add("");
         }
 
+        BulkShareApi.BulkShareTrackBody[] objectsList = new BulkShareApi.BulkShareTrackBody[values.size()];
+
         for (int i = 0; i < values.size(); i++) {
-            JSONObject newObject = new JSONObject();
-            try {
-                newObject.put("short_code", shortCode);
-                newObject.put("social_name", socialName);
-
-                switch (trackType) {
-                    case SMS:
-                        newObject.put("recipient_email", "");
-                        newObject.put("recipient_username", values.get(i));
-                        break;
-                    case EMAIL:
-                        newObject.put("recipient_email", values.get(i));
-                        newObject.put("recipient_username", "");
-                        break;
-                    default:
-                        newObject.put("recipient_email", "");
-                        newObject.put("recipient_username", "");
-                        break;
-                }
-
-                objectsList.put(newObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            String recipient_email = "";
+            String recipient_username = "";
+            switch (trackType) {
+                case SMS:
+                    recipient_username = values.get(i);
+                    break;
+                case EMAIL:
+                    recipient_email = values.get(i);
+                    break;
             }
+
+            BulkShareApi.BulkShareTrackBody newObject = new BulkShareApi.BulkShareTrackBody(short_code, social_name, recipient_email, recipient_username);
+            objectsList[i] = newObject;
         }
 
         return objectsList;
     }
 
-    // Overloaded method for optional list parameter
-    static JSONArray contactArray(SocialServiceTrackType trackType, String shortCode) {
-        return contactArray(null, trackType, shortCode);
+    /**
+     *
+     * @param emailsList
+     * @param shortCode
+     * @param emailSubject
+     * @param message
+     * @return
+     */
+    static BulkShareApi.BulkShareEmailBody payloadObjectForEmail(List<String> emailsList, String shortCode, String emailSubject, String message) {
+        String[] emails = emailsList.toArray(new String[emailsList.size()]);
+        return new BulkShareApi.BulkShareEmailBody(emailSubject, message, shortCode, emails);
     }
 
-    static JSONObject payloadObjectForEmail(List<String> emails, String shortCode, String emailSubject, String message) {
-        JSONObject object = new JSONObject();
-        try {
-            object.put("to_emails", new JSONArray(emails));
-            object.put("short_code", shortCode);
-            object.put("message", message);
-            object.put("subject_line", emailSubject);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return object;
+    /**
+     *
+     * @param numbersList
+     * @param fullName
+     * @param smsMessage
+     * @return
+     */
+    static BulkShareApi.BulkShareSmsBody payloadObjectForSMS(List<String> numbersList, String fullName, String smsMessage) {
+        String[] numbers = numbersList.toArray(new String[numbersList.size()]);
+        return new BulkShareApi.BulkShareSmsBody(fullName, smsMessage, numbers);
     }
 
-    static JSONObject payloadObjectForSMS(List<String> numbers, String fullName, String smsMessage) {
-        JSONObject object = new JSONObject();
-        try {
-            object.put("to", new JSONArray(numbers));
-            object.put("name", fullName);
-            object.put("message", smsMessage);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return object;
-    }
-    // END JSON OBJECT MAKER
-    // END STATIC HELPER FUNCTIONS
 }

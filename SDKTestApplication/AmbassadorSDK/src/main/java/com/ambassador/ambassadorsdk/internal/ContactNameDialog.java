@@ -17,12 +17,9 @@ import org.json.JSONObject;
 
 import javax.inject.Inject;
 
-/**
- * Created by CoreyFields on 8/21/15.
- */
 public class ContactNameDialog extends Dialog {
+
     private CustomEditText etFirstName, etLastName;
-    private ContactNameListener mCallback;
     private ProgressDialog pd;
 
     @Inject
@@ -30,10 +27,6 @@ public class ContactNameDialog extends Dialog {
 
     @Inject
     RequestManager requestManager;
-
-    public interface ContactNameListener {
-        void namesHaveBeenUpdated();
-    }
 
     public ContactNameDialog(Context context, ProgressDialog pd) {
         super(context);
@@ -44,7 +37,6 @@ public class ContactNameDialog extends Dialog {
 
         AmbassadorSingleton.getComponent().inject(this);
         this.pd = pd;
-        mCallback = (ContactNameListener)getOwnerActivity();
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_contact_name);
 
@@ -86,7 +78,7 @@ public class ContactNameDialog extends Dialog {
         }
     }
 
-    void handleNameInput(String firstName, String lastName) {
+    void handleNameInput(final String firstName, final String lastName) {
         //this shouldn't happen because UI enforces entry, but check anyway in case UI validation is removed
         if (firstName == null || lastName == null) return;
 
@@ -107,8 +99,8 @@ public class ContactNameDialog extends Dialog {
             requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    mCallback.namesHaveBeenUpdated();
                     ambassadorConfig.setUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
+                    pd.dismiss();
                     hide();
                 }
 
@@ -122,4 +114,6 @@ public class ContactNameDialog extends Dialog {
             e.printStackTrace();
         }
     }
+
+
 }
