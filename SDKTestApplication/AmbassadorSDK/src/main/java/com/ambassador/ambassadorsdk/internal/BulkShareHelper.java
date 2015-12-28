@@ -130,7 +130,7 @@ public class BulkShareHelper {
      * @param emailAddress
      * @return
      */
-    private static boolean isValidEmail(String emailAddress) {
+    public static boolean isValidEmail(String emailAddress) {
         Pattern emailRegex = Pattern.compile("^(.+)@(.+)\\.(.+)$");
         Matcher matcher = emailRegex.matcher(emailAddress);
         return matcher.matches();

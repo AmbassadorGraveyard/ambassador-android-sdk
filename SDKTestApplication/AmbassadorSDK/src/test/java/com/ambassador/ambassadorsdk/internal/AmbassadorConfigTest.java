@@ -70,21 +70,9 @@ public class AmbassadorConfigTest {
     @Test
     public void staticUrlGetTests() {
         // ACT
-        String identifyURL = AmbassadorConfig.identifyURL();
-        String conversionURL = AmbassadorConfig.conversionURL();
-        String bulkSMSShareURL = AmbassadorConfig.bulkSMSShareURL();
-        String bulkEmailShareURL = AmbassadorConfig.bulkEmailShareURL();
-        String shareTrackURL = AmbassadorConfig.shareTrackURL();
-        String pusherChannelNameURL = AmbassadorConfig.pusherChannelNameURL();
         String pusherCallbackURL = AmbassadorConfig.pusherCallbackURL();
 
         // ASSERT
-        assertTrue(isURLReturnGood(identifyURL));
-        assertTrue(isURLReturnGood(conversionURL));
-        assertTrue(isURLReturnGood(bulkSMSShareURL));
-        assertTrue(isURLReturnGood(bulkEmailShareURL));
-        assertTrue(isURLReturnGood(shareTrackURL));
-        assertTrue(isURLReturnGood(pusherChannelNameURL));
         assertTrue(isURLReturnGood(pusherCallbackURL));
     }
 
