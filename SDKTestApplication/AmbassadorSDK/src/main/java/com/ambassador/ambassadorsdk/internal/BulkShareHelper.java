@@ -1,8 +1,6 @@
 package com.ambassador.ambassadorsdk.internal;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +9,26 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+/**
+ *
+ */
 public class BulkShareHelper {
 
+    /** */
     @Inject
     RequestManager requestManager;
 
+    /**
+     *
+     */
     public interface BulkShareCompletion {
         void bulkShareSuccess();
         void bulkShareFailure();
     }
 
+    /**
+     *
+     */
     public enum SocialServiceTrackType {
 
         SMS("sms"),
@@ -41,12 +49,21 @@ public class BulkShareHelper {
 
     }
 
+    /**
+     *
+     */
     public BulkShareHelper() {
         AmbassadorSingleton.getInstanceComponent().inject(this);
     }
 
+    /**
+     *
+     * @param messageToShare
+     * @param contacts
+     * @param phoneNumbers
+     * @param completion
+     */
     public void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
-        // Functionality: Request to bulk share emails and sms
         if (phoneNumbers) {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
@@ -76,6 +93,11 @@ public class BulkShareHelper {
         }
     }
 
+    /**
+     *
+     * @param contactObjects
+     * @return
+     */
     static ArrayList<String> verifiedSMSList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
@@ -88,6 +110,11 @@ public class BulkShareHelper {
         return verifiedNumbers;
     }
 
+    /**
+     *
+     * @param contactObjects
+     * @return
+     */
     static ArrayList<String> verifiedEmailList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
@@ -98,91 +125,87 @@ public class BulkShareHelper {
 
         return verifiedEmails;
     }
-
-    static boolean isValidEmail(String emailAddress) {
+    /**
+     *
+     * @param emailAddress
+     * @return
+     */
+    private static boolean isValidEmail(String emailAddress) {
         Pattern emailRegex = Pattern.compile("^(.+)@(.+)\\.(.+)$");
         Matcher matcher = emailRegex.matcher(emailAddress);
-
         return matcher.matches();
     }
 
-    static JSONArray contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
-        String socialName = trackType.toString();
-        JSONArray objectsList = buildJSONArray();
+    /**
+     *
+     * @param trackType
+     * @param shortCode
+     * @return
+     */
+    static BulkShareApi.BulkShareTrackBody[] contactArray(SocialServiceTrackType trackType, String shortCode) {
+        return contactArray(null, trackType, shortCode);
+    }
+
+    /**
+     *
+     * @param values
+     * @param trackType
+     * @param shortCode
+     * @return
+     */
+    static BulkShareApi.BulkShareTrackBody[] contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
+        String short_code = shortCode;
+        String social_name = trackType.toString();
+
         if (values == null) {
             values = new ArrayList<>();
             values.add("");
         }
 
+        BulkShareApi.BulkShareTrackBody[] objectsList = new BulkShareApi.BulkShareTrackBody[values.size()];
+
         for (int i = 0; i < values.size(); i++) {
-            JSONObject newObject = buildJSONObject();
-            try {
-                newObject.put("short_code", shortCode);
-                newObject.put("social_name", socialName);
-
-                switch (trackType) {
-                    case SMS:
-                        newObject.put("recipient_email", "");
-                        newObject.put("recipient_username", values.get(i));
-                        break;
-                    case EMAIL:
-                        newObject.put("recipient_email", values.get(i));
-                        newObject.put("recipient_username", "");
-                        break;
-                    default:
-                        newObject.put("recipient_email", "");
-                        newObject.put("recipient_username", "");
-                        break;
-                }
-
-                objectsList.put(newObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            String recipient_email = "";
+            String recipient_username = "";
+            switch (trackType) {
+                case SMS:
+                    recipient_username = values.get(i);
+                    break;
+                case EMAIL:
+                    recipient_email = values.get(i);
+                    break;
             }
+
+            BulkShareApi.BulkShareTrackBody newObject = new BulkShareApi.BulkShareTrackBody(short_code, social_name, recipient_email, recipient_username);
+            objectsList[i] = newObject;
         }
 
         return objectsList;
     }
 
-    static JSONArray contactArray(SocialServiceTrackType trackType, String shortCode) {
-        return contactArray(null, trackType, shortCode);
+    /**
+     *
+     * @param emailsList
+     * @param shortCode
+     * @param emailSubject
+     * @param message
+     * @return
+     */
+    static BulkShareApi.BulkShareEmailBody payloadObjectForEmail(List<String> emailsList, String shortCode, String emailSubject, String message) {
+        String[] emails = emailsList.toArray(new String[emailsList.size()]);
+        return new BulkShareApi.BulkShareEmailBody(emailSubject, message, shortCode, emails);
     }
 
-    static JSONObject payloadObjectForEmail(List<String> emails, String shortCode, String emailSubject, String message) {
-        JSONObject object = buildJSONObject();
-
-        try {
-            object.put("to_emails", new JSONArray(emails));
-            object.put("short_code", shortCode);
-            object.put("message", message);
-            object.put("subject_line", emailSubject);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return object;
-    }
-
-    static JSONObject payloadObjectForSMS(List<String> numbers, String fullName, String smsMessage) {
-        JSONObject object = buildJSONObject();
-
-        try {
-            object.put("to", new JSONArray(numbers));
-            object.put("name", fullName);
-            object.put("message", smsMessage);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return object;
-    }
-
-    static JSONObject buildJSONObject() {
-        return new JSONObject();
-    }
-
-    static JSONArray buildJSONArray() {
-        return new JSONArray();
+    /**
+     *
+     * @param numbersList
+     * @param fullName
+     * @param smsMessage
+     * @return
+     */
+    static BulkShareApi.BulkShareSmsBody payloadObjectForSMS(List<String> numbersList, String fullName, String smsMessage) {
+        String[] numbers = numbersList.toArray(new String[numbersList.size()]);
+        return new BulkShareApi.BulkShareSmsBody(fullName, smsMessage, numbers);
     }
 
 }

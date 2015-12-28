@@ -16,67 +16,23 @@ import com.twitter.sdk.android.core.models.User;
  * Created by JakeDunahee on 7/29/15.
  */
 public class AmbassadorConfig {
-    // Constants
-    static final String TWITTER_KEY = "QmXl03hbQEKSLLiDY4e6vpIjP";
-    static final String TWITTER_SECRET = "IfIbOuVbKwPkfJQW0zknChNMBbqhmpkuuK8FJmqkQqBqCGa4dW";
+
     static final String CALLBACK_URL = "http://localhost:2999";
     static final String LINKED_IN_CLIENT_ID = "777z4czm3edaef";
     static final String LINKED_IN_CLIENT_SECRET = "lM1FzXJauTSfxdnW";
-    //static final String PUSHER_APP_ID = "112803";
     static final String PUSHER_KEY_DEV = "8bd3fe1994164f9b83f6";
     static final String PUSHER_KEY_PROD = "79576dbee58121cac49a";
-    //static final String PUSHER_SECRET = "35327adb59c3b567a44a";
-    static final Boolean isReleaseBuild = false;
+    public static final Boolean isReleaseBuild = false;
 
     private Context context = AmbassadorSingleton.getInstanceContext();
     private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     private ServiceSelectorPreferences rafParameters;
 
-    static String identifyURL() {
+    public static String ambassadorApiUrl() {
         if (AmbassadorConfig.isReleaseBuild) {
-            return "https://api.getambassador.com/universal/action/identify/?u=";
+            return "https://api.getambassador.com";
         } else {
-            return "https://dev-ambassador-api.herokuapp.com/universal/action/identify/?u=";
-        }
-    }
-
-    static String conversionURL() {
-        if (AmbassadorConfig.isReleaseBuild) {
-            return "https://api.getambassador.com/universal/action/conversion/?u=";
-        } else {
-            return "https://dev-ambassador-api.herokuapp.com/universal/action/conversion/?u=";
-        }
-    }
-
-    static String bulkSMSShareURL() {
-        if (AmbassadorConfig.isReleaseBuild) {
-            return "https://api.getambassador.com/share/sms/";
-        } else {
-            return "https://dev-ambassador-api.herokuapp.com/share/sms/";
-        }
-    }
-
-    static String bulkEmailShareURL() {
-        if (AmbassadorConfig.isReleaseBuild) {
-            return "https://api.getambassador.com/share/email/";
-        } else {
-            return "https://dev-ambassador-api.herokuapp.com/share/email/";
-        }
-    }
-
-    static String shareTrackURL() {
-        if (AmbassadorConfig.isReleaseBuild) {
-            return "https://api.getambassador.com/track/share/";
-        } else {
-            return "https://dev-ambassador-api.herokuapp.com/track/share/";
-        }
-    }
-
-    static String pusherChannelNameURL() {
-        if (AmbassadorConfig.isReleaseBuild) {
-            return "https://api.getambassador.com/auth/session/";
-        } else {
-            return "https://dev-ambassador-api.herokuapp.com/auth/session/";
+            return "https://dev-ambassador-api.herokuapp.com";
         }
     }
 
