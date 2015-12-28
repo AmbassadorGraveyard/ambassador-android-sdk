@@ -426,17 +426,6 @@ public class AmbassadorActivityTest {
         })
         .when(requestManager).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
 
-        //if the name request goes through, the app will attempt to call bulkShare
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] object = invocation.getArguments();
-                BulkShareHelper.BulkShareCompletion completion = (BulkShareHelper.BulkShareCompletion) object[3];
-                completion.bulkShareSuccess();
-                return null;
-            }
-        })
-        .when(bulkShareHelper).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
-
         //this call will fail, so make sure the dialog is still present and the mocks never get called
         onView(withId(R.id.btnContinue)).perform(click());
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
@@ -445,11 +434,14 @@ public class AmbassadorActivityTest {
         //this call will succeed, so make sure the mocks get called the appropriate number of times, the dialog is not present, and the main layout appears
         onView(withId(R.id.btnContinue)).perform(click());
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
-        verify(bulkShareHelper, times(1)).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
         verify(requestManager, times(2)).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
-        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
-        onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
-        onView(withId(R.id.rvContacts)).check(ViewAssertions.doesNotExist());
+
+        //since we never actually send the request, the identified callback never gets sent
+        //so this tests is mimicing if the identify response from updateName never came back
+        //in that case the view will stay on the list of contacts
+        onView(withId(R.id.rvContacts)).check(matches(isDisplayed()));
+        onView(withId(R.id.gvSocialGrid)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.llMainLayout)).check(ViewAssertions.doesNotExist());
     }
 
     @Test
