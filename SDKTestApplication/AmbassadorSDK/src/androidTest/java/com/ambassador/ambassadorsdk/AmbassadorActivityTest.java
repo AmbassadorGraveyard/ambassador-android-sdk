@@ -24,17 +24,16 @@ import com.ambassador.ambassadorsdk.internal.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
+import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatcher;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -65,7 +64,6 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.argThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
@@ -428,17 +426,6 @@ public class AmbassadorActivityTest {
         })
         .when(requestManager).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
 
-        //if the name request goes through, the app will attempt to call bulkShare
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] object = invocation.getArguments();
-                BulkShareHelper.BulkShareCompletion completion = (BulkShareHelper.BulkShareCompletion) object[3];
-                completion.bulkShareSuccess();
-                return null;
-            }
-        })
-        .when(bulkShareHelper).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
-
         //this call will fail, so make sure the dialog is still present and the mocks never get called
         onView(withId(R.id.btnContinue)).perform(click());
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
@@ -447,11 +434,14 @@ public class AmbassadorActivityTest {
         //this call will succeed, so make sure the mocks get called the appropriate number of times, the dialog is not present, and the main layout appears
         onView(withId(R.id.btnContinue)).perform(click());
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
-        verify(bulkShareHelper, times(1)).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
         verify(requestManager, times(2)).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
-        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
-        onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
-        onView(withId(R.id.rvContacts)).check(ViewAssertions.doesNotExist());
+
+        //since we never actually send the request, the identified callback never gets sent
+        //so this tests is mimicing if the identify response from updateName never came back
+        //in that case the view will stay on the list of contacts
+        onView(withId(R.id.rvContacts)).check(matches(isDisplayed()));
+        onView(withId(R.id.gvSocialGrid)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.llMainLayout)).check(ViewAssertions.doesNotExist());
     }
 
     @Test
@@ -483,7 +473,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
         pressBack();
-        verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         //ensure dialog fields not visible now that we've backed out
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -493,14 +483,14 @@ public class AmbassadorActivityTest {
         //enter blank text and make sure dialog is still visible
         onView(withId(R.id.etMessage)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.btnSend)).perform(click());
-        verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         //since text was cleared, ensure dialog is present, then click "send anyway"
         onView(withText("Hold on!")).check(matches(isDisplayed()));
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         pressBack();
-        verify(requestManager, never()).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         //test sending a successful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
@@ -528,7 +518,7 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-        .when(requestManager).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
+        .when(requestManager).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnSend)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -545,7 +535,7 @@ public class AmbassadorActivityTest {
         //failure shouldn't dismiss the dialog
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
-        verify(requestManager, times(2)).postToLinkedIn(argThat(new IsJSONObject()), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, times(2)).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnCancel)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -733,9 +723,4 @@ public class AmbassadorActivityTest {
         };
     }
 
-    private static class IsJSONObject extends ArgumentMatcher<JSONObject> {
-        public boolean matches(Object jsonObject) {
-            return (jsonObject != null); //equivalent to (jsonObject instanceOf JSONObject)
-        }
-    }
 }

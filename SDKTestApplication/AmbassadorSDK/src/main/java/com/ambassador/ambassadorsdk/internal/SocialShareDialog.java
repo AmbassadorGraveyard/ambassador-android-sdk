@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -157,7 +158,10 @@ public class SocialShareDialog extends Dialog {
                                 "\"comment\": \"" + etMessage.getText().toString() + "\"," +
                                 "\"visibility\": " + "{ \"code\": \"anyone\" }" +
                                 "}");
-                        requestManager.postToLinkedIn(object, linkedInCompletion);
+
+
+                        LinkedInApi.LinkedInPostRequest request = new LinkedInApi.LinkedInPostRequest(etMessage.getText().toString());
+                        requestManager.postToLinkedIn(request, linkedInCompletion);
                     } catch (JSONException e) {
                         Log.e(this.getClass().getSimpleName(), e.toString());
                     }
