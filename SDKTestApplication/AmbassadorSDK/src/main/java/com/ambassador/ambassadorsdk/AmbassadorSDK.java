@@ -42,17 +42,7 @@ public class AmbassadorSDK {
         identify.getIdentity();
 
         PusherSDK pusher = buildPusherSDK();
-        pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
-            @Override
-            public void pusherSubscribed() {
-
-            }
-
-            @Override
-            public void pusherFailed() {
-
-            }
-        });
+        pusher.createPusher(null);
     }
 
     static IIdentify buildIdentify() {
