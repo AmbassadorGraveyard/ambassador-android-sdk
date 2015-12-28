@@ -20,7 +20,6 @@ import javax.inject.Inject;
 public class ContactNameDialog extends Dialog {
 
     private CustomEditText etFirstName, etLastName;
-    private ContactNameListener mCallback;
     private ProgressDialog pd;
 
     @Inject
@@ -28,10 +27,6 @@ public class ContactNameDialog extends Dialog {
 
     @Inject
     RequestManager requestManager;
-
-    public interface ContactNameListener {
-        void namesHaveBeenUpdated(long requestId);
-    }
 
     public ContactNameDialog(Context context, ProgressDialog pd) {
         super(context);
@@ -42,7 +37,6 @@ public class ContactNameDialog extends Dialog {
 
         AmbassadorSingleton.getComponent().inject(this);
         this.pd = pd;
-        mCallback = (ContactNameListener)getOwnerActivity();
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_contact_name);
 
@@ -105,7 +99,6 @@ public class ContactNameDialog extends Dialog {
             requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    mCallback.namesHaveBeenUpdated(Long.valueOf((String) successResponse));
                     ambassadorConfig.setUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
                     hide();
                 }

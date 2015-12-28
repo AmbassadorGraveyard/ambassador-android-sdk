@@ -54,7 +54,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 /**
  * Created by JakeDunahee on 7/31/15.
  */
-public class ContactSelectorActivity extends AppCompatActivity implements PusherSDK.IdentifyListener, ContactNameDialog.ContactNameListener {
+public class ContactSelectorActivity extends AppCompatActivity implements PusherSDK.IdentifyListener {
 
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
 
@@ -77,8 +77,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
     private ProgressDialog pd;
     private ContactNameDialog cnd;
     Boolean showPhoneNumbers;
-
-    long nameUpdateRequestId = -1L;
 
     @Inject
     BulkShareHelper bulkShareHelper;
@@ -597,14 +595,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
 
     @Override
     public void identified(long requestId) {
-        if (requestId == nameUpdateRequestId) {
-            _initiateSend();
-        }
-    }
-
-    @Override
-    public void namesHaveBeenUpdated(long requestId) {
-        this.nameUpdateRequestId = requestId;
+        _initiateSend();
     }
 
     private void _handleContactsPopulation() {
