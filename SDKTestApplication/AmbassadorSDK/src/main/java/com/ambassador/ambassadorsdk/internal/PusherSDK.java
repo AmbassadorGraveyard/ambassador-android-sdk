@@ -60,7 +60,9 @@ public class PusherSDK {
 
             @Override
             public void onFailure(Object failureResponse) {
-                pusherSubscribeCallback.pusherFailed();
+                if (pusherSubscribeCallback != null) {
+                    pusherSubscribeCallback.pusherFailed();
+                }
                 Utilities.debugLog("createPusher", "CREATE PUSHER failed with Response = " + failureResponse);
             }
         });
@@ -140,7 +142,9 @@ public class PusherSDK {
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-                pusherSubscribeCallback.pusherSubscribed();
+                if (pusherSubscribeCallback != null) {
+                    pusherSubscribeCallback.pusherSubscribed();
+                }
                 Utilities.debugLog("PusherSDK", "Successfully subscribed to " + channelName);
             }
 
