@@ -2,7 +2,8 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 
-import org.junit.Assert;
+import junit.framework.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,10 +12,9 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.mockito.Mockito.mock;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
+        AmbassadorSingleton.class,
         AmbassadorApplicationModule.class
 })
 public class AmbassadorSingletonTest {
@@ -25,42 +25,50 @@ public class AmbassadorSingletonTest {
 
     @Before
     public void setUp() {
-        context = mock(Context.class);
-        component = mock(AmbassadorApplicationComponent.class);
-        module = mock(AmbassadorApplicationModule.class);
+        PowerMockito.spy(AmbassadorSingleton.class);
+
+        context = Mockito.mock(Context.class);
+        component = Mockito.mock(AmbassadorApplicationComponent.class);
+        module = Mockito.mock(AmbassadorApplicationModule.class);
     }
 
     @Test
     public void initTest() {
         // ARRANGE
-        AmbassadorSingleton ambassadorSingleton = Mockito.spy(AmbassadorSingleton.getInstance());
+        AmbassadorSingleton singleton = Mockito.spy(AmbassadorSingleton.class);
+        Mockito.when(AmbassadorSingleton.getInstance()).thenReturn(singleton);
+        Mockito.when(AmbassadorSingleton.buildAmbassadorApplicationModule()).thenReturn(module);
 
         // ACT
-        ambassadorSingleton.init(context);
+        AmbassadorSingleton.init(context);
 
         // ASSERT
-        Mockito.verify(ambassadorSingleton).setContext(Mockito.eq(context));
-        Mockito.verify(ambassadorSingleton).setComponent(Mockito.any(AmbassadorApplicationComponent.class));
+        Assert.assertEquals(AmbassadorSingleton.getInstanceContext(), context);
+        Assert.assertEquals(AmbassadorSingleton.getInstanceAmbModule(), module);
     }
 
     @Test
-    public void getInstanceTest() {
-        // ACT
-        AmbassadorSingleton singleton1 = AmbassadorSingleton.getInstance();
-        AmbassadorSingleton singleton2 = AmbassadorSingleton.getInstance();
-        AmbassadorSingleton singleton3 = AmbassadorSingleton.getInstance();
-
-        // ASSERT
-        Assert.assertEquals(singleton1, singleton2);
-        Assert.assertEquals(singleton2, singleton3);
-    }
-
-    @Test
-    public void isValidFalseTest() {
+    public void isValidTestBothTrue() {
         // ARRANGE
-        PowerMockito.spy(AmbassadorSingleton.class);
-        AmbassadorSingleton.setInstanceComponent(null);
-        AmbassadorSingleton.setInstanceAmbModule(null);
+        AmbassadorSingleton singleton = Mockito.mock(AmbassadorSingleton.class);
+        Mockito.when(AmbassadorSingleton.getInstance()).thenReturn(singleton);
+        Mockito.when(singleton.getComponent()).thenReturn(component);
+        Mockito.when(singleton.getAmbModule()).thenReturn(module);
+
+        // ACT
+        boolean check = AmbassadorSingleton.isValid();
+
+        // ASSERT
+        Assert.assertTrue(check);
+    }
+
+    @Test
+    public void isValidTestLeftTrue() {
+        // ARRANGE
+        AmbassadorSingleton singleton = Mockito.mock(AmbassadorSingleton.class);
+        Mockito.when(AmbassadorSingleton.getInstance()).thenReturn(singleton);
+        Mockito.when(singleton.getComponent()).thenReturn(component);
+        Mockito.when(singleton.getAmbModule()).thenReturn(null);
 
         // ACT
         boolean check = AmbassadorSingleton.isValid();
@@ -70,19 +78,39 @@ public class AmbassadorSingletonTest {
     }
 
     @Test
-    public void isValidTrueTest() {
+    public void isValidTestRightTrue() {
         // ARRANGE
-        PowerMockito.spy(AmbassadorSingleton.class);
-        AmbassadorApplicationComponent component = Mockito.spy(AmbassadorApplicationComponent.class);
-        AmbassadorSingleton.setInstanceComponent(component);
-        AmbassadorApplicationModule module = Mockito.spy(AmbassadorApplicationModule.class);
-        AmbassadorSingleton.setInstanceAmbModule(module);
+        AmbassadorSingleton singleton = Mockito.mock(AmbassadorSingleton.class);
+        Mockito.when(AmbassadorSingleton.getInstance()).thenReturn(singleton);
+        Mockito.when(singleton.getComponent()).thenReturn(null);
+        Mockito.when(singleton.getAmbModule()).thenReturn(module);
 
         // ACT
         boolean check = AmbassadorSingleton.isValid();
 
         // ASSERT
-        Assert.assertTrue(check);
+        Assert.assertFalse(check);
+    }
+
+    @Test
+    public void isValidTestNoneTrue() {
+        // ARRANGE
+        AmbassadorSingleton singleton = Mockito.mock(AmbassadorSingleton.class);
+        Mockito.when(AmbassadorSingleton.getInstance()).thenReturn(singleton);
+        Mockito.when(singleton.getComponent()).thenReturn(null);
+        Mockito.when(singleton.getAmbModule()).thenReturn(null);
+
+        // ACT
+        boolean check = AmbassadorSingleton.isValid();
+
+        // ASSERT
+        Assert.assertFalse(check);
+    }
+
+    @Test
+    public void getInstanceTest() {
+        Assert.assertNotNull(AmbassadorSingleton.getInstance());
+        Assert.assertEquals(AmbassadorSingleton.getInstance(), AmbassadorSingleton.getInstance());
     }
 
 }

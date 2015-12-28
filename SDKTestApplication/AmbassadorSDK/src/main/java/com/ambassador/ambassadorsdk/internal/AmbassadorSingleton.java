@@ -21,27 +21,31 @@ public class AmbassadorSingleton {
         //the testing component will provide its own overrides to inject into the tests
     }
 
-    public void init(Context context) {
-        if (this.context == null) {
-            setContext(context);
+    public static void init(Context context) {
+        if (getInstanceContext() == null) {
+            setInstanceContext(context);
         }
 
-        if (component == null) {
-            amb = new AmbassadorApplicationModule();
-            ApplicationComponent component = DaggerAmbassadorSingleton_ApplicationComponent.builder().ambassadorApplicationModule(amb).build();
-            setComponent(component);
+        if (getInstanceComponent() == null) {
+            setInstanceAmbModule(buildAmbassadorApplicationModule());
+            ApplicationComponent component = DaggerAmbassadorSingleton_ApplicationComponent.builder().ambassadorApplicationModule(getInstanceAmbModule()).build();
+            setInstanceComponent(component);
         }
     }
 
-    public void setContext(Context context) {
+    static AmbassadorApplicationModule buildAmbassadorApplicationModule() {
+        return new AmbassadorApplicationModule();
+    }
+
+    private void setContext(Context context) {
         this.context = context;
     }
 
-    public void setInstanceContext(Context context) {
+    public static void setInstanceContext(Context context) {
         getInstance().setContext(context);
     }
 
-    private Context getContext() {
+    public Context getContext() {
         return context;
     }
 
@@ -57,7 +61,7 @@ public class AmbassadorSingleton {
         return getInstance().getComponent();
     }
 
-    public void setComponent(AmbassadorApplicationComponent component) {
+    private void setComponent(AmbassadorApplicationComponent component) {
         this.component = component;
     }
 
@@ -73,7 +77,7 @@ public class AmbassadorSingleton {
         return getInstance().getAmbModule();
     }
 
-    public void setAmbModule(AmbassadorApplicationModule ambModule) {
+    private void setAmbModule(AmbassadorApplicationModule ambModule) {
         this.amb = ambModule;
     }
 
@@ -82,7 +86,7 @@ public class AmbassadorSingleton {
     }
 
     public static boolean isValid() {
-        return getInstance().component != null && getInstance().amb != null;
+        return getInstanceComponent() != null && getInstanceAmbModule() != null;
     }
 
     public static AmbassadorSingleton getInstance() {
