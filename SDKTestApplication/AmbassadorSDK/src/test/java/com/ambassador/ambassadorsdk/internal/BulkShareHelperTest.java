@@ -1,5 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +18,9 @@ import java.util.List;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class
+        AmbassadorSingleton.class,
+        JSONObject.class,
+        BulkShareHelper.class
 })
 public class BulkShareHelperTest {
 
@@ -28,6 +32,8 @@ public class BulkShareHelperTest {
         PowerMockito.mockStatic(
                 AmbassadorSingleton.class
         );
+
+        PowerMockito.spy(BulkShareHelper.class);
 
         AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
         Mockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(component);
@@ -178,18 +184,143 @@ public class BulkShareHelperTest {
     }
 
     @Test
-    public void contactArrayTest() {
-        // merge in master before writing this test
+    public void contactArrayTestSms() throws Exception {
+        // ARRANGE
+        List<String> values = new ArrayList<>();
+        values.add("track1");
+        values.add("track2");
+        values.add("track3");
+        BulkShareHelper.SocialServiceTrackType trackType = BulkShareHelper.SocialServiceTrackType.SMS;
+        String shortCode = "shortCode";
+
+        JSONArray jsonArray = Mockito.mock(JSONArray.class);
+        Mockito.when(BulkShareHelper.buildJSONArray()).thenReturn(jsonArray);
+
+        JSONObject jsonObject = Mockito.mock(JSONObject.class);
+        Mockito.when(BulkShareHelper.buildJSONObject()).thenReturn(jsonObject);
+
+        // ACT
+        JSONArray ret = BulkShareHelper.contactArray(values, trackType, shortCode);
+
+        // ASSERT
+        Assert.assertEquals(jsonArray, ret);
+        Mockito.verify(jsonObject, Mockito.times(3)).put(Mockito.eq("short_code"), Mockito.eq(shortCode));
+        Mockito.verify(jsonObject, Mockito.times(3)).put(Mockito.eq("social_name"), Mockito.eq(trackType.toString()));
+        Mockito.verify(jsonObject, Mockito.times(3)).put(Mockito.eq("recipient_email"), Mockito.eq(""));
+        Mockito.verify(jsonObject).put(Mockito.eq("recipient_username"), Mockito.eq("track1"));
+        Mockito.verify(jsonObject).put(Mockito.eq("recipient_username"), Mockito.eq("track2"));
+        Mockito.verify(jsonObject).put(Mockito.eq("recipient_username"), Mockito.eq("track3"));
+        Mockito.verify(jsonArray, Mockito.times(3)).put(Mockito.any(JSONObject.class));
     }
 
     @Test
-    public void payloadObjectForEmailTest() {
-        // merge in master before writing this test
+    public void contactArrayTestEmail() throws Exception {
+        // ARRANGE
+        List<String> values = new ArrayList<>();
+        values.add("track1");
+        values.add("track2");
+        values.add("track3");
+        BulkShareHelper.SocialServiceTrackType trackType = BulkShareHelper.SocialServiceTrackType.EMAIL;
+        String shortCode = "shortCode";
+
+        JSONArray jsonArray = Mockito.mock(JSONArray.class);
+        Mockito.when(BulkShareHelper.buildJSONArray()).thenReturn(jsonArray);
+
+        JSONObject jsonObject = Mockito.mock(JSONObject.class);
+        Mockito.when(BulkShareHelper.buildJSONObject()).thenReturn(jsonObject);
+
+        // ACT
+        JSONArray ret = BulkShareHelper.contactArray(values, trackType, shortCode);
+
+        // ASSERT
+        Assert.assertEquals(jsonArray, ret);
+        Mockito.verify(jsonObject, Mockito.times(3)).put(Mockito.eq("short_code"), Mockito.eq(shortCode));
+        Mockito.verify(jsonObject, Mockito.times(3)).put(Mockito.eq("social_name"), Mockito.eq(trackType.toString()));
+        Mockito.verify(jsonObject).put(Mockito.eq("recipient_email"), Mockito.eq("track1"));
+        Mockito.verify(jsonObject).put(Mockito.eq("recipient_email"), Mockito.eq("track2"));
+        Mockito.verify(jsonObject).put(Mockito.eq("recipient_email"), Mockito.eq("track3"));
+        Mockito.verify(jsonObject, Mockito.times(3)).put(Mockito.eq("recipient_username"), Mockito.eq(""));
+        Mockito.verify(jsonArray, Mockito.times(3)).put(Mockito.any(JSONObject.class));
     }
 
     @Test
-    public void payloadObjectForSMSTest() {
-        // merge in master before writing this test
+    public void contactArrayTestOther() throws Exception {
+        // ARRANGE
+        List<String> values = new ArrayList<>();
+        values.add("track1");
+        values.add("track2");
+        values.add("track3");
+        BulkShareHelper.SocialServiceTrackType trackType = BulkShareHelper.SocialServiceTrackType.FACEBOOK;
+        String shortCode = "shortCode";
+
+        JSONArray jsonArray = Mockito.mock(JSONArray.class);
+        Mockito.when(BulkShareHelper.buildJSONArray()).thenReturn(jsonArray);
+
+        JSONObject jsonObject = Mockito.mock(JSONObject.class);
+        Mockito.when(BulkShareHelper.buildJSONObject()).thenReturn(jsonObject);
+
+        // ACT
+        JSONArray ret = BulkShareHelper.contactArray(values, trackType, shortCode);
+
+        // ASSERT
+        Assert.assertEquals(jsonArray, ret);
+        Mockito.verify(jsonObject, Mockito.times(3)).put(Mockito.eq("short_code"), Mockito.eq(shortCode));
+        Mockito.verify(jsonObject, Mockito.times(3)).put(Mockito.eq("social_name"), Mockito.eq(trackType.toString()));
+        Mockito.verify(jsonObject, Mockito.times(3)).put(Mockito.eq("recipient_email"), Mockito.eq(""));
+        Mockito.verify(jsonObject, Mockito.times(3)).put(Mockito.eq("recipient_username"), Mockito.eq(""));
+        Mockito.verify(jsonArray, Mockito.times(3)).put(Mockito.any(JSONObject.class));
+    }
+
+    @Test
+    public void payloadObjectForEmailTest() throws Exception {
+        // ARRANGE
+        List<String> emails = new ArrayList<>();
+        emails.add("test1@gmail.com");
+        emails.add("test2@gmail.com");
+        emails.add("test3@gmail.com");
+        String shortCode = "shortCode";
+        String subject = "subject";
+        String message = "message";
+
+        JSONObject jsonObject = Mockito.mock(JSONObject.class);
+        Mockito.when(BulkShareHelper.buildJSONObject()).thenReturn(jsonObject);
+        Mockito.when(jsonObject.put(Mockito.anyString(), Mockito.anyString())).thenReturn(jsonObject);
+        Mockito.when(jsonObject.put(Mockito.anyString(), Mockito.any(JSONArray.class))).thenReturn(jsonObject);
+
+        // ACT
+        JSONObject ret = BulkShareHelper.payloadObjectForEmail(emails, shortCode, subject, message);
+
+        // ASSERT
+        Assert.assertEquals(ret, jsonObject);
+        Mockito.verify(jsonObject).put(Mockito.eq("to_emails"), Mockito.any(JSONArray.class));
+        Mockito.verify(jsonObject).put(Mockito.eq("short_code"), Mockito.eq(shortCode));
+        Mockito.verify(jsonObject).put(Mockito.eq("message"), Mockito.eq(message));
+        Mockito.verify(jsonObject).put(Mockito.eq("subject_line"), Mockito.eq(subject));
+    }
+
+    @Test
+    public void payloadObjectForSMSTest() throws Exception {
+        // ARRANGE
+        List<String> numbers = new ArrayList<>();
+        numbers.add("3133291103");
+        numbers.add("3133291104");
+        numbers.add("3133291105");
+        String fullName = "fullName";
+        String message = "message";
+
+        JSONObject jsonObject = Mockito.mock(JSONObject.class);
+        Mockito.when(BulkShareHelper.buildJSONObject()).thenReturn(jsonObject);
+        Mockito.when(jsonObject.put(Mockito.anyString(), Mockito.anyString())).thenReturn(jsonObject);
+        Mockito.when(jsonObject.put(Mockito.anyString(), Mockito.any(JSONArray.class))).thenReturn(jsonObject);
+
+        // ACT
+        JSONObject ret = BulkShareHelper.payloadObjectForSMS(numbers, fullName, message);
+
+        // ASSERT
+        Assert.assertEquals(jsonObject, ret);
+        Mockito.verify(jsonObject).put(Mockito.eq("to"), Mockito.any(JSONArray.class));
+        Mockito.verify(jsonObject).put("name", fullName);
+        Mockito.verify(jsonObject).put("message", message);
     }
 
 }
