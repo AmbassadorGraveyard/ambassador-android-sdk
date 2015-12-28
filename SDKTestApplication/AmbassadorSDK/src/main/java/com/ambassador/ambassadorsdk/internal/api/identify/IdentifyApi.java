@@ -104,14 +104,14 @@ public class IdentifyApi {
             @Override
             public void success(UpdateNameRequestResponse updateNameRequestResponse, Response response) {
                 // This should never happen, this request is not returning JSON so it hits the failure
-                completion.onSuccess(requestId + "");
+                completion.onSuccess(requestId);
                 Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
-                    completion.onSuccess(requestId + "");
+                    completion.onSuccess(requestId);
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
                 } else {
                     completion.onFailure("failure");
