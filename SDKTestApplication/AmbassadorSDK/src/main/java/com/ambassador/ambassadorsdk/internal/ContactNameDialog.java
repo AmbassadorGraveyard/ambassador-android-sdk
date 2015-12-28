@@ -100,6 +100,7 @@ public class ContactNameDialog extends Dialog {
                 @Override
                 public void onSuccess(Object successResponse) {
                     ambassadorConfig.setUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
+                    pd.dismiss();
                     hide();
                 }
 
