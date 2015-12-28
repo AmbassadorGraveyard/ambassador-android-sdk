@@ -25,6 +25,9 @@ public class AmbassadorSDK {
     @Inject
     static AmbassadorConfig ambassadorConfig;
 
+    @Inject
+    static PusherSDK pusherSDK;
+
     public static void presentRAF(Context context, String campaignID) {
         Intent intent = buildIntent(context, AmbassadorActivity.class);
         ambassadorConfig.setCampaignID(campaignID);
@@ -41,16 +44,11 @@ public class AmbassadorSDK {
         IIdentify identify = buildIdentify();
         identify.getIdentity();
 
-        PusherSDK pusher = buildPusherSDK();
-        pusher.createPusher(null);
+        pusherSDK.createPusher(null);
     }
 
     static IIdentify buildIdentify() {
         return new IdentifyAugurSDK();
-    }
-
-    static PusherSDK buildPusherSDK() {
-        return new PusherSDK();
     }
 
     public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {

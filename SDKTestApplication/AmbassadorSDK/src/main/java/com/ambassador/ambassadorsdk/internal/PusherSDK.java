@@ -4,6 +4,7 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.PrivateChannelEventListener;
@@ -32,6 +33,12 @@ public class PusherSDK {
         void pusherSubscribed();
         void pusherFailed();
     }
+
+    public interface IdentifyListener {
+        void identified(long requestId);
+    }
+
+    IdentifyListener identifyListener;
 
     @Inject
     AmbassadorConfig ambassadorConfig;
@@ -70,15 +77,22 @@ public class PusherSDK {
 
     void setupPusher(Object successResponse, PusherSubscribeCallback pusherSubscribeCallback) {
         String sessionId = null;
-        String expiresAt = null;
         String channelName = null;
+        String expiresAt = null;
+
+        IdentifyApi.CreatePusherChannelResponse resp = null;
         try {
-            JSONObject obj = new JSONObject(successResponse.toString());
-            sessionId = obj.getString("client_session_uid");
-            channelName = obj.getString("channel_name");
-            expiresAt = obj.getString("expires_at");
-        } catch (JSONException e) {
-            e.printStackTrace();
+            resp = (IdentifyApi.CreatePusherChannelResponse) successResponse;
+        } catch (ClassCastException e) {
+
+        }
+
+        if (resp != null) {
+            sessionId = resp.client_session_uid;
+            channelName = resp.channel_name;
+            expiresAt = resp.expires_at;
+        } else {
+            return;
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -111,7 +125,7 @@ public class PusherSDK {
 
         HashMap<String, String> queryParams = new HashMap<>();
         queryParams.put("auth_type", "private");
-        queryParams.put("channel", PusherChannel.getchannelName());
+        queryParams.put("channel", PusherChannel.getChannelName());
         authorizer.setQueryStringParameters(queryParams);
 
         PusherOptions options = new PusherOptions();
@@ -133,7 +147,7 @@ public class PusherSDK {
             }
         }, ConnectionState.ALL);
 
-        pusher.subscribePrivate(PusherChannel.getchannelName(), new PrivateChannelEventListener() {
+        pusher.subscribePrivate(PusherChannel.getChannelName(), new PrivateChannelEventListener() {
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
                 Utilities.debugLog("PusherSDK", "Failed to subscribe to PusherSDK because " + message + ". The " +
@@ -165,7 +179,9 @@ public class PusherSDK {
                                     final JSONObject pusherUrlObject = new JSONObject(successResponse.toString());
 
                                     //make sure the request id coming back is for the one we sent off
-                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId()) return;
+                                    if (pusherUrlObject.getLong("request_id") != PusherChannel.getRequestId()) {
+                                        return;
+                                    }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -179,8 +195,13 @@ public class PusherSDK {
                         });
                     } else {
                         //make sure the request id coming back is for the one we sent off
-                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId()) return;
-
+                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId()) {
+                            return;
+                        }
+                        if (identifyListener != null) {
+                            identifyListener.identified(PusherChannel.getRequestId());
+                        }
+                        
                         setPusherInfo(data);
                     }
                 } catch (JSONException e) {
@@ -214,4 +235,9 @@ public class PusherSDK {
             e.printStackTrace();
         }
     }
+
+    public void setIdentifyListener(IdentifyListener listener) {
+        this.identifyListener = listener;
+    }
+
 }
