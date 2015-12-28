@@ -190,9 +190,9 @@ public class PusherSDK {
                         });
                     } else {
                         //make sure the request id coming back is for the one we sent off
-                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId())
+                        if (pusherObject.getLong("request_id") != PusherChannel.getRequestId()) {
                             return;
-
+                        }
                         if (identifyListener != null) {
                             identifyListener.identified(PusherChannel.getRequestId());
                         }
