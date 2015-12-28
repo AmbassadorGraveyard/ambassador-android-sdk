@@ -76,9 +76,6 @@ public class BulkShareHelper {
         }
     }
 
-
-    // STATIC HELPER FUNCTIONS
-    // VERIFIER FUNCTIONS
     static ArrayList<String> verifiedSMSList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
@@ -103,27 +100,22 @@ public class BulkShareHelper {
     }
 
     static boolean isValidEmail(String emailAddress) {
-        // Functionality: Boolean that checks for legit email addressing using regex
         Pattern emailRegex = Pattern.compile("^(.+)@(.+)\\.(.+)$");
         Matcher matcher = emailRegex.matcher(emailAddress);
 
         return matcher.matches();
     }
-    // END VERIFIER FUNCTIONS
 
-
-    // JSON OBJECT MAKER
     static JSONArray contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
-        // Functionality: Creates a jsonArray of jsonObjects created from validated phone numbers and email addresses
         String socialName = trackType.toString();
-        JSONArray objectsList = new JSONArray();
+        JSONArray objectsList = buildJSONArray();
         if (values == null) {
-            values = new ArrayList<String>();
+            values = new ArrayList<>();
             values.add("");
         }
 
         for (int i = 0; i < values.size(); i++) {
-            JSONObject newObject = new JSONObject();
+            JSONObject newObject = buildJSONObject();
             try {
                 newObject.put("short_code", shortCode);
                 newObject.put("social_name", socialName);
@@ -152,13 +144,13 @@ public class BulkShareHelper {
         return objectsList;
     }
 
-    // Overloaded method for optional list parameter
     static JSONArray contactArray(SocialServiceTrackType trackType, String shortCode) {
         return contactArray(null, trackType, shortCode);
     }
 
     static JSONObject payloadObjectForEmail(List<String> emails, String shortCode, String emailSubject, String message) {
-        JSONObject object = new JSONObject();
+        JSONObject object = buildJSONObject();
+
         try {
             object.put("to_emails", new JSONArray(emails));
             object.put("short_code", shortCode);
@@ -172,7 +164,8 @@ public class BulkShareHelper {
     }
 
     static JSONObject payloadObjectForSMS(List<String> numbers, String fullName, String smsMessage) {
-        JSONObject object = new JSONObject();
+        JSONObject object = buildJSONObject();
+
         try {
             object.put("to", new JSONArray(numbers));
             object.put("name", fullName);
@@ -183,6 +176,13 @@ public class BulkShareHelper {
 
         return object;
     }
-    // END JSON OBJECT MAKER
-    // END STATIC HELPER FUNCTIONS
+
+    static JSONObject buildJSONObject() {
+        return new JSONObject();
+    }
+
+    static JSONArray buildJSONArray() {
+        return new JSONArray();
+    }
+
 }
