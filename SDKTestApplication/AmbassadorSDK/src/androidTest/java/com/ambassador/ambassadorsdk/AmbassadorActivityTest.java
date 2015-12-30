@@ -110,6 +110,9 @@ public class AmbassadorActivityTest {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         context = instrumentation.getTargetContext().getApplicationContext();
 
+        SystemAnimations systemAnimations = new SystemAnimations(context);
+        systemAnimations.disableAll();
+
         parameters = new ServiceSelectorPreferences();
         parameters.defaultShareMessage = "Check out this company!";
         parameters.titleText = "RAF Params Welcome Title";
@@ -394,6 +397,9 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.rlSend)).perform(click());
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
+        if (((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText()) {
+            pressBack();
+        }
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
@@ -404,6 +410,9 @@ public class AmbassadorActivityTest {
 
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
+        if (((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText()) {
+            pressBack();
+        }
         onView(withId(R.id.etFirstName)).perform(typeText("Test"), closeSoftKeyboard());
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
