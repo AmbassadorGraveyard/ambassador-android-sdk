@@ -1,5 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
+
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -184,27 +186,109 @@ public class BulkShareHelperTest {
 
     @Test
     public void contactArrayTestSms() throws Exception {
+        // ARRANGE
+        List<String> values = new ArrayList<>();
+        values.add("3133291104");
+        values.add("5199729550");
+        BulkShareHelper.SocialServiceTrackType trackType = BulkShareHelper.SocialServiceTrackType.SMS;
+        String shortCode = "shortCode";
 
+        // ACT
+        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(values, trackType, shortCode);
+
+        // ASSERT
+        Assert.assertEquals(2, bodies.length);
+        Assert.assertEquals("", bodies[0].recipient_email);
+        Assert.assertEquals("", bodies[1].recipient_email);
+        Assert.assertEquals("3133291104", bodies[0].recipient_username);
+        Assert.assertEquals("5199729550", bodies[1].recipient_username);
+        Assert.assertEquals("shortCode", bodies[0].short_code);
+        Assert.assertEquals("shortCode", bodies[1].short_code);
+        Assert.assertEquals("sms", bodies[0].social_name);
+        Assert.assertEquals("sms", bodies[1].social_name);
     }
 
     @Test
     public void contactArrayTestEmail() throws Exception {
+        // ARRANGE
+        List<String> values = new ArrayList<>();
+        values.add("dylan@getambassador.com");
+        values.add("corey@getambassador.com");
+        BulkShareHelper.SocialServiceTrackType trackType = BulkShareHelper.SocialServiceTrackType.EMAIL;
+        String shortCode = "shortCode";
 
+        // ACT
+        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(values, trackType, shortCode);
+
+        // ASSERT
+        Assert.assertEquals(2, bodies.length);
+        Assert.assertEquals("dylan@getambassador.com", bodies[0].recipient_email);
+        Assert.assertEquals("corey@getambassador.com", bodies[1].recipient_email);
+        Assert.assertEquals("", bodies[0].recipient_username);
+        Assert.assertEquals("", bodies[1].recipient_username);
+        Assert.assertEquals("shortCode", bodies[0].short_code);
+        Assert.assertEquals("shortCode", bodies[1].short_code);
+        Assert.assertEquals("email", bodies[0].social_name);
+        Assert.assertEquals("email", bodies[1].social_name);
     }
 
     @Test
     public void contactArrayTestOther() throws Exception {
+        // ARRANGE
+        BulkShareHelper.SocialServiceTrackType trackType = BulkShareHelper.SocialServiceTrackType.FACEBOOK;
+        String shortCode = "shortCode";
 
+        // ACT
+        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(trackType, shortCode);
+
+        // ASSERT
+        Assert.assertEquals(1, bodies.length);
+        Assert.assertEquals("", bodies[0].recipient_email);
+        Assert.assertEquals("", bodies[0].recipient_username);
+        Assert.assertEquals("shortCode", bodies[0].short_code);
+        Assert.assertEquals("facebook", bodies[0].social_name);
     }
 
     @Test
     public void payloadObjectForEmailTest() throws Exception {
+        // ARRANGE
+        List<String> emails = new ArrayList<>();
+        emails.add("dylan@getambassador.com");
+        emails.add("corey@getambassador.com");
+        String shortCode = "shortCode";
+        String subject = "subject";
+        String message = "message";
 
+        // ACT
+        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emails, shortCode, subject, message);
+
+        // ASSERT
+        Assert.assertEquals(shortCode, body.short_code);
+        Assert.assertEquals(subject, body.subject_line);
+        Assert.assertEquals(message, body.message);
+        Assert.assertEquals(2, body.to_emails.length);
+        Assert.assertEquals("dylan@getambassador.com", body.to_emails[0]);
+        Assert.assertEquals("corey@getambassador.com", body.to_emails[1]);
     }
 
     @Test
     public void payloadObjectForSMSTest() throws Exception {
+        // ARRANGE
+        List<String> numbers = new ArrayList<>();
+        numbers.add("3133291104");
+        numbers.add("5199729550");
+        String fullName = "fullName";
+        String message = "message";
 
+        // ACT
+        BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numbers, fullName, message);
+
+        // ASSERT
+        Assert.assertEquals(fullName, body.name);
+        Assert.assertEquals(message, body.message);
+        Assert.assertEquals(2, body.to.length);
+        Assert.assertEquals("3133291104", body.to[0]);
+        Assert.assertEquals("5199729550", body.to[1]);
     }
 
 }

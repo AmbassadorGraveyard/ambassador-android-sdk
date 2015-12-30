@@ -135,9 +135,9 @@ public class BulkShareApi {
     /** Pojo for bulk share sms post request body */
     public static class BulkShareSmsBody {
 
-        private String name;
-        private String message;
-        private String[] to;
+        public String name;
+        public String message;
+        public String[] to;
 
         public BulkShareSmsBody(String name, String message, String... to) {
             this.name = name;
@@ -157,10 +157,10 @@ public class BulkShareApi {
     /** Pojo for bulk share email post request body */
     public static class BulkShareEmailBody {
 
-        private String subject_line;
-        private String message;
-        private String short_code;
-        private String[] to_emails;
+        public String subject_line;
+        public String message;
+        public String short_code;
+        public String[] to_emails;
 
         public BulkShareEmailBody(String subject_line, String message, String short_code, String... to_emails) {
             this.subject_line = subject_line;
@@ -181,10 +181,10 @@ public class BulkShareApi {
     /** Pojo for bulk share track post request body */
     public static class BulkShareTrackBody {
 
-        private String short_code;
-        private String social_name;
-        private String recipient_email;
-        private String recipient_username;
+        public String short_code;
+        public String social_name;
+        public String recipient_email;
+        public String recipient_username;
 
         public BulkShareTrackBody(String short_code, String social_name, String recipient_email, String recipient_username) {
             this.short_code = short_code;
