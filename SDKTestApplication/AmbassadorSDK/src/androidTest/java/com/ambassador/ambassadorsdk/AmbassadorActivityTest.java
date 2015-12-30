@@ -447,6 +447,11 @@ public class AmbassadorActivityTest {
 
         //this call will succeed, so make sure the mocks get called the appropriate number of times, the dialog is not present, and the main layout appears
         onView(withId(R.id.btnContinue)).perform(click());
+        try {
+            Thread.sleep(1500);
+        } catch (Exception e) {
+            
+        }
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
         verify(requestManager, times(2)).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
 
