@@ -12,6 +12,7 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.content.LocalBroadcastManager;
 import android.test.suitebuilder.annotation.MediumTest;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
@@ -384,6 +385,9 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.rlSend)).perform(click());
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
+        if (((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText()) {
+            pressBack();
+        }
         pressBack();
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
 
