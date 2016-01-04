@@ -21,12 +21,13 @@ class SocialGridAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<SocialGridModel> models;
     LayoutInflater inflater;
+    private float cornerRadius;
 
     public SocialGridAdapter(Context context, ArrayList<SocialGridModel> models) {
         this.context = context;
-        inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.models = models;
+        this.cornerRadius = context.getResources().getDimension(R.dimen.socialOptionCornerRadius);
     }
 
     @Override
@@ -60,7 +61,11 @@ class SocialGridAdapter extends BaseAdapter {
 
         GradientDrawable backgroundDrawable = new GradientDrawable();
         backgroundDrawable.setColor(model.getColor());
-        backgroundDrawable.setCornerRadius(context.getResources().getDimension(R.dimen.socialOptionCornerRadius));
+        if (cornerRadius < 0) {
+            backgroundDrawable.setCornerRadius(context.getResources().getDimension(R.dimen.social_option_size));
+        } else {
+            backgroundDrawable.setCornerRadius(cornerRadius);
+        }
 
         if (model.isDrawBorder()) {
             backgroundDrawable.setStroke(3, context.getResources().getColor(R.color.ultraLightGray));
