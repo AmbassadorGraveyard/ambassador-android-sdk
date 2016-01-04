@@ -286,3 +286,17 @@ Reordering the SMS item to the first position will move the icon to the front.
 <img src="screenshots/reorderIconValuesModified.png" />
 
 <img src="screenshots/modifiedIconOrder.png" width="250" />
+
+#### Corner Radius
+
+You can set the corner radius of social options.  Modify the _socialOptionCornerRadius_ dimension value in customValues.
+
+<img src="screenshots/cornerRadiusValueExample.png" width="400" />
+
+<img src="screenshots/cornerRadiusExample.png" width="250" />
+
+You can also display the options as circles by setting the value to -1dp.
+
+<img src="screenshots/cornerRadiusValueCircleExample.png" width="400" />
+
+<img src="screenshots/cornerRadiusCircleExample.png" width="250" />
