@@ -2,7 +2,6 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.ShapeDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ class SocialGridAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<SocialGridModel> models;
     LayoutInflater inflater;
-    private ShapeDrawable rectShapeDrawable;
 
     public SocialGridAdapter(Context context, ArrayList<SocialGridModel> models) {
         this.context = context;
