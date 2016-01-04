@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.view.LayoutInflater;
@@ -62,18 +63,22 @@ class SocialGridAdapter extends BaseAdapter {
         }
 
         SocialGridModel model = getItem(position);
-
         ImageView gridImage = (ImageView) convertView.findViewById(R.id.ivGridImage);
         TextView gridTitle = (TextView) convertView.findViewById(R.id.tvGridTitle);
         RelativeLayout backgroundView = (RelativeLayout) convertView.findViewById(R.id.rlBackground);
 
         gridImage.setImageResource(model.getDrawable());
         gridTitle.setText(model.getTitle());
-        backgroundView.setBackgroundColor(model.getColor());
+
+        GradientDrawable backgroundDrawable = new GradientDrawable();
+        backgroundDrawable.setColor(model.getColor());
+        backgroundDrawable.setCornerRadius(context.getResources().getDimension(R.dimen.socialOptionCornerRadius));
 
         if (model.isDrawBorder()) {
-            backgroundView.setBackground(rectShapeDrawable);
+            backgroundDrawable.setStroke(3, context.getResources().getColor(R.color.ultraLightGray));
         }
+
+        backgroundView.setBackground(backgroundDrawable);
 
         return convertView;
     }
