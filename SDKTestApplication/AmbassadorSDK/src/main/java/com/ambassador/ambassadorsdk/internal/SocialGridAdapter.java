@@ -1,10 +1,8 @@
 package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,14 +29,6 @@ class SocialGridAdapter extends BaseAdapter {
         inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         this.models = models;
-
-        //create drawable to use as border around non-filled grid cells
-        RectShape rect = new RectShape();
-        rectShapeDrawable = new ShapeDrawable(rect);
-        Paint paint = rectShapeDrawable.getPaint();
-        paint.setColor(context.getResources().getColor(R.color.ultraLightGray));
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(Utilities.getPixelSizeForDimension(R.dimen.grid_cell_outline_width));
     }
 
     @Override
