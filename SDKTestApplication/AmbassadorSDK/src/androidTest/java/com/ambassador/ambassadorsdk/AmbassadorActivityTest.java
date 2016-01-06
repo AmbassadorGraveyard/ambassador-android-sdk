@@ -318,7 +318,9 @@ public class AmbassadorActivityTest {
         Espresso.closeSoftKeyboard();
         pressBack();
         onView(withId(R.id.btnEdit)).perform(click());
-        onView(withId(R.id.etShareMessage)).perform(typeText("http://staging.mbsy.co/jHjl"), closeSoftKeyboard());
+        onView(withId(R.id.etShareMessage)).perform(typeText("http://staging.mbsy.co/jHjl"));
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
         onView(withId(R.id.btnDone)).perform(click());
 
         doAnswer(new Answer<Void>() {
