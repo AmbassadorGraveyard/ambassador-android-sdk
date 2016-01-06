@@ -388,7 +388,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.rlSend)).perform(click());
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
-        if (((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText()) {
+        if (keyboardIsOpen()) {
             pressBack();
         }
         pressBack();
@@ -447,11 +447,6 @@ public class AmbassadorActivityTest {
 
         //this call will succeed, so make sure the mocks get called the appropriate number of times, the dialog is not present, and the main layout appears
         onView(withId(R.id.btnContinue)).perform(click());
-        try {
-            Thread.sleep(1500);
-        } catch (Exception e) {
-            
-        }
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
         verify(requestManager, times(2)).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
 
@@ -491,6 +486,9 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
+        if (keyboardIsOpen()) {
+            pressBack();
+        }
         pressBack();
         verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
@@ -626,6 +624,9 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("Twitter Post")).check(matches(isDisplayed()));
+        if (keyboardIsOpen()) {
+            pressBack();
+        }
         pressBack();
         verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
@@ -740,6 +741,11 @@ public class AmbassadorActivityTest {
             public void describeTo(Description description) {
             }
         };
+    }
+
+    private boolean keyboardIsOpen() {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        return imm.isAcceptingText();
     }
 
 }
