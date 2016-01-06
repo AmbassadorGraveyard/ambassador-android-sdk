@@ -348,7 +348,7 @@ public class AmbassadorActivityTest {
     }
 
     @Test
-    public void testContactsSMS() {
+    public void testContactsSMS() throws Exception {
         //start recording fired Intents
         Intents.init();
         //click sms icon
@@ -398,6 +398,7 @@ public class AmbassadorActivityTest {
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
         Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
