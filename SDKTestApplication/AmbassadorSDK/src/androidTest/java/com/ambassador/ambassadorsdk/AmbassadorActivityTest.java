@@ -317,7 +317,6 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
         Espresso.closeSoftKeyboard();
         pressBack();
-        Thread.sleep(100);
         onView(withId(R.id.btnEdit)).perform(click());
         onView(withId(R.id.etShareMessage)).perform(typeText("http://staging.mbsy.co/jHjl"), closeSoftKeyboard());
         onView(withId(R.id.btnDone)).perform(click());
@@ -393,7 +392,6 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
         Espresso.closeSoftKeyboard();
         pressBack();
-        Thread.sleep(100);
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
 
         onView(withId(R.id.rlSend)).perform(click());
