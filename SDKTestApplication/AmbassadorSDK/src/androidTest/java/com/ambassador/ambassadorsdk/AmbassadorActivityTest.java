@@ -444,7 +444,7 @@ public class AmbassadorActivityTest {
         })
         .when(requestManager).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
 
-        //this call will fail, so make sure the dialog is still present and the mocks never get called
+        ///this call will fail, so make sure the dialog is still present and the mocks never get called
         onView(withId(R.id.btnContinue)).perform(click());
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
