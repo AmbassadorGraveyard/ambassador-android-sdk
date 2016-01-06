@@ -16,6 +16,6 @@ test:
     - ./gradlew -p SDKTestApplication test
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     - cp -r SDKTestApplication/AmbassadorSDK/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
-    - ./gradlew -p SDKTestApplication connectedDebugAndroidTest -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m"
+    - ./gradlew -p SDKTestApplication connectedDebugAndroidTest -PpreDexEnable=false -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
