@@ -15,7 +15,7 @@ import com.twitter.sdk.android.core.models.User;
 /**
  * Created by JakeDunahee on 7/29/15.
  */
-public class AmbassadorConfig { 
+public class AmbassadorConfig {
 
     static final String CALLBACK_URL = "http://localhost:2999";
     static final String LINKED_IN_CLIENT_ID = "***REMOVED***";
