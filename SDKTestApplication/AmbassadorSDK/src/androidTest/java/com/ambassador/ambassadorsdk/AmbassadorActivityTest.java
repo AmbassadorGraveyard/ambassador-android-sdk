@@ -409,8 +409,9 @@ public class AmbassadorActivityTest {
 
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
-        Espresso.closeSoftKeyboard();
         onView(withId(R.id.etFirstName)).perform(typeText("Test"), closeSoftKeyboard());
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
         onView(withId(R.id.etLastName)).perform(typeText("User"), closeSoftKeyboard());
