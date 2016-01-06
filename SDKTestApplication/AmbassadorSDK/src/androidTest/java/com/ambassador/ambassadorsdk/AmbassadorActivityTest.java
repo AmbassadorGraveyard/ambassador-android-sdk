@@ -315,6 +315,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.rlSend)).perform(click());
         //dialog "url not entered" should be showing at this point - since I can't check that programmatically-created dialog, just check that underlying views are not present
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
+        Espresso.closeSoftKeyboard();
         pressBack();
         onView(withId(R.id.btnEdit)).perform(click());
         onView(withId(R.id.etShareMessage)).perform(typeText("http://staging.mbsy.co/jHjl"), closeSoftKeyboard());
