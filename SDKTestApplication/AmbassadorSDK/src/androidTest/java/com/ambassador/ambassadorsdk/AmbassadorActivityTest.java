@@ -418,7 +418,9 @@ public class AmbassadorActivityTest {
         Thread.sleep(100);
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
-        onView(withId(R.id.etLastName)).perform(typeText("User"), closeSoftKeyboard());
+        onView(withId(R.id.etLastName)).perform(typeText("User"));
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
 
         doNothing().when(ambassadorConfig).setPusherInfo(anyString());
         doNothing().when(ambassadorConfig).setUserFullName(anyString(), anyString());
