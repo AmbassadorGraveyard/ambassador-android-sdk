@@ -443,7 +443,10 @@ public class AmbassadorActivityTest {
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
         //this call will succeed, so make sure the mocks get called the appropriate number of times, the dialog is not present, and the main layout appears
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
         onView(withId(R.id.btnContinue)).perform(click());
+        Thread.sleep(100);
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
         verify(requestManager, times(2)).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
 
