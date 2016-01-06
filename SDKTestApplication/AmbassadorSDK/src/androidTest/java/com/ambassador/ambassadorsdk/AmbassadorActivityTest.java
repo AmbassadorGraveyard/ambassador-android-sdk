@@ -391,7 +391,9 @@ public class AmbassadorActivityTest {
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
         Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
         pressBack();
+        Thread.sleep(100);
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
 
         onView(withId(R.id.rlSend)).perform(click());
