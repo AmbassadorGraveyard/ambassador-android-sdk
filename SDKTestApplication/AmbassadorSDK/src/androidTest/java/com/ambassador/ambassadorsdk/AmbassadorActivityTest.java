@@ -4,6 +4,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.Intents;
@@ -388,18 +389,14 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.rlSend)).perform(click());
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
-        if (keyboardIsOpen()) {
-            pressBack();
-        }
+        Espresso.closeSoftKeyboard();
         pressBack();
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
 
         onView(withId(R.id.rlSend)).perform(click());
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
-        if (((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText()) {
-            pressBack();
-        }
+        Espresso.closeSoftKeyboard();
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
@@ -410,9 +407,7 @@ public class AmbassadorActivityTest {
 
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
-        if (((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).isAcceptingText()) {
-            pressBack();
-        }
+        Espresso.closeSoftKeyboard();
         onView(withId(R.id.etFirstName)).perform(typeText("Test"), closeSoftKeyboard());
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
@@ -486,9 +481,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
-        if (keyboardIsOpen()) {
-            pressBack();
-        }
+        Espresso.closeSoftKeyboard();
         pressBack();
         verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
@@ -622,11 +615,9 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.ivHeaderImg)).check(matches(isDisplayed()));
         onView(withId(R.id.btnCancel)).check(matches(isDisplayed()));
         onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
-        onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
-        onView(withText("Twitter Post")).check(matches(isDisplayed()));
-        if (keyboardIsOpen()) {
-            pressBack();
-        }
+        onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));onView(withText("Twitter Post")).check(matches(isDisplayed()));
+
+        Espresso.closeSoftKeyboard();
         pressBack();
         verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
