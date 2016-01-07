@@ -413,7 +413,7 @@ public class AmbassadorActivityTest {
 
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
-        onView(withId(R.id.etFirstName)).perform(typeText("Test"), closeSoftKeyboard());
+        onView(withId(R.id.etFirstName)).perform(typeText("Test"));
         Espresso.closeSoftKeyboard();
         Thread.sleep(100);
         onView(withId(R.id.btnContinue)).perform(click());
@@ -744,11 +744,6 @@ public class AmbassadorActivityTest {
             public void describeTo(Description description) {
             }
         };
-    }
-
-    private boolean keyboardIsOpen() {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        return imm.isAcceptingText();
     }
 
 }
