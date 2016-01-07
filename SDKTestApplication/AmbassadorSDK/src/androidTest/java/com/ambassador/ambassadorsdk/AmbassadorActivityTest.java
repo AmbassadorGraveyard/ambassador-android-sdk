@@ -201,7 +201,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeDesc)).check(matches(withText(parameters.descriptionText)));
         onView(withId(R.id.etShortURL)).check(matches(isDisplayed()));
-        onView(withId(R.id.etShortURL)).check(matches(withText("http://staging.mbsy.co/jHjl")));
+        onView(withId(R.id.etShortURL)).check(matches(withText("testhttp://staging.mbsy.co/jHjl")));
         onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
     }
 
