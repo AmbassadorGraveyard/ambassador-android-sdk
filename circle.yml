@@ -9,13 +9,13 @@ test:
     - emulator -avd circleci-android22 -no-audio -no-window:
         background: true
         parallel: true
-    - sleep 30
-    - adb shell input keyevent 82
   override:
     - ./gradlew -p SDKTestApplication test
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     - cp -r SDKTestApplication/AmbassadorSDK/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
     - circle-android wait-for-boot
+    - sleep 30
+    - adb shell input keyevent 82
     - ./gradlew -p SDKTestApplication connectedDebugAndroidTest -PpreDexEnable=false -Pcom.android.build.threadPoolSize=1 -Dorg.gradle.parallel=false -Dorg.gradle.jvmargs="-Xms512m -Xmx512m" -Dorg.gradle.daemon=false
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     - cp -r SDKTestApplication/AmbassadorSDK/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
