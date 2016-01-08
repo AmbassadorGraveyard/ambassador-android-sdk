@@ -7,6 +7,8 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.IIdentify;
+import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 
 import org.junit.Before;
@@ -27,6 +29,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class AmbassadorSDKTest {
 
     AmbassadorConfig ambassadorConfig;
+    PusherSDK pusherSDK;
 
     @Before
     public void setUp() {
@@ -39,6 +42,9 @@ public class AmbassadorSDKTest {
 
         ambassadorConfig = Mockito.mock(AmbassadorConfig.class);
         AmbassadorSDK.ambassadorConfig = ambassadorConfig;
+
+        pusherSDK = Mockito.mock(PusherSDK.class);
+        AmbassadorSDK.pusherSDK = pusherSDK;
     }
 
     @Test
@@ -61,6 +67,18 @@ public class AmbassadorSDKTest {
 
     @Test
     public void identifyTest() throws Exception {
+        // ARRANGE
+        String email = "email";
+        IIdentify identify = Mockito.mock(IIdentify.class);
+        PowerMockito.doReturn(identify).when(AmbassadorSDK.class, "buildIdentify");
+
+        // ACT
+        AmbassadorSDK.identify(email);
+
+        // ASSERT
+        Mockito.verify(ambassadorConfig).setUserEmail(Mockito.eq(email));
+        Mockito.verify(identify).getIdentity();
+        Mockito.verify(pusherSDK).createPusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
 
     }
 
