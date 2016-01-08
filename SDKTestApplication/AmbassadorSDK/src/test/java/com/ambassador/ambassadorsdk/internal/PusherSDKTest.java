@@ -33,16 +33,6 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
         AmbassadorSingleton.class,
@@ -75,32 +65,32 @@ public class PusherSDKTest {
         component.inject(this);
 
         PowerMockito.mockStatic(AmbassadorSingleton.class);
-        AmbassadorApplicationComponent application = mock(AmbassadorApplicationComponent.class);
+        AmbassadorApplicationComponent application = Mockito.mock(AmbassadorApplicationComponent.class);
         PowerMockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(application);
-        doNothing().when(application).inject(any(PusherSDK.class));
+        Mockito.doNothing().when(application).inject(Mockito.any(PusherSDK.class));
         pusherSDK = Mockito.spy(PusherSDK.class);
 
         PowerMockito.spy(Utilities.class);
 
-        mockRequestManager = mock(RequestManager.class);
-        mockAmbassadorConfig = mock(AmbassadorConfig.class);
+        mockRequestManager = Mockito.mock(RequestManager.class);
+        mockAmbassadorConfig = Mockito.mock(AmbassadorConfig.class);
         pusherSDK.requestManager = mockRequestManager;
         pusherSDK.ambassadorConfig = mockAmbassadorConfig;
     }
 
     @Test
-    public void createPusherTest() {
+    public void createPusherSuccessTest() {
         // ARRANGE
-        doNothing().when(pusherSDK).setupPusher(any(), any(PusherSDK.PusherSubscribeCallback.class));
-        PusherSDK.PusherSubscribeCallback mockPusherSubscribeCallback = mock(PusherSDK.PusherSubscribeCallback.class);
-        doAnswer(new Answer() {
+        Mockito.doNothing().when(pusherSDK).setupPusher(Mockito.any(), Mockito.any(PusherSDK.PusherSubscribeCallback.class));
+        PusherSDK.PusherSubscribeCallback mockPusherSubscribeCallback = Mockito.mock(PusherSDK.PusherSubscribeCallback.class);
+        Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocationOnMock.getArguments()[0];
                 completion.onSuccess("fakeResponse");
                 return null;
             }
-        }).when(mockRequestManager).createPusherChannel(any(RequestManager.RequestCompletion.class));
+        }).when(mockRequestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
 
         PowerMockito.mockStatic(PusherChannel.class);
 
@@ -122,7 +112,7 @@ public class PusherSDKTest {
 
         // ASSERT
         /** make sure we got 3 calls */
-        verify(pusherSDK, times(3)).setupPusher("fakeResponse", mockPusherSubscribeCallback);
+        Mockito.verify(pusherSDK, Mockito.times(3)).setupPusher("fakeResponse", mockPusherSubscribeCallback);
 
         // ACT
         /** fail both conditions */
@@ -132,69 +122,53 @@ public class PusherSDKTest {
 
         // ASSERT
         /** make sure we still only have 3 calls */
-        verify(pusherSDK, times(3)).setupPusher("fakeResponse", mockPusherSubscribeCallback);
+        Mockito.verify(pusherSDK, Mockito.times(3)).setupPusher("fakeResponse", mockPusherSubscribeCallback);
     }
 
-    //@Test
     public void setupPusherTest() {
-        // ARRANGE
-        String successResponse = "{\"client_session_uid\":\"test1\", \"channel_name\":\"test2\", \"expires_at\":\"2015-11-13T19:22:13.701\"}";
-        PusherSDK.PusherSubscribeCallback mockPusherSubscribeCallback = mock(PusherSDK.PusherSubscribeCallback.class);
-        PowerMockito.mockStatic(PusherChannel.class);
-        doNothing().when(pusherSDK).subscribePusher(any(PusherSDK.PusherSubscribeCallback.class));
-        doNothing().when(pusherSDK).createPusher(any(PusherSDK.PusherSubscribeCallback.class));
 
-        // ACT
-        Mockito.when(PusherChannel.isExpired()).thenReturn(true);
-        pusherSDK.setupPusher(successResponse, mockPusherSubscribeCallback);
-        Mockito.when(PusherChannel.isExpired()).thenReturn(false);
-        pusherSDK.setupPusher(successResponse, mockPusherSubscribeCallback);
-
-        // ASSERT
-        verify(pusherSDK, times(1)).createPusher(any(PusherSDK.PusherSubscribeCallback.class));
-        verify(pusherSDK, times(1)).subscribePusher(any(PusherSDK.PusherSubscribeCallback.class));
     }
 
     @Test
     public void subscribePusherTest() throws Exception {
         // ARRANGE
-        PusherSDK.PusherSubscribeCallback mockPusherSubscribeCallback = mock(PusherSDK.PusherSubscribeCallback.class);
+        PusherSDK.PusherSubscribeCallback mockPusherSubscribeCallback = Mockito.mock(PusherSDK.PusherSubscribeCallback.class);
 
         PowerMockito.mockStatic(AmbassadorConfig.class);
         Mockito.when(AmbassadorConfig.pusherCallbackURL()).thenReturn("fakeResponse");
 
-        HttpAuthorizer mockHttpAuthorizer = mock(HttpAuthorizer.class);
+        HttpAuthorizer mockHttpAuthorizer = Mockito.mock(HttpAuthorizer.class);
         PowerMockito.whenNew(HttpAuthorizer.class).withAnyArguments().thenReturn(mockHttpAuthorizer);
 
-        HashMap mockHeaders = mock(HashMap.class);
-        when(mockHeaders.put(any(), any())).thenReturn("fake");
-        doNothing().when(mockHttpAuthorizer).setHeaders(any(HashMap.class));
+        HashMap mockHeaders = Mockito.mock(HashMap.class);
+        Mockito.when(mockHeaders.put(Mockito.any(), Mockito.any())).thenReturn("fake");
+        Mockito.doNothing().when(mockHttpAuthorizer).setHeaders(Mockito.any(HashMap.class));
 
-        HashMap mockQueryParams = mock(HashMap.class);
-        when(mockQueryParams.put(any(), any())).thenReturn("fake");
-        doNothing().when(mockHttpAuthorizer).setQueryStringParameters(any(HashMap.class));
+        HashMap mockQueryParams = Mockito.mock(HashMap.class);
+        Mockito.when(mockQueryParams.put(Mockito.any(), Mockito.any())).thenReturn("fake");
+        Mockito.doNothing().when(mockHttpAuthorizer).setQueryStringParameters(Mockito.any(HashMap.class));
 
         PowerMockito.whenNew(HashMap.class).withNoArguments().thenReturn(mockHeaders);
 
-        PusherOptions mockPusherOptions = mock(PusherOptions.class);
-        when(mockPusherOptions.setAuthorizer(any(Authorizer.class))).thenReturn(null);
-        when(mockPusherOptions.setEncrypted(anyBoolean())).thenReturn(null);
+        PusherOptions mockPusherOptions = Mockito.mock(PusherOptions.class);
+        Mockito.when(mockPusherOptions.setAuthorizer(Mockito.any(Authorizer.class))).thenReturn(null);
+        Mockito.when(mockPusherOptions.setEncrypted(Mockito.anyBoolean())).thenReturn(null);
 
         PowerMockito.whenNew(PusherOptions.class).withAnyArguments().thenReturn(mockPusherOptions);
 
-        Pusher mockPusher = mock(Pusher.class);
-        Connection mockConnection = mock(Connection.class);
-        when(mockPusher.getConnection()).thenReturn(mockConnection);
-        when(mockConnection.getState()).thenReturn(null);
+        Pusher mockPusher = Mockito.mock(Pusher.class);
+        Connection mockConnection = Mockito.mock(Connection.class);
+        Mockito.when(mockPusher.getConnection()).thenReturn(mockConnection);
+        Mockito.when(mockConnection.getState()).thenReturn(null);
 
         PowerMockito.whenNew(Pusher.class).withAnyArguments().thenReturn(mockPusher);
 
-        final ConnectionStateChange mockConnectionStateChange = mock(ConnectionStateChange.class);
+        final ConnectionStateChange mockConnectionStateChange = Mockito.mock(ConnectionStateChange.class);
 
         PowerMockito.mockStatic(PusherChannel.class);
         PowerMockito.mockStatic(Utilities.class);
 
-        doAnswer(new Answer() {
+        Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 ConnectionEventListener connectionEventListener = (ConnectionEventListener) invocationOnMock.getArguments()[0];
@@ -209,56 +183,55 @@ public class PusherSDKTest {
                 connectionEventListener.onError("fakeString", "fakeString", new Exception());
                 return null;
             }
-        }).when(mockPusher).connect(any(ConnectionEventListener.class), any(ConnectionState.class));
+        }).when(mockPusher).connect(Mockito.any(ConnectionEventListener.class), Mockito.any(ConnectionState.class));
 
-        PrivateChannelEventListener mockPrivateChannelEventListener = mock(PrivateChannelEventListener.class);
+        PrivateChannelEventListener mockPrivateChannelEventListener = Mockito.mock(PrivateChannelEventListener.class);
 
-        doAnswer(new Answer() {
+        Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 PrivateChannelEventListener privateChannelEventListener = (PrivateChannelEventListener) invocation.getArguments()[1];
-//                privateChannelEventListener.
                 return null;
             }
-        }).when(mockPusher).subscribePrivate(anyString(), any(PrivateChannelEventListener.class), anyString());
+        }).when(mockPusher).subscribePrivate(Mockito.anyString(), Mockito.any(PrivateChannelEventListener.class), Mockito.anyString());
 
         // ACT
         pusherSDK.subscribePusher(mockPusherSubscribeCallback);
         pusherSDK.subscribePusher(mockPusherSubscribeCallback);
 
         // ASSERT
-        verify(mockPusher, times(1)).getConnection();
-        verify(mockConnection, times(1)).getState();
+        Mockito.verify(mockPusher, Mockito.times(1)).getConnection();
+        Mockito.verify(mockConnection, Mockito.times(1)).getState();
     }
 
     @Test
     public void setPusherInfoTest() throws Exception {
         // ARRANGE
         String jsonObject = "fakeJson";
-        JSONObject pusherSave = mock(JSONObject.class);
-        JSONObject pusherObject = mock(JSONObject.class);
+        JSONObject pusherSave = Mockito.mock(JSONObject.class);
+        JSONObject pusherObject = Mockito.mock(JSONObject.class);
         PowerMockito.whenNew(JSONObject.class).withNoArguments().thenReturn(pusherSave);
         PowerMockito.whenNew(JSONObject.class).withAnyArguments().thenReturn(pusherObject);
-        when(pusherObject.getString(anyString())).thenReturn("fakeString");
-        when(pusherObject.getJSONArray(anyString())).thenReturn(new JSONArray());
-        when(pusherSave.put(anyString(), anyString())).thenReturn(null);
-        when(pusherSave.put(anyString(), any(JSONArray.class))).thenReturn(null);
-        doNothing().when(mockAmbassadorConfig).setPusherInfo(anyString());
+        Mockito.when(pusherObject.getString(Mockito.anyString())).thenReturn("fakeString");
+        Mockito.when(pusherObject.getJSONArray(Mockito.anyString())).thenReturn(new JSONArray());
+        Mockito.when(pusherSave.put(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
+        Mockito.when(pusherSave.put(Mockito.anyString(), Mockito.any(JSONArray.class))).thenReturn(null);
+        Mockito.doNothing().when(mockAmbassadorConfig).setPusherInfo(Mockito.anyString());
 
         PowerMockito.mockStatic(LocalBroadcastManager.class);
         PowerMockito.mockStatic(AmbassadorSingleton.class);
-        Context mockContext = mock(Context.class);
+        Context mockContext = Mockito.mock(Context.class);
         Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(mockContext);
-        LocalBroadcastManager mockLocalBroadcastManager = mock(LocalBroadcastManager.class);
+        LocalBroadcastManager mockLocalBroadcastManager = Mockito.mock(LocalBroadcastManager.class);
         Mockito.when(LocalBroadcastManager.getInstance(mockContext)).thenReturn(mockLocalBroadcastManager);
-        when(mockLocalBroadcastManager.sendBroadcast(any(Intent.class))).thenReturn(true);
+        Mockito.when(mockLocalBroadcastManager.sendBroadcast(Mockito.any(Intent.class))).thenReturn(true);
 
         // ACT
         pusherSDK.setPusherInfo(jsonObject);
 
         // ASSERT
-        verify(mockAmbassadorConfig).setPusherInfo(anyString());
-        verify(mockLocalBroadcastManager).sendBroadcast(any(Intent.class));
+        Mockito.verify(mockAmbassadorConfig).setPusherInfo(Mockito.anyString());
+        Mockito.verify(mockLocalBroadcastManager).sendBroadcast(Mockito.any(Intent.class));
     }
 
 }
