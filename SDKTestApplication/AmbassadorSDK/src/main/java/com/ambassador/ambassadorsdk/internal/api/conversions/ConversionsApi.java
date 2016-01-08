@@ -15,7 +15,7 @@ import retrofit.client.Response;
 public class ConversionsApi {
 
     /** Client for making Conversions requests to the Ambassador API */
-    public ConversionsClient conversionsClient;
+    private ConversionsClient conversionsClient;
 
     /**
      * Default constructor.

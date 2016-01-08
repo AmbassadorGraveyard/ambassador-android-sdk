@@ -108,7 +108,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
             return;
         }
 
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
 
         pusherSDK.setIdentifyListener(this);
 

@@ -12,7 +12,6 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.Tweet;
 
 import java.io.UnsupportedEncodingException;
-
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -53,7 +52,7 @@ public class RequestManager {
      * @param doInit whether or not to initialize Api objects.
      */
     RequestManager(boolean doInit) {
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
         bulkShareApi = new BulkShareApi(false);
         conversionsApi = new ConversionsApi(false);
         identifyApi = new IdentifyApi(false);

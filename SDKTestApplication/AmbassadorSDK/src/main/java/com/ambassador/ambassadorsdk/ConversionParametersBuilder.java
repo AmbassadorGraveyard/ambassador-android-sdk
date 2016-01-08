@@ -4,9 +4,6 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 
-/**
- * Created by dylan on 12/14/15.
- */
 public class ConversionParametersBuilder {
 
     private static final String TAG = ConversionParametersBuilder.class.getSimpleName();

@@ -29,28 +29,26 @@ public class AmbassadorSDK {
     static PusherSDK pusherSDK;
 
     public static void presentRAF(Context context, String campaignID) {
-        Intent intent = new Intent(context, AmbassadorActivity.class);
+        Intent intent = buildIntent(context, AmbassadorActivity.class);
         ambassadorConfig.setCampaignID(campaignID);
         context.startActivity(intent);
+    }
+
+    private static Intent buildIntent(Context context, Class target) {
+        return new Intent(context, target);
     }
 
     public static void identify(String emailAddress) {
         ambassadorConfig.setUserEmail(emailAddress);
 
-        IIdentify identify = new IdentifyAugurSDK();
+        IIdentify identify = buildIdentify();
         identify.getIdentity();
 
-        pusherSDK.createPusher(new PusherSDK.PusherSubscribeCallback() {
-            @Override
-            public void pusherSubscribed() {
+        pusherSDK.createPusher(null);
+    }
 
-            }
-
-            @Override
-            public void pusherFailed() {
-
-            }
-        });
+    private static IIdentify buildIdentify() {
+        return new IdentifyAugurSDK();
     }
 
     public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
@@ -58,46 +56,65 @@ public class AmbassadorSDK {
         if (!restrictToInstall || !getConvertedOnInstall()) {
             Utilities.debugLog("Conversion", "restrictToInstall: " + restrictToInstall);
 
-            ConversionUtility conversionUtility = new ConversionUtility(AmbassadorSingleton.get(), conversionParameters);
+            ConversionUtility conversionUtility = buildConversionUtility(conversionParameters);
             conversionUtility.registerConversion();
         }
 
         if (restrictToInstall) setConvertedOnInstall();
     }
 
-    public static void runWithKeys(Context context, String universalToken, String universalID) {
-        AmbassadorSingleton.getInstance().init(context);
-        AmbassadorSingleton.getComponent().inject(new AmbassadorSDK());
+    private static ConversionUtility buildConversionUtility(ConversionParameters conversionParameters) {
+        return new ConversionUtility(AmbassadorSingleton.getInstanceContext(), conversionParameters);
+    }
 
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
-        context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
+    private static Boolean getConvertedOnInstall() {
+        return ambassadorConfig.getConvertedOnInstall();
+    }
+
+    private static void setConvertedOnInstall() {
+        if (!ambassadorConfig.getConvertedOnInstall()) {
+            ambassadorConfig.setConvertOnInstall();
+        }
+    }
+
+    public static void runWithKeys(Context context, String universalToken, String universalID) {
+        AmbassadorSingleton.init(context);
+        AmbassadorSingleton.getInstanceComponent().inject(new AmbassadorSDK());
+
+        registerInstallReceiver(context);
 
         ambassadorConfig.setUniversalToken(universalToken);
         ambassadorConfig.setUniversalID(universalID);
         startConversionTimer();
     }
 
-
-    static Boolean getConvertedOnInstall() {
-        return ambassadorConfig.getConvertedOnInstall();
+    static void registerInstallReceiver(Context context) {
+        IntentFilter intentFilter = buildIntentFilter();
+        intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
+        context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
     }
 
-    static void setConvertedOnInstall() {
-        if (!ambassadorConfig.getConvertedOnInstall()) {
-            ambassadorConfig.setConvertOnInstall();
-        }
+    private static IntentFilter buildIntentFilter() {
+        return new IntentFilter();
     }
 
     static void startConversionTimer() {
-        final ConversionUtility utility = new ConversionUtility(AmbassadorSingleton.get());
-        Timer timer = new Timer();
+        final ConversionUtility utility = buildConversionUtility(AmbassadorSingleton.getInstanceContext());
+        Timer timer = buildTimer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 utility.readAndSaveDatabaseEntries();
             }
         }, 10000, 10000);
+    }
+
+    private static ConversionUtility buildConversionUtility(Context context) {
+        return new ConversionUtility(context);
+    }
+
+    private static Timer buildTimer() {
+        return new Timer();
     }
 
 }

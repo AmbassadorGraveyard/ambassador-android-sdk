@@ -30,6 +30,7 @@ public class BulkShareHelper {
      *
      */
     public enum SocialServiceTrackType {
+
         SMS("sms"),
         EMAIL("email"),
         TWITTER("twitter"),
@@ -45,13 +46,14 @@ public class BulkShareHelper {
         public String toString() {
             return stringValue;
         }
+
     }
 
     /**
      *
      */
     public BulkShareHelper() {
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
     }
 
     /**
@@ -100,7 +102,7 @@ public class BulkShareHelper {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
             String strippedNum = contact.getPhoneNumber().replaceAll("[^0-9]", "");
-            if (strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7 && !verifiedNumbers.contains(strippedNum)) {
+            if ((strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7) && !verifiedNumbers.contains(strippedNum)) {
                 verifiedNumbers.add(strippedNum);
             }
         }
@@ -116,19 +118,20 @@ public class BulkShareHelper {
     static ArrayList<String> verifiedEmailList(List<ContactObject> contactObjects) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
         for (ContactObject contact : contactObjects) {
-            if (BulkShareHelper.isValidEmail(contact.getEmailAddress())) { verifiedEmails.add(contact.getEmailAddress()); }
+            if (BulkShareHelper.isValidEmail(contact.getEmailAddress()) && !verifiedEmails.contains(contact.getEmailAddress())) {
+                verifiedEmails.add(contact.getEmailAddress());
+            }
         }
 
         return verifiedEmails;
     }
-
     /**
      *
      * @param emailAddress
      * @return
      */
-    private static boolean isValidEmail(String emailAddress) {
-        Pattern emailRegex = Pattern.compile("^(.+)@(.+)$");
+    public static boolean isValidEmail(String emailAddress) {
+        Pattern emailRegex = Pattern.compile("^(.+)@(.+)\\.(.+)$");
         Matcher matcher = emailRegex.matcher(emailAddress);
         return matcher.matches();
     }

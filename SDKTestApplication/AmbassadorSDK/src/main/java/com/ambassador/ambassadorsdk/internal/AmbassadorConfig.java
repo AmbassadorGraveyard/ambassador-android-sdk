@@ -24,7 +24,7 @@ public class AmbassadorConfig {
     static final String PUSHER_KEY_PROD = "***REMOVED***";
     public static final Boolean isReleaseBuild = false;
 
-    private Context context = AmbassadorSingleton.get();
+    private Context context = AmbassadorSingleton.getInstanceContext();
     private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     private ServiceSelectorPreferences rafParameters;
 
@@ -214,7 +214,7 @@ public class AmbassadorConfig {
 
     public void nullifyLinkedInIfInvalid(final NullifyCompleteListener listener) {
         if (getLinkedInToken() != null) {
-            RequestManager rm = new RequestManager();
+            RequestManager rm = buildRequestManager();
             rm.getProfileLinkedIn(new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
@@ -232,7 +232,11 @@ public class AmbassadorConfig {
         }
     }
 
-    private void callNullifyComplete(NullifyCompleteListener listener) {
+    RequestManager buildRequestManager() {
+        return new RequestManager();
+    }
+
+    void callNullifyComplete(NullifyCompleteListener listener) {
         if (listener != null) {
             listener.nullifyComplete();
         }
