@@ -34,7 +34,7 @@ public class AmbassadorSDK {
         context.startActivity(intent);
     }
 
-    static Intent buildIntent(Context context, Class target) {
+    private static Intent buildIntent(Context context, Class target) {
         return new Intent(context, target);
     }
 
@@ -47,7 +47,7 @@ public class AmbassadorSDK {
         pusherSDK.createPusher(null);
     }
 
-    static IIdentify buildIdentify() {
+    private static IIdentify buildIdentify() {
         return new IdentifyAugurSDK();
     }
 
@@ -63,15 +63,15 @@ public class AmbassadorSDK {
         if (restrictToInstall) setConvertedOnInstall();
     }
 
-    static ConversionUtility buildConversionUtility(ConversionParameters conversionParameters) {
+    private static ConversionUtility buildConversionUtility(ConversionParameters conversionParameters) {
         return new ConversionUtility(AmbassadorSingleton.getInstanceContext(), conversionParameters);
     }
 
-    static Boolean getConvertedOnInstall() {
+    private static Boolean getConvertedOnInstall() {
         return ambassadorConfig.getConvertedOnInstall();
     }
 
-    static void setConvertedOnInstall() {
+    private static void setConvertedOnInstall() {
         if (!ambassadorConfig.getConvertedOnInstall()) {
             ambassadorConfig.setConvertOnInstall();
         }
@@ -88,9 +88,19 @@ public class AmbassadorSDK {
         startConversionTimer();
     }
 
+    static void registerInstallReceiver(Context context) {
+        IntentFilter intentFilter = buildIntentFilter();
+        intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
+        context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
+    }
+
+    private static IntentFilter buildIntentFilter() {
+        return new IntentFilter();
+    }
+
     static void startConversionTimer() {
-        final ConversionUtility utility = new ConversionUtility(AmbassadorSingleton.getInstanceContext());
-        Timer timer = new Timer();
+        final ConversionUtility utility = buildConversionUtility(AmbassadorSingleton.getInstanceContext());
+        Timer timer = buildTimer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -99,10 +109,12 @@ public class AmbassadorSDK {
         }, 10000, 10000);
     }
 
-    static void registerInstallReceiver(Context context) {
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
-        context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
+    private static ConversionUtility buildConversionUtility(Context context) {
+        return new ConversionUtility(context);
+    }
+
+    private static Timer buildTimer() {
+        return new Timer();
     }
 
 }
