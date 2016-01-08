@@ -4,6 +4,7 @@ import android.app.Instrumentation;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.Intents;
@@ -50,6 +51,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -107,6 +109,9 @@ public class AmbassadorActivityTest {
     public void beforeEachTest() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         context = instrumentation.getTargetContext().getApplicationContext();
+
+        SystemAnimations systemAnimations = new SystemAnimations(context);
+        systemAnimations.disableAll();
 
         parameters = new ServiceSelectorPreferences();
         parameters.defaultShareMessage = "Check out this company!";
@@ -216,7 +221,7 @@ public class AmbassadorActivityTest {
     }
 
     @Test
-    public void testContactsEmail() {
+    public void testContactsEmail() throws Exception {
         //start recording fired Intents
         Intents.init();
         //click email icon
@@ -309,9 +314,12 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.rlSend)).perform(click());
         //dialog "url not entered" should be showing at this point - since I can't check that programmatically-created dialog, just check that underlying views are not present
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
+        Espresso.closeSoftKeyboard();
         pressBack();
         onView(withId(R.id.btnEdit)).perform(click());
-        onView(withId(R.id.etShareMessage)).perform(typeText("http://staging.mbsy.co/jHjl"), closeSoftKeyboard());
+        onView(withId(R.id.etShareMessage)).perform(typeText("http://staging.mbsy.co/jHjl"));
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
         onView(withId(R.id.btnDone)).perform(click());
 
         doAnswer(new Answer<Void>() {
@@ -341,7 +349,7 @@ public class AmbassadorActivityTest {
     }
 
     @Test
-    public void testContactsSMS() {
+    public void testContactsSMS() throws Exception {
         //start recording fired Intents
         Intents.init();
         //click sms icon
@@ -383,12 +391,17 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.rlSend)).perform(click());
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
         pressBack();
+        Thread.sleep(120);
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
 
         onView(withId(R.id.rlSend)).perform(click());
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
@@ -399,10 +412,14 @@ public class AmbassadorActivityTest {
 
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
-        onView(withId(R.id.etFirstName)).perform(typeText("Test"), closeSoftKeyboard());
+        onView(withId(R.id.etFirstName)).perform(typeText("Test"));
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
-        onView(withId(R.id.etLastName)).perform(typeText("User"), closeSoftKeyboard());
+        onView(withId(R.id.etLastName)).perform(typeText("User"));
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
 
         doNothing().when(ambassadorConfig).setPusherInfo(anyString());
         doNothing().when(ambassadorConfig).setUserFullName(anyString(), anyString());
@@ -426,13 +443,16 @@ public class AmbassadorActivityTest {
         })
         .when(requestManager).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
 
-        //this call will fail, so make sure the dialog is still present and the mocks never get called
+        ///this call will fail, so make sure the dialog is still present and the mocks never get called
         onView(withId(R.id.btnContinue)).perform(click());
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
         //this call will succeed, so make sure the mocks get called the appropriate number of times, the dialog is not present, and the main layout appears
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(100);
         onView(withId(R.id.btnContinue)).perform(click());
+        Thread.sleep(100);
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
         verify(requestManager, times(2)).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
 
@@ -472,6 +492,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
         onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
+        Espresso.closeSoftKeyboard();
         pressBack();
         verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
@@ -499,7 +520,7 @@ public class AmbassadorActivityTest {
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         String linkedInText = _getRandomNumber();
-        onView(withId(R.id.etMessage)).perform(typeText(linkedInText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeTextIntoFocusedView(linkedInText), closeSoftKeyboard());
 
         doNothing().when(requestManager).bulkShareTrack(any(BulkShareHelper.SocialServiceTrackType.class));
         doAnswer(new Answer<Void>() {
@@ -529,7 +550,7 @@ public class AmbassadorActivityTest {
         //make sure message has been restored
         onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
-        onView(withId(R.id.etMessage)).perform(typeText(linkedInText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeTextIntoFocusedView(linkedInText), closeSoftKeyboard());
 
         onView(withId(R.id.btnSend)).perform(click());
         //failure shouldn't dismiss the dialog
@@ -605,8 +626,9 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.ivHeaderImg)).check(matches(isDisplayed()));
         onView(withId(R.id.btnCancel)).check(matches(isDisplayed()));
         onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
-        onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
-        onView(withText("Twitter Post")).check(matches(isDisplayed()));
+        onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));onView(withText("Twitter Post")).check(matches(isDisplayed()));
+
+        Espresso.closeSoftKeyboard();
         pressBack();
         verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
@@ -634,7 +656,7 @@ public class AmbassadorActivityTest {
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         String tweetText = _getRandomNumber();
-        onView(withId(R.id.etMessage)).perform(typeText(tweetText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeTextIntoFocusedView(tweetText), closeSoftKeyboard());
 
         doNothing().when(requestManager).bulkShareTrack(any(BulkShareHelper.SocialServiceTrackType.class));
         doAnswer(new Answer<Void>() {
@@ -665,7 +687,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
-        onView(withId(R.id.etMessage)).perform(typeText(tweetText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeTextIntoFocusedView(tweetText), closeSoftKeyboard());
 
         onView(withId(R.id.btnSend)).perform(click());
         //failure shouldn't dismiss the dialog
