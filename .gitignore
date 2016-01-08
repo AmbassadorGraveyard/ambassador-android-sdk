@@ -30,5 +30,5 @@ proguard/
 .iml
 SDKTestApplication/.idea/misc.xml
 SDKTestApplication/AmbassadorSDK/AmbassadorSDK.iml
-SDKTestApplication/.idea/gradle.xml
 SDKTestApplication/app/app.iml
+
