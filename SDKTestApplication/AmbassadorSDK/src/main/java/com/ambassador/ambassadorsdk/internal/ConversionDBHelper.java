@@ -6,10 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/**
- * Created by JakeDunahee on 8/21/15.
- */
 public class ConversionDBHelper extends SQLiteOpenHelper {
+
     public static final int DATABASE_VERSION = 1;
     public static final String DATABASE_NAME = "Conversion.db";
 
@@ -24,13 +22,13 @@ public class ConversionDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // This database is only a cache for online data, so its upgrade policy is to simply to discard the data and start over
         db.execSQL(ConversionSQLStrings.SQL_DELETE_ENTRIES);
         onCreate(db);
     }
 
     public static ContentValues createValuesFromConversion(ConversionParameters parameters) {
-        ContentValues values = new ContentValues();
+        ContentValues values = buildContentValues();
+
         values.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN, parameters.mbsy_campaign);
         values.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL, parameters.mbsy_email);
         values.put(ConversionSQLStrings.ConversionSQLEntry.MBSY_FIRST_NAME, parameters.mbsy_first_name);
@@ -53,8 +51,13 @@ public class ConversionDBHelper extends SQLiteOpenHelper {
         return values;
     }
 
+    static ContentValues buildContentValues() {
+        return new ContentValues();
+    }
+
     public static ConversionParameters createConversionParameterWithCursor(Cursor cursor) {
-        ConversionParameters parameters = new ConversionParameters();
+        ConversionParameters parameters = buildConversionParameters();
+
         parameters.mbsy_campaign = cursor.getInt(cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN));
         parameters.mbsy_email = cursor.getString(cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL));
         parameters.mbsy_first_name = cursor.getString(cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry.MBSY_FIRST_NAME));
@@ -77,10 +80,15 @@ public class ConversionDBHelper extends SQLiteOpenHelper {
         return parameters;
     }
 
+    static ConversionParameters buildConversionParameters() {
+        return new ConversionParameters();
+    }
+
     public static void deleteRow(SQLiteDatabase db, int rowId) {
         String selection = ConversionSQLStrings.ConversionSQLEntry._ID + " LIKE ?";
         String[] selectionArgs = { String.valueOf(rowId) };
         db.delete(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, selection, selectionArgs);
         Utilities.debugLog("Conversion", "Removing row " + String.valueOf(rowId) + " with selection: " + selection);
     }
+
 }

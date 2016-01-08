@@ -1,9 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
-/**
- * Created by JakeDunahee on 8/21/15.
- */
 public class ConversionParameters {
+
     public int mbsy_campaign;
     public String mbsy_email;
     public String mbsy_first_name;
@@ -22,9 +20,8 @@ public class ConversionParameters {
     public String mbsy_event_data2;
     public String mbsy_event_data3;
     public int mbsy_is_approved;
-    protected String mbsy_short_code; //package-private - not modifiable by sdk users
+    protected String mbsy_short_code;
 
-    // Sets up default constructor for parameters
     public ConversionParameters() {
         mbsy_campaign = -1;
         mbsy_email = "";
@@ -47,7 +44,6 @@ public class ConversionParameters {
         mbsy_short_code = "";
     }
 
-    // Boolean that checks if the conversion parameters are valid
     public boolean isValid() {
         return mbsy_campaign > -1 && !mbsy_email.equals("") && mbsy_revenue > -1;
     }

@@ -47,7 +47,7 @@ public class PusherSDK {
     RequestManager requestManager;
 
     public PusherSDK() {
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
     }
 
     public void createPusher(final PusherSubscribeCallback pusherSubscribeCallback) {
@@ -67,7 +67,9 @@ public class PusherSDK {
 
             @Override
             public void onFailure(Object failureResponse) {
-                pusherSubscribeCallback.pusherFailed();
+                if (pusherSubscribeCallback != null) {
+                    pusherSubscribeCallback.pusherFailed();
+                }
                 Utilities.debugLog("createPusher", "CREATE PUSHER failed with Response = " + failureResponse);
             }
         });
@@ -154,7 +156,9 @@ public class PusherSDK {
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-                pusherSubscribeCallback.pusherSubscribed();
+                if (pusherSubscribeCallback != null) {
+                    pusherSubscribeCallback.pusherSubscribed();
+                }
                 Utilities.debugLog("PusherSDK", "Successfully subscribed to " + channelName);
             }
 
@@ -226,7 +230,7 @@ public class PusherSDK {
 
             //tell MainActivity to update edittext with url
             Intent intent = new Intent("pusherData");
-            LocalBroadcastManager.getInstance(AmbassadorSingleton.get()).sendBroadcast(intent);
+            LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }

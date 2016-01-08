@@ -6,13 +6,13 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 
-/**
- * Created by coreyfields on 10/7/15.
- */
 public class AmbassadorSingleton {
-    private Context appContext;
-    private static AmbassadorApplicationComponent component = null;
-    public static AmbassadorApplicationModule amb;
+
+    private static AmbassadorSingleton instance;
+
+    private Context context;
+    private AmbassadorApplicationComponent component;
+    public AmbassadorApplicationModule amb;
 
     @Singleton
     @Component(modules=AmbassadorApplicationModule.class)
@@ -21,50 +21,76 @@ public class AmbassadorSingleton {
         //the testing component will provide its own overrides to inject into the tests
     }
 
-    public void init(Context context) {
-        if (appContext == null) {
-            appContext = context;
+    public static void init(Context context) {
+        if (getInstanceContext() == null) {
+            setInstanceContext(context);
         }
 
-        //get injected modules we need
-        if (component == null) {
-            amb = new AmbassadorApplicationModule();
-            ApplicationComponent component = DaggerAmbassadorSingleton_ApplicationComponent.builder().ambassadorApplicationModule(amb).build();
-            setComponent(component);
+        if (getInstanceComponent() == null) {
+            setInstanceAmbModule(buildAmbassadorApplicationModule());
+            ApplicationComponent component = DaggerAmbassadorSingleton_ApplicationComponent.builder().ambassadorApplicationModule(getInstanceAmbModule()).build();
+            setInstanceComponent(component);
         }
     }
 
-    public static AmbassadorApplicationComponent getComponent() {
-        return component;
+    static AmbassadorApplicationModule buildAmbassadorApplicationModule() {
+        return new AmbassadorApplicationModule();
     }
 
-    public static void setComponent(AmbassadorApplicationComponent comp) {
-        component = comp;
+    private void setContext(Context context) {
+        this.context = context;
     }
 
-    public static AmbassadorApplicationModule getAmbModule() {
-        return amb;
+    public static void setInstanceContext(Context context) {
+        getInstance().setContext(context);
     }
 
-    public static void setAmbModule(AmbassadorApplicationModule ambModule) {
-        amb = ambModule;
+    public Context getContext() {
+        return context;
     }
 
-    private Context getContext() {
-        return appContext;
-    }
-
-    public static Context get() {
+    public static Context getInstanceContext() {
         return getInstance().getContext();
     }
 
-    private static AmbassadorSingleton instance;
+    public AmbassadorApplicationComponent getComponent() {
+        return component;
+    }
+
+    public static AmbassadorApplicationComponent getInstanceComponent() {
+        return getInstance().getComponent();
+    }
+
+    private void setComponent(AmbassadorApplicationComponent component) {
+        this.component = component;
+    }
+
+    public static void setInstanceComponent(AmbassadorApplicationComponent component) {
+        AmbassadorSingleton.getInstance().setComponent(component);
+    }
+
+    public AmbassadorApplicationModule getAmbModule() {
+        return amb;
+    }
+
+    public static AmbassadorApplicationModule getInstanceAmbModule() {
+        return getInstance().getAmbModule();
+    }
+
+    private void setAmbModule(AmbassadorApplicationModule ambModule) {
+        this.amb = ambModule;
+    }
+
+    public static void setInstanceAmbModule(AmbassadorApplicationModule ambModule) {
+        getInstance().setAmbModule(ambModule);
+    }
+
+    public static boolean isValid() {
+        return getInstanceComponent() != null && getInstanceAmbModule() != null;
+    }
 
     public static AmbassadorSingleton getInstance() {
         return instance == null ? (instance = new AmbassadorSingleton()) : instance;
     }
 
-    public static boolean isValid() {
-        return component != null && amb != null;
-    }
 }

@@ -77,7 +77,7 @@ public class RequestManagerTest {
         );
 
         AmbassadorApplicationComponent mockComponent = Mockito.mock(AmbassadorApplicationComponent.class);
-        Mockito.when(AmbassadorSingleton.getComponent()).thenReturn(mockComponent);
+        Mockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(mockComponent);
         Mockito.doNothing().when(mockComponent).inject(Mockito.any(RequestManager.class));
 
         bulkShareApi = Mockito.mock(BulkShareApi.class);

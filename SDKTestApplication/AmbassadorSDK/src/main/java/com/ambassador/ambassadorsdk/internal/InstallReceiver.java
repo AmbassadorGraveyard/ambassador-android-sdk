@@ -19,7 +19,7 @@ public class InstallReceiver extends BroadcastReceiver {
     AmbassadorConfig ambassadorConfig;
 
     public InstallReceiver() {
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
     }
 
     @Override

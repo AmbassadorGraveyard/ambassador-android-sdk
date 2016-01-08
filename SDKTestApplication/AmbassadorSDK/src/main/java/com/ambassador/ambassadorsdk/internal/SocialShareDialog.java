@@ -50,7 +50,7 @@ public class SocialShareDialog extends Dialog {
 
     public SocialShareDialog(@ForActivity Context context) {
         super(context);
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_social_share);

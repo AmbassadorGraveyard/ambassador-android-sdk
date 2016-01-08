@@ -161,8 +161,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         Fabric.with(this, new TwitterCore(twitterAuthConfig));
 
         //tell Dagger to inject dependencies
-        AmbassadorSingleton.getAmbModule().setContext(this);
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceAmbModule().setContext(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
 
         ambassadorConfig.setRafParameters(
                 getResources().getString(R.string.RAFdefaultShareMessage),

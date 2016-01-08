@@ -36,14 +36,14 @@ public class ConversionUtility {
     public ConversionUtility(Context context) {
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
     }
 
     public ConversionUtility(Context context, ConversionParameters parameters) {
         this.parameters = parameters;
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
-        AmbassadorSingleton.getComponent().inject(this);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
     }
 
     public void registerConversion() {
