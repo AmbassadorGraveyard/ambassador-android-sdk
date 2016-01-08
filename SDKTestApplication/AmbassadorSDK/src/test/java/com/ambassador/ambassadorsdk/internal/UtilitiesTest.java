@@ -9,7 +9,6 @@ import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
-import android.widget.TextView;
 
 import junit.framework.Assert;
 
@@ -172,21 +171,6 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void presentUrlDialogTest() {
-
-    }
-
-    @Test
-    public void presentNonCancelableMessageDialogTest() {
-
-    }
-
-    @Test
-    public void debugLogTest() {
-
-    }
-
-    @Test
     public void getScreenDensityTest() {
         // ARRANGE
         Resources resources = Mockito.mock(Resources.class);
@@ -221,6 +205,7 @@ public class UtilitiesTest {
         Assert.assertTrue(connected);
     }
 
+    @Test
     public void isConnectedFalseTest() {
         // ARRANGE
         ConnectivityManager connectivityManager = Mockito.mock(ConnectivityManager.class);
@@ -260,16 +245,7 @@ public class UtilitiesTest {
 
     @Test
     public void cutTextToShowTest() {
-        // ARRANGE
-        String text = "ambassador";
-        TextView textView = Mockito.mock(TextView.class);
-        float maxWidth = 120f;
 
-
-        // ACT
-        //Utilities.cutTextToShow(text, textView, maxWidth);
-
-        // ASSERT
     }
 
 }
