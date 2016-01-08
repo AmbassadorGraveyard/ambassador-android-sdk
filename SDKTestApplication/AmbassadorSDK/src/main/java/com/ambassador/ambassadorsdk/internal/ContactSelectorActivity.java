@@ -239,6 +239,12 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        pusherSDK.setIdentifyListener(null);
+    }
+
     private void updateCharCounter(int length) {
         tvSendCount.setText("(" + length + "/" + MAX_TEXT_LENGTH + ")");
         if (length > MAX_TEXT_LENGTH) {
