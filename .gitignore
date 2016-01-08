@@ -29,3 +29,4 @@ proguard/
 
 *.iml
 SDKTestApplication/.idea/misc.xml
+SDKTestApplication/.idea/gradle.xml
