@@ -22,6 +22,7 @@ public class AmbassadorConfig {
     static final String PUSHER_KEY_DEV = new StringResource(R.string.pusher_key_dev).getValue();
     static final String PUSHER_KEY_PROD = new StringResource(R.string.pusher_key_prod).getValue();
     static final String AUGUR_API_KEY = new StringResource(R.string.augur_api_key).getValue();
+
     public static final Boolean isReleaseBuild = false;
 
     private Context context = AmbassadorSingleton.getInstanceContext();

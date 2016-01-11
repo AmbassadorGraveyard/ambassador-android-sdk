@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    
     <string name="app_name">Ambassador SDK</string>
-    <string name="get_name_header">One more thing!</string>
-    <string name="get_name_explanation">We want to make sure your friends know who they are receiving this referral from. Please enter your first and last name.</string>
 
     <!-- GENERIC -->
     <string name="ok">OK</string>
@@ -28,6 +27,11 @@
     <string name="share_message_empty">Sorry, you must enter a message to share.</string>
     <string name="blank_twitter">Cannot share a blank Tweet.</string>
     <string name="blank_linkedin">Cannot share a blank post.</string>
+    <!-- // -->
+
+    <!-- GET NAME DIALOG -->
+    <string name="get_name_header">One more thing!</string>
+    <string name="get_name_explanation">We want to make sure your friends know who they are receiving this referral from. Please enter your first and last name.</string>
     <!-- // -->
 
     <!-- ACTIONS -->
