@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -61,7 +62,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
 
         loader = (ProgressBar) findViewById(R.id.loadingPanel);
 
-        String authUrl = LinkedInApi.getAuthorizationUrl("code", "***REMOVED***", "http://localhost:2999", "987654321", "r_basicprofile", "w_share");
+        String authUrl = LinkedInApi.getAuthorizationUrl("code", AmbassadorConfig.LINKED_IN_CLIENT_ID, AmbassadorConfig.LINKED_IN_CALLBACK_URL, "987654321", "r_basicprofile", "w_share");
 
         WebView webView = (WebView)findViewById(R.id.wvSocial);
         WebSettings settings = webView.getSettings();
@@ -152,13 +153,13 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                 requestManager.linkedInLoginRequest(requestToken, new RequestManager.RequestCompletion() {
                     @Override
                     public void onSuccess(Object successResponse) {
-                        Toast.makeText(getApplicationContext(), "Logged in successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
                         finish();
                     }
 
                     @Override
                     public void onFailure(Object failureResponse) {
-                        Toast.makeText(getApplicationContext(), "Unable to log in, please try again!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), new StringResource(R.string.login_failure).getValue(), Toast.LENGTH_SHORT).show();
                         view.loadUrl(LinkedInApi.lastGeneratedAuthorizationUrl);
                     }
                 });

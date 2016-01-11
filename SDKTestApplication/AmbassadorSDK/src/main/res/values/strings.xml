@@ -1,26 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Ambassador SDK</string>
-    <string name="action_settings">Settings</string>
     <string name="get_name_header">One more thing!</string>
     <string name="get_name_explanation">We want to make sure your friends know who they are receiving this referral from. Please enter your first and last name.</string>
-    <string name="missing_url_dialog_message">Your Referral Link is not included in the message:</string>
-    <string name="contacts_permission_denied_title">Sorry!</string>
-    <string name="contacts_permission_denied_message">We need to view your contacts to use this feature. Since you denied permission, we\'re sending you back.</string>
-    
+
     <!-- GENERIC -->
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="loading">Loading</string>
+    <string name="sharing">Sharing</string>
+    <string name="hold_on">Hold on!</string>
+    <string name="sorry">Sorry!</string>
     <!-- // -->
 
     <!-- STATUS -->
     <string name="login_success">Logged in successfully!</string>
     <string name="login_failure">Logged in successfully!</string>
-    <string name="post_success">Posted successfully!</string>
-    <string name="post_failure">Unable to post. Please try again.</string>
+    <string name="post_success">Shared successfully!</string>
+    <string name="post_failure">Unable to share. Please try again.</string>
     <string name="connection_failure">There is a problem with your connection.</string>
     <string name="loading_failure">There seems to be an issue while attempting to load. Please try again.</string>
+    <string name="update_failure">Unable to update information. Please try again.</string>
+    <string name="first_name_empty">Please enter your first name!</string>
+    <string name="last_name_empty">Please enter your last name!</string>
+    <string name="url_missing">Your Referral Link is not included in the message:</string>
+    <string name="contacts_permission_denied">We need to view your contacts to use this feature. Since you denied permission, we\'re sending you back.</string>
+    <string name="share_message_empty">Sorry, you must enter a message to share.</string>
+    <string name="blank_twitter">Cannot share a blank Tweet.</string>
+    <string name="blank_linkedin">Cannot share a blank post.</string>
     <!-- // -->
 
     <!-- ACTIONS -->
@@ -30,6 +37,10 @@
     <!-- AMBASSADOR -->
     <string name="ambassador_api_url">https://api.getambassador.com</string>
     <string name="ambassador_api_url_dev">https://dev-ambassador-api.herokuapp.com</string>
+    <!-- // -->
+
+    <!-- AUGUR -->
+    <string name="augur_api_key">***REMOVED***</string>
     <!-- // -->
 
     <!-- FACEBOOK -->
