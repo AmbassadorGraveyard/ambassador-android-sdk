@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.utils.StringResource;
 
 public class Utilities {
 
@@ -60,8 +61,8 @@ public class Utilities {
 
     public static void presentUrlDialog(Context context, final EditText editText, final String url, final UrlAlertInterface alertInterface) {
         AlertDialog dialogBuilder = new AlertDialog.Builder(context)
-                .setTitle("Hold on!")
-                .setMessage(context.getResources().getString(R.string.missing_url_dialog_message) + " " + url)
+                .setTitle(new StringResource(R.string.hold_on).getValue())
+                .setMessage(new StringResource(R.string.url_missing).getValue() + " " + url)
                 .setPositiveButton("Continue Sending", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -84,7 +85,7 @@ public class Utilities {
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton("OK", okayOnClickListener)
+                .setPositiveButton(new StringResource(R.string.ok).getValue(), okayOnClickListener)
                 .setCancelable(false)
                 .show();
 

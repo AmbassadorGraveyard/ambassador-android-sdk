@@ -233,7 +233,7 @@ public class RequestManager {
                 if (e.toString().toLowerCase().contains("no authentication")) {
                     completion.onFailure("auth");
                 } else {
-                    completion.onFailure("Failure Postring to Twitter");
+                    completion.onFailure("Failure Posting to Twitter");
                 }
                 Utilities.debugLog("amb-request", "FAILURE: RequestManager.postToTwitter(...)");
             }

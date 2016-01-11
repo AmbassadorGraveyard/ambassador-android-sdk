@@ -83,7 +83,8 @@ public class ContactInfoDialog extends Dialog {
         tvName.setText(contactObject.getName());
 
         if (isPhone) {
-            tvNumberOrEmail.setText(contactObject.getType() + " - " + contactObject.getPhoneNumber());
+            String separator = " - ";
+            tvNumberOrEmail.setText(contactObject.getType() + separator + contactObject.getPhoneNumber());
         } else {
             tvNumberOrEmail.setText(contactObject.getEmailAddress());
         }
