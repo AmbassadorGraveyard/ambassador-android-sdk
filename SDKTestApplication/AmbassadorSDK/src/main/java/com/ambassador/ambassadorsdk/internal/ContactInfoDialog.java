@@ -65,12 +65,12 @@ public class ContactInfoDialog extends Dialog {
 
     public void setContactObject(ContactObject contactObject, boolean isPhone) {
         this.contactObject = contactObject;
-        if (contactObject.getPicBmp() != null) {
-            ivPhoto.setImageBitmap(contactObject.getPicBmp());
+        if (contactObject.getPictureBitmap() != null) {
+            ivPhoto.setImageBitmap(contactObject.getPictureBitmap());
         } else if (contactObject.getPictureUri() != null) {
             Bitmap bmp = loadBmp(contactObject.getPictureUri());
             if (bmp != null) {
-                contactObject.setPicBmp(bmp);
+                contactObject.setPictureBitmap(bmp);
                 ivPhoto.setImageBitmap(bmp);
             } else {
                 ivPhoto.setBackground(new ColorDrawable(getOwnerActivity().getResources().getColor(R.color.contactsToolBar)));
