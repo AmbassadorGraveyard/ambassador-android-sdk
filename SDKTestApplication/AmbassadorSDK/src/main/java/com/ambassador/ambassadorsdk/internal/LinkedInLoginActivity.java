@@ -53,7 +53,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         AmbassadorSingleton.getInstanceComponent().inject(this);
 
         if (!Utilities.isConnected(this)) {
-            Toast.makeText(this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }

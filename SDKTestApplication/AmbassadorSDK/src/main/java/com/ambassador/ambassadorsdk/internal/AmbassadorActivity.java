@@ -247,7 +247,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
                 @Override
                 public void pusherFailed() {
-                    Toast.makeText(getApplicationContext(), new StringResource(R.string.connection_error).getValue(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
                     finish();
                 }
             });
@@ -268,7 +268,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
             @Override
             public void pusherFailed() {
-                Toast.makeText(getApplicationContext(), new StringResource(R.string.connection_error).getValue(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
