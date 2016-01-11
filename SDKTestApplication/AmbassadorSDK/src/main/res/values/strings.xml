@@ -7,20 +7,57 @@
     <string name="missing_url_dialog_message">Your Referral Link is not included in the message:</string>
     <string name="contacts_permission_denied_title">Sorry!</string>
     <string name="contacts_permission_denied_message">We need to view your contacts to use this feature. Since you denied permission, we\'re sending you back.</string>
-    <string name="connection_error">There is a problem with your connection.</string>
 
-    <!-- EXTERNAL API KEYS/IDS -->
+    <!-- ACTIONS -->
+    <string name="install_referrer_action">com.android.vending.INSTALL_REFERRER</string>
+    <!-- // -->
+
+    <!-- GENERIC -->
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="loading">Loading</string>
+    <!-- // -->
+
+    <!-- STATUS -->
+    <string name="login_success">Logged in successfully!</string>
+    <string name="login_failure">Logged in successfully!</string>
+    <string name="post_success">Posted successfully!</string>
+    <string name="post_failure">Unable to post. Please try again.</string>
+    <string name="connection_failure">There is a problem with your connection.</string>
+    <string name="loading_failure">There seems to be an issue while attempting to load. Please try again.</string>
+    <!-- // -->
+
+    <!-- ACTIONS -->
+    <string name="copied_to_clipboard">Copied to clipboard!</string>
+    <!-- // -->
+
+    <!-- AMBASSADOR -->
+    <string name="ambassador_api_url">https://api.getambassador.com</string>
+    <string name="ambassador_api_url_dev">https://dev-ambassador-api.herokuapp.com</string>
+    <!-- // -->
+
+    <!-- FACEBOOK -->
     <string name="facebook_app_id">***REMOVED***</string>
+    <!-- // -->
+
+    <!-- TWITTER -->
+    <string name="twitter_consumer_key">***REMOVED***</string>
+    <string name="twitter_consumer_secret">***REMOVED***</string>
+    <string name="twitter_reauthenticate_message">We need you to re-authenticate Twitter. Continue?</string>
+    <!-- // -->
+
+    <!-- LINKEDIN -->
     <string name="linked_in_client_id">***REMOVED***</string>
     <string name="linked_in_client_secret">***REMOVED***</string>
     <string name="linked_in_callback_url">http://localhost:2999</string>
+    <string name="linked_in_reauthenticate_message">We need you to re-authenticate LinkedIn. Continue?</string>
+    <!-- // -->
+
+    <!-- PUSHER -->
     <string name="pusher_key_dev">***REMOVED***</string>
     <string name="pusher_key_prod">***REMOVED***</string>
-
-    <!-- URLS -->
-    <string name="ambassador_api_url">https://api.getambassador.com</string>
-    <string name="ambassador_api_url_dev">https://dev-ambassador-api.herokuapp.com</string>
     <string name="pusher_callback_url">https://api.getambassador.com/auth/subscribe/</string>
     <string name="pusher_callback_url_dev">https://dev-ambassador-api.herokuapp.com/auth/subscribe/</string>
+    <!-- // -->
 
 </resources>
