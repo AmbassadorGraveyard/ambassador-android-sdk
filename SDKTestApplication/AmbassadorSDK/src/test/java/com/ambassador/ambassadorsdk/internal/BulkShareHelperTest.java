@@ -117,17 +117,17 @@ public class BulkShareHelperTest {
     public void verifiedSMSListTest() {
         // ARRANGE
         List<ContactObject> contacts = new ArrayList<>();
-        contacts.add(new ContactObject(null, null, null, null, "313-329-1104"));
-        contacts.add(new ContactObject(null, null, null, null, "1-313-329-1104"));
-        contacts.add(new ContactObject(null, null, null, null, "3133291104"));
-        contacts.add(new ContactObject(null, null, null, null, "13233291104"));
-        contacts.add(new ContactObject(null, null, null, null, "+1-313-329-1104"));
-        contacts.add(new ContactObject(null, null, null, null, "123456789012341223122"));
-        contacts.add(new ContactObject(null, null, null, null, "+1-cats-333-329-1104"));
-        contacts.add(new ContactObject(null, null, null, null, "1-313"));
-        contacts.add(new ContactObject(null, null, null, null, "12345"));
-        contacts.add(new ContactObject(null, null, null, null, "phoneNumber"));
-        contacts.add(new ContactObject(null, null, null, null, "1-3-1-3-3-2-9-1-1-0-4"));
+        contacts.add(new ContactObject.Builder().setPhoneNumber("313-329-1104").build());
+        contacts.add(new ContactObject.Builder().setPhoneNumber("1-313-329-1104").build());
+        contacts.add(new ContactObject.Builder().setPhoneNumber("3133291104").build());
+        contacts.add(new ContactObject.Builder().setPhoneNumber("13233291104").build());
+        contacts.add(new ContactObject.Builder().setPhoneNumber("+1-313-329-1104").build());
+        contacts.add(new ContactObject.Builder().setPhoneNumber("123456789012341223122").build());
+        contacts.add(new ContactObject.Builder().setPhoneNumber("+1-cats-333-329-1104").build());
+        contacts.add(new ContactObject.Builder().setPhoneNumber("1-313").build());
+        contacts.add(new ContactObject.Builder().setPhoneNumber("12345").build());
+        contacts.add(new ContactObject.Builder().setPhoneNumber("phoneNumber").build());
+        contacts.add(new ContactObject.Builder().setPhoneNumber("1-3-1-3-3-2-9-1-1-0-4").build());
 
         // ACT
         List<String> verified = BulkShareHelper.verifiedSMSList(contacts);
@@ -144,12 +144,12 @@ public class BulkShareHelperTest {
     public void verifiedEmailListTest() {
         // ARRANGE
         List<ContactObject> contacts = new ArrayList<>();
-        contacts.add(new ContactObject(null, null, null, "test@getambassador.com"));
-        contacts.add(new ContactObject(null, null, null, "test"));
-        contacts.add(new ContactObject(null, null, null, "test@getambassador"));
-        contacts.add(new ContactObject(null, null, null, "c@a.io"));
-        contacts.add(new ContactObject(null, null, null, "c@a.io"));
-        contacts.add(new ContactObject(null, null, null, "test@"));
+        contacts.add(new ContactObject.Builder().setEmailAddress("test@getambassador.com").build());
+        contacts.add(new ContactObject.Builder().setEmailAddress("test").build());
+        contacts.add(new ContactObject.Builder().setEmailAddress("test@getambassador").build());
+        contacts.add(new ContactObject.Builder().setEmailAddress("c@a.io").build());
+        contacts.add(new ContactObject.Builder().setEmailAddress("c@a.io").build());
+        contacts.add(new ContactObject.Builder().setEmailAddress("test@").build());
 
         // ACT
         List<String> verified = BulkShareHelper.verifiedEmailList(contacts);
