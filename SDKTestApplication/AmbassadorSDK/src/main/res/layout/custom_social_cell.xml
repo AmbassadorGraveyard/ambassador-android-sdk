@@ -4,8 +4,8 @@
     android:layout_height="80dp">
 
     <RelativeLayout
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/social_option_size"
+        android:layout_height="@dimen/social_option_size"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/rlBackground"
