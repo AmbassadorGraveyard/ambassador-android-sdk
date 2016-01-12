@@ -328,7 +328,14 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
                     type = phoneTypeMap.get(Integer.parseInt(typeNum));
                 }
 
-                ContactObject object = new ContactObject(name, thumbUri, picUri, type, phoneNumber);
+                ContactObject object = new ContactObject.Builder()
+                        .setName(name)
+                        .setPhoneNumber(phoneNumber)
+                        .setType(type)
+                        .setThumbnailUri(thumbUri)
+                        .setPictureUri(picUri)
+                        .build();
+
                 contactList.add(object);
             } while (phoneCursor.moveToNext());
         }
@@ -365,7 +372,13 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
                 }
             }
 
-            contactList.add(new ContactObject(name, null, null, type, phoneNumber));
+            ContactObject contactObject = new ContactObject.Builder()
+                    .setName(name)
+                    .setPhoneNumber(phoneNumber)
+                    .setType(type)
+                    .build();
+
+            contactList.add(contactObject);
         }
     }
 
@@ -384,7 +397,13 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
                 String picUri = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
                 String emailAddress = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                ContactObject object = new ContactObject(name, thumbUri, picUri, emailAddress);
+                ContactObject object = new ContactObject.Builder()
+                        .setName(name)
+                        .setEmailAddress(emailAddress)
+                        .setThumbnailUri(thumbUri)
+                        .setPictureUri(picUri)
+                        .build();
+
                 contactList.add(object);
             }
             while (emailCursor.moveToNext());
@@ -412,7 +431,12 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
             String name = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
             String email = name.substring(0, name.indexOf(" ")).toLowerCase() + "@getambassador.com";
 
-            contactList.add(new ContactObject(name, null, null, email));
+            ContactObject contactObject = new ContactObject.Builder()
+                    .setName(name)
+                    .setEmailAddress(email)
+                    .build();
+
+            contactList.add(contactObject);
         }
     }
 
