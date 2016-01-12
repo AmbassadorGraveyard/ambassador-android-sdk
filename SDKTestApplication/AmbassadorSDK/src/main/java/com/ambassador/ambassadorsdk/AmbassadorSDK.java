@@ -4,17 +4,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
+import com.ambassador.ambassadorsdk.internal.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 
+import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -29,6 +31,26 @@ public class AmbassadorSDK {
     static PusherSDK pusherSDK;
 
     public static void presentRAF(Context context, String campaignID) {
+        RAFOptions rafOptions = new RAFOptions.Builder().build();
+        intentAmbassadorActivity(context, campaignID);
+    }
+
+    public static void presentRAF(Context context, String campaignID, RAFOptions rafOptions) {
+        intentAmbassadorActivity(context, campaignID);
+    }
+
+    public static void presentRAF(Context context, String campaignID, InputStream inputStream) {
+        RAFOptions rafOptions;
+        try {
+            rafOptions = RAFOptionsFactory.decodeResources(inputStream);
+        } catch (Exception e) {
+            rafOptions = new RAFOptions.Builder().build();
+        }
+
+        intentAmbassadorActivity(context, campaignID);
+    }
+
+    private static void intentAmbassadorActivity(Context context, String campaignID) {
         Intent intent = buildIntent(context, AmbassadorActivity.class);
         ambassadorConfig.setCampaignID(campaignID);
         context.startActivity(intent);
