@@ -47,4 +47,5 @@
         <item>Email</item>
         <item>SMS</item>
     </array>
+    <dimen name="socialOptionCornerRadius">0dp</dimen>
 </resources>
