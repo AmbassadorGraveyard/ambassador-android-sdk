@@ -52,7 +52,7 @@ public final class SocialGridModel implements Comparable<SocialGridModel> {
         }
     }
 
-    public static class Builder {
+    public static final class Builder {
 
         private String name;
         private int iconDrawable;
@@ -60,6 +60,8 @@ public final class SocialGridModel implements Comparable<SocialGridModel> {
         private boolean drawBorder;
         private OnClickListener onClickListener;
         private int weight = 1000;
+
+        public Builder() {}
 
         public Builder setName(String name) {
             this.name = name;
