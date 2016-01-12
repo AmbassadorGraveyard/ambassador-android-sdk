@@ -81,6 +81,8 @@ public final class ContactObject implements Comparable<ContactObject> {
         private String emailAddress;
         private String type;
 
+        public Builder() {}
+
         public Builder setName(String name) {
             this.name = name;
             return this;
