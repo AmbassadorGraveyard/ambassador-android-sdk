@@ -2,7 +2,7 @@ package com.ambassador.ambassadorsdk;
 
 import android.graphics.Typeface;
 
-public class RAFOptions {
+public final class RAFOptions {
     
     private String defaultShareMessage = "Check out this company!";
     private String titleText = "RAF Params Welcome Title";
