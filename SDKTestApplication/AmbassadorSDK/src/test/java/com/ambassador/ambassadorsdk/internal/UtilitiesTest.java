@@ -1,7 +1,6 @@
 package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
@@ -94,56 +93,6 @@ public class UtilitiesTest {
         Assert.assertTrue(successResult);
         Assert.assertFalse(failResult);
         Assert.assertFalse(nullResult);
-    }
-
-    @Test
-    public void isTabletTest() {
-        // ARRANGE
-        Resources resources = Mockito.mock(Resources.class);
-        Configuration configuration = Mockito.mock(Configuration.class);
-        Mockito.when(context.getResources()).thenReturn(resources);
-        Mockito.when(resources.getConfiguration()).thenReturn(configuration);
-
-        // ACT
-        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
-        boolean smallCase = Utilities.isTablet(context);
-        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
-        boolean normalCase = Utilities.isTablet(context);
-        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_LARGE;
-        boolean largeCase = Utilities.isTablet(context);
-        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_XLARGE;
-        boolean xlargeCase = Utilities.isTablet(context);
-
-        // ASSERT
-        Assert.assertFalse(smallCase);
-        Assert.assertFalse(normalCase);
-        Assert.assertTrue(largeCase);
-        Assert.assertTrue(xlargeCase);
-    }
-
-    @Test
-    public void deviceTypeTest() {
-        // ARRANGE
-        Resources resources = Mockito.mock(Resources.class);
-        Configuration mockConfiguration = Mockito.mock(Configuration.class);
-        Mockito.when(context.getResources()).thenReturn(resources);
-        Mockito.when(resources.getConfiguration()).thenReturn(mockConfiguration);
-
-        // ACT
-        mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
-        String smallCase = Utilities.deviceType(context);
-        mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
-        String normalCase = Utilities.deviceType(context);
-        mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_LARGE;
-        String largeCase = Utilities.deviceType(context);
-        mockConfiguration.screenLayout = Configuration.SCREENLAYOUT_SIZE_XLARGE;
-        String xlargeCase = Utilities.deviceType(context);
-
-        // ASSERT
-        Assert.assertEquals(smallCase, "SmartPhone");
-        Assert.assertEquals(normalCase, "SmartPhone");
-        Assert.assertEquals(largeCase, "Tablet");
-        Assert.assertEquals(xlargeCase, "Tablet");
     }
 
     @Test
