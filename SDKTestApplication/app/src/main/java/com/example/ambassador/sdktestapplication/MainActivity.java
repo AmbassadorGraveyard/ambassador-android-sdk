@@ -3,6 +3,7 @@ package com.example.ambassador.sdktestapplication;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,7 +73,11 @@ public class MainActivity extends AppCompatActivity {
         btnPresentRAF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AmbassadorSDK.presentRAF(context, "260");
+                try {
+                    AmbassadorSDK.presentRAF(context, "260", getAssets().open("raf.xml"));
+                } catch (Exception e) {
+                    Log.e("e", e.toString());
+                }
             }
         });
 
