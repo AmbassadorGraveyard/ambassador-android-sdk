@@ -3,6 +3,7 @@ package com.ambassador.ambassadorsdk.internal.api.identify;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
+import com.ambassador.ambassadorsdk.utils.ResponseCode;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -78,7 +79,7 @@ public class IdentifyApi {
 
             @Override
             public void failure(RetrofitError error) {
-                if (Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
+                if (new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     // successful
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.identifyRequest(...)");
                 } else {
@@ -110,7 +111,7 @@ public class IdentifyApi {
 
             @Override
             public void failure(RetrofitError error) {
-                if (Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
+                if (new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     completion.onSuccess(requestId);
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
                 } else {
@@ -200,7 +201,7 @@ public class IdentifyApi {
             final int responseCode = connection.getResponseCode();
 
             InputStream iStream = null;
-            iStream = (Utilities.isSuccessfulResponseCode(responseCode)) ? connection.getInputStream() : connection.getErrorStream();
+            iStream = (new ResponseCode(responseCode).isSuccessful()) ? connection.getInputStream() : connection.getErrorStream();
             BufferedReader rd = createBufferedReader(iStream);
             String line;
             StringBuilder responseBuilder = new StringBuilder();
@@ -211,7 +212,7 @@ public class IdentifyApi {
 
             String response = responseBuilder.toString();
 
-            if (Utilities.isSuccessfulResponseCode(responseCode)) {
+            if (new ResponseCode(responseCode).isSuccessful()) {
                 completion.onSuccess(response);
                 Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.externalPusherRequest(...)");
             } else {
