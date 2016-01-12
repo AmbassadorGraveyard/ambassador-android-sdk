@@ -59,7 +59,6 @@ public final class SocialGridModel implements Comparable<SocialGridModel> {
         private int backgroundColor;
         private boolean drawBorder;
         private OnClickListener onClickListener;
-        private boolean disabled = false;
         private int weight = 1000;
 
         public Builder setName(String name) {
