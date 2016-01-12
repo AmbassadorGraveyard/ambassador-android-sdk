@@ -647,7 +647,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
                     _handleContactsPopulation();
                 } else {
                     // Permission denied, kick em out
-                    Utilities.presentNonCancelableMessageDialog(this, new StringResource(R.string.sorry).getValue(), getString(R.string.contacts_permission_denied), new DialogInterface.OnClickListener() {
+                    Utilities.presentNonCancelableMessageDialog(this, new StringResource(R.string.sorry).getValue(), new StringResource(R.string.contacts_permission_denied).getValue(), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();
