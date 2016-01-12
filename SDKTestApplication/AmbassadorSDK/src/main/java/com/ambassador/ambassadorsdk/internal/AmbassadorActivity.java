@@ -618,7 +618,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 .setOnClickListener(new SocialGridModel.OnClickListener() {
                     @Override
                     public void onClick() {
-                        goToContactsPage(true);
+                        goToContactsPage(false);
                     }
                 });
 
@@ -630,7 +630,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 .setOnClickListener(new SocialGridModel.OnClickListener() {
                     @Override
                     public void onClick() {
-
+                        goToContactsPage(true);
                     }
                 });
 
