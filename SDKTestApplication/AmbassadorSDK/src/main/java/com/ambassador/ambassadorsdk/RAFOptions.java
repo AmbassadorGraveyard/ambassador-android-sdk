@@ -4,66 +4,66 @@ import android.graphics.Typeface;
 
 public final class RAFOptions {
     
-    private String defaultShareMessage = "Check out this company!";
-    private String titleText = "RAF Params Welcome Title";
-    private String descriptionText = "RAF Params Welcome Description";
-    private String toolbarTitle = "RAF Params Toolbar Title";
-    private String logoPosition = "0";
+    private String defaultShareMessage;
+    private String titleText;
+    private String descriptionText;
+    private String toolbarTitle;
+    private String logoPosition;
 
-    private int homeBackgroundColor = android.R.color.white;
+    private int homeBackgroundColor;
 
-    private int homeWelcomeTitleColor = R.color.lightGray;
-    private float homeWelcomeTitleSize = 22;
+    private int homeWelcomeTitleColor;
+    private float homeWelcomeTitleSize;
     private Typeface homeWelcomeTitleFont;
 
-    private int homeWelcomeDescriptionColor = R.color.lightGray;
-    private float homeWelcomeDescriptionSize = 18;
+    private int homeWelcomeDescriptionColor;
+    private float homeWelcomeDescriptionSize;
     private Typeface homeWelcomeDescriptionFont;
 
-    private int homeToolbarColor = R.color.ambassador_blue;
-    private int homeToolbarTextColor = android.R.color.white;
+    private int homeToolbarColor;
+    private int homeToolbarTextColor;
     private Typeface homeToolbarTextFont;
-    private int homeToolbarArrowColor = android.R.color.white;
+    private int homeToolbarArrowColor;
 
-    private int homeShareTextBar = R.color.ultraUltraUltraLightGray;
-    private int homeShareTextColor = R.color.ultraLightGray;
-    private float homeShareTextSize = 12;
+    private int homeShareTextBar;
+    private int homeShareTextColor;
+    private float homeShareTextSize;
     private Typeface homeShareTextFont;
 
     private Typeface socialGridTextFont;
 
-    private int contactsListViewBackgroundColor = android.R.color.white;
+    private int contactsListViewBackgroundColor;
 
-    private float contactsListNameSize = 15;
+    private float contactsListNameSize;
     private Typeface contactsListNameFont;
 
-    private float contactsListValueSize = 12;
+    private float contactsListValueSize;
     private Typeface contactsListValueFont;
 
-    private int contactsSendBackground = android.R.color.white;
+    private int contactsSendBackground;
     private Typeface contactSendMessageTextFont;
 
-    private int contactsToolbarColor = R.color.ambassador_blue;
-    private int contactsToolbarTextColor = android.R.color.white;
-    private int contactsToolbarArrowColor = android.R.color.white;
+    private int contactsToolbarColor;
+    private int contactsToolbarTextColor;
+    private int contactsToolbarArrowColor;
 
-    private int contactsSendButtonColor = R.color.ambassador_blue;
-    private int contactsSendButtonTextColor = android.R.color.white;
+    private int contactsSendButtonColor;
+    private int contactsSendButtonTextColor;
 
-    private int contactsDoneButtonTextColor = R.color.ambassador_blue;
+    private int contactsDoneButtonTextColor;
 
-    private int contactsSearchBarColor = android.R.color.transparent;
-    private int contactsSearchIconColor = android.R.color.white;
+    private int contactsSearchBarColor;
+    private int contactsSearchIconColor;
 
-    private int contactNoPhotoAvailableBackgroundColor = R.color.ambassador_blue;
+    private int contactNoPhotoAvailableBackgroundColor;
 
-    private int linkedInToolbarColor = R.color.linkedin_blue;
-    private int linkedInToolbarTextColor = android.R.color.white;
-    private int linkedInToolbarArrowColor = android.R.color.white;
+    private int linkedInToolbarColor;
+    private int linkedInToolbarTextColor;
+    private int linkedInToolbarArrowColor;
 
-    private String[] channels = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
+    private String[] channels;
 
-    public RAFOptions() {}
+    private RAFOptions() {}
 
     public String getDefaultShareMessage() {
         return defaultShareMessage;
@@ -231,174 +231,277 @@ public final class RAFOptions {
 
     public static class Builder {
 
-        RAFOptions rafOptions;
+        private String defaultShareMessage = "Check out this company!";
+        private String titleText = "RAF Params Welcome Title";
+        private String descriptionText = "RAF Params Welcome Description";
+        private String toolbarTitle = "RAF Params Toolbar Title";
+        private String logoPosition = "0";
 
-        public Builder() {
-            rafOptions = new RAFOptions();
-        }
+        private int homeBackgroundColor = android.R.color.white;
+
+        private int homeWelcomeTitleColor = R.color.lightGray;
+        private float homeWelcomeTitleSize = 22;
+        private Typeface homeWelcomeTitleFont;
+
+        private int homeWelcomeDescriptionColor = R.color.lightGray;
+        private float homeWelcomeDescriptionSize = 18;
+        private Typeface homeWelcomeDescriptionFont;
+
+        private int homeToolbarColor = R.color.ambassador_blue;
+        private int homeToolbarTextColor = android.R.color.white;
+        private Typeface homeToolbarTextFont;
+        private int homeToolbarArrowColor = android.R.color.white;
+
+        private int homeShareTextBar = R.color.ultraUltraUltraLightGray;
+        private int homeShareTextColor = R.color.ultraLightGray;
+        private float homeShareTextSize = 12;
+        private Typeface homeShareTextFont;
+
+        private Typeface socialGridTextFont;
+
+        private int contactsListViewBackgroundColor = android.R.color.white;
+
+        private float contactsListNameSize = 15;
+        private Typeface contactsListNameFont;
+
+        private float contactsListValueSize = 12;
+        private Typeface contactsListValueFont;
+
+        private int contactsSendBackground = android.R.color.white;
+        private Typeface contactSendMessageTextFont;
+
+        private int contactsToolbarColor = R.color.ambassador_blue;
+        private int contactsToolbarTextColor = android.R.color.white;
+        private int contactsToolbarArrowColor = android.R.color.white;
+
+        private int contactsSendButtonColor = R.color.ambassador_blue;
+        private int contactsSendButtonTextColor = android.R.color.white;
+
+        private int contactsDoneButtonTextColor = R.color.ambassador_blue;
+
+        private int contactsSearchBarColor = android.R.color.transparent;
+        private int contactsSearchIconColor = android.R.color.white;
+
+        private int contactNoPhotoAvailableBackgroundColor = R.color.ambassador_blue;
+
+        private int linkedInToolbarColor = R.color.linkedin_blue;
+        private int linkedInToolbarTextColor = android.R.color.white;
+        private int linkedInToolbarArrowColor = android.R.color.white;
+
+        private String[] channels = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
+
+        public Builder() {}
 
         public void setDefaultShareMessage(String defaultShareMessage) {
-            rafOptions.defaultShareMessage = defaultShareMessage;
+            this.defaultShareMessage = defaultShareMessage;
         }
 
         public void setTitleText(String titleText) {
-            rafOptions.titleText = titleText;
+            this.titleText = titleText;
         }
 
         public void setDescriptionText(String descriptionText) {
-            rafOptions.descriptionText = descriptionText;
+            this.descriptionText = descriptionText;
         }
 
         public void setToolbarTitle(String toolbarTitle) {
-            rafOptions.toolbarTitle = toolbarTitle;
+            this.toolbarTitle = toolbarTitle;
         }
 
         public void setLogoPosition(String logoPosition) {
-            rafOptions.logoPosition = logoPosition;
+            this.logoPosition = logoPosition;
         }
 
         public void setHomeBackgroundColor(int homeBackgroundColor) {
-            rafOptions.homeBackgroundColor = homeBackgroundColor;
+            this.homeBackgroundColor = homeBackgroundColor;
         }
 
         public void setHomeWelcomeTitleColor(int homeWelcomeTitleColor) {
-            rafOptions.homeWelcomeTitleColor = homeWelcomeTitleColor;
+            this.homeWelcomeTitleColor = homeWelcomeTitleColor;
         }
 
         public void setHomeWelcomeTitleSize(float homeWelcomeTitleSize) {
-            rafOptions.homeWelcomeTitleSize = homeWelcomeTitleSize;
+            this.homeWelcomeTitleSize = homeWelcomeTitleSize;
         }
 
         public void setHomeWelcomeTitleFont(Typeface homeWelcomeTitleFont) {
-            rafOptions.homeWelcomeTitleFont = homeWelcomeTitleFont;
+            this.homeWelcomeTitleFont = homeWelcomeTitleFont;
         }
 
         public void setHomeWelcomeDescriptionColor(int homeWelcomeDescriptionColor) {
-            rafOptions.homeWelcomeDescriptionColor = homeWelcomeDescriptionColor;
+            this.homeWelcomeDescriptionColor = homeWelcomeDescriptionColor;
         }
 
         public void setHomeWelcomeDescriptionSize(float homeWelcomeDescriptionSize) {
-            rafOptions.homeWelcomeDescriptionSize = homeWelcomeDescriptionSize;
+            this.homeWelcomeDescriptionSize = homeWelcomeDescriptionSize;
         }
 
         public void setHomeWelcomeDescriptionFont(Typeface homeWelcomeDescriptionFont) {
-            rafOptions.homeWelcomeDescriptionFont = homeWelcomeDescriptionFont;
+            this.homeWelcomeDescriptionFont = homeWelcomeDescriptionFont;
         }
 
         public void setHomeToolbarColor(int homeToolbarColor) {
-            rafOptions.homeToolbarColor = homeToolbarColor;
+            this.homeToolbarColor = homeToolbarColor;
         }
 
         public void setHomeToolbarTextColor(int homeToolbarTextColor) {
-            rafOptions.homeToolbarTextColor = homeToolbarTextColor;
+            this.homeToolbarTextColor = homeToolbarTextColor;
         }
 
         public void setHomeToolbarTextFont(Typeface homeToolbarTextFont) {
-            rafOptions.homeToolbarTextFont = homeToolbarTextFont;
+            this.homeToolbarTextFont = homeToolbarTextFont;
         }
 
         public void setHomeToolbarArrowColor(int homeToolbarArrowColor) {
-            rafOptions.homeToolbarArrowColor = homeToolbarArrowColor;
+            this.homeToolbarArrowColor = homeToolbarArrowColor;
         }
 
         public void setHomeShareTextBar(int homeShareTextBar) {
-            rafOptions.homeShareTextBar = homeShareTextBar;
+            this.homeShareTextBar = homeShareTextBar;
         }
 
         public void setHomeShareTextColor(int homeShareTextColor) {
-            rafOptions.homeShareTextColor = homeShareTextColor;
+            this.homeShareTextColor = homeShareTextColor;
         }
 
         public void setHomeShareTextSize(float homeShareTextSize) {
-            rafOptions.homeShareTextSize = homeShareTextSize;
+            this.homeShareTextSize = homeShareTextSize;
         }
 
         public void setHomeShareTextFont(Typeface homeShareTextFont) {
-            rafOptions.homeShareTextFont = homeShareTextFont;
+            this.homeShareTextFont = homeShareTextFont;
         }
 
         public void setSocialGridTextFont(Typeface socialGridTextFont) {
-            rafOptions.socialGridTextFont = socialGridTextFont;
+            this.socialGridTextFont = socialGridTextFont;
         }
 
         public void setContactsListViewBackgroundColor(int contactsListViewBackgroundColor) {
-            rafOptions.contactsListViewBackgroundColor = contactsListViewBackgroundColor;
+            this.contactsListViewBackgroundColor = contactsListViewBackgroundColor;
         }
 
         public void setContactsListNameSize(float contactsListNameSize) {
-            rafOptions.contactsListNameSize = contactsListNameSize;
+            this.contactsListNameSize = contactsListNameSize;
         }
 
         public void setContactsListNameFont(Typeface contactsListNameFont) {
-            rafOptions.contactsListNameFont = contactsListNameFont;
+            this.contactsListNameFont = contactsListNameFont;
         }
 
         public void setContactsListValueSize(float contactsListValueSize) {
-            rafOptions.contactsListValueSize = contactsListValueSize;
+            this.contactsListValueSize = contactsListValueSize;
         }
 
         public void setContactsListValueFont(Typeface contactsListValueFont) {
-            rafOptions.contactsListValueFont = contactsListValueFont;
+            this.contactsListValueFont = contactsListValueFont;
         }
 
         public void setContactsSendBackground(int contactsSendBackground) {
-            rafOptions.contactsSendBackground = contactsSendBackground;
+            this.contactsSendBackground = contactsSendBackground;
         }
 
         public void setContactSendMessageTextFont(Typeface contactSendMessageTextFont) {
-            rafOptions.contactSendMessageTextFont = contactSendMessageTextFont;
+            this.contactSendMessageTextFont = contactSendMessageTextFont;
         }
 
         public void setContactsToolbarColor(int contactsToolbarColor) {
-            rafOptions.contactsToolbarColor = contactsToolbarColor;
+            this.contactsToolbarColor = contactsToolbarColor;
         }
 
         public void setContactsToolbarTextColor(int contactsToolbarTextColor) {
-            rafOptions.contactsToolbarTextColor = contactsToolbarTextColor;
+            this.contactsToolbarTextColor = contactsToolbarTextColor;
         }
 
         public void setContactsToolbarArrowColor(int contactsToolbarArrowColor) {
-            rafOptions.contactsToolbarArrowColor = contactsToolbarArrowColor;
+            this.contactsToolbarArrowColor = contactsToolbarArrowColor;
         }
 
         public void setContactsSendButtonColor(int contactsSendButtonColor) {
-            rafOptions.contactsSendButtonColor = contactsSendButtonColor;
+            this.contactsSendButtonColor = contactsSendButtonColor;
         }
 
         public void setContactsSendButtonTextColor(int contactsSendButtonTextColor) {
-            rafOptions.contactsSendButtonTextColor = contactsSendButtonTextColor;
+            this.contactsSendButtonTextColor = contactsSendButtonTextColor;
         }
 
         public void setContactsDoneButtonTextColor(int contactsDoneButtonTextColor) {
-            rafOptions.contactsDoneButtonTextColor = contactsDoneButtonTextColor;
+            this.contactsDoneButtonTextColor = contactsDoneButtonTextColor;
         }
 
         public void setContactsSearchBarColor(int contactsSearchBarColor) {
-            rafOptions.contactsSearchBarColor = contactsSearchBarColor;
+            this.contactsSearchBarColor = contactsSearchBarColor;
         }
 
         public void setContactsSearchIconColor(int contactsSearchIconColor) {
-            rafOptions.contactsSearchIconColor = contactsSearchIconColor;
+            this.contactsSearchIconColor = contactsSearchIconColor;
         }
 
         public void setContactNoPhotoAvailableBackgroundColor(int contactNoPhotoAvailableBackgroundColor) {
-            rafOptions.contactNoPhotoAvailableBackgroundColor = contactNoPhotoAvailableBackgroundColor;
+            this.contactNoPhotoAvailableBackgroundColor = contactNoPhotoAvailableBackgroundColor;
         }
 
         public void setLinkedInToolbarColor(int linkedInToolbarColor) {
-            rafOptions.linkedInToolbarColor = linkedInToolbarColor;
+            this.linkedInToolbarColor = linkedInToolbarColor;
         }
 
         public void setLinkedInToolbarTextColor(int linkedInToolbarTextColor) {
-            rafOptions.linkedInToolbarTextColor = linkedInToolbarTextColor;
+            this.linkedInToolbarTextColor = linkedInToolbarTextColor;
         }
 
         public void setLinkedInToolbarArrowColor(int linkedInToolbarArrowColor) {
-            rafOptions.linkedInToolbarArrowColor = linkedInToolbarArrowColor;
+            this.linkedInToolbarArrowColor = linkedInToolbarArrowColor;
+        }
+
+        public void setChannels(String[] channels) {
+            this.channels = channels;
         }
 
         public RAFOptions build() {
-            return rafOptions;
+            RAFOptions tmp = new RAFOptions();
+
+            tmp.defaultShareMessage = this.defaultShareMessage;
+            tmp.titleText = this.titleText;
+            tmp.descriptionText = this.descriptionText;
+            tmp.toolbarTitle = this.toolbarTitle;
+            tmp.logoPosition = this.logoPosition;
+            tmp.homeBackgroundColor = this.homeBackgroundColor;
+            tmp.homeWelcomeTitleColor = this.homeWelcomeTitleColor;
+            tmp.homeWelcomeTitleSize = this.homeWelcomeTitleSize;
+            tmp.homeWelcomeTitleFont = this.homeWelcomeTitleFont;
+            tmp.homeWelcomeDescriptionColor = this.homeWelcomeDescriptionColor;
+            tmp.homeWelcomeDescriptionSize = this.homeWelcomeDescriptionSize;
+            tmp.homeWelcomeDescriptionFont = this.homeWelcomeDescriptionFont;
+            tmp.homeToolbarColor = this.homeToolbarColor;
+            tmp.homeToolbarTextColor = this.homeToolbarTextColor;
+            tmp.homeToolbarTextFont = this.homeToolbarTextFont;
+            tmp.homeToolbarArrowColor = this.homeToolbarArrowColor;
+            tmp.homeShareTextBar = this.homeShareTextBar;
+            tmp.homeShareTextColor = this.homeShareTextColor;
+            tmp.homeShareTextSize = this.homeShareTextSize;
+            tmp.homeShareTextFont = this.homeShareTextFont;
+            tmp.socialGridTextFont = this.socialGridTextFont;
+            tmp.contactsListViewBackgroundColor = this.contactsListViewBackgroundColor;
+            tmp.contactsListNameSize = this.contactsListNameSize;
+            tmp.contactsListNameFont = this.contactsListNameFont;
+            tmp.contactsListValueSize = this.contactsListValueSize;
+            tmp.contactsListValueFont = this.contactsListValueFont;
+            tmp.contactsSendBackground = this.contactsSendBackground;
+            tmp.contactSendMessageTextFont = this.contactSendMessageTextFont;
+            tmp.contactsToolbarColor = this.contactsToolbarColor;
+            tmp.contactsToolbarTextColor = this.contactsToolbarTextColor;
+            tmp.contactsToolbarArrowColor = this.contactsToolbarArrowColor;
+            tmp.contactsSendButtonColor = this.contactsSendButtonColor;
+            tmp.contactsSendButtonTextColor = this.contactsSendButtonTextColor;
+            tmp.contactsDoneButtonTextColor = this.contactsDoneButtonTextColor;
+            tmp.contactsSearchBarColor = this.contactsSearchBarColor;
+            tmp.contactsSearchIconColor = this.contactsSearchIconColor;
+            tmp.contactNoPhotoAvailableBackgroundColor = this.contactNoPhotoAvailableBackgroundColor;
+            tmp.linkedInToolbarColor = this.linkedInToolbarColor;
+            tmp.linkedInToolbarTextColor = this.linkedInToolbarTextColor;
+            tmp.linkedInToolbarArrowColor = this.linkedInToolbarArrowColor;
+            tmp.channels = this.channels;
+
+            return tmp;
         }
 
     }
