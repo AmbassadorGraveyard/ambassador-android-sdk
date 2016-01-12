@@ -62,7 +62,14 @@ public class LinkedInLoginActivity extends AppCompatActivity {
 
         loader = (ProgressBar) findViewById(R.id.loadingPanel);
 
-        String authUrl = LinkedInApi.getAuthorizationUrl("code", AmbassadorConfig.LINKED_IN_CLIENT_ID, AmbassadorConfig.LINKED_IN_CALLBACK_URL, "987654321", "r_basicprofile", "w_share");
+        String authUrl = LinkedInApi.getAuthorizationUrl(
+                new StringResource(R.string.linked_in_login_response_type).getValue(),
+                AmbassadorConfig.LINKED_IN_CLIENT_ID,
+                AmbassadorConfig.LINKED_IN_CALLBACK_URL,
+                "987654321",
+                new StringResource(R.string.linked_in_r_profile_permission).getValue(),
+                new StringResource(R.string.linked_in_w_share_permission).getValue()
+        );
 
         WebView webView = (WebView)findViewById(R.id.wvSocial);
         WebSettings settings = webView.getSettings();
