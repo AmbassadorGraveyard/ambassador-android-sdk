@@ -62,6 +62,9 @@
     <string name="linked_in_client_secret">***REMOVED***</string>
     <string name="linked_in_callback_url">http://localhost:2999</string>
     <string name="linked_in_reauthenticate_message">We need you to re-authenticate LinkedIn. Continue?</string>
+    <string name="linked_in_w_share_permission">w_share</string>
+    <string name="linked_in_r_profile_permission">r_basicprofile</string>
+    <string name="linked_in_login_response_type">code</string>
     <!-- // -->
 
     <!-- PUSHER -->
