@@ -577,47 +577,64 @@ public class AmbassadorActivity extends AppCompatActivity {
      * onclick method that calls the existing method handler, eg. shareWithFacebook();
      */
     private void _instantiateGridModelsIntoArray() {
-        SocialGridModel modelFacebook = new SocialGridModel("FACEBOOK", R.drawable.facebook_icon, getResources().getColor(R.color.facebook_blue));
-        modelFacebook.setOnClickListener(new SocialGridModel.OnClickListener() {
-            @Override
-            public void onClick() {
-                shareWithFacebook();
-            }
-        });
+        SocialGridModel.Builder modelFacebook = new SocialGridModel.Builder()
+                .setName("FACEBOOK")
+                .setIconDrawable(R.drawable.facebook_icon)
+                .setBackgroundColor(getResources().getColor(R.color.facebook_blue))
+                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        shareWithFacebook();
+                    }
+                });
 
-        SocialGridModel modelTwitter = new SocialGridModel("TWITTER", R.drawable.twitter_icon, getResources().getColor(R.color.twitter_blue));
-        modelTwitter.setOnClickListener(new SocialGridModel.OnClickListener() {
-            @Override
-            public void onClick() {
-                shareWithTwitter();
-            }
-        });
+        SocialGridModel.Builder modelTwitter = new SocialGridModel.Builder()
+                .setName("TWITTER")
+                .setIconDrawable(R.drawable.twitter_icon)
+                .setBackgroundColor(getResources().getColor(R.color.twitter_blue))
+                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        shareWithTwitter();
+                    }
+                });
 
-        SocialGridModel modelLinkedIn = new SocialGridModel("LINKEDIN", R.drawable.linkedin_icon, getResources().getColor(R.color.linkedin_blue));
-        modelLinkedIn.setOnClickListener(new SocialGridModel.OnClickListener() {
-            @Override
-            public void onClick() {
-                shareWithLinkedIn();
-            }
-        });
+        SocialGridModel.Builder modelLinkedIn = new SocialGridModel.Builder()
+                .setName("LINKEDIN")
+                .setIconDrawable(R.drawable.linkedin_icon)
+                .setBackgroundColor(getResources().getColor(R.color.linkedin_blue))
+                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        shareWithLinkedIn();
+                    }
+                });
 
-        SocialGridModel modelEmail = new SocialGridModel("EMAIL", R.drawable.email_icon, getResources().getColor(android.R.color.white), true);
-        modelEmail.setOnClickListener(new SocialGridModel.OnClickListener() {
-            @Override
-            public void onClick() {
-                goToContactsPage(false);
-            }
-        });
+        SocialGridModel.Builder modelEmail = new SocialGridModel.Builder()
+                .setName("EMAIL")
+                .setIconDrawable(R.drawable.email_icon)
+                .setBackgroundColor(getResources().getColor(android.R.color.white))
+                .setDrawBorder(true)
+                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        goToContactsPage(true);
+                    }
+                });
 
-        SocialGridModel modelSms = new SocialGridModel("SMS", R.drawable.sms_icon, getResources().getColor(android.R.color.white), true);
-        modelSms.setOnClickListener(new SocialGridModel.OnClickListener() {
-            @Override
-            public void onClick() {
-                goToContactsPage(true);
-            }
-        });
+        SocialGridModel.Builder modelSms = new SocialGridModel.Builder()
+                .setName("SMS")
+                .setIconDrawable(R.drawable.sms_icon)
+                .setBackgroundColor(getResources().getColor(android.R.color.white))
+                .setDrawBorder(true)
+                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                    @Override
+                    public void onClick() {
 
-        HashMap<String, SocialGridModel> map = new HashMap<>();
+                    }
+                });
+
+        HashMap<String, SocialGridModel.Builder> map = new HashMap<>();
         map.put("facebook", modelFacebook);
         map.put("twitter", modelTwitter);
         map.put("linkedin", modelLinkedIn);
@@ -630,10 +647,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         for (int i = 0; i < order.length; i++) {
             String channel = order[i].toLowerCase();
             if (map.containsKey(channel)) {
-                SocialGridModel model = map.get(channel);
-                model.setWeight(i);
+                SocialGridModel.Builder modelBuilder = map.get(channel);
+                modelBuilder.setWeight(i);
+                SocialGridModel model = modelBuilder.build();
                 if (!tmpGridModels.contains(model)) {
-                    tmpGridModels.add(map.get(channel));
+                    tmpGridModels.add(model);
                 }
             }
         }
@@ -645,9 +663,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         gridModels = new ArrayList<>();
 
         for (SocialGridModel model : tmpGridModels) {
-            if (!model.isDisabled()) {
-                gridModels.add(model);
-            }
+            gridModels.add(model);
         }
 
         Collections.sort(gridModels);

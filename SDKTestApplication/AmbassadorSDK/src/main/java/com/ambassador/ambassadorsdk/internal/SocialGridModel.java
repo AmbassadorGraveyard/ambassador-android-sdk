@@ -13,12 +13,7 @@ public final class SocialGridModel implements Comparable<SocialGridModel> {
     private int backgroundColor;
     private boolean drawBorder;
     private OnClickListener onClickListener;
-    private boolean disabled = false;
     private int weight = 1000;
-
-    public void setOnClickListener(OnClickListener onClickListener) {
-        this.onClickListener = onClickListener;
-    }
 
     public void click() {
         if (onClickListener != null) {
@@ -40,10 +35,6 @@ public final class SocialGridModel implements Comparable<SocialGridModel> {
 
     public boolean willDrawBorder() {
         return drawBorder;
-    }
-
-    public boolean isDisabled() {
-        return disabled;
     }
 
     public int getWeight() {
@@ -96,11 +87,6 @@ public final class SocialGridModel implements Comparable<SocialGridModel> {
             return this;
         }
 
-        public Builder setDisabled(boolean disabled) {
-            this.disabled = disabled;
-            return this;
-        }
-
         public Builder setWeight(int weight) {
             this.weight = weight;
             return this;
@@ -113,7 +99,6 @@ public final class SocialGridModel implements Comparable<SocialGridModel> {
             tmp.backgroundColor = this.backgroundColor;
             tmp.drawBorder = this.drawBorder;
             tmp.onClickListener = this.onClickListener;
-            tmp.disabled = this.disabled;
             tmp.weight = this.weight;
             return tmp;
         }

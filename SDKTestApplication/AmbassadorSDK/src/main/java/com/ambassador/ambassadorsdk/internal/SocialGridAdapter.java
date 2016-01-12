@@ -67,11 +67,11 @@ class SocialGridAdapter extends BaseAdapter {
         TextView gridTitle = (TextView) convertView.findViewById(R.id.tvGridTitle);
         RelativeLayout backgroundView = (RelativeLayout) convertView.findViewById(R.id.rlBackground);
 
-        gridImage.setImageResource(model.getDrawable());
-        gridTitle.setText(model.getTitle());
-        backgroundView.setBackgroundColor(model.getColor());
+        gridImage.setImageResource(model.getIconDrawable());
+        gridTitle.setText(model.getName());
+        backgroundView.setBackgroundColor(model.getBackgroundColor());
 
-        if (model.isDrawBorder()) {
+        if (model.willDrawBorder()) {
             backgroundView.setBackground(rectShapeDrawable);
         }
 
