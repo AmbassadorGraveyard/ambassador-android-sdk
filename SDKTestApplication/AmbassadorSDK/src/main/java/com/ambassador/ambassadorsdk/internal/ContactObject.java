@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.internal;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
-public class ContactObject implements Comparable<ContactObject> {
+public final class ContactObject implements Comparable<ContactObject> {
 
     private String name;
     private String phoneNumber;
