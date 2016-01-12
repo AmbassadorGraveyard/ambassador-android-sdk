@@ -5,22 +5,26 @@ import android.content.res.Configuration;
 
 public final class Device {
 
-    private Context context;
+    private boolean isTablet = false;
+    private boolean isSmartPhone = true;
 
     private Device() {}
 
     public Device(Context context) {
-        this.context = context;
+        if ((context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK)
+                >= Configuration.SCREENLAYOUT_SIZE_LARGE) {
+            isTablet = true;
+            isSmartPhone = false;
+        }
     }
 
     public boolean isTablet() {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+        return isTablet;
     }
 
     public boolean isSmartPhone() {
-        return !isTablet();
+        return isSmartPhone;
     }
 
     public String getType() {
