@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,10 +69,10 @@ public class ContactNameDialog extends Dialog {
 
     void continueSending() {
         if (etFirstName.getText().toString().isEmpty()) {
-            Toast.makeText(getOwnerActivity(), "Hmm, your entry is suspiciously blank", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getOwnerActivity(), new StringResource(R.string.first_name_empty).getValue(), Toast.LENGTH_SHORT).show();
             etFirstName.shakeEditText();
         } else if (etLastName.getText().toString().isEmpty()) {
-            Toast.makeText(getOwnerActivity(), "Hmm, your entry is suspiciously blank", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getOwnerActivity(), new StringResource(R.string.last_name_empty).getValue(), Toast.LENGTH_SHORT).show();
             etLastName.shakeEditText();
         } else {
             handleNameInput(etFirstName.getText().toString(), etLastName.getText().toString());
@@ -106,7 +107,7 @@ public class ContactNameDialog extends Dialog {
 
                 @Override
                 public void onFailure(Object failureResponse) {
-                    Toast.makeText(getOwnerActivity(), "Unable to update information.  Please try again.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getOwnerActivity(), new StringResource(R.string.update_failure).getValue(), Toast.LENGTH_SHORT).show();
                     pd.dismiss();
                 }
             });
