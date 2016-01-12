@@ -149,7 +149,8 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.Contact
         }
 
         if (shouldShowPhoneNumbers) {
-            holder.tvNumberOrEmail.setText(contact.getType() + " - " + contact.getPhoneNumber());
+            String separator = " - ";
+            holder.tvNumberOrEmail.setText(contact.getType() + separator + contact.getPhoneNumber());
         } else {
             holder.tvNumberOrEmail.setText(contact.getEmailAddress());
         }
