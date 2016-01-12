@@ -116,6 +116,7 @@ public class ContactObjectTest {
         Assert.assertEquals(contactObject.getType(), contactObjectNew.getType());
     }
 
+    @Test
     public void cloneAllTest() {
         // ARRANGE
         ContactObject contactObject = new ContactObject("name1", "thumb2", "pic2", "email@test.com", "mobile", "3133291104");
