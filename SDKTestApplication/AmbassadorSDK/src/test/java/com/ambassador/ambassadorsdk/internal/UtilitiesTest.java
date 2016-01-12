@@ -43,30 +43,6 @@ public class UtilitiesTest {
     }
 
     @Test
-    public void isSuccessfulResponseCodeTest() {
-        // ARRANGE
-        int successBottomCase = 200;
-        int successTopCase = 299;
-        int failBottomCase = 300;
-        int failLowerTopCase = 199;
-        int negativeCase = -1;
-
-        // ACT
-        boolean successBottomResult = Utilities.isSuccessfulResponseCode(successBottomCase);
-        boolean successTopResult = Utilities.isSuccessfulResponseCode(successTopCase);
-        boolean failBottomResult = Utilities.isSuccessfulResponseCode(failBottomCase);
-        boolean failLowerTopResult = Utilities.isSuccessfulResponseCode(failLowerTopCase);
-        boolean negativeResult = Utilities.isSuccessfulResponseCode(negativeCase);
-
-        // ASSERT
-        Assert.assertTrue(successBottomResult);
-        Assert.assertTrue(successTopResult);
-        Assert.assertFalse(failBottomResult);
-        Assert.assertFalse(failLowerTopResult);
-        Assert.assertFalse(negativeResult);
-    }
-
-    @Test
     public void getPixelSizeForDimensionTest() {
         // ARRANGE
         int parameter = android.R.dimen.app_icon_size;

@@ -26,10 +26,6 @@ public class Utilities {
         void insertUrlTapped(DialogInterface dialogInterface);
     }
 
-    public static Boolean isSuccessfulResponseCode(int statusCode) {
-        return (statusCode >= 200 && statusCode < 300);
-    }
-
     public static int getPixelSizeForDimension(int dimension) {
         Context cxt = AmbassadorSingleton.getInstanceContext();
         return cxt.getResources().getDimensionPixelSize(dimension);
