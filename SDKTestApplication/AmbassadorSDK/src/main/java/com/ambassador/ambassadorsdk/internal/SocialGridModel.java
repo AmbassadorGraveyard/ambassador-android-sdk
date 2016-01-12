@@ -1,35 +1,20 @@
 package com.ambassador.ambassadorsdk.internal;
 
-/**
- * Created by dylan on 11/6/15.
- */
-class SocialGridModel implements Comparable<SocialGridModel> {
+public final class SocialGridModel implements Comparable<SocialGridModel> {
 
     interface OnClickListener {
         void onClick();
     }
 
-    private String title;
-    private int drawable;
-    private int color;
+    private SocialGridModel() {}
+
+    private String name;
+    private int iconDrawable;
+    private int backgroundColor;
     private boolean drawBorder;
     private OnClickListener onClickListener;
-    private boolean disabled;
+    private boolean disabled = false;
     private int weight = 1000;
-
-    public SocialGridModel(String title, int drawable, int color) {
-        this.title = title;
-        this.drawable = drawable;
-        this.color = color;
-        this.drawBorder = false;
-    }
-
-    public SocialGridModel(String title, int drawable, int color, boolean drawBorder) {
-        this.title = title;
-        this.drawable = drawable;
-        this.color = color;
-        this.drawBorder = drawBorder;
-    }
 
     public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -41,31 +26,19 @@ class SocialGridModel implements Comparable<SocialGridModel> {
         }
     }
 
-    public void setDisabled(boolean disabled) {
-        this.disabled = disabled;
+    public String getName() {
+        return name;
     }
 
-    public void setWeight(int weight) {
-        this.weight = weight;
+    public int getIconDrawable() {
+        return iconDrawable;
     }
 
-    /**
-     * Getters
-     */
-
-    public String getTitle() {
-        return title;
+    public int getBackgroundColor() {
+        return backgroundColor;
     }
 
-    public int getDrawable() {
-        return drawable;
-    }
-
-    public int getColor() {
-        return color;
-    }
-
-    public boolean isDrawBorder() {
+    public boolean willDrawBorder() {
         return drawBorder;
     }
 
@@ -77,8 +50,6 @@ class SocialGridModel implements Comparable<SocialGridModel> {
         return weight;
     }
 
-    /** ---------------------------- */
-
     @Override
     public int compareTo(SocialGridModel another) {
         if (another.getWeight() > weight) {
@@ -88,6 +59,65 @@ class SocialGridModel implements Comparable<SocialGridModel> {
         } else {
             return 0;
         }
+    }
+
+    public static class Builder {
+
+        private String name;
+        private int iconDrawable;
+        private int backgroundColor;
+        private boolean drawBorder;
+        private OnClickListener onClickListener;
+        private boolean disabled = false;
+        private int weight = 1000;
+
+        public Builder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder setIconDrawable(int iconDrawable) {
+            this.iconDrawable = iconDrawable;
+            return this;
+        }
+
+        public Builder setBackgroundColor(int backgroundColor) {
+            this.backgroundColor = backgroundColor;
+            return this;
+        }
+
+        public Builder setDrawBorder(boolean drawBorder) {
+            this.drawBorder = drawBorder;
+            return this;
+        }
+
+        public Builder setOnClickListener(OnClickListener onClickListener) {
+            this.onClickListener = onClickListener;
+            return this;
+        }
+
+        public Builder setDisabled(boolean disabled) {
+            this.disabled = disabled;
+            return this;
+        }
+
+        public Builder setWeight(int weight) {
+            this.weight = weight;
+            return this;
+        }
+
+        public SocialGridModel build() {
+            SocialGridModel tmp = new SocialGridModel();
+            tmp.name = this.name;
+            tmp.iconDrawable = this.iconDrawable;
+            tmp.backgroundColor = this.backgroundColor;
+            tmp.drawBorder = this.drawBorder;
+            tmp.onClickListener = this.onClickListener;
+            tmp.disabled = this.disabled;
+            tmp.weight = this.weight;
+            return tmp;
+        }
+
     }
 
 }
