@@ -39,6 +39,7 @@ import java.util.TimerTask;
 })
 public class AmbassadorSDKTest {
 
+    Context context;
     AmbassadorConfig ambassadorConfig;
     PusherSDK pusherSDK;
 
@@ -49,6 +50,9 @@ public class AmbassadorSDKTest {
                 Utilities.class,
                 InstallReceiver.class
         );
+
+        context = Mockito.mock(Context.class);
+        TestUtils.mockStrings(context);
 
         PowerMockito.spy(AmbassadorSDK.class);
 
@@ -62,7 +66,6 @@ public class AmbassadorSDKTest {
     @Test
     public void presentRAFTest() throws Exception {
         // ARRANGE
-        Context context = Mockito.mock(Context.class);
         String campaignId = "260";
         Intent intent = Mockito.mock(Intent.class);
         PowerMockito.doReturn(intent).when(AmbassadorSDK.class, "buildIntent", context, AmbassadorActivity.class);
@@ -128,7 +131,6 @@ public class AmbassadorSDKTest {
     @Test
     public void runWithKeysTest() throws Exception {
         // ARRANGE
-        Context context = Mockito.mock(Context.class);
         String universalToken = "universalToken";
         String universalID = "universalID";
         AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
@@ -150,7 +152,6 @@ public class AmbassadorSDKTest {
     @Test
     public void registerInstallReceiverTest() throws Exception {
         // ARRANGE
-        Context context = Mockito.mock(Context.class);
         IntentFilter intentFilter = Mockito.mock(IntentFilter.class);
         PowerMockito.doReturn(intentFilter).when(AmbassadorSDK.class, "buildIntentFilter");
         Mockito.doNothing().when(intentFilter).addAction(Mockito.anyString());
@@ -171,7 +172,6 @@ public class AmbassadorSDKTest {
         // ARRANGE
         ConversionUtility conversionUtility = Mockito.mock(ConversionUtility.class);
         Mockito.doNothing().when(conversionUtility).readAndSaveDatabaseEntries();
-        Context context = Mockito.mock(Context.class);
         Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
         PowerMockito.doReturn(conversionUtility).when(AmbassadorSDK.class, "buildConversionUtility", context);
         Timer timer = Mockito.mock(Timer.class);

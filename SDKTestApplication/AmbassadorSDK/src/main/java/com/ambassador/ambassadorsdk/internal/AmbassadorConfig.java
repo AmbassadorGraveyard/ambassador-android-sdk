@@ -3,6 +3,8 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.utils.StringResource;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
@@ -12,36 +14,39 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
 
-/**
- * Created by JakeDunahee on 7/29/15.
- */
 public class AmbassadorConfig {
 
-    static final String CALLBACK_URL = "http://localhost:2999";
-    static final String LINKED_IN_CLIENT_ID = "777z4czm3edaef";
-    static final String LINKED_IN_CLIENT_SECRET = "lM1FzXJauTSfxdnW";
-    static final String PUSHER_KEY_DEV = "8bd3fe1994164f9b83f6";
-    static final String PUSHER_KEY_PROD = "79576dbee58121cac49a";
+    static final String LINKED_IN_CLIENT_ID = new StringResource(R.string.linked_in_client_id).getValue();
+    static final String LINKED_IN_CLIENT_SECRET = new StringResource(R.string.linked_in_client_secret).getValue();
+    static final String LINKED_IN_CALLBACK_URL = new StringResource(R.string.linked_in_callback_url).getValue();
+    static final String PUSHER_KEY_DEV = new StringResource(R.string.pusher_key_dev).getValue();
+    static final String PUSHER_KEY_PROD = new StringResource(R.string.pusher_key_prod).getValue();
+    static final String AUGUR_API_KEY = new StringResource(R.string.augur_api_key).getValue();
+
     public static final Boolean isReleaseBuild = false;
 
     private Context context = AmbassadorSingleton.getInstanceContext();
-    private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+    private SharedPreferences sharePrefs;
     private ServiceSelectorPreferences rafParameters;
 
     public static String ambassadorApiUrl() {
         if (AmbassadorConfig.isReleaseBuild) {
-            return "https://api.getambassador.com";
+            return new StringResource(R.string.ambassador_api_url).getValue();
         } else {
-            return "https://dev-ambassador-api.herokuapp.com";
+            return new StringResource(R.string.ambassador_api_url_dev).getValue();
         }
     }
 
     static String pusherCallbackURL() {
         if (AmbassadorConfig.isReleaseBuild) {
-            return "https://api.getambassador.com/auth/subscribe/";
+            return new StringResource(R.string.pusher_callback_url).getValue();
         } else {
-            return "https://dev-ambassador-api.herokuapp.com/auth/subscribe/";
+            return new StringResource(R.string.pusher_callback_url_dev).getValue();
         }
+    }
+
+    public AmbassadorConfig() {
+        sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     }
 
     void setLinkedInToken(String token) {
