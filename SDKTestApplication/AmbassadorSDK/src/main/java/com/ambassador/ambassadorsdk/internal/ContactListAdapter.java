@@ -149,7 +149,8 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.Contact
         }
 
         if (shouldShowPhoneNumbers) {
-            holder.tvNumberOrEmail.setText(contact.getType() + " - " + contact.getPhoneNumber());
+            String separator = " - ";
+            holder.tvNumberOrEmail.setText(contact.getType() + separator + contact.getPhoneNumber());
         } else {
             holder.tvNumberOrEmail.setText(contact.getEmailAddress());
         }
@@ -161,13 +162,13 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.Contact
             holder.ivCheckMark.setX(itemWidth);
         }
 
-        if (contact.getThumbBmp() != null) {
-            holder.ivPic.setImageBitmap(contact.getThumbBmp());
+        if (contact.getThumbnailBitmap() != null) {
+            holder.ivPic.setImageBitmap(contact.getThumbnailBitmap());
         } else if (contact.getThumbnailUri() != null) {
             new BitmapLoaderTask(holder.ivPic, contact).execute(contact.getThumbnailUri());
         } else {
             holder.ivPic.setImageBitmap(noPicBmp);
-            contact.setThumbBmp(noPicBmp);
+            contact.setThumbnailBitmap(noPicBmp);
         }
     }
 
@@ -224,7 +225,7 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.Contact
     /** Get a deep copy of the selected contacts */
     public List<ContactObject> getSelectedContacts() {
         List<ContactObject> tmp = new ArrayList<>();
-        for (ContactObject contact : selectedContacts) tmp.add(contact.clone());
+        for (ContactObject contact : selectedContacts) tmp.add(contact.copy());
         return tmp;
     }
 
@@ -272,7 +273,7 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.Contact
                     imageView.setImageBitmap(bitmap);
                     final ContactObject contact = contactObjectWeakReference.get();
                     if (contact != null) {
-                        contact.setThumbBmp(bitmap);
+                        contact.setThumbnailBitmap(bitmap);
                     }
                 }
             } else if (imageViewWeakReference != null) {

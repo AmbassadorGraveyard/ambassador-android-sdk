@@ -28,7 +28,7 @@ public class IdentifyAugurSDK implements IIdentify {
         try {
             // required
             augurConfig.put("context", AmbassadorSingleton.getInstanceContext());
-            augurConfig.put("apiKey","***REMOVED***");
+            augurConfig.put("apiKey", AmbassadorConfig.AUGUR_API_KEY);
             // optional
             //augurConfig.put("timeout", 1000); // default: 5000 (5 seconds)
             augurConfig.put("maxRetries", 5); // default: 5
