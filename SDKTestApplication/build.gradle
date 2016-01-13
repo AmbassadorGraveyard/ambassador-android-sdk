@@ -56,7 +56,55 @@ subprojects { prj ->
                     excludes: [
                             '**/R*.class',
                             '**/BuildConfig*',
-                            '**/AmbassadorSDK_MembersInjector.class'
+
+                            '**/AmbassadorSDK_MembersInjector.class',
+                            '**/AmbassadorActivity_MembersInjector.class',
+                            '**/BulkShareHelper_MembersInjector.class',
+                            '**/ContactNameDialog_MembersInjector.class',
+                            '**/ContactSelectorActivity_MembersInjector.class',
+                            '**/ConversionUtility_MembersInjector.class',
+                            '**/IdentifyAugurSDK_MembersInjector.class',
+                            '**/InstallReceiver_MembersInjector.class',
+                            '**/LinkedInLoginActivity_MembersInjector.class',
+                            '**/PusherSDK_MembersInjector.class',
+                            '**/RequestManager_MembersInjector.class',
+                            '**/SocialShareDialog_MembersInjector.class',
+
+                            '**/AmbassadorApplicationModule_ProvideAmbassadorConfigFactory.class',
+                            '**/AmbassadorApplicationModule_ProvideBulkShareHelperFactory.class',
+                            '**/AmbassadorApplicationModule_ProvideContextFactory.class',
+                            '**/AmbassadorApplicationModule_ProvideFbShareDialogFactory.class',
+                            '**/AmbassadorApplicationModule_ProvidePusherSDKFactory.class',
+                            '**/AmbassadorApplicationModule_ProvideRequestManagerFactory.class',
+
+                            '**/DaggerAmbassadorSingleton_ApplicationComponent.class',
+                            '**/DaggerAmbassadorSingleton_ApplicationComponent$Builder.class',
+
+                            '**/BulkShareApi$BulkShareEmailResponse.class',
+                            '**/BulkShareApi$BulkShareSmsResponse.class',
+                            '**/BulkShareApi$BulkShareTrackResponse.class',
+                            '**/BulkShareApi$BulkShareEmailBody.class',
+                            '**/BulkShareApi$BulkShareSmsBody.class',
+                            '**/BulkShareApi$BulkShareTrackBody.class',
+
+                            '**/LinkedInApi$LinkedInLoginResponse.class',
+                            '**/LinkedInApi$LinkedInPostRequest.class',
+                            '**/LinkedInApi$LinkedInPostRequest$Visibility.class',
+                            '**/LinkedInApi$LinkedInProfileResponse.class',
+
+                            '**/ConversionsApi$RegisterConversionRequestBody.class',
+                            '**/ConversionsApi$RegisterConversionRequestBody$AugurObject.class',
+                            '**/ConversionsApi$RegisterConversionRequestBody$AugurObject$ConsumerObject.class',
+                            '**/ConversionsApi$RegisterConversionRequestBody$AugurObject$DeviceObject.class',
+                            '**/ConversionsApi$RegisterConversionRequestBody$FieldsObject.class',
+                            '**/ConversionsApi$RegisterConversionRequestResponse.class',
+
+                            '**/IdentifyApi$CreatePusherChannelResponse.class',
+                            '**/IdentifyApi$IdentifyRequestBody.class',
+                            '**/IdentifyApi$IdentifyRequestResponse.class',
+                            '**/IdentifyApi$UpdateNameRequestBody.class',
+                            '**/IdentifyApi$UpdateNameRequestBody$UpdateBody.class',
+                            '**/IdentifyApi$UpdateNameRequestResponse.class'
                     ]
             )
 
