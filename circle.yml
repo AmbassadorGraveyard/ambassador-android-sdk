@@ -21,6 +21,6 @@ test:
     # - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     # - cp -r SDKTestApplication/AmbassadorSDK/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
   post:
-    - curl http://www.jpm4j.org/install/script | sh
+    - sudo curl http://www.jpm4j.org/install/script | sh
     - jpm install com.codacy:codacy-coverage-reporter:assembly
     - codacy-coverage-reporter -l Java -r $CIRCLE_TEST_REPORTS/jacocoReport.xml
