@@ -3,6 +3,9 @@ dependencies:
     - wget "https://services.gradle.org/distributions/gradle-2.9-bin.zip"; unzip gradle-2.9-bin.zip
     - echo y | android update sdk --no-ui --all --filter tool,extra-android-m2repository,extra-android-support,extra-google-google_play_services,extra-google-m2repository,android-23
     - echo y | android update sdk --no-ui --all --filter build-tools-23.0.2
+    - curl -sL http://bit.ly/jpm4j >jpm4j.jar
+    - java -jar jpm4j.jar -u init
+    - jpm install com.codacy:codacy-coverage-reporter:assembly
 
 test:
   # pre:
@@ -21,6 +24,4 @@ test:
     # - cp -r SDKTestApplication/AmbassadorSDK/build/outputs $CIRCLE_ARTIFACTS
     # - cp -r SDKTestApplication/AmbassadorSDK/build/outputs/androidTest-results/* $CIRCLE_TEST_REPORTS
   post:
-    - sudo curl http://www.jpm4j.org/install/script | sh
-    - jpm install com.codacy:codacy-coverage-reporter:assembly
     - codacy-coverage-reporter -l Java -r $CIRCLE_TEST_REPORTS/jacocoReport.xml
