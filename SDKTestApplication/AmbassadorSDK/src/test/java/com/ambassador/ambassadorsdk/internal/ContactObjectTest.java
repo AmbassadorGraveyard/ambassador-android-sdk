@@ -123,6 +123,7 @@ public class ContactObjectTest {
         Assert.assertEquals(contactObject.getType(), contactObjectNew.getType());
     }
 
+    @Test
     public void copyAllTest() {
         // ARRANGE
         ContactObject contactObject = new ContactObject.Builder()
