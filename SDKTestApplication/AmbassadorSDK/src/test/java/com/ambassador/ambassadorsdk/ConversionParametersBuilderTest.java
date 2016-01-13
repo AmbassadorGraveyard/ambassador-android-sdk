@@ -72,7 +72,7 @@ public class ConversionParametersBuilderTest {
         ConversionParameters parameters = builder.build();
         
         // VERIFY
-        Assert.assertEquals(parameters.mbsy_campaign, mbsy_campaign + 200);
+        Assert.assertEquals(parameters.mbsy_campaign, mbsy_campaign);
         Assert.assertEquals(parameters.mbsy_email, mbsy_email);
         Assert.assertEquals(parameters.mbsy_first_name, mbsy_first_name);
         Assert.assertEquals(parameters.mbsy_last_name, mbsy_last_name);
