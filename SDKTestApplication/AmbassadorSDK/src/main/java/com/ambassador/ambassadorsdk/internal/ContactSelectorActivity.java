@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -134,7 +135,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
 
         //setup progress dialog only once
         pd = new ProgressDialog(this);
-        pd.setMessage("Sharing");
+        pd.setMessage(new StringResource(R.string.sharing).getValue());
         pd.setOwnerActivity(this);
         pd.setCancelable(false);
 
@@ -327,7 +328,14 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
                     type = phoneTypeMap.get(Integer.parseInt(typeNum));
                 }
 
-                ContactObject object = new ContactObject(name, thumbUri, picUri, type, phoneNumber);
+                ContactObject object = new ContactObject.Builder()
+                        .setName(name)
+                        .setPhoneNumber(phoneNumber)
+                        .setType(type)
+                        .setThumbnailUri(thumbUri)
+                        .setPictureUri(picUri)
+                        .build();
+
                 contactList.add(object);
             } while (phoneCursor.moveToNext());
         }
@@ -364,7 +372,13 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
                 }
             }
 
-            contactList.add(new ContactObject(name, null, null, type, phoneNumber));
+            ContactObject contactObject = new ContactObject.Builder()
+                    .setName(name)
+                    .setPhoneNumber(phoneNumber)
+                    .setType(type)
+                    .build();
+
+            contactList.add(contactObject);
         }
     }
 
@@ -383,7 +397,13 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
                 String picUri = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
                 String emailAddress = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                ContactObject object = new ContactObject(name, thumbUri, picUri, emailAddress);
+                ContactObject object = new ContactObject.Builder()
+                        .setName(name)
+                        .setEmailAddress(emailAddress)
+                        .setThumbnailUri(thumbUri)
+                        .setPictureUri(picUri)
+                        .build();
+
                 contactList.add(object);
             }
             while (emailCursor.moveToNext());
@@ -411,7 +431,12 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
             String name = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
             String email = name.substring(0, name.indexOf(" ")).toLowerCase() + "@getambassador.com";
 
-            contactList.add(new ContactObject(name, null, null, email));
+            ContactObject contactObject = new ContactObject.Builder()
+                    .setName(name)
+                    .setEmailAddress(email)
+                    .build();
+
+            contactList.add(contactObject);
         }
     }
 
@@ -534,7 +559,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
 
     private void _sendToContacts() {
         if (etShareMessage.getText().toString().length() < 1) {
-            Toast.makeText(getApplicationContext(), "Sorry, you must enter a share message.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), new StringResource(R.string.share_message_empty).getValue(), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -588,13 +613,13 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
             public void bulkShareSuccess() {
                 pd.dismiss();
                 finish();
-                Toast.makeText(getApplicationContext(), "Message successfully shared!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void bulkShareFailure() {
                 pd.dismiss();
-                Toast.makeText(getApplicationContext(), "Unable to share message. Please try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -646,7 +671,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
                     _handleContactsPopulation();
                 } else {
                     // Permission denied, kick em out
-                    Utilities.presentNonCancelableMessageDialog(this, getString(R.string.contacts_permission_denied_title), getString(R.string.contacts_permission_denied_message), new DialogInterface.OnClickListener() {
+                    Utilities.presentNonCancelableMessageDialog(this, new StringResource(R.string.sorry).getValue(), new StringResource(R.string.contacts_permission_denied).getValue(), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();

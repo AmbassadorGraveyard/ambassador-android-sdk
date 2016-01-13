@@ -1,9 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
-import android.graphics.Paint;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RectShape;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,21 +21,13 @@ class SocialGridAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<SocialGridModel> models;
     LayoutInflater inflater;
-    private ShapeDrawable rectShapeDrawable;
+    private float cornerRadius;
 
     public SocialGridAdapter(Context context, ArrayList<SocialGridModel> models) {
         this.context = context;
-        inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
+        this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.models = models;
-
-        //create drawable to use as border around non-filled grid cells
-        RectShape rect = new RectShape();
-        rectShapeDrawable = new ShapeDrawable(rect);
-        Paint paint = rectShapeDrawable.getPaint();
-        paint.setColor(context.getResources().getColor(R.color.ultraLightGray));
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(Utilities.getPixelSizeForDimension(R.dimen.grid_cell_outline_width));
+        this.cornerRadius = context.getResources().getDimension(R.dimen.socialOptionCornerRadius);
     }
 
     @Override
@@ -62,18 +52,26 @@ class SocialGridAdapter extends BaseAdapter {
         }
 
         SocialGridModel model = getItem(position);
-
         ImageView gridImage = (ImageView) convertView.findViewById(R.id.ivGridImage);
         TextView gridTitle = (TextView) convertView.findViewById(R.id.tvGridTitle);
         RelativeLayout backgroundView = (RelativeLayout) convertView.findViewById(R.id.rlBackground);
 
-        gridImage.setImageResource(model.getDrawable());
-        gridTitle.setText(model.getTitle());
-        backgroundView.setBackgroundColor(model.getColor());
+        gridImage.setImageResource(model.getIconDrawable());
+        gridTitle.setText(model.getName());
 
-        if (model.isDrawBorder()) {
-            backgroundView.setBackground(rectShapeDrawable);
+        GradientDrawable backgroundDrawable = new GradientDrawable();
+        backgroundDrawable.setColor(model.getBackgroundColor());
+        if (cornerRadius < 0) {
+            backgroundDrawable.setCornerRadius(context.getResources().getDimension(R.dimen.social_option_size));
+        } else {
+            backgroundDrawable.setCornerRadius(cornerRadius);
         }
+
+        if (model.willDrawBorder()) {
+            backgroundDrawable.setStroke(3, context.getResources().getColor(R.color.ultraLightGray));
+        }
+
+        backgroundView.setBackground(backgroundDrawable);
 
         return convertView;
     }

@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.utils.StringResource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -62,10 +63,6 @@ import io.fabric.sdk.android.Fabric;
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
-
-/**
- * Created by JakeDunahee on 7/22/15.
- */
 public class AmbassadorActivity extends AppCompatActivity {
 
     CustomEditText etShortUrl;
@@ -80,7 +77,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     final private Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
-            Toast.makeText(getApplicationContext(), "There seems to be an issue while attempting to load. Please try again.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), new StringResource(R.string.loading_failure).getValue(), Toast.LENGTH_SHORT).show();
             finish();
         }
     };
@@ -157,7 +154,10 @@ public class AmbassadorActivity extends AppCompatActivity {
         );
 
         FacebookSdk.sdkInitialize(getApplicationContext());
-        TwitterAuthConfig twitterAuthConfig = new TwitterAuthConfig("***REMOVED***","***REMOVED***");
+
+        String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
+        String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
+        TwitterAuthConfig twitterAuthConfig = new TwitterAuthConfig(twitterConsumerKey, twitterConsumerSecret);
         Fabric.with(this, new TwitterCore(twitterAuthConfig));
 
         //tell Dagger to inject dependencies
@@ -208,7 +208,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         });
 
         pd = new ProgressDialog(this);
-        pd.setMessage("Loading");
+        pd.setMessage(new StringResource(R.string.loading).getValue());
         pd.setOwnerActivity(this);
         pd.setCanceledOnTouchOutside(false);
         pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -247,7 +247,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
                 @Override
                 public void pusherFailed() {
-                    Toast.makeText(getApplicationContext(), getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
                     finish();
                 }
             });
@@ -268,7 +268,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
             @Override
             public void pusherFailed() {
-                Toast.makeText(getApplicationContext(), getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -318,7 +318,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("simpleText", copyText);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, new StringResource(R.string.copied_to_clipboard).getValue(), Toast.LENGTH_SHORT).show();
 
         return clip.toString();
     }
@@ -366,7 +366,7 @@ public class AmbassadorActivity extends AppCompatActivity {
             @Override
             public void onSuccess(Sharer.Result result) {
                 if (result.getPostId() != null) {
-                    Toast.makeText(getApplicationContext(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
                     requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
                 }
             }
@@ -378,7 +378,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
             @Override
             public void onError(FacebookException e) {
-                Toast.makeText(getApplicationContext(), "Unable to post.  Please try again.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -424,7 +424,7 @@ public class AmbassadorActivity extends AppCompatActivity {
                 public void success(Result<TwitterSession> result) {
                     ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
                     ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
-                    Toast.makeText(getApplicationContext(), "Logged in successfully!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -437,15 +437,15 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     private void requestReauthTwitter() {
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setMessage("We need you to re-authenticate Twitter. Continue?")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setMessage(new StringResource(R.string.twitter_reauthenticate_message).getValue())
+                .setPositiveButton(new StringResource(R.string.ok).getValue(), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         shareWithTwitter();
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(new StringResource(R.string.cancel).getValue(), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -493,15 +493,15 @@ public class AmbassadorActivity extends AppCompatActivity {
 
     private void requestReauthLinkedIn() {
         AlertDialog dialog = new AlertDialog.Builder(this)
-                .setMessage("We need you to re-authenticate LinkedIn. Continue?")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setMessage(new StringResource(R.string.linked_in_reauthenticate_message).getValue())
+                .setPositiveButton(new StringResource(R.string.ok).getValue(), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         shareWithLinkedIn();
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(new StringResource(R.string.cancel).getValue(), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -577,47 +577,64 @@ public class AmbassadorActivity extends AppCompatActivity {
      * onclick method that calls the existing method handler, eg. shareWithFacebook();
      */
     private void _instantiateGridModelsIntoArray() {
-        SocialGridModel modelFacebook = new SocialGridModel("FACEBOOK", R.drawable.facebook_icon, getResources().getColor(R.color.facebook_blue));
-        modelFacebook.setOnClickListener(new SocialGridModel.OnClickListener() {
-            @Override
-            public void onClick() {
-                shareWithFacebook();
-            }
-        });
+        SocialGridModel.Builder modelFacebook = new SocialGridModel.Builder()
+                .setName("FACEBOOK")
+                .setIconDrawable(R.drawable.facebook_icon)
+                .setBackgroundColor(getResources().getColor(R.color.facebook_blue))
+                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        shareWithFacebook();
+                    }
+                });
 
-        SocialGridModel modelTwitter = new SocialGridModel("TWITTER", R.drawable.twitter_icon, getResources().getColor(R.color.twitter_blue));
-        modelTwitter.setOnClickListener(new SocialGridModel.OnClickListener() {
-            @Override
-            public void onClick() {
-                shareWithTwitter();
-            }
-        });
+        SocialGridModel.Builder modelTwitter = new SocialGridModel.Builder()
+                .setName("TWITTER")
+                .setIconDrawable(R.drawable.twitter_icon)
+                .setBackgroundColor(getResources().getColor(R.color.twitter_blue))
+                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        shareWithTwitter();
+                    }
+                });
 
-        SocialGridModel modelLinkedIn = new SocialGridModel("LINKEDIN", R.drawable.linkedin_icon, getResources().getColor(R.color.linkedin_blue));
-        modelLinkedIn.setOnClickListener(new SocialGridModel.OnClickListener() {
-            @Override
-            public void onClick() {
-                shareWithLinkedIn();
-            }
-        });
+        SocialGridModel.Builder modelLinkedIn = new SocialGridModel.Builder()
+                .setName("LINKEDIN")
+                .setIconDrawable(R.drawable.linkedin_icon)
+                .setBackgroundColor(getResources().getColor(R.color.linkedin_blue))
+                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        shareWithLinkedIn();
+                    }
+                });
 
-        SocialGridModel modelEmail = new SocialGridModel("EMAIL", R.drawable.email_icon, getResources().getColor(android.R.color.white), true);
-        modelEmail.setOnClickListener(new SocialGridModel.OnClickListener() {
-            @Override
-            public void onClick() {
-                goToContactsPage(false);
-            }
-        });
+        SocialGridModel.Builder modelEmail = new SocialGridModel.Builder()
+                .setName("EMAIL")
+                .setIconDrawable(R.drawable.email_icon)
+                .setBackgroundColor(getResources().getColor(android.R.color.white))
+                .setDrawBorder(true)
+                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        goToContactsPage(false);
+                    }
+                });
 
-        SocialGridModel modelSms = new SocialGridModel("SMS", R.drawable.sms_icon, getResources().getColor(android.R.color.white), true);
-        modelSms.setOnClickListener(new SocialGridModel.OnClickListener() {
-            @Override
-            public void onClick() {
-                goToContactsPage(true);
-            }
-        });
+        SocialGridModel.Builder modelSms = new SocialGridModel.Builder()
+                .setName("SMS")
+                .setIconDrawable(R.drawable.sms_icon)
+                .setBackgroundColor(getResources().getColor(android.R.color.white))
+                .setDrawBorder(true)
+                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                    @Override
+                    public void onClick() {
+                        goToContactsPage(true);
+                    }
+                });
 
-        HashMap<String, SocialGridModel> map = new HashMap<>();
+        HashMap<String, SocialGridModel.Builder> map = new HashMap<>();
         map.put("facebook", modelFacebook);
         map.put("twitter", modelTwitter);
         map.put("linkedin", modelLinkedIn);
@@ -630,10 +647,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         for (int i = 0; i < order.length; i++) {
             String channel = order[i].toLowerCase();
             if (map.containsKey(channel)) {
-                SocialGridModel model = map.get(channel);
-                model.setWeight(i);
+                SocialGridModel.Builder modelBuilder = map.get(channel);
+                modelBuilder.setWeight(i);
+                SocialGridModel model = modelBuilder.build();
                 if (!tmpGridModels.contains(model)) {
-                    tmpGridModels.add(map.get(channel));
+                    tmpGridModels.add(model);
                 }
             }
         }
@@ -645,9 +663,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         gridModels = new ArrayList<>();
 
         for (SocialGridModel model : tmpGridModels) {
-            if (!model.isDisabled()) {
-                gridModels.add(model);
-            }
+            gridModels.add(model);
         }
 
         Collections.sort(gridModels);

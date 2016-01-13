@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
+import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,7 +47,7 @@ public class SocialShareDialog extends Dialog {
 
     private SocialNetwork socialNetwork;
 
-    private String blankErrorText = "Cannot share a blank message";
+    private String blankErrorText;
 
     public SocialShareDialog(@ForActivity Context context) {
         super(context);
@@ -110,7 +111,7 @@ public class SocialShareDialog extends Dialog {
         tvSend.setText("Tweet");
         btnSend.setText("Tweet");
 
-        blankErrorText = "Cannot share a blank Tweet";
+        blankErrorText = new StringResource(R.string.blank_twitter).getValue();
     }
 
     private void styleLinkedIn() {
@@ -120,7 +121,7 @@ public class SocialShareDialog extends Dialog {
         tvSend.setText("Send");
         btnSend.setText("Share");
 
-        blankErrorText = "Cannot share blank message";
+        blankErrorText = new StringResource(R.string.blank_linkedin).getValue();
     }
 
     private void shareClicked() {
@@ -174,7 +175,7 @@ public class SocialShareDialog extends Dialog {
         @Override
         public void onSuccess(Object successResponse) {
             loader.setVisibility(View.GONE);
-            Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
             requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.TWITTER);
             dismiss();
             attemptNotifySuccess();
@@ -187,7 +188,7 @@ public class SocialShareDialog extends Dialog {
                 dismiss();
                 attemptNotifyReauth();
             } else {
-                Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
                 attemptNotifyFailed();
             }
         }
@@ -197,7 +198,7 @@ public class SocialShareDialog extends Dialog {
         @Override
         public void onSuccess(Object successResponse) {
             loader.setVisibility(View.GONE);
-            Toast.makeText(getOwnerActivity(), "Posted successfully!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
             requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.LINKEDIN);
             dismiss();
             attemptNotifySuccess();
@@ -210,7 +211,7 @@ public class SocialShareDialog extends Dialog {
                 dismiss();
                 attemptNotifyReauth();
             } else {
-                Toast.makeText(getOwnerActivity(), "Unable to post, please try again!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
                 attemptNotifyFailed();
             }
         }
