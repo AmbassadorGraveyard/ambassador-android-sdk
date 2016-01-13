@@ -2,6 +2,8 @@ package com.ambassador.ambassadorsdk.internal.api.identify;
 
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.TestUtils;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 
@@ -25,6 +27,7 @@ import retrofit.mime.TypedString;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
+        AmbassadorSingleton.class,
         ServiceGenerator.class,
         Log.class
 })
@@ -39,6 +42,8 @@ public class IdentifyApiTest {
                 ServiceGenerator.class,
                 Log.class
         );
+
+        TestUtils.mockStrings();
         
         IdentifyApi ia = new IdentifyApi(false);
         identifyApi = Mockito.spy(ia);

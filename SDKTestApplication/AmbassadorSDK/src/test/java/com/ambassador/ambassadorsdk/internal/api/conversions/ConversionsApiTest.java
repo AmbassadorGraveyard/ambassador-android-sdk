@@ -2,6 +2,8 @@ package com.ambassador.ambassadorsdk.internal.api.conversions;
 
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.TestUtils;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 
@@ -25,6 +27,7 @@ import retrofit.mime.TypedByteArray;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
+        AmbassadorSingleton.class,
         ServiceGenerator.class,
         Log.class
 })
@@ -39,6 +42,8 @@ public class ConversionsApiTest {
                 ServiceGenerator.class,
                 Log.class
         );
+
+        TestUtils.mockStrings();
 
         ConversionsApi ca = new ConversionsApi(false);
         conversionsApi = Mockito.spy(ca);
