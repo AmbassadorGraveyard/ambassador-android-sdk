@@ -2,6 +2,9 @@ package com.ambassador.ambassadorsdk.internal.api;
 
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.TestUtils;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +20,7 @@ import retrofit.client.Client;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
+        AmbassadorSingleton.class,
         ServiceGenerator.class,
         Log.class
 })
@@ -29,6 +33,9 @@ public class ServiceGeneratorTest {
         PowerMockito.mockStatic(
                 Log.class
         );
+
+        TestUtils.mockStrings();
+
         PowerMockito.spy(ServiceGenerator.class);
     }
 

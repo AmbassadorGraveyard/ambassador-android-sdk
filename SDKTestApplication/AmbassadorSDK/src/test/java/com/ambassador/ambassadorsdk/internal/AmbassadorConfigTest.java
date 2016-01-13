@@ -3,6 +3,8 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.TestUtils;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterApiClient;
@@ -30,7 +32,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -43,19 +44,19 @@ import static org.mockito.Mockito.when;
         RequestManager.class
 })
 public class AmbassadorConfigTest {
-    
+
+    private Context context;
     private SharedPreferences sharedPrefs;
     private SharedPreferences.Editor editor;
 
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                AmbassadorConfig.class,
                 AmbassadorSingleton.class,
                 TwitterCore.class
         );
 
-        Context context = mock(Context.class);
+        context = mock(Context.class);
 
         sharedPrefs = mock(SharedPreferences.class);
         editor = mock(SharedPreferences.Editor.class);
@@ -64,7 +65,14 @@ public class AmbassadorConfigTest {
         when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPrefs);
         when(sharedPrefs.edit()).thenReturn(editor);
         when(editor.putString(anyString(), anyString())).thenReturn(editor);
-        doNothing().when(editor).apply();
+
+        setStrings();
+    }
+
+    private void setStrings() {
+        TestUtils.mockString(R.string.pusher_callback_url, "https://api.getambassador.com/auth/subscribe/");
+        TestUtils.mockString(R.string.pusher_callback_url_dev, "https://dev-ambassador-api.herokuapp.com/auth/subscribe/");
+        TestUtils.mockStrings(context);
     }
 
     @Test
