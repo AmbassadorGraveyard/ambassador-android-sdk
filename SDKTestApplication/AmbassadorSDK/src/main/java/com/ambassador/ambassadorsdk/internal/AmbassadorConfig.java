@@ -26,7 +26,7 @@ public class AmbassadorConfig {
     public static final Boolean isReleaseBuild = false;
 
     private Context context = AmbassadorSingleton.getInstanceContext();
-    private SharedPreferences sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
+    private SharedPreferences sharePrefs;
     private ServiceSelectorPreferences rafParameters;
 
     public static String ambassadorApiUrl() {
@@ -43,6 +43,10 @@ public class AmbassadorConfig {
         } else {
             return new StringResource(R.string.pusher_callback_url_dev).getValue();
         }
+    }
+
+    public AmbassadorConfig() {
+        sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     }
 
     void setLinkedInToken(String token) {

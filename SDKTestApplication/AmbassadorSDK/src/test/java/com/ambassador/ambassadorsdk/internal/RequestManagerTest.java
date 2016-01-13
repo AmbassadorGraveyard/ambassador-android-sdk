@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.TestUtils;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
@@ -75,6 +76,8 @@ public class RequestManagerTest {
                 TwitterCore.class,
                 Log.class
         );
+
+        TestUtils.mockStrings();
 
         AmbassadorApplicationComponent mockComponent = Mockito.mock(AmbassadorApplicationComponent.class);
         Mockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(mockComponent);
@@ -273,7 +276,7 @@ public class RequestManagerTest {
         Mockito.verify(requestCompletion).onFailure("auth");
 
         requestManager.postToTwitter(tweetString, requestCompletion);
-        Mockito.verify(requestCompletion).onFailure("Failure Postring to Twitter");
+        Mockito.verify(requestCompletion).onFailure("Failure Posting to Twitter");
     }
 
     @Test

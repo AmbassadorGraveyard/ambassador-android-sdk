@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.ambassador.ambassadorsdk.TestUtils;
 import com.pusher.client.Authorizer;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
@@ -65,6 +66,8 @@ public class PusherSDKTest {
         component.inject(this);
 
         PowerMockito.mockStatic(AmbassadorSingleton.class);
+        TestUtils.mockStrings();
+
         AmbassadorApplicationComponent application = Mockito.mock(AmbassadorApplicationComponent.class);
         PowerMockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(application);
         Mockito.doNothing().when(application).inject(Mockito.any(PusherSDK.class));
