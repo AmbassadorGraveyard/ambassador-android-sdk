@@ -56,18 +56,18 @@ class SocialGridAdapter extends BaseAdapter {
         TextView gridTitle = (TextView) convertView.findViewById(R.id.tvGridTitle);
         RelativeLayout backgroundView = (RelativeLayout) convertView.findViewById(R.id.rlBackground);
 
-        gridImage.setImageResource(model.getDrawable());
-        gridTitle.setText(model.getTitle());
+        gridImage.setImageResource(model.getIconDrawable());
+        gridTitle.setText(model.getName());
 
         GradientDrawable backgroundDrawable = new GradientDrawable();
-        backgroundDrawable.setColor(model.getColor());
+        backgroundDrawable.setColor(model.getBackgroundColor());
         if (cornerRadius < 0) {
             backgroundDrawable.setCornerRadius(context.getResources().getDimension(R.dimen.social_option_size));
         } else {
             backgroundDrawable.setCornerRadius(cornerRadius);
         }
 
-        if (model.isDrawBorder()) {
+        if (model.willDrawBorder()) {
             backgroundDrawable.setStroke(3, context.getResources().getColor(R.color.ultraLightGray));
         }
 
