@@ -6,12 +6,14 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.utils.Font;
+import com.google.common.base.Joiner;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,8 +35,22 @@ public final class RAFOptionsFactory {
             if (entry.getAttributes() != null) {
                 String type = entry.getNodeName();
                 String key = entry.getAttributes().getNamedItem("name").getNodeValue();
-                String value = entry.getFirstChild().getNodeValue();
+                String value = "";
+                if (!type.equals("array")) {
+                    value = entry.getFirstChild().getNodeValue();
+                } else {
+                    NodeList nodes = entry.getChildNodes();
+                    ArrayList<String> names = new ArrayList<>();
+                    for (int j = 0; j < nodes.getLength(); j++) {
+                        Node node = nodes.item(j);
+                        if (node.getAttributes() != null) {
+                            String name = node.getFirstChild().getNodeValue();
+                            names.add(name);
+                        }
+                    }
 
+                    value = Joiner.on("&").join(names);
+                }
                 new ResourceProcessor()
                         .withContext(context)
                         .withType(type)
@@ -91,20 +107,25 @@ public final class RAFOptionsFactory {
             switch (type) {
                 case TYPE_STRING:
                     new RAFOptionsMethod(key)
-                            .withType("string")
+                            .withType(TYPE_STRING)
                             .withParam(value)
                             .invoke(builder);
                     break;
                 case TYPE_COLOR:
                     int processedValue = getColor(value);
                     new RAFOptionsMethod(key)
-                            .withType("color")
+                            .withType(TYPE_COLOR)
                             .withParam(processedValue)
                             .invoke(builder);
                     break;
                 case TYPE_DIMEN:
                     break;
                 case TYPE_ARRAY:
+                    String[] array = value.split("&");
+                    new RAFOptionsMethod(key)
+                            .withType(TYPE_ARRAY)
+                            .withParam(array)
+                            .invoke(builder);
                     break;
             }
         }
@@ -162,6 +183,11 @@ public final class RAFOptionsFactory {
 
             public RAFOptionsMethod withParam(float value) {
                 this.paramFloat = value;
+                return this;
+            }
+
+            public RAFOptionsMethod withParam(String[] value) {
+                this.paramStringArray = value;
                 return this;
             }
 
