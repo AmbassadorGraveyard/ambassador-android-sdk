@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.utils.Font;
@@ -107,14 +108,15 @@ public final class RAFOptionsFactory {
         }
 
         private int getColor(String value) {
+            String resName;
             if (value.matches(REGEX_ANDROID_RESOURCE_COLOR)) {
-                value = value.substring(value.indexOf("/"));
-                int identifier = context.getResources().getIdentifier(value, "color", "android");
+                resName = value.substring(value.indexOf("/"));
+                int identifier = context.getResources().getIdentifier(resName, "color", "android");
                 return context.getResources().getColor(identifier);
 
             } else if (value.matches(REGEX_LOCAL_RESOURCE_COLOR)) {
-                value = value.substring(value.indexOf("/"));
-                int identifer = context.getResources().getIdentifier(value, "color", context.getPackageName());
+                resName = value.substring(value.indexOf("/"));
+                int identifer = context.getResources().getIdentifier(resName, "color", context.getPackageName());
                 return context.getResources().getColor(identifer);
 
             } else if (value.matches(REGEX_HEX_COLOR)) {
@@ -192,13 +194,13 @@ public final class RAFOptionsFactory {
 
                     case "homewelcometitle":
                         switch (type) {
-                            case "color":
+                            case TYPE_COLOR:
                                 builder.setHomeWelcomeTitleColor(paramInt);
                                 break;
-                            case "dimen":
+                            case TYPE_DIMEN:
                                 builder.setHomeWelcomeTitleSize(paramFloat);
                                 break;
-                            case "string":
+                            case TYPE_STRING:
                                 builder.setHomeWelcomeTitleFont(new Font(paramString).getTypeface());
                                 break;
                         }
@@ -206,13 +208,13 @@ public final class RAFOptionsFactory {
 
                     case "homeWelcomeDesc":
                         switch (type) {
-                            case "color":
+                            case TYPE_COLOR:
                                 builder.setHomeWelcomeDescriptionColor(paramInt);
                                 break;
-                            case "dimen":
+                            case TYPE_DIMEN:
                                 builder.setHomeWelcomeDescriptionSize(paramFloat);
                                 break;
-                            case "string":
+                            case TYPE_STRING:
                                 builder.setHomeWelcomeDescriptionFont(new Font(paramString).getTypeface());
                                 break;
                         }
@@ -223,7 +225,12 @@ public final class RAFOptionsFactory {
                         break;
 
                     case "homeToolBarText":
-                        // color, string
+                        switch (type) {
+                            case TYPE_COLOR:
+                                break;
+                            case TYPE_STRING:
+                                break;
+                        }
                         break;
 
                     case "homeToolBarArrow":
@@ -233,7 +240,14 @@ public final class RAFOptionsFactory {
                         break;
 
                     case "homeShareText":
-                        // color, dimen, string
+                        switch (type) {
+                            case TYPE_COLOR:
+                                break;
+                            case TYPE_DIMEN:
+                                break;
+                            case TYPE_STRING:
+                                break;
+                        }
                         break;
 
                     case "socialGridText":
@@ -243,7 +257,12 @@ public final class RAFOptionsFactory {
                         break;
 
                     case "contactsListName":
-                        // dimen, string
+                        switch (type) {
+                            case TYPE_DIMEN:
+                                break;
+                            case TYPE_STRING:
+                                break;
+                        }
                         break;
 
                     case "contactsListValue":
@@ -290,6 +309,10 @@ public final class RAFOptionsFactory {
                         break;
 
                     case "linkedinToolBarArrow":
+                        break;
+
+                    default:
+                        Log.e("Ambassador", "Key: " + key + " is not a valid attribute");
                         break;
                 }
             }

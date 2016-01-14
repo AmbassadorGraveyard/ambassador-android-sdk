@@ -24,8 +24,8 @@ import org.powermock.reflect.Whitebox;
 })
 public class FontTest {
 
-    AssetManager assets;
-    Typeface defaultTypeface;
+    private AssetManager assets;
+    private Typeface defaultTypeface;
 
     @Before
     public void setUp() throws Exception {

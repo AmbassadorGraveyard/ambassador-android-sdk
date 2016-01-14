@@ -32,8 +32,7 @@ public class AmbassadorSDK {
     static PusherSDK pusherSDK;
 
     public static void presentRAF(Context context, String campaignID) {
-        RAFOptions rafOptions = new RAFOptions.Builder().build();
-        intentAmbassadorActivity(context, campaignID);
+        presentRAF(context, campaignID, new RAFOptions.Builder().build());
     }
 
     public static void presentRAF(Context context, String campaignID, RAFOptions rafOptions) {
