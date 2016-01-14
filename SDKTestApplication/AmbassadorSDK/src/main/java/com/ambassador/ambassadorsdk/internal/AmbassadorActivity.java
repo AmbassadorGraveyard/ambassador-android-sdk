@@ -62,8 +62,6 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AmbassadorActivity extends AppCompatActivity {
 
@@ -154,12 +152,6 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         setContentView(view);
 
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                        .setDefaultFontPath("fonts/Roboto-RobotoRegular.ttf")
-                        .setFontAttrId(R.attr.fontPath)
-                        .build()
-        );
-
         FacebookSdk.sdkInitialize(getApplicationContext());
 
         String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
@@ -171,12 +163,6 @@ public class AmbassadorActivity extends AppCompatActivity {
         AmbassadorSingleton.getInstanceAmbModule().setContext(this);
         AmbassadorSingleton.getInstanceComponent().inject(this);
 
-//        ambassadorConfig.setRafParameters(
-//                getResources().getString(R.string.RAFdefaultShareMessage),
-//                getResources().getString(R.string.RAFtitleText),
-//                getResources().getString(R.string.RAFdescriptionText),
-//                getResources().getString(R.string.RAFtoolbarTitle));
-//
         ambassadorConfig.setRafParameters(
                 raf.getDefaultShareMessage(),
                 raf.getTitleText(),
@@ -295,15 +281,18 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         tvWelcomeTitle.setTextColor(raf.getHomeWelcomeTitleColor());
         tvWelcomeTitle.setTextSize(raf.getHomeWelcomeTitleSize());
+        tvWelcomeTitle.setTypeface(raf.getHomeWelcomeTitleFont());
 
         tvWelcomeDesc.setTextColor(raf.getHomeWelcomeDescriptionColor());
         tvWelcomeDesc.setTextSize(raf.getHomeWelcomeDescriptionSize());
+        tvWelcomeDesc.setTypeface(raf.getHomeWelcomeDescriptionFont());
 
         flShortUrl.setBackgroundColor(raf.getHomeShareTextBar());
 
         etShortUrl.setBackgroundColor(raf.getHomeShareTextBar());
         etShortUrl.setTextColor(raf.getHomeShareTextColor());
         etShortUrl.setTextSize(raf.getHomeShareTextSize());
+        etShortUrl.setTypeface(raf.getHomeShareTextFont());
     }
 
     @Override
@@ -318,11 +307,6 @@ public class AmbassadorActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         finish(); // Dismisses activity if back button pressed
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
 
     @Override

@@ -51,11 +51,6 @@ import java.util.Random;
 
 import javax.inject.Inject;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
-
-/**
- * Created by JakeDunahee on 7/31/15.
- */
 public class ContactSelectorActivity extends AppCompatActivity implements PusherSDK.IdentifyListener {
 
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
@@ -255,6 +250,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
         tvSendContacts.setTextColor(raf.getContactsSendButtonTextColor());
         tvSendCount.setTextColor(raf.getContactsSendButtonTextColor());
         rvContacts.setBackgroundColor(raf.getContactsListViewBackgroundColor());
+        etShareMessage.setTypeface(raf.getContactSendMessageTextFont());
     }
 
     @Override
@@ -315,12 +311,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
 
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
-
 
     /** Contact methods **/
 

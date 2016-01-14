@@ -62,6 +62,7 @@ class SocialGridAdapter extends BaseAdapter {
 
         gridImage.setImageResource(model.getIconDrawable());
         gridTitle.setText(model.getName());
+        gridTitle.setTypeface(raf.getSocialGridTextFont());
 
         GradientDrawable backgroundDrawable = new GradientDrawable();
         backgroundDrawable.setColor(model.getBackgroundColor());
