@@ -135,6 +135,7 @@ public final class RAFOptionsFactory {
             private String paramString;
             private int paramInt;
             private float paramFloat;
+            private String[] paramStringArray;
 
             private String key;
 
@@ -353,6 +354,14 @@ public final class RAFOptionsFactory {
 
                     case "linkedintoolbararrow":
                         builder.setLinkedInToolbarArrowColor(paramInt);
+                        break;
+
+                    case "channels":
+                        builder.setChannels(paramStringArray);
+                        break;
+
+                    case "socialoptioncornerradius":
+                        builder.setSocialOptionCornerRadius(paramFloat);
                         break;
 
                     default:
