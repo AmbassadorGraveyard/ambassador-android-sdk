@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
-                    AmbassadorSDK.presentRAF(context, "260", getAssets().open("raf.xml"));
+                    AmbassadorSDK.presentRAF(context, "260", "raf.xml");
                 } catch (Exception e) {
                     Log.e("e", e.toString());
                 }

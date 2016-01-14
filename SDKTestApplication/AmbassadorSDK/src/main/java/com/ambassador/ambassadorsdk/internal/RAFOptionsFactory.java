@@ -95,10 +95,10 @@ public final class RAFOptionsFactory {
                             .invoke(builder);
                     break;
                 case TYPE_COLOR:
-                    int processedValue = getColor(value);
-                    new RAFOptionsMethod(key)
-                            .withParam(processedValue)
-                            .invoke(builder);
+//                    int processedValue = getColor(value);
+//                    new RAFOptionsMethod(key)
+//                            .withParam(processedValue)
+//                            .invoke(builder);
                     break;
                 case TYPE_DIMEN:
                     break;
@@ -163,10 +163,14 @@ public final class RAFOptionsFactory {
             }
 
             public void invoke(RAFOptions.Builder builder) {
-                execute(builder);
+                try {
+                    execute(builder);
+                } catch (NullPointerException e) {
+                    // Something wasn't right, it will be ignored and default left.
+                }
             }
 
-            private void execute(RAFOptions.Builder builder) {
+            private void execute(RAFOptions.Builder builder) throws NullPointerException {
                 switch (key.toLowerCase()) {
                     case "rafdefaultsharemessage":
                         builder.setDefaultShareMessage(paramString);

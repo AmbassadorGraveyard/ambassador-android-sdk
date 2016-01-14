@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -65,10 +67,15 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class AmbassadorActivity extends AppCompatActivity {
 
+    private RAFOptions raf = RAFOptions.get();
+
     CustomEditText etShortUrl;
     private ProgressDialog pd;
     private LockableScrollView scrollView;
     private LinearLayout llMainLayout;
+    private TextView tvWelcomeTitle;
+    private TextView tvWelcomeDesc;
+    private FrameLayout flShortUrl;
     private Timer networkTimer;
     private CallbackManager callbackManager;
     private final android.os.Handler timerHandler = new android.os.Handler();
@@ -143,7 +150,7 @@ public class AmbassadorActivity extends AppCompatActivity {
             }
         });
 
-        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.homeToolBar));
+        Utilities.setStatusBar(getWindow(), raf.getHomeToolbarColor());
 
         setContentView(view);
 
@@ -164,11 +171,18 @@ public class AmbassadorActivity extends AppCompatActivity {
         AmbassadorSingleton.getInstanceAmbModule().setContext(this);
         AmbassadorSingleton.getInstanceComponent().inject(this);
 
+//        ambassadorConfig.setRafParameters(
+//                getResources().getString(R.string.RAFdefaultShareMessage),
+//                getResources().getString(R.string.RAFtitleText),
+//                getResources().getString(R.string.RAFdescriptionText),
+//                getResources().getString(R.string.RAFtoolbarTitle));
+//
         ambassadorConfig.setRafParameters(
-                getResources().getString(R.string.RAFdefaultShareMessage),
-                getResources().getString(R.string.RAFtitleText),
-                getResources().getString(R.string.RAFdescriptionText),
-                getResources().getString(R.string.RAFtoolbarTitle));
+                raf.getDefaultShareMessage(),
+                raf.getTitleText(),
+                raf.getDescriptionText(),
+                raf.getToolbarTitle()
+        );
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
@@ -177,9 +191,10 @@ public class AmbassadorActivity extends AppCompatActivity {
         llMainLayout = (LinearLayout) findViewById(R.id.llMainLayout);
         StaticGridView gvSocialGrid = (StaticGridView) findViewById(R.id.gvSocialGrid);
         ImageButton btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
-        TextView tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
-        TextView tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
+        tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
+        tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
         etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
+        flShortUrl = (FrameLayout) findViewById(R.id.flShortUrl);
 
         tvWelcomeTitle.setText(ambassadorConfig.getRafParameters().titleText);
         tvWelcomeDesc.setText(ambassadorConfig.getRafParameters().descriptionText);
@@ -274,6 +289,22 @@ public class AmbassadorActivity extends AppCompatActivity {
         });
     }
 
+    private void setTheme() {
+        llMainLayout.setBackgroundColor(raf.getHomeBackgroundColor());
+
+        tvWelcomeTitle.setTextColor(raf.getHomeWelcomeTitleColor());
+        tvWelcomeTitle.setTextSize(raf.getHomeWelcomeTitleSize());
+
+        tvWelcomeDesc.setTextColor(raf.getHomeWelcomeDescriptionColor());
+        tvWelcomeDesc.setTextSize(raf.getHomeWelcomeDescriptionSize());
+
+        flShortUrl.setBackgroundColor(raf.getHomeShareTextBar());
+
+        etShortUrl.setBackgroundColor(raf.getHomeShareTextBar());
+        etShortUrl.setTextColor(raf.getHomeShareTextColor());
+        etShortUrl.setTextSize(raf.getHomeShareTextSize());
+    }
+
     @Override
     protected void onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
@@ -330,7 +361,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         int pos;
         try {
-            pos = Integer.parseInt(getString(R.string.RAFLogoPosition));
+            pos = Integer.parseInt(raf.getLogoPosition());
         }
         catch (NumberFormatException e) {
             pos = 0;
@@ -564,11 +595,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         if (toolbar == null) return;
 
         final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(getResources().getColor(R.color.homeToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+        arrow.setColorFilter(raf.getHomeToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(arrow);
 
-        toolbar.setBackgroundColor(getResources().getColor(R.color.homeToolBar));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.homeToolBarText));
+        toolbar.setBackgroundColor(raf.getHomeToolbarColor());
+        toolbar.setTitleTextColor(raf.getHomeToolbarTextColor());
     }
     // END UI SETTER METHODS
 
@@ -643,7 +674,7 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         ArrayList<SocialGridModel> tmpGridModels = new ArrayList<>();
 
-        String[] order = getResources().getStringArray(R.array.channels);
+        String[] order = raf.getChannels();
         for (int i = 0; i < order.length; i++) {
             String channel = order[i].toLowerCase();
             if (map.containsKey(channel)) {
