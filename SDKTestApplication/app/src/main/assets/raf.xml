@@ -1,8 +1,8 @@
 <resources>
     <string name="RAFdefaultShareMessage">Check out this company goog!</string>
-    <string name="RAFtitleText">RAF Params Welcome Title</string>
-    <string name="RAFdescriptionText">RAF Params Welcome Description</string>
-    <string name="RAFtoolbarTitle">RAF Params Toolbar Title</string>
+    <string name="RAFtitleText">ttt</string>
+    <string name="RAFdescriptionText">RAF Params Welcome Descrn</string>
+    <string name="RAFtoolbarTitle">RAF Params sadasdToolbar Title</string>
     <string name="RAFLogoPosition">0</string>
     <color name="homeBackground">@android:color/white</color>
     <color name="homeWelcomeTitle">@color/lightGray</color>

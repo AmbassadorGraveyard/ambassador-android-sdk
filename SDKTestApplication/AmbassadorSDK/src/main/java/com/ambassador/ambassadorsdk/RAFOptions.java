@@ -2,6 +2,8 @@ package com.ambassador.ambassadorsdk;
 
 import android.graphics.Typeface;
 
+import com.ambassador.ambassadorsdk.utils.ColorResource;
+
 public final class RAFOptions {
 
     private static RAFOptions instance;
@@ -64,6 +66,8 @@ public final class RAFOptions {
     private int linkedInToolbarArrowColor;
 
     private String[] channels;
+
+    private float socialOptionCornerRadius;
 
     private RAFOptions() {}
 
@@ -231,6 +235,10 @@ public final class RAFOptions {
         return channels;
     }
 
+    public float getSocialOptionCornerRadius() {
+        return socialOptionCornerRadius;
+    }
+
     public static class Builder {
 
         private String defaultShareMessage = "Check out this company!";
@@ -239,29 +247,29 @@ public final class RAFOptions {
         private String toolbarTitle = "RAF Params Toolbar Title";
         private String logoPosition = "0";
 
-        private int homeBackgroundColor = android.R.color.white;
+        private int homeBackgroundColor = new ColorResource(android.R.color.white).getColor();
 
-        private int homeWelcomeTitleColor = R.color.lightGray;
+        private int homeWelcomeTitleColor = new ColorResource(R.color.lightGray).getColor();
         private float homeWelcomeTitleSize = 22;
         private Typeface homeWelcomeTitleFont;
 
-        private int homeWelcomeDescriptionColor = R.color.lightGray;
+        private int homeWelcomeDescriptionColor = new ColorResource(R.color.lightGray).getColor();
         private float homeWelcomeDescriptionSize = 18;
         private Typeface homeWelcomeDescriptionFont;
 
-        private int homeToolbarColor = R.color.ambassador_blue;
-        private int homeToolbarTextColor = android.R.color.white;
+        private int homeToolbarColor = new ColorResource(R.color.ambassador_blue).getColor();
+        private int homeToolbarTextColor = new ColorResource(android.R.color.white).getColor();
         private Typeface homeToolbarTextFont;
-        private int homeToolbarArrowColor = android.R.color.white;
+        private int homeToolbarArrowColor = new ColorResource(android.R.color.white).getColor();
 
-        private int homeShareTextBar = R.color.ultraUltraUltraLightGray;
-        private int homeShareTextColor = R.color.ultraLightGray;
+        private int homeShareTextBar = new ColorResource(R.color.ultraUltraUltraLightGray).getColor();
+        private int homeShareTextColor = new ColorResource(R.color.ultraLightGray).getColor();
         private float homeShareTextSize = 12;
         private Typeface homeShareTextFont;
 
         private Typeface socialGridTextFont;
 
-        private int contactsListViewBackgroundColor = android.R.color.white;
+        private int contactsListViewBackgroundColor = new ColorResource(android.R.color.white).getColor();
 
         private float contactsListNameSize = 15;
         private Typeface contactsListNameFont;
@@ -269,28 +277,30 @@ public final class RAFOptions {
         private float contactsListValueSize = 12;
         private Typeface contactsListValueFont;
 
-        private int contactsSendBackground = android.R.color.white;
+        private int contactsSendBackground = new ColorResource(android.R.color.white).getColor();
         private Typeface contactSendMessageTextFont;
 
-        private int contactsToolbarColor = R.color.ambassador_blue;
-        private int contactsToolbarTextColor = android.R.color.white;
-        private int contactsToolbarArrowColor = android.R.color.white;
+        private int contactsToolbarColor = new ColorResource(R.color.ambassador_blue).getColor();
+        private int contactsToolbarTextColor = new ColorResource(android.R.color.white).getColor();
+        private int contactsToolbarArrowColor = new ColorResource(android.R.color.white).getColor();
 
-        private int contactsSendButtonColor = R.color.ambassador_blue;
-        private int contactsSendButtonTextColor = android.R.color.white;
+        private int contactsSendButtonColor = new ColorResource(R.color.ambassador_blue).getColor();
+        private int contactsSendButtonTextColor = new ColorResource(android.R.color.white).getColor();
 
-        private int contactsDoneButtonTextColor = R.color.ambassador_blue;
+        private int contactsDoneButtonTextColor = new ColorResource(R.color.ambassador_blue).getColor();
 
-        private int contactsSearchBarColor = android.R.color.transparent;
-        private int contactsSearchIconColor = android.R.color.white;
+        private int contactsSearchBarColor = new ColorResource(android.R.color.transparent).getColor();
+        private int contactsSearchIconColor = new ColorResource(android.R.color.white).getColor();
 
-        private int contactNoPhotoAvailableBackgroundColor = R.color.ambassador_blue;
+        private int contactNoPhotoAvailableBackgroundColor = new ColorResource(R.color.ambassador_blue).getColor();
 
-        private int linkedInToolbarColor = R.color.linkedin_blue;
-        private int linkedInToolbarTextColor = android.R.color.white;
-        private int linkedInToolbarArrowColor = android.R.color.white;
+        private int linkedInToolbarColor = new ColorResource(R.color.linkedin_blue).getColor();
+        private int linkedInToolbarTextColor = new ColorResource(android.R.color.white).getColor();
+        private int linkedInToolbarArrowColor = new ColorResource(android.R.color.white).getColor();
 
         private String[] channels = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
+
+        private float socialOptionCornerRadius;
 
         public Builder() {}
 
@@ -458,6 +468,10 @@ public final class RAFOptions {
             this.channels = channels;
         }
 
+        public void setSocialOptionCornerRadius(float socialOptionCornerRadius) {
+            this.socialOptionCornerRadius = socialOptionCornerRadius;
+        }
+
         public RAFOptions build() {
             RAFOptions tmp = new RAFOptions();
 
@@ -502,6 +516,7 @@ public final class RAFOptions {
             tmp.linkedInToolbarTextColor = this.linkedInToolbarTextColor;
             tmp.linkedInToolbarArrowColor = this.linkedInToolbarArrowColor;
             tmp.channels = this.channels;
+            tmp.socialOptionCornerRadius = this.socialOptionCornerRadius;
 
             return tmp;
         }

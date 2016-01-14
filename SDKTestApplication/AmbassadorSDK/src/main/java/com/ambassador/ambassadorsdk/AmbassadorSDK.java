@@ -23,7 +23,7 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
-public class AmbassadorSDK {
+public final class AmbassadorSDK {
 
     @Inject
     static AmbassadorConfig ambassadorConfig;
@@ -45,7 +45,6 @@ public class AmbassadorSDK {
 
         presentRAF(context, campaignID, rafOptions);
     }
-
 
     public static void presentRAF(Context context, String campaignID, RAFOptions rafOptions) {
         RAFOptions.set(rafOptions);
