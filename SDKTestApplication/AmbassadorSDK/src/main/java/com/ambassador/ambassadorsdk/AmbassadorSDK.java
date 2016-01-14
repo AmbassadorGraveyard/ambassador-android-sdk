@@ -14,7 +14,7 @@ import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
-import com.ambassador.ambassadorsdk.internal.RAFOptionsFactory;
+import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 
 import java.io.InputStream;
