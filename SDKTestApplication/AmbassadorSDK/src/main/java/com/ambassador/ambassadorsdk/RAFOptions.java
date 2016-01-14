@@ -3,6 +3,8 @@ package com.ambassador.ambassadorsdk;
 import android.graphics.Typeface;
 
 public final class RAFOptions {
+
+    private static RAFOptions instance;
     
     private String defaultShareMessage;
     private String titleText;
@@ -504,6 +506,14 @@ public final class RAFOptions {
             return tmp;
         }
 
+    }
+
+    public static void set(RAFOptions rafOptions) {
+        instance = rafOptions;
+    }
+
+    public static RAFOptions get() {
+        return instance;
     }
 
 }

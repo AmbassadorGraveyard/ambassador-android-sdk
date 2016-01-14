@@ -35,10 +35,6 @@ public class AmbassadorSDK {
         presentRAF(context, campaignID, new RAFOptions.Builder().build());
     }
 
-    public static void presentRAF(Context context, String campaignID, RAFOptions rafOptions) {
-        intentAmbassadorActivity(context, campaignID);
-    }
-
     public static void presentRAF(Context context, String campaignID, InputStream inputStream) {
         RAFOptions rafOptions;
         try {
@@ -48,6 +44,12 @@ public class AmbassadorSDK {
         }
 
         presentRAF(context, campaignID, rafOptions);
+    }
+
+
+    public static void presentRAF(Context context, String campaignID, RAFOptions rafOptions) {
+        RAFOptions.set(rafOptions);
+        intentAmbassadorActivity(context, campaignID);
     }
 
     public static void presentRAF(Context context, String campaignID, String pathInAssets) {
