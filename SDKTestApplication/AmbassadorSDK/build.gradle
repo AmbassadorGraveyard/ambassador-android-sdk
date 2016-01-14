@@ -99,7 +99,6 @@ dependencies {
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.google.code.gson:gson:2.4'
     compile 'com.google.dagger:dagger:2.0'
-    compile 'uk.co.chrisjenx:calligraphy:2.1.0'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'org.mockito:mockito-core:1.10.19'
 

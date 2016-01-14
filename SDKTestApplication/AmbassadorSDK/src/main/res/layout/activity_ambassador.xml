@@ -24,7 +24,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
             android:text="Spread the word!" />
-        <!--fontPath="@string/homeWelcomeTitle" />-->
 
         <TextView
             android:id="@+id/tvWelcomeDesc"
@@ -33,7 +32,6 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
             android:text="Refer a friend to get a reward" />
-        <!--fontPath="@string/homeWelcomeDesc" />-->
 
         <FrameLayout
             android:id="@+id/flShortUrl"
@@ -55,7 +53,6 @@
                 android:clickable="true"
                 android:editable="false"
                 android:text="" />
-            <!--fontPath="@string/homeShareText" />-->
 
             <ImageButton
                 android:id="@+id/btnCopyPaste"

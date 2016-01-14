@@ -28,9 +28,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by dylan on 11/19/15.
- */
 class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
 
     private RAFOptions raf = RAFOptions.get();
@@ -56,6 +53,7 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.Contact
 
             tvNumberOrEmail = (TextView) itemView.findViewById(R.id.tvNumberOrEmail);
             tvNumberOrEmail.setTextSize(raf.getContactsListValueSize());
+            tvNumberOrEmail.setTypeface(raf.getContactsListValueFont());
 
             ivCheckMark = (ImageView) itemView.findViewById(R.id.ivCheckMark);
             ivPic = (ImageView) itemView.findViewById(R.id.ivPic);
