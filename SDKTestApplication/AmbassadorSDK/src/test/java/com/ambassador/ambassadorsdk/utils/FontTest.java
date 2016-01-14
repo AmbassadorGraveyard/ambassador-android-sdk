@@ -60,7 +60,7 @@ public class FontTest {
     @Test
     public void constructorBadTest() throws Exception {
         // ARRANGE
-        PowerMockito.doReturn(null).when(Typeface.class, "createFromAsset", Mockito.eq(assets), Mockito.anyString());
+        PowerMockito.doThrow(new RuntimeException()).when(Typeface.class, "createFromAsset", Mockito.eq(assets), Mockito.anyString());
 
         // ACT
         Font font = new Font("path");
