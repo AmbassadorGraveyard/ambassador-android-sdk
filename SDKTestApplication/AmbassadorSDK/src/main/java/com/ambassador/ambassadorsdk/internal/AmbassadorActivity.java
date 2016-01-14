@@ -201,6 +201,7 @@ public class AmbassadorActivity extends AppCompatActivity {
         _setUpToolbar(ambassadorConfig.getRafParameters().toolbarTitle);
 
         loadCustomImages();
+        setTheme();
 
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
