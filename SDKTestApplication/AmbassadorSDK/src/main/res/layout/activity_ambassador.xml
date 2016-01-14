@@ -1,92 +1,91 @@
-<com.ambassador.ambassadorsdk.internal.LockableScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ambassador.ambassadorsdk.internal.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/scrollView"
-    android:fillViewport="true"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:fillViewport="true">
 
     <LinearLayout
+        android:id="@+id/llMainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        tools:context=".MainActivity"
-        android:orientation="vertical"
-        android:id="@+id/llMainLayout">
+        tools:context=".MainActivity">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Spread the word!"
             android:id="@+id/tvWelcomeTitle"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"/>
-            <!--fontPath="@string/homeWelcomeTitle" />-->
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Refer a friend to get a reward"
-            android:id="@+id/tvWelcomeDesc"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"/>
-            <!--fontPath="@string/homeWelcomeDesc" />-->
+            android:layout_marginTop="15dp"
+            android:text="Spread the word!" />
+        <!--fontPath="@string/homeWelcomeTitle" />-->
+
+        <TextView
+            android:id="@+id/tvWelcomeDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"
+            android:text="Refer a friend to get a reward" />
+        <!--fontPath="@string/homeWelcomeDesc" />-->
 
         <FrameLayout
             android:id="@+id/flShortUrl"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="35dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:layout_marginTop="35dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
             <com.ambassador.ambassadorsdk.internal.CustomEditText
+                android:id="@+id/etShortURL"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/etShortURL"
-                android:text=""
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_gravity="center_horizontal"
+                android:clickable="true"
                 android:editable="false"
-                android:clickable="true"/>
-                <!--fontPath="@string/homeShareText" />-->
+                android:text="" />
+            <!--fontPath="@string/homeShareText" />-->
 
             <ImageButton
+                android:id="@+id/btnCopyPaste"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:id="@+id/btnCopyPaste"
-                android:background="?android:attr/selectableItemBackground"
-                android:src="@drawable/copy_paste_icon"
-                android:scaleType="fitXY"
                 android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="5dp"
                 android:layout_marginRight="5dp"
-                android:layout_marginEnd="5dp" />
+                android:background="?android:attr/selectableItemBackground"
+                android:scaleType="fitXY"
+                android:src="@drawable/copy_paste_icon" />
 
         </FrameLayout>
 
         <com.ambassador.ambassadorsdk.internal.StaticGridView
+            android:id="@+id/gvSocialGrid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/gvSocialGrid"
-            android:stackFromBottom="false"
-            android:transitionGroup="false"
-            android:columnWidth="80dp"
-            android:numColumns="3"
-            android:verticalSpacing="10dp"
-            android:gravity="center"
+            android:layout_marginBottom="20dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginBottom="20dp"
             android:layout_marginTop="30dp"
-            android:clickable="true"/>
+            android:layout_weight="1"
+            android:clickable="true"
+            android:columnWidth="80dp"
+            android:gravity="center"
+            android:numColumns="3"
+            android:stackFromBottom="false"
+            android:transitionGroup="false"
+            android:verticalSpacing="10dp" />
 
     </LinearLayout>
 

@@ -1,38 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="80dp"
-    android:layout_height="80dp">
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/rlBackground"
         android:layout_width="@dimen/social_option_size"
         android:layout_height="@dimen/social_option_size"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:id="@+id/rlBackground"
         android:layout_marginTop="5dp"
         android:background="@android:color/white">
 
         <ImageView
+            android:id="@+id/ivGridImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/ivGridImage"
-            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/facebook_icon"
-            android:layout_margin="15dp" />
+            android:layout_centerVertical="true"
+            android:layout_margin="15dp"
+            android:src="@drawable/facebook_icon" />
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/tvGridTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="FACEBOOK"
-        android:textSize="11sp"
-        android:id="@+id/tvGridTitle"
-        android:gravity="center_horizontal"
-        android:layout_below="@+id/rlBackground"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp"/>
-        <!--fontPath="@string/socialGridText"/>-->
+        android:layout_below="@+id/rlBackground"
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal"
+        android:text="FACEBOOK"
+        android:textSize="11sp" />
+    <!--fontPath="@string/socialGridText"/>-->
 
 </RelativeLayout>

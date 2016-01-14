@@ -52,8 +52,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/llSendView"
         android:layout_below="@+id/rlSearch"
-        android:layout_centerHorizontal="true"/>
-        <!--android:background="@color/contactsListViewBackground" />-->
+        android:layout_centerHorizontal="true" />
+    <!--android:background="@color/contactsListViewBackground" />-->
 
     <LinearLayout
         android:id="@+id/llSendView"
@@ -138,7 +138,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:paddingRight="10dp"
-                android:text="(0/160)"/>
+                android:text="(0/160)" />
 
         </RelativeLayout>
 
