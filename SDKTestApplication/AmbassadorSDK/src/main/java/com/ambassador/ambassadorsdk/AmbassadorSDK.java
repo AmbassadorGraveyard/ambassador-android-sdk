@@ -3,6 +3,7 @@ package com.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
@@ -42,12 +43,21 @@ public class AmbassadorSDK {
     public static void presentRAF(Context context, String campaignID, InputStream inputStream) {
         RAFOptions rafOptions;
         try {
-            rafOptions = RAFOptionsFactory.decodeResources(inputStream);
+            rafOptions = RAFOptionsFactory.decodeResources(inputStream, context);
         } catch (Exception e) {
             rafOptions = new RAFOptions.Builder().build();
         }
 
-        intentAmbassadorActivity(context, campaignID);
+        presentRAF(context, campaignID, rafOptions);
+    }
+
+    public static void presentRAF(Context context, String campaignID, String pathInAssets) {
+        try {
+            presentRAF(context, campaignID, context.getAssets().open(pathInAssets));
+        } catch (Exception e) {
+            presentRAF(context, campaignID);
+            Log.e("AmbassadorSDK", pathInAssets + " not found.");
+        }
     }
 
     private static void intentAmbassadorActivity(Context context, String campaignID) {
