@@ -6,7 +6,7 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
 public class ColorResource {
 
-    int color;
+    private int color;
 
     private ColorResource() {}
 
