@@ -13,8 +13,9 @@ public class Font {
 
     public Font(String path) {
         AssetManager assets = AmbassadorSingleton.getInstanceContext().getAssets();
-        this.typeface = Typeface.createFromAsset(assets, path);
-        if (this.typeface == null) {
+        try {
+            this.typeface = Typeface.createFromAsset(assets, path);
+        } catch (Exception e) {
             this.typeface = Typeface.DEFAULT;
         }
     }
