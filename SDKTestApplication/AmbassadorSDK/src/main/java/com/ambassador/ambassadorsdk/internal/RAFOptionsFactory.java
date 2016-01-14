@@ -95,10 +95,10 @@ public final class RAFOptionsFactory {
                             .invoke(builder);
                     break;
                 case TYPE_COLOR:
-//                    int processedValue = getColor(value);
-//                    new RAFOptionsMethod(key)
-//                            .withParam(processedValue)
-//                            .invoke(builder);
+                    int processedValue = getColor(value);
+                    new RAFOptionsMethod(key)
+                            .withParam(processedValue)
+                            .invoke(builder);
                     break;
                 case TYPE_DIMEN:
                     break;
@@ -110,12 +110,12 @@ public final class RAFOptionsFactory {
         private int getColor(String value) {
             String resName;
             if (value.matches(REGEX_ANDROID_RESOURCE_COLOR)) {
-                resName = value.substring(value.indexOf("/"));
+                resName = value.substring(value.indexOf("/") + 1);
                 int identifier = context.getResources().getIdentifier(resName, "color", "android");
                 return context.getResources().getColor(identifier);
 
             } else if (value.matches(REGEX_LOCAL_RESOURCE_COLOR)) {
-                resName = value.substring(value.indexOf("/"));
+                resName = value.substring(value.indexOf("/") + 1);
                 int identifer = context.getResources().getIdentifier(resName, "color", context.getPackageName());
                 return context.getResources().getColor(identifer);
 
