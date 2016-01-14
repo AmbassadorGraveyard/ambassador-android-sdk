@@ -155,6 +155,9 @@ public final class RAFOptionsFactory {
         }
 
         private float getDimen(String value) {
+            if (value.startsWith("-")) {
+                return -Float.parseFloat(value.replaceAll("\\D+", ""));
+            }
             return Float.parseFloat(value.replaceAll("\\D+", ""));
         }
 
