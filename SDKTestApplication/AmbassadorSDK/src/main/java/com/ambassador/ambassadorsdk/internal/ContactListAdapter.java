@@ -47,9 +47,11 @@ class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.Contact
 
             tvName = (TextView) itemView.findViewById(R.id.tvName);
             tvName.setTextSize(raf.getContactsListNameSize());
+            tvName.setTypeface(raf.getContactsListNameFont());
 
             tvDots = (TextView) itemView.findViewById(R.id.tvDots);
             tvDots.setTextSize(raf.getContactsListNameSize());
+            tvDots.setTypeface(raf.getContactsListNameFont());
 
             tvNumberOrEmail = (TextView) itemView.findViewById(R.id.tvNumberOrEmail);
             tvNumberOrEmail.setTextSize(raf.getContactsListValueSize());

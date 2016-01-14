@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.factories;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -91,12 +91,14 @@ public final class RAFOptionsFactory {
             switch (type) {
                 case TYPE_STRING:
                     new RAFOptionsMethod(key)
+                            .withType("string")
                             .withParam(value)
                             .invoke(builder);
                     break;
                 case TYPE_COLOR:
                     int processedValue = getColor(value);
                     new RAFOptionsMethod(key)
+                            .withType("color")
                             .withParam(processedValue)
                             .invoke(builder);
                     break;
@@ -207,10 +209,11 @@ public final class RAFOptionsFactory {
                             case TYPE_STRING:
                                 builder.setHomeWelcomeTitleFont(new Font(paramString).getTypeface());
                                 break;
+                            default: break;
                         }
                         break;
 
-                    case "homeWelcomeDesc":
+                    case "homewelcomedesc":
                         switch (type) {
                             case TYPE_COLOR:
                                 builder.setHomeWelcomeDescriptionColor(paramInt);
@@ -221,98 +224,135 @@ public final class RAFOptionsFactory {
                             case TYPE_STRING:
                                 builder.setHomeWelcomeDescriptionFont(new Font(paramString).getTypeface());
                                 break;
+                            default: break;
                         }
                         break;
 
-                    case "homeToolBar":
+                    case "hometoolbar":
                         builder.setHomeToolbarColor(paramInt);
                         break;
 
-                    case "homeToolBarText":
+                    case "hometoolbartext":
                         switch (type) {
                             case TYPE_COLOR:
+                                builder.setHomeToolbarTextColor(paramInt);
                                 break;
                             case TYPE_STRING:
+                                builder.setHomeToolbarTextFont(new Font(paramString).getTypeface());
                                 break;
+                            default: break;
                         }
                         break;
 
-                    case "homeToolBarArrow":
+                    case "hometoolbararrow":
+                        builder.setHomeToolbarArrowColor(paramInt);
                         break;
 
-                    case "homeShareTextBar":
+                    case "homesharetextbar":
+                        builder.setHomeShareTextBar(paramInt);
                         break;
 
-                    case "homeShareText":
+                    case "homesharetext":
                         switch (type) {
                             case TYPE_COLOR:
+                                builder.setHomeShareTextColor(paramInt);
                                 break;
                             case TYPE_DIMEN:
+                                builder.setHomeShareTextSize(paramFloat);
                                 break;
                             case TYPE_STRING:
+                                builder.setHomeShareTextFont(new Font(paramString).getTypeface());
                                 break;
+                            default: break;
                         }
                         break;
 
-                    case "socialGridText":
+                    case "socialgridtext":
+                        builder.setSocialGridTextFont(new Font(paramString).getTypeface());
                         break;
 
-                    case "contactsListViewBackground":
+                    case "contactslistviewbackground":
+                        builder.setContactsListViewBackgroundColor(paramInt);
                         break;
 
-                    case "contactsListName":
+                    case "contactslistname":
                         switch (type) {
                             case TYPE_DIMEN:
+                                builder.setContactsListNameSize(paramFloat);
                                 break;
                             case TYPE_STRING:
+                                builder.setContactsListNameFont(new Font(paramString).getTypeface());
                                 break;
+                            default: break;
                         }
                         break;
 
-                    case "contactsListValue":
-                        // dimen, string
+                    case "contactslistvalue":
+                        switch (type) {
+                            case TYPE_DIMEN:
+                                builder.setContactsListValueSize(paramFloat);
+                                break;
+                            case TYPE_STRING:
+                                builder.setContactsListValueFont(new Font(paramString).getTypeface());
+                                break;
+                            default: break;
+                        }
                         break;
 
-                    case "contactsSendBackground":
+                    case "contactssendbackground":
+                        builder.setContactsSendBackground(paramInt);
                         break;
 
-                    case "contactSendMessageText":
+                    case "contactsendmessagetext":
+                        builder.setContactSendMessageTextFont(new Font(paramString).getTypeface());
                         break;
 
-                    case "contactsToolBar":
+                    case "contactstoolbar":
+                        builder.setContactsToolbarColor(paramInt);
                         break;
 
-                    case "contactsToolBarText":
+                    case "contactstoolbartext":
+                        builder.setContactsToolbarTextColor(paramInt);
                         break;
 
-                    case "contactsToolBarArrow":
+                    case "contactstoolbararrow":
+                        builder.setContactsToolbarArrowColor(paramInt);
                         break;
 
-                    case "contactsSendButton":
+                    case "contactssendbutton":
+                        builder.setContactsSendButtonColor(paramInt);
                         break;
 
-                    case "contactsSendButtonText":
+                    case "contactssendbuttontext":
+                        builder.setContactsSendButtonTextColor(paramInt);
                         break;
 
-                    case "contactsDoneButtonText":
+                    case "contactsdonebuttontext":
+                        builder.setContactsDoneButtonTextColor(paramInt);
                         break;
 
-                    case "contactsSearchBar":
+                    case "contactssearchbar":
+                        builder.setContactsSearchBarColor(paramInt);
                         break;
 
-                    case "contactsSearchIcon":
+                    case "contactssearchicon":
+                        builder.setContactsSearchIconColor(paramInt);
                         break;
 
-                    case "contactNoPhotoAvailableBackground":
+                    case "contactnophotoavailablebackground":
+                        builder.setContactNoPhotoAvailableBackgroundColor(paramInt);
                         break;
 
-                    case "linkedinToolBar":
+                    case "linkedintoolbar":
+                        builder.setLinkedInToolbarColor(paramInt);
                         break;
 
-                    case "linkedinToolBarText":
+                    case "linkedintoolbartext":
+                        builder.setLinkedInToolbarTextColor(paramInt);
                         break;
 
-                    case "linkedinToolBarArrow":
+                    case "linkedintoolbararrow":
+                        builder.setLinkedInToolbarArrowColor(paramInt);
                         break;
 
                     default:
