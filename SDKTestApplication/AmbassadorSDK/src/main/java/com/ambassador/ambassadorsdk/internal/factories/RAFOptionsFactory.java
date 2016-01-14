@@ -119,6 +119,11 @@ public final class RAFOptionsFactory {
                             .invoke(builder);
                     break;
                 case TYPE_DIMEN:
+                    float processedDimen = getDimen(value);
+                    new RAFOptionsMethod(key)
+                            .withType(TYPE_DIMEN)
+                            .withParam(processedDimen)
+                            .invoke(builder);
                     break;
                 case TYPE_ARRAY:
                     String[] array = value.split("&");
@@ -147,6 +152,10 @@ public final class RAFOptionsFactory {
             }
 
             return 0;
+        }
+
+        private float getDimen(String value) {
+            return Float.parseFloat(value.replaceAll("\\D+", ""));
         }
 
         private static final class RAFOptionsMethod {
