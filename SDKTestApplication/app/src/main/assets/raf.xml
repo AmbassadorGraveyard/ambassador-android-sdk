@@ -1,8 +1,5 @@
 <resources>
-    <color name="catsmeow">@color/ambassador_blue</color>
-    <color name="homeBackground1">@color/ambassador_blue</color>
-    <color name="homeBackground2">#3c97d3</color>
-    <string name="RAFdefaultShareMessage">Check out this company!</string>
+    <string name="RAFdefaultShareMessage">Check out this company goog!</string>
     <string name="RAFtitleText">RAF Params Welcome Title</string>
     <string name="RAFdescriptionText">RAF Params Welcome Description</string>
     <string name="RAFtoolbarTitle">RAF Params Toolbar Title</string>
