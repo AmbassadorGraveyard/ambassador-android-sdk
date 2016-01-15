@@ -71,8 +71,8 @@ public final class RAFOptionsFactory {
         private static final String TYPE_DIMEN = "dimen";
         private static final String TYPE_ARRAY = "array";
 
-        private static final String REGEX_ANDROID_RESOURCE_COLOR = "@android:color/[a-zA-Z]*";
-        private static final String REGEX_LOCAL_RESOURCE_COLOR = "@color/[a-zA-z]*";
+        private static final String REGEX_ANDROID_RESOURCE_COLOR = "@android:color/[a-zA-Z0-9]*";
+        private static final String REGEX_LOCAL_RESOURCE_COLOR = "@color/[a-zA-z0-9]*";
         private static final String REGEX_HEX_COLOR = "#[a-zA-Z0-9]*";
 
         private Context context;
