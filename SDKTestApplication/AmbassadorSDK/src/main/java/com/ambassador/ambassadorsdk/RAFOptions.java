@@ -2,7 +2,7 @@ package com.ambassador.ambassadorsdk;
 
 import android.graphics.Typeface;
 
-import com.ambassador.ambassadorsdk.utils.ColorResource;
+import com.ambassador.ambassadorsdk.internal.factories.ResourceFactory;
 
 public final class RAFOptions {
 
@@ -253,29 +253,29 @@ public final class RAFOptions {
         private String logoPosition = "0";
         private String logo = null;
 
-        private int homeBackgroundColor = new ColorResource(android.R.color.white).getColor();
+        private int homeBackgroundColor = ResourceFactory.getColor(android.R.color.white).getColor();
 
-        private int homeWelcomeTitleColor = new ColorResource(R.color.lightGray).getColor();
+        private int homeWelcomeTitleColor = ResourceFactory.getColor(R.color.lightGray).getColor();
         private float homeWelcomeTitleSize = 22;
         private Typeface homeWelcomeTitleFont;
 
-        private int homeWelcomeDescriptionColor = new ColorResource(R.color.lightGray).getColor();
+        private int homeWelcomeDescriptionColor = ResourceFactory.getColor(R.color.lightGray).getColor();
         private float homeWelcomeDescriptionSize = 18;
         private Typeface homeWelcomeDescriptionFont;
 
-        private int homeToolbarColor = new ColorResource(R.color.ambassador_blue).getColor();
-        private int homeToolbarTextColor = new ColorResource(android.R.color.white).getColor();
+        private int homeToolbarColor = ResourceFactory.getColor(R.color.ambassador_blue).getColor();
+        private int homeToolbarTextColor = ResourceFactory.getColor(android.R.color.white).getColor();
         private Typeface homeToolbarTextFont;
-        private int homeToolbarArrowColor = new ColorResource(android.R.color.white).getColor();
+        private int homeToolbarArrowColor = ResourceFactory.getColor(android.R.color.white).getColor();
 
-        private int homeShareTextBar = new ColorResource(R.color.ultraUltraUltraLightGray).getColor();
-        private int homeShareTextColor = new ColorResource(R.color.ultraLightGray).getColor();
+        private int homeShareTextBar = ResourceFactory.getColor(R.color.ultraUltraUltraLightGray).getColor();
+        private int homeShareTextColor = ResourceFactory.getColor(R.color.ultraLightGray).getColor();
         private float homeShareTextSize = 12;
         private Typeface homeShareTextFont;
 
         private Typeface socialGridTextFont;
 
-        private int contactsListViewBackgroundColor = new ColorResource(android.R.color.white).getColor();
+        private int contactsListViewBackgroundColor = ResourceFactory.getColor(android.R.color.white).getColor();
 
         private float contactsListNameSize = 15;
         private Typeface contactsListNameFont;
@@ -283,26 +283,26 @@ public final class RAFOptions {
         private float contactsListValueSize = 12;
         private Typeface contactsListValueFont;
 
-        private int contactsSendBackground = new ColorResource(android.R.color.white).getColor();
+        private int contactsSendBackground = ResourceFactory.getColor(android.R.color.white).getColor();
         private Typeface contactSendMessageTextFont;
 
-        private int contactsToolbarColor = new ColorResource(R.color.ambassador_blue).getColor();
-        private int contactsToolbarTextColor = new ColorResource(android.R.color.white).getColor();
-        private int contactsToolbarArrowColor = new ColorResource(android.R.color.white).getColor();
+        private int contactsToolbarColor = ResourceFactory.getColor(R.color.ambassador_blue).getColor();
+        private int contactsToolbarTextColor = ResourceFactory.getColor(android.R.color.white).getColor();
+        private int contactsToolbarArrowColor = ResourceFactory.getColor(android.R.color.white).getColor();
 
-        private int contactsSendButtonColor = new ColorResource(R.color.ambassador_blue).getColor();
-        private int contactsSendButtonTextColor = new ColorResource(android.R.color.white).getColor();
+        private int contactsSendButtonColor = ResourceFactory.getColor(R.color.ambassador_blue).getColor();
+        private int contactsSendButtonTextColor = ResourceFactory.getColor(android.R.color.white).getColor();
 
-        private int contactsDoneButtonTextColor = new ColorResource(R.color.ambassador_blue).getColor();
+        private int contactsDoneButtonTextColor = ResourceFactory.getColor(R.color.ambassador_blue).getColor();
 
-        private int contactsSearchBarColor = new ColorResource(android.R.color.transparent).getColor();
-        private int contactsSearchIconColor = new ColorResource(android.R.color.white).getColor();
+        private int contactsSearchBarColor = ResourceFactory.getColor(android.R.color.transparent).getColor();
+        private int contactsSearchIconColor = ResourceFactory.getColor(android.R.color.white).getColor();
 
-        private int contactNoPhotoAvailableBackgroundColor = new ColorResource(R.color.ambassador_blue).getColor();
+        private int contactNoPhotoAvailableBackgroundColor = ResourceFactory.getColor(R.color.ambassador_blue).getColor();
 
-        private int linkedInToolbarColor = new ColorResource(R.color.linkedin_blue).getColor();
-        private int linkedInToolbarTextColor = new ColorResource(android.R.color.white).getColor();
-        private int linkedInToolbarArrowColor = new ColorResource(android.R.color.white).getColor();
+        private int linkedInToolbarColor = ResourceFactory.getColor(R.color.linkedin_blue).getColor();
+        private int linkedInToolbarTextColor = ResourceFactory.getColor(android.R.color.white).getColor();
+        private int linkedInToolbarArrowColor = ResourceFactory.getColor(android.R.color.white).getColor();
 
         private String[] channels = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
 
@@ -531,6 +531,10 @@ public final class RAFOptions {
             tmp.socialOptionCornerRadius = this.socialOptionCornerRadius;
 
             return tmp;
+        }
+
+        public static RAFOptions.Builder newInstance() {
+            return new RAFOptions.Builder();
         }
 
     }
