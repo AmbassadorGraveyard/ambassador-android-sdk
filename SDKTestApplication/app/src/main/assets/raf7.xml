@@ -7,7 +7,7 @@
     <string name="RAFLogoPosition">cats</string>
     <string name="RAFLogo">raffake.png</string>
     <color name="homeBackground">#ffffff</color>
-    <color name="homdaeWelcomeTitle">#ff0</color>
+    <color name="homeWelcomeTitle">#ff0</color>
     <dimen name="homeWelcomeTitle">16sp</dimen>
     <string name="homeWealcomeTitle">fonts/d.ttf</string>
     <color name="homeWelsscomeDesc">#9198AB</color>
