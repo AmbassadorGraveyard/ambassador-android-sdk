@@ -112,25 +112,37 @@ public final class RAFOptionsFactory {
                             .invoke(builder);
                     break;
                 case TYPE_COLOR:
-                    int processedValue = getColor(value);
-                    new RAFOptionsMethod(key)
-                            .withType(TYPE_COLOR)
-                            .withParam(processedValue)
-                            .invoke(builder);
+                    try {
+                        int processedValue = getColor(value);
+                        new RAFOptionsMethod(key)
+                                .withType(TYPE_COLOR)
+                                .withParam(processedValue)
+                                .invoke(builder);
+                    } catch (Exception e) {
+                        Log.e("AmbassadorSDK", "An error occurred processing key:" + key + " value:" + value);
+                    }
                     break;
                 case TYPE_DIMEN:
-                    float processedDimen = getDimen(value);
-                    new RAFOptionsMethod(key)
-                            .withType(TYPE_DIMEN)
-                            .withParam(processedDimen)
-                            .invoke(builder);
+                    try {
+                        float processedDimen = getDimen(value);
+                        new RAFOptionsMethod(key)
+                                .withType(TYPE_DIMEN)
+                                .withParam(processedDimen)
+                                .invoke(builder);
+                    } catch (Exception e) {
+                        Log.e("AmbassadorSDK", "An error occurred processing key:" + key + " value:" + value);
+                    }
                     break;
                 case TYPE_ARRAY:
-                    String[] array = value.split("&");
-                    new RAFOptionsMethod(key)
-                            .withType(TYPE_ARRAY)
-                            .withParam(array)
-                            .invoke(builder);
+                    try {
+                        String[] array = value.split("&");
+                        new RAFOptionsMethod(key)
+                                .withType(TYPE_ARRAY)
+                                .withParam(array)
+                                .invoke(builder);
+                    } catch (Exception e) {
+                        Log.e("AmbassadorSDK", "An error occurred processing key:" + key + " value:" + value);
+                    }
                     break;
             }
         }
@@ -148,11 +160,7 @@ public final class RAFOptionsFactory {
                 return context.getResources().getColor(identifer);
 
             } else if (value.matches(REGEX_HEX_COLOR)) {
-                try {
-                    return Color.parseColor(value);
-                } catch (IllegalArgumentException e) {
-                    Log.e("AmbassadorSDK", value + " is not a valid color.");
-                }
+                return Color.parseColor(value);
             }
 
             return 0;
