@@ -3,7 +3,6 @@ package com.example.ambassador.sdktestapplication;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,19 +68,23 @@ public class MainActivity extends AppCompatActivity {
 
         AmbassadorSDK.registerConversion(conversionParameters, true);
 
-        Button btnPresentRAF = (Button)findViewById(R.id.btnPresentRAF);
+        Button btnPresentRAF = (Button) findViewById(R.id.btnPresentRAF1);
         btnPresentRAF.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    AmbassadorSDK.presentRAF(context, "260", "raf.xml");
-                } catch (Exception e) {
-                    Log.e("e", e.toString());
-                }
+                AmbassadorSDK.presentRAF(context, "260", "raf1.xml");
             }
         });
 
-        Button btnPurchase = (Button)findViewById(R.id.btnPurchase);
+        Button btnPresentRAF2 = (Button) findViewById(R.id.btnPresentRAF2);
+        btnPresentRAF2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbassadorSDK.presentRAF(context, "260", "raf2.xml");
+            }
+        });
+
+        Button btnPurchase = (Button) findViewById(R.id.btnPurchase);
         btnPurchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
