@@ -4,7 +4,7 @@ import android.support.annotation.ColorRes;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
-public class ColorResource {
+public final class ColorResource {
 
     private int color;
 

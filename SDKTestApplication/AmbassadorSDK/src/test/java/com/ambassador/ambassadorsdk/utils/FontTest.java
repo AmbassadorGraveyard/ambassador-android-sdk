@@ -70,4 +70,18 @@ public class FontTest {
         Assert.assertEquals(defaultTypeface, font.getTypeface());
     }
 
+    @Test
+    public void fontLightTest() {
+        // ARRANGE
+        Typeface typeface = Mockito.mock(Typeface.class);
+        Mockito.when(Typeface.create(Mockito.eq("sans-serif-light"), Mockito.eq(Typeface.NORMAL))).thenReturn(typeface);
+
+        // ACT
+        Font font = new Font("sans-serif-light");
+
+        // ASSERT
+        Assert.assertNotNull(font.getTypeface());
+        Assert.assertEquals(typeface, font.getTypeface());
+    }
+
 }
