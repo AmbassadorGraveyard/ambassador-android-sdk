@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Button btnPresentRAF9 = (Button) findViewById(R.id.btnPresentRAF9);
-        btnPresentRAF8.setOnClickListener(new View.OnClickListener() {
+        btnPresentRAF9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AmbassadorSDK.presentRAF(context, "260", "raf9.xml");
