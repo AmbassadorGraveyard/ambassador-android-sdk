@@ -4,6 +4,7 @@ import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
+import com.ambassador.ambassadorsdk.utils.ResponseCode;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -67,7 +68,7 @@ public class ConversionsApi {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getResponse() != null && Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
+                if (error.getResponse() != null && new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     completion.onSuccess("success");
                     Utilities.debugLog("amb-request", "SUCCESS: ConversionsApi.registerConversionRequest(...)");
                 } else {
