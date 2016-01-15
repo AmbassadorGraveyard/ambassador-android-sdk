@@ -64,7 +64,7 @@ public final class RAFOptionsFactory {
         return rafBuilder.build();
     }
 
-    public static final class ResourceProcessor {
+    protected static class ResourceProcessor {
 
         private static final String TYPE_STRING = "string";
         private static final String TYPE_COLOR = "color";
@@ -145,6 +145,10 @@ public final class RAFOptionsFactory {
                         Log.e("AmbassadorSDK", "An error occurred processing key:" + key + " value:" + value);
                     }
                     break;
+
+                default:
+                    Log.e("AmbassadorSDK", "Not a valid tag type:" + type);
+                    break;
             }
         }
 
@@ -174,7 +178,7 @@ public final class RAFOptionsFactory {
             return Float.parseFloat(value.replaceAll("\\D+", ""));
         }
 
-        private static final class RAFOptionsMethod {
+        protected static class RAFOptionsMethod {
 
             private String type;
 

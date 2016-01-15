@@ -1,6 +1,6 @@
 package com.ambassador.ambassadorsdk.utils;
 
-public final class ResponseCode {
+public class ResponseCode {
 
     private int responseCode;
 
