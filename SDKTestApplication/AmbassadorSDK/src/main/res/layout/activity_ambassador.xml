@@ -22,9 +22,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
-            android:text="Spread the word!"
-            android:gravity="center_horizontal"/>
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center_horizontal"
+            android:text="Spread the word!" />
 
         <TextView
             android:id="@+id/tvWelcomeDesc"
@@ -40,7 +42,7 @@
             android:layout_height="40dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="20dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 

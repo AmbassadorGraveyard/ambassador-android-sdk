@@ -186,7 +186,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         tvWelcomeDesc.setText(ambassadorConfig.getRafParameters().descriptionText);
         _setUpToolbar(ambassadorConfig.getRafParameters().toolbarTitle);
 
-        loadCustomImages();
+        try {
+            loadCustomImages();
+        } catch (Exception e) {
+
+        }
         setTheme();
 
         btnCopyPaste.setOnClickListener(new View.OnClickListener() {
@@ -339,10 +343,11 @@ public class AmbassadorActivity extends AppCompatActivity {
         return clip.toString();
     }
 
-    void loadCustomImages() {
+    void loadCustomImages() throws Exception {
         //first check if an image exists
-        int drawableId = getResources().getIdentifier("raf_logo", "drawable", getPackageName());
-        if (drawableId == 0) return;
+
+        String drawablePath = raf.getLogo();
+        if (drawablePath == null) return;
 
         int pos;
         try {
@@ -354,9 +359,19 @@ public class AmbassadorActivity extends AppCompatActivity {
 
         if (pos >= 1 && pos <= 5) {
             ImageView logo = new ImageView(this);
-            logo.setId(drawableId);
-            logo.setImageDrawable(ContextCompat.getDrawable(this, drawableId));
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height));
+            logo.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+            Drawable drawable = Drawable.createFromStream(getAssets().open(drawablePath), null);
+            int width = drawable.getIntrinsicWidth();
+            int height = drawable.getIntrinsicHeight();
+            float ratio = (float) width / (float) height;
+
+            logo.setImageDrawable(Drawable.createFromStream(getAssets().open(drawablePath), null));
+
+            int heightToSet = Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height);
+            int widthToSet = (int) (heightToSet * ratio);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(widthToSet, heightToSet);
+
             params.gravity = Gravity.CENTER_HORIZONTAL;
             params.topMargin = Utilities.getPixelSizeForDimension(R.dimen.raf_logo_top_margin);
             logo.setLayoutParams(params);

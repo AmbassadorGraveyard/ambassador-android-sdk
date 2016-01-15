@@ -237,6 +237,10 @@ public final class RAFOptionsFactory {
                         builder.setLogoPosition(paramString);
                         break;
 
+                    case "raflogo":
+                        builder.setLogo(paramString);
+                        break;
+
                     case "homebackground":
                         builder.setHomeBackgroundColor(paramInt);
                         break;

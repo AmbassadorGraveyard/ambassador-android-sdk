@@ -243,7 +243,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
 
     private void setTheme() {
         rlSearch.setBackgroundColor(raf.getContactsSearchBarColor());
-        btnDoneSearch.setBackgroundColor(raf.getContactsDoneButtonTextColor());
         llSendView.setBackgroundColor(raf.getContactsSendBackground());
         btnDone.setTextColor(raf.getContactsDoneButtonTextColor());
         rlSend.setBackgroundColor(raf.getContactsSendButtonColor());

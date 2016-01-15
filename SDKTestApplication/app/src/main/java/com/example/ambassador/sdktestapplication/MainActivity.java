@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
 
         AmbassadorSDK.registerConversion(conversionParameters, true);
 
-        Button btnPresentRAF = (Button) findViewById(R.id.btnPresentRAF1);
-        btnPresentRAF.setOnClickListener(new View.OnClickListener() {
+        Button btnPresentRAF1 = (Button) findViewById(R.id.btnPresentRAF1);
+        btnPresentRAF1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AmbassadorSDK.presentRAF(context, "260", "raf1.xml");
@@ -81,6 +81,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 AmbassadorSDK.presentRAF(context, "260", "raf2.xml");
+            }
+        });
+
+        Button btnPresentRAF3 = (Button) findViewById(R.id.btnPresentRAF3);
+        btnPresentRAF3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbassadorSDK.presentRAF(context, "260", "raf3.xml");
             }
         });
 
