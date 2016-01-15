@@ -13,6 +13,7 @@ public final class RAFOptions {
     private String descriptionText;
     private String toolbarTitle;
     private String logoPosition;
+    private String logo;
 
     private int homeBackgroundColor;
 
@@ -89,6 +90,10 @@ public final class RAFOptions {
 
     public String getLogoPosition() {
         return logoPosition;
+    }
+
+    public String getLogo() {
+        return logo;
     }
 
     public int getHomeBackgroundColor() {
@@ -246,6 +251,7 @@ public final class RAFOptions {
         private String descriptionText = "RAF Params Welcome Description";
         private String toolbarTitle = "RAF Params Toolbar Title";
         private String logoPosition = "0";
+        private String logo = null;
 
         private int homeBackgroundColor = new ColorResource(android.R.color.white).getColor();
 
@@ -322,6 +328,11 @@ public final class RAFOptions {
 
         public void setLogoPosition(String logoPosition) {
             this.logoPosition = logoPosition;
+        }
+
+        public Builder setLogo(String logo) {
+            this.logo = logo;
+            return this;
         }
 
         public void setHomeBackgroundColor(int homeBackgroundColor) {
@@ -480,6 +491,7 @@ public final class RAFOptions {
             tmp.descriptionText = this.descriptionText;
             tmp.toolbarTitle = this.toolbarTitle;
             tmp.logoPosition = this.logoPosition;
+            tmp.logo = this.logo;
             tmp.homeBackgroundColor = this.homeBackgroundColor;
             tmp.homeWelcomeTitleColor = this.homeWelcomeTitleColor;
             tmp.homeWelcomeTitleSize = this.homeWelcomeTitleSize;
