@@ -148,7 +148,11 @@ public final class RAFOptionsFactory {
                 return context.getResources().getColor(identifer);
 
             } else if (value.matches(REGEX_HEX_COLOR)) {
-                return Color.parseColor(value);
+                try {
+                    return Color.parseColor(value);
+                } catch (IllegalArgumentException e) {
+                    Log.e("AmbassadorSDK", value + " is not a valid color.");
+                }
             }
 
             return 0;
