@@ -3,7 +3,6 @@ package com.ambassador.ambassadorsdk.internal;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -27,10 +26,6 @@ public class Utilities {
         void insertUrlTapped(DialogInterface dialogInterface);
     }
 
-    public static Boolean isSuccessfulResponseCode(int statusCode) {
-        return (statusCode >= 200 && statusCode < 300);
-    }
-
     public static int getPixelSizeForDimension(int dimension) {
         Context cxt = AmbassadorSingleton.getInstanceContext();
         return cxt.getResources().getDimensionPixelSize(dimension);
@@ -47,16 +42,6 @@ public class Utilities {
     public static boolean containsURL(String message, String url) {
         if (message == null) return false;
         return message.contains(url);
-    }
-
-    public static boolean isTablet(Context context) {
-        return (context.getResources().getConfiguration().screenLayout
-                & Configuration.SCREENLAYOUT_SIZE_MASK)
-                >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
-
-    public static String deviceType(Context context) {
-        return (isTablet(context)) ? "Tablet" : "SmartPhone";
     }
 
     public static void presentUrlDialog(Context context, final EditText editText, final String url, final UrlAlertInterface alertInterface) {

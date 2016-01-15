@@ -3,6 +3,7 @@ package com.ambassador.ambassadorsdk.internal.api.bulkshare;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
+import com.ambassador.ambassadorsdk.utils.ResponseCode;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -67,7 +68,7 @@ public class BulkShareApi {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getResponse() != null && Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
+                if (error.getResponse() != null && new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     completion.onSuccess("success");
                     Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareSms(...)");
                 } else {
@@ -96,7 +97,7 @@ public class BulkShareApi {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getResponse() != null && Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
+                if (error.getResponse() != null && new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     completion.onSuccess("success");
                     Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareEmail(...)");
                 } else {
@@ -123,7 +124,7 @@ public class BulkShareApi {
 
             @Override
             public void failure(RetrofitError error) {
-                if (error.getResponse() != null && Utilities.isSuccessfulResponseCode(error.getResponse().getStatus())) {
+                if (error.getResponse() != null && new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     Utilities.debugLog("amb-request", "SUCCESS: BulkShareApi.bulkShareTrack(...)");
                 } else {
                     Utilities.debugLog("amb-request", "FAILURE: BulkShareApi.bulkShareTrack(...)");

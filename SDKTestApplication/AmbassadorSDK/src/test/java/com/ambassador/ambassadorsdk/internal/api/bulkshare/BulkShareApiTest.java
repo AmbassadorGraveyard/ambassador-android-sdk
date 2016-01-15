@@ -165,11 +165,42 @@ public class BulkShareApiTest {
         String auth = "auth";
         BulkShareApi.BulkShareTrackBody[] requestBody = new BulkShareApi.BulkShareTrackBody[]{};
 
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<String> callback = (Callback<String>) invocation.getArguments()[3];
+                callback.success(null, null);
+                return null;
+            }
+        }).doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<String> callback = (Callback<String>) invocation.getArguments()[3];
+                RetrofitError error = Mockito.mock(RetrofitError.class);
+                Response resp = new Response("url", 201, "reason", new ArrayList<Header>(), new TypedString("body"));
+                Mockito.when(error.getResponse()).thenReturn(resp);
+                callback.failure(error);
+                return null;
+            }
+        }).doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<String> callback = (Callback<String>) invocation.getArguments()[3];
+                RetrofitError error = Mockito.mock(RetrofitError.class);
+                Response resp = new Response("url", 401, "reason", new ArrayList<Header>(), new TypedString("body"));
+                Mockito.when(error.getResponse()).thenReturn(resp);
+                callback.failure(error);
+                return null;
+            }
+        }).when(bulkShareClient).bulkShareTrack(Mockito.eq(uid), Mockito.eq(auth), Mockito.eq(requestBody), Mockito.any(Callback.class));
+
         // ACT
+        bulkShareApi.bulkShareTrack(uid, auth, requestBody);
+        bulkShareApi.bulkShareTrack(uid, auth, requestBody);
         bulkShareApi.bulkShareTrack(uid, auth, requestBody);
 
         // ASSERT
-        Mockito.verify(bulkShareClient).bulkShareTrack(Mockito.eq(uid), Mockito.eq(auth), Mockito.eq(requestBody), Mockito.any(Callback.class));
+        Mockito.verify(bulkShareClient, Mockito.times(3)).bulkShareTrack(Mockito.eq(uid), Mockito.eq(auth), Mockito.eq(requestBody), Mockito.any(Callback.class));
     }
 
 }
