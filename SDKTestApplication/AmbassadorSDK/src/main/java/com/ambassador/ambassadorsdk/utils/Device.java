@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.utils;
 import android.content.Context;
 import android.content.res.Configuration;
 
-public final class Device {
+public class Device {
 
     private boolean isTablet = false;
     private boolean isSmartPhone = true;

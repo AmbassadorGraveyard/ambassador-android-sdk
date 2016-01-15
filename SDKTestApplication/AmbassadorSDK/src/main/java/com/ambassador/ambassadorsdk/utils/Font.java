@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
-public final class Font {
+public class Font {
 
     private Typeface typeface;
 
