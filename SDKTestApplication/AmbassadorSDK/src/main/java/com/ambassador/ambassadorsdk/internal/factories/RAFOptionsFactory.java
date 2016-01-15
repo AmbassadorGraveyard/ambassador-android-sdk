@@ -21,7 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public final class RAFOptionsFactory {
 
     public static RAFOptions decodeResources(InputStream inputStream, Context context) throws Exception {
-        RAFOptions.Builder rafBuilder = new RAFOptions.Builder();
+        RAFOptions.Builder rafBuilder = RAFOptions.Builder.newInstance();
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dbBuilder = dbFactory.newDocumentBuilder();
@@ -51,6 +51,7 @@ public final class RAFOptionsFactory {
 
                     value = Joiner.on("&").join(names);
                 }
+
                 new ResourceProcessor()
                         .withContext(context)
                         .withType(type)
@@ -63,7 +64,7 @@ public final class RAFOptionsFactory {
         return rafBuilder.build();
     }
 
-    private static final class ResourceProcessor {
+    public static final class ResourceProcessor {
 
         private static final String TYPE_STRING = "string";
         private static final String TYPE_COLOR = "color";
