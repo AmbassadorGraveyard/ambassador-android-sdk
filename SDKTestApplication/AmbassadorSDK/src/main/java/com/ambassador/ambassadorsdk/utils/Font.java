@@ -38,6 +38,9 @@ public final class Font {
             case FONT_LIGHT:
                 this.typeface = Typeface.create("sans-serif-light", Typeface.NORMAL);
                 break;
+
+            default:
+                this.typeface = Typeface.DEFAULT;
         }
     }
 
