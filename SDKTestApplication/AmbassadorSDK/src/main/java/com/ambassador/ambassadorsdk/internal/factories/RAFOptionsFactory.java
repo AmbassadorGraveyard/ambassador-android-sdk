@@ -36,7 +36,7 @@ public final class RAFOptionsFactory {
                 String type = entry.getNodeName();
                 String key = entry.getAttributes().getNamedItem("name").getNodeValue();
                 String value = "";
-                if (!type.equals("array")) {
+                if (!"array".equals(type)) {
                     value = entry.getFirstChild().getNodeValue();
                 } else {
                     NodeList nodes = entry.getChildNodes();
