@@ -206,7 +206,7 @@ The file consists of various elements with editable properties. The colors can b
 
 For instance, if the color 'homeToolBar' is changed:
 
-<img src="screenshots/changeToolBarColor.png" />
+<img src="screenshots/changeToolBarColor.png" width="250" />
 
 The resulting toolbar would display:
 
