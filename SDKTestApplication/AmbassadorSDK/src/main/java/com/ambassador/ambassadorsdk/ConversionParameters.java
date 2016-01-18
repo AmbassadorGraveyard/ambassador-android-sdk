@@ -296,6 +296,10 @@ public class ConversionParameters {
             }
         }
 
+        public static Builder newInstance() {
+            return new Builder();
+        }
+
     }
 
 }
