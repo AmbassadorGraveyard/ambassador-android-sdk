@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.ambassador.ambassadorsdk.ConversionParameters;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -75,24 +77,24 @@ public class ConversionDBHelperTest {
         ConversionDBHelper.createValuesFromConversion(conversionParameters);
         
         // ASSERT
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN, conversionParameters.mbsy_campaign);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL, conversionParameters.mbsy_email);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_FIRST_NAME, conversionParameters.mbsy_first_name);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_LAST_NAME, conversionParameters.mbsy_last_name);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL_NEW_AMBASSADOR, conversionParameters.mbsy_email_new_ambassador);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_UID, conversionParameters.mbsy_uid);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM1, conversionParameters.mbsy_custom1);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM2, conversionParameters.mbsy_custom2);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM3, conversionParameters.mbsy_custom3);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_AUTO_CREATE, conversionParameters.mbsy_auto_create);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_REVENUE, conversionParameters.mbsy_revenue);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_DEACTIVATE_NEW_AMBASSADOR, conversionParameters.mbsy_deactivate_new_ambassador);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_TRANSACTION_UID, conversionParameters.mbsy_transaction_uid);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_ADD_TO_GROUP_ID, conversionParameters.mbsy_add_to_group_id);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA1, conversionParameters.mbsy_event_data1);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA2, conversionParameters.mbsy_event_data2);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA3, conversionParameters.mbsy_event_data3);
-        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED, conversionParameters.mbsy_is_approved);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN, conversionParameters.campaign);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL, conversionParameters.email);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_FIRST_NAME, conversionParameters.firstName);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_LAST_NAME, conversionParameters.lastName);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EMAIL_NEW_AMBASSADOR, conversionParameters.emailNewAmbassador);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_UID, conversionParameters.uid);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM1, conversionParameters.custom1);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM2, conversionParameters.custom2);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_CUSTOM3, conversionParameters.custom3);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_AUTO_CREATE, conversionParameters.autoCreate);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_REVENUE, conversionParameters.revenue);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_DEACTIVATE_NEW_AMBASSADOR, conversionParameters.deactivateNewAmbassador);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_TRANSACTION_UID, conversionParameters.transactionUid);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_ADD_TO_GROUP_ID, conversionParameters.addToGroupId);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA1, conversionParameters.eventData1);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA2, conversionParameters.eventData2);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_EVENT_DATA3, conversionParameters.eventData3);
+        Mockito.verify(contentValues).put(ConversionSQLStrings.ConversionSQLEntry.MBSY_IS_APPROVED, conversionParameters.isApproved);
     }
 
     @Test
@@ -108,24 +110,24 @@ public class ConversionDBHelperTest {
         ConversionDBHelper.createConversionParameterWithCursor(cursor);
 
         // ASSERT
-        Assert.assertEquals(conversionParameters.mbsy_campaign, -1);
-        Assert.assertEquals(conversionParameters.mbsy_email, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_first_name, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_last_name, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_email_new_ambassador, -1);
-        Assert.assertEquals(conversionParameters.mbsy_uid, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_custom1, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_custom2, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_custom3, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_auto_create, -1);
-        Assert.assertEquals(conversionParameters.mbsy_revenue, -1);
-        Assert.assertEquals(conversionParameters.mbsy_deactivate_new_ambassador, -1);
-        Assert.assertEquals(conversionParameters.mbsy_transaction_uid, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_add_to_group_id, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_event_data1, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_event_data2, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_event_data3, "-1");
-        Assert.assertEquals(conversionParameters.mbsy_is_approved, -1);
+        Assert.assertEquals(conversionParameters.campaign, -1);
+        Assert.assertEquals(conversionParameters.email, "-1");
+        Assert.assertEquals(conversionParameters.firstName, "-1");
+        Assert.assertEquals(conversionParameters.lastName, "-1");
+        Assert.assertEquals(conversionParameters.emailNewAmbassador, -1);
+        Assert.assertEquals(conversionParameters.uid, "-1");
+        Assert.assertEquals(conversionParameters.custom1, "-1");
+        Assert.assertEquals(conversionParameters.custom2, "-1");
+        Assert.assertEquals(conversionParameters.custom3, "-1");
+        Assert.assertEquals(conversionParameters.autoCreate, -1);
+        Assert.assertEquals(conversionParameters.revenue, -1);
+        Assert.assertEquals(conversionParameters.deactivateNewAmbassador, -1);
+        Assert.assertEquals(conversionParameters.transactionUid, "-1");
+        Assert.assertEquals(conversionParameters.addToGroupId, "-1");
+        Assert.assertEquals(conversionParameters.eventData1, "-1");
+        Assert.assertEquals(conversionParameters.eventData2, "-1");
+        Assert.assertEquals(conversionParameters.eventData3, "-1");
+        Assert.assertEquals(conversionParameters.isApproved, -1);
     }
 
     @Test

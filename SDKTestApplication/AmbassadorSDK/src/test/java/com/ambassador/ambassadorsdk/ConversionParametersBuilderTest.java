@@ -2,8 +2,6 @@ package com.ambassador.ambassadorsdk;
 
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.ConversionParameters;
-
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -72,24 +70,24 @@ public class ConversionParametersBuilderTest {
         ConversionParameters parameters = builder.build();
         
         // VERIFY
-        Assert.assertEquals(parameters.mbsy_campaign, mbsy_campaign);
-        Assert.assertEquals(parameters.mbsy_email, mbsy_email);
-        Assert.assertEquals(parameters.mbsy_first_name, mbsy_first_name);
-        Assert.assertEquals(parameters.mbsy_last_name, mbsy_last_name);
-        Assert.assertEquals(parameters.mbsy_email_new_ambassador, mbsy_email_new_ambassador);
-        Assert.assertEquals(parameters.mbsy_uid, mbsy_uid);
-        Assert.assertEquals(parameters.mbsy_custom1, mbsy_custom1);
-        Assert.assertEquals(parameters.mbsy_custom2, mbsy_custom2);
-        Assert.assertEquals(parameters.mbsy_custom3, mbsy_custom3);
-        Assert.assertEquals(parameters.mbsy_auto_create, mbsy_auto_create);
-        Assert.assertEquals(parameters.mbsy_revenue, mbsy_revenue);
-        Assert.assertEquals(parameters.mbsy_deactivate_new_ambassador, mbsy_deactivate_new_ambassador);
-        Assert.assertEquals(parameters.mbsy_transaction_uid, mbsy_transaction_uid);
-        Assert.assertEquals(parameters.mbsy_add_to_group_id, mbsy_add_to_group_id);
-        Assert.assertEquals(parameters.mbsy_event_data1, mbsy_event_data1);
-        Assert.assertEquals(parameters.mbsy_event_data2, mbsy_event_data2);
-        Assert.assertEquals(parameters.mbsy_event_data3, mbsy_event_data3);
-        Assert.assertEquals(parameters.mbsy_is_approved, mbsy_is_approved);
+        Assert.assertEquals(parameters.campaign, mbsy_campaign);
+        Assert.assertEquals(parameters.email, mbsy_email);
+        Assert.assertEquals(parameters.firstName, mbsy_first_name);
+        Assert.assertEquals(parameters.lastName, mbsy_last_name);
+        Assert.assertEquals(parameters.emailNewAmbassador, mbsy_email_new_ambassador);
+        Assert.assertEquals(parameters.uid, mbsy_uid);
+        Assert.assertEquals(parameters.custom1, mbsy_custom1);
+        Assert.assertEquals(parameters.custom2, mbsy_custom2);
+        Assert.assertEquals(parameters.custom3, mbsy_custom3);
+        Assert.assertEquals(parameters.autoCreate, mbsy_auto_create);
+        Assert.assertEquals(parameters.revenue, mbsy_revenue);
+        Assert.assertEquals(parameters.deactivateNewAmbassador, mbsy_deactivate_new_ambassador);
+        Assert.assertEquals(parameters.transactionUid, mbsy_transaction_uid);
+        Assert.assertEquals(parameters.addToGroupId, mbsy_add_to_group_id);
+        Assert.assertEquals(parameters.eventData1, mbsy_event_data1);
+        Assert.assertEquals(parameters.eventData2, mbsy_event_data2);
+        Assert.assertEquals(parameters.eventData3, mbsy_event_data3);
+        Assert.assertEquals(parameters.isApproved, mbsy_is_approved);
     }
 
 }
