@@ -1,52 +1,61 @@
 package com.ambassador.ambassadorsdk;
 
-import android.util.Log;
 
 import junit.framework.Assert;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({
-    Log.class
-})
-public class ConversionParametersBuilderTest {
+@PrepareForTest({})
+public class ConversionParametersTest {
 
-    private int mbsy_campaign = 15;
-    private String mbsy_email = "test@getambassador.com";
-    private String mbsy_first_name = "first";
-    private String mbsy_last_name = "last";
-    private int mbsy_email_new_ambassador = 16;
-    private String mbsy_uid = "uid";
-    private String mbsy_custom1 = "custom1";
-    private String mbsy_custom2 = "custom2";
-    private String mbsy_custom3 = "custom3";
-    private int mbsy_auto_create = 17;
-    private int mbsy_revenue = 18;
-    private int mbsy_deactivate_new_ambassador = 19;
-    private String mbsy_transaction_uid = "s1";
-    private String mbsy_add_to_group_id = "s2";
-    private String mbsy_event_data1 = "s3";
-    private String mbsy_event_data2 = "s4";
-    private String mbsy_event_data3 = "s5";
-    private int mbsy_is_approved = 5;
-    
-    @Before
-    public void setUp() {
-        PowerMockito.mockStatic(
-                Log.class
-        );
+    @Test
+    public void isValidTest() {
+        ConversionParameters parameters = new ConversionParameters();
+        Assert.assertFalse(parameters.isValid());
+
+        parameters.campaign = 12;
+        Assert.assertFalse(parameters.isValid());
+
+        parameters.email = "test@getambassador.com";
+        Assert.assertFalse(parameters.isValid());
+
+        parameters.revenue = 50;
+        Assert.assertTrue(parameters.isValid());
+
+        parameters.campaign = -1;
+        Assert.assertFalse(parameters.isValid());
+
+        parameters.email = "";
+        Assert.assertFalse(parameters.isValid());
     }
 
     @Test
     public void buildTest() {
         // ARRANGE
-        ConversionParametersBuilder builder = new ConversionParametersBuilder()
+        int mbsy_campaign = 15;
+        String mbsy_email = "test@getambassador.com";
+        String mbsy_first_name = "first";
+        String mbsy_last_name = "last";
+        int mbsy_email_new_ambassador = 16;
+        String mbsy_uid = "uid";
+        String mbsy_custom1 = "custom1";
+        String mbsy_custom2 = "custom2";
+        String mbsy_custom3 = "custom3";
+        int mbsy_auto_create = 17;
+        int mbsy_revenue = 18;
+        int mbsy_deactivate_new_ambassador = 19;
+        String mbsy_transaction_uid = "s1";
+        String mbsy_add_to_group_id = "s2";
+        String mbsy_event_data1 = "s3";
+        String mbsy_event_data2 = "s4";
+        String mbsy_event_data3 = "s5";
+        int mbsy_is_approved = 5;
+
+        ConversionParameters.Builder builder = new ConversionParameters.Builder()
                 .setCampaign(mbsy_campaign)
                 .setEmail(mbsy_email)
                 .setFirstName(mbsy_first_name)
@@ -65,10 +74,10 @@ public class ConversionParametersBuilderTest {
                 .setEventData2(mbsy_event_data2)
                 .setEventData3(mbsy_event_data3)
                 .setIsApproved(mbsy_is_approved);
-        
+
         // ACT
         ConversionParameters parameters = builder.build();
-        
+
         // VERIFY
         Assert.assertEquals(parameters.campaign, mbsy_campaign);
         Assert.assertEquals(parameters.email, mbsy_email);

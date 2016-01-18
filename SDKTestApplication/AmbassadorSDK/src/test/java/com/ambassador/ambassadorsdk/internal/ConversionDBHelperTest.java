@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 
@@ -21,14 +22,16 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @PrepareForTest({
         ContentValues.class,
         ConversionDBHelper.class,
-        Utilities.class
+        Utilities.class,
+        Log.class
 })
 public class ConversionDBHelperTest {
 
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                Utilities.class
+                Utilities.class,
+                Log.class
         );
 
         PowerMockito.spy(ConversionDBHelper.class);
@@ -98,16 +101,14 @@ public class ConversionDBHelperTest {
     }
 
     @Test
-    public void createConversionParameterWithCursorTest() {
+    public void createConversionParameterWithCursorTest() throws Exception {
         // ARRANGE
-        ConversionParameters conversionParameters = Mockito.mock(ConversionParameters.class);
-        Mockito.when(ConversionDBHelper.buildConversionParameters()).thenReturn(conversionParameters);
         Cursor cursor = Mockito.mock(Cursor.class);
         Mockito.when(cursor.getInt(Mockito.anyInt())).thenReturn(-1);
         Mockito.when(cursor.getString(Mockito.anyInt())).thenReturn("-1");
 
         // ACT
-        ConversionDBHelper.createConversionParameterWithCursor(cursor);
+        ConversionParameters conversionParameters = ConversionDBHelper.createConversionParameterWithCursor(cursor);
 
         // ASSERT
         Assert.assertEquals(conversionParameters.campaign, -1);

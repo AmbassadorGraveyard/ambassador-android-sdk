@@ -58,7 +58,7 @@ public class ConversionDBHelper extends SQLiteOpenHelper {
     }
 
     public static ConversionParameters createConversionParameterWithCursor(Cursor cursor) {
-        return new ConversionParameters.Builder()
+        return ConversionParameters.Builder.newInstance()
                 .setCampaign(
                         cursor.getInt(
                                 cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry.MBSY_CAMPAIGN)
