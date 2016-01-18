@@ -176,7 +176,7 @@ AmbassadorSDK.registerConversion(conversionParameters, true);
 
 The RAF Screen provides UI components that allow users to share with their contacts to become part of your referral program.
 
-<img src="screenshots/rafScreenShot.png" width="250" />   <img src="screenshots/contactsPage.png" width="250"/>
+<img src="screenshots/standardIconOrder.png" width="250" />   <img src="screenshots/contactsPage.png" width="250"/>
 
 To launch the RAF Screen, simply add the following line to your application. The parameter _context_ refers to the current context, and the string _877_ refers to the campaign ID.
 
