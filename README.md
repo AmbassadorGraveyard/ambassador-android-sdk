@@ -190,7 +190,7 @@ final Context context = this;
 btnRaf.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        AmbassadorSDK.presentRAF(context, "305", "rafs/raf.xml");
+        AmbassadorSDK.presentRAF(context, "305", "defaultValues.xml");
     }
 });
 ```
