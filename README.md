@@ -4,17 +4,20 @@ _**Support Level**_: API 16+ (4.1+)
 ## Getting Started
 
 Install Git hooks:
+
 ```
 $ ln -s ../../git-hooks/prepare-commit-msg .git/hooks/prepare-commit-msg
 $ ln -s ../../git-hooks/pre-push .git/hooks/pre-push
 ```
 
 The `pre-push` hook requires re-initialization of the repo:
+
 ```
 $ git init
 ```
 
 Make sure the `pre-push` hook is executable:
+
 ```
 $ chmod +x .git/hooks/pre-push
 ```
@@ -206,7 +209,9 @@ The file consists of various elements with editable properties. The colors can b
 
 For instance, if the color 'homeToolBar' is changed:
 
-<img src="screenshots/changeToolBarColor.png" />
+```xml
+<color name="homeToolBar">#ff0000</color>
+```
 
 The resulting toolbar would display:
 
@@ -229,7 +234,9 @@ If you wish to use custom fonts in the Ambassador SDK, you must place them in yo
 
 To use a custom font, insert the name of the font as `fonts/<your font name.extension>`.  Ex: `fonts/ExampleFont.ttf`:
 
-<img src="screenshots/changedFontValue.png" />
+```xml
+<string name="homeWelcomeTitle">fonts/Action_Man.ttf</string>
+```
 
 By inserting the **fonts/Action_Man.ttf** value as seen above, expect the following result:
 
@@ -251,7 +258,9 @@ The SDK will constrain your image height to 30dp (density-independent pixels). T
 
 To set the position of the logo, edit the following value in customValues.xml.
 
-<img src="screenshots/rafLogoPosition.png" />
+```xml
+<string name="RAFLogoPosition">1</string>
+```
 
 _Note_: The RAFLogoPosition element is ignored when no `raf_logo.png` is present in the drawable folders. Set the RAFLogoPosition to 0 to hide the logo.
 
@@ -263,13 +272,28 @@ The following image shows the logo in the various positions set in the custom va
 
 The share options can be disabled or reordered in customValues.xml. The share options allowed are Facebook, Twitter, LinkedIn, Email, and SMS. These strings are _not_ case sensitive.
 
-<img src="screenshots/socialArray.png" />
+```xml
+<array name="channels">
+    <item>Facebook</item>
+    <item>Twitter</item>
+    <item>LinkedIn</item>
+    <item>Email</item>
+    <item>SMS</item>
+</array>
+```
 
 #### Disabling Share Options
 
 To disable a share option, remove it from the array.
 
-<img src="screenshots/disableIconValues.png" />
+```xml
+<array name="channels">
+    <item>Facebook</item>
+    <item>Twitter</item>
+    <item>Email</item>
+    <item>SMS</item>
+</array>
+```
 
 <img src="screenshots/disableIconExample.png" width="250" />
 
@@ -283,7 +307,15 @@ This is the standard ordering with Facebook appearing first and SMS last.
 
 Reordering the SMS item to the first position will move the icon to the front.
 
-<img src="screenshots/reorderIconValuesModified.png" />
+```xml
+<array name="channels">
+    <item>SMS</item>
+    <item>Facebook</item>
+    <item>Twitter</item>
+    <item>LinkedIn</item>
+    <item>Email</item>
+</array>
+```
 
 <img src="screenshots/modifiedIconOrder.png" width="250" />
 
@@ -291,12 +323,16 @@ Reordering the SMS item to the first position will move the icon to the front.
 
 You can set the corner radius of social options.  Modify the _socialOptionCornerRadius_ dimension value in customValues.
 
-<img src="screenshots/cornerRadiusValueExample.png" width="400" />
+```xml
+<dimen name="socialOptionCornerRadius">5dp</dimen>
+```
 
 <img src="screenshots/cornerRadiusExample.png" width="250" />
 
 You can also display the options as circles by setting the value to -1dp.
 
-<img src="screenshots/cornerRadiusValueCircleExample.png" width="400" />
+```xml
+<dimen name="socialOptionCornerRadius">-1dp</dimen>
+```
 
 <img src="screenshots/cornerRadiusCircleExample.png" width="250" />
