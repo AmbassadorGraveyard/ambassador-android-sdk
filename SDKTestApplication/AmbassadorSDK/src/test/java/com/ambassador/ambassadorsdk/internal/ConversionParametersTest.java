@@ -1,6 +1,8 @@
 package com.ambassador.ambassadorsdk.internal;
 
 
+import com.ambassador.ambassadorsdk.ConversionParameters;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -17,19 +19,19 @@ public class ConversionParametersTest {
         ConversionParameters parameters = new ConversionParameters();
         Assert.assertFalse(parameters.isValid());
 
-        parameters.mbsy_campaign = 12;
+        parameters.campaign = 12;
         Assert.assertFalse(parameters.isValid());
 
-        parameters.mbsy_email = "test@getambassador.com";
+        parameters.email = "test@getambassador.com";
         Assert.assertFalse(parameters.isValid());
 
-        parameters.mbsy_revenue = 50;
+        parameters.revenue = 50;
         Assert.assertTrue(parameters.isValid());
 
-        parameters.mbsy_campaign = -1;
+        parameters.campaign = -1;
         Assert.assertFalse(parameters.isValid());
 
-        parameters.mbsy_email = "";
+        parameters.email = "";
         Assert.assertFalse(parameters.isValid());
     }
 

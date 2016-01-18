@@ -1,6 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.api.conversions;
 
-import com.ambassador.ambassadorsdk.internal.ConversionParameters;
+import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
@@ -147,24 +147,24 @@ public class ConversionsApi {
             private String mbsy_short_code;
 
             public FieldsObject(ConversionParameters parameters, String shortCode) {
-                this.mbsy_campaign = parameters.mbsy_campaign;
-                this.mbsy_email = parameters.mbsy_email;
-                this.mbsy_first_name = parameters.mbsy_first_name;
-                this.mbsy_last_name = parameters.mbsy_last_name;
-                this.mbsy_email_new_ambassador = parameters.mbsy_email_new_ambassador;
-                this.mbsy_uid = parameters.mbsy_uid;
-                this.mbsy_custom1 = parameters.mbsy_custom1;
-                this.mbsy_custom2 = parameters.mbsy_custom2;
-                this.mbsy_custom3 = parameters.mbsy_custom3;
-                this.mbsy_auto_create = parameters.mbsy_auto_create;
-                this.mbsy_revenue = parameters.mbsy_revenue;
-                this.mbsy_deactivate_new_ambassador = parameters.mbsy_deactivate_new_ambassador;
-                this.mbsy_transaction_uid = parameters.mbsy_transaction_uid;
-                this.mbsy_add_to_group_id = parameters.mbsy_add_to_group_id;
-                this.mbsy_event_data1 = parameters.mbsy_event_data1;
-                this.mbsy_event_data2 = parameters.mbsy_event_data2;
-                this.mbsy_event_data3 = parameters.mbsy_event_data3;
-                this.mbsy_is_approved = parameters.mbsy_is_approved;
+                this.mbsy_campaign = parameters.getCampaign();
+                this.mbsy_email = parameters.getEmail();
+                this.mbsy_first_name = parameters.getFirstName();
+                this.mbsy_last_name = parameters.getLastName();
+                this.mbsy_email_new_ambassador = parameters.getEmailNewAmbassador();
+                this.mbsy_uid = parameters.getUid();
+                this.mbsy_custom1 = parameters.getCustom1();
+                this.mbsy_custom2 = parameters.getCustom2();
+                this.mbsy_custom3 = parameters.getCustom3();
+                this.mbsy_auto_create = parameters.getAutoCreate();
+                this.mbsy_revenue = parameters.getRevenue();
+                this.mbsy_deactivate_new_ambassador = parameters.getDeactivateNewAmbassador();
+                this.mbsy_transaction_uid = parameters.getTransactionUid();
+                this.mbsy_add_to_group_id = parameters.getAddToGroupId();
+                this.mbsy_event_data1 = parameters.getEventData1();
+                this.mbsy_event_data2 = parameters.getEventData2();
+                this.mbsy_event_data3 = parameters.getEventData3();
+                this.mbsy_is_approved = parameters.getIsApproved();
                 this.mbsy_short_code = shortCode;
             }
 
