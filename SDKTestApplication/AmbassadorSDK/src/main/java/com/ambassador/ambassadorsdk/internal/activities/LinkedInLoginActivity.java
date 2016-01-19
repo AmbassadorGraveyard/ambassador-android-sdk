@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +20,10 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.WebPopupDialog;
 import com.ambassador.ambassadorsdk.utils.Device;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 
@@ -137,8 +141,8 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
     private void generateAuthUrl() {
         authUrl = LinkedInApi.getAuthorizationUrl(
                 new StringResource(R.string.linked_in_login_response_type).getValue(),
-                AmbassadorConfig.LINKED_IN_CLIENT_ID,
-                AmbassadorConfig.LINKED_IN_CALLBACK_URL,
+                new StringResource(R.string.linked_in_client_id).getValue(),
+                new StringResource(R.string.linked_in_callback_url).getValue(),
                 "987654321",
                 new StringResource(R.string.linked_in_r_profile_permission).getValue(),
                 new StringResource(R.string.linked_in_w_share_permission).getValue()
@@ -151,6 +155,10 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
     // endregion
 
     // region LinkedIn Web
+    /**
+     * WebViewClient extension that handles redirects, login finishing, and opening un-handled
+     * links inside of a WebPopupDialog.
+     */
     private final class LinkedInClient extends WebViewClient {
 
         private WebPopupDialog popupDialog;
@@ -233,6 +241,10 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Handles information for working with LinkedIn OAuth like generating login URLs and
+     * extracting tokens.
+     */
     private static final class LinkedInApi {
 
         private static final String AUTHORIZE_URL = "https://www.linkedin.com/uas/oauth2/authorization";
