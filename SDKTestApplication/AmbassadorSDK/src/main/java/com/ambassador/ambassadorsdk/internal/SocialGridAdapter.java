@@ -15,10 +15,7 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 
 import java.util.ArrayList;
 
-/**
- * Created by JakeDunahee on 7/22/15.
- */
-class SocialGridAdapter extends BaseAdapter {
+public class SocialGridAdapter extends BaseAdapter {
 
     private RAFOptions raf = RAFOptions.get();
 
