@@ -42,6 +42,8 @@ import butterfork.ButterFork;
  */
 public final class LinkedInLoginActivity extends AppCompatActivity {
 
+    // region Fields
+
     // region Views
     @Bind(B.id.action_bar)  protected Toolbar       toolbar;
     @Bind(B.id.wvLogin)     protected WebView       wvLogin;
@@ -56,6 +58,10 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
     // region Local members
     protected String authUrl;
     // endregion
+
+    // endregion
+
+    // region Methods
 
     // region Activity overrides
     @Override
@@ -72,10 +78,8 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
         finishIfDeviceNotConnected();
         if (isFinishing()) return;
 
-        // Layout
+        // Other setup
         setUpToolbar();
-
-        // Web configuration
         configureWebView();
         generateAuthUrl();
         loadLoginPage();
@@ -153,6 +157,10 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
         wvLogin.loadUrl(authUrl);
     }
     // endregion
+
+    // endregion
+
+    // region Classes
 
     // region LinkedIn Web
     /**
@@ -302,6 +310,8 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
         }
 
     }
+    // endregion
+
     // endregion
 
 }

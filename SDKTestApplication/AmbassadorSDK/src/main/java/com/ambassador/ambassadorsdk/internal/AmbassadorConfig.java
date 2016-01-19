@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.utils.StringResource;
@@ -13,6 +14,8 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
+
+import org.json.JSONObject;
 
 public class AmbassadorConfig {
 
@@ -140,6 +143,15 @@ public class AmbassadorConfig {
     }
 
     public String getPusherInfo() { return sharePrefs.getString("pusherObject", null); }
+
+    @Nullable
+    public JSONObject getPusherInfoObject() {
+        try {
+            return new JSONObject(getPusherInfo());
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     public String getURL() {
         return sharePrefs.getString("url", null);

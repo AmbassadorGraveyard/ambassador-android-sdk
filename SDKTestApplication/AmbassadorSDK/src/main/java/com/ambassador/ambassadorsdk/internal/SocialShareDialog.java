@@ -128,18 +128,18 @@ public class SocialShareDialog extends Dialog {
         if (Utilities.containsURL(etMessage.getText().toString(), ambassadorConfig.getURL())) {
             share();
         } else {
-            Utilities.presentUrlDialog(this.getOwnerActivity(), etMessage, ambassadorConfig.getURL(), new Utilities.UrlAlertInterface() {
-                @Override
-                public void sendAnywayTapped(DialogInterface dialogInterface) {
-                    dialogInterface.dismiss();
-                    share();
-                }
-
-                @Override
-                public void insertUrlTapped(DialogInterface dialogInterface) {
-                    dialogInterface.dismiss();
-                }
-            });
+//            Utilities.presentUrlDialog(this.getOwnerActivity(), etMessage, ambassadorConfig.getURL(), new Utilities.UrlAlertInterface() {
+//                @Override
+//                public void sendAnywayTapped(DialogInterface dialogInterface) {
+//                    dialogInterface.dismiss();
+//                    share();
+//                }
+//
+//                @Override
+//                public void insertUrlTapped(DialogInterface dialogInterface) {
+//                    dialogInterface.dismiss();
+//                }
+//            });
         }
     }
 

@@ -2,17 +2,17 @@ package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -47,32 +47,32 @@ import com.ambassador.ambassadorsdk.internal.ContactObject;
 import com.ambassador.ambassadorsdk.internal.DividerItemDecoration;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.utils.ContactList;
 import com.ambassador.ambassadorsdk.utils.Device;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
 
 import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- *
+ * Activity that handles contact selection and sharing using email or SMS.
  */
 public final class ContactSelectorActivity extends AppCompatActivity implements PusherSDK.IdentifyListener {
+
+    // region Fields
 
     // region Constants
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
     private static final int MAX_SMS_LENGTH = 160;
+    private static final int LENGTH_GOOD_COLOR = AmbassadorSingleton.getInstanceContext().getResources().getColor(R.color.contactsSendButtonText); // TODO: replace with ColorResource after merged
+    private static final int LENGTH_BAD_COLOR = AmbassadorSingleton.getInstanceContext().getResources().getColor(android.R.color.holo_red_dark); // TODO: replace with ColorResource after merged
     // endregion
     
     // region Views
@@ -99,24 +99,21 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     // endregion
 
     // region Local members
-    protected List<ContactObject>   contactList;
-    protected ContactListAdapter    contactListAdapter;
-    protected JSONObject            pusherData;
-    protected boolean               showPhoneNumbers;
+    protected HashMap<Integer, String>  phoneTypeMap;
+    protected List<ContactObject>       contactList;
+    protected ContactListAdapter        contactListAdapter;
+    protected JSONObject                pusherData;
+    protected boolean                   showPhoneNumbers;
+    protected ContactNameDialog         contactNameDialog;
+    protected ProgressDialog            progressDialog;
+    protected float                     lastSendHeight;
     // endregion
-    
-    private static int lengthBadColor;
-    private static int lengthGoodColor;
 
+    // endregion
 
-    private static HashMap<Integer, String> phoneTypeMap;
-    static {
-        phoneTypeMap = new HashMap<>();
-        phoneTypeMap.put(ContactsContract.CommonDataKinds.Phone.TYPE_HOME, "Home");
-        phoneTypeMap.put(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE, "Mobile");
-        phoneTypeMap.put(ContactsContract.CommonDataKinds.Phone.TYPE_WORK, "Work");
-    }
+    // region Methods
 
+    // region Activity overrides
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,34 +127,133 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         finishIfContextInvalid();
         if (isFinishing()) return;
 
-        // Layout
+        // Other setup
+        processIntent();
         setUpToolbar();
+        setUpOnClicks();
+        setUpProgressDialog();
+        setUpUI();
+        setUpPusher();
 
+        populateContacts();
+    }
 
-        pusherSDK.setIdentifyListener(this);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        pusherSDK.setIdentifyListener(null);
+    }
 
-        _setUpToolbar(ambassadorConfig.getRafParameters().toolbarTitle);
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case CHECK_CONTACT_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    populateContacts();
+                } else {
+                    Utilities.presentNonCancelableMessageDialog(this, new StringResource(R.string.sorry).getValue(), new StringResource(R.string.contacts_permission_denied).getValue(), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
+                }
+                break;
+        }
+    }
 
-        showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.ambassador_menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        final Drawable searchIcon = ContextCompat.getDrawable(this, R.drawable.abc_ic_search_api_mtrl_alpha);
+        searchIcon.setColorFilter(getResources().getColor(R.color.contactsSearchIcon), PorterDuff.Mode.SRC_ATOP);
+        searchItem.setIcon(searchIcon);
+        return true;
+    }
 
-        //setup progress dialog only once
-        pd = new ProgressDialog(this);
-        pd.setMessage(new StringResource(R.string.sharing).getValue());
-        pd.setOwnerActivity(this);
-        pd.setCancelable(false);
-
-        pusherSDK.setIdentifyListener(this);
-
-        if (_handleContactsPermission()) {
-            _handleContactsPopulation();
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_search) {
+            toggleSearch();
+            return true;
         }
 
-        // Sets share message to default message from RAF Parameters
+        return super.onOptionsItemSelected(item);
+    }
+    // endregion
+
+    // region Requirement checks
+    private void finishIfContextInvalid() {
+        if (!AmbassadorSingleton.isValid()) {
+            finish();
+        }
+    }
+    // endregion
+
+    // region Setup
+    private void processIntent() {
+        Intent data = getIntent();
+        showPhoneNumbers = data.getBooleanExtra("showPhoneNumbers", true);
+    }
+
+    private void setUpToolbar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(ambassadorConfig.getRafParameters().toolbarTitle);
+        }
+
+        Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        arrow.setColorFilter(getResources().getColor(R.color.contactsToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+
+        if (toolbar == null) return;
+
+        toolbar.setNavigationIcon(arrow);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.contactsToolBar));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.contactsToolBarText));
+
+        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.contactsToolBar));
+    }
+
+    private void setUpOnClicks() {
+        rlSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rlSendClicked();
+            }
+        });
+        btnDoneSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnDoneSearchClicked();
+            }
+        });
+        btnEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnEditClicked();
+            }
+        });
+        btnDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnDoneClicked();
+            }
+        });
+    }
+
+    private void setUpProgressDialog() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(new StringResource(R.string.sharing).getValue());
+        progressDialog.setOwnerActivity(this);
+        progressDialog.setCancelable(false);
+    }
+
+    private void setUpUI() {
         etShareMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
+        btnEdit.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
         if (showPhoneNumbers) {
-            lengthGoodColor = getResources().getColor(R.color.contactsSendButtonText);
-            lengthBadColor = getResources().getColor(android.R.color.holo_red_light);
             updateCharCounter(etShareMessage.getText().toString().length());
             etShareMessage.addTextChangedListener(new TextWatcher() {
                 @Override
@@ -184,46 +280,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
             tvSendContacts.setLayoutParams(params);
         }
 
-        rlSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean goodToGo = true;
-                if (showPhoneNumbers && !(etShareMessage.getText().length() <= MAX_SMS_LENGTH)) {
-                    negativeTextViewFeedback(tvSendCount);
-                    goodToGo = false;
-                }
-                if (contactListAdapter.getSelectedContacts().size() <= 0) {
-                    negativeTextViewFeedback(tvSendContacts);
-                    goodToGo = false;
-                }
-
-                if (goodToGo) {
-                    _sendToContacts();
-                }
-            }
-        });
-
-        btnDoneSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _displayOrHideSearch();
-            }
-        });
-
-        btnEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _editBtnTapped();
-            }
-        });
-        btnEdit.setColorFilter(getResources().getColor(R.color.ultraLightGray));
-
-        btnDone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                _doneEditingMessage();
-            }
-        });
         etSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -238,243 +294,45 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
             public void afterTextChanged(Editable s) {
             }
         });
-
-        //get and store pusher data
-        try {
-            pusherData = new JSONObject(ambassadorConfig.getPusherInfo());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        pusherSDK.setIdentifyListener(null);
-    }
-
-    private void updateCharCounter(int length) {
-        tvSendCount.setText("(" + length + "/" + MAX_SMS_LENGTH + ")");
-        if (length > MAX_SMS_LENGTH) {
-            tvSendCount.setShadowLayer(2, -1, 0, Color.WHITE);
-            tvSendCount.setTextColor(lengthBadColor);
-        } else {
-            tvSendCount.setShadowLayer(2, -1, 0, Color.TRANSPARENT);
-            tvSendCount.setTextColor(lengthGoodColor);
-        }
-    }
-
-    private void negativeTextViewFeedback(TextView textView) {
-        Animation shake = new TranslateAnimation(-3, 3, 0, 0);
-        shake.setInterpolator(new CycleInterpolator(3));
-        shake.setDuration(500);
-
-        textView.clearAnimation();
-        textView.startAnimation(shake);
-    }
-
-    @Override
-    protected void onPause() {
-        if (cnd != null) {
-            cnd.dismiss();
-        }
-        super.onPause();
-    }
-
-    /** Toolbar menu methods **/
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.ambassador_menu, menu);
-
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        final Drawable searchIcon = ContextCompat.getDrawable(this, R.drawable.abc_ic_search_api_mtrl_alpha);
-        searchIcon.setColorFilter(getResources().getColor(R.color.contactsSearchIcon), PorterDuff.Mode.SRC_ATOP);
-        searchItem.setIcon(searchIcon);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_search) {
-            _displayOrHideSearch();
-        } else {
-            finish();
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
-
-    // region Requirement checks
-    private void finishIfContextInvalid() {
-        if (!AmbassadorSingleton.isValid()) {
-            finish();
-        }
+    private void setUpPusher() {
+        pusherData = ambassadorConfig.getPusherInfoObject();
+        pusherSDK.setIdentifyListener(this);
     }
     // endregion
 
-
-    /** Contact methods **/
-
-    private void _getContactPhoneList() {
-        contactList = new ArrayList<>();
-        Cursor phoneCursor = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-
-        if (phoneCursor == null) {
-            return;
-        }
-
-        if (phoneCursor.moveToFirst()) {
-            do {
-                String name = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                String thumbUri = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                String picUri = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-                String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                String typeNum = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
-
-                String type = "Other";
-                if (phoneTypeMap.containsKey(Integer.parseInt(typeNum))) {
-                    type = phoneTypeMap.get(Integer.parseInt(typeNum));
-                }
-
-                ContactObject object = new ContactObject.Builder()
-                        .setName(name)
-                        .setPhoneNumber(phoneNumber)
-                        .setType(type)
-                        .setThumbnailUri(thumbUri)
-                        .setPictureUri(picUri)
-                        .build();
-
-                contactList.add(object);
-            } while (phoneCursor.moveToNext());
-        }
-
-        phoneCursor.close();
-
-        if (!AmbassadorConfig.isReleaseBuild && contactList.size() <= 0) {
-            _addDummyPhoneData(contactList);
-        }
-
-        if (contactList.size() <= 0) {
-            tvNoContacts.setVisibility(View.VISIBLE);
-        }
-
-        Collections.sort(contactList);
-    }
-
-    private void _addDummyPhoneData(List<ContactObject> contactList) {
-        String[] firstNames = new String[]{"Dylan", "Jake", "Corey", "Mitch", "Matt", "Brian", "Amanada", "Brandon"};
-        String[] lastNames = new String[]{"Smith", "Johnson", "Stevens"};
-        String[] types = new String[]{"Home", "Mobile", "Work"};
-        String[] numbers = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9"};
-
-        Random rand = new Random();
-        for (int i = 0; i < 100; i++) {
-            String name = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
-            String type = types[rand.nextInt(types.length)];
-            String phoneNumber = "";
-            for (int j = 0; j < 12; j++) {
-                if (j == 3 || j == 7) {
-                    phoneNumber += "-";
-                } else {
-                    phoneNumber += numbers[rand.nextInt(numbers.length)];
-                }
-            }
-
-            ContactObject contactObject = new ContactObject.Builder()
-                    .setName(name)
-                    .setPhoneNumber(phoneNumber)
-                    .setType(type)
-                    .build();
-
-            contactList.add(contactObject);
+    // region OnClickListeners
+    private void rlSendClicked() {
+        if (ableToSend() && haveName()) {
+            send();
         }
     }
 
-    private void _getContactEmailList() {
-        contactList = new ArrayList<>();
-        Cursor emailCursor = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
-
-        if (emailCursor == null) {
-            return;
-        }
-
-        if (emailCursor.moveToFirst()) {
-            do  {
-                String name = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                String thumbUri = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_THUMBNAIL_URI));
-                String picUri = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-                String emailAddress = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-                ContactObject object = new ContactObject.Builder()
-                        .setName(name)
-                        .setEmailAddress(emailAddress)
-                        .setThumbnailUri(thumbUri)
-                        .setPictureUri(picUri)
-                        .build();
-
-                contactList.add(object);
-            }
-            while (emailCursor.moveToNext());
-        }
-
-        emailCursor.close();
-
-        if (!AmbassadorConfig.isReleaseBuild && contactList.size() <= 0) {
-            _addDummyEmailData(contactList);
-        }
-
-        if (contactList.size() <= 0) {
-            tvNoContacts.setVisibility(View.VISIBLE);
-        }
-
-        Collections.sort(contactList);
+    private void btnDoneSearchClicked() {
+        toggleSearch();
     }
 
-    private void _addDummyEmailData(List<ContactObject> contactList) {
-        String[] firstNames = new String[]{"Dylan", "Jake", "Corey", "Mitch", "Matt", "Brian", "Amanada", "Brandon"};
-        String[] lastNames = new String[]{"Smith", "Johnson", "Stevens"};
-
-        Random rand = new Random();
-        for (int i = 0; i < 100; i++) {
-            String name = firstNames[rand.nextInt(firstNames.length)] + " " + lastNames[rand.nextInt(lastNames.length)];
-            String email = name.substring(0, name.indexOf(" ")).toLowerCase() + "@getambassador.com";
-
-            ContactObject contactObject = new ContactObject.Builder()
-                    .setName(name)
-                    .setEmailAddress(email)
-                    .build();
-
-            contactList.add(contactObject);
-        }
-    }
-
-    /** Button methods **/
-
-    private void _editBtnTapped() {
+    private void btnEditClicked() {
         rlSend.setEnabled(false);
         btnEdit.setVisibility(View.GONE);
         btnDone.setVisibility(View.VISIBLE);
         etShareMessage.setEnabled(true);
         etShareMessage.requestFocus();
         etShareMessage.setSelection(0);
-        inputManager.showSoftInput(etShareMessage, 0);
+        device.openSoftKeyboard(etShareMessage);
     }
 
-    private void _doneEditingMessage() {
+    private void btnDoneClicked() {
         rlSend.setEnabled(true);
         btnEdit.setVisibility(View.VISIBLE);
         btnDone.setVisibility(View.GONE);
         etShareMessage.setEnabled(false);
     }
+    // endregion
 
-    private void _displayOrHideSearch() {
+    // region UI helpers
+    private void toggleSearch() {
         final float scale = Utilities.getScreenDensity();
         int finalHeight = (rlSearch.getHeight() > 0) ? 0 : (int) (50 * scale + 0.5f);
 
@@ -491,17 +349,16 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
         if (finalHeight != 0) {
             /** Showing search **/
-            _shrinkSendView(true);
+            shrinkSendView(true);
             etSearch.requestFocus();
             device.openSoftKeyboard(etSearch);
         } else {
             /** Hiding search **/
             etSearch.setText("");
-
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    _shrinkSendView(false);
+                    shrinkSendView(false);
                 }
             }, 250);
             etSearch.clearFocus();
@@ -513,10 +370,28 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         anim.start();
     }
 
-    float lastSendHeight;
+    private void updateCharCounter(int length) {
+        String text = "(" + length + "/" + MAX_SMS_LENGTH + ")";
+        tvSendCount.setText(text);
+        if (length > MAX_SMS_LENGTH) {
+            tvSendCount.setShadowLayer(2, -1, 0, Color.WHITE);
+            tvSendCount.setTextColor(LENGTH_BAD_COLOR);
+        } else {
+            tvSendCount.setShadowLayer(2, -1, 0, Color.TRANSPARENT);
+            tvSendCount.setTextColor(LENGTH_GOOD_COLOR);
+        }
+    }
 
-    /** Shrinks or inflates the send button while the user is searching, to make more room **/
-    private void _shrinkSendView(Boolean shouldShrink) {
+    private void negativeTextViewFeedback(TextView textView) {
+        Animation shake = new TranslateAnimation(-3, 3, 0, 0);
+        shake.setInterpolator(new CycleInterpolator(3));
+        shake.setDuration(500);
+
+        textView.clearAnimation();
+        textView.startAnimation(shake);
+    }
+
+    private void shrinkSendView(Boolean shouldShrink) {
         if (shouldShrink) {
             lastSendHeight = llSendView.getHeight();
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)llSendView.getLayoutParams();
@@ -544,26 +419,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         }
     }
 
-    // Adds and styles toolbar in place of the actionbar
-    private void setUpToolbar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(toolbarTitle);
-        }
-
-        Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(getResources().getColor(R.color.contactsToolBarArrow), PorterDuff.Mode.SRC_ATOP);
-
-        if (toolbar == null) return;
-
-        toolbar.setNavigationIcon(arrow);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.contactsToolBar));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.contactsToolBarText));
-
-        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.contactsToolBar));
-    }
-
-    public void _updateSendButton(int numOfContacts) {
+    public void updateSendButton(int numOfContacts) {
         if (numOfContacts == 0) {
             tvSendContacts.setText("NO CONTACTS SELECTED");
             return;
@@ -574,69 +430,157 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         btnSendText += (numOfContacts > 1) ? " CONTACTS" : " CONTACT";
         tvSendContacts.setText(btnSendText);
     }
+    // endregion
 
-    private void _sendToContacts() {
-        if (etShareMessage.getText().toString().length() < 1) {
-            Toast.makeText(getApplicationContext(), new StringResource(R.string.share_message_empty).getValue(), Toast.LENGTH_SHORT).show();
+    // region Contacts & sending
+    private void populateContacts() {
+        if (!handleContactsPermission()) {
             return;
         }
 
-        if (Utilities.containsURL(etShareMessage.getText().toString(), ambassadorConfig.getURL())) {
-            //get and store pusher data
-            try {
-                //if user is doing sms and we don't have first or last name, we need to get it with a dialog
-                if (showPhoneNumbers && //FOR TESTING INCLUDE THIS -->  true || //remove "true ||" for launch
-                        (!pusherData.has("firstName") || pusherData.getString("firstName").equals("null") || pusherData.getString("firstName").isEmpty()
-                                ||
-                                !pusherData.has("lastName") || pusherData.getString("lastName").equals("null") || pusherData.getString("lastName").isEmpty())) {
-                    //show dialog to get name
-                    cnd = new ContactNameDialog(this, pd);
-                    cnd.setOnShowListener(new DialogInterface.OnShowListener() {
-                        @Override
-                        public void onShow(DialogInterface dialog) {
-                            cnd.showKeyboard();
-                        }
-                    });
-                    cnd.show();
-                } else {
-                    _initiateSend();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        if (showPhoneNumbers) contactList = new ContactList(ContactList.Type.PHONE).get(this);
+        else contactList = new ContactList(ContactList.Type.EMAIL).get(this);
+        contactList = (contactList.size() == 0 && AmbassadorConfig.isReleaseBuild)
+                ? new ContactList(ContactList.Type.DUMMY).get(this) : contactList;
 
-            return;
+        if (contactList.size() == 0) {
+            tvNoContacts.setVisibility(View.VISIBLE);
         }
 
-        Utilities.presentUrlDialog(this, etShareMessage, ambassadorConfig.getURL(), new Utilities.UrlAlertInterface() {
+        contactListAdapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
+        contactListAdapter.setOnSelectedContactsChangedListener(new ContactListAdapter.OnSelectedContactsChangedListener() {
             @Override
-            public void sendAnywayTapped(DialogInterface dialogInterface) {
-                dialogInterface.dismiss();
-                _initiateSend();
-            }
-
-            @Override
-            public void insertUrlTapped(DialogInterface dialogInterface) {
-                dialogInterface.dismiss();
+            public void onSelectedContactsChanged(int selected) {
+                updateSendButton(selected);
             }
         });
+
+        rvContacts.setHasFixedSize(true);
+        rvContacts.setLayoutManager(new LinearLayoutManager(this));
+        rvContacts.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
+        rvContacts.setAdapter(contactListAdapter);
     }
 
-    private void _initiateSend() {
-        //this method is called from two places, one of which could already be showing the progress dialog
-        if (!pd.isShowing()) pd.show();
+    private boolean handleContactsPermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, CHECK_CONTACT_PERMISSIONS);
+        }
+        return false;
+    }
 
+    private boolean ableToSend() {
+        boolean lengthToShort = showPhoneNumbers && !(etShareMessage.getText().length() <= MAX_SMS_LENGTH);
+        boolean noneSelected = contactListAdapter.getSelectedContacts().size() <= 0;
+        boolean emptyMessage = etShareMessage.getText().toString().length() <= 0;
+        boolean noUrl = Utilities.containsURL(etShareMessage.getText().toString(), ambassadorConfig.getURL());
+
+        if (lengthToShort && noneSelected) {
+            negativeTextViewFeedback(tvSendCount);
+            negativeTextViewFeedback(tvSendContacts);
+            return false;
+        } else if (lengthToShort) {
+            negativeTextViewFeedback(tvSendCount);
+            return false;
+        } else if (noneSelected) {
+            negativeTextViewFeedback(tvSendContacts);
+            return false;
+        } else if (emptyMessage) {
+            Toast.makeText(getApplicationContext(), new StringResource(R.string.share_message_empty).getValue(), Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (noUrl) {
+            askForUrl();
+            return false;
+        }
+
+        return true;
+    }
+
+    private void askForUrl() {
+        final String url = ambassadorConfig.getURL();
+        AlertDialog dialogBuilder = new AlertDialog.Builder(this)
+                .setTitle(new StringResource(R.string.hold_on).getValue())
+                .setMessage(new StringResource(R.string.url_missing).getValue() + " " + url)
+                .setPositiveButton("Continue Sending", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        send();
+                    }
+                })
+                .setNegativeButton("Insert Link", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        insertURLIntoMessage(etShareMessage, url);
+
+                        dialog.dismiss();
+                    }
+                }).show();
+
+        dialogBuilder.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+        dialogBuilder.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+    }
+
+    private static void insertURLIntoMessage(EditText editText, String url) {
+        String appendingLink = url;
+
+        if (editText.getText().toString().contains("http://")) {
+            String sub = editText.getText().toString().substring(editText.getText().toString().indexOf("http://"));
+            String replacementSubstring;
+            replacementSubstring = (sub.contains(" ")) ? sub.substring(0, sub.indexOf(' ')) : sub;
+            editText.setText(editText.getText().toString().replace(replacementSubstring, appendingLink));
+            return;
+        }
+
+        if (editText.getText().toString().length() != 0 && editText.getText().toString().charAt(editText.getText().toString().length() - 1) != ' ') {
+            appendingLink = " " + url;
+            editText.setText(editText.getText().append(appendingLink));
+        } else {
+            appendingLink = url;
+            editText.setText(editText.getText().append(appendingLink));
+        }
+    }
+
+    private boolean haveName() {
+        if (showPhoneNumbers && (!pusherHasKey("firstName") || !pusherHasKey("lastName"))) {
+            contactNameDialog = new ContactNameDialog(this, progressDialog);
+            contactNameDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    contactNameDialog.showKeyboard();
+                }
+            });
+            contactNameDialog.show();
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean pusherHasKey(String key) {
+        try {
+            String value = pusherData.getString(key);
+            return value != null && !value.equals("null") && !value.isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private void send() {
+        if (!progressDialog.isShowing()) progressDialog.show();
         bulkShareHelper.bulkShare(etShareMessage.getText().toString(), contactListAdapter.getSelectedContacts(), showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
             @Override
             public void bulkShareSuccess() {
-                pd.dismiss();
+                progressDialog.dismiss();
                 finish();
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void bulkShareFailure() {
-                pd.dismiss();
+                progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -644,60 +588,10 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     @Override
     public void identified(long requestId) {
-        _initiateSend();
+        send();
     }
+    // endregion
 
-    private void _handleContactsPopulation() {
-        showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
-        if (showPhoneNumbers) {
-            _getContactPhoneList();
-        } else {
-            _getContactEmailList();
-        }
-
-        contactListAdapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
-        contactListAdapter.setOnSelectedContactsChangedListener(new ContactListAdapter.OnSelectedContactsChangedListener() {
-            @Override
-            public void onSelectedContactsChanged(int selected) {
-                _updateSendButton(selected);
-            }
-        });
-
-        rvContacts.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        rvContacts.setLayoutManager(llm);
-        rvContacts.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-        rvContacts.setAdapter(contactListAdapter);
-    }
-
-    private boolean _handleContactsPermission() {
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            return true; // have permission, proceed as normal
-        } else if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, CHECK_CONTACT_PERMISSIONS);
-        }
-        return false;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case CHECK_CONTACT_PERMISSIONS:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission granted
-                    _handleContactsPopulation();
-                } else {
-                    // Permission denied, kick em out
-                    Utilities.presentNonCancelableMessageDialog(this, new StringResource(R.string.sorry).getValue(), new StringResource(R.string.contacts_permission_denied).getValue(), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    });
-                }
-                break;
-        }
-    }
+    // endregion
 
 }
