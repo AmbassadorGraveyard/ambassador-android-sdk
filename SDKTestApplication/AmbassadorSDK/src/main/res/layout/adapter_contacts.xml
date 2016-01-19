@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="70dp"
     android:clickable="true"
@@ -10,64 +9,60 @@
         android:id="@+id/ivPic"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp" />
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
-        android:maxWidth="220dp"
-        android:text="Large Text"
-        android:textColor="@color/darkGray"
-        android:textSize="@dimen/contactsListName"
-        android:singleLine="true"
-        android:ellipsize="none"
-        android:layout_marginTop="12dp"
         android:layout_marginLeft="6dp"
         android:layout_marginStart="6dp"
+        android:layout_marginTop="12dp"
         android:layout_toRightOf="@+id/ivPic"
-        fontPath="@string/contactsListName"/>
+        android:ellipsize="none"
+        android:maxWidth="220dp"
+        android:singleLine="true"
+        android:text="Large Text"
+        android:textColor="@color/darkGray" />
+    <!--fontPath="@string/contactsListName"/>-->
 
     <TextView
         android:id="@+id/tvDots"
         android:layout_width="wrap_content"
         android:layout_height="25dp"
+        android:layout_marginTop="12dp"
+        android:layout_toEndOf="@+id/tvName"
+        android:layout_toRightOf="@+id/tvName"
         android:text="..."
         android:textColor="@color/darkGray"
-        android:textSize="@dimen/contactsListName"
-        android:layout_toRightOf="@+id/tvName"
-        android:layout_toEndOf="@+id/tvName"
-        android:layout_marginTop="12dp"
-        fontPath="@string/contactsListName"
-        android:visibility="gone"/>
+        android:visibility="gone" />
+    <!--fontPath="@string/contactsListName"-->
 
     <TextView
         android:id="@+id/tvNumberOrEmail"
         android:layout_width="wrap_content"
         android:layout_height="20dp"
-        android:text="Medium Text"
-        android:textColor="@color/lightGray"
-        android:layout_marginLeft="0dp"
-        android:layout_marginStart="0dp"
-        android:textSize="@dimen/contactsListValue"
-        android:layout_below="@+id/tvName"
-        android:layout_alignStart="@+id/tvName"
         android:layout_alignLeft="@+id/tvName"
-        android:layout_marginRight="50dp"
+        android:layout_alignStart="@+id/tvName"
+        android:layout_below="@+id/tvName"
         android:layout_marginEnd="50dp"
-        fontPath="@string/contactsListValue"
-        android:layout_toRightOf="@+id/ivPic"/>
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginStart="0dp"
+        android:layout_toRightOf="@+id/ivPic"
+        android:text="Medium Text"
+        android:textColor="@color/lightGray" />
 
     <ImageView
         android:id="@+id/ivCheckMark"
         android:layout_width="20dp"
         android:layout_height="wrap_content"
-        android:src="@drawable/checkmark"
-        android:layout_alignTop="@+id/tvName"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/tvName"
+        android:layout_marginEnd="-20dp"
         android:layout_marginRight="-20dp"
-        android:layout_marginEnd="-20dp" />
+        android:src="@drawable/checkmark" />
 
 </RelativeLayout>

@@ -4,18 +4,21 @@ _**Support Level**_: API 16+ (4.1+)
 ## Getting Started
 
 Install Git hooks:
-```
+
+```sh
 $ ln -s ../../git-hooks/prepare-commit-msg .git/hooks/prepare-commit-msg
 $ ln -s ../../git-hooks/pre-push .git/hooks/pre-push
 ```
 
 The `pre-push` hook requires re-initialization of the repo:
-```
+
+```sh
 $ git init
 ```
 
 Make sure the `pre-push` hook is executable:
-```
+
+```sh
 $ chmod +x .git/hooks/pre-push
 ```
 
@@ -173,12 +176,12 @@ AmbassadorSDK.registerConversion(conversionParameters, true);
 
 The RAF Screen provides UI components that allow users to share with their contacts to become part of your referral program.
 
-<img src="screenshots/rafScreenShot.png" width="250" />   <img src="screenshots/contactsPage.png" width="250"/>
+<img src="screenshots/standardIconOrder.png" width="320" />   <img src="screenshots/contactsPage.png" width="320"/>
 
-To launch the RAF Screen, simply add the following line to your application. The parameter _context_ refers to the current context, and the string _877_ refers to the campaign ID.
+To launch the RAF Screen, simply add the following function call to your application. The parameter _context_ refers to your application's context, _campaignId_ refers to the campaign ID you want to associate with the RAF, and _optionsPath_ is the path to an assets xml file with customization options.
 
 ```java
-AmbassadorSDK.presentRAF(context, "877");
+AmbassadorSDK.presentRAF(context, campaignId, optionsPath);
 ```
 Example usage in a MainActivity:
 ```java
@@ -187,7 +190,7 @@ final Context context = this;
 btnRaf.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        AmbassadorSDK.presentRAF(context, "305");
+        AmbassadorSDK.presentRAF(context, "CAMPAIGN_ID_HERE", "defaultValues.xml");
     }
 });
 ```
@@ -196,21 +199,96 @@ btnRaf.setOnClickListener(new View.OnClickListener() {
 
 #### Customizing the RAF Screen
 
-Custom messages, colors, and font sizes are set in the file customValues.xml. Open this file in the following location in Android Studio:
+Custom messages, colors, and font sizes are set in an xml file. Create a file named 'defaultValues.xml' and place it in your assets folder. Copy and paste the text below to start with our default values. The _color_ values can be replaced with any hexadecimal string (ex: #ff0000), and the _dimen_ values can be replaced with any font size. The _string_ values can be replaced with any text you wish to show on the RAF Screen.
 
-<img src="screenshots/customValuesLocation.png" />
+<img src="screenshots/customValuesLocation.png" width="320"/>
 
-The file consists of various elements with editable properties. The colors can be replaced with any hexadecimal string (ex: #ff0000). The dimen values can be replaced with any font size. The strings can be replaced with any text you wish to show on the RAF Screen.
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
 
-<img src="screenshots/customValues.png" />
+    <!-- MAIN ACTIVITY -->
+    <string name="RAFdefaultShareMessage">Check out this company!</string>
+    <string name="RAFtitleText">RAF Params Welcome Title</string>
+    <string name="RAFdescriptionText">RAF Params Welcome Description</string>
+    <string name="RAFtoolbarTitle">RAF Params Toolbar Title</string>
+    <string name="RAFLogoPosition">0</string>
+    <string name="RAFLogo">logo.png</string>
+
+    <color name="homeBackground">@android:color/white</color>
+
+    <color name="homeWelcomeTitle">@color/lightGray</color>
+    <dimen name="homeWelcomeTitle">22sp</dimen>
+    <string name="homeWelcomeTitle">fonts/Roboto-RobotoRegular.ttf</string>
+
+    <color name="homeWelcomeDesc">@color/lightGray</color>
+    <dimen name="homeWelcomeDesc">18sp</dimen>
+    <string name="homeWelcomeDesc">fonts/Roboto-RobotoRegular.ttf</string>
+
+    <color name="homeToolBar">@color/ambassador_blue</color>
+    <color name="homeToolBarText">@android:color/white</color>
+    <string name="homeToolBarText">fonts/Roboto-RobotoRegular.ttf</string>
+    <color name="homeToolBarArrow">@android:color/white</color>
+
+    <color name="homeShareTextBar">@color/ultraUltraUltraLightGray</color>
+    <color name="homeShareText">@color/ultraLightGray</color>
+    <dimen name="homeShareText">12sp</dimen>
+    <string name="homeShareText">fonts/Roboto-RobotoRegular.ttf</string>
+
+    <string name="socialGridText">fonts/Roboto-RobotoRegular.ttf</string>
+    <array name="channels">
+        <item>Facebook</item>
+        <item>Twitter</item>
+        <item>LinkedIn</item>
+        <item>Email</item>
+        <item>SMS</item>
+    </array>
+    <dimen name="socialOptionCornerRadius">0dp</dimen>
+    <!-- /MAIN ACTIVITY -->
+
+    <!-- CONTACTS ACTIVITY -->
+    <color name="contactsListViewBackground">@android:color/white</color>
+    <dimen name="contactsListName">15sp</dimen>
+    <string name="contactsListName">fonts/Roboto-RobotoRegular.ttf</string>
+    <dimen name="contactsListValue">12sp</dimen>
+    <string name="contactsListValue">fonts/Roboto-RobotoRegular.ttf</string>
+
+    <color name="contactsSendBackground">@android:color/white</color>
+    <string name="contactSendMessageText">fonts/Roboto-RobotoRegular.ttf</string>
+
+    <color name="contactsToolBar">@color/ambassador_blue</color>
+    <color name="contactsToolBarText">@android:color/white</color>
+    <color name="contactsToolBarArrow">@android:color/white</color>
+
+    <color name="contactsSendButton">@color/ambassador_blue</color>
+    <color name="contactsSendButtonText">@android:color/white</color>
+
+    <color name="contactsDoneButtonText">@color/ambassador_blue</color>
+
+    <color name="contactsSearchBar">@android:color/transparent</color>
+    <color name="contactsSearchIcon">@android:color/white</color>
+
+    <color name="contactNoPhotoAvailableBackground">@color/ambassador_blue</color>
+    <!-- /CONTACTS ACTIVITY -->
+
+    <!-- LINKEDIN LOGIN -->
+    <color name="linkedinToolBar">@color/linkedin_blue</color>
+    <color name="linkedinToolBarText">@android:color/white</color>
+    <color name="linkedinToolBarArrow">@android:color/white</color>
+    <!-- /LINKEDIN LOGIN -->
+
+</resources>
+```
 
 For instance, if the color 'homeToolBar' is changed:
 
-<img src="screenshots/changeToolBarColor.png" />
+```xml
+<color name="homeToolBar">#ff0000</color>
+```
 
 The resulting toolbar would display:
 
-<img src="screenshots/appCustomToolBarColor.png" width="250" />
+<img src="screenshots/appCustomToolBarColor.png" width="320" />
 
 _Note_: If any values in this file are blank, the RAF will use the default values shipped with the SDK. The strings for the RAF Screen will revert to these:
 
@@ -225,35 +303,35 @@ _Note_: The shortURL will automatically be appended to the defaultShareMessage
 
 If you wish to use custom fonts in the Ambassador SDK, you must place them in your app's **assets/fonts** folder:
 
-<img src="screenshots/assetsStructure.png" />
+<img src="screenshots/assetsStructure.png" width="320" />
 
 To use a custom font, insert the name of the font as `fonts/<your font name.extension>`.  Ex: `fonts/ExampleFont.ttf`:
 
-<img src="screenshots/changedFontValue.png" />
+```xml
+<string name="homeWelcomeTitle">fonts/Action_Man.ttf</string>
+```
 
 By inserting the **fonts/Action_Man.ttf** value as seen above, expect the following result:
 
-<img src="screenshots/newFontDemoShot.png" width="250" />
+<img src="screenshots/newFontDemoShot.png" width="320" />
 
-_Note_: By leaving a font value blank or entering it incorrectly, **Roboto-RobotoRegular** will be used by default.
+_Note_: By leaving a font value blank or entering it incorrectly, Android's default font **Roboto** will be used.
 
 #### Using Custom Images
 
 A custom image can be placed on the SDK Home Screen. This is commonly used for company logos.
 
-First, rename your image file `raf_logo.png` (must be lowercase). Then place this image in your app's drawable-mdpi folder.
+Place the image in your app's _assets_ folder.
 
-<img src="screenshots/raf_logo_folder.png" />
-
-_Note_: To create properly-scaled images for differing device densities, you must create an image for each android density. To read more about this, visit <a href="http://developer.android.com/guide/practices/screens_support.html" target="1">Supporting Multiple Screens</a>. If you choose to do this, place each scaled image in the proper folder (drawable-xhdpi, drawable-xxhdpi, etc.). If you choose not to do this, Android will pull the image from the mdpi folder, however it may not properly scale depending on the density of the target device.
-
-The SDK will constrain your image height to 30dp (density-independent pixels). This is to prevent images of large height from pushing the content below it down and off the screen. There is no constraint on the width, however the image will not get cut off on either the right or the left.
+<img src="screenshots/raf_logo_folder.png" width="320" />
 
 To set the position of the logo, edit the following value in customValues.xml.
 
-<img src="screenshots/rafLogoPosition.png" />
+```xml
+<string name="RAFLogoPosition">1</string>
+```
 
-_Note_: The RAFLogoPosition element is ignored when no `raf_logo.png` is present in the drawable folders. Set the RAFLogoPosition to 0 to hide the logo.
+_Note_: The RAFLogoPosition element is ignored when no logo image is provided in your options xml file. Set the RAFLogoPosition to 0 to hide the logo.
 
 The following image shows the logo in the various positions set in the custom values:
 
@@ -263,15 +341,30 @@ The following image shows the logo in the various positions set in the custom va
 
 The share options can be disabled or reordered in customValues.xml. The share options allowed are Facebook, Twitter, LinkedIn, Email, and SMS. These strings are _not_ case sensitive.
 
-<img src="screenshots/socialArray.png" />
+```xml
+<array name="channels">
+    <item>Facebook</item>
+    <item>Twitter</item>
+    <item>LinkedIn</item>
+    <item>Email</item>
+    <item>SMS</item>
+</array>
+```
 
 #### Disabling Share Options
 
 To disable a share option, remove it from the array.
 
-<img src="screenshots/disableIconValues.png" />
+```xml
+<array name="channels">
+    <item>Facebook</item>
+    <item>Twitter</item>
+    <item>Email</item>
+    <item>SMS</item>
+</array>
+```
 
-<img src="screenshots/disableIconExample.png" width="250" />
+<img src="screenshots/disableIconExample.png" width="320" />
 
 #### Reordering Share Options
 
@@ -279,24 +372,37 @@ To reorder share options, rearrange their positions in the array.
 
 This is the standard ordering with Facebook appearing first and SMS last.
 
-<img src="screenshots/standardIconOrder.png" width="250" />
+<img src="screenshots/standardIconOrder.png" width="320" />
 
 Reordering the SMS item to the first position will move the icon to the front.
 
-<img src="screenshots/reorderIconValuesModified.png" />
+```xml
+<array name="channels">
+    <item>SMS</item>
+    <item>Facebook</item>
+    <item>Twitter</item>
+    <item>LinkedIn</item>
+    <item>Email</item>
+</array>
+```
 
-<img src="screenshots/modifiedIconOrder.png" width="250" />
+<img src="screenshots/modifiedIconOrder.png" width="320" />
 
 #### Corner Radius
 
 You can set the corner radius of social options.  Modify the _socialOptionCornerRadius_ dimension value in customValues.
 
-<img src="screenshots/cornerRadiusValueExample.png" width="400" />
+```xml
+<dimen name="socialOptionCornerRadius">5dp</dimen>
+```
 
-<img src="screenshots/cornerRadiusExample.png" width="250" />
+<img src="screenshots/cornerRadiusExample.png" width="320" />
 
 You can also display the options as circles by setting the value to -1dp.
 
-<img src="screenshots/cornerRadiusValueCircleExample.png" width="400" />
+```xml
+<dimen name="socialOptionCornerRadius">-1dp</dimen>
+```
 
-<img src="screenshots/cornerRadiusCircleExample.png" width="250" />
+<img src="screenshots/cornerRadiusCircleExample.png" width="320" />
+

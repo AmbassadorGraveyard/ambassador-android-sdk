@@ -18,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import java.net.MalformedURLException;
@@ -25,10 +26,9 @@ import java.net.URL;
 
 import javax.inject.Inject;
 
-/**
- * Created by JakeDunahee on 7/27/15.
- */
 public class LinkedInLoginActivity extends AppCompatActivity {
+
+    private RAFOptions raf = RAFOptions.get();
 
     ProgressBar loader;
 
@@ -101,11 +101,11 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         if (toolbar == null) return;
 
         final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(getResources().getColor(R.color.linkedinToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+        arrow.setColorFilter(raf.getLinkedInToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(arrow);
 
-        toolbar.setBackgroundColor(getResources().getColor(R.color.linkedinToolBar));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.linkedinToolBarText));
+        toolbar.setBackgroundColor(raf.getLinkedinToolbarColor());
+        toolbar.setTitleTextColor(raf.getLinkedInToolbarTextColor());
     }
 
     private class LinkedInClient extends WebViewClient {

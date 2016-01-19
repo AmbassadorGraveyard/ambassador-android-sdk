@@ -67,15 +67,79 @@ public class MainActivity extends AppCompatActivity {
 
         AmbassadorSDK.registerConversion(conversionParameters, true);
 
-        Button btnPresentRAF = (Button)findViewById(R.id.btnPresentRAF);
-        btnPresentRAF.setOnClickListener(new View.OnClickListener() {
+        Button btnPresentRAF1 = (Button) findViewById(R.id.btnPresentRAF1);
+        btnPresentRAF1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbassadorSDK.presentRAF(context, "260", "raf1.xml");
+            }
+        });
+
+        Button btnPresentRAF2 = (Button) findViewById(R.id.btnPresentRAF2);
+        btnPresentRAF2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbassadorSDK.presentRAF(context, "260", "raf2.xml");
+            }
+        });
+
+        Button btnPresentRAF3 = (Button) findViewById(R.id.btnPresentRAF3);
+        btnPresentRAF3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbassadorSDK.presentRAF(context, "260", "raf3.xml");
+            }
+        });
+
+        Button btnPresentRAF4 = (Button) findViewById(R.id.btnPresentRAF4);
+        btnPresentRAF4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AmbassadorSDK.presentRAF(context, "260");
             }
         });
 
-        Button btnPurchase = (Button)findViewById(R.id.btnPurchase);
+        Button btnPresentRAF5 = (Button) findViewById(R.id.btnPresentRAF5);
+        btnPresentRAF5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbassadorSDK.presentRAF(context, "260", "raf5.xml");
+            }
+        });
+
+        Button btnPresentRAF6 = (Button) findViewById(R.id.btnPresentRAF6);
+        btnPresentRAF6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbassadorSDK.presentRAF(context, "999");
+            }
+        });
+
+        Button btnPresentRAF7 = (Button) findViewById(R.id.btnPresentRAF7);
+        btnPresentRAF7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbassadorSDK.presentRAF(context, "260", "raf7.xml");
+            }
+        });
+
+        Button btnPresentRAF8 = (Button) findViewById(R.id.btnPresentRAF8);
+        btnPresentRAF8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbassadorSDK.presentRAF(context, "260", "raf8.xml");
+            }
+        });
+
+        Button btnPresentRAF9 = (Button) findViewById(R.id.btnPresentRAF9);
+        btnPresentRAF9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AmbassadorSDK.presentRAF(context, "260", "raf9.xml");
+            }
+        });
+
+        Button btnPurchase = (Button) findViewById(R.id.btnPurchase);
         btnPurchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
