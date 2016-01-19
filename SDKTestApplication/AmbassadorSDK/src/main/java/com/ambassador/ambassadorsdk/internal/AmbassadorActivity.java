@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.internal.activities.LinkedInLoginActivity;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;

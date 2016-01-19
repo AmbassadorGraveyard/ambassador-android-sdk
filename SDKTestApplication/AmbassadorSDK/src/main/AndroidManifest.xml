@@ -32,7 +32,7 @@
             android:label="Ambassador SDK"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".internal.LinkedInLoginActivity"
+            android:name=".internal.activities.LinkedInLoginActivity"
             android:label="LinkedInLogin"
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme"/>
