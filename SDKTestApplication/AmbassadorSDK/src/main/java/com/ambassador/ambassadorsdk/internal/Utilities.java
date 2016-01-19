@@ -13,7 +13,6 @@ import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.R;
@@ -21,7 +20,7 @@ import com.ambassador.ambassadorsdk.utils.StringResource;
 
 public class Utilities {
 
-    interface UrlAlertInterface {
+    public interface UrlAlertInterface {
         void sendAnywayTapped(DialogInterface dialogInterface);
         void insertUrlTapped(DialogInterface dialogInterface);
     }
@@ -44,28 +43,6 @@ public class Utilities {
         return message.contains(url);
     }
 
-    public static void presentUrlDialog(Context context, final EditText editText, final String url, final UrlAlertInterface alertInterface) {
-        AlertDialog dialogBuilder = new AlertDialog.Builder(context)
-                .setTitle(new StringResource(R.string.hold_on).getValue())
-                .setMessage(new StringResource(R.string.url_missing).getValue() + " " + url)
-                .setPositiveButton("Continue Sending", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        alertInterface.sendAnywayTapped(dialog);
-                    }
-                })
-                .setNegativeButton("Insert Link", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        _insertURLIntoMessage(editText, url);
-                        alertInterface.insertUrlTapped(dialog);
-                    }
-                }).show();
-
-        dialogBuilder.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.twitter_blue));
-        dialogBuilder.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(context.getResources().getColor(R.color.twitter_blue));
-    }
-
     public static void presentNonCancelableMessageDialog(Context context, String title, String message, DialogInterface.OnClickListener okayOnClickListener) {
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(title)
@@ -77,28 +54,6 @@ public class Utilities {
         dialog.setCanceledOnTouchOutside(false);
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.twitter_blue));
     }
-
-    private static void _insertURLIntoMessage(EditText editText, String url) {
-        String appendingLink = url;
-
-        if (editText.getText().toString().contains("http://")) {
-            String sub = editText.getText().toString().substring(editText.getText().toString().indexOf("http://"));
-            String replacementSubstring;
-            replacementSubstring = (sub.contains(" ")) ? sub.substring(0, sub.indexOf(' ')) : sub;
-            editText.setText(editText.getText().toString().replace(replacementSubstring, appendingLink));
-
-            return;
-        }
-
-        if (editText.getText().toString().length() != 0 && editText.getText().toString().charAt(editText.getText().toString().length() - 1) != ' ') {
-            appendingLink = " " + url;
-            editText.setText(editText.getText().append(appendingLink));
-        } else {
-            appendingLink = url;
-            editText.setText(editText.getText().append(appendingLink));
-        }
-    }
-
 
     public static void debugLog(String tagString, String logMessage) {
         if (!AmbassadorConfig.isReleaseBuild) {
