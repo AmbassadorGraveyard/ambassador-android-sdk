@@ -178,10 +178,10 @@ The RAF Screen provides UI components that allow users to share with their conta
 
 <img src="screenshots/standardIconOrder.png" width="320" />   <img src="screenshots/contactsPage.png" width="320"/>
 
-To launch the RAF Screen, simply add the following line to your application. The parameter _Context_ refers to your current context, the _String_ campaignId refers to the campaign ID you want to associate with the RAF, and the _String_ optionsPath refers to the path in your assets to an xml file with customization options.
+To launch the RAF Screen, simply add the following function call to your application. The parameter _context_ refers to your application's context, _campaignId_ refers to the campaign ID you want to associate with the RAF, and _optionsPath_ is the path to an assets xml file with customization options.
 
 ```java
-AmbassadorSDK.presentRAF(Context context, String campaignId, String optionsPath);
+AmbassadorSDK.presentRAF(context, campaignId, optionsPath);
 ```
 Example usage in a MainActivity:
 ```java
@@ -190,7 +190,7 @@ final Context context = this;
 btnRaf.setOnClickListener(new View.OnClickListener() {
     @Override
     public void onClick(View v) {
-        AmbassadorSDK.presentRAF(context, "305", "defaultValues.xml");
+        AmbassadorSDK.presentRAF(context, "CAMPAIGN_ID_HERE", "defaultValues.xml");
     }
 });
 ```
@@ -199,13 +199,10 @@ btnRaf.setOnClickListener(new View.OnClickListener() {
 
 #### Customizing the RAF Screen
 
-Custom messages, colors, and font sizes are set in an xml file. Start by creating a blank .xml file and using our default values. Place this file in your assets folder:
+CCustom messages, colors, and font sizes are set in an xml file. Create a file named 'defaultValues.xml' and place it in your assets folder. Copy and paste the text below to start with our default values. The values can be replaced with any hexadecimal string (ex: #ff0000), and the values can be replaced with any font size. The strings can be replaced with any text you wish to show on the RAF Screen.
 
 <img src="screenshots/customValuesLocation.png" width="320"/>
 
-The file consists of various elements with editable properties. The colors can be replaced with any hexadecimal string (ex: #ff0000). The dimen values can be replaced with any font size. The strings can be replaced with any text you wish to show on the RAF Screen.
-
-<!-- <img src="screenshots/customValues.png" /> -->
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
