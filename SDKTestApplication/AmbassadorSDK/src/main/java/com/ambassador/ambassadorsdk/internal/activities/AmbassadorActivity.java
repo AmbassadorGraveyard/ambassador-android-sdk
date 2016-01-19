@@ -76,7 +76,7 @@ import javax.inject.Inject;
 
 import io.fabric.sdk.android.Fabric;
 
-public class AmbassadorActivity extends AppCompatActivity {
+public final class AmbassadorActivity extends AppCompatActivity {
 
     // region Fields
 
@@ -121,7 +121,7 @@ public class AmbassadorActivity extends AppCompatActivity {
     // endregion
 
     // endregion
-    
+
     private RAFOptions raf = RAFOptions.get();
 
     CustomEditText etShortUrl;
