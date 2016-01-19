@@ -43,14 +43,14 @@ import butterfork.ButterFork;
 public final class LinkedInLoginActivity extends AppCompatActivity {
 
     // region Views
-    @Bind(B.id.action_bar)  protected Toolbar toolbar;
-    @Bind(B.id.wvLogin)     protected WebView wvLogin;
-    @Bind(B.id.pbLoading)   protected ProgressBar loader;
+    @Bind(B.id.action_bar)  protected Toolbar       toolbar;
+    @Bind(B.id.wvLogin)     protected WebView       wvLogin;
+    @Bind(B.id.pbLoading)   protected ProgressBar   loader;
     // endregion
 
     // region Dependencies
-    @Inject protected RequestManager requestManager;
-    @Inject protected Device device;
+    @Inject protected RequestManager    requestManager;
+    @Inject protected Device            device;
     // endregion
 
     // region Local members
@@ -110,10 +110,10 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
             actionBar.setTitle("Login to LinkedIn");
         }
 
-        if (toolbar == null) return;
-
         Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         arrow.setColorFilter(getResources().getColor(R.color.linkedinToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+
+        if (toolbar == null) return;
 
         toolbar.setNavigationIcon(arrow);
         toolbar.setBackgroundColor(getResources().getColor(R.color.linkedinToolBar));

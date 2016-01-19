@@ -4,13 +4,22 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
+/**
+ *
+ */
 public final class Device {
 
-    private Configuration configuration;
-    private ConnectivityManager connectivityManager;
+    // region Dependencies
+    protected Configuration         configuration;
+    protected ConnectivityManager   connectivityManager;
+    protected InputMethodManager    inputMethodManager;
+    // endregion
 
     public Device() {
         Context context = AmbassadorSingleton.getInstanceContext();
@@ -19,6 +28,10 @@ public final class Device {
                 (ConnectivityManager) AmbassadorSingleton
                         .getInstanceContext()
                         .getSystemService(Context.CONNECTIVITY_SERVICE);
+        inputMethodManager =
+                (InputMethodManager) AmbassadorSingleton
+                        .getInstanceContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
     public boolean isTablet() {
@@ -31,6 +44,7 @@ public final class Device {
                 < Configuration.SCREENLAYOUT_SIZE_LARGE;
     }
 
+    @NonNull
     public String getType() {
         return (isTablet()) ? "Tablet" : "SmartPhone";
     }
@@ -44,6 +58,14 @@ public final class Device {
         }
 
         return false;
+    }
+
+    public void openSoftKeyboard(@NonNull View view) {
+        inputMethodManager.showSoftInput(view, 0);
+    }
+
+    public void closeSoftKeyboard(@NonNull View view) {
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 }

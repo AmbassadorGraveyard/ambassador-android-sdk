@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,7 +28,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.CycleInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -36,7 +36,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.ContactListAdapter;
+import com.ambassador.ambassadorsdk.internal.ContactNameDialog;
+import com.ambassador.ambassadorsdk.internal.ContactObject;
+import com.ambassador.ambassadorsdk.internal.DividerItemDecoration;
+import com.ambassador.ambassadorsdk.internal.PusherSDK;
+import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.utils.Device;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import org.json.JSONException;
@@ -50,43 +61,53 @@ import java.util.Random;
 
 import javax.inject.Inject;
 
+import butterfork.Bind;
+import butterfork.ButterFork;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
- * Created by JakeDunahee on 7/31/15.
+ *
  */
-public class ContactSelectorActivity extends AppCompatActivity implements PusherSDK.IdentifyListener {
+public final class ContactSelectorActivity extends AppCompatActivity implements PusherSDK.IdentifyListener {
 
+    // region Constants
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
+    private static final int MAX_SMS_LENGTH = 160;
+    // endregion
+    
+    // region Views
+    @Bind(B.id.action_bar)      protected Toolbar           toolbar;
+    @Bind(B.id.rlSearch)        protected RelativeLayout    rlSearch;
+    @Bind(B.id.etSearch)        protected EditText          etSearch;
+    @Bind(B.id.btnDoneSearch)   protected Button            btnDoneSearch;
+    @Bind(B.id.rvContacts)      protected RecyclerView      rvContacts;
+    @Bind(B.id.llSendView)      protected LinearLayout      llSendView;
+    @Bind(B.id.etShareMessage)  protected EditText          etShareMessage;
+    @Bind(B.id.btnEdit)         protected ImageButton       btnEdit;
+    @Bind(B.id.btnDone)         protected Button            btnDone;
+    @Bind(B.id.rlSend)          protected RelativeLayout    rlSend;
+    @Bind(B.id.tvSendContacts)  protected TextView          tvSendContacts;
+    @Bind(B.id.tvSendCount)     protected TextView          tvSendCount;
+    @Bind(B.id.tvNoContacts)    protected TextView          tvNoContacts;
+    // endregion
 
-    private static final int MAX_TEXT_LENGTH = 160;
+    // region Dependencies
+    @Inject protected PusherSDK         pusherSDK;
+    @Inject protected BulkShareHelper   bulkShareHelper;
+    @Inject protected AmbassadorConfig  ambassadorConfig;
+    @Inject protected Device            device;
+    // endregion
+
+    // region Local members
+    protected List<ContactObject>   contactList;
+    protected ContactListAdapter    contactListAdapter;
+    protected JSONObject            pusherData;
+    protected boolean               showPhoneNumbers;
+    // endregion
+    
     private static int lengthBadColor;
     private static int lengthGoodColor;
-    private RecyclerView rvContacts;
-    private RelativeLayout rlSend;
-    private TextView tvSendContacts, tvSendCount;
-    private ImageButton btnEdit;
-    private Button btnDone;
-    private EditText etShareMessage, etSearch;
-    private RelativeLayout rlSearch;
-    private LinearLayout llSendView;
-    private List<ContactObject> contactList;
-    private InputMethodManager inputManager;
-    private JSONObject pusherData;
-    private TextView tvNoContacts;
-    private ContactListAdapter adapter;
-    private ProgressDialog pd;
-    private ContactNameDialog cnd;
-    Boolean showPhoneNumbers;
 
-    @Inject
-    BulkShareHelper bulkShareHelper;
-
-    @Inject
-    AmbassadorConfig ambassadorConfig;
-
-    @Inject
-    PusherSDK pusherSDK;
 
     private static HashMap<Integer, String> phoneTypeMap;
     static {
@@ -99,35 +120,21 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.contactsToolBar));
-
         setContentView(R.layout.activity_contacts);
 
-        if (!AmbassadorSingleton.isValid()) {
-            finish();
-            return;
-        }
-
+        // Injection
         AmbassadorSingleton.getInstanceComponent().inject(this);
+        ButterFork.bind(this);
+
+        // Requirement checks
+        finishIfContextInvalid();
+        if (isFinishing()) return;
+
+        // Layout
+        setUpToolbar();
+
 
         pusherSDK.setIdentifyListener(this);
-
-        rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
-        Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
-        btnEdit = (ImageButton)findViewById(R.id.btnEdit);
-        btnDone = (Button)findViewById(R.id.btnDone);
-
-        rlSend = (RelativeLayout) findViewById(R.id.rlSend);
-        tvSendContacts = (TextView) findViewById(R.id.tvSendContacts);
-        tvSendCount = (TextView) findViewById(R.id.tvSendCount);
-
-        etShareMessage = (EditText) findViewById(R.id.etShareMessage);
-        rlSearch = (RelativeLayout)findViewById(R.id.rlSearch);
-        etSearch = (EditText) findViewById(R.id.etSearch);
-        llSendView = (LinearLayout) findViewById(R.id.llSendView);
-        tvNoContacts = (TextView) findViewById(R.id.tvNoContacts);
-        inputManager = (InputMethodManager)getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         _setUpToolbar(ambassadorConfig.getRafParameters().toolbarTitle);
 
@@ -181,11 +188,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
             @Override
             public void onClick(View v) {
                 boolean goodToGo = true;
-                if (showPhoneNumbers && !(etShareMessage.getText().length() <= MAX_TEXT_LENGTH)) {
+                if (showPhoneNumbers && !(etShareMessage.getText().length() <= MAX_SMS_LENGTH)) {
                     negativeTextViewFeedback(tvSendCount);
                     goodToGo = false;
                 }
-                if (adapter.getSelectedContacts().size() <= 0) {
+                if (contactListAdapter.getSelectedContacts().size() <= 0) {
                     negativeTextViewFeedback(tvSendContacts);
                     goodToGo = false;
                 }
@@ -224,7 +231,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.filterList(etSearch.getText().toString());
+                contactListAdapter.filterList(etSearch.getText().toString());
             }
 
             @Override
@@ -247,8 +254,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
     }
 
     private void updateCharCounter(int length) {
-        tvSendCount.setText("(" + length + "/" + MAX_TEXT_LENGTH + ")");
-        if (length > MAX_TEXT_LENGTH) {
+        tvSendCount.setText("(" + length + "/" + MAX_SMS_LENGTH + ")");
+        if (length > MAX_SMS_LENGTH) {
             tvSendCount.setShadowLayer(2, -1, 0, Color.WHITE);
             tvSendCount.setTextColor(lengthBadColor);
         } else {
@@ -303,6 +310,14 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
     }
+
+    // region Requirement checks
+    private void finishIfContextInvalid() {
+        if (!AmbassadorSingleton.isValid()) {
+            finish();
+        }
+    }
+    // endregion
 
 
     /** Contact methods **/
@@ -478,7 +493,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
             /** Showing search **/
             _shrinkSendView(true);
             etSearch.requestFocus();
-            inputManager.showSoftInput(etSearch, 0);
+            device.openSoftKeyboard(etSearch);
         } else {
             /** Hiding search **/
             etSearch.setText("");
@@ -490,7 +505,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
                 }
             }, 250);
             etSearch.clearFocus();
-            inputManager.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+            device.closeSoftKeyboard(etSearch);
 
         }
 
@@ -530,19 +545,22 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
     }
 
     // Adds and styles toolbar in place of the actionbar
-    private void _setUpToolbar(String toolbarTitle) {
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(toolbarTitle); }
+    private void setUpToolbar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(toolbarTitle);
+        }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
+        Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        arrow.setColorFilter(getResources().getColor(R.color.contactsToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+
         if (toolbar == null) return;
 
-        final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(getResources().getColor(R.color.contactsToolBarArrow), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(arrow);
-
         toolbar.setBackgroundColor(getResources().getColor(R.color.contactsToolBar));
         toolbar.setTitleTextColor(getResources().getColor(R.color.contactsToolBarText));
+
+        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.contactsToolBar));
     }
 
     public void _updateSendButton(int numOfContacts) {
@@ -608,7 +626,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
         //this method is called from two places, one of which could already be showing the progress dialog
         if (!pd.isShowing()) pd.show();
 
-        bulkShareHelper.bulkShare(etShareMessage.getText().toString(), adapter.getSelectedContacts(), showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
+        bulkShareHelper.bulkShare(etShareMessage.getText().toString(), contactListAdapter.getSelectedContacts(), showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
             @Override
             public void bulkShareSuccess() {
                 pd.dismiss();
@@ -637,8 +655,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
             _getContactEmailList();
         }
 
-        adapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
-        adapter.setOnSelectedContactsChangedListener(new ContactListAdapter.OnSelectedContactsChangedListener() {
+        contactListAdapter = new ContactListAdapter(this, contactList, showPhoneNumbers);
+        contactListAdapter.setOnSelectedContactsChangedListener(new ContactListAdapter.OnSelectedContactsChangedListener() {
             @Override
             public void onSelectedContactsChanged(int selected) {
                 _updateSendButton(selected);
@@ -649,7 +667,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rvContacts.setLayoutManager(llm);
         rvContacts.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
-        rvContacts.setAdapter(adapter);
+        rvContacts.setAdapter(contactListAdapter);
     }
 
     private boolean _handleContactsPermission() {

@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.LinkedInLoginActivity;
 
 /**
