@@ -117,15 +117,15 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
         }
 
         Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(getResources().getColor(R.color.linkedinToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+        arrow.setColorFilter(raf.getLinkedInToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
 
         if (toolbar == null) return;
 
         toolbar.setNavigationIcon(arrow);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.linkedinToolBar));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.linkedinToolBarText));
+        toolbar.setBackgroundColor(raf.getLinkedinToolbarColor());
+        toolbar.setTitleTextColor(raf.getLinkedInToolbarTextColor());
 
-        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.linkedinToolBar));
+        Utilities.setStatusBar(getWindow(), raf.getLinkedinToolbarColor());
     }
     // endregion
 
