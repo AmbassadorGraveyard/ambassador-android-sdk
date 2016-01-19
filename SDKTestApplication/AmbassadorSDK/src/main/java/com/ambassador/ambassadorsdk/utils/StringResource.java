@@ -6,6 +6,7 @@ public class StringResource {
 
     private String value;
 
+    @SuppressWarnings("unused")
     private StringResource() {}
 
     public StringResource(int refId) {
