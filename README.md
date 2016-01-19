@@ -126,7 +126,7 @@ Conversions can be triggered from anywhere.  Common places are an Activity's **o
 
  ```java
 // STEP ONE: Create a ConversionParametersBuilder object
-ConversionParametersBuilder builder = new ConversionParametersBuilder();
+ConversionParameters.Builder builder = new ConversionParameters.Builder();
 
 // STEP TWO: Set the REQUIRED properties
 builder.setRevenue(10);
@@ -154,7 +154,7 @@ builder.setIsApproved(1); // Boolean represented by int (Defaults to true);
 ConversionParameters conversionParameters = builder.build();
 
 // (Also: you can chain the builder methods which is way easier)
-conversionParameters = new ConversionParametersBuilder()
+conversionParameters = new ConversionParameters.Builder()
         .setRevenue(10)
         .setCampaign(101)
         .setEmail("user@example.com")
