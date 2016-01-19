@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
 
 import java.io.IOException;
 
@@ -23,6 +24,8 @@ import java.io.IOException;
  * Created by dylan on 11/20/15.
  */
 public class ContactInfoDialog extends Dialog {
+
+    private RAFOptions raf = RAFOptions.get();
 
     private ContactObject contactObject;
 
@@ -73,11 +76,11 @@ public class ContactInfoDialog extends Dialog {
                 contactObject.setPictureBitmap(bmp);
                 ivPhoto.setImageBitmap(bmp);
             } else {
-                ivPhoto.setBackground(new ColorDrawable(getOwnerActivity().getResources().getColor(R.color.contactsToolBar)));
+                ivPhoto.setBackground(new ColorDrawable(raf.getContactsToolbarColor()));
                 ivPhoto.setImageDrawable(getOwnerActivity().getResources().getDrawable(R.drawable.big_no_contact));
             }
         } else {
-            ivPhoto.setBackground(new ColorDrawable(getOwnerActivity().getResources().getColor(R.color.contactsToolBar)));
+            ivPhoto.setBackground(new ColorDrawable(raf.getContactsToolbarColor()));
             ivPhoto.setImageDrawable(getOwnerActivity().getResources().getDrawable(R.drawable.big_no_contact));
         }
         tvName.setText(contactObject.getName());

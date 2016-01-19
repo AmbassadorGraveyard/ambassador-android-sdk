@@ -8,6 +8,6 @@
     </style>
 
     <style name="ActivityTheme" parent="AppTheme">
-        <item name="android:colorPrimary">@color/homeToolBar</item>
+        <!--<item name="android:colorPrimary">@color/homeToolBar</item>-->
     </style>
 </resources>

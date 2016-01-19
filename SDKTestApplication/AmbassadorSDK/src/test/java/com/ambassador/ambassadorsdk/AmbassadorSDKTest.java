@@ -2,14 +2,11 @@ package com.ambassador.ambassadorsdk;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
@@ -65,19 +62,7 @@ public class AmbassadorSDKTest {
 
     @Test
     public void presentRAFTest() throws Exception {
-        // ARRANGE
-        String campaignId = "260";
-        Intent intent = Mockito.mock(Intent.class);
-        PowerMockito.doReturn(intent).when(AmbassadorSDK.class, "buildIntent", context, AmbassadorActivity.class);
-        Mockito.doNothing().when(ambassadorConfig).setCampaignID(Mockito.eq(campaignId));
-        Mockito.doNothing().when(context).startActivity(Mockito.eq(intent));
 
-        // ACT
-        AmbassadorSDK.presentRAF(context, campaignId);
-
-        // ASSERT
-        Mockito.verify(ambassadorConfig).setCampaignID(Mockito.eq(campaignId));
-        Mockito.verify(context).startActivity(Mockito.eq(intent));
     }
 
     @Test

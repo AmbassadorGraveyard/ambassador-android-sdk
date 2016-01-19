@@ -21,18 +21,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by dylan on 11/19/15.
- */
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
 
+    private RAFOptions raf = RAFOptions.get();
+
     public static class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+
+        private RAFOptions raf = RAFOptions.get();
 
         TextView tvName, tvDots;
         TextView tvNumberOrEmail;
@@ -42,9 +44,19 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
         ContactViewHolder(View itemView, OnContactClickListener listener) {
             super(itemView);
+
             tvName = (TextView) itemView.findViewById(R.id.tvName);
+            tvName.setTextSize(raf.getContactsListNameSize());
+            tvName.setTypeface(raf.getContactsListNameFont());
+
             tvDots = (TextView) itemView.findViewById(R.id.tvDots);
+            tvDots.setTextSize(raf.getContactsListNameSize());
+            tvDots.setTypeface(raf.getContactsListNameFont());
+
             tvNumberOrEmail = (TextView) itemView.findViewById(R.id.tvNumberOrEmail);
+            tvNumberOrEmail.setTextSize(raf.getContactsListValueSize());
+            tvNumberOrEmail.setTypeface(raf.getContactsListValueFont());
+
             ivCheckMark = (ImageView) itemView.findViewById(R.id.ivCheckMark);
             ivPic = (ImageView) itemView.findViewById(R.id.ivPic);
 
@@ -235,7 +247,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         Canvas canvas = new Canvas(tmp);
 
         Paint paint = new Paint();
-        paint.setColor(context.getResources().getColor(R.color.contactNoPhotoAvailableBackground));
+        paint.setColor(raf.getContactNoPhotoAvailableBackgroundColor());
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPaint(paint);
 

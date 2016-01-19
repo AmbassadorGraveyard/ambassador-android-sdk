@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
 
 import java.util.ArrayList;
 
@@ -18,6 +19,9 @@ import java.util.ArrayList;
  * Created by JakeDunahee on 7/22/15.
  */
 class SocialGridAdapter extends BaseAdapter {
+
+    private RAFOptions raf = RAFOptions.get();
+
     private Context context;
     private ArrayList<SocialGridModel> models;
     LayoutInflater inflater;
@@ -27,7 +31,7 @@ class SocialGridAdapter extends BaseAdapter {
         this.context = context;
         this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.models = models;
-        this.cornerRadius = context.getResources().getDimension(R.dimen.socialOptionCornerRadius);
+        this.cornerRadius = raf.getSocialOptionCornerRadius();
     }
 
     @Override
@@ -58,6 +62,7 @@ class SocialGridAdapter extends BaseAdapter {
 
         gridImage.setImageResource(model.getIconDrawable());
         gridTitle.setText(model.getName());
+        gridTitle.setTypeface(raf.getSocialGridTextFont());
 
         GradientDrawable backgroundDrawable = new GradientDrawable();
         backgroundDrawable.setColor(model.getBackgroundColor());

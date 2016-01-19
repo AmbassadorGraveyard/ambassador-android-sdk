@@ -2,7 +2,7 @@ package com.ambassador.ambassadorsdk.utils;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
-public final class StringResource {
+public class StringResource {
 
     private String value;
 

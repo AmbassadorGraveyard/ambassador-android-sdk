@@ -38,6 +38,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
@@ -47,13 +48,13 @@ import com.ambassador.ambassadorsdk.internal.ContactObject;
 import com.ambassador.ambassadorsdk.internal.DividerItemDecoration;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.utils.ColorResource;
 import com.ambassador.ambassadorsdk.utils.ContactList;
 import com.ambassador.ambassadorsdk.utils.Device;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import org.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -71,8 +72,8 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     // region Constants
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
     private static final int MAX_SMS_LENGTH = 160;
-    private static final int LENGTH_GOOD_COLOR = AmbassadorSingleton.getInstanceContext().getResources().getColor(R.color.contactsSendButtonText); // TODO: replace with ColorResource after merged
-    private static final int LENGTH_BAD_COLOR = AmbassadorSingleton.getInstanceContext().getResources().getColor(android.R.color.holo_red_dark); // TODO: replace with ColorResource after merged
+    private static final int LENGTH_GOOD_COLOR = RAFOptions.get().getContactsSendButtonTextColor(); // TODO: make this not suck
+    private static final int LENGTH_BAD_COLOR = new ColorResource(android.R.color.holo_red_dark).getColor();
     // endregion
     
     // region Views
@@ -99,7 +100,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     // endregion
 
     // region Local members
-    protected HashMap<Integer, String>  phoneTypeMap;
+    protected  RAFOptions               raf = RAFOptions.get();
     protected List<ContactObject>       contactList;
     protected ContactListAdapter        contactListAdapter;
     protected JSONObject                pusherData;
@@ -167,7 +168,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         getMenuInflater().inflate(R.menu.ambassador_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
         final Drawable searchIcon = ContextCompat.getDrawable(this, R.drawable.abc_ic_search_api_mtrl_alpha);
-        searchIcon.setColorFilter(getResources().getColor(R.color.contactsSearchIcon), PorterDuff.Mode.SRC_ATOP);
+        searchIcon.setColorFilter(raf.getContactsSearchIconColor(), PorterDuff.Mode.SRC_ATOP);
         searchItem.setIcon(searchIcon);
         return true;
     }
@@ -204,15 +205,15 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         }
 
         Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(getResources().getColor(R.color.contactsToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+        arrow.setColorFilter(raf.getContactsToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
 
         if (toolbar == null) return;
 
         toolbar.setNavigationIcon(arrow);
-        toolbar.setBackgroundColor(getResources().getColor(R.color.contactsToolBar));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.contactsToolBarText));
+        toolbar.setBackgroundColor(raf.getContactsToolbarColor());
+        toolbar.setTitleTextColor(raf.getContactsToolbarTextColor());
 
-        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.contactsToolBar));
+        Utilities.setStatusBar(getWindow(), raf.getContactsToolbarColor());
     }
 
     private void setUpOnClicks() {
