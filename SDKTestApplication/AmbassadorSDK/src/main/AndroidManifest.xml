@@ -37,7 +37,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/ActivityTheme"/>
         <activity
-            android:name=".internal.ContactSelectorActivity"
+            android:name=".internal.activities.ContactSelectorActivity"
             android:label="Contacts Activity"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:screenOrientation="portrait"
