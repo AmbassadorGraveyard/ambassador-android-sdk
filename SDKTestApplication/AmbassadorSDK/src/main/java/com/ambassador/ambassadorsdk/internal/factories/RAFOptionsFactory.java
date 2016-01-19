@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal.factories;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
@@ -37,7 +38,7 @@ public final class RAFOptionsFactory {
 
             String type = entry.getNodeName();
             String key = entry.getAttributes().getNamedItem("name").getNodeValue();
-            String value = "";
+            String value;
             if (!"array".equals(type)) {
                 value = entry.getFirstChild().getNodeValue();
             } else {
@@ -158,12 +159,12 @@ public final class RAFOptionsFactory {
             if (value.matches(REGEX_ANDROID_RESOURCE_COLOR)) {
                 resName = value.substring(value.indexOf("/") + 1);
                 int identifier = context.getResources().getIdentifier(resName, "color", "android");
-                return context.getResources().getColor(identifier);
+                return ContextCompat.getColor(context, identifier);
 
             } else if (value.matches(REGEX_LOCAL_RESOURCE_COLOR)) {
                 resName = value.substring(value.indexOf("/") + 1);
-                int identifer = context.getResources().getIdentifier(resName, "color", context.getPackageName());
-                return context.getResources().getColor(identifer);
+                int identifier = context.getResources().getIdentifier(resName, "color", context.getPackageName());
+                return ContextCompat.getColor(context, identifier);
 
             } else if (value.matches(REGEX_HEX_COLOR)) {
                 return Color.parseColor(value);
@@ -190,6 +191,7 @@ public final class RAFOptionsFactory {
 
             private String key;
 
+            @SuppressWarnings("unused")
             private RAFOptionsMethod() {}
 
             public RAFOptionsMethod(String key) {
