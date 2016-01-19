@@ -305,7 +305,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     // region OnClickListeners
     private void rlSendClicked() {
-        if (ableToSend() && haveName()) {
+        if (ableToSend()) {
             send();
         }
     }
@@ -477,6 +477,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         boolean noneSelected = contactListAdapter.getSelectedContacts().size() <= 0;
         boolean emptyMessage = etShareMessage.getText().toString().length() <= 0;
         boolean noUrl = Utilities.containsURL(etShareMessage.getText().toString(), ambassadorConfig.getURL());
+        boolean haveName = showPhoneNumbers && (!pusherHasKey("firstName") || !pusherHasKey("lastName"));
 
         if (lengthToShort && noneSelected) {
             negativeTextViewFeedback(tvSendCount);
@@ -494,6 +495,8 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         } else if (noUrl) {
             askForUrl();
             return false;
+        } else if (haveName) {
+            askForName();
         }
 
         return true;
@@ -524,7 +527,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         dialogBuilder.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
     }
 
-    private static void insertURLIntoMessage(EditText editText, String url) {
+    private void insertURLIntoMessage(EditText editText, String url) {
         String appendingLink = url;
 
         if (editText.getText().toString().contains("http://")) {
@@ -544,20 +547,15 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         }
     }
 
-    private boolean haveName() {
-        if (showPhoneNumbers && (!pusherHasKey("firstName") || !pusherHasKey("lastName"))) {
-            contactNameDialog = new ContactNameDialog(this, progressDialog);
-            contactNameDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface dialog) {
-                    contactNameDialog.showKeyboard();
-                }
-            });
-            contactNameDialog.show();
-            return false;
-        }
-
-        return true;
+    private void askForName() {
+        contactNameDialog = new ContactNameDialog(this, progressDialog);
+        contactNameDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                contactNameDialog.showKeyboard();
+            }
+        });
+        contactNameDialog.show();
     }
 
     private boolean pusherHasKey(String key) {
@@ -567,6 +565,11 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public void identified(long requestId) {
+        send();
     }
 
     private void send() {
@@ -585,11 +588,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    public void identified(long requestId) {
-        send();
     }
     // endregion
 
