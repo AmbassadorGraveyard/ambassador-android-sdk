@@ -78,6 +78,50 @@ import io.fabric.sdk.android.Fabric;
 
 public class AmbassadorActivity extends AppCompatActivity {
 
+    // region Fields
+
+    // region Constants
+    int constants;
+    // endregion
+
+    // region Views
+    int views;
+    // endregion
+
+    // region Dependencies
+    int dependencies;
+    // endregion
+
+    // region Local members
+    int localMembers;
+    // endregion
+
+    // endregion
+
+    // region Methods
+
+    // region Activity overrides
+    int activityOverrides;
+    // endregion
+
+    // region Requirement checks
+    int requirementChecks;
+    // endregion
+
+    // region Setup
+    int setup;
+    // endregion
+
+    // region OnClickListeners
+    int onclicks;
+    // endregion
+
+    // region UI helpers
+    int uihelpers;
+    // endregion
+
+    // endregion
+    
     private RAFOptions raf = RAFOptions.get();
 
     CustomEditText etShortUrl;
