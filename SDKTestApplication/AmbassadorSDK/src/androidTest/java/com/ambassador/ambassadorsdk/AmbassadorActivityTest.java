@@ -15,7 +15,7 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.view.View;
 import android.widget.TextView;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationModule;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;

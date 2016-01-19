@@ -2,7 +2,7 @@ package com.ambassador.ambassadorsdk.internal;
 
 public final class SocialGridModel implements Comparable<SocialGridModel> {
 
-    interface OnClickListener {
+    public interface OnClickListener {
         void onClick();
     }
 

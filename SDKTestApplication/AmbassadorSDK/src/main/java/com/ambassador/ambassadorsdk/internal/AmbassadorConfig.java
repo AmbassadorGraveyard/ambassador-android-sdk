@@ -52,15 +52,15 @@ public class AmbassadorConfig {
         sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     }
 
-    void setLinkedInToken(String token) {
+    public void setLinkedInToken(String token) {
         sharePrefs.edit().putString("linkedInToken", token).apply();
     }
 
-    void setTwitterAccessToken(String token) {
+    public void setTwitterAccessToken(String token) {
         sharePrefs.edit().putString("twitterToken", token).apply();
     }
 
-    void setTwitterAccessTokenSecret(String twitterTokenSecret) {
+    public void setTwitterAccessTokenSecret(String twitterTokenSecret) {
         sharePrefs.edit().putString("twitterTokenSecret", twitterTokenSecret).apply();
     }
 

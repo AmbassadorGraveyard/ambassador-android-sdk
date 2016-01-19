@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -31,8 +31,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
-import com.ambassador.ambassadorsdk.internal.activities.LinkedInLoginActivity;
+import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.CustomEditText;
+import com.ambassador.ambassadorsdk.internal.LockableScrollView;
+import com.ambassador.ambassadorsdk.internal.PusherChannel;
+import com.ambassador.ambassadorsdk.internal.PusherSDK;
+import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.SocialGridAdapter;
+import com.ambassador.ambassadorsdk.internal.SocialGridModel;
+import com.ambassador.ambassadorsdk.internal.SocialShareDialog;
+import com.ambassador.ambassadorsdk.internal.StaticGridView;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 import com.facebook.CallbackManager;
