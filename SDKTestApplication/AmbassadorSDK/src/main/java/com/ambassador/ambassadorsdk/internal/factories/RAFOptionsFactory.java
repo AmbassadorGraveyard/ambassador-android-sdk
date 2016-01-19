@@ -32,33 +32,34 @@ public final class RAFOptionsFactory {
 
         for (int i = 0; i < values.getLength(); i++) {
             Node entry = values.item(i);
-            if (entry.getAttributes() != null) {
-                String type = entry.getNodeName();
-                String key = entry.getAttributes().getNamedItem("name").getNodeValue();
-                String value = "";
-                if (!"array".equals(type)) {
-                    value = entry.getFirstChild().getNodeValue();
-                } else {
-                    NodeList nodes = entry.getChildNodes();
-                    ArrayList<String> names = new ArrayList<>();
-                    for (int j = 0; j < nodes.getLength(); j++) {
-                        Node node = nodes.item(j);
-                        if (node.getAttributes() != null) {
-                            String name = node.getFirstChild().getNodeValue();
-                            names.add(name);
-                        }
-                    }
+            if (entry.getAttributes() == null)
+                continue;
 
-                    value = Joiner.on("&").join(names);
+            String type = entry.getNodeName();
+            String key = entry.getAttributes().getNamedItem("name").getNodeValue();
+            String value = "";
+            if (!"array".equals(type)) {
+                value = entry.getFirstChild().getNodeValue();
+            } else {
+                NodeList nodes = entry.getChildNodes();
+                ArrayList<String> names = new ArrayList<>();
+                for (int j = 0; j < nodes.getLength(); j++) {
+                    Node node = nodes.item(j);
+                    if (node.getAttributes() != null) {
+                        String name = node.getFirstChild().getNodeValue();
+                        names.add(name);
+                    }
                 }
 
-                new ResourceProcessor()
-                        .withContext(context)
-                        .withType(type)
-                        .withKey(key)
-                        .withValue(value)
-                        .applyTo(rafBuilder);
+                value = Joiner.on("&").join(names);
             }
+
+            new ResourceProcessor()
+                    .withContext(context)
+                    .withType(type)
+                    .withKey(key)
+                    .withValue(value)
+                    .applyTo(rafBuilder);
         }
 
         return rafBuilder.build();
