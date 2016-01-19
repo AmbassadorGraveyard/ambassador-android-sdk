@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import org.json.JSONException;
@@ -50,22 +51,20 @@ import java.util.Random;
 
 import javax.inject.Inject;
 
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
-
-/**
- * Created by JakeDunahee on 7/31/15.
- */
 public class ContactSelectorActivity extends AppCompatActivity implements PusherSDK.IdentifyListener {
 
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
-
     private static final int MAX_TEXT_LENGTH = 160;
+
+    private RAFOptions raf = RAFOptions.get();
+
     private static int lengthBadColor;
     private static int lengthGoodColor;
     private RecyclerView rvContacts;
     private RelativeLayout rlSend;
     private TextView tvSendContacts, tvSendCount;
     private ImageButton btnEdit;
+    private Button btnDoneSearch;
     private Button btnDone;
     private EditText etShareMessage, etSearch;
     private RelativeLayout rlSearch;
@@ -100,7 +99,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.contactsToolBar));
+        Utilities.setStatusBar(getWindow(), raf.getContactsToolbarColor());
 
         setContentView(R.layout.activity_contacts);
 
@@ -114,7 +113,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
         pusherSDK.setIdentifyListener(this);
 
         rvContacts = (RecyclerView) findViewById(R.id.rvContacts);
-        Button btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
+        btnDoneSearch = (Button) findViewById(R.id.btnDoneSearch);
         btnEdit = (ImageButton)findViewById(R.id.btnEdit);
         btnDone = (Button)findViewById(R.id.btnDone);
 
@@ -133,6 +132,8 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
 
         showPhoneNumbers = getIntent().getBooleanExtra("showPhoneNumbers", true);
 
+        setTheme();
+
         //setup progress dialog only once
         pd = new ProgressDialog(this);
         pd.setMessage(new StringResource(R.string.sharing).getValue());
@@ -149,7 +150,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
         etShareMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
 
         if (showPhoneNumbers) {
-            lengthGoodColor = getResources().getColor(R.color.contactsSendButtonText);
+            lengthGoodColor = raf.getContactsSendButtonTextColor();
             lengthBadColor = getResources().getColor(android.R.color.holo_red_light);
             updateCharCounter(etShareMessage.getText().toString().length());
             etShareMessage.addTextChangedListener(new TextWatcher() {
@@ -240,6 +241,17 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
         }
     }
 
+    private void setTheme() {
+        rlSearch.setBackgroundColor(raf.getContactsSearchBarColor());
+        llSendView.setBackgroundColor(raf.getContactsSendBackground());
+        btnDone.setTextColor(raf.getContactsDoneButtonTextColor());
+        rlSend.setBackgroundColor(raf.getContactsSendButtonColor());
+        tvSendContacts.setTextColor(raf.getContactsSendButtonTextColor());
+        tvSendCount.setTextColor(raf.getContactsSendButtonTextColor());
+        rvContacts.setBackgroundColor(raf.getContactsListViewBackgroundColor());
+        etShareMessage.setTypeface(raf.getContactSendMessageTextFont());
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -282,7 +294,7 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
         final Drawable searchIcon = ContextCompat.getDrawable(this, R.drawable.abc_ic_search_api_mtrl_alpha);
-        searchIcon.setColorFilter(getResources().getColor(R.color.contactsSearchIcon), PorterDuff.Mode.SRC_ATOP);
+        searchIcon.setColorFilter(raf.getContactsSearchIconColor(), PorterDuff.Mode.SRC_ATOP);
         searchItem.setIcon(searchIcon);
 
         return true;
@@ -298,12 +310,6 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
 
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
-
 
     /** Contact methods **/
 
@@ -538,11 +544,11 @@ public class ContactSelectorActivity extends AppCompatActivity implements Pusher
         if (toolbar == null) return;
 
         final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(getResources().getColor(R.color.contactsToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+        arrow.setColorFilter(raf.getContactsToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
         toolbar.setNavigationIcon(arrow);
 
-        toolbar.setBackgroundColor(getResources().getColor(R.color.contactsToolBar));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.contactsToolBarText));
+        toolbar.setBackgroundColor(raf.getContactsToolbarColor());
+        toolbar.setTitleTextColor(raf.getContactsToolbarTextColor());
     }
 
     public void _updateSendButton(int numOfContacts) {

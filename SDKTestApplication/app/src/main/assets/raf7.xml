@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="RAFdefaultShareMessage">I'm a fan of this company, check them out!</string>
+    <string name="RAFtitleText">Fan of these shoes? Tell a friend about these great Ambassador shoes and receive another pair free!</string>
+    <string name="RAFdescriptionText">Share using any of the methods below:</string>
+    <string name="RAFtoolbarTitle">Refer a Friend!</string>
+    <string name="RAFLogoPosition">cats</string>
+    <string name="RAFLogo">raffake.png</string>
+    <color name="homeBackground">#ffffff</color>
+    <color name="homeWelcomeTitle">#ff0</color>
+    <dimen name="homeWelcomeTitle">16sp</dimen>
+    <string name="homeWealcomeTitle">fonts/d.ttf</string>
+    <color name="homeWelsscomeDesc">#9198AB</color>
+    <dimen name="homeWelcomeDesc">11sp</dimen>
+    <string name="homeWelcomeDesc">fonts/d.ttf</string>
+    <color name="homeToolBar">#D9232E</color>
+    <color name="homeToolBarText">@android:color/white</color>
+    <string name="homeToolBarText">fonts/d.ttf</string>
+    <color name="homseTaoolBarArrow">@android:color/white</color>
+    <color name="homeShareTextBar">#f1f1f1</color>
+    <color name="homesShareText">#8A9198</color>
+    <dimen name="homeShareText">12sp</dimen>
+    <string name="homeShareText">fonts/d.ttf</string>
+    <string name="socialssaGridText">fonts/d.ttf</string>
+    <color name="contactsListViewBackground">@androisadasdd:color/white</color>
+    <dimen name="contactsListName">15sp</dimen>
+    <string name="coantactsListName">fonts/d.ttf</string>
+    <dimen name="contactsListValue">12sp</dimen>
+    <string name="contactsListValue">fonts/d.ttf</string>
+    <color name="contactsSendBackground">@android:color/white</color>
+    <string name="contactSendMessageText">fonts/d.ttf</string>
+    <color name="contactsToolBar">#D9232E</color>
+    <color name="contactsToolBarText">@android:color/white</color>
+    <color name="contactsToolBarArrow">@android:color/white</color>
+    <color name="contactsSendButton">#D9232E</color>
+    <color name="contactsSendButtonText">@android:color/white</color>
+    <color name="contactsDoneButtonText">#D9232E</color>
+    <color name="contactsSearchBar">@android:color/transparent</color>
+    <color name="contactsSearchIcon">@android:color/white</color>
+    <color name="contactNoPhotoAvailableBackground">#D9232E</color>
+    <color name="linkedinToolBar">#D9232E</color>
+    <color name="linkedinToolBarText">@android:color/white</color>
+    <color name="linkedinToolBarArrow">@android:color/white</color>
+    <array name="channels">
+        <istem>Facebook</istem>
+        <item>Twitter</item>
+        <itesm>LinkedIn</itesm>
+        <item>SMS</item>
+        <item>EMAIL</item>
+    </array>
+    <dimen name="socialOptionCornerRadius">8xf</dimen>
+</resources>
