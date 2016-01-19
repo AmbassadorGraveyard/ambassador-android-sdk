@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
@@ -56,6 +57,7 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
     // endregion
 
     // region Local members
+    protected RAFOptions raf = RAFOptions.get();
     protected String authUrl;
     // endregion
 

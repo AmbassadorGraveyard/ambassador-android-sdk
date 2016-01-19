@@ -3,8 +3,8 @@ package com.ambassador.ambassadorsdk;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
@@ -14,13 +14,15 @@ import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 
+import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.inject.Inject;
 
-public class AmbassadorSDK {
+public final class AmbassadorSDK {
 
     @Inject
     static AmbassadorConfig ambassadorConfig;
@@ -29,6 +31,35 @@ public class AmbassadorSDK {
     static PusherSDK pusherSDK;
 
     public static void presentRAF(Context context, String campaignID) {
+        presentRAF(context, campaignID, new RAFOptions.Builder().build());
+    }
+
+    public static void presentRAF(Context context, String campaignID, InputStream inputStream) {
+        RAFOptions rafOptions;
+        try {
+            rafOptions = RAFOptionsFactory.decodeResources(inputStream, context);
+        } catch (Exception e) {
+            rafOptions = new RAFOptions.Builder().build();
+        }
+
+        presentRAF(context, campaignID, rafOptions);
+    }
+
+    public static void presentRAF(Context context, String campaignID, RAFOptions rafOptions) {
+        RAFOptions.set(rafOptions);
+        intentAmbassadorActivity(context, campaignID);
+    }
+
+    public static void presentRAF(Context context, String campaignID, String pathInAssets) {
+        try {
+            presentRAF(context, campaignID, context.getAssets().open(pathInAssets));
+        } catch (Exception e) {
+            presentRAF(context, campaignID);
+            Log.e("AmbassadorSDK", pathInAssets + " not found.");
+        }
+    }
+
+    private static void intentAmbassadorActivity(Context context, String campaignID) {
         Intent intent = buildIntent(context, AmbassadorActivity.class);
         ambassadorConfig.setCampaignID(campaignID);
         context.startActivity(intent);

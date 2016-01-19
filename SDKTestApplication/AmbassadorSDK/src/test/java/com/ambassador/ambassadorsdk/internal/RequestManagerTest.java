@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.TestUtils;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;

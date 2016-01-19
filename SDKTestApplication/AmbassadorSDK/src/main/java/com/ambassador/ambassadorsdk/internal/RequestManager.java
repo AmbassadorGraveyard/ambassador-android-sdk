@@ -1,5 +1,6 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
