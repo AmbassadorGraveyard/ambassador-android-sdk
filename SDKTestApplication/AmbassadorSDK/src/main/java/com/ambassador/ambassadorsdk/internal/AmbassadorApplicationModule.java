@@ -3,6 +3,7 @@ package com.ambassador.ambassadorsdk.internal;
 import android.app.Activity;
 import android.content.Context;
 
+import com.ambassador.ambassadorsdk.utils.Device;
 import com.facebook.share.widget.ShareDialog;
 
 import javax.inject.Singleton;
@@ -12,11 +13,9 @@ import dagger.Provides;
 
 import static org.mockito.Mockito.mock;
 
-/**
- * Created by coreyfields on 9/14/15.
- */
 @Module
 public class AmbassadorApplicationModule {
+
     private Context context;
     private Boolean mockMode = false;
 
@@ -68,4 +67,11 @@ public class AmbassadorApplicationModule {
         if (mockMode) return mock(PusherSDK.class);
         return new PusherSDK();
     }
+
+    @Provides
+    @Singleton
+    Device provideDevice() {
+        return new Device();
+    }
+
 }

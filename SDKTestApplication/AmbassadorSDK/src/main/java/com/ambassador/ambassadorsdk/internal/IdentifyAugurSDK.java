@@ -63,7 +63,7 @@ public class IdentifyAugurSDK implements IIdentify {
                         device.put("ID", ambassadorConfig.getWebDeviceId());
                     }
 
-                    device.put("type", new Device(AmbassadorSingleton.getInstanceContext()).getType());
+                    device.put("type", new Device().getType());
                     jsonObject.put("device", device);
 
                     Utilities.debugLog("Augur", "Augur successfully received through SDK call");

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -17,7 +18,9 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.utils.Device;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import java.net.MalformedURLException;
@@ -25,67 +28,53 @@ import java.net.URL;
 
 import javax.inject.Inject;
 
+import butterfork.Bind;
+import butterfork.ButterFork;
+
 /**
- * Created by JakeDunahee on 7/27/15.
+ * Activity that handles OAuth authentication with LinkedIn.
+ * Presents a WebView prompting the user to login, and handles getting
+ * the access token stored in AmbassadorConfig.
  */
-public class LinkedInLoginActivity extends AppCompatActivity {
+public final class LinkedInLoginActivity extends AppCompatActivity {
 
-    ProgressBar loader;
+    // region Views
+    @Bind(B.id.action_bar)  protected Toolbar toolbar;
+    @Bind(B.id.wvLogin)     protected WebView wvLogin;
+    @Bind(B.id.pbLoading)   protected ProgressBar loader;
+    // endregion
 
-    @Inject
-    RequestManager requestManager;
+    // region Dependencies
+    @Inject protected RequestManager requestManager;
+    @Inject protected Device device;
+    // endregion
 
-    private boolean popupIsOpen = false;
+    // region Local members
+    protected String authUrl;
+    // endregion
 
+    // region Activity overrides
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.linkedin_blue));
-
         setContentView(R.layout.activity_webview);
 
-        if (!AmbassadorSingleton.isValid()) {
-            finish();
-            return;
-        }
-
+        // Injection
         AmbassadorSingleton.getInstanceComponent().inject(this);
+        ButterFork.bind(this);
 
-        if (!Utilities.isConnected(this)) {
-            Toast.makeText(this, new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+        // Requirement checks
+        finishIfContextInvalid();
+        finishIfDeviceNotConnected();
+        if (isFinishing()) return;
 
-        _setUpToolbar();
+        // Layout
+        setUpToolbar();
 
-        loader = (ProgressBar) findViewById(R.id.loadingPanel);
-
-        String authUrl = LinkedInApi.getAuthorizationUrl(
-                new StringResource(R.string.linked_in_login_response_type).getValue(),
-                AmbassadorConfig.LINKED_IN_CLIENT_ID,
-                AmbassadorConfig.LINKED_IN_CALLBACK_URL,
-                "987654321",
-                new StringResource(R.string.linked_in_r_profile_permission).getValue(),
-                new StringResource(R.string.linked_in_w_share_permission).getValue()
-        );
-
-        WebView webView = (WebView)findViewById(R.id.wvSocial);
-        WebSettings settings = webView.getSettings();
-
-        settings.setAllowFileAccess(false);
-        settings.setJavaScriptEnabled(false);
-        settings.setSaveFormData(false);
-        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
-        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setHorizontalScrollBarEnabled(true);
-
-        webView.setWebViewClient(new LinkedInClient());
-        webView.loadUrl(authUrl);
+        // Web configuration
+        configureWebView();
+        generateAuthUrl();
+        loadLoginPage();
     }
 
     @Override
@@ -93,26 +82,82 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         finish();
         return super.onOptionsItemSelected(item);
     }
+    // endregion
 
-    private void _setUpToolbar() {
-        if (getSupportActionBar() != null) { getSupportActionBar().setTitle("Login to LinkedIn"); }
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
-        if (toolbar == null) return;
-
-        final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(getResources().getColor(R.color.linkedinToolBarArrow), PorterDuff.Mode.SRC_ATOP);
-        toolbar.setNavigationIcon(arrow);
-
-        toolbar.setBackgroundColor(getResources().getColor(R.color.linkedinToolBar));
-        toolbar.setTitleTextColor(getResources().getColor(R.color.linkedinToolBarText));
+    // region Requirement checks
+    private void finishIfContextInvalid() {
+        if (!AmbassadorSingleton.isValid()) {
+            finish();
+        }
     }
 
-    private class LinkedInClient extends WebViewClient {
+    private void finishIfDeviceNotConnected() {
+        if (!device.isConnected()) {
+            Toast.makeText(this, new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
+            finish();
+        }
+    }
+    // endregion
+
+    // region Layout configuration
+    private void setUpToolbar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("Login to LinkedIn");
+        }
+
+        if (toolbar == null) return;
+
+        Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        arrow.setColorFilter(getResources().getColor(R.color.linkedinToolBarArrow), PorterDuff.Mode.SRC_ATOP);
+
+        toolbar.setNavigationIcon(arrow);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.linkedinToolBar));
+        toolbar.setTitleTextColor(getResources().getColor(R.color.linkedinToolBarText));
+
+        Utilities.setStatusBar(getWindow(), getResources().getColor(R.color.linkedinToolBar));
+    }
+    // endregion
+
+    // region Web configuration
+    private void configureWebView() {
+        WebSettings settings = wvLogin.getSettings();
+        settings.setAllowFileAccess(false);
+        settings.setJavaScriptEnabled(false);
+        settings.setSaveFormData(false);
+        settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
+        settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+
+        wvLogin.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        wvLogin.setVerticalScrollBarEnabled(false);
+        wvLogin.setHorizontalScrollBarEnabled(true);
+        wvLogin.setWebViewClient(new LinkedInClient());
+    }
+
+    private void generateAuthUrl() {
+        authUrl = LinkedInApi.getAuthorizationUrl(
+                new StringResource(R.string.linked_in_login_response_type).getValue(),
+                AmbassadorConfig.LINKED_IN_CLIENT_ID,
+                AmbassadorConfig.LINKED_IN_CALLBACK_URL,
+                "987654321",
+                new StringResource(R.string.linked_in_r_profile_permission).getValue(),
+                new StringResource(R.string.linked_in_w_share_permission).getValue()
+        );
+    }
+
+    private void loadLoginPage() {
+        wvLogin.loadUrl(authUrl);
+    }
+    // endregion
+
+    // region LinkedIn Web
+    private final class LinkedInClient extends WebViewClient {
+
+        private WebPopupDialog popupDialog;
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (!isHandled(url) && !popupIsOpen) {
+            if (!isHandled(url) && !isPopupOpen()) {
                 Uri uri = Uri.parse(url);
                 if (uri != null && uri.getPath().equals("/uas/request-password-reset")) {
                     Intent i = new Intent(Intent.ACTION_VIEW);
@@ -129,20 +174,9 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                 }
 
                 view.stopLoading();
-                WebPopupDialog dialog = new WebPopupDialog(LinkedInLoginActivity.this);
-                dialog.setOwnerActivity(LinkedInLoginActivity.this);
-                dialog.load(url);
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.setCancelable(true);
-                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        popupIsOpen = false;
-                    }
-                });
-                dialog.show();
-                popupIsOpen = true;
+                popup(url);
             }
+
             return false;
         }
 
@@ -153,7 +187,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
                 loader.setVisibility(View.GONE);
             } else if (LinkedInApi.isSuccessUrl(url)) {
                 String requestToken = LinkedInApi.extractToken(url);
-                if (requestToken == null ) {
+                if (requestToken == null) {
                     finish();
                     return;
                 }
@@ -175,15 +209,31 @@ public class LinkedInLoginActivity extends AppCompatActivity {
 
         private boolean isHandled(String url) {
             Uri uri = Uri.parse(url);
-            if (uri != null) {
-                return uri.getHost().equals("localhost");
-            }
-            return false;
+            return uri != null && uri.getHost().equals("localhost");
+        }
+
+        private void popup(String url) {
+            popupDialog = new WebPopupDialog(LinkedInLoginActivity.this);
+            popupDialog.setOwnerActivity(LinkedInLoginActivity.this);
+            popupDialog.load(url);
+            popupDialog.setCanceledOnTouchOutside(true);
+            popupDialog.setCancelable(true);
+            popupDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    popupDialog = null;
+                }
+            });
+            popupDialog.show();
+        }
+
+        private boolean isPopupOpen() {
+            return popupDialog != null && popupDialog.isShowing();
         }
 
     }
 
-    static class LinkedInApi {
+    private static final class LinkedInApi {
 
         private static final String AUTHORIZE_URL = "https://www.linkedin.com/uas/oauth2/authorization";
         private static final String RESPONSE_TYPE_KEY = "response_type";
@@ -240,6 +290,7 @@ public class LinkedInLoginActivity extends AppCompatActivity {
         }
 
     }
+    // endregion
 
 }
 
