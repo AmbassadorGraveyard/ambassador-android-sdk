@@ -6,13 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.inject.Inject;
 
@@ -77,7 +75,8 @@ public class ConversionUtility {
         String augurId = augurDevice.get("ID").getAsString();
 
         ConversionsApi.RegisterConversionRequestBody.AugurObject augurObject = new ConversionsApi.RegisterConversionRequestBody.AugurObject(augurUid, augurType, augurId);
-        ConversionsApi.RegisterConversionRequestBody.FieldsObject fieldsObject = new ConversionsApi.RegisterConversionRequestBody.FieldsObject(parameters, parameters.mbsy_short_code);
+        ConversionsApi.RegisterConversionRequestBody.FieldsObject fieldsObject = parameters.getFieldsObject();
+
         return new ConversionsApi.RegisterConversionRequestBody(augurObject, fieldsObject);
     }
 
@@ -136,7 +135,7 @@ public class ConversionUtility {
     public void makeConversionRequest(final ConversionParameters newParameters) {
         //in the case of an install conversion, we didn't have the shortCode right away, so that conversion got stored in the database.
         //now that we know we have it (wouldn't have gotten this far if we didn't) set that parameter value.
-        newParameters.mbsy_short_code = ambassadorConfig.getReferralShortCode();
+        newParameters.updateShortCode(ambassadorConfig.getReferralShortCode());
 
         requestManager.registerConversionRequest(newParameters, new RequestManager.RequestCompletion() {
             @Override
@@ -155,8 +154,8 @@ public class ConversionUtility {
 
     class ConversionParametersException extends Exception {
         public ConversionParametersException() {
-            super("Conversion parameters must have set values for 'mbsy_revenue," +
-                    "'mbsy_campaign', and 'mbsy_email.");
+            super("Conversion parameters must have set values for 'revenue," +
+                    "'campaign', and 'email.");
         }
     }
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 
-import com.ambassador.ambassadorsdk.internal.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
