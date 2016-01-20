@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.models;
 
 import android.graphics.Bitmap;
 
@@ -18,7 +18,7 @@ import java.util.List;
 @PrepareForTest({
 
 })
-public class ContactObjectTest {
+public class ContactTest {
 
     @Test
     public void getterSetterTest() {

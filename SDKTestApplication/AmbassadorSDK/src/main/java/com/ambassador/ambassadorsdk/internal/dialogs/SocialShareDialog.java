@@ -3,6 +3,7 @@ package com.ambassador.ambassadorsdk.internal.dialogs;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -12,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
@@ -20,33 +22,38 @@ import com.ambassador.ambassadorsdk.internal.ForActivity;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
-import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.internal.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.inject.Inject;
 
+import butterfork.Bind;
+import butterfork.ButterFork;
+
 /**
- * Created by dylan on 12/7/15.
+ *
  */
-public class SocialShareDialog extends Dialog {
+public final class SocialShareDialog extends Dialog {
+
+    // region Views
+    @Bind(B.id.tvHeaderText)    protected TextView          tvHeaderText;
+    @Bind(B.id.ivHeaderImg)     protected ImageView         ivHeaderImg;
+    @Bind(B.id.tvSend)          protected TextView          tvSend;
+    @Bind(B.id.etMessage)       protected ShakableEditText  etMessage;
+    @Bind(B.id.btnSend)         protected Button            btnSend;
+    @Bind(B.id.btnCancel)       protected Button            btnCancel;
+    @Bind(B.id.pbLoading)       protected ProgressBar       pbLoading;
+    // endregion
+
+    // region Dependencies
+    @Inject protected RequestManager    requestManager;
+    @Inject protected AmbassadorConfig  ambassadorConfig;
+    // endregion
 
     private ShareDialogEventListener eventListener;
-
-    private TextView tvHeaderText;
-    private ImageView ivHeaderImage;
-    private TextView tvSend;
-    private ShakableEditText etMessage;
-    private Button btnSend, btnCancel;
-    private ProgressBar loader;
-
-    @Inject
-    RequestManager requestManager;
-
-    @Inject
-    AmbassadorConfig ambassadorConfig;
 
     public enum SocialNetwork {
         TWITTER, LINKEDIN
@@ -62,19 +69,9 @@ public class SocialShareDialog extends Dialog {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_social_share);
+        ButterFork.bind(this);
 
-        tvHeaderText = (TextView) findViewById(R.id.tvHeaderText);
-        ivHeaderImage = (ImageView) findViewById(R.id.ivHeaderImg);
-
-        tvSend = (TextView) findViewById(R.id.tvSend);
-
-        etMessage = (ShakableEditText) findViewById(R.id.etMessage);
-
-        btnSend = (Button) findViewById(R.id.btnSend);
-        btnCancel = (Button) findViewById(R.id.btnCancel);
-
-        loader = (ProgressBar) findViewById(R.id.loadingPanel);
-        loader.setVisibility(View.GONE);
+        pbLoading.setVisibility(View.GONE);
 
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,6 +96,11 @@ public class SocialShareDialog extends Dialog {
         });
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
     public void setSocialNetwork(SocialNetwork socialNetwork) {
         this.socialNetwork = socialNetwork;
         switch (socialNetwork) {
@@ -114,7 +116,7 @@ public class SocialShareDialog extends Dialog {
     private void styleTwitter() {
         tvHeaderText.setText("Twitter Post");
         tvHeaderText.setBackgroundColor(getContext().getResources().getColor(R.color.twitter_blue));
-        ivHeaderImage.setImageDrawable(getContext().getResources().getDrawable(R.drawable.twitter_icon));
+        ivHeaderImg.setImageDrawable(getContext().getResources().getDrawable(R.drawable.twitter_icon));
         tvSend.setText("Tweet");
         btnSend.setText("Tweet");
 
@@ -124,7 +126,7 @@ public class SocialShareDialog extends Dialog {
     private void styleLinkedIn() {
         tvHeaderText.setText("LinkedIn Post");
         tvHeaderText.setBackgroundColor(getContext().getResources().getColor(R.color.linkedin_blue));
-        ivHeaderImage.setImageDrawable(getContext().getResources().getDrawable(R.drawable.linkedin_icon));
+        ivHeaderImg.setImageDrawable(getContext().getResources().getDrawable(R.drawable.linkedin_icon));
         tvSend.setText("Send");
         btnSend.setText("Share");
 
@@ -155,7 +157,7 @@ public class SocialShareDialog extends Dialog {
             Toast.makeText(getOwnerActivity(), blankErrorText, Toast.LENGTH_SHORT).show();
             etMessage.shake();
         } else {
-            loader.setVisibility(View.VISIBLE);
+            pbLoading.setVisibility(View.VISIBLE);
             switch (socialNetwork) {
                 case TWITTER:
                     requestManager.postToTwitter(etMessage.getText().toString(), twitterCompletion);
@@ -181,7 +183,7 @@ public class SocialShareDialog extends Dialog {
     private RequestManager.RequestCompletion twitterCompletion = new RequestManager.RequestCompletion() {
         @Override
         public void onSuccess(Object successResponse) {
-            loader.setVisibility(View.GONE);
+            pbLoading.setVisibility(View.GONE);
             Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
             requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.TWITTER);
             dismiss();
@@ -190,7 +192,7 @@ public class SocialShareDialog extends Dialog {
 
         @Override
         public void onFailure(Object failureResponse) {
-            loader.setVisibility(View.GONE);
+            pbLoading.setVisibility(View.GONE);
             if (((String) failureResponse).equals("auth")) {
                 dismiss();
                 attemptNotifyReauth();
@@ -204,7 +206,7 @@ public class SocialShareDialog extends Dialog {
     private RequestManager.RequestCompletion linkedInCompletion = new RequestManager.RequestCompletion() {
         @Override
         public void onSuccess(Object successResponse) {
-            loader.setVisibility(View.GONE);
+            pbLoading.setVisibility(View.GONE);
             Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
             requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.LINKEDIN);
             dismiss();
@@ -213,7 +215,7 @@ public class SocialShareDialog extends Dialog {
 
         @Override
         public void onFailure(Object failureResponse) {
-            loader.setVisibility(View.GONE);
+            pbLoading.setVisibility(View.GONE);
             if (((String) failureResponse).contains("No authentication")) {
                 dismiss();
                 attemptNotifyReauth();

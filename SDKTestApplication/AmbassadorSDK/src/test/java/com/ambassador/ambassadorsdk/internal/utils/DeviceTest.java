@@ -38,7 +38,7 @@ public class DeviceTest {
         configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
 
         // ACT
-        boolean smallCase = new Device(context).isTablet();
+        boolean smallCase = new Device().isTablet();
 
         // ASSERT
         Assert.assertFalse(smallCase);
@@ -50,7 +50,7 @@ public class DeviceTest {
         configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
 
         // ACT
-        boolean normalCase = new Device(context).isTablet();
+        boolean normalCase = new Device().isTablet();
 
         // ASSERT
         Assert.assertFalse(normalCase);
@@ -62,7 +62,7 @@ public class DeviceTest {
         configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_LARGE;
 
         // ACT
-        boolean largeCase = new Device(context).isTablet();
+        boolean largeCase = new Device().isTablet();
 
         // ASSERT
         Assert.assertTrue(largeCase);
@@ -74,7 +74,7 @@ public class DeviceTest {
         configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_XLARGE;
 
         // ACT
-        boolean xlargeCase = new Device(context).isTablet();
+        boolean xlargeCase = new Device().isTablet();
 
         // ASSERT
         Assert.assertTrue(xlargeCase);
@@ -87,7 +87,7 @@ public class DeviceTest {
         configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
 
         // ACT
-        String smallCase = new Device(context).getType();
+        String smallCase = new Device().getType();
 
         // ASSERT
         Assert.assertEquals(smallCase, "SmartPhone");
@@ -99,7 +99,7 @@ public class DeviceTest {
         configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
 
         // ACT
-        String normalCase = new Device(context).getType();
+        String normalCase = new Device().getType();
 
         // ASSERT
         Assert.assertEquals(normalCase, "SmartPhone");
@@ -111,7 +111,7 @@ public class DeviceTest {
         configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_LARGE;
 
         // ACT
-        String largeCase = new Device(context).getType();
+        String largeCase = new Device().getType();
 
         // ASSERT
         Assert.assertEquals(largeCase, "Tablet");
@@ -123,7 +123,7 @@ public class DeviceTest {
         configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_XLARGE;
 
         // ACT
-        String xlargeCase = new Device(context).getType();
+        String xlargeCase = new Device().getType();
 
         // ASSERT
         Assert.assertEquals(xlargeCase, "Tablet");

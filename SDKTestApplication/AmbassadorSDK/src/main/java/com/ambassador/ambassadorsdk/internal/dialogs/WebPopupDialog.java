@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -14,29 +15,35 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 
-/**
- * Created by dylan on 12/4/15.
- */
-public class WebPopupDialog extends Dialog {
+import butterfork.Bind;
+import butterfork.ButterFork;
 
-    private WebView webView;
-    private ProgressBar progressBar;
+/**
+ *
+ */
+public final class WebPopupDialog extends Dialog {
+
+    // region Views
+    @Bind(B.id.wvPopup)     protected WebView       wvPopup;
+    @Bind(B.id.pbLoading)   protected ProgressBar   pbLoading;
+    // endregion
 
     public WebPopupDialog(Context context) {
         super(context);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_webview_popup);
+        ButterFork.bind(this);
 
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.dimAmount = 0.85f;
 
-        webView = (WebView) findViewById(R.id.webView);
-        WebSettings settings = webView.getSettings();
+        WebSettings settings = wvPopup.getSettings();
 
         settings.setAllowFileAccess(false);
         settings.setJavaScriptEnabled(false);
@@ -44,13 +51,11 @@ public class WebPopupDialog extends Dialog {
         settings.setRenderPriority(WebSettings.RenderPriority.HIGH);
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
 
-        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setHorizontalScrollBarEnabled(true);
+        wvPopup.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        wvPopup.setVerticalScrollBarEnabled(false);
+        wvPopup.setHorizontalScrollBarEnabled(true);
 
-        webView.setWebViewClient(new Client());
-
-        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        wvPopup.setWebViewClient(new Client());
 
         /** This works for dismiss on margin click */
         getWindow().getDecorView().setOnTouchListener(new View.OnTouchListener() {
@@ -60,6 +65,11 @@ public class WebPopupDialog extends Dialog {
                 return false;
             }
         });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     private class Client extends WebViewClient {
@@ -78,13 +88,13 @@ public class WebPopupDialog extends Dialog {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
-            progressBar.setVisibility(View.GONE);
+            pbLoading.setVisibility(View.GONE);
         }
 
     }
 
     public void load(String url) {
-        webView.loadUrl(url);
+        wvPopup.loadUrl(url);
     }
 
 }
