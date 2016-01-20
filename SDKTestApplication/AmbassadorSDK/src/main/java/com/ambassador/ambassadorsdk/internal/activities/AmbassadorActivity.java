@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
@@ -25,8 +26,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,16 +39,16 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
-import com.ambassador.ambassadorsdk.internal.views.LockableScrollView;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.SocialShareDialog;
-import com.ambassador.ambassadorsdk.internal.views.StaticGridView;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
+import com.ambassador.ambassadorsdk.internal.views.LockableScrollView;
+import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
+import com.ambassador.ambassadorsdk.internal.views.StaticGridView;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -99,8 +100,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Bind(B.id.tvWelcomeTitle)  protected TextView              tvWelcomeTitle;
     @Bind(B.id.tvWelcomeDesc)   protected TextView              tvWelcomeDesc;
     @Bind(B.id.flShortUrl)      protected FrameLayout           flShortUrl;
-    @Bind(B.id.etShortURL)      protected ShakableEditText etShortURL;
-    @Bind(B.id.btnCopy)         protected Button                btnCopy;
+    @Bind(B.id.etShortURL)      protected ShakableEditText      etShortUrl;
+    @Bind(B.id.btnCopy)         protected ImageButton           btnCopy;
     @Bind(B.id.gvSocialGrid)    protected StaticGridView        gvSocialGrid;
     // endregion
 
@@ -187,11 +188,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 }
 
-                int parentHeight = scrollView.getHeight();
-                int childHeight = llMainLayout.getHeight();
+                int parentHeight = svParent.getHeight();
+                int childHeight = llParent.getHeight();
 
                 if (childHeight - parentHeight > 0 && childHeight - parentHeight < Utilities.getPixelSizeForDimension(R.dimen.ambassador_activity_scroll_lock_buffer)) {
-                    scrollView.lock();
+                    svParent.lock();
                 }
             }
         });
@@ -236,13 +237,13 @@ public final class AmbassadorActivity extends AppCompatActivity {
         }
         setTheme();
 
-        btnCopyPaste.setOnClickListener(new View.OnClickListener() {
+        btnCopy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 copyShortURLToClipboard(etShortUrl.getText().toString(), getApplicationContext());
             }
         });
 
-        btnCopyPaste.setColorFilter(getResources().getColor(R.color.ultraLightGray));
+        btnCopy.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
         // Sets up social gridView
         final SocialGridAdapter gridAdapter = new SocialGridAdapter(this, getShareMethods());
@@ -287,7 +288,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         //if we have a channel and it's not expired but it's not currently connected, subscribe to the existing channel
         if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() != ConnectionState.CONNECTED) {
-            pusher.subscribePusher(new PusherSDK.PusherSubscribeCallback() {
+            pusherSDK.subscribePusher(new PusherSDK.PusherSubscribeCallback() {
                 @Override
                 public void pusherSubscribed() {
                    requestManager.identifyRequest();
@@ -308,7 +309,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         PusherChannel.setChannelName(null);
         PusherChannel.setExpiresAt(null);
         PusherChannel.setRequestId(-1);
-        pusher.createPusher(new PusherSDK.PusherSubscribeCallback() {
+        pusherSDK.createPusher(new PusherSDK.PusherSubscribeCallback() {
             @Override
             public void pusherSubscribed() {
                 requestManager.identifyRequest();
@@ -323,7 +324,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     private void setTheme() {
-        llMainLayout.setBackgroundColor(raf.getHomeBackgroundColor());
+        llParent.setBackgroundColor(raf.getHomeBackgroundColor());
 
         tvWelcomeTitle.setTextColor(raf.getHomeWelcomeTitleColor());
         tvWelcomeTitle.setTextSize(raf.getHomeWelcomeTitleSize());
@@ -413,7 +414,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             params.gravity = Gravity.CENTER_HORIZONTAL;
             params.topMargin = Utilities.getPixelSizeForDimension(R.dimen.raf_logo_top_margin);
             logo.setLayoutParams(params);
-            llMainLayout.addView(logo, pos-1);
+            llParent.addView(logo, pos-1);
         }
     }
 
@@ -526,7 +527,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     void shareWithLinkedIn() {
-        // Presents login screen if user hasn't signed in yet
         if (ambassadorConfig.getLinkedInToken() != null) {
             SocialShareDialog linkedInDialog = new SocialShareDialog(AmbassadorActivity.this);
             linkedInDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.LINKEDIN);
@@ -638,6 +638,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(raf.getHomeToolbarTextColor());
     }
 
+    @NonNull
     private List<ShareMethod> getShareMethods() {
         ShareMethod.Builder modelFacebook = new ShareMethod.Builder()
                 .setName("FACEBOOK")
