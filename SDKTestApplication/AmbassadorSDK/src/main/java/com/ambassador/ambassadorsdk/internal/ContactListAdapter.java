@@ -194,7 +194,12 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
             filteredContacts.clear();
             for (int i = 0; i < contacts.size(); i++) {
                 Contact object = contacts.get(i);
-                if (object.getName().toLowerCase().contains(filterString.toLowerCase())) { filteredContacts.add(object); }
+                String name = object.getName().toLowerCase();
+                String value = (shouldShowPhoneNumbers ? object.getPhoneNumber() : object.getEmailAddress()).toLowerCase();
+                String query = filterString.toLowerCase();
+                if (name.contains(query) || value.contains(query)) {
+                    filteredContacts.add(object);
+                }
             }
 
             notifyDataSetChanged();
