@@ -12,14 +12,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/**
+ *
+ */
 public final class ContactList {
-
-    private Type type;
 
     public enum Type {
         PHONE, EMAIL, DUMMY
     }
 
+    private Type type;
+
+    @SuppressWarnings("unused")
     private ContactList() {}
 
     public ContactList(@NonNull Type type) {

@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
