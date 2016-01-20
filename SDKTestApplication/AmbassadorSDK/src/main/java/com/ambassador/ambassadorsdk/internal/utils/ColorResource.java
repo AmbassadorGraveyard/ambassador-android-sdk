@@ -5,7 +5,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
-public final class ColorResource {
+public class ColorResource {
 
     private int color;
 

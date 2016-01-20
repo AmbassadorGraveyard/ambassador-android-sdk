@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-public final class RAFOptionsFactory {
+public class RAFOptionsFactory {
 
     @NonNull
     public static RAFOptions decodeResources(@NonNull InputStream inputStream, @NonNull Context context) throws Exception {
