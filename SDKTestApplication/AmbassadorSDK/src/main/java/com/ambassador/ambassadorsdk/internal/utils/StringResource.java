@@ -5,6 +5,9 @@ import android.support.annotation.StringRes;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
+/**
+ *
+ */
 public final class StringResource {
 
     private String value;

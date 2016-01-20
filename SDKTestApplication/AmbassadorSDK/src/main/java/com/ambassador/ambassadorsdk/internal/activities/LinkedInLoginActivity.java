@@ -24,7 +24,7 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
-import com.ambassador.ambassadorsdk.internal.WebPopupDialog;
+import com.ambassador.ambassadorsdk.internal.dialogs.WebPopupDialog;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.StringResource;
 

@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.adapters;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;

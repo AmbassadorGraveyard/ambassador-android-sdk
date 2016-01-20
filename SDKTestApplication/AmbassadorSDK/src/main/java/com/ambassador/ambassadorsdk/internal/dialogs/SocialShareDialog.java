@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.dialogs;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -13,6 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.ForActivity;
+import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.internal.utils.StringResource;
