@@ -28,11 +28,11 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
+public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
 
     private RAFOptions raf = RAFOptions.get();
 
-    public static class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public static final class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         private RAFOptions raf = RAFOptions.get();
 
@@ -85,7 +85,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     private Context context;
 
-    private List<ContactObject> contacts, filteredContacts, selectedContacts;
+    private List<Contact> contacts, filteredContacts, selectedContacts;
 
     private boolean shouldShowPhoneNumbers;
     private float maxNameWidth;
@@ -95,7 +95,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     private OnSelectedContactsChangedListener onSelectedContactsChangedListener;
 
-    public ContactListAdapter(Context context, List<ContactObject> contacts, boolean shouldShowPhoneNumbers) {
+    public ContactListAdapter(Context context, List<Contact> contacts, boolean shouldShowPhoneNumbers) {
         this.context = context;
         this.contacts = contacts;
         this.selectedContacts = new ArrayList<>();
@@ -147,7 +147,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
 
     @Override
     public void onBindViewHolder(ContactViewHolder holder, int position) {
-        ContactObject contact = filteredContacts.get(position);
+        Contact contact = filteredContacts.get(position);
 
         float widthInDp = Utilities.getTextWidthDp(contact.getName(), holder.tvName);
 
@@ -161,8 +161,8 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         }
 
         if (shouldShowPhoneNumbers) {
-            String separator = " - ";
-            holder.tvNumberOrEmail.setText(contact.getType() + separator + contact.getPhoneNumber());
+            String text = contact.getType() + " - " + contact.getPhoneNumber();
+            holder.tvNumberOrEmail.setText(text);
         } else {
             holder.tvNumberOrEmail.setText(contact.getEmailAddress());
         }
@@ -192,7 +192,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
         if (filterString != null && !filterString.equals("")) {
             filteredContacts.clear();
             for (int i = 0; i < contacts.size(); i++) {
-                ContactObject object = contacts.get(i);
+                Contact object = contacts.get(i);
                 if (object.getName().toLowerCase().contains(filterString.toLowerCase())) { filteredContacts.add(object); }
             }
 
@@ -235,9 +235,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     }
 
     /** Get a deep copy of the selected contacts */
-    public List<ContactObject> getSelectedContacts() {
-        List<ContactObject> tmp = new ArrayList<>();
-        for (ContactObject contact : selectedContacts) tmp.add(contact.copy());
+    public List<Contact> getSelectedContacts() {
+        List<Contact> tmp = new ArrayList<>();
+        for (Contact contact : selectedContacts) tmp.add(contact.copy());
         return tmp;
     }
 
@@ -259,9 +259,9 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
     private class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
 
         private final WeakReference<ImageView> imageViewWeakReference;
-        private final WeakReference<ContactObject> contactObjectWeakReference;
+        private final WeakReference<Contact> contactObjectWeakReference;
 
-        public BitmapLoaderTask(ImageView imageView, ContactObject contact) {
+        public BitmapLoaderTask(ImageView imageView, Contact contact) {
             imageViewWeakReference = new WeakReference<>(imageView);
             contactObjectWeakReference = new WeakReference<>(contact);
         }
@@ -283,7 +283,7 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
                 final ImageView imageView = imageViewWeakReference.get();
                 if (imageView != null) {
                     imageView.setImageBitmap(bitmap);
-                    final ContactObject contact = contactObjectWeakReference.get();
+                    final Contact contact = contactObjectWeakReference.get();
                     if (contact != null) {
                         contact.setThumbnailBitmap(bitmap);
                     }

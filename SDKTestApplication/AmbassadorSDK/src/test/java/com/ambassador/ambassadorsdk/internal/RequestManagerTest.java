@@ -115,12 +115,12 @@ public class RequestManagerTest {
     @Test
     public void bulkShareSmsTest() {
         // ARRANGE
-        List<ContactObject> contactObjects = new ArrayList<>();
+        List<Contact> contacts = new ArrayList<>();
         String messageToShare = "Check out Ambassador!";
         RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
 
         // ACT
-        requestManager.bulkShareSms(contactObjects, messageToShare, requestCompletion);
+        requestManager.bulkShareSms(contacts, messageToShare, requestCompletion);
 
         // ASSERT
         Mockito.verify(bulkShareApi).bulkShareSms(Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(BulkShareApi.BulkShareSmsBody.class), Mockito.eq(requestCompletion));
@@ -129,12 +129,12 @@ public class RequestManagerTest {
     @Test
     public void bulkShareEmailTest() {
         // ARRANGE
-        List<ContactObject> contactObjects = new ArrayList<>();
+        List<Contact> contacts = new ArrayList<>();
         String messageToShare = "Check out Ambassador!";
         RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
 
         // ACT
-        requestManager.bulkShareEmail(contactObjects, messageToShare, requestCompletion);
+        requestManager.bulkShareEmail(contacts, messageToShare, requestCompletion);
 
         // ASSERT
         Mockito.verify(bulkShareApi).bulkShareEmail(Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(BulkShareApi.BulkShareEmailBody.class), Mockito.eq(requestCompletion));
@@ -143,15 +143,15 @@ public class RequestManagerTest {
     @Test
     public void bulkShareTrackTest() {
         // ARRANGE
-        List<ContactObject> contactObjects = new ArrayList<>();
+        List<Contact> contacts = new ArrayList<>();
 
         // ACT
         requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.SMS);
         requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.EMAIL);
         requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
-        requestManager.bulkShareTrack(contactObjects, BulkShareHelper.SocialServiceTrackType.SMS);
-        requestManager.bulkShareTrack(contactObjects, BulkShareHelper.SocialServiceTrackType.EMAIL);
-        requestManager.bulkShareTrack(contactObjects, BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+        requestManager.bulkShareTrack(contacts, BulkShareHelper.SocialServiceTrackType.SMS);
+        requestManager.bulkShareTrack(contacts, BulkShareHelper.SocialServiceTrackType.EMAIL);
+        requestManager.bulkShareTrack(contacts, BulkShareHelper.SocialServiceTrackType.FACEBOOK);
 
         // ASSERT
         Mockito.verify(bulkShareApi, Mockito.times(6)).bulkShareTrack(Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(BulkShareApi.BulkShareTrackBody[].class));

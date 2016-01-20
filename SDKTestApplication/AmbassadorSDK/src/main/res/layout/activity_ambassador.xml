@@ -1,13 +1,13 @@
 <com.ambassador.ambassadorsdk.internal.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
+    android:id="@+id/svParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:fillViewport="true">
 
     <LinearLayout
-        android:id="@+id/llMainLayout"
+        android:id="@+id/llParent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -58,7 +58,7 @@
                 android:text="" />
 
             <ImageButton
-                android:id="@+id/btnCopyPaste"
+                android:id="@+id/btnCopy"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end|center_vertical"

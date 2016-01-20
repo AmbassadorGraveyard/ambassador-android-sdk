@@ -73,7 +73,7 @@ public class RequestManager {
      * @param messageToShare the message to send in the SMS
      * @param completion callback for request completion
      */
-    public void bulkShareSms(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
+    public void bulkShareSms(final List<Contact> contacts, final String messageToShare, final RequestCompletion completion) {
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
         List<String> numberList = BulkShareHelper.verifiedSMSList(contacts);
@@ -90,7 +90,7 @@ public class RequestManager {
      * @param messageToShare the message to send in the email
      * @param completion callback for request completion
      */
-    public void bulkShareEmail(final List<ContactObject> contacts, final String messageToShare, final RequestCompletion completion) {
+    public void bulkShareEmail(final List<Contact> contacts, final String messageToShare, final RequestCompletion completion) {
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
         List<String> emailList = BulkShareHelper.verifiedEmailList(contacts);
@@ -113,7 +113,7 @@ public class RequestManager {
      * @param contacts the list of contacts that received the share
      * @param shareType enum that describes the source of the share: Facebook, SMS, etc.
      */
-    public void bulkShareTrack(final List<ContactObject> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
+    public void bulkShareTrack(final List<Contact> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
         BulkShareApi.BulkShareTrackBody[] body;
