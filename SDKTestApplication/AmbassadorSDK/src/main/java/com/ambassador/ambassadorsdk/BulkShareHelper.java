@@ -112,7 +112,7 @@ public class BulkShareHelper {
 
 
     // JSON OBJECT MAKER
-    static JSONArray contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
+    static JSONArray contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode, String fromEmail) {
         // Functionality: Creates a jsonArray of jsonObjects created from validated phone numbers and email addresses
         String socialName = trackType.toString();
         JSONArray objectsList = new JSONArray();
@@ -142,6 +142,8 @@ public class BulkShareHelper {
                         break;
                 }
 
+                newObject.put("from_email", fromEmail);
+
                 objectsList.put(newObject);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -152,17 +154,18 @@ public class BulkShareHelper {
     }
 
     // Overloaded method for optional list parameter
-    static JSONArray contactArray(SocialServiceTrackType trackType, String shortCode) {
-        return contactArray(null, trackType, shortCode);
+    static JSONArray contactArray(SocialServiceTrackType trackType, String shortCode, String fromEmail) {
+        return contactArray(null, trackType, shortCode, fromEmail);
     }
 
-    static JSONObject payloadObjectForEmail(List<String> emails, String shortCode, String emailSubject, String message) {
+    static JSONObject payloadObjectForEmail(List<String> emails, String shortCode, String emailSubject, String message, String fromEmail) {
         JSONObject object = new JSONObject();
         try {
             object.put("to_emails", new JSONArray(emails));
             object.put("short_code", shortCode);
             object.put("message", message);
             object.put("subject_line", emailSubject);
+            object.put("from_email", fromEmail);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -170,12 +173,13 @@ public class BulkShareHelper {
         return object;
     }
 
-    static JSONObject payloadObjectForSMS(List<String> numbers, String fullName, String smsMessage) {
+    static JSONObject payloadObjectForSMS(List<String> numbers, String fullName, String smsMessage, String fromEmail) {
         JSONObject object = new JSONObject();
         try {
             object.put("to", new JSONArray(numbers));
             object.put("name", fullName);
             object.put("message", smsMessage);
+            object.put("from_email", fromEmail);
         } catch (JSONException e) {
             e.printStackTrace();
         }

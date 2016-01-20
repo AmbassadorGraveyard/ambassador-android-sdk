@@ -97,7 +97,7 @@ public class RequestManager {
 
                 try {
                     DataOutputStream oStream = new DataOutputStream(connection.getOutputStream());
-                    oStream.writeBytes(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts), ambassadorConfig.getUserFullName(), messageToShare).toString());
+                    oStream.writeBytes(BulkShareHelper.payloadObjectForSMS(BulkShareHelper.verifiedSMSList(contacts), ambassadorConfig.getUserFullName(), messageToShare, ambassadorConfig.getUserEmail()).toString());
                     oStream.flush();
                     oStream.close();
 
@@ -141,7 +141,8 @@ public class RequestManager {
                     oStream.writeBytes(BulkShareHelper.payloadObjectForEmail(BulkShareHelper.verifiedEmailList(contacts),
                             ambassadorConfig.getReferrerShortCode(),
                             ambassadorConfig.getEmailSubjectLine(),
-                            messageToShare).toString());
+                            messageToShare,
+                            ambassadorConfig.getUserEmail()).toString());
                     oStream.flush();
                     oStream.close();
 
@@ -185,13 +186,13 @@ public class RequestManager {
 
                     switch (shareType) {
                         case SMS:
-                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getReferrerShortCode()).toString());
+                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getReferrerShortCode(), ambassadorConfig.getUserEmail()).toString());
                             break;
                         case EMAIL:
-                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getReferrerShortCode()).toString());
+                            oStream.writeBytes(BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getReferrerShortCode(), ambassadorConfig.getUserEmail()).toString());
                             break;
                         default:
-                            oStream.writeBytes(BulkShareHelper.contactArray(shareType, ambassadorConfig.getReferrerShortCode()).toString());
+                            oStream.writeBytes(BulkShareHelper.contactArray(shareType, ambassadorConfig.getReferrerShortCode(), ambassadorConfig.getUserEmail()).toString());
                     }
 
                     oStream.flush();
