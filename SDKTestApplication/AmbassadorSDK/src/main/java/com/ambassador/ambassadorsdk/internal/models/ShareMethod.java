@@ -1,28 +1,39 @@
 package com.ambassador.ambassadorsdk.internal.models;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
+/**
+ * Represents a sharing method displayed in AmbassadorActivity.
+ */
 public final class ShareMethod implements Comparable<ShareMethod> {
 
-    public interface OnClickListener {
-        void onClick();
+    public interface ShareAction {
+        void share();
     }
 
-    private ShareMethod() {}
+    protected ShareMethod() {}
 
-    private String name;
-    private int iconDrawable;
-    private int backgroundColor;
-    private boolean drawBorder;
-    private OnClickListener onClickListener;
-    private int weight = 1000;
+    protected String name;
+    protected int weight;
+    protected int iconDrawable;
+    protected int backgroundColor;
+    protected boolean drawBorder;
+    protected ShareAction shareAction;
 
     public void click() {
-        if (onClickListener != null) {
-            onClickListener.onClick();
+        if (shareAction != null) {
+            shareAction.share();
         }
     }
 
+    @NonNull
     public String getName() {
-        return name;
+        return name != null ? name : "Unknown";
+    }
+
+    public int getWeight() {
+        return weight;
     }
 
     public int getIconDrawable() {
@@ -37,12 +48,8 @@ public final class ShareMethod implements Comparable<ShareMethod> {
         return drawBorder;
     }
 
-    public int getWeight() {
-        return weight;
-    }
-
     @Override
-    public int compareTo(ShareMethod another) {
+    public int compareTo(@NonNull ShareMethod another) {
         if (another.getWeight() > weight) {
             return -1;
         } else if (another.getWeight() < weight) {
@@ -55,52 +62,59 @@ public final class ShareMethod implements Comparable<ShareMethod> {
     public static final class Builder {
 
         private String name;
+        private int weight;
         private int iconDrawable;
         private int backgroundColor;
         private boolean drawBorder;
-        private OnClickListener onClickListener;
-        private int weight = 1000;
+        private ShareAction shareAction;
 
         public Builder() {}
 
-        public Builder setName(String name) {
+        @NonNull
+        public Builder setName(@Nullable String name) {
             this.name = name;
             return this;
         }
 
-        public Builder setIconDrawable(int iconDrawable) {
-            this.iconDrawable = iconDrawable;
-            return this;
-        }
-
-        public Builder setBackgroundColor(int backgroundColor) {
-            this.backgroundColor = backgroundColor;
-            return this;
-        }
-
-        public Builder setDrawBorder(boolean drawBorder) {
-            this.drawBorder = drawBorder;
-            return this;
-        }
-
-        public Builder setOnClickListener(OnClickListener onClickListener) {
-            this.onClickListener = onClickListener;
-            return this;
-        }
-
+        @NonNull
         public Builder setWeight(int weight) {
             this.weight = weight;
             return this;
         }
 
+        @NonNull
+        public Builder setIconDrawable(int iconDrawable) {
+            this.iconDrawable = iconDrawable;
+            return this;
+        }
+
+        @NonNull
+        public Builder setBackgroundColor(int backgroundColor) {
+            this.backgroundColor = backgroundColor;
+            return this;
+        }
+
+        @NonNull
+        public Builder setDrawBorder(boolean drawBorder) {
+            this.drawBorder = drawBorder;
+            return this;
+        }
+
+        @NonNull
+        public Builder setShareAction(@Nullable ShareAction shareAction) {
+            this.shareAction = shareAction;
+            return this;
+        }
+
+        @NonNull
         public ShareMethod build() {
             ShareMethod tmp = new ShareMethod();
             tmp.name = this.name;
+            tmp.weight = this.weight;
             tmp.iconDrawable = this.iconDrawable;
             tmp.backgroundColor = this.backgroundColor;
             tmp.drawBorder = this.drawBorder;
-            tmp.onClickListener = this.onClickListener;
-            tmp.weight = this.weight;
+            tmp.shareAction = this.shareAction;
             return tmp;
         }
 
