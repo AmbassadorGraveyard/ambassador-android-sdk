@@ -16,7 +16,7 @@ import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 
 import java.util.List;
 
-public class SocialGridAdapter extends BaseAdapter {
+public final class SocialGridAdapter extends BaseAdapter {
 
     private RAFOptions raf = RAFOptions.get();
 

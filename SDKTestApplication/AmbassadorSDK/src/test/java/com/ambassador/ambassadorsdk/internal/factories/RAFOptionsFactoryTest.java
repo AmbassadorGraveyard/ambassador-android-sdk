@@ -38,7 +38,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
         Color.class,
         AmbassadorSingleton.class,
         Typeface.class,
-        Log.class
+        Log.class,
+        ColorResource.class
 })
 public class RAFOptionsFactoryTest {
 
@@ -62,7 +63,7 @@ public class RAFOptionsFactoryTest {
         context = Mockito.mock(Context.class);
         inputStream = Mockito.mock(InputStream.class);
 
-        ColorResource colorResource = Mockito.mock(ColorResource.class);
+        ColorResource colorResource = PowerMockito.mock(ColorResource.class);
         Mockito.when(ResourceFactory.getColor(Mockito.anyInt())).thenReturn(colorResource);
 
         DocumentBuilderFactory documentBuilderFactory = Mockito.mock(DocumentBuilderFactory.class);

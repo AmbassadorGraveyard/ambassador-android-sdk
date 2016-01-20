@@ -42,7 +42,8 @@ import java.util.List;
         PusherChannel.class,
         IdentifyApi.IdentifyRequestBody.class,
         TwitterCore.class,
-        Log.class
+        Log.class,
+        ConversionParameters.class
 })
 public class RequestManagerTest {
 
@@ -161,7 +162,7 @@ public class RequestManagerTest {
     @Test
     public void registerConversionRequestTest() {
         // ARRANGE
-        ConversionParameters conversionParameters = Mockito.mock(ConversionParameters.class);
+        ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
         RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
         ConversionsApi.RegisterConversionRequestBody requestBody = Mockito.mock(ConversionsApi.RegisterConversionRequestBody.class);
         BDDMockito.given(ConversionUtility.createConversionRequestBody(conversionParameters, identifyObject)).willReturn(requestBody);

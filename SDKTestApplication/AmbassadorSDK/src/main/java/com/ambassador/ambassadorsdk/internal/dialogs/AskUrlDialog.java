@@ -12,7 +12,7 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.utils.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.StringResource;
 
-public class AskUrlDialog extends AlertDialog {
+public final class AskUrlDialog extends AlertDialog {
 
     protected String url;
     protected OnCompleteListener listener;

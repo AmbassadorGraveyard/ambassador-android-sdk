@@ -32,7 +32,8 @@ import java.util.TimerTask;
         AmbassadorConfig.class,
         AmbassadorSingleton.class,
         Utilities.class,
-        InstallReceiver.class
+        InstallReceiver.class,
+        ConversionParameters.class
 })
 public class AmbassadorSDKTest {
 
@@ -85,7 +86,7 @@ public class AmbassadorSDKTest {
     @Test
     public void registerConversionRestrictToInstallTest() {
         // ARRANGE
-        ConversionParameters conversionParameters = Mockito.mock(ConversionParameters.class);
+        ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
         boolean restrictToInstall = true;
         Mockito.when(ambassadorConfig.getConvertedOnInstall()).thenReturn(true);
 
@@ -99,7 +100,7 @@ public class AmbassadorSDKTest {
     @Test
     public void registerConversionNonInstallTest() throws Exception {
         // ARRANGE
-        ConversionParameters conversionParameters = Mockito.mock(ConversionParameters.class);
+        ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
         boolean restrictToInstall = false;
         Mockito.when(ambassadorConfig.getConvertedOnInstall()).thenReturn(false);
         ConversionUtility conversionUtility = Mockito.mock(ConversionUtility.class);

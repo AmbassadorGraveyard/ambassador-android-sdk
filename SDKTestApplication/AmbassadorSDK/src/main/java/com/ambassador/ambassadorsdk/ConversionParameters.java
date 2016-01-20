@@ -8,7 +8,7 @@ import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 /**
  * Stores information relevant for registering a conversion on the backend.
  */
-public class ConversionParameters {
+public final class ConversionParameters {
 
     public int campaign;
     public String email;
