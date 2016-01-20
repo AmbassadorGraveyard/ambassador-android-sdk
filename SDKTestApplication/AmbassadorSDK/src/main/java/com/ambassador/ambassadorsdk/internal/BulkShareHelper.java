@@ -63,7 +63,7 @@ public class BulkShareHelper {
      * @param phoneNumbers
      * @param completion
      */
-    public void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
+    public void bulkShare(final String messageToShare, final List<Contact> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
         if (phoneNumbers) {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
@@ -95,12 +95,12 @@ public class BulkShareHelper {
 
     /**
      *
-     * @param contactObjects
+     * @param contacts
      * @return
      */
-    static ArrayList<String> verifiedSMSList(List<ContactObject> contactObjects) {
+    static ArrayList<String> verifiedSMSList(List<Contact> contacts) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
-        for (ContactObject contact : contactObjects) {
+        for (Contact contact : contacts) {
             String strippedNum = contact.getPhoneNumber().replaceAll("[^0-9]", "");
             if ((strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7) && !verifiedNumbers.contains(strippedNum)) {
                 verifiedNumbers.add(strippedNum);
@@ -112,12 +112,12 @@ public class BulkShareHelper {
 
     /**
      *
-     * @param contactObjects
+     * @param contacts
      * @return
      */
-    static ArrayList<String> verifiedEmailList(List<ContactObject> contactObjects) {
+    static ArrayList<String> verifiedEmailList(List<Contact> contacts) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
-        for (ContactObject contact : contactObjects) {
+        for (Contact contact : contacts) {
             if (BulkShareHelper.isValidEmail(contact.getEmailAddress()) && !verifiedEmails.contains(contact.getEmailAddress())) {
                 verifiedEmails.add(contact.getEmailAddress());
             }

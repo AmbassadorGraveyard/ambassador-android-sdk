@@ -33,7 +33,7 @@ public class ContactObjectTest {
         Bitmap picBmp = Mockito.mock(Bitmap.class);
 
         // ACT
-        ContactObject contactObject = new ContactObject.Builder()
+        Contact contact = new Contact.Builder()
                 .setName(name)
                 .setThumbnailUri(thumb)
                 .setPictureUri(pic)
@@ -42,28 +42,28 @@ public class ContactObjectTest {
                 .setPhoneNumber(phone)
                 .build();
 
-        contactObject.setThumbnailBitmap(thumbBmp);
-        contactObject.setPictureBitmap(picBmp);
+        contact.setThumbnailBitmap(thumbBmp);
+        contact.setPictureBitmap(picBmp);
 
         // ASSERT
-        Assert.assertEquals(name, contactObject.getName());
-        Assert.assertEquals(thumb, contactObject.getThumbnailUri());
-        Assert.assertEquals(pic, contactObject.getPictureUri());
-        Assert.assertEquals(email, contactObject.getEmailAddress());
-        Assert.assertEquals(type, contactObject.getType());
-        Assert.assertEquals(phone, contactObject.getPhoneNumber());
-        Assert.assertEquals(picBmp, contactObject.getPictureBitmap());
-        Assert.assertEquals(thumbBmp, contactObject.getThumbnailBitmap());
+        Assert.assertEquals(name, contact.getName());
+        Assert.assertEquals(thumb, contact.getThumbnailUri());
+        Assert.assertEquals(pic, contact.getPictureUri());
+        Assert.assertEquals(email, contact.getEmailAddress());
+        Assert.assertEquals(type, contact.getType());
+        Assert.assertEquals(phone, contact.getPhoneNumber());
+        Assert.assertEquals(picBmp, contact.getPictureBitmap());
+        Assert.assertEquals(thumbBmp, contact.getThumbnailBitmap());
     }
 
     @Test
     public void sortTest() {
         // ARRANGE
-        List<ContactObject> toSort = new ArrayList<>();
-        toSort.add(new ContactObject.Builder().setName("a").build());
-        toSort.add(new ContactObject.Builder().setName("b").build());
-        toSort.add(new ContactObject.Builder().setName("c").build());
-        toSort.add(new ContactObject.Builder().setName("d").build());
+        List<Contact> toSort = new ArrayList<>();
+        toSort.add(new Contact.Builder().setName("a").build());
+        toSort.add(new Contact.Builder().setName("b").build());
+        toSort.add(new Contact.Builder().setName("c").build());
+        toSort.add(new Contact.Builder().setName("d").build());
 
         // ACT
         Collections.shuffle(toSort);
@@ -79,7 +79,7 @@ public class ContactObjectTest {
     @Test
     public void cloneEmailTest() {
         // ARRANGE
-        ContactObject contactObject = new ContactObject.Builder()
+        Contact contact = new Contact.Builder()
                 .setName("name")
                 .setThumbnailUri("thumb")
                 .setPictureUri("pic")
@@ -87,22 +87,22 @@ public class ContactObjectTest {
                 .build();
 
         // ACT
-        ContactObject contactObjectNew = contactObject.copy();
+        Contact contactNew = contact.copy();
 
         // ASSERT
-        Assert.assertNotSame(contactObject, contactObjectNew);
-        Assert.assertEquals(contactObject.getName(), contactObjectNew.getName());
-        Assert.assertEquals(contactObject.getEmailAddress(), contactObjectNew.getEmailAddress());
-        Assert.assertEquals(contactObject.getThumbnailUri(), contactObjectNew.getThumbnailUri());
-        Assert.assertEquals(contactObject.getPictureUri(), contactObjectNew.getPictureUri());
-        Assert.assertEquals(contactObject.getPhoneNumber(), contactObjectNew.getPhoneNumber());
-        Assert.assertEquals(contactObject.getType(), contactObjectNew.getType());
+        Assert.assertNotSame(contact, contactNew);
+        Assert.assertEquals(contact.getName(), contactNew.getName());
+        Assert.assertEquals(contact.getEmailAddress(), contactNew.getEmailAddress());
+        Assert.assertEquals(contact.getThumbnailUri(), contactNew.getThumbnailUri());
+        Assert.assertEquals(contact.getPictureUri(), contactNew.getPictureUri());
+        Assert.assertEquals(contact.getPhoneNumber(), contactNew.getPhoneNumber());
+        Assert.assertEquals(contact.getType(), contactNew.getType());
     }
 
     @Test
     public void clonePhoneTest() {
         // ARRANGE
-        ContactObject contactObject = new ContactObject.Builder()
+        Contact contact = new Contact.Builder()
                 .setName("name")
                 .setThumbnailUri("thumb")
                 .setPictureUri("pic")
@@ -111,22 +111,22 @@ public class ContactObjectTest {
                 .build();
 
         // ACT
-        ContactObject contactObjectNew = contactObject.copy();
+        Contact contactNew = contact.copy();
 
         // ASSERT
-        Assert.assertNotSame(contactObject, contactObjectNew);
-        Assert.assertEquals(contactObject.getName(), contactObjectNew.getName());
-        Assert.assertEquals(contactObject.getEmailAddress(), contactObjectNew.getEmailAddress());
-        Assert.assertEquals(contactObject.getThumbnailUri(), contactObjectNew.getThumbnailUri());
-        Assert.assertEquals(contactObject.getPictureUri(), contactObjectNew.getPictureUri());
-        Assert.assertEquals(contactObject.getPhoneNumber(), contactObjectNew.getPhoneNumber());
-        Assert.assertEquals(contactObject.getType(), contactObjectNew.getType());
+        Assert.assertNotSame(contact, contactNew);
+        Assert.assertEquals(contact.getName(), contactNew.getName());
+        Assert.assertEquals(contact.getEmailAddress(), contactNew.getEmailAddress());
+        Assert.assertEquals(contact.getThumbnailUri(), contactNew.getThumbnailUri());
+        Assert.assertEquals(contact.getPictureUri(), contactNew.getPictureUri());
+        Assert.assertEquals(contact.getPhoneNumber(), contactNew.getPhoneNumber());
+        Assert.assertEquals(contact.getType(), contactNew.getType());
     }
 
     @Test
     public void copyAllTest() {
         // ARRANGE
-        ContactObject contactObject = new ContactObject.Builder()
+        Contact contact = new Contact.Builder()
                 .setName("name")
                 .setThumbnailUri("thumb")
                 .setPictureUri("pic")
@@ -136,16 +136,16 @@ public class ContactObjectTest {
                 .build();
 
         // ACT
-        ContactObject contactObjectNew = contactObject.copy();
+        Contact contactNew = contact.copy();
 
         // ASSERT
-        Assert.assertNotSame(contactObject, contactObjectNew);
-        Assert.assertEquals(contactObject.getName(), contactObjectNew.getName());
-        Assert.assertEquals(contactObject.getEmailAddress(), contactObjectNew.getEmailAddress());
-        Assert.assertEquals(contactObject.getThumbnailUri(), contactObjectNew.getThumbnailUri());
-        Assert.assertEquals(contactObject.getPictureUri(), contactObjectNew.getPictureUri());
-        Assert.assertEquals(contactObject.getPhoneNumber(), contactObjectNew.getPhoneNumber());
-        Assert.assertEquals(contactObject.getType(), contactObjectNew.getType());
+        Assert.assertNotSame(contact, contactNew);
+        Assert.assertEquals(contact.getName(), contactNew.getName());
+        Assert.assertEquals(contact.getEmailAddress(), contactNew.getEmailAddress());
+        Assert.assertEquals(contact.getThumbnailUri(), contactNew.getThumbnailUri());
+        Assert.assertEquals(contact.getPictureUri(), contactNew.getPictureUri());
+        Assert.assertEquals(contact.getPhoneNumber(), contactNew.getPhoneNumber());
+        Assert.assertEquals(contact.getType(), contactNew.getType());
     }
 
 }

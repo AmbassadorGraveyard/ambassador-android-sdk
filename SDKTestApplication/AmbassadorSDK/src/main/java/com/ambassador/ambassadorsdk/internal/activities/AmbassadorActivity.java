@@ -23,6 +23,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -30,7 +32,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
@@ -44,7 +48,6 @@ import com.ambassador.ambassadorsdk.internal.SocialGridModel;
 import com.ambassador.ambassadorsdk.internal.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.StaticGridView;
 import com.ambassador.ambassadorsdk.internal.Utilities;
-import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -74,8 +77,12 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import butterfork.Bind;
 import io.fabric.sdk.android.Fabric;
 
+/**
+ * Activity that handles sharing options and copying the share URL.
+ */
 public final class AmbassadorActivity extends AppCompatActivity {
 
     // region Fields
@@ -85,15 +92,24 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // endregion
 
     // region Views
-    int views;
+    @Bind(B.id.svParent)        protected LockableScrollView    svParent;
+    @Bind(B.id.llParent)        protected LinearLayout          llParent;
+    @Bind(B.id.tvWelcomeTitle)  protected TextView              tvWelcomeTitle;
+    @Bind(B.id.tvWelcomeDesc)   protected TextView              tvWelcomeDesc;
+    @Bind(B.id.flShortUrl)      protected FrameLayout           flShortUrl;
+    @Bind(B.id.etShortURL)      protected CustomEditText        etShortURL;
+    @Bind(B.id.btnCopy)         protected Button                btnCopy;
+    @Bind(B.id.gvSocialGrid)    protected StaticGridView        gvSocialGrid;
     // endregion
 
     // region Dependencies
-    int dependencies;
+    @Inject protected RequestManager        requestManager;
+    @Inject protected AmbassadorConfig      ambassadorConfig;
+    @Inject protected PusherSDK             pusherSDK;
     // endregion
 
     // region Local members
-    int localMembers;
+    protected RAFOptions raf = RAFOptions.get();
     // endregion
 
     // endregion
@@ -122,15 +138,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     // endregion
 
-    private RAFOptions raf = RAFOptions.get();
-
-    CustomEditText etShortUrl;
     private ProgressDialog pd;
-    private LockableScrollView scrollView;
-    private LinearLayout llMainLayout;
-    private TextView tvWelcomeTitle;
-    private TextView tvWelcomeDesc;
-    private FrameLayout flShortUrl;
     private Timer networkTimer;
     private CallbackManager callbackManager;
     private final android.os.Handler timerHandler = new android.os.Handler();
@@ -168,16 +176,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Inject
     ShareDialog fbDialog;
 
-    @Inject
-    RequestManager requestManager;
-
-    @Inject
-    AmbassadorConfig ambassadorConfig;
-
-    @Inject
-    PusherSDK pusher;
-
-    // ACTIVITY OVERRIDE METHODS
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -231,9 +229,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         // UI Components
         scrollView = (LockableScrollView) findViewById(R.id.scrollView);
-        llMainLayout = (LinearLayout) findViewById(R.id.llMainLayout);
+        llMainLayout = (LinearLayout) findViewById(R.id.llParent);
         StaticGridView gvSocialGrid = (StaticGridView) findViewById(R.id.gvSocialGrid);
-        ImageButton btnCopyPaste = (ImageButton) findViewById(R.id.btnCopyPaste);
+        ImageButton btnCopyPaste = (ImageButton) findViewById(R.id.btnCopy);
         tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
         tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
         etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
@@ -387,10 +385,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         launchedSocial = null;
     }
 
-    // END ACTIVITY OVERRIDE METHODS
-
-
-    // ONCLICK METHODS
     String copyShortURLToClipboard(String copyText, Context context) {
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("simpleText", copyText);
@@ -600,10 +594,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
     }
 
-    // END ONCLICK METHODS
-
-
-    // UI SETTER METHODS
     void tryAndSetURL(String pusherString, String initialShareMessage) {
         // Functionality: Gets URL from PusherSDK
         // First checks to see if PusherSDK info has already been saved to SharedPreferencs
@@ -658,7 +648,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         toolbar.setBackgroundColor(raf.getHomeToolbarColor());
         toolbar.setTitleTextColor(raf.getHomeToolbarTextColor());
     }
-    // END UI SETTER METHODS
 
     /**
      * Instantiates a model object for each social grid item and binds a passthrough

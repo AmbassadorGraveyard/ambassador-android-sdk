@@ -27,7 +27,7 @@ public class ContactInfoDialog extends Dialog {
 
     private RAFOptions raf = RAFOptions.get();
 
-    private ContactObject contactObject;
+    private Contact contact;
 
     private ImageView ivPhoto;
     private TextView tvName;
@@ -66,14 +66,14 @@ public class ContactInfoDialog extends Dialog {
     }
 
 
-    public void setContactObject(ContactObject contactObject, boolean isPhone) {
-        this.contactObject = contactObject;
-        if (contactObject.getPictureBitmap() != null) {
-            ivPhoto.setImageBitmap(contactObject.getPictureBitmap());
-        } else if (contactObject.getPictureUri() != null) {
-            Bitmap bmp = loadBmp(contactObject.getPictureUri());
+    public void setContactObject(Contact contact, boolean isPhone) {
+        this.contact = contact;
+        if (contact.getPictureBitmap() != null) {
+            ivPhoto.setImageBitmap(contact.getPictureBitmap());
+        } else if (contact.getPictureUri() != null) {
+            Bitmap bmp = loadBmp(contact.getPictureUri());
             if (bmp != null) {
-                contactObject.setPictureBitmap(bmp);
+                contact.setPictureBitmap(bmp);
                 ivPhoto.setImageBitmap(bmp);
             } else {
                 ivPhoto.setBackground(new ColorDrawable(raf.getContactsToolbarColor()));
@@ -83,13 +83,13 @@ public class ContactInfoDialog extends Dialog {
             ivPhoto.setBackground(new ColorDrawable(raf.getContactsToolbarColor()));
             ivPhoto.setImageDrawable(getOwnerActivity().getResources().getDrawable(R.drawable.big_no_contact));
         }
-        tvName.setText(contactObject.getName());
+        tvName.setText(contact.getName());
 
         if (isPhone) {
             String separator = " - ";
-            tvNumberOrEmail.setText(contactObject.getType() + separator + contactObject.getPhoneNumber());
+            tvNumberOrEmail.setText(contact.getType() + separator + contact.getPhoneNumber());
         } else {
-            tvNumberOrEmail.setText(contactObject.getEmailAddress());
+            tvNumberOrEmail.setText(contact.getEmailAddress());
         }
     }
 

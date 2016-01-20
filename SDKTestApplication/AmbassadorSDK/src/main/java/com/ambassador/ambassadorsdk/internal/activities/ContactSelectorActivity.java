@@ -44,7 +44,7 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.ContactNameDialog;
-import com.ambassador.ambassadorsdk.internal.ContactObject;
+import com.ambassador.ambassadorsdk.internal.Contact;
 import com.ambassador.ambassadorsdk.internal.DividerItemDecoration;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
@@ -101,7 +101,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     // region Local members
     protected  RAFOptions               raf = RAFOptions.get();
-    protected List<ContactObject>       contactList;
+    protected List<Contact>       contactList;
     protected ContactListAdapter        contactListAdapter;
     protected JSONObject                pusherData;
     protected boolean                   showPhoneNumbers;
@@ -362,13 +362,11 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
             }
         });
 
-        if (finalHeight != 0) {
-            /** Showing search **/
+        if (finalHeight != 0) { // show search
             shrinkSendView(true);
             etSearch.requestFocus();
             device.openSoftKeyboard(etSearch);
-        } else {
-            /** Hiding search **/
+        } else { // hide search
             etSearch.setText("");
             new Handler().postDelayed(new Runnable() {
                 @Override

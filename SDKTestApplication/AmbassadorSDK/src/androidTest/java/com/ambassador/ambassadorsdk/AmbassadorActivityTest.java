@@ -277,7 +277,7 @@ public class AmbassadorActivityTest {
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(1, R.id.tvNumberOrEmail)).check(matches(_withRegex(EMAIL_PATTERN)));
 
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        //onData(is(instanceOf(ContactObject.class))).inAdapterView(withId(R.id.rvContacts)).atPosition(0).perform(click());
+        //onData(is(instanceOf(Contact.class))).inAdapterView(withId(R.id.rvContacts)).atPosition(0).perform(click());
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
 
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));

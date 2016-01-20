@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 
-import com.ambassador.ambassadorsdk.internal.ContactObject;
+import com.ambassador.ambassadorsdk.internal.Contact;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +27,7 @@ public final class ContactList {
     }
 
     @NonNull
-    public List<ContactObject> get(@NonNull Context context) {
+    public List<Contact> get(@NonNull Context context) {
         switch (type) {
             case PHONE:
                 return getPhoneList(context);
@@ -44,8 +44,8 @@ public final class ContactList {
     }
 
     @NonNull
-    private List<ContactObject> getPhoneList(@NonNull Context context) {
-        List<ContactObject> tmp = new ArrayList<>();
+    private List<Contact> getPhoneList(@NonNull Context context) {
+        List<Contact> tmp = new ArrayList<>();
         Cursor phoneCursor = context.getContentResolver()
                 .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
@@ -62,7 +62,7 @@ public final class ContactList {
                 String typeNum = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.TYPE));
                 String type = getPhoneType(Integer.parseInt(typeNum));
 
-                ContactObject object = new ContactObject.Builder()
+                Contact object = new Contact.Builder()
                         .setName(name)
                         .setPhoneNumber(phoneNumber)
                         .setType(type)
@@ -94,8 +94,8 @@ public final class ContactList {
     }
 
     @NonNull
-    private List<ContactObject> getEmailList(@NonNull Context context) {
-        List<ContactObject> tmp = new ArrayList<>();
+    private List<Contact> getEmailList(@NonNull Context context) {
+        List<Contact> tmp = new ArrayList<>();
         Cursor emailCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
 
         if (emailCursor == null) {
@@ -109,7 +109,7 @@ public final class ContactList {
                 String picUri = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
                 String emailAddress = emailCursor.getString(emailCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                ContactObject object = new ContactObject.Builder()
+                Contact object = new Contact.Builder()
                         .setName(name)
                         .setEmailAddress(emailAddress)
                         .setThumbnailUri(thumbUri)
@@ -127,8 +127,8 @@ public final class ContactList {
     }
 
     @NonNull
-    private List<ContactObject> getDummyList() {
-        List<ContactObject> tmp = new ArrayList<>();
+    private List<Contact> getDummyList() {
+        List<Contact> tmp = new ArrayList<>();
 
         String[] firstNames = new String[]{"Dylan", "Jake", "Corey", "Mitch", "Matt", "Brian", "Amanada", "Brandon"};
         String[] lastNames = new String[]{"Smith", "Johnson", "Stevens"};
@@ -149,14 +149,14 @@ public final class ContactList {
                 }
             }
 
-            ContactObject contactObject = new ContactObject.Builder()
+            Contact contact = new Contact.Builder()
                     .setName(name)
                     .setEmailAddress(email)
                     .setPhoneNumber(phoneNumber)
                     .setType(type)
                     .build();
 
-            tmp.add(contactObject);
+            tmp.add(contact);
         }
 
         Collections.sort(tmp);
