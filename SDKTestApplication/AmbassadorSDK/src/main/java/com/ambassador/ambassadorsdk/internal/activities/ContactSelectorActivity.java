@@ -130,6 +130,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
         // Other setup
         processIntent();
+        setTheme();
         setUpToolbar();
         setUpOnClicks();
         setUpProgressDialog();
@@ -178,6 +179,8 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         if (item.getItemId() == R.id.action_search) {
             toggleSearch();
             return true;
+        } else {
+            finish();
         }
 
         return super.onOptionsItemSelected(item);
@@ -196,6 +199,17 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     private void processIntent() {
         Intent data = getIntent();
         showPhoneNumbers = data.getBooleanExtra("showPhoneNumbers", true);
+    }
+
+    private void setTheme() {
+        rlSearch.setBackgroundColor(raf.getContactsSearchBarColor());
+        llSendView.setBackgroundColor(raf.getContactsSendBackground());
+        btnDone.setTextColor(raf.getContactsDoneButtonTextColor());
+        rlSend.setBackgroundColor(raf.getContactsSendButtonColor());
+        tvSendContacts.setTextColor(raf.getContactsSendButtonTextColor());
+        tvSendCount.setTextColor(raf.getContactsSendButtonTextColor());
+        rvContacts.setBackgroundColor(raf.getContactsListViewBackgroundColor());
+        etShareMessage.setTypeface(raf.getContactSendMessageTextFont());
     }
 
     private void setUpToolbar() {
