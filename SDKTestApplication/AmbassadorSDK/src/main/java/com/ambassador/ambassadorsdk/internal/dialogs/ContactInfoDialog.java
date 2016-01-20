@@ -9,31 +9,37 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 
 import java.io.IOException;
 
+import butterfork.Bind;
+import butterfork.ButterFork;
+
 /**
- * Created by dylan on 11/20/15.
+ *
  */
-public class ContactInfoDialog extends Dialog {
+public final class ContactInfoDialog extends Dialog {
+
+    // region Views
+    @Bind(B.id.ivPhoto)         protected ImageView     ivPhoto;
+    @Bind(B.id.tvName)          protected TextView      tvName;
+    @Bind(B.id.tvNumberOrEmail) protected TextView      tvNumberOrEmail;
+    @Bind(B.id.ivExit)          protected ImageView     ivExit;
+    // endregion
 
     private RAFOptions raf = RAFOptions.get();
-
-    private Contact contact;
-
-    private ImageView ivPhoto;
-    private TextView tvName;
-    private TextView tvNumberOrEmail;
-    private ImageView ivExit;
 
     public ContactInfoDialog(Context context) {
         super(context);
@@ -49,15 +55,13 @@ public class ContactInfoDialog extends Dialog {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_contact_info);
+        ButterFork.bind(this);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
 
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.dimAmount = 0.7f;
 
-        ivPhoto = (ImageView) findViewById(R.id.ivPhoto);
-        tvName = (TextView) findViewById(R.id.tvName);
-        tvNumberOrEmail = (TextView) findViewById(R.id.tvNumberOrEmail);
-        ivExit = (ImageView) findViewById(R.id.ivExit);
         ivExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,12 +71,11 @@ public class ContactInfoDialog extends Dialog {
     }
 
 
-    public void setContactObject(Contact contact, boolean isPhone) {
-        this.contact = contact;
+    public void setContactObject(@NonNull Contact contact, boolean isPhone) {
         if (contact.getPictureBitmap() != null) {
             ivPhoto.setImageBitmap(contact.getPictureBitmap());
         } else if (contact.getPictureUri() != null) {
-            Bitmap bmp = loadBmp(contact.getPictureUri());
+            Bitmap bmp = loadBitmap(contact.getPictureUri());
             if (bmp != null) {
                 contact.setPictureBitmap(bmp);
                 ivPhoto.setImageBitmap(bmp);
@@ -87,14 +90,15 @@ public class ContactInfoDialog extends Dialog {
         tvName.setText(contact.getName());
 
         if (isPhone) {
-            String separator = " - ";
-            tvNumberOrEmail.setText(contact.getType() + separator + contact.getPhoneNumber());
+            String text = contact.getType() + " - " + contact.getPhoneNumber();
+            tvNumberOrEmail.setText(text);
         } else {
             tvNumberOrEmail.setText(contact.getEmailAddress());
         }
     }
 
-    private Bitmap loadBmp(String uri) {
+    @Nullable
+    private Bitmap loadBitmap(@NonNull String uri) {
         try {
             return MediaStore.Images.Media.getBitmap(getOwnerActivity().getContentResolver(), Uri.parse(uri));
         } catch (IOException e) {

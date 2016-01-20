@@ -4,34 +4,45 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
-import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.internal.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.inject.Inject;
 
-public class ContactNameDialog extends Dialog {
+import butterfork.Bind;
+import butterfork.ButterFork;
 
-    private ShakableEditText etFirstName, etLastName;
+/**
+ *
+ */
+public final class ContactNameDialog extends Dialog {
+
+    // region Views
+    @Bind(B.id.etFirstName) protected ShakableEditText  etFirstName;
+    @Bind(B.id.etLastName)  protected ShakableEditText  etLastName;
+    // endregion
+
+    // region Dependencies
+    @Inject protected RequestManager    requestManager;
+    @Inject protected AmbassadorConfig  ambassadorConfig;
+    // endregion
+
     private ProgressDialog pd;
-
-    @Inject
-    AmbassadorConfig ambassadorConfig;
-
-    @Inject
-    RequestManager requestManager;
 
     public ContactNameDialog(Context context, ProgressDialog pd) {
         super(context);
@@ -44,6 +55,7 @@ public class ContactNameDialog extends Dialog {
         this.pd = pd;
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_contact_name);
+        ButterFork.bind(this);
 
         etFirstName = (ShakableEditText)findViewById(R.id.etFirstName);
         etFirstName.setTint(context.getResources().getColor(R.color.ambassador_blue));
@@ -64,6 +76,11 @@ public class ContactNameDialog extends Dialog {
                 continueSending();
             }
         });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     public void showKeyboard() {

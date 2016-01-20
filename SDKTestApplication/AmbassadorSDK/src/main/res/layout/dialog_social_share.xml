@@ -88,7 +88,7 @@
         android:textColor="@color/ambassador_blue" />
 
     <ProgressBar
-        android:id="@+id/loadingPanel"
+        android:id="@+id/pbLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"

@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.models;
 
 import junit.framework.Assert;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @PrepareForTest({
 
 })
-public class SocialGridModelTest {
+public class ShareMethodTest {
 
     @Test
     public void getterSetterTest() {
@@ -26,8 +26,8 @@ public class SocialGridModelTest {
         int backgroundColor = 6;
         boolean drawBorder = true;
         int weight = 500;
-        ShareMethod.OnClickListener onClickListener = Mockito.mock(ShareMethod.OnClickListener.class);
-        Mockito.doNothing().when(onClickListener).onClick();
+        ShareMethod.ShareAction shareAction = Mockito.mock(ShareMethod.ShareAction.class);
+        Mockito.doNothing().when(shareAction).share();
 
         // ACT
         ShareMethod shareMethod = new ShareMethod.Builder()
@@ -35,7 +35,7 @@ public class SocialGridModelTest {
                 .setIconDrawable(iconDrawable)
                 .setBackgroundColor(backgroundColor)
                 .setDrawBorder(drawBorder)
-                .setOnClickListener(onClickListener)
+                .setShareAction(shareAction)
                 .setWeight(weight)
                 .build();
 
@@ -47,7 +47,7 @@ public class SocialGridModelTest {
         Assert.assertEquals(backgroundColor, shareMethod.getBackgroundColor());
         Assert.assertEquals(drawBorder, shareMethod.willDrawBorder());
         Assert.assertEquals(weight, shareMethod.getWeight());
-        Mockito.verify(onClickListener).onClick();
+        Mockito.verify(shareAction).share();
     }
 
     @Test
@@ -73,34 +73,34 @@ public class SocialGridModelTest {
     @Test
     public void clickNotNullTest() {
         // ARRANGE
-        ShareMethod.OnClickListener onClickListener = Mockito.mock(ShareMethod.OnClickListener.class);
-        Mockito.doNothing().when(onClickListener).onClick();
+        ShareMethod.ShareAction shareAction = Mockito.mock(ShareMethod.ShareAction.class);
+        Mockito.doNothing().when(shareAction).share();
 
         // ACT
         ShareMethod shareMethod = new ShareMethod.Builder()
-                .setOnClickListener(onClickListener)
+                .setShareAction(shareAction)
                 .build();
 
         shareMethod.click();
 
         // ASSERT
-        Mockito.verify(onClickListener).onClick();
+        Mockito.verify(shareAction).share();
     }
 
     @Test
     public void clickNullTest() {
         // ARRANGE
-        ShareMethod.OnClickListener onClickListener = null;
+        ShareMethod.ShareAction shareAction = null;
 
         // ACT
         ShareMethod shareMethod = new ShareMethod.Builder()
-                .setOnClickListener(onClickListener)
+                .setShareAction(shareAction)
                 .build();
 
         shareMethod.click();
 
         // ASSERT
-        Assert.assertNull(onClickListener);
+        Assert.assertNull(shareAction);
     }
 
 }
