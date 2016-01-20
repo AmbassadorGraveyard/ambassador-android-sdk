@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,9 +6,9 @@ import android.view.MotionEvent;
 import android.widget.ScrollView;
 
 /**
- * Created by dylan on 11/11/15.
+ * ScrollView that can have scrolling locked
  */
-public class LockableScrollView extends ScrollView {
+public final class LockableScrollView extends ScrollView {
 
     private boolean isLocked = false;
 
@@ -26,10 +26,7 @@ public class LockableScrollView extends ScrollView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (isLocked) {
-            return false;
-        }
-        return super.onInterceptTouchEvent(ev);
+        return !isLocked && super.onInterceptTouchEvent(ev);
     }
 
     @Override

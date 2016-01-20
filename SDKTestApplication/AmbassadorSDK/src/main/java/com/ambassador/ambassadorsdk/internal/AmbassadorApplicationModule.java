@@ -1,10 +1,8 @@
 package com.ambassador.ambassadorsdk.internal;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.ambassador.ambassadorsdk.utils.Device;
-import com.facebook.share.widget.ShareDialog;
 
 import javax.inject.Singleton;
 
@@ -39,12 +37,6 @@ public class AmbassadorApplicationModule {
     @ForActivity
     Context provideContext() {
         return context;
-    }
-
-    @Provides
-    @Singleton
-    ShareDialog provideFbShareDialog() {
-        return new ShareDialog((Activity)context);
     }
 
     @Provides

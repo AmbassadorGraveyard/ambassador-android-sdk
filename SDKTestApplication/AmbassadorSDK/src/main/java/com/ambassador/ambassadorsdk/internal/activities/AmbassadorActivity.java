@@ -12,8 +12,10 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -25,7 +27,6 @@ import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,16 +38,16 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.CustomEditText;
-import com.ambassador.ambassadorsdk.internal.LockableScrollView;
+import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
+import com.ambassador.ambassadorsdk.internal.views.LockableScrollView;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
-import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.SocialShareDialog;
-import com.ambassador.ambassadorsdk.internal.StaticGridView;
+import com.ambassador.ambassadorsdk.internal.views.StaticGridView;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -71,6 +72,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -91,12 +93,13 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // endregion
 
     // region Views
+    @Bind(B.id.action_bar)      protected Toolbar               toolbar;
     @Bind(B.id.svParent)        protected LockableScrollView    svParent;
     @Bind(B.id.llParent)        protected LinearLayout          llParent;
     @Bind(B.id.tvWelcomeTitle)  protected TextView              tvWelcomeTitle;
     @Bind(B.id.tvWelcomeDesc)   protected TextView              tvWelcomeDesc;
     @Bind(B.id.flShortUrl)      protected FrameLayout           flShortUrl;
-    @Bind(B.id.etShortURL)      protected CustomEditText        etShortURL;
+    @Bind(B.id.etShortURL)      protected ShakableEditText etShortURL;
     @Bind(B.id.btnCopy)         protected Button                btnCopy;
     @Bind(B.id.gvSocialGrid)    protected StaticGridView        gvSocialGrid;
     // endregion
@@ -140,8 +143,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     private ProgressDialog pd;
     private Timer networkTimer;
     private CallbackManager callbackManager;
-    private final android.os.Handler timerHandler = new android.os.Handler();
-    private ArrayList<ShareMethod> gridModels;
+    private final Handler timerHandler = new Handler();
 
     final private Runnable myRunnable = new Runnable() {
         @Override
@@ -172,17 +174,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     TwitterAuthClient twitterAuthClient;
 
-    @Inject
-    ShareDialog fbDialog;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (!AmbassadorSingleton.isValid()) {
-            finish();
-            return;
-        }
 
         /** Apparently the content view has to be inflated like this for the ViewTreeObserver to work */
         final View view = LayoutInflater.from(this).inflate(R.layout.activity_ambassador, null, false);
@@ -206,6 +200,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         setContentView(view);
 
+        if (!AmbassadorSingleton.isValid()) {
+            finish();
+            return;
+        }
+
         FacebookSdk.sdkInitialize(getApplicationContext());
 
         String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
@@ -226,19 +225,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
-        // UI Components
-        scrollView = (LockableScrollView) findViewById(R.id.scrollView);
-        llMainLayout = (LinearLayout) findViewById(R.id.llParent);
-        StaticGridView gvSocialGrid = (StaticGridView) findViewById(R.id.gvSocialGrid);
-        ImageButton btnCopyPaste = (ImageButton) findViewById(R.id.btnCopy);
-        tvWelcomeTitle = (TextView) findViewById(R.id.tvWelcomeTitle);
-        tvWelcomeDesc = (TextView) findViewById(R.id.tvWelcomeDesc);
-        etShortUrl = (CustomEditText) findViewById(R.id.etShortURL);
-        flShortUrl = (FrameLayout) findViewById(R.id.flShortUrl);
-
         tvWelcomeTitle.setText(ambassadorConfig.getRafParameters().titleText);
         tvWelcomeDesc.setText(ambassadorConfig.getRafParameters().descriptionText);
-        _setUpToolbar(ambassadorConfig.getRafParameters().toolbarTitle);
+        setUpToolbar();
 
         try {
             loadCustomImages();
@@ -256,8 +245,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         btnCopyPaste.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
         // Sets up social gridView
-        _instantiateGridModelsIntoArray();
-        final SocialGridAdapter gridAdapter = new SocialGridAdapter(this, gridModels);
+        final SocialGridAdapter gridAdapter = new SocialGridAdapter(this, getShareMethods());
         gvSocialGrid.setAdapter(gridAdapter);
         gvSocialGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -441,9 +429,10 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setContentTitle(ambassadorConfig.getRafParameters().defaultShareMessage)
                 .setContentUrl(Uri.parse(ambassadorConfig.getURL()))
                 .build();
-
         callbackManager = CallbackManager.Factory.create();
-        fbDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+
+        ShareDialog shareDialog = new ShareDialog(this);
+        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
                 if (result.getPostId() != null) {
@@ -462,8 +451,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
             }
         });
-
-        fbDialog.show(content);
+        shareDialog.show(content);
     }
 
     void shareWithTwitter() {
@@ -634,25 +622,23 @@ public final class AmbassadorActivity extends AppCompatActivity {
         timerHandler.post(myRunnable);
     }
 
-    private void _setUpToolbar(String toolbarTitle) {
-        if (getSupportActionBar() != null) { getSupportActionBar().setTitle(toolbarTitle); }
+    private void setUpToolbar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(ambassadorConfig.getRafParameters().toolbarTitle);
+        }
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.action_bar);
         if (toolbar == null) return;
 
         final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
         arrow.setColorFilter(raf.getHomeToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
-        toolbar.setNavigationIcon(arrow);
 
+        toolbar.setNavigationIcon(arrow);
         toolbar.setBackgroundColor(raf.getHomeToolbarColor());
         toolbar.setTitleTextColor(raf.getHomeToolbarTextColor());
     }
 
-    /**
-     * Instantiates a model object for each social grid item and binds a passthrough
-     * onclick method that calls the existing method handler, eg. shareWithFacebook();
-     */
-    private void _instantiateGridModelsIntoArray() {
+    private List<ShareMethod> getShareMethods() {
         ShareMethod.Builder modelFacebook = new ShareMethod.Builder()
                 .setName("FACEBOOK")
                 .setIconDrawable(R.drawable.facebook_icon)
@@ -717,31 +703,24 @@ public final class AmbassadorActivity extends AppCompatActivity {
         map.put("email", modelEmail);
         map.put("sms", modelSms);
 
-        ArrayList<ShareMethod> tmpGridModels = new ArrayList<>();
+        ArrayList<ShareMethod> shareMethods = new ArrayList<>();
 
         String[] order = raf.getChannels();
         for (int i = 0; i < order.length; i++) {
             String channel = order[i].toLowerCase();
             if (map.containsKey(channel)) {
-                ShareMethod.Builder modelBuilder = map.get(channel);
-                modelBuilder.setWeight(i);
-                ShareMethod model = modelBuilder.build();
-                if (!tmpGridModels.contains(model)) {
-                    tmpGridModels.add(model);
+                ShareMethod shareMethod = map.get(channel)
+                        .setWeight(i)
+                        .build();
+
+                if (!shareMethods.contains(shareMethod)) {
+                    shareMethods.add(shareMethod);
                 }
             }
         }
 
-        _handleDisablingAndSorting(tmpGridModels);
+        Collections.sort(shareMethods);
+        return shareMethods;
     }
 
-    private void _handleDisablingAndSorting(ArrayList<ShareMethod> tmpGridModels) {
-        gridModels = new ArrayList<>();
-
-        for (ShareMethod model : tmpGridModels) {
-            gridModels.add(model);
-        }
-
-        Collections.sort(gridModels);
-    }
 }

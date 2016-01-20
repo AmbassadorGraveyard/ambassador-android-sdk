@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import org.json.JSONException;
@@ -20,7 +21,7 @@ import javax.inject.Inject;
 
 public class ContactNameDialog extends Dialog {
 
-    private CustomEditText etFirstName, etLastName;
+    private ShakableEditText etFirstName, etLastName;
     private ProgressDialog pd;
 
     @Inject
@@ -41,10 +42,10 @@ public class ContactNameDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE); // Hides the default title bar
         setContentView(R.layout.dialog_contact_name);
 
-        etFirstName = (CustomEditText)findViewById(R.id.etFirstName);
-        etFirstName.setEditTextTint(context.getResources().getColor(R.color.ambassador_blue));
-        etLastName = (CustomEditText)findViewById(R.id.etLastName);
-        etLastName.setEditTextTint(context.getResources().getColor(R.color.ambassador_blue));
+        etFirstName = (ShakableEditText)findViewById(R.id.etFirstName);
+        etFirstName.setTint(context.getResources().getColor(R.color.ambassador_blue));
+        etLastName = (ShakableEditText)findViewById(R.id.etLastName);
+        etLastName.setTint(context.getResources().getColor(R.color.ambassador_blue));
         Button btnCancel = (Button)findViewById(R.id.btnCancel);
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,10 +71,10 @@ public class ContactNameDialog extends Dialog {
     void continueSending() {
         if (etFirstName.getText().toString().isEmpty()) {
             Toast.makeText(getOwnerActivity(), new StringResource(R.string.first_name_empty).getValue(), Toast.LENGTH_SHORT).show();
-            etFirstName.shakeEditText();
+            etFirstName.shake();
         } else if (etLastName.getText().toString().isEmpty()) {
             Toast.makeText(getOwnerActivity(), new StringResource(R.string.last_name_empty).getValue(), Toast.LENGTH_SHORT).show();
-            etLastName.shakeEditText();
+            etLastName.shake();
         } else {
             handleNameInput(etFirstName.getText().toString(), etLastName.getText().toString());
         }

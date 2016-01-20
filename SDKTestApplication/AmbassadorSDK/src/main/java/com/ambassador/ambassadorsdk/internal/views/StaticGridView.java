@@ -1,13 +1,13 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.GridView;
 
 /**
- * Created by dylan on 11/11/15.
+ * GridView with height truly wrapping content of children.
  */
-public class StaticGridView extends GridView {
+public final class StaticGridView extends GridView {
 
     public StaticGridView(Context context) {
         super(context);
