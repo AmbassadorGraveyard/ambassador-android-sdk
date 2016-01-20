@@ -28,18 +28,20 @@ import butterfork.Bind;
 import butterfork.ButterFork;
 
 /**
- *
+ * Dialog to show an enhanced view of a contact's info.
  */
 public final class ContactInfoDialog extends Dialog {
 
     // region Views
-    @Bind(B.id.ivPhoto)         protected ImageView     ivPhoto;
-    @Bind(B.id.tvName)          protected TextView      tvName;
-    @Bind(B.id.tvNumberOrEmail) protected TextView      tvNumberOrEmail;
-    @Bind(B.id.ivExit)          protected ImageView     ivExit;
+    @Bind(B.id.ivPhoto)             protected ImageView     ivPhoto;
+    @Bind(B.id.tvName)              protected TextView      tvName;
+    @Bind(B.id.tvNumberOrEmail)     protected TextView      tvNumberOrEmail;
+    @Bind(B.id.ivExit)              protected ImageView     ivExit;
     // endregion
 
-    private RAFOptions raf = RAFOptions.get();
+    // region Local members
+    protected RAFOptions raf;
+    // endregion
 
     public ContactInfoDialog(Context context) {
         super(context);
@@ -47,21 +49,28 @@ public final class ContactInfoDialog extends Dialog {
         if (context instanceof Activity) {
             setOwnerActivity((Activity) context);
         }
+
+        raf = RAFOptions.get();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_contact_info);
         ButterFork.bind(this);
+
+        configureDialog();
+        setupButtons();
+    }
+
+    private void configureDialog() {
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.dimAmount = 0.7f;
+    }
 
+    private void setupButtons() {
         ivExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +79,14 @@ public final class ContactInfoDialog extends Dialog {
         });
     }
 
+    @Nullable
+    private Bitmap loadBitmap(@NonNull String uri) {
+        try {
+            return MediaStore.Images.Media.getBitmap(getOwnerActivity().getContentResolver(), Uri.parse(uri));
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
     public void setContactObject(@NonNull Contact contact, boolean isPhone) {
         if (contact.getPictureBitmap() != null) {
@@ -94,15 +111,6 @@ public final class ContactInfoDialog extends Dialog {
             tvNumberOrEmail.setText(text);
         } else {
             tvNumberOrEmail.setText(contact.getEmailAddress());
-        }
-    }
-
-    @Nullable
-    private Bitmap loadBitmap(@NonNull String uri) {
-        try {
-            return MediaStore.Images.Media.getBitmap(getOwnerActivity().getContentResolver(), Uri.parse(uri));
-        } catch (IOException e) {
-            return null;
         }
     }
 
