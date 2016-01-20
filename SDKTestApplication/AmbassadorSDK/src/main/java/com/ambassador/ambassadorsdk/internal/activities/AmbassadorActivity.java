@@ -80,6 +80,7 @@ import java.util.TimerTask;
 import javax.inject.Inject;
 
 import butterfork.Bind;
+import butterfork.ButterFork;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -200,6 +201,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
         Utilities.setStatusBar(getWindow(), raf.getHomeToolbarColor());
 
         setContentView(view);
+
+        ButterFork.bind(this);
 
         if (!AmbassadorSingleton.isValid()) {
             finish();
