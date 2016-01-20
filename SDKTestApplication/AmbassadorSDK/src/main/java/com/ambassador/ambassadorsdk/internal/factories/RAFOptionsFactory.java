@@ -7,7 +7,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.utils.Font;
+import com.ambassador.ambassadorsdk.internal.utils.Font;
 import com.google.common.base.Joiner;
 
 import org.w3c.dom.Document;

@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.internal.api.identify;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
-import com.ambassador.ambassadorsdk.utils.ResponseCode;
+import com.ambassador.ambassadorsdk.internal.utils.ResponseCode;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

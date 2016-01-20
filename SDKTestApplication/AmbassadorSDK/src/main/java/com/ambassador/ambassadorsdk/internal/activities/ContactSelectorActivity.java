@@ -48,10 +48,10 @@ import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.ambassador.ambassadorsdk.internal.DividerItemDecoration;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
-import com.ambassador.ambassadorsdk.utils.ColorResource;
-import com.ambassador.ambassadorsdk.utils.ContactList;
-import com.ambassador.ambassadorsdk.utils.Device;
-import com.ambassador.ambassadorsdk.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.utils.ColorResource;
+import com.ambassador.ambassadorsdk.internal.utils.ContactList;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.ambassador.ambassadorsdk.internal.utils.StringResource;
 
 import org.json.JSONObject;
 

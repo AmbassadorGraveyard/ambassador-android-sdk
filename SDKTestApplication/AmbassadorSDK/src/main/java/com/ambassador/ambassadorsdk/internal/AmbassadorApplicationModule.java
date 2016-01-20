@@ -2,7 +2,7 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 
-import com.ambassador.ambassadorsdk.utils.Device;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import javax.inject.Singleton;
 

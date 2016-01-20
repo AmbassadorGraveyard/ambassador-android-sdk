@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.utils;
+package com.ambassador.ambassadorsdk.internal.utils;
 
 import android.content.Context;
 import android.content.res.AssetManager;

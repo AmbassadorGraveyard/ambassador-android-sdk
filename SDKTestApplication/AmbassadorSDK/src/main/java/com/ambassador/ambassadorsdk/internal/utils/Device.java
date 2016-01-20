@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.utils;
+package com.ambassador.ambassadorsdk.internal.utils;
 
 import android.content.Context;
 import android.content.res.Configuration;
@@ -15,11 +15,9 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
  */
 public final class Device {
 
-    // region Dependencies
     protected Configuration         configuration;
     protected ConnectivityManager   connectivityManager;
     protected InputMethodManager    inputMethodManager;
-    // endregion
 
     public Device() {
         Context context = AmbassadorSingleton.getInstanceContext();

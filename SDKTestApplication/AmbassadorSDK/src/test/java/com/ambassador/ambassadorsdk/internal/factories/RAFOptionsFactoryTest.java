@@ -9,7 +9,7 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.utils.ColorResource;
+import com.ambassador.ambassadorsdk.internal.utils.ColorResource;
 
 import junit.framework.Assert;
 
