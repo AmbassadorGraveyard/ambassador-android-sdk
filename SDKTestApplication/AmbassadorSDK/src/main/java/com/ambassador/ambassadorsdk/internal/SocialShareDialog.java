@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.utils.StringResource;
 
 import org.json.JSONException;
@@ -31,7 +32,7 @@ public class SocialShareDialog extends Dialog {
     private TextView tvHeaderText;
     private ImageView ivHeaderImage;
     private TextView tvSend;
-    private CustomEditText etMessage;
+    private ShakableEditText etMessage;
     private Button btnSend, btnCancel;
     private ProgressBar loader;
 
@@ -61,7 +62,7 @@ public class SocialShareDialog extends Dialog {
 
         tvSend = (TextView) findViewById(R.id.tvSend);
 
-        etMessage = (CustomEditText) findViewById(R.id.etMessage);
+        etMessage = (ShakableEditText) findViewById(R.id.etMessage);
 
         btnSend = (Button) findViewById(R.id.btnSend);
         btnCancel = (Button) findViewById(R.id.btnCancel);
@@ -146,7 +147,7 @@ public class SocialShareDialog extends Dialog {
     private void share() {
         if (etMessage.getText().toString().isEmpty()) {
             Toast.makeText(getOwnerActivity(), blankErrorText, Toast.LENGTH_SHORT).show();
-            etMessage.shakeEditText();
+            etMessage.shake();
         } else {
             loader.setVisibility(View.VISIBLE);
             switch (socialNetwork) {

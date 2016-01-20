@@ -14,18 +14,18 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class SocialGridAdapter extends BaseAdapter {
 
     private RAFOptions raf = RAFOptions.get();
 
     private Context context;
-    private ArrayList<ShareMethod> models;
+    private List<ShareMethod> models;
     LayoutInflater inflater;
     private float cornerRadius;
 
-    public SocialGridAdapter(Context context, ArrayList<ShareMethod> models) {
+    public SocialGridAdapter(Context context, List<ShareMethod> models) {
         this.context = context;
         this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.models = models;
