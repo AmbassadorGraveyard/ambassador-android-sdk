@@ -22,6 +22,9 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+/**
+ * Static methods called by the end-developer to utilize the SDK.
+ */
 public final class AmbassadorSDK {
 
     @Inject
