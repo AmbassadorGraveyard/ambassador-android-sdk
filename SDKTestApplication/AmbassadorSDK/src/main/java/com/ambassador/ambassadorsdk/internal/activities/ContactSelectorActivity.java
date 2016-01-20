@@ -422,7 +422,8 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     public void updateSendButton(int numOfContacts) {
         if (numOfContacts == 0) {
-            tvSendContacts.setText("NO CONTACTS SELECTED");
+            String noneSelected = "NO CONTACTS SELECTED";
+            tvSendContacts.setText(noneSelected);
             return;
         }
 
