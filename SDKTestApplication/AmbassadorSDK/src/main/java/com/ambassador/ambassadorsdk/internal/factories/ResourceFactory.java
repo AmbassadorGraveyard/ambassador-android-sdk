@@ -3,8 +3,8 @@ package com.ambassador.ambassadorsdk.internal.factories;
 import android.support.annotation.ColorRes;
 import android.support.annotation.StringRes;
 
-import com.ambassador.ambassadorsdk.utils.ColorResource;
-import com.ambassador.ambassadorsdk.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.utils.ColorResource;
+import com.ambassador.ambassadorsdk.internal.utils.StringResource;
 
 public final class ResourceFactory {
 

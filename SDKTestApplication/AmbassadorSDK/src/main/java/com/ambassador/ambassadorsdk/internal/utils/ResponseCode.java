@@ -1,9 +1,10 @@
-package com.ambassador.ambassadorsdk.utils;
+package com.ambassador.ambassadorsdk.internal.utils;
 
-public class ResponseCode {
+public final class ResponseCode {
 
     private int responseCode;
 
+    @SuppressWarnings("unused")
     private ResponseCode() {}
 
     public ResponseCode(int responseCode) {

@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
-import com.ambassador.ambassadorsdk.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.utils.StringResource;
 
 import org.json.JSONException;
 import org.json.JSONObject;

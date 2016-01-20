@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.internal.api.bulkshare;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
-import com.ambassador.ambassadorsdk.utils.ResponseCode;
+import com.ambassador.ambassadorsdk.internal.utils.ResponseCode;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;

@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.utils;
+package com.ambassador.ambassadorsdk.internal.utils;
 
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
@@ -6,14 +6,18 @@ import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
-public class Font {
-
-    private Typeface typeface;
+/**
+ *
+ */
+public final class Font {
 
     public enum Defaults {
         FONT_LIGHT
     }
 
+    private Typeface typeface;
+
+    @SuppressWarnings("unused")
     private Font() {}
 
     public Font(@NonNull String path) {
@@ -44,8 +48,9 @@ public class Font {
         }
     }
 
+    @NonNull
     public Typeface getTypeface() {
-        return this.typeface;
+        return typeface != null ? typeface : Typeface.DEFAULT;
     }
 
 }

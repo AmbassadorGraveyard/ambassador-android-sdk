@@ -49,7 +49,7 @@ import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.views.LockableScrollView;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.internal.views.StaticGridView;
-import com.ambassador.ambassadorsdk.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.utils.StringResource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;

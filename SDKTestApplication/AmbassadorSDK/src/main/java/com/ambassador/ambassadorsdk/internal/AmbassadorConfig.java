@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.utils.StringResource;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;

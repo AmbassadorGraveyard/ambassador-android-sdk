@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.internal;
 import android.os.Handler;
 import android.os.Message;
 
-import com.ambassador.ambassadorsdk.utils.Device;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import org.json.JSONObject;
 
