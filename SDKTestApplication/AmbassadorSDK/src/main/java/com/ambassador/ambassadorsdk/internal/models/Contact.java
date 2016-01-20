@@ -103,7 +103,7 @@ public final class Contact implements Comparable<Contact> {
         }
 
         @NonNull
-        public Builder setPhoneNumber(@NonNull String phoneNumber) {
+        public Builder setPhoneNumber(@Nullable String phoneNumber) {
             this.phoneNumber = phoneNumber;
             return this;
         }

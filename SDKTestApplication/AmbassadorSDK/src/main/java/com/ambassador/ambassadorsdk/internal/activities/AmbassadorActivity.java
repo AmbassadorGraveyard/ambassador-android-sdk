@@ -657,9 +657,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setName("FACEBOOK")
                 .setIconDrawable(R.drawable.facebook_icon)
                 .setBackgroundColor(getResources().getColor(R.color.facebook_blue))
-                .setOnClickListener(new ShareMethod.OnClickListener() {
+                .setShareAction(new ShareMethod.ShareAction() {
                     @Override
-                    public void onClick() {
+                    public void share() {
                         shareWithFacebook();
                     }
                 });
@@ -668,9 +668,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setName("TWITTER")
                 .setIconDrawable(R.drawable.twitter_icon)
                 .setBackgroundColor(getResources().getColor(R.color.twitter_blue))
-                .setOnClickListener(new ShareMethod.OnClickListener() {
+                .setShareAction(new ShareMethod.ShareAction() {
                     @Override
-                    public void onClick() {
+                    public void share() {
                         shareWithTwitter();
                     }
                 });
@@ -679,9 +679,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setName("LINKEDIN")
                 .setIconDrawable(R.drawable.linkedin_icon)
                 .setBackgroundColor(getResources().getColor(R.color.linkedin_blue))
-                .setOnClickListener(new ShareMethod.OnClickListener() {
+                .setShareAction(new ShareMethod.ShareAction() {
                     @Override
-                    public void onClick() {
+                    public void share() {
                         shareWithLinkedIn();
                     }
                 });
@@ -691,9 +691,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setIconDrawable(R.drawable.email_icon)
                 .setBackgroundColor(getResources().getColor(android.R.color.white))
                 .setDrawBorder(true)
-                .setOnClickListener(new ShareMethod.OnClickListener() {
+                .setShareAction(new ShareMethod.ShareAction() {
                     @Override
-                    public void onClick() {
+                    public void share() {
                         goToContactsPage(false);
                     }
                 });
@@ -703,9 +703,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setIconDrawable(R.drawable.sms_icon)
                 .setBackgroundColor(getResources().getColor(android.R.color.white))
                 .setDrawBorder(true)
-                .setOnClickListener(new ShareMethod.OnClickListener() {
+                .setShareAction(new ShareMethod.ShareAction() {
                     @Override
-                    public void onClick() {
+                    public void share() {
                         goToContactsPage(true);
                     }
                 });
