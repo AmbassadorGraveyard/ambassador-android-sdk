@@ -1,12 +1,12 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.models;
 
-public final class SocialGridModel implements Comparable<SocialGridModel> {
+public final class ShareMethod implements Comparable<ShareMethod> {
 
     public interface OnClickListener {
         void onClick();
     }
 
-    private SocialGridModel() {}
+    private ShareMethod() {}
 
     private String name;
     private int iconDrawable;
@@ -42,7 +42,7 @@ public final class SocialGridModel implements Comparable<SocialGridModel> {
     }
 
     @Override
-    public int compareTo(SocialGridModel another) {
+    public int compareTo(ShareMethod another) {
         if (another.getWeight() > weight) {
             return -1;
         } else if (another.getWeight() < weight) {
@@ -93,8 +93,8 @@ public final class SocialGridModel implements Comparable<SocialGridModel> {
             return this;
         }
 
-        public SocialGridModel build() {
-            SocialGridModel tmp = new SocialGridModel();
+        public ShareMethod build() {
+            ShareMethod tmp = new ShareMethod();
             tmp.name = this.name;
             tmp.iconDrawable = this.iconDrawable;
             tmp.backgroundColor = this.backgroundColor;

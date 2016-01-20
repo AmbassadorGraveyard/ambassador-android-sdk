@@ -26,11 +26,11 @@ public class SocialGridModelTest {
         int backgroundColor = 6;
         boolean drawBorder = true;
         int weight = 500;
-        SocialGridModel.OnClickListener onClickListener = Mockito.mock(SocialGridModel.OnClickListener.class);
+        ShareMethod.OnClickListener onClickListener = Mockito.mock(ShareMethod.OnClickListener.class);
         Mockito.doNothing().when(onClickListener).onClick();
 
         // ACT
-        SocialGridModel socialGridModel = new SocialGridModel.Builder()
+        ShareMethod shareMethod = new ShareMethod.Builder()
                 .setName(name)
                 .setIconDrawable(iconDrawable)
                 .setBackgroundColor(backgroundColor)
@@ -39,25 +39,25 @@ public class SocialGridModelTest {
                 .setWeight(weight)
                 .build();
 
-        socialGridModel.click();
+        shareMethod.click();
 
         // ASSERT
-        Assert.assertEquals(name, socialGridModel.getName());
-        Assert.assertEquals(iconDrawable, socialGridModel.getIconDrawable());
-        Assert.assertEquals(backgroundColor, socialGridModel.getBackgroundColor());
-        Assert.assertEquals(drawBorder, socialGridModel.willDrawBorder());
-        Assert.assertEquals(weight, socialGridModel.getWeight());
+        Assert.assertEquals(name, shareMethod.getName());
+        Assert.assertEquals(iconDrawable, shareMethod.getIconDrawable());
+        Assert.assertEquals(backgroundColor, shareMethod.getBackgroundColor());
+        Assert.assertEquals(drawBorder, shareMethod.willDrawBorder());
+        Assert.assertEquals(weight, shareMethod.getWeight());
         Mockito.verify(onClickListener).onClick();
     }
 
     @Test
     public void sortTest() {
         // ARRANGE
-        List<SocialGridModel> toSort = new ArrayList<>();
-        toSort.add(new SocialGridModel.Builder().setName("a").setWeight(500).build());
-        toSort.add(new SocialGridModel.Builder().setName("b").setWeight(300).build());
-        toSort.add(new SocialGridModel.Builder().setName("c").setWeight(200).build());
-        toSort.add(new SocialGridModel.Builder().setName("d").setWeight(400).build());
+        List<ShareMethod> toSort = new ArrayList<>();
+        toSort.add(new ShareMethod.Builder().setName("a").setWeight(500).build());
+        toSort.add(new ShareMethod.Builder().setName("b").setWeight(300).build());
+        toSort.add(new ShareMethod.Builder().setName("c").setWeight(200).build());
+        toSort.add(new ShareMethod.Builder().setName("d").setWeight(400).build());
 
         // ACT
         Collections.shuffle(toSort);
@@ -73,15 +73,15 @@ public class SocialGridModelTest {
     @Test
     public void clickNotNullTest() {
         // ARRANGE
-        SocialGridModel.OnClickListener onClickListener = Mockito.mock(SocialGridModel.OnClickListener.class);
+        ShareMethod.OnClickListener onClickListener = Mockito.mock(ShareMethod.OnClickListener.class);
         Mockito.doNothing().when(onClickListener).onClick();
 
         // ACT
-        SocialGridModel socialGridModel = new SocialGridModel.Builder()
+        ShareMethod shareMethod = new ShareMethod.Builder()
                 .setOnClickListener(onClickListener)
                 .build();
 
-        socialGridModel.click();
+        shareMethod.click();
 
         // ASSERT
         Mockito.verify(onClickListener).onClick();
@@ -90,14 +90,14 @@ public class SocialGridModelTest {
     @Test
     public void clickNullTest() {
         // ARRANGE
-        SocialGridModel.OnClickListener onClickListener = null;
+        ShareMethod.OnClickListener onClickListener = null;
 
         // ACT
-        SocialGridModel socialGridModel = new SocialGridModel.Builder()
+        ShareMethod shareMethod = new ShareMethod.Builder()
                 .setOnClickListener(onClickListener)
                 .build();
 
-        socialGridModel.click();
+        shareMethod.click();
 
         // ASSERT
         Assert.assertNull(onClickListener);

@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 
-import com.ambassador.ambassadorsdk.internal.Contact;
+import com.ambassador.ambassadorsdk.internal.models.Contact;
 
 import java.util.ArrayList;
 import java.util.Collections;

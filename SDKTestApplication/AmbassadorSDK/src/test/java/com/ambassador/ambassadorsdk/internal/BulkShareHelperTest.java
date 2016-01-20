@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
+import com.ambassador.ambassadorsdk.internal.models.Contact;
 
 import org.json.JSONObject;
 import org.junit.Assert;
