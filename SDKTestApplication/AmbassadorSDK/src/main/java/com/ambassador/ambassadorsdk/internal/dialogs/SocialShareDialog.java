@@ -1,13 +1,16 @@
 package com.ambassador.ambassadorsdk.internal.dialogs;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,16 +28,13 @@ import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.utils.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
 
 /**
- *
+ * Dialog to handle sharing to Twitter or LinkedIn.
  */
 public final class SocialShareDialog extends Dialog {
 
@@ -53,26 +53,36 @@ public final class SocialShareDialog extends Dialog {
     @Inject protected AmbassadorConfig  ambassadorConfig;
     // endregion
 
-    private ShareDialogEventListener eventListener;
+    // region Local members
+    protected ShareDialogEventListener  eventListener;
+    protected SocialNetwork             socialNetwork;
+    // endregion
 
     public enum SocialNetwork {
         TWITTER, LINKEDIN
     }
 
-    private SocialNetwork socialNetwork;
-
-    private String blankErrorText;
-
     public SocialShareDialog(@ForActivity Context context) {
         super(context);
-        AmbassadorSingleton.getInstanceComponent().inject(this);
 
+        if (context instanceof Activity) {
+            setOwnerActivity((Activity) context);
+        }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_social_share);
+        AmbassadorSingleton.getInstanceComponent().inject(this);
         ButterFork.bind(this);
 
-        pbLoading.setVisibility(View.GONE);
+        setupButtons();
+        configureViews();
+    }
 
+    private void setupButtons() {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -87,7 +97,10 @@ public final class SocialShareDialog extends Dialog {
                 attemptNotifyCancelled();
             }
         });
+    }
 
+    private void configureViews() {
+        pbLoading.setVisibility(View.GONE);
         setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -96,31 +109,12 @@ public final class SocialShareDialog extends Dialog {
         });
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    public void setSocialNetwork(SocialNetwork socialNetwork) {
-        this.socialNetwork = socialNetwork;
-        switch (socialNetwork) {
-            case TWITTER:
-                styleTwitter();
-                break;
-            case LINKEDIN:
-                styleLinkedIn();
-                break;
-        }
-    }
-
     private void styleTwitter() {
-        tvHeaderText.setText("Twitter Post");
+        tvHeaderText.setText(new StringResource(R.string.twitter_share_dialog_title).getValue());
         tvHeaderText.setBackgroundColor(getContext().getResources().getColor(R.color.twitter_blue));
         ivHeaderImg.setImageDrawable(getContext().getResources().getDrawable(R.drawable.twitter_icon));
         tvSend.setText("Tweet");
         btnSend.setText("Tweet");
-
-        blankErrorText = new StringResource(R.string.blank_twitter).getValue();
     }
 
     private void styleLinkedIn() {
@@ -129,31 +123,30 @@ public final class SocialShareDialog extends Dialog {
         ivHeaderImg.setImageDrawable(getContext().getResources().getDrawable(R.drawable.linkedin_icon));
         tvSend.setText("Send");
         btnSend.setText("Share");
-
-        blankErrorText = new StringResource(R.string.blank_linkedin).getValue();
     }
 
     private void shareClicked() {
         if (Utilities.containsURL(etMessage.getText().toString(), ambassadorConfig.getURL())) {
             share();
         } else {
-//            Utilities.presentUrlDialog(this.getOwnerActivity(), etMessage, ambassadorConfig.getURL(), new Utilities.UrlAlertInterface() {
-//                @Override
-//                public void sendAnywayTapped(DialogInterface dialogInterface) {
-//                    dialogInterface.dismiss();
-//                    share();
-//                }
-//
-//                @Override
-//                public void insertUrlTapped(DialogInterface dialogInterface) {
-//                    dialogInterface.dismiss();
-//                }
-//            });
+            askForUrl();
         }
     }
 
     private void share() {
         if (etMessage.getText().toString().isEmpty()) {
+            String blankErrorText;
+            switch (socialNetwork) {
+                case TWITTER:
+                    blankErrorText = new StringResource(R.string.blank_twitter).getValue();
+                    break;
+                case LINKEDIN:
+                    blankErrorText = new StringResource(R.string.blank_linkedin).getValue();
+                    break;
+                default:
+                    blankErrorText = "An error occurred";
+                    break;
+            }
             Toast.makeText(getOwnerActivity(), blankErrorText, Toast.LENGTH_SHORT).show();
             etMessage.shake();
         } else {
@@ -163,20 +156,47 @@ public final class SocialShareDialog extends Dialog {
                     requestManager.postToTwitter(etMessage.getText().toString(), twitterCompletion);
                     break;
                 case LINKEDIN:
-                    try {
-                        JSONObject object = new JSONObject("{" +
-                                "\"comment\": \"" + etMessage.getText().toString() + "\"," +
-                                "\"visibility\": " + "{ \"code\": \"anyone\" }" +
-                                "}");
-
-
-                        LinkedInApi.LinkedInPostRequest request = new LinkedInApi.LinkedInPostRequest(etMessage.getText().toString());
-                        requestManager.postToLinkedIn(request, linkedInCompletion);
-                    } catch (JSONException e) {
-                        Log.e(this.getClass().getSimpleName(), e.toString());
-                    }
+                    LinkedInApi.LinkedInPostRequest request = new LinkedInApi.LinkedInPostRequest(etMessage.getText().toString());
+                    requestManager.postToLinkedIn(request, linkedInCompletion);
                     break;
             }
+        }
+    }
+
+    private void askForUrl() {
+        final String url = ambassadorConfig.getURL();
+        new AskUrlDialog(getContext(), url)
+                .setOnCompleteListener(new AskUrlDialog.OnCompleteListener() {
+                    @Override
+                    public void dontAdd() {
+                        share();
+                    }
+
+                    @Override
+                    public void doAdd() {
+                        insertURLIntoMessage(etMessage, url);
+                    }
+                })
+                .show();
+    }
+
+    private void insertURLIntoMessage(EditText editText, String url) {
+        String appendingLink = url;
+
+        if (editText.getText().toString().contains("http://")) {
+            String sub = editText.getText().toString().substring(editText.getText().toString().indexOf("http://"));
+            String replacementSubstring;
+            replacementSubstring = (sub.contains(" ")) ? sub.substring(0, sub.indexOf(' ')) : sub;
+            editText.setText(editText.getText().toString().replace(replacementSubstring, appendingLink));
+            return;
+        }
+
+        if (editText.getText().toString().length() != 0 && editText.getText().toString().charAt(editText.getText().toString().length() - 1) != ' ') {
+            appendingLink = " " + url;
+            editText.setText(editText.getText().append(appendingLink));
+        } else {
+            appendingLink = url;
+            editText.setText(editText.getText().append(appendingLink));
         }
     }
 
@@ -226,15 +246,25 @@ public final class SocialShareDialog extends Dialog {
         }
     };
 
+    public void setSocialNetwork(@NonNull SocialNetwork socialNetwork) {
+        this.socialNetwork = socialNetwork;
+        switch (socialNetwork) {
+            case TWITTER:
+                styleTwitter();
+                break;
+            case LINKEDIN:
+                styleLinkedIn();
+                break;
+            default:
+                break;
+        }
+    }
+
     public interface ShareDialogEventListener {
         void postSuccess();
         void postFailed();
         void postCancelled();
         void needAuth();
-    }
-
-    public void setSocialDialogEventListener(ShareDialogEventListener listener) {
-        this.eventListener = listener;
     }
 
     private void attemptNotifySuccess() {
@@ -259,6 +289,10 @@ public final class SocialShareDialog extends Dialog {
         if (eventListener != null) {
             eventListener.needAuth();
         }
+    }
+
+    public void setSocialDialogEventListener(@Nullable ShareDialogEventListener listener) {
+        this.eventListener = listener;
     }
 
 }

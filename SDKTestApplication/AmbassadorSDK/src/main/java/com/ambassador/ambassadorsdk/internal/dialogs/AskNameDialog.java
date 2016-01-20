@@ -32,7 +32,7 @@ import butterfork.ButterFork;
 /**
  * Dialog to ask the user for his/her name if the backend doesn't have it.
  */
-public final class ContactNameDialog extends Dialog {
+public final class AskNameDialog extends Dialog {
 
     // region Views
     @Bind(B.id.etFirstName) protected ShakableEditText  etFirstName;
@@ -51,7 +51,7 @@ public final class ContactNameDialog extends Dialog {
     protected ProgressDialog pd;
     // endregion
 
-    public ContactNameDialog(Context context, ProgressDialog pd) {
+    public AskNameDialog(Context context, ProgressDialog pd) {
         super(context);
 
         if (context instanceof Activity) {

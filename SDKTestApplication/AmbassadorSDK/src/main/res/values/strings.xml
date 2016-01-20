@@ -55,6 +55,7 @@
     <string name="twitter_consumer_key">QmXl03hbQEKSLLiDY4e6vpIjP</string>
     <string name="twitter_consumer_secret">IfIbOuVbKwPkfJQW0zknChNMBbqhmpkuuK8FJmqkQqBqCGa4dW</string>
     <string name="twitter_reauthenticate_message">We need you to re-authenticate Twitter. Continue?</string>
+    <string name="twitter_share_dialog_title">Twitter Post</string>
     <!-- // -->
 
     <!-- LINKEDIN -->
