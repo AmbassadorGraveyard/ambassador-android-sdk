@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 
 import java.util.ArrayList;
 
@@ -20,11 +21,11 @@ public class SocialGridAdapter extends BaseAdapter {
     private RAFOptions raf = RAFOptions.get();
 
     private Context context;
-    private ArrayList<SocialGridModel> models;
+    private ArrayList<ShareMethod> models;
     LayoutInflater inflater;
     private float cornerRadius;
 
-    public SocialGridAdapter(Context context, ArrayList<SocialGridModel> models) {
+    public SocialGridAdapter(Context context, ArrayList<ShareMethod> models) {
         this.context = context;
         this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.models = models;
@@ -37,7 +38,7 @@ public class SocialGridAdapter extends BaseAdapter {
     }
 
     @Override
-    public SocialGridModel getItem(int position) {
+    public ShareMethod getItem(int position) {
         return models.get(position);
     }
 
@@ -52,7 +53,7 @@ public class SocialGridAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.custom_social_cell, parent, false);
         }
 
-        SocialGridModel model = getItem(position);
+        ShareMethod model = getItem(position);
         ImageView gridImage = (ImageView) convertView.findViewById(R.id.ivGridImage);
         TextView gridTitle = (TextView) convertView.findViewById(R.id.tvGridTitle);
         RelativeLayout backgroundView = (RelativeLayout) convertView.findViewById(R.id.rlBackground);

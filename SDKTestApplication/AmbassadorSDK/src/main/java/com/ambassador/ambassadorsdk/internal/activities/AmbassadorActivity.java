@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -43,8 +42,8 @@ import com.ambassador.ambassadorsdk.internal.LockableScrollView;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.SocialGridAdapter;
-import com.ambassador.ambassadorsdk.internal.SocialGridModel;
 import com.ambassador.ambassadorsdk.internal.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.StaticGridView;
 import com.ambassador.ambassadorsdk.internal.Utilities;
@@ -142,7 +141,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     private Timer networkTimer;
     private CallbackManager callbackManager;
     private final android.os.Handler timerHandler = new android.os.Handler();
-    private ArrayList<SocialGridModel> gridModels;
+    private ArrayList<ShareMethod> gridModels;
 
     final private Runnable myRunnable = new Runnable() {
         @Override
@@ -263,7 +262,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         gvSocialGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SocialGridModel model = gridAdapter.getItem(position);
+                ShareMethod model = gridAdapter.getItem(position);
                 model.click();
             }
         });
@@ -654,79 +653,79 @@ public final class AmbassadorActivity extends AppCompatActivity {
      * onclick method that calls the existing method handler, eg. shareWithFacebook();
      */
     private void _instantiateGridModelsIntoArray() {
-        SocialGridModel.Builder modelFacebook = new SocialGridModel.Builder()
+        ShareMethod.Builder modelFacebook = new ShareMethod.Builder()
                 .setName("FACEBOOK")
                 .setIconDrawable(R.drawable.facebook_icon)
                 .setBackgroundColor(getResources().getColor(R.color.facebook_blue))
-                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                .setOnClickListener(new ShareMethod.OnClickListener() {
                     @Override
                     public void onClick() {
                         shareWithFacebook();
                     }
                 });
 
-        SocialGridModel.Builder modelTwitter = new SocialGridModel.Builder()
+        ShareMethod.Builder modelTwitter = new ShareMethod.Builder()
                 .setName("TWITTER")
                 .setIconDrawable(R.drawable.twitter_icon)
                 .setBackgroundColor(getResources().getColor(R.color.twitter_blue))
-                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                .setOnClickListener(new ShareMethod.OnClickListener() {
                     @Override
                     public void onClick() {
                         shareWithTwitter();
                     }
                 });
 
-        SocialGridModel.Builder modelLinkedIn = new SocialGridModel.Builder()
+        ShareMethod.Builder modelLinkedIn = new ShareMethod.Builder()
                 .setName("LINKEDIN")
                 .setIconDrawable(R.drawable.linkedin_icon)
                 .setBackgroundColor(getResources().getColor(R.color.linkedin_blue))
-                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                .setOnClickListener(new ShareMethod.OnClickListener() {
                     @Override
                     public void onClick() {
                         shareWithLinkedIn();
                     }
                 });
 
-        SocialGridModel.Builder modelEmail = new SocialGridModel.Builder()
+        ShareMethod.Builder modelEmail = new ShareMethod.Builder()
                 .setName("EMAIL")
                 .setIconDrawable(R.drawable.email_icon)
                 .setBackgroundColor(getResources().getColor(android.R.color.white))
                 .setDrawBorder(true)
-                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                .setOnClickListener(new ShareMethod.OnClickListener() {
                     @Override
                     public void onClick() {
                         goToContactsPage(false);
                     }
                 });
 
-        SocialGridModel.Builder modelSms = new SocialGridModel.Builder()
+        ShareMethod.Builder modelSms = new ShareMethod.Builder()
                 .setName("SMS")
                 .setIconDrawable(R.drawable.sms_icon)
                 .setBackgroundColor(getResources().getColor(android.R.color.white))
                 .setDrawBorder(true)
-                .setOnClickListener(new SocialGridModel.OnClickListener() {
+                .setOnClickListener(new ShareMethod.OnClickListener() {
                     @Override
                     public void onClick() {
                         goToContactsPage(true);
                     }
                 });
 
-        HashMap<String, SocialGridModel.Builder> map = new HashMap<>();
+        HashMap<String, ShareMethod.Builder> map = new HashMap<>();
         map.put("facebook", modelFacebook);
         map.put("twitter", modelTwitter);
         map.put("linkedin", modelLinkedIn);
         map.put("email", modelEmail);
         map.put("sms", modelSms);
 
-        ArrayList<SocialGridModel> tmpGridModels = new ArrayList<>();
+        ArrayList<ShareMethod> tmpGridModels = new ArrayList<>();
 
         String[] order = raf.getChannels();
         for (int i = 0; i < order.length; i++) {
             String channel = order[i].toLowerCase();
             if (map.containsKey(channel)) {
-                SocialGridModel.Builder modelBuilder = map.get(channel);
+                ShareMethod.Builder modelBuilder = map.get(channel);
                 modelBuilder.setWeight(i);
-                SocialGridModel model = modelBuilder.build();
+                ShareMethod model = modelBuilder.build();
                 if (!tmpGridModels.contains(model)) {
                     tmpGridModels.add(model);
                 }
@@ -736,10 +735,10 @@ public final class AmbassadorActivity extends AppCompatActivity {
         _handleDisablingAndSorting(tmpGridModels);
     }
 
-    private void _handleDisablingAndSorting(ArrayList<SocialGridModel> tmpGridModels) {
+    private void _handleDisablingAndSorting(ArrayList<ShareMethod> tmpGridModels) {
         gridModels = new ArrayList<>();
 
-        for (SocialGridModel model : tmpGridModels) {
+        for (ShareMethod model : tmpGridModels) {
             gridModels.add(model);
         }
 

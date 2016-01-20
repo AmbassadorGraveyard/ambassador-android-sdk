@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.models;
 
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;

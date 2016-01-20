@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.models.Contact;
 
 import java.io.IOException;
 

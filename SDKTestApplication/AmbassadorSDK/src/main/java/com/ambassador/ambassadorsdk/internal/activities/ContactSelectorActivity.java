@@ -44,7 +44,7 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.ContactNameDialog;
-import com.ambassador.ambassadorsdk.internal.Contact;
+import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.ambassador.ambassadorsdk.internal.DividerItemDecoration;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
