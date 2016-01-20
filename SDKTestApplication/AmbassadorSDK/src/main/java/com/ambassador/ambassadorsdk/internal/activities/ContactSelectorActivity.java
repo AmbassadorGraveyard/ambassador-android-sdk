@@ -2,7 +2,6 @@ package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -44,7 +43,8 @@ import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
-import com.ambassador.ambassadorsdk.internal.dialogs.ContactNameDialog;
+import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
+import com.ambassador.ambassadorsdk.internal.dialogs.AskUrlDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.ambassador.ambassadorsdk.internal.utils.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.ContactList;
@@ -100,11 +100,11 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     // region Local members
     protected  RAFOptions               raf = RAFOptions.get();
-    protected List<Contact>       contactList;
+    protected List<Contact>             contactList;
     protected ContactListAdapter        contactListAdapter;
     protected JSONObject                pusherData;
     protected boolean                   showPhoneNumbers;
-    protected ContactNameDialog         contactNameDialog;
+    protected AskNameDialog             askNameDialog;
     protected ProgressDialog            progressDialog;
     protected float                     lastSendHeight;
     // endregion
@@ -515,27 +515,19 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     private void askForUrl() {
         final String url = ambassadorConfig.getURL();
-        AlertDialog dialogBuilder = new AlertDialog.Builder(this)
-                .setTitle(new StringResource(R.string.hold_on).getValue())
-                .setMessage(new StringResource(R.string.url_missing).getValue() + " " + url)
-                .setPositiveButton("Continue Sending", new DialogInterface.OnClickListener() {
+        new AskUrlDialog(this, url)
+                .setOnCompleteListener(new AskUrlDialog.OnCompleteListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void dontAdd() {
                         send();
                     }
-                })
-                .setNegativeButton("Insert Link", new DialogInterface.OnClickListener() {
+
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void doAdd() {
                         insertURLIntoMessage(etShareMessage, url);
-
-                        dialog.dismiss();
                     }
-                }).show();
-
-        dialogBuilder.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
-        dialogBuilder.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+                })
+                .show();
     }
 
     private void insertURLIntoMessage(EditText editText, String url) {
@@ -559,14 +551,14 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     }
 
     private void askForName() {
-        contactNameDialog = new ContactNameDialog(this, progressDialog);
-        contactNameDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+        askNameDialog = new AskNameDialog(this, progressDialog);
+        askNameDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                contactNameDialog.showKeyboard();
+                askNameDialog.showKeyboard();
             }
         });
-        contactNameDialog.show();
+        askNameDialog.show();
     }
 
     private boolean pusherHasKey(String key) {

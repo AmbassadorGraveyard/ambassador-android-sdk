@@ -4,7 +4,7 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.LinkedInLoginActivity;
-import com.ambassador.ambassadorsdk.internal.dialogs.ContactNameDialog;
+import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 
 /**
@@ -19,7 +19,7 @@ public interface AmbassadorApplicationComponent {
     void inject(ConversionUtility conversionUtility);
     void inject(RequestManager requestManager);
     void inject(AmbassadorSDK ambassadorSDK);
-    void inject(ContactNameDialog contactNameDialog);
+    void inject(AskNameDialog askNameDialog);
     void inject(IdentifyAugurSDK identify);
     void inject(PusherSDK pusherSDK);
     void inject(InstallReceiver installReceiver);
