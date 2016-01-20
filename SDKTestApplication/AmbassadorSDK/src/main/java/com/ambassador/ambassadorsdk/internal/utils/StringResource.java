@@ -8,7 +8,7 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 /**
  *
  */
-public class StringResource {
+public final class StringResource {
 
     private String value;
 
