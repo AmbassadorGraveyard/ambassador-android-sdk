@@ -18,7 +18,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -42,16 +41,16 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.ContactListAdapter;
-import com.ambassador.ambassadorsdk.internal.ContactNameDialog;
-import com.ambassador.ambassadorsdk.internal.models.Contact;
-import com.ambassador.ambassadorsdk.internal.DividerItemDecoration;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
+import com.ambassador.ambassadorsdk.internal.dialogs.ContactNameDialog;
+import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.ambassador.ambassadorsdk.internal.utils.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.ContactList;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView;
 
 import org.json.JSONObject;
 
@@ -77,19 +76,19 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     // endregion
     
     // region Views
-    @Bind(B.id.action_bar)      protected Toolbar           toolbar;
-    @Bind(B.id.rlSearch)        protected RelativeLayout    rlSearch;
-    @Bind(B.id.etSearch)        protected EditText          etSearch;
-    @Bind(B.id.btnDoneSearch)   protected Button            btnDoneSearch;
-    @Bind(B.id.rvContacts)      protected RecyclerView      rvContacts;
-    @Bind(B.id.llSendView)      protected LinearLayout      llSendView;
-    @Bind(B.id.etShareMessage)  protected EditText          etShareMessage;
-    @Bind(B.id.btnEdit)         protected ImageButton       btnEdit;
-    @Bind(B.id.btnDone)         protected Button            btnDone;
-    @Bind(B.id.rlSend)          protected RelativeLayout    rlSend;
-    @Bind(B.id.tvSendContacts)  protected TextView          tvSendContacts;
-    @Bind(B.id.tvSendCount)     protected TextView          tvSendCount;
-    @Bind(B.id.tvNoContacts)    protected TextView          tvNoContacts;
+    @Bind(B.id.action_bar)      protected Toolbar               toolbar;
+    @Bind(B.id.rlSearch)        protected RelativeLayout        rlSearch;
+    @Bind(B.id.etSearch)        protected EditText              etSearch;
+    @Bind(B.id.btnDoneSearch)   protected Button                btnDoneSearch;
+    @Bind(B.id.rvContacts)      protected DividedRecyclerView   rvContacts;
+    @Bind(B.id.llSendView)      protected LinearLayout          llSendView;
+    @Bind(B.id.etShareMessage)  protected EditText              etShareMessage;
+    @Bind(B.id.btnEdit)         protected ImageButton           btnEdit;
+    @Bind(B.id.btnDone)         protected Button                btnDone;
+    @Bind(B.id.rlSend)          protected RelativeLayout        rlSend;
+    @Bind(B.id.tvSendContacts)  protected TextView              tvSendContacts;
+    @Bind(B.id.tvSendCount)     protected TextView              tvSendCount;
+    @Bind(B.id.tvNoContacts)    protected TextView              tvNoContacts;
     // endregion
 
     // region Dependencies
@@ -471,7 +470,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
         rvContacts.setHasFixedSize(true);
         rvContacts.setLayoutManager(new LinearLayoutManager(this));
-        rvContacts.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
         rvContacts.setAdapter(contactListAdapter);
     }
 
