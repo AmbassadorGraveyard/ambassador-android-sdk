@@ -15,7 +15,7 @@ import retrofit.mime.TypedInput;
 /**
  * Handles LinkedIn API using Retrofit services and contains all relevant pojo classes.
  */
-public class LinkedInApi {
+public final class LinkedInApi {
 
     /** Client for making authenticated requests such as posting */
     private LinkedInClient linkedInClient;
