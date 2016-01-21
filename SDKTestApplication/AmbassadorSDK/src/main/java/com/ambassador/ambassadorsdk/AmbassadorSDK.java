@@ -153,7 +153,7 @@ public final class AmbassadorSDK {
         return new Timer();
     }
 
-    private static void setupGcm(final Context context) {
+    protected static void setupGcm(final Context context) {
         if (checkPlayServices(context)) {
             new Thread(new Runnable() {
                 @Override
