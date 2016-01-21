@@ -1,10 +1,8 @@
 package com.ambassador.ambassadorsdk;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
@@ -16,7 +14,6 @@ import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
-import com.ambassador.ambassadorsdk.internal.notifications.RegistrationIntentService;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -158,28 +155,18 @@ public final class AmbassadorSDK {
 
     private static void setupGcm(final Context context) {
         if (checkPlayServices(context)) {
-
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
                         String id = gcm.register("440421303402");
+                        ambassadorConfig.setGcmId(id);
                     } catch (IOException e) {
-                        Log.v("T","T");
+                        // whatever
                     }
                 }
             }).start();
-
-            Intent intent = new Intent(context, RegistrationIntentService.class);
-            context.startService(intent);
-
-            LocalBroadcastManager.getInstance(context).registerReceiver(new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-
-                }
-            }, new IntentFilter("registrationComplete"));
         }
     }
 
