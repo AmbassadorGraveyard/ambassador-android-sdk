@@ -123,7 +123,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         ButterFork.bind(this);
 
         // Requirement checks
-        finishIfContextInvalid();
+        finishIfSingletonInvalid();
         if (isFinishing()) return;
 
         // Other setup
@@ -134,7 +134,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         setUpProgressDialog();
         setUpUI();
         setUpPusher();
-
         populateContacts();
     }
 
@@ -186,7 +185,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     // endregion
 
     // region Requirement checks
-    private void finishIfContextInvalid() {
+    private void finishIfSingletonInvalid() {
         if (!AmbassadorSingleton.isValid()) {
             finish();
         }
