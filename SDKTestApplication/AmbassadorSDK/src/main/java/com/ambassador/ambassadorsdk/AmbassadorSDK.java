@@ -1,8 +1,10 @@
 package com.ambassador.ambassadorsdk;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
@@ -14,7 +16,10 @@ import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.broadcasts.RegistrationIntentService;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.InputStream;
 import java.util.Timer;
@@ -113,6 +118,7 @@ public final class AmbassadorSDK {
         AmbassadorSingleton.getInstanceComponent().inject(new AmbassadorSDK());
 
         registerInstallReceiver(context);
+        setupGcm(context);
 
         ambassadorConfig.setUniversalToken(universalToken);
         ambassadorConfig.setUniversalID(universalID);
@@ -146,6 +152,26 @@ public final class AmbassadorSDK {
 
     private static Timer buildTimer() {
         return new Timer();
+    }
+
+    private static void setupGcm(Context context) {
+        if (checkPlayServices(context)) {
+            Intent intent = new Intent(context, RegistrationIntentService.class);
+            context.startService(intent);
+
+            LocalBroadcastManager.getInstance(context).registerReceiver(new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+
+                }
+            }, new IntentFilter("registrationComplete"));
+        }
+    }
+
+    private static boolean checkPlayServices(Context context) {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
+        return resultCode == ConnectionResult.SUCCESS;
     }
 
 }
