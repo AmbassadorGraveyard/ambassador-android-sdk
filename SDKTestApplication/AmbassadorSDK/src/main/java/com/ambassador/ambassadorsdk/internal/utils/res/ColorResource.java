@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal.utils;
+package com.ambassador.ambassadorsdk.internal.utils.res;
 
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
