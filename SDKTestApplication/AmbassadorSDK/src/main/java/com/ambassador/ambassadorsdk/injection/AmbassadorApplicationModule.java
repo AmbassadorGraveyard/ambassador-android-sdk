@@ -1,6 +1,6 @@
 package com.ambassador.ambassadorsdk.injection;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
@@ -16,43 +16,35 @@ import dagger.Provides;
 @Module
 public final class AmbassadorApplicationModule {
 
-    private Context context;
-
-    public void setContext(Context context) {
-        this.context = context;
-    }
-
+    @NonNull
     @Provides
     @Singleton
     public RequestManager provideRequestManager() {
         return new RequestManager();
     }
 
-    @Provides
-    @Singleton
-    @ForActivity
-    public Context provideContext() {
-        return context;
-    }
-
+    @NonNull
     @Provides
     @Singleton
     public BulkShareHelper provideBulkShareHelper() {
         return new BulkShareHelper();
     }
 
+    @NonNull
     @Provides
     @Singleton
     public AmbassadorConfig provideAmbassadorConfig() {
         return new AmbassadorConfig();
     }
 
+    @NonNull
     @Provides
     @Singleton
     public PusherSDK providePusherSDK() {
         return new PusherSDK();
     }
 
+    @NonNull
     @Provides
     @Singleton
     public Device provideDevice() {
