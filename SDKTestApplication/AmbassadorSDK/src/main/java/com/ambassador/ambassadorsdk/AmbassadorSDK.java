@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -20,7 +21,9 @@ import com.ambassador.ambassadorsdk.internal.broadcasts.RegistrationIntentServic
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -154,8 +157,21 @@ public final class AmbassadorSDK {
         return new Timer();
     }
 
-    private static void setupGcm(Context context) {
+    private static void setupGcm(final Context context) {
         if (checkPlayServices(context)) {
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
+                        String id = gcm.register("440421303402");
+                    } catch (IOException e) {
+                        Log.v("T","T");
+                    }
+                }
+            }).start();
+
             Intent intent = new Intent(context, RegistrationIntentService.class);
             context.startService(intent);
 
