@@ -40,6 +40,7 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static android.support.test.espresso.action.ViewActions.longClick;
 import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.action.ViewActions.typeTextIntoFocusedView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.intent.Intents.intended;
 import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
@@ -498,7 +499,7 @@ public class AmbassadorActivityTest {
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         String linkedInText = _getRandomNumber();
-        onView(withId(R.id.etMessage)).perform(typeText(linkedInText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeTextIntoFocusedView(linkedInText), closeSoftKeyboard());
 
         doNothing().when(requestManager).bulkShareTrack(any(BulkShareHelper.SocialServiceTrackType.class));
         doAnswer(new Answer<Void>() {
@@ -528,7 +529,7 @@ public class AmbassadorActivityTest {
         //make sure message has been restored
         onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
-        onView(withId(R.id.etMessage)).perform(typeText(linkedInText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeTextIntoFocusedView(linkedInText), closeSoftKeyboard());
 
         onView(withId(R.id.btnSend)).perform(click());
         //failure shouldn't dismiss the dialog
@@ -633,7 +634,7 @@ public class AmbassadorActivityTest {
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         String tweetText = _getRandomNumber();
-        onView(withId(R.id.etMessage)).perform(typeText(tweetText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeTextIntoFocusedView(tweetText), closeSoftKeyboard());
 
         doNothing().when(requestManager).bulkShareTrack(any(BulkShareHelper.SocialServiceTrackType.class));
         doAnswer(new Answer<Void>() {
@@ -664,7 +665,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
-        onView(withId(R.id.etMessage)).perform(typeText(tweetText), closeSoftKeyboard());
+        onView(withId(R.id.etMessage)).perform(typeTextIntoFocusedView(tweetText), closeSoftKeyboard());
 
         onView(withId(R.id.btnSend)).perform(click());
         //failure shouldn't dismiss the dialog
