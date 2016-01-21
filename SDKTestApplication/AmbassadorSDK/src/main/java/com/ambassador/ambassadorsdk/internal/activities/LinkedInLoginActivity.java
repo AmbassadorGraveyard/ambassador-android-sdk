@@ -76,7 +76,7 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
         ButterFork.bind(this);
 
         // Requirement checks
-        finishIfContextInvalid();
+        finishIfSingletonInvalid();
         finishIfDeviceNotConnected();
         if (isFinishing()) return;
 
@@ -95,7 +95,7 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
     // endregion
 
     // region Requirement checks
-    private void finishIfContextInvalid() {
+    private void finishIfSingletonInvalid() {
         if (!AmbassadorSingleton.isValid()) {
             finish();
         }
