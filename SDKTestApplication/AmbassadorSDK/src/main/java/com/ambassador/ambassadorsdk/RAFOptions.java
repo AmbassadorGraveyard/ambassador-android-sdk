@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk;
 
 import android.graphics.Typeface;
 
+import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.factories.ResourceFactory;
 
 public final class RAFOptions {
@@ -544,6 +545,7 @@ public final class RAFOptions {
     }
 
     public static RAFOptions get() {
+        if (instance == null) instance = RAFOptions.Builder.newInstance().build();
         return instance;
     }
 
