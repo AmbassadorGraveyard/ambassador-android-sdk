@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
@@ -124,7 +123,7 @@ public class AmbassadorSDKTest {
         Mockito.doNothing().when(component).inject(Mockito.any(AmbassadorSDK.class));
         PowerMockito.doNothing().when(AmbassadorSDK.class, "registerInstallReceiver", context);
         PowerMockito.doNothing().when(AmbassadorSDK.class, "startConversionTimer");
-        PowerMockito.doNothing().when(AmbassadorSDK.class, "setupGcm");
+        PowerMockito.doNothing().when(AmbassadorSDK.class, "setupGcm", context);
         Mockito.doNothing().when(ambassadorConfig).setUniversalToken(Mockito.anyString());
         Mockito.doNothing().when(ambassadorConfig).setUniversalID(Mockito.anyString());
 
