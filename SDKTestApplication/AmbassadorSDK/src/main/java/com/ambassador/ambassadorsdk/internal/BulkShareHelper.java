@@ -1,5 +1,6 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 
@@ -16,8 +17,7 @@ import javax.inject.Inject;
 public class BulkShareHelper {
 
     /** */
-    @Inject
-    RequestManager requestManager;
+    @Inject protected RequestManager requestManager;
 
     /**
      *
@@ -99,7 +99,7 @@ public class BulkShareHelper {
      * @param contacts
      * @return
      */
-    static ArrayList<String> verifiedSMSList(List<Contact> contacts) {
+    public static ArrayList<String> verifiedSMSList(List<Contact> contacts) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
         for (Contact contact : contacts) {
             String strippedNum = contact.getPhoneNumber().replaceAll("[^0-9]", "");
@@ -116,7 +116,7 @@ public class BulkShareHelper {
      * @param contacts
      * @return
      */
-    static ArrayList<String> verifiedEmailList(List<Contact> contacts) {
+    public static ArrayList<String> verifiedEmailList(List<Contact> contacts) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
         for (Contact contact : contacts) {
             if (BulkShareHelper.isValidEmail(contact.getEmailAddress()) && !verifiedEmails.contains(contact.getEmailAddress())) {
@@ -143,7 +143,7 @@ public class BulkShareHelper {
      * @param shortCode
      * @return
      */
-    static BulkShareApi.BulkShareTrackBody[] contactArray(SocialServiceTrackType trackType, String shortCode) {
+    public static BulkShareApi.BulkShareTrackBody[] contactArray(SocialServiceTrackType trackType, String shortCode) {
         return contactArray(null, trackType, shortCode);
     }
 
@@ -154,7 +154,7 @@ public class BulkShareHelper {
      * @param shortCode
      * @return
      */
-    static BulkShareApi.BulkShareTrackBody[] contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
+    public static BulkShareApi.BulkShareTrackBody[] contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
         String short_code = shortCode;
         String social_name = trackType.toString();
 
@@ -192,7 +192,7 @@ public class BulkShareHelper {
      * @param message
      * @return
      */
-    static BulkShareApi.BulkShareEmailBody payloadObjectForEmail(List<String> emailsList, String shortCode, String emailSubject, String message) {
+    public static BulkShareApi.BulkShareEmailBody payloadObjectForEmail(List<String> emailsList, String shortCode, String emailSubject, String message) {
         String[] emails = emailsList.toArray(new String[emailsList.size()]);
         return new BulkShareApi.BulkShareEmailBody(emailSubject, message, shortCode, emails);
     }
@@ -204,7 +204,7 @@ public class BulkShareHelper {
      * @param smsMessage
      * @return
      */
-    static BulkShareApi.BulkShareSmsBody payloadObjectForSMS(List<String> numbersList, String fullName, String smsMessage) {
+    public static BulkShareApi.BulkShareSmsBody payloadObjectForSMS(List<String> numbersList, String fullName, String smsMessage) {
         String[] numbers = numbersList.toArray(new String[numbersList.size()]);
         return new BulkShareApi.BulkShareSmsBody(fullName, smsMessage, numbers);
     }
