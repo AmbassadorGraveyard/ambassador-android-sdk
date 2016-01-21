@@ -5,7 +5,8 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
@@ -19,9 +20,9 @@ import org.json.JSONObject;
 
 public class AmbassadorConfig {
 
-    static final String LINKED_IN_CLIENT_ID = new StringResource(R.string.linked_in_client_id).getValue();
-    static final String LINKED_IN_CLIENT_SECRET = new StringResource(R.string.linked_in_client_secret).getValue();
-    static final String LINKED_IN_CALLBACK_URL = new StringResource(R.string.linked_in_callback_url).getValue();
+    public static final String LINKED_IN_CLIENT_ID = new StringResource(R.string.linked_in_client_id).getValue();
+    public static final String LINKED_IN_CLIENT_SECRET = new StringResource(R.string.linked_in_client_secret).getValue();
+    public static final String LINKED_IN_CALLBACK_URL = new StringResource(R.string.linked_in_callback_url).getValue();
     static final String PUSHER_KEY_DEV = new StringResource(R.string.pusher_key_dev).getValue();
     static final String PUSHER_KEY_PROD = new StringResource(R.string.pusher_key_prod).getValue();
     static final String AUGUR_API_KEY = new StringResource(R.string.augur_api_key).getValue();
@@ -132,11 +133,11 @@ public class AmbassadorConfig {
         return sharePrefs.getString("twitterToken", null);
     }
 
-    String getTwitterAccessTokenSecret() {
+    public String getTwitterAccessTokenSecret() {
         return sharePrefs.getString("twitterTokenSecret", null);
     }
 
-    String getIdentifyObject() { return sharePrefs.getString("identifyObject", null); }
+    public String getIdentifyObject() { return sharePrefs.getString("identifyObject", null); }
 
     public String getCampaignID() {
         return sharePrefs.getString("campaignID", null);
@@ -163,23 +164,23 @@ public class AmbassadorConfig {
         return sharePrefs.getString("universalID", null);
     }
 
-    String getReferrerShortCode() { return sharePrefs.getString("referrerShortCode", null); }
+    public String getReferrerShortCode() { return sharePrefs.getString("referrerShortCode", null); }
 
-    String getReferralShortCode() { return sharePrefs.getString("referralShortCode", null); }
+    public String getReferralShortCode() { return sharePrefs.getString("referralShortCode", null); }
 
-    String getWebDeviceId() {
+    public String getWebDeviceId() {
         return sharePrefs.getString("webDeviceId", null);
     }
 
-    String getUserFullName() {
+    public String getUserFullName() {
         return sharePrefs.getString("fullName", null);
     }
 
-    String getEmailSubjectLine() {
+    public String getEmailSubjectLine() {
         return sharePrefs.getString("subjectLine", null);
     }
 
-    String getUserEmail() {
+    public String getUserEmail() {
         return sharePrefs.getString("userEmail", null);
     }
 
