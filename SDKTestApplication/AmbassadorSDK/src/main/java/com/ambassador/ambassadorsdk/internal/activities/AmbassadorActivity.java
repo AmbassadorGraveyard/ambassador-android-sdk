@@ -2,8 +2,6 @@ package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,15 +39,16 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.views.LockableScrollView;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.internal.views.StaticGridView;
-import com.ambassador.ambassadorsdk.internal.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -110,6 +109,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Inject protected RequestManager        requestManager;
     @Inject protected AmbassadorConfig      ambassadorConfig;
     @Inject protected PusherSDK             pusherSDK;
+    @Inject protected Device                device;
     // endregion
 
     // region Local members
@@ -145,15 +145,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
     private ProgressDialog pd;
     private Timer networkTimer;
     private CallbackManager callbackManager;
-    private final Handler timerHandler = new Handler();
-
-    final private Runnable myRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Toast.makeText(getApplicationContext(), new StringResource(R.string.loading_failure).getValue(), Toast.LENGTH_SHORT).show();
-            finish();
-        }
-    };
 
     final private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
@@ -163,16 +154,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
         }
     };
 
-    /**
-     * It's really stupid that this has to be here.  Facebook and Twitter want to use OnActivityResult
-     * but they don't use or handle the requestCode's.  So we have to keep track of who to pass the callback
-     * to.
-     */
     private enum LaunchedSocial {
-        FACEBOOK, TWITTER
+        FACEBOOK, TWITTER, LINKEDIN, EMAIL, SMS
     };
 
-    LaunchedSocial launchedSocial = null;
+    private LaunchedSocial launchedSocial = null;
 
     TwitterAuthClient twitterAuthClient;
 
@@ -242,7 +228,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         btnCopy.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                copyShortURLToClipboard(etShortUrl.getText().toString(), getApplicationContext());
+                copyShortUrlToClipboard(etShortUrl.getText().toString(), getApplicationContext());
             }
         });
 
@@ -276,7 +262,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         networkTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                _showNetworkError();
+                showNetworkError();
             }
         }, 30000);
 
@@ -367,22 +353,30 @@ public final class AmbassadorActivity extends AppCompatActivity {
             case FACEBOOK:
                 callbackManager.onActivityResult(requestCode, resultCode, data);
                 break;
+
             case TWITTER:
                 twitterAuthClient.onActivityResult(requestCode, resultCode, data);
                 break;
 
+            case LINKEDIN:
+                break;
+
+            case EMAIL:
+                break;
+
+            case SMS:
+                break;
+
+            default:
+                break;
         }
 
         launchedSocial = null;
     }
 
-    String copyShortURLToClipboard(String copyText, Context context) {
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
-        ClipData clip = ClipData.newPlainText("simpleText", copyText);
-        clipboard.setPrimaryClip(clip);
+    private void copyShortUrlToClipboard(@NonNull String copyText, @NonNull Context context) {
+        device.copyToClipboard(copyText);
         Toast.makeText(context, new StringResource(R.string.copied_to_clipboard).getValue(), Toast.LENGTH_SHORT).show();
-
-        return clip.toString();
     }
 
     void loadCustomImages() throws Exception {
@@ -419,12 +413,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
             logo.setLayoutParams(params);
             llParent.addView(logo, pos-1);
         }
-    }
-
-    void goToContactsPage(Boolean showPhoneNumbers) {
-        Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
-        contactIntent.putExtra("showPhoneNumbers", showPhoneNumbers);
-        startActivity(contactIntent);
     }
 
     void shareWithFacebook() {
@@ -619,10 +607,14 @@ public final class AmbassadorActivity extends AppCompatActivity {
         }
     }
 
-    private void _showNetworkError() {
-        // Functionality: After 30 seconds of waiting for data from PusherSDK/Augur, shows toast to user
-        // stating that there is a network error and then dismisses the RAF activity
-        timerHandler.post(myRunnable);
+    private void showNetworkError() {
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), new StringResource(R.string.loading_failure).getValue(), Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
     }
 
     private void setUpToolbar() {
@@ -641,79 +633,43 @@ public final class AmbassadorActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(raf.getHomeToolbarTextColor());
     }
 
+    // region Share methods
+    private void facebookClicked() {
+        launchedSocial = LaunchedSocial.FACEBOOK;
+    }
+
+    private void twitterClicked() {
+        launchedSocial = LaunchedSocial.TWITTER;
+    }
+
+    private void linkedInClicked() {
+        launchedSocial = LaunchedSocial.LINKEDIN;
+    }
+
+    private void emailClicked() {
+        launchedSocial = LaunchedSocial.EMAIL;
+        Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
+        contactIntent.putExtra("showPhoneNumbers", false);
+        startActivity(contactIntent);
+    }
+
+    private void smsClicked() {
+        launchedSocial = LaunchedSocial.SMS;
+        Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
+        contactIntent.putExtra("showPhoneNumbers", true);
+        startActivity(contactIntent);
+    }
+
     @NonNull
     private List<ShareMethod> getShareMethods() {
-        ShareMethod.Builder modelFacebook = new ShareMethod.Builder()
-                .setName("FACEBOOK")
-                .setIconDrawable(R.drawable.facebook_icon)
-                .setBackgroundColor(getResources().getColor(R.color.facebook_blue))
-                .setShareAction(new ShareMethod.ShareAction() {
-                    @Override
-                    public void share() {
-                        shareWithFacebook();
-                    }
-                });
-
-        ShareMethod.Builder modelTwitter = new ShareMethod.Builder()
-                .setName("TWITTER")
-                .setIconDrawable(R.drawable.twitter_icon)
-                .setBackgroundColor(getResources().getColor(R.color.twitter_blue))
-                .setShareAction(new ShareMethod.ShareAction() {
-                    @Override
-                    public void share() {
-                        shareWithTwitter();
-                    }
-                });
-
-        ShareMethod.Builder modelLinkedIn = new ShareMethod.Builder()
-                .setName("LINKEDIN")
-                .setIconDrawable(R.drawable.linkedin_icon)
-                .setBackgroundColor(getResources().getColor(R.color.linkedin_blue))
-                .setShareAction(new ShareMethod.ShareAction() {
-                    @Override
-                    public void share() {
-                        shareWithLinkedIn();
-                    }
-                });
-
-        ShareMethod.Builder modelEmail = new ShareMethod.Builder()
-                .setName("EMAIL")
-                .setIconDrawable(R.drawable.email_icon)
-                .setBackgroundColor(getResources().getColor(android.R.color.white))
-                .setDrawBorder(true)
-                .setShareAction(new ShareMethod.ShareAction() {
-                    @Override
-                    public void share() {
-                        goToContactsPage(false);
-                    }
-                });
-
-        ShareMethod.Builder modelSms = new ShareMethod.Builder()
-                .setName("SMS")
-                .setIconDrawable(R.drawable.sms_icon)
-                .setBackgroundColor(getResources().getColor(android.R.color.white))
-                .setDrawBorder(true)
-                .setShareAction(new ShareMethod.ShareAction() {
-                    @Override
-                    public void share() {
-                        goToContactsPage(true);
-                    }
-                });
-
-        HashMap<String, ShareMethod.Builder> map = new HashMap<>();
-        map.put("facebook", modelFacebook);
-        map.put("twitter", modelTwitter);
-        map.put("linkedin", modelLinkedIn);
-        map.put("email", modelEmail);
-        map.put("sms", modelSms);
-
+        HashMap<String, ShareMethod.Builder> shareMethodMap = getDefaultShareMethodBuilderMap();
         ArrayList<ShareMethod> shareMethods = new ArrayList<>();
-
         String[] order = raf.getChannels();
+
         for (int i = 0; i < order.length; i++) {
             String channel = order[i].toLowerCase();
-            if (map.containsKey(channel)) {
-                ShareMethod shareMethod = map.get(channel)
+            if (shareMethodMap.containsKey(channel)) {
+                ShareMethod shareMethod = shareMethodMap.get(channel)
                         .setWeight(i)
                         .build();
 
@@ -726,5 +682,75 @@ public final class AmbassadorActivity extends AppCompatActivity {
         Collections.sort(shareMethods);
         return shareMethods;
     }
+
+    @NonNull
+    private HashMap<String, ShareMethod.Builder> getDefaultShareMethodBuilderMap() {
+        ShareMethod.Builder modelFacebook = new ShareMethod.Builder()
+                .setName("FACEBOOK")
+                .setIconDrawable(R.drawable.facebook_icon)
+                .setBackgroundColor(getResources().getColor(R.color.facebook_blue))
+                .setShareAction(new ShareMethod.ShareAction() {
+                    @Override
+                    public void share() {
+                        facebookClicked();
+                    }
+                });
+
+        ShareMethod.Builder modelTwitter = new ShareMethod.Builder()
+                .setName("TWITTER")
+                .setIconDrawable(R.drawable.twitter_icon)
+                .setBackgroundColor(getResources().getColor(R.color.twitter_blue))
+                .setShareAction(new ShareMethod.ShareAction() {
+                    @Override
+                    public void share() {
+                        twitterClicked();
+                    }
+                });
+
+        ShareMethod.Builder modelLinkedIn = new ShareMethod.Builder()
+                .setName("LINKEDIN")
+                .setIconDrawable(R.drawable.linkedin_icon)
+                .setBackgroundColor(getResources().getColor(R.color.linkedin_blue))
+                .setShareAction(new ShareMethod.ShareAction() {
+                    @Override
+                    public void share() {
+                        linkedInClicked();
+                    }
+                });
+
+        ShareMethod.Builder modelEmail = new ShareMethod.Builder()
+                .setName("EMAIL")
+                .setIconDrawable(R.drawable.email_icon)
+                .setBackgroundColor(getResources().getColor(android.R.color.white))
+                .setDrawBorder(true)
+                .setShareAction(new ShareMethod.ShareAction() {
+                    @Override
+                    public void share() {
+                        emailClicked();
+                    }
+                });
+
+        ShareMethod.Builder modelSms = new ShareMethod.Builder()
+                .setName("SMS")
+                .setIconDrawable(R.drawable.sms_icon)
+                .setBackgroundColor(getResources().getColor(android.R.color.white))
+                .setDrawBorder(true)
+                .setShareAction(new ShareMethod.ShareAction() {
+                    @Override
+                    public void share() {
+                        smsClicked();
+                    }
+                });
+
+        HashMap<String, ShareMethod.Builder> map = new HashMap<>();
+        map.put("facebook", modelFacebook);
+        map.put("twitter", modelTwitter);
+        map.put("linkedin", modelLinkedIn);
+        map.put("email", modelEmail);
+        map.put("sms", modelSms);
+
+        return map;
+    }
+    // endregion
 
 }
