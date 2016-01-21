@@ -1,16 +1,20 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.injection;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.ConversionUtility;
+import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
+import com.ambassador.ambassadorsdk.internal.InstallReceiver;
+import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.LinkedInLoginActivity;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 
-/**
- * Created by coreyfields on 9/16/15.
- */
 public interface AmbassadorApplicationComponent {
+
     void inject(AmbassadorActivity ambassadorActivity);
     void inject(SocialShareDialog socialShareDialog);
     void inject(LinkedInLoginActivity linkedInLoginActivity);
@@ -23,4 +27,5 @@ public interface AmbassadorApplicationComponent {
     void inject(IdentifyAugurSDK identify);
     void inject(PusherSDK pusherSDK);
     void inject(InstallReceiver installReceiver);
+
 }

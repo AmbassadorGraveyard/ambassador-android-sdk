@@ -1,7 +1,11 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.injection;
 
 import android.content.Context;
 
+import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.PusherSDK;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import javax.inject.Singleton;
@@ -9,60 +13,49 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-import static org.mockito.Mockito.mock;
-
 @Module
-public class AmbassadorApplicationModule {
+public final class AmbassadorApplicationModule {
 
     private Context context;
-    private Boolean mockMode = false;
 
     public void setContext(Context context) {
         this.context = context;
     }
 
-    public void setMockMode(Boolean mockMode) {
-        this.mockMode = mockMode;
-    }
-
     @Provides
     @Singleton
-    RequestManager provideRequestManager() {
-        if (mockMode) return mock(RequestManager.class);
+    public RequestManager provideRequestManager() {
         return new RequestManager();
     }
 
     @Provides
     @Singleton
     @ForActivity
-    Context provideContext() {
+    public Context provideContext() {
         return context;
     }
 
     @Provides
     @Singleton
-    BulkShareHelper provideBulkShareHelper() {
-        if (mockMode) return mock(BulkShareHelper.class);
+    public BulkShareHelper provideBulkShareHelper() {
         return new BulkShareHelper();
     }
 
     @Provides
     @Singleton
-    AmbassadorConfig provideAmbassadorConfig() {
-        if (mockMode) return mock(AmbassadorConfig.class);
+    public AmbassadorConfig provideAmbassadorConfig() {
         return new AmbassadorConfig();
     }
 
     @Provides
     @Singleton
-    PusherSDK providePusherSDK() {
-        if (mockMode) return mock(PusherSDK.class);
+    public PusherSDK providePusherSDK() {
         return new PusherSDK();
     }
 
     @Provides
     @Singleton
-    Device provideDevice() {
+    public Device provideDevice() {
         return new Device();
     }
 
