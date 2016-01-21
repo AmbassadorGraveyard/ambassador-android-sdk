@@ -192,9 +192,10 @@ public class BulkShareHelperTest {
         values.add("5199729550");
         BulkShareHelper.SocialServiceTrackType trackType = BulkShareHelper.SocialServiceTrackType.SMS;
         String shortCode = "shortCode";
+        String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(values, trackType, shortCode);
+        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(values, trackType, shortCode, fromEmail);
 
         // ASSERT
         Assert.assertEquals(2, bodies.length);
@@ -206,6 +207,7 @@ public class BulkShareHelperTest {
         Assert.assertEquals("shortCode", bodies[1].short_code);
         Assert.assertEquals("sms", bodies[0].social_name);
         Assert.assertEquals("sms", bodies[1].social_name);
+        Assert.assertEquals(fromEmail, bodies[0].from_email);
     }
 
     @Test
@@ -216,9 +218,10 @@ public class BulkShareHelperTest {
         values.add("corey@getambassador.com");
         BulkShareHelper.SocialServiceTrackType trackType = BulkShareHelper.SocialServiceTrackType.EMAIL;
         String shortCode = "shortCode";
+        String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(values, trackType, shortCode);
+        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(values, trackType, shortCode, fromEmail);
 
         // ASSERT
         Assert.assertEquals(2, bodies.length);
@@ -230,6 +233,7 @@ public class BulkShareHelperTest {
         Assert.assertEquals("shortCode", bodies[1].short_code);
         Assert.assertEquals("email", bodies[0].social_name);
         Assert.assertEquals("email", bodies[1].social_name);
+        Assert.assertEquals(fromEmail, bodies[0].from_email);
     }
 
     @Test
@@ -237,9 +241,10 @@ public class BulkShareHelperTest {
         // ARRANGE
         BulkShareHelper.SocialServiceTrackType trackType = BulkShareHelper.SocialServiceTrackType.FACEBOOK;
         String shortCode = "shortCode";
+        String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(trackType, shortCode);
+        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(trackType, shortCode, fromEmail);
 
         // ASSERT
         Assert.assertEquals(1, bodies.length);
@@ -247,6 +252,7 @@ public class BulkShareHelperTest {
         Assert.assertEquals("", bodies[0].recipient_username);
         Assert.assertEquals("shortCode", bodies[0].short_code);
         Assert.assertEquals("facebook", bodies[0].social_name);
+        Assert.assertEquals(fromEmail, bodies[0].from_email);
     }
 
     @Test
@@ -258,9 +264,10 @@ public class BulkShareHelperTest {
         String shortCode = "shortCode";
         String subject = "subject";
         String message = "message";
+        String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emails, shortCode, subject, message);
+        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emails, shortCode, subject, message, fromEmail);
 
         // ASSERT
         Assert.assertEquals(shortCode, body.short_code);
@@ -269,6 +276,7 @@ public class BulkShareHelperTest {
         Assert.assertEquals(2, body.to_emails.length);
         Assert.assertEquals("dylan@getambassador.com", body.to_emails[0]);
         Assert.assertEquals("corey@getambassador.com", body.to_emails[1]);
+        Assert.assertEquals(fromEmail, body.from_email);
     }
 
     @Test
@@ -279,9 +287,10 @@ public class BulkShareHelperTest {
         numbers.add("5199729550");
         String fullName = "fullName";
         String message = "message";
+        String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numbers, fullName, message);
+        BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numbers, fullName, message, fromEmail);
 
         // ASSERT
         Assert.assertEquals(fullName, body.name);
@@ -289,6 +298,7 @@ public class BulkShareHelperTest {
         Assert.assertEquals(2, body.to.length);
         Assert.assertEquals("3133291104", body.to[0]);
         Assert.assertEquals("5199729550", body.to[1]);
+        Assert.assertEquals(fromEmail, body.from_email);
     }
 
 }
