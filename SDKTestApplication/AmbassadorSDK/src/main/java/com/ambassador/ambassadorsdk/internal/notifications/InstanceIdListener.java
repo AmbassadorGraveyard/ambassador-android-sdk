@@ -1,6 +1,5 @@
-package com.ambassador.ambassadorsdk.internal.broadcasts;
+package com.ambassador.ambassadorsdk.internal.notifications;
 
-import android.app.IntentService;
 import android.content.Intent;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
