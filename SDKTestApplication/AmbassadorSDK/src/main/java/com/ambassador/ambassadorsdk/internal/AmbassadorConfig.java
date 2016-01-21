@@ -177,6 +177,14 @@ public class AmbassadorConfig {
         sharePrefs.edit().putBoolean("installConversion", true).apply();
     }
 
+    public String getGcmId() {
+        return sharePrefs.getString("gcmId", null);
+    }
+
+    public void setGcmId(String gcmId) {
+        sharePrefs.edit().putString("gcmId", gcmId).apply();
+    }
+
     public void nullifyTwitterIfInvalid(final NullifyCompleteListener listener) {
         if (TwitterCore.getInstance() != null && TwitterCore.getInstance().getSessionManager() != null) {
             final SessionManager sm = TwitterCore.getInstance().getSessionManager();
