@@ -2,6 +2,9 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 
+import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationModule;
+
 import junit.framework.Assert;
 
 import org.junit.Before;

@@ -9,8 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.utils.ColorResource;
-import com.ambassador.ambassadorsdk.internal.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 public final class AskUrlDialog extends AlertDialog {
 

@@ -1,6 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.api.linkedIn;
 
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 
@@ -27,6 +27,7 @@ public final class LinkedInApi {
      * Default constructor.
      * Instantiates BulkShareApi and automatically initializes client.
      */
+    @SuppressWarnings("unused")
     public LinkedInApi() {
         this(true);
     }

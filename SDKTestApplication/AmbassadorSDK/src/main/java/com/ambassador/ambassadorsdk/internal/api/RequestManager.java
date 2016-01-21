@@ -1,6 +1,12 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.api;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.ConversionUtility;
+import com.ambassador.ambassadorsdk.internal.PusherChannel;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
@@ -23,15 +29,14 @@ import javax.inject.Inject;
  * Handles all requests at the highest level. This is what all other internal classes use.
  * Prepares parameters and calls the different Api classes.
  */
-public class RequestManager {
+public final class RequestManager {
 
-    @Inject
-    AmbassadorConfig ambassadorConfig;
+    @Inject protected AmbassadorConfig ambassadorConfig;
 
-    BulkShareApi bulkShareApi;
-    ConversionsApi conversionsApi;
-    IdentifyApi identifyApi;
-    LinkedInApi linkedInApi;
+    protected BulkShareApi bulkShareApi;
+    protected ConversionsApi conversionsApi;
+    protected IdentifyApi identifyApi;
+    protected LinkedInApi linkedInApi;
 
     /**
      * Standard callback used throughout the codebase.
@@ -53,7 +58,7 @@ public class RequestManager {
      * Constructor with parameter for optionally initializing APIs.
      * @param doInit whether or not to initialize Api objects.
      */
-    RequestManager(boolean doInit) {
+    public RequestManager(boolean doInit) {
         AmbassadorSingleton.getInstanceComponent().inject(this);
         bulkShareApi = new BulkShareApi(false);
         conversionsApi = new ConversionsApi(false);
@@ -197,7 +202,7 @@ public class RequestManager {
      * Stores the channel information when it receives back.
      * @param completion callback for request completion
      */
-    void createPusherChannel(final RequestCompletion completion) {
+    public void createPusherChannel(final RequestCompletion completion) {
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
 
@@ -209,7 +214,7 @@ public class RequestManager {
      * @param url the url to hit
      * @param completion callback for request completion
      */
-    void externalPusherRequest(final String url, final RequestCompletion completion) {
+    public void externalPusherRequest(final String url, final RequestCompletion completion) {
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
         identifyApi.externalPusherRequest(url, uid, auth, completion);
