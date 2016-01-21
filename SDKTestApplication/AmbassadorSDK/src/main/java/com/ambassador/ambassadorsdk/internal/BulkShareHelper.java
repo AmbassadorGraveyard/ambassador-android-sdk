@@ -142,8 +142,8 @@ public class BulkShareHelper {
      * @param shortCode
      * @return
      */
-    static BulkShareApi.BulkShareTrackBody[] contactArray(SocialServiceTrackType trackType, String shortCode) {
-        return contactArray(null, trackType, shortCode);
+    static BulkShareApi.BulkShareTrackBody[] contactArray(SocialServiceTrackType trackType, String shortCode, String fromEmail) {
+        return contactArray(null, trackType, shortCode, fromEmail);
     }
 
     /**
@@ -153,7 +153,7 @@ public class BulkShareHelper {
      * @param shortCode
      * @return
      */
-    static BulkShareApi.BulkShareTrackBody[] contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode) {
+    static BulkShareApi.BulkShareTrackBody[] contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode, String fromEmail) {
         String short_code = shortCode;
         String social_name = trackType.toString();
 
@@ -176,7 +176,7 @@ public class BulkShareHelper {
                     break;
             }
 
-            BulkShareApi.BulkShareTrackBody newObject = new BulkShareApi.BulkShareTrackBody(short_code, social_name, recipient_email, recipient_username);
+            BulkShareApi.BulkShareTrackBody newObject = new BulkShareApi.BulkShareTrackBody(short_code, social_name, recipient_email, recipient_username, fromEmail);
             objectsList[i] = newObject;
         }
 
@@ -191,9 +191,9 @@ public class BulkShareHelper {
      * @param message
      * @return
      */
-    static BulkShareApi.BulkShareEmailBody payloadObjectForEmail(List<String> emailsList, String shortCode, String emailSubject, String message) {
+    static BulkShareApi.BulkShareEmailBody payloadObjectForEmail(List<String> emailsList, String shortCode, String emailSubject, String message, String fromEmail) {
         String[] emails = emailsList.toArray(new String[emailsList.size()]);
-        return new BulkShareApi.BulkShareEmailBody(emailSubject, message, shortCode, emails);
+        return new BulkShareApi.BulkShareEmailBody(emailSubject, message, shortCode, fromEmail, emails);
     }
 
     /**
@@ -203,9 +203,9 @@ public class BulkShareHelper {
      * @param smsMessage
      * @return
      */
-    static BulkShareApi.BulkShareSmsBody payloadObjectForSMS(List<String> numbersList, String fullName, String smsMessage) {
+    static BulkShareApi.BulkShareSmsBody payloadObjectForSMS(List<String> numbersList, String fullName, String smsMessage, String fromEmail) {
         String[] numbers = numbersList.toArray(new String[numbersList.size()]);
-        return new BulkShareApi.BulkShareSmsBody(fullName, smsMessage, numbers);
+        return new BulkShareApi.BulkShareSmsBody(fullName, smsMessage, fromEmail, numbers);
     }
 
 }
