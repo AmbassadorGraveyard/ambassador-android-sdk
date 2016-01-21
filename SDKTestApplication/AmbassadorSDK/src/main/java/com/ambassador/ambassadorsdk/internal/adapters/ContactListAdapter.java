@@ -11,7 +11,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -153,7 +152,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
             }
         });
 
-        _setOtherFields(cvh);
+        this.maxNameWidth = Utilities.getDpSizeForPixels(cvh.tvName.getMaxWidth());
         return cvh;
     }
 
@@ -194,10 +193,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
             holder.ivPic.setImageBitmap(noPicBmp);
             contact.setThumbnailBitmap(noPicBmp);
         }
-    }
-
-    private void _setOtherFields(ContactViewHolder cvh) {
-        this.maxNameWidth = Utilities.getDpSizeForPixels(cvh.tvName.getMaxWidth());
     }
 
     public void filterList(String filterString) {
