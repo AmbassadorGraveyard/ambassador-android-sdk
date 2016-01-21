@@ -468,8 +468,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
             }
         });
 
-        rvContacts.setHasFixedSize(true);
-        rvContacts.setLayoutManager(new LinearLayoutManager(this));
         rvContacts.setAdapter(contactListAdapter);
     }
 

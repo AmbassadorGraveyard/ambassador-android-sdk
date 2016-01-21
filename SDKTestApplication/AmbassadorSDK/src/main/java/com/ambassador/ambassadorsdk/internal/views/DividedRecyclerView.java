@@ -10,6 +10,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
+/**
+ * RecyclerView that displays items vertically with a dividing line between items.
+ */
 public final class DividedRecyclerView extends RecyclerView {
 
     public DividedRecyclerView(Context context) {
@@ -29,6 +32,8 @@ public final class DividedRecyclerView extends RecyclerView {
 
     private void init() {
         addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
+        setHasFixedSize(true);
+        setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     private static class DividerItemDecoration extends RecyclerView.ItemDecoration {
