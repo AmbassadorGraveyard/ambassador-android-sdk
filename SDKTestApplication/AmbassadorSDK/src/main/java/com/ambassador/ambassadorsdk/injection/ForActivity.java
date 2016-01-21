@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.injection;
 
 import java.lang.annotation.Retention;
 import javax.inject.Qualifier;
