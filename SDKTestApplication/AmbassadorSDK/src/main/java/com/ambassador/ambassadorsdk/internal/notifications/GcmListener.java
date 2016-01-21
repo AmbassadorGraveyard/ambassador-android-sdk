@@ -1,6 +1,5 @@
-package com.ambassador.ambassadorsdk.internal.broadcasts;
+package com.ambassador.ambassadorsdk.internal.notifications;
 
-import android.app.IntentService;
 import android.os.Bundle;
 import android.util.Log;
 

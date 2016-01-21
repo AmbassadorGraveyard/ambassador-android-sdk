@@ -1,9 +1,7 @@
-package com.ambassador.ambassadorsdk.internal.broadcasts;
+package com.ambassador.ambassadorsdk.internal.notifications;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
