@@ -162,6 +162,7 @@ public final class AmbassadorSDK {
                         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
                         String id = gcm.register("440421303402");
                         ambassadorConfig.setGcmId(id);
+                        Log.v("AMB_GCM", "REG TOKEN: " + id);
                     } catch (IOException e) {
                         // whatever
                     }
