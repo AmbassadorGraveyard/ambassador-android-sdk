@@ -13,7 +13,7 @@ import retrofit.client.Response;
 /**
  * Handles Ambassador API conversion methods using Retrofit services and contains all relevant pojo classes.
  */
-public class ConversionsApi {
+public final class ConversionsApi {
 
     /** Client for making Conversions requests to the Ambassador API */
     private ConversionsClient conversionsClient;

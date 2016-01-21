@@ -23,7 +23,7 @@ import retrofit.client.Response;
 /**
  * Handles Ambassador API identify methods using Retrofit services and contains all relevant pojo classes.
  */
-public class IdentifyApi {
+public final class IdentifyApi {
 
     /** Client for making Identify requests to the Ambassador API */
     private IdentifyClient identifyClient;

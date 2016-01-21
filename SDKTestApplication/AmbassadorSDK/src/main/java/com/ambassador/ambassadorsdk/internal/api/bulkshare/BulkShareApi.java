@@ -12,7 +12,7 @@ import retrofit.client.Response;
 /**
  * Handles Ambassador API bulkshare methods using Retrofit services and contains all relevant pojo classes.
  */
-public class BulkShareApi {
+public final class BulkShareApi {
 
     /** Client for making BulkShare requests to the Ambassador API */
     private BulkShareClient bulkShareClient;

@@ -11,7 +11,7 @@ import retrofit.client.OkClient;
  * Class containing static method createService which will generate service implementations
  * for working with different APIs.
  */
-public class ServiceGenerator {
+public final class ServiceGenerator {
 
     /**
      * Generates and returns an object that implements one of the API service interfaces and handles
