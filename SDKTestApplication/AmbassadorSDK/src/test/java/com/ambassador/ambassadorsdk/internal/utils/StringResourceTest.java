@@ -3,6 +3,7 @@ package com.ambassador.ambassadorsdk.internal.utils;
 import android.content.Context;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 import junit.framework.Assert;
 

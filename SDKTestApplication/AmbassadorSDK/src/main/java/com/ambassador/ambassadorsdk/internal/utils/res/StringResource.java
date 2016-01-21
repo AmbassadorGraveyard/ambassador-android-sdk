@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal.utils;
+package com.ambassador.ambassadorsdk.internal.utils.res;
 
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
