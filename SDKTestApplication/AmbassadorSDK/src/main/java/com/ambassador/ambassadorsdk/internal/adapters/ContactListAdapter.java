@@ -11,6 +11,8 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.dialogs.ContactInfoDialog;
@@ -31,6 +34,9 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterfork.Bind;
+import butterfork.ButterFork;
+
 public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
 
     private RAFOptions raf = RAFOptions.get();
@@ -39,29 +45,26 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
 
         private RAFOptions raf = RAFOptions.get();
 
-        TextView tvName, tvDots;
-        TextView tvNumberOrEmail;
-        ImageView ivCheckMark;
-        ImageView ivPic;
-        OnContactClickListener listener;
+        @Bind(B.id.tvName)              protected TextView      tvName;
+        @Bind(B.id.tvDots)              protected TextView      tvDots;
+        @Bind(B.id.tvNumberOrEmail)     protected TextView      tvNumberOrEmail;
+        @Bind(B.id.ivCheckMark)         protected ImageView     ivCheckMark;
+        @Bind(B.id.ivPic)               protected ImageView     ivPic;
 
-        ContactViewHolder(View itemView, OnContactClickListener listener) {
+        protected OnContactClickListener listener;
+
+        private ContactViewHolder(View itemView, @Nullable OnContactClickListener listener) {
             super(itemView);
+            ButterFork.bind(itemView);
 
-            tvName = (TextView) itemView.findViewById(R.id.tvName);
             tvName.setTextSize(raf.getContactsListNameSize());
             tvName.setTypeface(raf.getContactsListNameFont());
 
-            tvDots = (TextView) itemView.findViewById(R.id.tvDots);
             tvDots.setTextSize(raf.getContactsListNameSize());
             tvDots.setTypeface(raf.getContactsListNameFont());
 
-            tvNumberOrEmail = (TextView) itemView.findViewById(R.id.tvNumberOrEmail);
             tvNumberOrEmail.setTextSize(raf.getContactsListValueSize());
             tvNumberOrEmail.setTypeface(raf.getContactsListValueFont());
-
-            ivCheckMark = (ImageView) itemView.findViewById(R.id.ivCheckMark);
-            ivPic = (ImageView) itemView.findViewById(R.id.ivPic);
 
             this.listener = listener;
             itemView.setOnClickListener(this);
@@ -70,12 +73,16 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
 
         @Override
         public void onClick(View v) {
-            this.listener.onClick(v, getPosition());
+            if (this.listener != null) {
+                this.listener.onClick(v, getPosition());
+            }
         }
 
         @Override
         public boolean onLongClick(View v) {
-            this.listener.onLongClick(v, getPosition());
+            if (this.listener != null) {
+                this.listener.onLongClick(v, getPosition());
+            }
             return true;
         }
 
@@ -88,7 +95,9 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
 
     private Context context;
 
-    private List<Contact> contacts, filteredContacts, selectedContacts;
+    private List<Contact> contacts;
+    private List<Contact> filteredContacts;
+    private List<Contact> selectedContacts;
 
     private boolean shouldShowPhoneNumbers;
     private float maxNameWidth;
