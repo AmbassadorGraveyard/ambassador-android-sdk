@@ -22,7 +22,7 @@ public final class SocialGridAdapter extends BaseAdapter {
 
     private Context context;
     private List<ShareMethod> models;
-    LayoutInflater inflater;
+    private LayoutInflater inflater;
     private float cornerRadius;
 
     public SocialGridAdapter(Context context, List<ShareMethod> models) {
