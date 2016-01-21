@@ -8,10 +8,6 @@ import android.support.annotation.Nullable;
  */
 public final class ShareMethod implements Comparable<ShareMethod> {
 
-    public interface ShareAction {
-        void share();
-    }
-
     protected ShareMethod() {}
 
     protected String name;
@@ -57,6 +53,10 @@ public final class ShareMethod implements Comparable<ShareMethod> {
         } else {
             return 0;
         }
+    }
+
+    public interface ShareAction {
+        void share();
     }
 
     public static final class Builder {
