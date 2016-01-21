@@ -12,14 +12,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -39,16 +40,16 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
-import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
-import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.LockableScrollView;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.internal.views.StaticGridView;
-import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -114,6 +115,14 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     // region Local members
     protected RAFOptions raf = RAFOptions.get();
+    protected ProgressDialog        progressDialog;
+    protected Timer                 networkTimer;
+    protected ShareManager          currentManager;
+    protected FacebookManager       facebookManager;
+    protected TwitterManager        twitterManager;
+    protected LinkedInManager       linkedInManager;
+    protected EmailManager          emailManager;
+    protected SmsManager            smsManager;
     // endregion
 
     // endregion
@@ -121,53 +130,69 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // region Methods
 
     // region Activity overrides
-    int activityOverrides;
-    // endregion
-
-    // region Requirement checks
-    int requirementChecks;
-    // endregion
-
-    // region Setup
-    int setup;
-    // endregion
-
-    // region OnClickListeners
-    int onclicks;
-    // endregion
-
-    // region UI helpers
-    int uihelpers;
-    // endregion
-
-    // endregion
-
-    private ProgressDialog pd;
-    private Timer networkTimer;
-    private CallbackManager callbackManager;
-
-    final private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(ambassadorConfig.getPusherInfo(), ambassadorConfig.getRafParameters().defaultShareMessage);
-        }
-    };
-
-    private enum LaunchedSocial {
-        FACEBOOK, TWITTER, LINKEDIN, EMAIL, SMS
-    };
-
-    private LaunchedSocial launchedSocial = null;
-
-    TwitterAuthClient twitterAuthClient;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_ambassador);
 
-        /** Apparently the content view has to be inflated like this for the ViewTreeObserver to work */
-        final View view = LayoutInflater.from(this).inflate(R.layout.activity_ambassador, null, false);
+        // Injection
+        AmbassadorSingleton.getInstanceComponent().inject(this);
+        ButterFork.bind(this);
+
+        // Requirement checks
+        finishIfSingletonInvalid();
+        if (isFinishing()) return;
+
+        // Other setup
+        setUpLockingScrollView();
+        setUpShareManagers();
+        setUpOptions();
+        setUpToolbar();
+        setUpSocialGridView();
+        setUpCustomImages();
+        setUpAmbassadorConfig();
+        setUpLoader();
+        setUpPusher();
+        setUpCopy();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        if (progressDialog != null) progressDialog.dismiss();
+        if (networkTimer != null) {
+            networkTimer.cancel();
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (currentManager != null) {
+            currentManager.onActivityResult(requestCode, resultCode, data);
+        }
+
+        currentManager = null;
+    }
+    // endregion
+
+    // region Requirement checks
+    protected void finishIfSingletonInvalid() {
+        if (!AmbassadorSingleton.isValid()) {
+            finish();
+        }
+    }
+    // endregion
+
+    // region Setup
+    protected void setUpLockingScrollView() {
+        final View view = findViewById(android.R.id.content);
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -183,56 +208,58 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-        Utilities.setStatusBar(getWindow(), raf.getHomeToolbarColor());
+    protected void setUpShareManagers() {
+        facebookManager = new FacebookManager();
+        twitterManager = new TwitterManager();
+        linkedInManager = new LinkedInManager();
+        emailManager = new EmailManager();
+        smsManager = new SmsManager();
+    }
 
-        setContentView(view);
-
-        ButterFork.bind(this);
-
-        if (!AmbassadorSingleton.isValid()) {
-            finish();
-            return;
-        }
-
-        FacebookSdk.sdkInitialize(getApplicationContext());
-
-        String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
-        String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
-        TwitterAuthConfig twitterAuthConfig = new TwitterAuthConfig(twitterConsumerKey, twitterConsumerSecret);
-        Fabric.with(this, new TwitterCore(twitterAuthConfig));
-
-        AmbassadorSingleton.getInstanceComponent().inject(this);
-
-        ambassadorConfig.setRafParameters(
-                raf.getDefaultShareMessage(),
-                raf.getTitleText(),
-                raf.getDescriptionText(),
-                raf.getToolbarTitle()
-        );
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
+    protected void setUpOptions() {
+        llParent.setBackgroundColor(raf.getHomeBackgroundColor());
 
         tvWelcomeTitle.setText(ambassadorConfig.getRafParameters().titleText);
+        tvWelcomeTitle.setTextColor(raf.getHomeWelcomeTitleColor());
+        tvWelcomeTitle.setTextSize(raf.getHomeWelcomeTitleSize());
+        tvWelcomeTitle.setTypeface(raf.getHomeWelcomeTitleFont());
+
         tvWelcomeDesc.setText(ambassadorConfig.getRafParameters().descriptionText);
-        setUpToolbar();
+        tvWelcomeDesc.setTextColor(raf.getHomeWelcomeDescriptionColor());
+        tvWelcomeDesc.setTextSize(raf.getHomeWelcomeDescriptionSize());
+        tvWelcomeDesc.setTypeface(raf.getHomeWelcomeDescriptionFont());
 
-        try {
-            loadCustomImages();
-        } catch (Exception e) {
+        flShortUrl.setBackgroundColor(raf.getHomeShareTextBar());
 
-        }
-        setTheme();
-
-        btnCopy.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                copyShortUrlToClipboard(etShortUrl.getText().toString(), getApplicationContext());
-            }
-        });
+        etShortUrl.setBackgroundColor(raf.getHomeShareTextBar());
+        etShortUrl.setTextColor(raf.getHomeShareTextColor());
+        etShortUrl.setTextSize(raf.getHomeShareTextSize());
+        etShortUrl.setTypeface(raf.getHomeShareTextFont());
 
         btnCopy.setColorFilter(getResources().getColor(R.color.ultraLightGray));
+    }
 
-        // Sets up social gridView
+    protected void setUpToolbar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(ambassadorConfig.getRafParameters().toolbarTitle);
+        }
+
+        if (toolbar == null) return;
+
+        final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        arrow.setColorFilter(raf.getHomeToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
+
+        toolbar.setNavigationIcon(arrow);
+        toolbar.setBackgroundColor(raf.getHomeToolbarColor());
+        toolbar.setTitleTextColor(raf.getHomeToolbarTextColor());
+
+        Utilities.setStatusBar(getWindow(), raf.getHomeToolbarColor());
+    }
+
+    protected void setUpSocialGridView() {
         final SocialGridAdapter gridAdapter = new SocialGridAdapter(this, getShareMethods());
         gvSocialGrid.setAdapter(gridAdapter);
         gvSocialGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -242,19 +269,68 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 model.click();
             }
         });
+    }
 
-        pd = new ProgressDialog(this);
-        pd.setMessage(new StringResource(R.string.loading).getValue());
-        pd.setOwnerActivity(this);
-        pd.setCanceledOnTouchOutside(false);
-        pd.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+    protected void setUpCustomImages() {
+        String drawablePath = raf.getLogo();
+        if (drawablePath == null) return;
+
+        try {
+            int pos;
+            pos = Integer.parseInt(raf.getLogoPosition());
+
+            if (pos >= 1 && pos <= 5) {
+                ImageView logo = new ImageView(this);
+                logo.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+                Drawable drawable = Drawable.createFromStream(getAssets().open(drawablePath), null);
+                int width = drawable.getIntrinsicWidth();
+                int height = drawable.getIntrinsicHeight();
+                float ratio = (float) width / (float) height;
+
+                logo.setImageDrawable(Drawable.createFromStream(getAssets().open(drawablePath), null));
+
+                int heightToSet = Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height);
+                int widthToSet = (int) (heightToSet * ratio);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(widthToSet, heightToSet);
+
+                params.gravity = Gravity.CENTER_HORIZONTAL;
+                params.topMargin = Utilities.getPixelSizeForDimension(R.dimen.raf_logo_top_margin);
+                logo.setLayoutParams(params);
+                llParent.addView(logo, pos-1);
+            }
+        } catch (Exception e) {
+            Log.e("AmbassadorSDK", e.toString());
+        }
+    }
+
+    protected void setUpCopy() {
+        btnCopy.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                copyShortUrlToClipboard(etShortUrl.getText().toString(), getApplicationContext());
+            }
+        });
+    }
+
+    protected void setUpAmbassadorConfig() {
+        ambassadorConfig.setRafParameters(raf.getDefaultShareMessage(), raf.getTitleText(), raf.getDescriptionText(), raf.getToolbarTitle());
+        ambassadorConfig.nullifyTwitterIfInvalid(null);
+        ambassadorConfig.nullifyLinkedInIfInvalid(null);
+    }
+
+    protected void setUpLoader() {
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(new StringResource(R.string.loading).getValue());
+        progressDialog.setOwnerActivity(this);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
                 finish();
             }
         });
-
-        pd.show();
+        progressDialog.show();
 
         networkTimer = new Timer();
         networkTimer.schedule(new TimerTask() {
@@ -263,22 +339,24 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 showNetworkError();
             }
         }, 30000);
+    }
 
-        ambassadorConfig.nullifyTwitterIfInvalid(null);
-        ambassadorConfig.nullifyLinkedInIfInvalid(null);
+    protected void setUpPusher() {
+        // set the broadcast receiver for pusher coming back
+        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
-        //if we have a channel and it's not expired and connected, call API Identify
+        // if we have a channel and it's not expired and connected, call API Identify
         if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() == ConnectionState.CONNECTED) {
             requestManager.identifyRequest();
             return;
         }
 
-        //if we have a channel and it's not expired but it's not currently connected, subscribe to the existing channel
+        // if we have a channel and it's not expired but it's not currently connected, subscribe to the existing channel
         if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() != ConnectionState.CONNECTED) {
             pusherSDK.subscribePusher(new PusherSDK.PusherSubscribeCallback() {
                 @Override
                 public void pusherSubscribed() {
-                   requestManager.identifyRequest();
+                    requestManager.identifyRequest();
                 }
 
                 @Override
@@ -291,7 +369,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             return;
         }
 
-        //otherwise, resubscribe to pusher and then call API Identify
+        // otherwise, resubscribe to pusher and then call API Identify
         PusherChannel.setSessionId(null);
         PusherChannel.setChannelName(null);
         PusherChannel.setExpiresAt(null);
@@ -309,189 +387,20 @@ public final class AmbassadorActivity extends AppCompatActivity {
             }
         });
     }
+    // endregion
 
-    private void setTheme() {
-        llParent.setBackgroundColor(raf.getHomeBackgroundColor());
-
-        tvWelcomeTitle.setTextColor(raf.getHomeWelcomeTitleColor());
-        tvWelcomeTitle.setTextSize(raf.getHomeWelcomeTitleSize());
-        tvWelcomeTitle.setTypeface(raf.getHomeWelcomeTitleFont());
-
-        tvWelcomeDesc.setTextColor(raf.getHomeWelcomeDescriptionColor());
-        tvWelcomeDesc.setTextSize(raf.getHomeWelcomeDescriptionSize());
-        tvWelcomeDesc.setTypeface(raf.getHomeWelcomeDescriptionFont());
-
-        flShortUrl.setBackgroundColor(raf.getHomeShareTextBar());
-
-        etShortUrl.setBackgroundColor(raf.getHomeShareTextBar());
-        etShortUrl.setTextColor(raf.getHomeShareTextColor());
-        etShortUrl.setTextSize(raf.getHomeShareTextSize());
-        etShortUrl.setTypeface(raf.getHomeShareTextFont());
-    }
-
-    @Override
-    protected void onDestroy() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
-        if (pd != null) pd.dismiss();
-        if (networkTimer != null) { networkTimer.cancel(); }
-        super.onDestroy();
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        finish(); // Dismisses activity if back button pressed
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (launchedSocial) {
-            case FACEBOOK:
-                callbackManager.onActivityResult(requestCode, resultCode, data);
-                break;
-
-            case TWITTER:
-                twitterAuthClient.onActivityResult(requestCode, resultCode, data);
-                break;
-
-            case LINKEDIN:
-                break;
-
-            case EMAIL:
-                break;
-
-            case SMS:
-                break;
-
-            default:
-                break;
+    // region Other
+    final private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            tryAndSetURL(ambassadorConfig.getPusherInfo(), ambassadorConfig.getRafParameters().defaultShareMessage);
         }
-
-        launchedSocial = null;
-    }
+    };
 
     private void copyShortUrlToClipboard(@NonNull String copyText, @NonNull Context context) {
         device.copyToClipboard(copyText);
         Toast.makeText(context, new StringResource(R.string.copied_to_clipboard).getValue(), Toast.LENGTH_SHORT).show();
-    }
-
-    void loadCustomImages() throws Exception {
-        //first check if an image exists
-
-        String drawablePath = raf.getLogo();
-        if (drawablePath == null) return;
-
-        int pos;
-        try {
-            pos = Integer.parseInt(raf.getLogoPosition());
-        }
-        catch (NumberFormatException e) {
-            pos = 0;
-        }
-
-        if (pos >= 1 && pos <= 5) {
-            ImageView logo = new ImageView(this);
-            logo.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-            Drawable drawable = Drawable.createFromStream(getAssets().open(drawablePath), null);
-            int width = drawable.getIntrinsicWidth();
-            int height = drawable.getIntrinsicHeight();
-            float ratio = (float) width / (float) height;
-
-            logo.setImageDrawable(Drawable.createFromStream(getAssets().open(drawablePath), null));
-
-            int heightToSet = Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height);
-            int widthToSet = (int) (heightToSet * ratio);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(widthToSet, heightToSet);
-
-            params.gravity = Gravity.CENTER_HORIZONTAL;
-            params.topMargin = Utilities.getPixelSizeForDimension(R.dimen.raf_logo_top_margin);
-            logo.setLayoutParams(params);
-            llParent.addView(logo, pos-1);
-        }
-    }
-
-    void shareWithFacebook() {
-        launchedSocial = LaunchedSocial.FACEBOOK;
-        ShareLinkContent content = new ShareLinkContent.Builder()
-                .setContentTitle(ambassadorConfig.getRafParameters().defaultShareMessage)
-                .setContentUrl(Uri.parse(ambassadorConfig.getURL()))
-                .build();
-        callbackManager = CallbackManager.Factory.create();
-
-        ShareDialog shareDialog = new ShareDialog(this);
-        shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-            @Override
-            public void onSuccess(Sharer.Result result) {
-                if (result.getPostId() != null) {
-                    Toast.makeText(getApplicationContext(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-                    requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
-                }
-            }
-
-            @Override
-            public void onCancel() {
-
-            }
-
-            @Override
-            public void onError(FacebookException e) {
-                Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        shareDialog.show(content);
-    }
-
-    void shareWithTwitter() {
-        // Presents twitter login screen if user has not logged in yet
-        if (ambassadorConfig.getTwitterAccessToken() != null) {
-            SocialShareDialog tweetDialog = new SocialShareDialog(AmbassadorActivity.this);
-            tweetDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.TWITTER);
-            tweetDialog.setOwnerActivity(AmbassadorActivity.this);
-            tweetDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
-                @Override
-                public void postSuccess() {
-
-                }
-
-                @Override
-                public void postFailed() {
-
-                }
-
-                @Override
-                public void postCancelled() {
-
-                }
-
-                @Override
-                public void needAuth() {
-                    ambassadorConfig.setTwitterAccessTokenSecret(null);
-                    ambassadorConfig.setTwitterAccessToken(null);
-                    TwitterCore.getInstance().getSessionManager().clearActiveSession();
-                    requestReauthTwitter();
-                }
-            });
-            tweetDialog.show();
-        } else {
-            launchedSocial = LaunchedSocial.TWITTER;
-            twitterAuthClient = new TwitterAuthClient();
-            twitterAuthClient.authorize(AmbassadorActivity.this, new Callback<TwitterSession>() {
-                @Override
-                public void success(Result<TwitterSession> result) {
-                    ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
-                    ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
-                    Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void failure(TwitterException e) {
-
-                }
-            });
-        }
     }
 
     private void requestReauthTwitter() {
@@ -513,40 +422,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
-    }
-
-    void shareWithLinkedIn() {
-        if (ambassadorConfig.getLinkedInToken() != null) {
-            SocialShareDialog linkedInDialog = new SocialShareDialog(AmbassadorActivity.this);
-            linkedInDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.LINKEDIN);
-            linkedInDialog.setOwnerActivity(AmbassadorActivity.this);
-            linkedInDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
-                @Override
-                public void postSuccess() {
-
-                }
-
-                @Override
-                public void postFailed() {
-
-                }
-
-                @Override
-                public void postCancelled() {
-
-                }
-
-                @Override
-                public void needAuth() {
-                    ambassadorConfig.setLinkedInToken(null);
-                    requestReauthLinkedIn();
-                }
-            });
-            linkedInDialog.show();
-        } else {
-            Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);
-            startActivity(intent);
-        }
     }
 
     private void requestReauthLinkedIn() {
@@ -573,8 +448,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
     void tryAndSetURL(String pusherString, String initialShareMessage) {
         // Functionality: Gets URL from PusherSDK
         // First checks to see if PusherSDK info has already been saved to SharedPreferencs
-        if (pd != null) {
-            pd.dismiss();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
             networkTimer.cancel();
         }
 
@@ -614,52 +489,13 @@ public final class AmbassadorActivity extends AppCompatActivity {
             }
         });
     }
+    // endregion
 
-    private void setUpToolbar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(ambassadorConfig.getRafParameters().toolbarTitle);
-        }
+    // endregion
 
-        if (toolbar == null) return;
-
-        final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(raf.getHomeToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
-
-        toolbar.setNavigationIcon(arrow);
-        toolbar.setBackgroundColor(raf.getHomeToolbarColor());
-        toolbar.setTitleTextColor(raf.getHomeToolbarTextColor());
-    }
-
-    // region Share methods
-    private void facebookClicked() {
-        launchedSocial = LaunchedSocial.FACEBOOK;
-    }
-
-    private void twitterClicked() {
-        launchedSocial = LaunchedSocial.TWITTER;
-    }
-
-    private void linkedInClicked() {
-        launchedSocial = LaunchedSocial.LINKEDIN;
-    }
-
-    private void emailClicked() {
-        launchedSocial = LaunchedSocial.EMAIL;
-        Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
-        contactIntent.putExtra("showPhoneNumbers", false);
-        startActivity(contactIntent);
-    }
-
-    private void smsClicked() {
-        launchedSocial = LaunchedSocial.SMS;
-        Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
-        contactIntent.putExtra("showPhoneNumbers", true);
-        startActivity(contactIntent);
-    }
-
+    // region Share method setup
     @NonNull
-    private List<ShareMethod> getShareMethods() {
+    protected List<ShareMethod> getShareMethods() {
         HashMap<String, ShareMethod.Builder> shareMethodMap = getDefaultShareMethodBuilderMap();
         ArrayList<ShareMethod> shareMethods = new ArrayList<>();
         String[] order = raf.getChannels();
@@ -682,7 +518,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     @NonNull
-    private HashMap<String, ShareMethod.Builder> getDefaultShareMethodBuilderMap() {
+    protected HashMap<String, ShareMethod.Builder> getDefaultShareMethodBuilderMap() {
         ShareMethod.Builder modelFacebook = new ShareMethod.Builder()
                 .setName("FACEBOOK")
                 .setIconDrawable(R.drawable.facebook_icon)
@@ -690,7 +526,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setShareAction(new ShareMethod.ShareAction() {
                     @Override
                     public void share() {
-                        facebookClicked();
+                        launchShareMethod(facebookManager);
                     }
                 });
 
@@ -701,7 +537,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setShareAction(new ShareMethod.ShareAction() {
                     @Override
                     public void share() {
-                        twitterClicked();
+                        launchShareMethod(twitterManager);
                     }
                 });
 
@@ -712,7 +548,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setShareAction(new ShareMethod.ShareAction() {
                     @Override
                     public void share() {
-                        linkedInClicked();
+                        launchShareMethod(linkedInManager);
                     }
                 });
 
@@ -724,7 +560,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setShareAction(new ShareMethod.ShareAction() {
                     @Override
                     public void share() {
-                        emailClicked();
+                        launchShareMethod(emailManager);
                     }
                 });
 
@@ -736,7 +572,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setShareAction(new ShareMethod.ShareAction() {
                     @Override
                     public void share() {
-                        smsClicked();
+                        launchShareMethod(smsManager);
                     }
                 });
 
@@ -750,5 +586,208 @@ public final class AmbassadorActivity extends AppCompatActivity {
         return map;
     }
     // endregion
+
+    private void launchShareMethod(@NonNull ShareManager shareManager) {
+        this.currentManager = shareManager;
+        shareManager.onShareRequested();
+    }
+
+    // region ShareManagers
+    protected interface ShareManager {
+        void onShareRequested();
+        void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
+    }
+
+    protected static class FacebookManager implements ShareManager {
+
+        protected CallbackManager callbackManager;
+
+        protected FacebookManager() {
+            FacebookSdk.sdkInitialize(AmbassadorSingleton.getInstanceContext());
+            callbackManager = CallbackManager.Factory.create();
+        }
+
+        @Override
+        public void onShareRequested() {
+            ShareLinkContent content = new ShareLinkContent.Builder()
+                    .setContentTitle(ambassadorConfig.getRafParameters().defaultShareMessage)
+                    .setContentUrl(Uri.parse(ambassadorConfig.getURL()))
+                    .build();
+            callbackManager = CallbackManager.Factory.create();
+
+            ShareDialog shareDialog = new ShareDialog(this);
+            shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
+                @Override
+                public void onSuccess(Sharer.Result result) {
+                    if (result.getPostId() != null) {
+                        Toast.makeText(getApplicationContext(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
+                        requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+                    }
+                }
+
+                @Override
+                public void onCancel() {
+
+                }
+
+                @Override
+                public void onError(FacebookException e) {
+                    Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            shareDialog.show(content);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
+
+    }
+
+    protected static class TwitterManager implements ShareManager {
+
+        protected TwitterAuthClient twitterAuthClient;
+
+        protected TwitterManager() {
+            String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
+            String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
+            TwitterAuthConfig twitterAuthConfig = new TwitterAuthConfig(twitterConsumerKey, twitterConsumerSecret);
+            Fabric.with(AmbassadorSingleton.getInstanceContext(), new TwitterCore(twitterAuthConfig));
+            twitterAuthClient = new TwitterAuthClient();
+        }
+
+        @Override
+        public void onShareRequested() {
+            if (ambassadorConfig.getTwitterAccessToken() != null) {
+                SocialShareDialog tweetDialog = new SocialShareDialog(AmbassadorActivity.this);
+                tweetDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.TWITTER);
+                tweetDialog.setOwnerActivity(AmbassadorActivity.this);
+                tweetDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
+                    @Override
+                    public void postSuccess() {
+
+                    }
+
+                    @Override
+                    public void postFailed() {
+
+                    }
+
+                    @Override
+                    public void postCancelled() {
+
+                    }
+
+                    @Override
+                    public void needAuth() {
+                        ambassadorConfig.setTwitterAccessTokenSecret(null);
+                        ambassadorConfig.setTwitterAccessToken(null);
+                        TwitterCore.getInstance().getSessionManager().clearActiveSession();
+                        requestReauthTwitter();
+                    }
+                });
+                tweetDialog.show();
+            } else {
+                twitterAuthClient = new TwitterAuthClient();
+                twitterAuthClient.authorize(AmbassadorActivity.this, new Callback<TwitterSession>() {
+                    @Override
+                    public void success(Result<TwitterSession> result) {
+                        ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
+                        ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
+                        Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void failure(TwitterException e) {
+
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+            twitterAuthClient.onActivityResult(requestCode, resultCode, data);
+        }
+
+    }
+
+    protected static class LinkedInManager implements ShareManager {
+
+        @Override
+        public void onShareRequested() {
+            if (ambassadorConfig.getLinkedInToken() != null) {
+                SocialShareDialog linkedInDialog = new SocialShareDialog(AmbassadorActivity.this);
+                linkedInDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.LINKEDIN);
+                linkedInDialog.setOwnerActivity(AmbassadorActivity.this);
+                linkedInDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
+                    @Override
+                    public void postSuccess() {
+
+                    }
+
+                    @Override
+                    public void postFailed() {
+
+                    }
+
+                    @Override
+                    public void postCancelled() {
+
+                    }
+
+                    @Override
+                    public void needAuth() {
+                        ambassadorConfig.setLinkedInToken(null);
+                        requestReauthLinkedIn();
+                    }
+                });
+                linkedInDialog.show();
+            } else {
+                Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);
+                startActivity(intent);
+            }
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        }
+
+    }
+
+    protected static class EmailManager implements ShareManager {
+
+        @Override
+        public void onShareRequested() {
+            Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
+            contactIntent.putExtra("showPhoneNumbers", false);
+            startActivity(contactIntent);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        }
+
+    }
+
+    protected static class SmsManager implements ShareManager {
+
+        @Override
+        public void onShareRequested() {
+            Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
+            contactIntent.putExtra("showPhoneNumbers", true);
+            startActivity(contactIntent);
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+
+        }
+
+    }
+    //endregion
 
 }
