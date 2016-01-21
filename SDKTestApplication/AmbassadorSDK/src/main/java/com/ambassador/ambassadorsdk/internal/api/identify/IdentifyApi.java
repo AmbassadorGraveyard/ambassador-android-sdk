@@ -1,6 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.api.identify;
 
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 import com.ambassador.ambassadorsdk.internal.utils.ResponseCode;
@@ -32,6 +32,7 @@ public final class IdentifyApi {
      * Default constructor.
      * Instantiates IdentifyApi and automatically initializes client.
      */
+    @SuppressWarnings("unused")
     public IdentifyApi() {
         this(true);
     }

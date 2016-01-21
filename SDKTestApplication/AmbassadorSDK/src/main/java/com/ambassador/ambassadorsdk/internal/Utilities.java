@@ -16,7 +16,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 public class Utilities {
 

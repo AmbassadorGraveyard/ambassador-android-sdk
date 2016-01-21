@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;

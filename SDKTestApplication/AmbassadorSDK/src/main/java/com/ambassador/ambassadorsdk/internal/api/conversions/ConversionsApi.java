@@ -1,7 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.api.conversions;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 import com.ambassador.ambassadorsdk.internal.utils.ResponseCode;
@@ -22,6 +22,7 @@ public final class ConversionsApi {
      * Default constructor.
      * Instantiates ConversionsApi and automatically initializes client.
      */
+    @SuppressWarnings("unused")
     public ConversionsApi() {
         this(true);
     }

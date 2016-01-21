@@ -4,6 +4,7 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;

@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.TestUtils;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 
 import org.junit.Before;

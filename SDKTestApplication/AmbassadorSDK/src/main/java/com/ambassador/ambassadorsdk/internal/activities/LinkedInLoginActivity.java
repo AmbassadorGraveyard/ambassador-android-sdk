@@ -22,11 +22,11 @@ import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.dialogs.WebPopupDialog;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
-import com.ambassador.ambassadorsdk.internal.utils.StringResource;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -2,6 +2,8 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 
+import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationModule;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

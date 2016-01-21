@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.TestUtils;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterApiClient;

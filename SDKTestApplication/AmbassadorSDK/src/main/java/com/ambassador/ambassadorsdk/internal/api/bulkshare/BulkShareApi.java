@@ -1,6 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.api.bulkshare;
 
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 import com.ambassador.ambassadorsdk.internal.utils.ResponseCode;
@@ -21,6 +21,7 @@ public final class BulkShareApi {
      * Default constructor.
      * Instantiates BulkShareApi and automatically initializes client.
      */
+    @SuppressWarnings("unused")
     public BulkShareApi() {
         this(true);
     }
