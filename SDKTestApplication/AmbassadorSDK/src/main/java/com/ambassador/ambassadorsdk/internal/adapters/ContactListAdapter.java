@@ -55,7 +55,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
 
         private ContactViewHolder(View itemView, @Nullable OnContactClickListener listener) {
             super(itemView);
-            ButterFork.bind(itemView);
+            ButterFork.bind(this, itemView);
 
             tvName.setTextSize(raf.getContactsListNameSize());
             tvName.setTypeface(raf.getContactsListNameFont());
