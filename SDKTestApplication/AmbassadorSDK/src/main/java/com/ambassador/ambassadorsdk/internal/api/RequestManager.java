@@ -84,7 +84,8 @@ public final class RequestManager {
         String auth = ambassadorConfig.getUniversalKey();
         List<String> numberList = BulkShareHelper.verifiedSMSList(contacts);
         String name = ambassadorConfig.getUserFullName();
-        BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numberList, name, messageToShare);
+        String fromEmail = ambassadorConfig.getUserEmail();
+        BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numberList, name, messageToShare, fromEmail);
 
         bulkShareApi.bulkShareSms(uid, auth, body, completion);
     }
@@ -100,7 +101,8 @@ public final class RequestManager {
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
         List<String> emailList = BulkShareHelper.verifiedEmailList(contacts);
-        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emailList, ambassadorConfig.getReferralShortCode(), ambassadorConfig.getEmailSubjectLine(), messageToShare);
+        String fromEmail = ambassadorConfig.getUserEmail();
+        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emailList, ambassadorConfig.getReferralShortCode(), ambassadorConfig.getEmailSubjectLine(), messageToShare, fromEmail);
 
         bulkShareApi.bulkShareEmail(uid, auth, body, completion);
     }
@@ -122,16 +124,17 @@ public final class RequestManager {
     public void bulkShareTrack(final List<Contact> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
+        String fromEmail = ambassadorConfig.getUserEmail();
         BulkShareApi.BulkShareTrackBody[] body;
         switch (shareType) {
             case SMS:
-                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getReferrerShortCode());
+                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getReferrerShortCode(), fromEmail);
                 break;
             case EMAIL:
-                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getReferrerShortCode());
+                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getReferrerShortCode(), fromEmail);
                 break;
             default:
-                body = BulkShareHelper.contactArray(shareType, ambassadorConfig.getReferrerShortCode());
+                body = BulkShareHelper.contactArray(shareType, ambassadorConfig.getReferrerShortCode(), fromEmail);
                 break;
         }
 
