@@ -48,7 +48,7 @@ public final class ContactList {
     }
 
     @NonNull
-    private List<Contact> getPhoneList(@NonNull Context context) {
+    protected List<Contact> getPhoneList(@NonNull Context context) {
         List<Contact> tmp = new ArrayList<>();
         Cursor phoneCursor = context.getContentResolver()
                 .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
@@ -84,7 +84,7 @@ public final class ContactList {
     }
 
     @NonNull
-    private String getPhoneType(int typeNum) {
+    protected String getPhoneType(int typeNum) {
         switch (typeNum) {
             case ContactsContract.CommonDataKinds.Phone.TYPE_HOME:
                 return "Home";
@@ -98,7 +98,7 @@ public final class ContactList {
     }
 
     @NonNull
-    private List<Contact> getEmailList(@NonNull Context context) {
+    protected List<Contact> getEmailList(@NonNull Context context) {
         List<Contact> tmp = new ArrayList<>();
         Cursor emailCursor = context.getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, null, null, null);
 
@@ -131,7 +131,7 @@ public final class ContactList {
     }
 
     @NonNull
-    private List<Contact> getDummyList() {
+    protected List<Contact> getDummyList() {
         List<Contact> tmp = new ArrayList<>();
 
         String[] firstNames = new String[]{"Dylan", "Jake", "Corey", "Mitch", "Matt", "Brian", "Amanada", "Brandon"};
