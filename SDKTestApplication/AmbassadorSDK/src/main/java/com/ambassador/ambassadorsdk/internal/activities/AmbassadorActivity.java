@@ -587,12 +587,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
     // endregion
 
+    // region ShareManagers
     private void launchShareMethod(@NonNull ShareManager shareManager) {
         this.currentManager = shareManager;
         shareManager.onShareRequested();
     }
 
-    // region ShareManagers
     protected interface ShareManager {
         void onShareRequested();
         void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
