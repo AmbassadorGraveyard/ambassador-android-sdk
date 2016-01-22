@@ -302,7 +302,10 @@ public class AmbassadorConfigTest {
     @Test
     public void setRafParametersTest() throws Exception {
         // ARRANGE
-        String testValue1 = "test1", testValue2 = "test2", testValue3 = "test3", testValue4 = "test4";
+        String testValue1 = "test1";
+        String testValue2 = "test2";
+        String testValue3 = "test3";
+        String testValue4 = "test4";
         AmbassadorConfig ambassadorConfig = new AmbassadorConfig();
 
         // ACT
