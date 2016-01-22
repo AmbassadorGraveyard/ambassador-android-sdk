@@ -10,13 +10,10 @@ import org.json.JSONObject;
 
 import javax.inject.Inject;
 
-/**
- * Created by dylan on 11/18/15.
- */
-public class InstallReceiver extends BroadcastReceiver {
+public final class InstallReceiver extends BroadcastReceiver {
 
     @Inject
-    AmbassadorConfig ambassadorConfig;
+    protected AmbassadorConfig ambassadorConfig;
 
     public InstallReceiver() {
         AmbassadorSingleton.getInstanceComponent().inject(this);
@@ -30,8 +27,10 @@ public class InstallReceiver extends BroadcastReceiver {
 
         if (qstring == null) return;
 
-        String[] param1, param2;
-        String webDeviceId, referralShortCode;
+        String[] param1;
+        String[] param2;
+        String webDeviceId;
+        String referralShortCode;
         try {
             String[] qSplit = qstring.split("&");
             param1 = qSplit[0].split("="); //mbsy_cookie_code=jwnZ
