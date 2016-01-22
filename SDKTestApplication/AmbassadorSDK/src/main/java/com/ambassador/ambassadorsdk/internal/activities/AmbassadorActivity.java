@@ -696,7 +696,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void failure(TwitterException e) {
-
+                        Log.e("AmbassadorSDK", e.toString());
                     }
                 });
             }
