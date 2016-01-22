@@ -94,10 +94,8 @@ public final class WebPopupDialog extends Dialog {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Uri uri = Uri.parse(url);
-            if (uri != null) {
-                if (uri.getPath().equals("/uas/login")) {
-                    dismiss();
-                }
+            if (uri != null && "/uas/login".equals(uri.getPath())) {
+                dismiss();
             }
             return false;
         }
