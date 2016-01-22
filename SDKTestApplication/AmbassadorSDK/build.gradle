@@ -93,6 +93,7 @@ dependencies {
     compile 'com.google.dagger:dagger:2.0'
     compile 'com.facebook.android:facebook-android-sdk:4.7.0'
     compile 'com.oguzbabaoglu:butterfork-binder:1.0.0'
+    compile 'org.mockito:mockito-core:1.10.19'
     apt 'com.oguzbabaoglu:butterfork-compiler:1.0.0'
     apt 'com.google.dagger:dagger-compiler:2.0'
     provided 'org.glassfish:javax.annotation:10.0-b28'
@@ -114,7 +115,12 @@ dependencies {
     androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
     androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2'
+    androidTestCompile ('com.android.support.test.espresso:espresso-contrib:2.2') {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-annotations'
+        exclude module: 'recyclerview-v7'
+    }
     androidTestApt 'com.google.dagger:dagger-compiler:2.0'
     // endregion
 }
