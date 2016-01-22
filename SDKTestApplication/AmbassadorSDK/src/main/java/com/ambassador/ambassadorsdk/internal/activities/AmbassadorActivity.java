@@ -10,7 +10,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -477,7 +476,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     private void showNetworkError() {
-        new Handler().post(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.loading_failure).getValue(), Toast.LENGTH_SHORT).show();

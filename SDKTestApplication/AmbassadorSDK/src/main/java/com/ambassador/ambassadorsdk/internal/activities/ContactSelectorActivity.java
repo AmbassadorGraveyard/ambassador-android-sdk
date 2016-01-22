@@ -141,6 +141,12 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     protected void onDestroy() {
         super.onDestroy();
         pusherSDK.setIdentifyListener(null);
+        if (askNameDialog != null && askNameDialog.isShowing()) {
+            askNameDialog.dismiss();
+        }
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
@@ -288,6 +294,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
             tvSendCount.setVisibility(View.GONE);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tvSendContacts.getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
             params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
             tvSendContacts.setLayoutParams(params);
         }
@@ -483,8 +490,8 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         boolean lengthToShort = showPhoneNumbers && !(etShareMessage.getText().length() <= MAX_SMS_LENGTH);
         boolean noneSelected = contactListAdapter.getSelectedContacts().size() <= 0;
         boolean emptyMessage = etShareMessage.getText().toString().length() <= 0;
-        boolean noUrl = Utilities.containsURL(etShareMessage.getText().toString(), ambassadorConfig.getURL());
-        boolean haveName = showPhoneNumbers && (!pusherHasKey("firstName") || !pusherHasKey("lastName"));
+        boolean haveUrl = Utilities.containsURL(etShareMessage.getText().toString(), ambassadorConfig.getURL());
+        boolean haveName = pusherHasKey("firstName") && pusherHasKey("lastName");
 
         if (lengthToShort && noneSelected) {
             negativeTextViewFeedback(tvSendCount);
@@ -499,11 +506,12 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         } else if (emptyMessage) {
             Toast.makeText(getApplicationContext(), new StringResource(R.string.share_message_empty).getValue(), Toast.LENGTH_SHORT).show();
             return false;
-        } else if (noUrl) {
+        } else if (!haveUrl) {
             askForUrl();
             return false;
-        } else if (haveName) {
+        } else if (showPhoneNumbers && !haveName) {
             askForName();
+            return false;
         }
 
         return true;
@@ -572,7 +580,14 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     }
 
     private void send() {
-        if (!progressDialog.isShowing()) progressDialog.show();
+        if (!progressDialog.isShowing()) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    progressDialog.show();
+                }
+            });
+        }
         bulkShareHelper.bulkShare(etShareMessage.getText().toString(), contactListAdapter.getSelectedContacts(), showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
             @Override
             public void bulkShareSuccess() {
