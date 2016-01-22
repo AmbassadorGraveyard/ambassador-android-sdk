@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal.api.linkedIn;
+package com.ambassador.ambassadorsdk.internal.api.linkedin;
 
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
