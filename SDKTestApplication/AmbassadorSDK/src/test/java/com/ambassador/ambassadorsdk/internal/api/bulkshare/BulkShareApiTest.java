@@ -29,7 +29,8 @@ import retrofit.mime.TypedString;
 @PrepareForTest({
         AmbassadorSingleton.class,
         ServiceGenerator.class,
-        Log.class
+        Log.class,
+        BulkShareApi.class
 })
 public class BulkShareApiTest {
 
@@ -46,7 +47,7 @@ public class BulkShareApiTest {
         TestUtils.mockStrings();
 
         BulkShareApi bsa = new BulkShareApi(false);
-        bulkShareApi = Mockito.spy(bsa);
+        bulkShareApi = PowerMockito.spy(bsa);
 
         bulkShareClient = Mockito.mock(BulkShareClient.class);
         bulkShareApi.setBulkShareClient(bulkShareClient);

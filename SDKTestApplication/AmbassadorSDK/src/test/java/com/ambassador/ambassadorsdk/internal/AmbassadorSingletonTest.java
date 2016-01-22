@@ -33,6 +33,8 @@ public class AmbassadorSingletonTest {
         context = Mockito.mock(Context.class);
         component = Mockito.mock(AmbassadorApplicationComponent.class);
         module = Mockito.mock(AmbassadorApplicationModule.class);
+
+        Mockito.when(context.getApplicationContext()).thenReturn(context);
     }
 
     @Test

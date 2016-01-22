@@ -29,7 +29,8 @@ import retrofit.mime.TypedByteArray;
 @PrepareForTest({
         AmbassadorSingleton.class,
         ServiceGenerator.class,
-        Log.class
+        Log.class,
+        ConversionsApi.class
 })
 public class ConversionsApiTest {
 
@@ -46,7 +47,7 @@ public class ConversionsApiTest {
         TestUtils.mockStrings();
 
         ConversionsApi ca = new ConversionsApi(false);
-        conversionsApi = Mockito.spy(ca);
+        conversionsApi = PowerMockito.spy(ca);
 
         conversionsClient = Mockito.mock(ConversionsClient.class);
         conversionsApi.setConversionsClient(conversionsClient);

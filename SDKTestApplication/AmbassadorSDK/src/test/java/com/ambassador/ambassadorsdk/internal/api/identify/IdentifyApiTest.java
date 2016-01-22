@@ -29,7 +29,8 @@ import retrofit.mime.TypedString;
 @PrepareForTest({
         AmbassadorSingleton.class,
         ServiceGenerator.class,
-        Log.class
+        Log.class,
+        IdentifyApi.class
 })
 public class IdentifyApiTest {
 
@@ -46,7 +47,7 @@ public class IdentifyApiTest {
         TestUtils.mockStrings();
         
         IdentifyApi ia = new IdentifyApi(false);
-        identifyApi = Mockito.spy(ia);
+        identifyApi = PowerMockito.spy(ia);
 
         identifyClient = Mockito.mock(IdentifyClient.class);
         identifyApi.setIdentifyClient(identifyClient);
