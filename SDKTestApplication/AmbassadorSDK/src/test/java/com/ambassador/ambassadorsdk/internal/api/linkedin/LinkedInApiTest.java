@@ -6,9 +6,6 @@ import com.ambassador.ambassadorsdk.TestUtils;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
-import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
-import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInAuthClient;
-import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInClient;
 
 import org.junit.Before;
 import org.junit.Test;
