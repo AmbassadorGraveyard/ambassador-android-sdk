@@ -149,8 +149,8 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
                 Contact object = contacts.get(i);
                 String name = object.getName().toLowerCase();
                 String value = (shouldShowPhoneNumbers ? object.getPhoneNumber() : object.getEmailAddress()).toLowerCase();
-                String query = filterString.toLowerCase();
-                if (name.contains(query) || value.contains(query)) {
+                String query = searchProcessedString(filterString);
+                if (searchProcessedString(name).contains(query) || searchProcessedString(value).contains(query)) {
                     filteredContacts.add(object);
                 }
             }
@@ -161,6 +161,10 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
             filteredContacts = new ArrayList<>(contacts);
             notifyDataSetChanged();
         }
+    }
+
+    private String searchProcessedString(String raw) {
+        return raw.toLowerCase().replace(" ", "").replace("-", "").replace("(", "").replace(")", "");
     }
 
     public void updateArrays(View view, int position) {
