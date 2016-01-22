@@ -38,7 +38,7 @@ public class AmbassadorSingleton {
     }
 
     private void setContext(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     public static void setInstanceContext(Context context) {
