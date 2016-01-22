@@ -1,11 +1,9 @@
 package com.ambassador.ambassadorsdk.internal.notifications;
 
-import android.content.Intent;
-
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceIDListenerService;
 
-public class InstanceIdListener extends InstanceIDListenerService {
+public final class InstanceIdListener extends InstanceIDListenerService {
 
     @Override
     public void onTokenRefresh() {
