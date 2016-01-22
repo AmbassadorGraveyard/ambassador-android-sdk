@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.factories;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.util.Log;
 
@@ -19,6 +20,140 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public final class RAFOptionsFactory {
+
+    public static RAFOptions decodeCustomValues(Context context) {
+        RAFOptions.Builder builder = new RAFOptions.Builder();
+
+        Resources resources = context.getResources();
+        String packageName = context.getPackageName();
+
+        int id;
+
+        id = resources.getIdentifier("RAFdefaultShareMessage", "string", packageName);
+        builder.setDefaultShareMessage(resources.getString(id));
+
+        id = resources.getIdentifier("RAFtitleText", "string", packageName);
+        builder.setTitleText(resources.getString(id));
+
+        id = resources.getIdentifier("RAFdescriptionText", "string", packageName);
+        builder.setDescriptionText(resources.getString(id));
+
+        id = resources.getIdentifier("RAFtoolbarTitle", "string", packageName);
+        builder.setToolbarTitle(resources.getString(id));
+
+        id = resources.getIdentifier("RAFLogoPosition", "string", packageName);
+        builder.setLogoPosition(resources.getString(id));
+
+        id = resources.getIdentifier("homeBackground", "color", packageName);
+        builder.setHomeBackgroundColor(resources.getColor(id));
+
+        id = resources.getIdentifier("homeWelcomeTitle", "color", packageName);
+        builder.setHomeWelcomeTitleColor(resources.getColor(id));
+
+        id = resources.getIdentifier("homeWelcomeTitle", "dimen", packageName);
+        builder.setHomeWelcomeTitleSize(resources.getDimension(id));
+
+        id = resources.getIdentifier("homeWelcomeTitle", "string", packageName);
+        builder.setHomeWelcomeTitleFont(new Font(resources.getString(id)).getTypeface());
+
+        id = resources.getIdentifier("homeWelcomeDesc", "color", packageName);
+        builder.setHomeWelcomeDescriptionColor(resources.getColor(id));
+
+        id = resources.getIdentifier("homeWelcomeDesc", "dimen", packageName);
+        builder.setHomeWelcomeDescriptionSize(resources.getDimension(id));
+
+        id = resources.getIdentifier("homeWelcomeDesc", "string", packageName);
+        builder.setHomeWelcomeDescriptionFont(new Font(resources.getString(id)).getTypeface());
+
+        id = resources.getIdentifier("homeToolBar", "color", packageName);
+        builder.setHomeToolbarColor(resources.getColor(id));
+
+        id = resources.getIdentifier("homeToolBarText", "color", packageName);
+        builder.setHomeToolbarTextColor(resources.getColor(id));
+
+        id = resources.getIdentifier("homeToolBarText", "string", packageName);
+        builder.setHomeToolbarTextFont(new Font(resources.getString(id)).getTypeface());
+
+        id = resources.getIdentifier("homeToolBarArrow", "color", packageName);
+        builder.setHomeToolbarArrowColor(resources.getColor(id));
+
+        id = resources.getIdentifier("homeShareTextBar", "color", packageName);
+        builder.setHomeShareTextBar(resources.getColor(id));
+
+        id = resources.getIdentifier("homeShareText", "color", packageName);
+        builder.setHomeShareTextColor(resources.getColor(id));
+
+        id = resources.getIdentifier("homeShareText", "dimen", packageName);
+        builder.setHomeShareTextSize(resources.getDimension(id));
+
+        id = resources.getIdentifier("homeShareText", "string", packageName);
+        builder.setHomeShareTextFont(new Font(resources.getString(id)).getTypeface());
+
+        id = resources.getIdentifier("socialGridText", "string", packageName);
+        builder.setSocialGridTextFont(new Font(resources.getString(id)).getTypeface());
+
+        id = resources.getIdentifier("contactsListViewBackground", "color", packageName);
+        builder.setContactsListViewBackgroundColor(resources.getColor(id));
+
+        id = resources.getIdentifier("contactsListName", "dimen", packageName);
+        builder.setContactsListNameSize(resources.getDimension(id));
+
+        id = resources.getIdentifier("contactsListName", "string", packageName);
+        builder.setContactsListNameFont(new Font(resources.getString(id)).getTypeface());
+
+        id = resources.getIdentifier("contactsListValue", "dimen", packageName);
+        builder.setContactsListValueSize(resources.getDimension(id));
+
+        id = resources.getIdentifier("contactsListValue", "string", packageName);
+        builder.setContactsListValueFont(new Font(resources.getString(id)).getTypeface());
+
+        id = resources.getIdentifier("contactsSendBackground", "color", packageName);
+        builder.setContactsSendBackground(resources.getColor(id));
+
+        id = resources.getIdentifier("contactSendMessageText", "string", packageName);
+        builder.setContactSendMessageTextFont(new Font(resources.getString(id)).getTypeface());
+
+        id = resources.getIdentifier("contactsToolBar", "color", packageName);
+        builder.setContactsToolbarColor(resources.getColor(id));
+
+        id = resources.getIdentifier("contactsToolBarText", "color", packageName);
+        builder.setContactsToolbarTextColor(resources.getColor(id));
+
+        id = resources.getIdentifier("contactsToolBarArrow", "color", packageName);
+        builder.setContactsToolbarArrowColor(resources.getColor(id));
+
+        id = resources.getIdentifier("contactsSendButton", "color", packageName);
+        builder.setContactsSendButtonColor(resources.getColor(id));
+
+        id = resources.getIdentifier("contactsSendButtonText", "color", packageName);
+        builder.setContactsSendButtonTextColor(resources.getColor(id));
+
+        id = resources.getIdentifier("contactsDoneButtonText", "color", packageName);
+        builder.setContactsDoneButtonTextColor(resources.getColor(id));
+
+        id = resources.getIdentifier("contactsSearchBar", "color", packageName);
+        builder.setContactsSearchBarColor(resources.getColor(id));
+
+        id = resources.getIdentifier("contactsSearchIcon", "color", packageName);
+        builder.setContactsSearchIconColor(resources.getColor(id));
+
+        id = resources.getIdentifier("contactNoPhotoAvailableBackground", "color", packageName);
+        builder.setContactNoPhotoAvailableBackgroundColor(resources.getColor(id));
+
+        id = resources.getIdentifier("linkedinToolBar", "color", packageName);
+        builder.setLinkedInToolbarColor(resources.getColor(id));
+
+        id = resources.getIdentifier("linkedinToolBarText", "color", packageName);
+        builder.setLinkedInToolbarTextColor(resources.getColor(id));
+
+        id = resources.getIdentifier("linkedinToolBarArrow", "color", packageName);
+        builder.setLinkedInToolbarArrowColor(resources.getColor(id));
+
+        id = resources.getIdentifier("socialOptionCornerRadius", "dimen", packageName);
+        builder.setSocialOptionCornerRadius(resources.getDimension(id));
+
+        return builder.build();
+    }
 
     public static RAFOptions decodeResources(InputStream inputStream, Context context) throws Exception {
         RAFOptions.Builder rafBuilder = RAFOptions.Builder.newInstance();
