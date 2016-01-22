@@ -39,7 +39,8 @@ import java.util.HashMap;
         LocalBroadcastManager.class,
         Context.class,
         AmbassadorConfig.class,
-        Utilities.class
+        Utilities.class,
+        RequestManager.class
 })
 public class PusherSDKTest {
 
@@ -59,7 +60,7 @@ public class PusherSDKTest {
 
         PowerMockito.spy(Utilities.class);
 
-        mockRequestManager = Mockito.mock(RequestManager.class);
+        mockRequestManager = PowerMockito.mock(RequestManager.class);
         mockAmbassadorConfig = Mockito.mock(AmbassadorConfig.class);
         pusherSDK.requestManager = mockRequestManager;
         pusherSDK.ambassadorConfig = mockAmbassadorConfig;

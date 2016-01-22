@@ -24,7 +24,8 @@ import java.util.List;
 @PrepareForTest({
         AmbassadorSingleton.class,
         JSONObject.class,
-        BulkShareHelper.class
+        BulkShareHelper.class,
+        RequestManager.class
 })
 public class BulkShareHelperTest {
 
@@ -45,7 +46,7 @@ public class BulkShareHelperTest {
 
         bulkShareHelper = Mockito.spy(new BulkShareHelper());
 
-        requestManager = Mockito.mock(RequestManager.class);
+        requestManager = PowerMockito.mock(RequestManager.class);
         bulkShareHelper.requestManager = requestManager;
     }
 

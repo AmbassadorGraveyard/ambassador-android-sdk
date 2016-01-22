@@ -49,7 +49,13 @@ import java.util.List;
         IdentifyApi.IdentifyRequestBody.class,
         TwitterCore.class,
         Log.class,
-        ConversionParameters.class
+        RequestManager.class,
+        ConversionParameters.class,
+        BulkShareApi.class,
+        ConversionsApi.class,
+        IdentifyApi.class,
+        LinkedInApi.class,
+        AmbassadorConfig.class
 })
 public class RequestManagerTest {
 
@@ -92,13 +98,13 @@ public class RequestManagerTest {
         Mockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(mockComponent);
         Mockito.doNothing().when(mockComponent).inject(Mockito.any(RequestManager.class));
 
-        bulkShareApi = Mockito.mock(BulkShareApi.class);
-        conversionsApi = Mockito.mock(ConversionsApi.class);
-        identifyApi = Mockito.mock(IdentifyApi.class);
+        bulkShareApi = PowerMockito.mock(BulkShareApi.class);
+        conversionsApi = PowerMockito.mock(ConversionsApi.class);
+        identifyApi = PowerMockito.mock(IdentifyApi.class);
         linkedInApi = Mockito.mock(LinkedInApi.class);
 
         RequestManager rm = new RequestManager(false);
-        requestManager = Mockito.spy(rm);
+        requestManager = PowerMockito.spy(rm);
 
         ambassadorConfig = Mockito.mock(AmbassadorConfig.class);
         Mockito.when(ambassadorConfig.getUniversalID()).thenReturn(universalId);
