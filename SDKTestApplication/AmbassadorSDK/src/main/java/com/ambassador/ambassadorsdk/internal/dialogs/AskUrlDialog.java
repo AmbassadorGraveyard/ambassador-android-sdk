@@ -25,14 +25,17 @@ public final class AskUrlDialog extends AlertDialog {
         }
 
         this.url = url;
+
+        setupText();
+        setupButtons();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(new ColorResource(R.color.twitter_blue).getColor());
+        getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(new ColorResource(R.color.twitter_blue).getColor());
 
-        setupText();
-        setupButtons();
     }
 
     private void setupText() {
@@ -60,9 +63,6 @@ public final class AskUrlDialog extends AlertDialog {
                 }
             }
         });
-
-        getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(new ColorResource(R.color.twitter_blue).getColor());
-        getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(new ColorResource(R.color.twitter_blue).getColor());
     }
 
     @NonNull
