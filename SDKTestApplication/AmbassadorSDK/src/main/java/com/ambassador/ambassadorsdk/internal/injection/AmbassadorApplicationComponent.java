@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.injection;
+package com.ambassador.ambassadorsdk.internal.injection;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;

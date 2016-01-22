@@ -21,7 +21,7 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.injection.ForActivity;
+import com.ambassador.ambassadorsdk.internal.injection.ForActivity;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;

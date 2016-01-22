@@ -1,6 +1,6 @@
 package com.ambassador.ambassadorsdk.internal;
 
-import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
@@ -29,8 +29,8 @@ import java.util.List;
 })
 public class BulkShareHelperTest {
 
-    BulkShareHelper bulkShareHelper;
-    RequestManager requestManager;
+    private BulkShareHelper bulkShareHelper;
+    private RequestManager requestManager;
 
     @Before
     public void setUpMock() {

@@ -33,9 +33,9 @@ import retrofit.mime.TypedInput;
 })
 public class LinkedInApiTest {
 
-    LinkedInApi linkedInApi;
-    LinkedInClient linkedInClient;
-    LinkedInAuthClient linkedInAuthClient;
+    private LinkedInApi linkedInApi;
+    private LinkedInClient linkedInClient;
+    private LinkedInAuthClient linkedInAuthClient;
 
     @Before
     public void setUp() throws Exception {

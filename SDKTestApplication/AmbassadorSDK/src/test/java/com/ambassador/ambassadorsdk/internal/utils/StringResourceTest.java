@@ -21,7 +21,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 })
 public class StringResourceTest {
 
-    Context context;
+    private Context context;
 
     @Before
     public void setUp() {

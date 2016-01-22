@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.ambassador.ambassadorsdk.TestUtils;
-import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.pusher.client.Authorizer;
 import com.pusher.client.Pusher;
@@ -44,9 +44,9 @@ import java.util.HashMap;
 })
 public class PusherSDKTest {
 
-    PusherSDK pusherSDK;
-    RequestManager mockRequestManager;
-    AmbassadorConfig mockAmbassadorConfig;
+    private PusherSDK pusherSDK;
+    private RequestManager mockRequestManager;
+    private AmbassadorConfig mockAmbassadorConfig;
 
     @Before
     public void setUp() throws Exception {

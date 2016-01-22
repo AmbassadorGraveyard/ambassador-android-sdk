@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
-import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
@@ -37,9 +37,9 @@ import java.util.TimerTask;
 })
 public class AmbassadorSDKTest {
 
-    Context context;
-    AmbassadorConfig ambassadorConfig;
-    PusherSDK pusherSDK;
+    private Context context;
+    private AmbassadorConfig ambassadorConfig;
+    private PusherSDK pusherSDK;
 
     @Before
     public void setUp() {
