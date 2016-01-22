@@ -39,59 +39,6 @@ import butterfork.ButterFork;
 public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
 
     private RAFOptions raf = RAFOptions.get();
-
-    public static final class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-
-        private RAFOptions raf = RAFOptions.get();
-
-        @Bind(B.id.tvName)              protected TextView      tvName;
-        @Bind(B.id.tvDots)              protected TextView      tvDots;
-        @Bind(B.id.tvNumberOrEmail)     protected TextView      tvNumberOrEmail;
-        @Bind(B.id.ivCheckMark)         protected ImageView     ivCheckMark;
-        @Bind(B.id.ivPic)               protected ImageView     ivPic;
-
-        protected OnContactClickListener listener;
-
-        private ContactViewHolder(View itemView, @Nullable OnContactClickListener listener) {
-            super(itemView);
-            ButterFork.bind(this, itemView);
-
-            tvName.setTextSize(raf.getContactsListNameSize());
-            tvName.setTypeface(raf.getContactsListNameFont());
-
-            tvDots.setTextSize(raf.getContactsListNameSize());
-            tvDots.setTypeface(raf.getContactsListNameFont());
-
-            tvNumberOrEmail.setTextSize(raf.getContactsListValueSize());
-            tvNumberOrEmail.setTypeface(raf.getContactsListValueFont());
-
-            this.listener = listener;
-            itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            if (this.listener != null) {
-                this.listener.onClick(v, getPosition());
-            }
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            if (this.listener != null) {
-                this.listener.onLongClick(v, getPosition());
-            }
-            return true;
-        }
-
-        public interface OnContactClickListener {
-            void onClick(View view, int position);
-            void onLongClick(View view, int position);
-        }
-
-    }
-
     private Context context;
 
     private List<Contact> contacts;
@@ -316,6 +263,58 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
 
     public void setOnSelectedContactsChangedListener(OnSelectedContactsChangedListener onSelectedContactsChangedListener) {
         this.onSelectedContactsChangedListener = onSelectedContactsChangedListener;
+    }
+
+    public static final class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+
+        private RAFOptions raf = RAFOptions.get();
+
+        @Bind(B.id.tvName)              protected TextView      tvName;
+        @Bind(B.id.tvDots)              protected TextView      tvDots;
+        @Bind(B.id.tvNumberOrEmail)     protected TextView      tvNumberOrEmail;
+        @Bind(B.id.ivCheckMark)         protected ImageView     ivCheckMark;
+        @Bind(B.id.ivPic)               protected ImageView     ivPic;
+
+        protected OnContactClickListener listener;
+
+        private ContactViewHolder(View itemView, @Nullable OnContactClickListener listener) {
+            super(itemView);
+            ButterFork.bind(this, itemView);
+
+            tvName.setTextSize(raf.getContactsListNameSize());
+            tvName.setTypeface(raf.getContactsListNameFont());
+
+            tvDots.setTextSize(raf.getContactsListNameSize());
+            tvDots.setTypeface(raf.getContactsListNameFont());
+
+            tvNumberOrEmail.setTextSize(raf.getContactsListValueSize());
+            tvNumberOrEmail.setTypeface(raf.getContactsListValueFont());
+
+            this.listener = listener;
+            itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (this.listener != null) {
+                this.listener.onClick(v, getPosition());
+            }
+        }
+
+        @Override
+        public boolean onLongClick(View v) {
+            if (this.listener != null) {
+                this.listener.onLongClick(v, getPosition());
+            }
+            return true;
+        }
+
+        public interface OnContactClickListener {
+            void onClick(View view, int position);
+            void onLongClick(View view, int position);
+        }
+
     }
 
 }
