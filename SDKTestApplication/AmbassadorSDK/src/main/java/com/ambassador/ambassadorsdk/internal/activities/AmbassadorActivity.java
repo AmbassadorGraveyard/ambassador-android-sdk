@@ -90,10 +90,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     // region Fields
 
-    // region Constants
-    int constants;
-    // endregion
-
     // region Views
     @Bind(B.id.action_bar)      protected Toolbar               toolbar;
     @Bind(B.id.svParent)        protected LockableScrollView    svParent;
