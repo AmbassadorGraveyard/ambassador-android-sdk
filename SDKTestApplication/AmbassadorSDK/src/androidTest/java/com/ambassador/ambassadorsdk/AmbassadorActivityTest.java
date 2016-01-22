@@ -16,8 +16,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
-import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationModule;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationModule;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;

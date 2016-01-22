@@ -34,8 +34,8 @@ import retrofit.mime.TypedByteArray;
 })
 public class ConversionsApiTest {
 
-    ConversionsApi conversionsApi;
-    ConversionsClient conversionsClient;
+    private ConversionsApi conversionsApi;
+    private ConversionsClient conversionsClient;
 
     @Before
     public void setUp() throws Exception {

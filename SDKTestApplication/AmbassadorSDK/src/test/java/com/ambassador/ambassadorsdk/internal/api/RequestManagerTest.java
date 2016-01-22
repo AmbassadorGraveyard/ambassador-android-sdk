@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.TestUtils;
-import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
@@ -59,27 +59,27 @@ import java.util.List;
 })
 public class RequestManagerTest {
 
-    RequestManager requestManager;
-    AmbassadorConfig ambassadorConfig;
+    private RequestManager requestManager;
+    private AmbassadorConfig ambassadorConfig;
 
-    BulkShareApi bulkShareApi;
-    ConversionsApi conversionsApi;
-    IdentifyApi identifyApi;
-    LinkedInApi linkedInApi;
+    private BulkShareApi bulkShareApi;
+    private ConversionsApi conversionsApi;
+    private IdentifyApi identifyApi;
+    private LinkedInApi linkedInApi;
 
-    String universalId = "***REMOVED***";
-    String universalToken = "SDKToken ***REMOVED***";
-    String userFullName = "Test User";
-    String identifyObject = "identifyObject";
-    String campaignId = "260";
-    String userEmail = "user@test.com";
-    String linkedInToken = "linkedInToken";
+    private String universalId = "***REMOVED***";
+    private String universalToken = "SDKToken ***REMOVED***";
+    private String userFullName = "Test User";
+    private String identifyObject = "identifyObject";
+    private String campaignId = "260";
+    private String userEmail = "user@test.com";
+    private String linkedInToken = "linkedInToken";
 
-    String sessionId = "sessionId";
-    long requestId = 123L;
+    private String sessionId = "sessionId";
+    private long requestId = 123L;
 
     @Mock
-    SessionManager<TwitterSession> sessionManager;
+    private SessionManager<TwitterSession> sessionManager;
 
     @Before
     public void setUp() throws Exception {

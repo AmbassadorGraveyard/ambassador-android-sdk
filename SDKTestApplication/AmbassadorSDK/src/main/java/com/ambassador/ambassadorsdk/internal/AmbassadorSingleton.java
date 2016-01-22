@@ -2,8 +2,8 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 
-import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationModule;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationModule;
 
 import javax.inject.Singleton;
 

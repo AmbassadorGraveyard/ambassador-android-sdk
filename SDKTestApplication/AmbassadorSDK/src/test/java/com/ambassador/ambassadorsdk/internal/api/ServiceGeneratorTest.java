@@ -26,7 +26,7 @@ import retrofit.client.Client;
 })
 public class ServiceGeneratorTest {
 
-    static String endpoint = "http://test.com";
+    private static String endpoint = "http://test.com";
 
     @Before
     public void setUp() throws Exception {

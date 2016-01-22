@@ -34,8 +34,8 @@ import retrofit.mime.TypedString;
 })
 public class IdentifyApiTest {
 
-    IdentifyApi identifyApi;
-    IdentifyClient identifyClient;
+    private IdentifyApi identifyApi;
+    private IdentifyClient identifyClient;
 
     @Before
     public void setUp() throws Exception {

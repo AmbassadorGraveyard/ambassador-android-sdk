@@ -34,8 +34,8 @@ import retrofit.mime.TypedString;
 })
 public class BulkShareApiTest {
 
-    BulkShareApi bulkShareApi;
-    BulkShareClient bulkShareClient;
+    private BulkShareApi bulkShareApi;
+    private BulkShareClient bulkShareClient;
 
     @Before
     public void setUp() throws Exception {

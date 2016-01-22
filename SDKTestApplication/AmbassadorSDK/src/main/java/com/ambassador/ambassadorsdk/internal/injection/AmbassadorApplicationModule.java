@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.injection;
+package com.ambassador.ambassadorsdk.internal.injection;
 
 import android.support.annotation.NonNull;
 
