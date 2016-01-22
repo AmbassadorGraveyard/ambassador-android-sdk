@@ -144,13 +144,13 @@ public final class AmbassadorActivity extends AppCompatActivity {
         if (isFinishing()) return;
 
         // Other setup
-        setUpLockingScrollView();
         setUpShareManagers();
+        setUpAmbassadorConfig();
+        setUpLockingScrollView();
         setUpOptions();
         setUpToolbar();
         setUpSocialGridView();
         setUpCustomImages();
-        setUpAmbassadorConfig();
         setUpLoader();
         setUpPusher();
         setUpCopy();
@@ -191,6 +191,20 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // endregion
 
     // region Setup
+    protected void setUpShareManagers() {
+        facebookManager = new FacebookManager();
+        twitterManager = new TwitterManager();
+        linkedInManager = new LinkedInManager();
+        emailManager = new EmailManager();
+        smsManager = new SmsManager();
+    }
+
+    protected void setUpAmbassadorConfig() {
+        ambassadorConfig.setRafParameters(raf.getDefaultShareMessage(), raf.getTitleText(), raf.getDescriptionText(), raf.getToolbarTitle());
+        ambassadorConfig.nullifyTwitterIfInvalid(null);
+        ambassadorConfig.nullifyLinkedInIfInvalid(null);
+    }
+
     protected void setUpLockingScrollView() {
         final View view = findViewById(android.R.id.content);
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -208,14 +222,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    protected void setUpShareManagers() {
-        facebookManager = new FacebookManager();
-        twitterManager = new TwitterManager();
-        linkedInManager = new LinkedInManager();
-        emailManager = new EmailManager();
-        smsManager = new SmsManager();
     }
 
     protected void setUpOptions() {
@@ -313,12 +319,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         });
     }
 
-    protected void setUpAmbassadorConfig() {
-        ambassadorConfig.setRafParameters(raf.getDefaultShareMessage(), raf.getTitleText(), raf.getDescriptionText(), raf.getToolbarTitle());
-        ambassadorConfig.nullifyTwitterIfInvalid(null);
-        ambassadorConfig.nullifyLinkedInIfInvalid(null);
-    }
-
     protected void setUpLoader() {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(new StringResource(R.string.loading).getValue());
@@ -409,7 +409,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setPositiveButton(new StringResource(R.string.ok).getValue(), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        shareWithTwitter();
+                        twitterManager.onShareRequested();
                         dialog.dismiss();
                     }
                 })
@@ -430,7 +430,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 .setPositiveButton(new StringResource(R.string.ok).getValue(), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        shareWithLinkedIn();
+                        linkedInManager.onShareRequested();
                         dialog.dismiss();
                     }
                 })
@@ -598,7 +598,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         void onActivityResult(int requestCode, int resultCode, @Nullable Intent data);
     }
 
-    protected static class FacebookManager implements ShareManager {
+    protected class FacebookManager implements ShareManager {
 
         protected CallbackManager callbackManager;
 
@@ -615,7 +615,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     .build();
             callbackManager = CallbackManager.Factory.create();
 
-            ShareDialog shareDialog = new ShareDialog(this);
+            ShareDialog shareDialog = new ShareDialog(AmbassadorActivity.this);
             shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
                 @Override
                 public void onSuccess(Sharer.Result result) {
@@ -645,7 +645,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     }
 
-    protected static class TwitterManager implements ShareManager {
+    protected class TwitterManager implements ShareManager {
 
         protected TwitterAuthClient twitterAuthClient;
 
@@ -713,7 +713,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     }
 
-    protected static class LinkedInManager implements ShareManager {
+    protected class LinkedInManager implements ShareManager {
 
         @Override
         public void onShareRequested() {
@@ -757,11 +757,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     }
 
-    protected static class EmailManager implements ShareManager {
+    protected class EmailManager implements ShareManager {
 
         @Override
         public void onShareRequested() {
-            Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
+            Intent contactIntent = new Intent(AmbassadorActivity.this, ContactSelectorActivity.class);
             contactIntent.putExtra("showPhoneNumbers", false);
             startActivity(contactIntent);
         }
@@ -773,11 +773,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     }
 
-    protected static class SmsManager implements ShareManager {
+    protected class SmsManager implements ShareManager {
 
         @Override
         public void onShareRequested() {
-            Intent contactIntent = new Intent(this, ContactSelectorActivity.class);
+            Intent contactIntent = new Intent(AmbassadorActivity.this, ContactSelectorActivity.class);
             contactIntent.putExtra("showPhoneNumbers", true);
             startActivity(contactIntent);
         }
