@@ -80,6 +80,17 @@ public final class SocialShareDialog extends Dialog {
 
         setupButtons();
         configureViews();
+
+        switch (socialNetwork) {
+            case TWITTER:
+                styleTwitter();
+                break;
+            case LINKEDIN:
+                styleLinkedIn();
+                break;
+            default:
+                break;
+        }
     }
 
     private void setupButtons() {
@@ -248,16 +259,6 @@ public final class SocialShareDialog extends Dialog {
 
     public void setSocialNetwork(@NonNull SocialNetwork socialNetwork) {
         this.socialNetwork = socialNetwork;
-        switch (socialNetwork) {
-            case TWITTER:
-                styleTwitter();
-                break;
-            case LINKEDIN:
-                styleLinkedIn();
-                break;
-            default:
-                break;
-        }
     }
 
     public interface ShareDialogEventListener {
