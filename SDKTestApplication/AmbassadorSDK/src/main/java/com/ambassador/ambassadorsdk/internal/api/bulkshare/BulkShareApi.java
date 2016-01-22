@@ -139,11 +139,13 @@ public final class BulkShareApi {
 
         public String name;
         public String message;
+        public String from_email;
         public String[] to;
 
-        public BulkShareSmsBody(String name, String message, String... to) {
+        public BulkShareSmsBody(String name, String message, String from_email, String... to) {
             this.name = name;
             this.message = message;
+            this.from_email = from_email;
             this.to = to;
         }
 
@@ -162,12 +164,14 @@ public final class BulkShareApi {
         public String subject_line;
         public String message;
         public String short_code;
+        public String from_email;
         public String[] to_emails;
 
-        public BulkShareEmailBody(String subject_line, String message, String short_code, String... to_emails) {
+        public BulkShareEmailBody(String subject_line, String message, String short_code, String from_email, String... to_emails) {
             this.subject_line = subject_line;
             this.message = message;
             this.short_code = short_code;
+            this.from_email = from_email;
             this.to_emails = to_emails;
         }
 
@@ -187,12 +191,14 @@ public final class BulkShareApi {
         public String social_name;
         public String recipient_email;
         public String recipient_username;
+        public String from_email;
 
-        public BulkShareTrackBody(String short_code, String social_name, String recipient_email, String recipient_username) {
+        public BulkShareTrackBody(String short_code, String social_name, String recipient_email, String recipient_username, String from_email) {
             this.short_code = short_code;
             this.social_name = social_name;
             this.recipient_email = recipient_email;
             this.recipient_username = recipient_username;
+            this.from_email = from_email;
         }
 
     }
