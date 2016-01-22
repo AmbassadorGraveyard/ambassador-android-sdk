@@ -8,14 +8,14 @@ import android.support.annotation.Nullable;
  */
 public final class ShareMethod implements Comparable<ShareMethod> {
 
-    protected ShareMethod() {}
-
     protected String name;
     protected int weight;
     protected int iconDrawable;
     protected int backgroundColor;
     protected boolean drawBorder;
     protected ShareAction shareAction;
+
+    protected ShareMethod() {}
 
     public void click() {
         if (shareAction != null) {
