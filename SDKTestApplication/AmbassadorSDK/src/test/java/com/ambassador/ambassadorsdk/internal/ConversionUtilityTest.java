@@ -1,21 +1,10 @@
 package com.ambassador.ambassadorsdk.internal;
 
-import android.content.Context;
-
-import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationModule;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import javax.inject.Singleton;
-
-import dagger.Component;
-
-import static org.mockito.Mockito.mock;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
@@ -23,24 +12,10 @@ import static org.mockito.Mockito.mock;
 })
 public class ConversionUtilityTest {
 
-    Context mockContext;
-
-    @Singleton
-    @Component(modules = {AmbassadorApplicationModule.class})
-    public interface TestComponent {
-        void inject(ConversionUtilityTest conversionUtilityTest);
-    }
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
-        amb.setMockMode(true);
 
-        mockContext = mock(Context.class);
-
-        TestComponent component = DaggerConversionUtilityTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
-        component.inject(this);
     }
 
     @Test

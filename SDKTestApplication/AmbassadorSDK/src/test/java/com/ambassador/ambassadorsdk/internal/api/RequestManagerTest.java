@@ -1,11 +1,15 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.api;
 
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.TestUtils;
 import com.ambassador.ambassadorsdk.injection.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.ConversionUtility;
+import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
