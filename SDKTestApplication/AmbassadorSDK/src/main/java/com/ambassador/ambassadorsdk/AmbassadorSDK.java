@@ -31,6 +31,9 @@ public final class AmbassadorSDK {
     static PusherSDK pusherSDK;
 
     public static void presentRAF(Context context, String campaignID) {
+        if (context.getResources().getIdentifier("homeWelcomeTitle", "color", context.getPackageName()) != 0) {
+            presentRAF(context, campaignID, RAFOptionsFactory.decodeCustomValues());
+        }
         presentRAF(context, campaignID, new RAFOptions.Builder().build());
     }
 
