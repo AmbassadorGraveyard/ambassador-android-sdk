@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.TestUtils;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
@@ -13,7 +12,8 @@ import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
-import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
