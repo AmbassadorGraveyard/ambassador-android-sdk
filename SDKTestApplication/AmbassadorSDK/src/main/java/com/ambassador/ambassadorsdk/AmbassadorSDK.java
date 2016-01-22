@@ -13,13 +13,11 @@ import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
+import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,6 +31,9 @@ public final class AmbassadorSDK {
 
     @Inject
     static PusherSDK pusherSDK;
+
+    @Inject
+    static RequestManager requestManager;
 
     public static void presentRAF(Context context, String campaignID) {
         presentRAF(context, campaignID, new RAFOptions.Builder().build());
@@ -154,27 +155,30 @@ public final class AmbassadorSDK {
     }
 
     protected static void setupGcm(final Context context) {
-        if (checkPlayServices(context)) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(context);
-                        String id = gcm.register("440421303402");
-                        ambassadorConfig.setGcmId(id);
-                        Log.v("AMB_GCM", "REG TOKEN: " + id);
-                    } catch (IOException e) {
-                        // whatever
+        new GcmHandler(context).getRegistrationToken(new GcmHandler.RegistrationListener() {
+            @Override
+            public void registrationSuccess(final String token) {
+                requestManager.updateGcmRegistrationToken(token, new RequestManager.RequestCompletion() {
+                    @Override
+                    public void onSuccess(Object successResponse) {
+                        ambassadorConfig.setGcmRegistrationToken(token);
+                        Log.v("AMB_GCM", token);
                     }
-                }
-            }).start();
-        }
+
+                    @Override
+                    public void onFailure(Object failureResponse) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void registrationFailure(Throwable e) {
+                Log.e("AmbassadorSDK", e.toString());
+            }
+        });
     }
 
-    private static boolean checkPlayServices(Context context) {
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
-        return resultCode == ConnectionResult.SUCCESS;
-    }
+
 
 }

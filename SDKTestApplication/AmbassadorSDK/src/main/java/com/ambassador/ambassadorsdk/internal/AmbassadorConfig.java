@@ -177,12 +177,12 @@ public class AmbassadorConfig {
         sharePrefs.edit().putBoolean("installConversion", true).apply();
     }
 
-    public String getGcmId() {
-        return sharePrefs.getString("gcmId", null);
+    public String getGcmRegistrationToken() {
+        return sharePrefs.getString("gcmRegistrationToken", null);
     }
 
-    public void setGcmId(String gcmId) {
-        sharePrefs.edit().putString("gcmId", gcmId).apply();
+    public void setGcmRegistrationToken(String gcmRegistrationToken) {
+        sharePrefs.edit().putString("gcmRegistrationToken", gcmRegistrationToken).apply();
     }
 
     public void nullifyTwitterIfInvalid(final NullifyCompleteListener listener) {
