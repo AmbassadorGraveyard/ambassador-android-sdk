@@ -133,7 +133,7 @@ public final class ConversionParameters {
     }
 
     public boolean isValid() {
-        return campaign > -1 && !email.equals("") && revenue > -1;
+        return campaign > -1 && !"".equals(email) && revenue > -1;
     }
 
     public ConversionsApi.RegisterConversionRequestBody.FieldsObject getFieldsObject() {

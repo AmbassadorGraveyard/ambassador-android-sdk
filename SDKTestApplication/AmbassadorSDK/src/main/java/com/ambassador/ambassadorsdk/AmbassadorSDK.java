@@ -28,10 +28,10 @@ import javax.inject.Inject;
 public final class AmbassadorSDK {
 
     @Inject
-    static AmbassadorConfig ambassadorConfig;
+    protected static AmbassadorConfig ambassadorConfig;
 
     @Inject
-    static PusherSDK pusherSDK;
+    protected static PusherSDK pusherSDK;
 
     public static void presentRAF(Context context, String campaignID) {
         presentRAF(context, campaignID, new RAFOptions.Builder().build());
@@ -122,7 +122,7 @@ public final class AmbassadorSDK {
         startConversionTimer();
     }
 
-    static void registerInstallReceiver(Context context) {
+    protected static void registerInstallReceiver(Context context) {
         IntentFilter intentFilter = buildIntentFilter();
         intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
         context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
@@ -132,7 +132,7 @@ public final class AmbassadorSDK {
         return new IntentFilter();
     }
 
-    static void startConversionTimer() {
+    protected static void startConversionTimer() {
         final ConversionUtility utility = buildConversionUtility(AmbassadorSingleton.getInstanceContext());
         Timer timer = buildTimer();
         timer.scheduleAtFixedRate(new TimerTask() {

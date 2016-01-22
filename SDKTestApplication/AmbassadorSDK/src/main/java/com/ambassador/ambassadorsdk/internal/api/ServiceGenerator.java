@@ -46,7 +46,7 @@ public final class ServiceGenerator {
      * @return the String value of the field
      * @throws NoEndpointFoundException when the field is not declared in serviceClass
      */
-    static String extractEndpoint(Class<?> serviceClass) throws NoEndpointFoundException {
+    protected static String extractEndpoint(Class<?> serviceClass) throws NoEndpointFoundException {
         try {
            return (String) serviceClass.getField("ENDPOINT").get(null);
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public final class ServiceGenerator {
      * Instantiates a new RestAdapter.Builder and returns it.
      * @return a RestBuilder.Builder object
      */
-    static RestAdapter.Builder getBuilder() {
+    protected static RestAdapter.Builder getBuilder() {
         return new RestAdapter.Builder();
     }
 
