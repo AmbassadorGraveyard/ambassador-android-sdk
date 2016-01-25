@@ -16,7 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,14 +23,18 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.dialogs.ContactInfoDialog;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.dialogs.ContactInfoDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
@@ -51,6 +54,8 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     private int itemWidth;
     private Bitmap noPicBmp;
 
+    @Inject protected Device device;
+
     private OnSelectedContactsChangedListener onSelectedContactsChangedListener;
 
     public ContactListAdapter(Context context, List<Contact> contacts, boolean shouldShowPhoneNumbers) {
@@ -61,6 +66,9 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         this.shouldShowPhoneNumbers = shouldShowPhoneNumbers;
         this.checkmarkXPos = Utilities.getPixelSizeForDimension(R.dimen.contact_select_checkmark_x);
         this.noPicBmp = generateNoPicBitmap(context);
+
+        AmbassadorSingleton.getInstanceComponent().inject(this);
+        this.itemWidth = device.getScreenWidth();
     }
 
     @Override
@@ -71,14 +79,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_contacts, parent, false);
-
-        v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                v.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                itemWidth = v.getWidth();
-            }
-        });
 
         ContactViewHolder cvh = new ContactViewHolder(v, new ContactViewHolder.OnContactClickListener() {
             @Override
@@ -217,6 +217,10 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         canvas.drawBitmap(bitmap, null, new Rect(0, 0, bitmap.getWidth(), bitmap.getWidth()), new Paint(Paint.ANTI_ALIAS_FLAG));
 
         return tmp;
+    }
+
+    public void refreshItemWidth() {
+        this.itemWidth = device.getScreenWidth();
     }
 
     private class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
