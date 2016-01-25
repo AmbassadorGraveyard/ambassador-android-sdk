@@ -367,7 +367,11 @@ public class AmbassadorActivity extends AppCompatActivity {
             int height = drawable.getIntrinsicHeight();
             float ratio = (float) width / (float) height;
 
-            logo.setImageDrawable(Drawable.createFromStream(getAssets().open(drawablePath), null));
+            if (drawablePath != null) {
+                logo.setImageDrawable(Drawable.createFromStream(getAssets().open(drawablePath), null));
+            } else if (drawableId != -555) {
+                logo.setImageDrawable(getResources().getDrawable(drawableId));
+            }
 
             int heightToSet = Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height);
             int widthToSet = (int) (heightToSet * ratio);
