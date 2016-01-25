@@ -32,7 +32,7 @@ public final class AmbassadorSDK {
 
     public static void presentRAF(Context context, String campaignID) {
         if (context.getResources().getIdentifier("homeWelcomeTitle", "color", context.getPackageName()) != 0) {
-            presentRAF(context, campaignID, RAFOptionsFactory.decodeCustomValues());
+            presentRAF(context, campaignID, RAFOptionsFactory.decodeCustomValues(context));
         }
         presentRAF(context, campaignID, new RAFOptions.Builder().build());
     }
