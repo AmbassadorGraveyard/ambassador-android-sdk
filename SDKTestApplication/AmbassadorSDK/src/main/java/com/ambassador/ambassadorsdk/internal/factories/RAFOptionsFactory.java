@@ -51,7 +51,7 @@ public final class RAFOptionsFactory {
         builder.setHomeWelcomeTitleColor(resources.getColor(id));
 
         id = resources.getIdentifier("homeWelcomeTitle", "dimen", packageName);
-        builder.setHomeWelcomeTitleSize(resources.getDimension(id));
+        builder.setHomeWelcomeTitleSize(removeDensity(context, resources.getDimension(id)));
 
         id = resources.getIdentifier("homeWelcomeTitle", "string", packageName);
         builder.setHomeWelcomeTitleFont(new Font(resources.getString(id)).getTypeface());
@@ -60,7 +60,7 @@ public final class RAFOptionsFactory {
         builder.setHomeWelcomeDescriptionColor(resources.getColor(id));
 
         id = resources.getIdentifier("homeWelcomeDesc", "dimen", packageName);
-        builder.setHomeWelcomeDescriptionSize(resources.getDimension(id));
+        builder.setHomeWelcomeDescriptionSize(removeDensity(context, resources.getDimension(id)));
 
         id = resources.getIdentifier("homeWelcomeDesc", "string", packageName);
         builder.setHomeWelcomeDescriptionFont(new Font(resources.getString(id)).getTypeface());
@@ -84,7 +84,7 @@ public final class RAFOptionsFactory {
         builder.setHomeShareTextColor(resources.getColor(id));
 
         id = resources.getIdentifier("homeShareText", "dimen", packageName);
-        builder.setHomeShareTextSize(resources.getDimension(id));
+        builder.setHomeShareTextSize(removeDensity(context, resources.getDimension(id)));
 
         id = resources.getIdentifier("homeShareText", "string", packageName);
         builder.setHomeShareTextFont(new Font(resources.getString(id)).getTypeface());
@@ -96,13 +96,13 @@ public final class RAFOptionsFactory {
         builder.setContactsListViewBackgroundColor(resources.getColor(id));
 
         id = resources.getIdentifier("contactsListName", "dimen", packageName);
-        builder.setContactsListNameSize(resources.getDimension(id));
+        builder.setContactsListNameSize(removeDensity(context, resources.getDimension(id)));
 
         id = resources.getIdentifier("contactsListName", "string", packageName);
         builder.setContactsListNameFont(new Font(resources.getString(id)).getTypeface());
 
         id = resources.getIdentifier("contactsListValue", "dimen", packageName);
-        builder.setContactsListValueSize(resources.getDimension(id));
+        builder.setContactsListValueSize(removeDensity(context, resources.getDimension(id)));
 
         id = resources.getIdentifier("contactsListValue", "string", packageName);
         builder.setContactsListValueFont(new Font(resources.getString(id)).getTypeface());
@@ -150,9 +150,14 @@ public final class RAFOptionsFactory {
         builder.setLinkedInToolbarArrowColor(resources.getColor(id));
 
         id = resources.getIdentifier("socialOptionCornerRadius", "dimen", packageName);
-        builder.setSocialOptionCornerRadius(resources.getDimension(id));
+        builder.setSocialOptionCornerRadius(removeDensity(context, resources.getDimension(id)));
 
         return builder.build();
+    }
+
+    private static float removeDensity(Context context, float densityPixels) {
+        float scaledDensity = context.getResources().getDisplayMetrics().scaledDensity;
+        return densityPixels / scaledDensity;
     }
 
     public static RAFOptions decodeResources(InputStream inputStream, Context context) throws Exception {
