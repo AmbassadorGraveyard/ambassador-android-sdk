@@ -44,6 +44,9 @@ public final class RAFOptionsFactory {
         id = resources.getIdentifier("RAFLogoPosition", "string", packageName);
         builder.setLogoPosition(resources.getString(id));
 
+        id = resources.getIdentifier("raf_logo", "drawable", packageName);
+        builder.setLogoResId(id);
+
         id = resources.getIdentifier("homeBackground", "color", packageName);
         builder.setHomeBackgroundColor(resources.getColor(id));
 

@@ -347,7 +347,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         //first check if an image exists
 
         String drawablePath = raf.getLogo();
-        if (drawablePath == null) return;
+        int drawableId = raf.getLogoResId();
+        if (drawablePath == null && drawableId == -555) return;
 
         int pos;
         try {
