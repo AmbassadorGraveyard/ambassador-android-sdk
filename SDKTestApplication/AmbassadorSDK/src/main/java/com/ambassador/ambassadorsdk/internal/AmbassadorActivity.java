@@ -347,7 +347,8 @@ public class AmbassadorActivity extends AppCompatActivity {
         //first check if an image exists
 
         String drawablePath = raf.getLogo();
-        if (drawablePath == null) return;
+        int drawableId = raf.getLogoResId();
+        if (drawablePath == null && drawableId == -555) return;
 
         int pos;
         try {
@@ -361,12 +362,20 @@ public class AmbassadorActivity extends AppCompatActivity {
             ImageView logo = new ImageView(this);
             logo.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-            Drawable drawable = Drawable.createFromStream(getAssets().open(drawablePath), null);
+            Drawable drawable;
+            try {
+                drawable = Drawable.createFromStream(getAssets().open(drawablePath), null);
+            } catch (Exception e) {
+                drawable = getResources().getDrawable(drawableId);
+            }
+
+            if (drawable == null) return;
+
             int width = drawable.getIntrinsicWidth();
             int height = drawable.getIntrinsicHeight();
             float ratio = (float) width / (float) height;
 
-            logo.setImageDrawable(Drawable.createFromStream(getAssets().open(drawablePath), null));
+            logo.setImageDrawable(drawable);
 
             int heightToSet = Utilities.getPixelSizeForDimension(R.dimen.raf_logo_height);
             int widthToSet = (int) (heightToSet * ratio);

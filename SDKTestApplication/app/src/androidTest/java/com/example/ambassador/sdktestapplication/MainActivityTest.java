@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -25,7 +24,6 @@ public class MainActivityTest {
 
     @Test
     public void testPresentRaf() {
-        onView(withId(R.id.btnPresentRAF)).perform(click());
         onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
