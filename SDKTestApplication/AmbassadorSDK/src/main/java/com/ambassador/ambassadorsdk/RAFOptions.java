@@ -563,7 +563,8 @@ public final class RAFOptions {
 
     @NonNull
     public static RAFOptions get() {
-        return instance != null ? instance : Builder.newInstance().build();
+        if (instance == null) instance = RAFOptions.Builder.newInstance().build();
+        return instance;
     }
 
 }
