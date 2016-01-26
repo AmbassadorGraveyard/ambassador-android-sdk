@@ -133,7 +133,7 @@
             android:layout_height="45dp"
             android:layout_marginTop="8dp">
 
-            <TextView
+            <com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView
                 android:id="@+id/tvSendContacts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -141,8 +141,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:paddingLeft="10dp"
-                android:text="NO CONTACTS SELECTED"
-                android:textStyle="bold" />
+                android:text="NO CONTACTS SELECTED" />
 
             <TextView
                 android:id="@+id/tvSendCount"
