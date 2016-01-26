@@ -50,6 +50,7 @@ import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.ContactList;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
+import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView;
 
 import org.json.JSONObject;
@@ -87,7 +88,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     @Bind(B.id.btnEdit)         protected ImageButton           btnEdit;
     @Bind(B.id.btnDone)         protected Button                btnDone;
     @Bind(B.id.rlSend)          protected RelativeLayout        rlSend;
-    @Bind(B.id.tvSendContacts)  protected TextView              tvSendContacts;
+    @Bind(B.id.tvSendContacts)  protected CrossfadedTextView    tvSendContacts;
     @Bind(B.id.tvSendCount)     protected TextView              tvSendCount;
     @Bind(B.id.tvNoContacts)    protected TextView              tvNoContacts;
     // endregion
@@ -270,6 +271,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     }
 
     private void setUpUI() {
+        tvSendContacts.setTextNoAnimation("NO CONTACTS SELECTED");
         etShareMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
         btnEdit.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
@@ -292,6 +294,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
                 }
             });
+            tvSendContacts.setGravity(CrossfadedTextView.Gravity.LEFT);
         } else {
             tvSendCount.setVisibility(View.GONE);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tvSendContacts.getLayoutParams();
@@ -299,6 +302,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
             params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
             params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
             tvSendContacts.setLayoutParams(params);
+            tvSendContacts.setGravity(CrossfadedTextView.Gravity.CENTER);
         }
 
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -434,7 +438,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         }
     }
 
-    private void negativeTextViewFeedback(TextView textView) {
+    private void negativeTextViewFeedback(View textView) {
         Animation shake = new TranslateAnimation(-3, 3, 0, 0);
         shake.setInterpolator(new CycleInterpolator(3));
         shake.setDuration(500);
