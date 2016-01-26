@@ -123,6 +123,7 @@ public class AmbassadorSDKTest {
         Mockito.doNothing().when(component).inject(Mockito.any(AmbassadorSDK.class));
         PowerMockito.doNothing().when(AmbassadorSDK.class, "registerInstallReceiver", context);
         PowerMockito.doNothing().when(AmbassadorSDK.class, "startConversionTimer");
+        PowerMockito.doNothing().when(AmbassadorSDK.class, "setupGcm", context);
         Mockito.doNothing().when(ambassadorConfig).setUniversalToken(Mockito.anyString());
         Mockito.doNothing().when(ambassadorConfig).setUniversalID(Mockito.anyString());
 
