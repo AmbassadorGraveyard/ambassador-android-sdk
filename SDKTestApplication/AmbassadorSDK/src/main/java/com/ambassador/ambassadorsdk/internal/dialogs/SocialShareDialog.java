@@ -24,7 +24,7 @@ import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.injection.ForActivity;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
-import com.ambassador.ambassadorsdk.internal.api.linkedin2.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 

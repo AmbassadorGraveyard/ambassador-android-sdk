@@ -25,7 +25,7 @@ import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
-import com.ambassador.ambassadorsdk.internal.api.linkedin2.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
