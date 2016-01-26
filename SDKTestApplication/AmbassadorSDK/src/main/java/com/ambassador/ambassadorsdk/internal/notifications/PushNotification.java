@@ -8,8 +8,7 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
-import com.ambassador.ambassadorsdk.internal.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.models.NotificationData;
 
 public final class PushNotification {
