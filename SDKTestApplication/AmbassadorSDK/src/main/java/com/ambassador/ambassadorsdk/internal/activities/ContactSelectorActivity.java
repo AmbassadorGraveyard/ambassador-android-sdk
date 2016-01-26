@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.Manifest;
+import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -80,6 +81,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     @Bind(B.id.etSearch)        protected EditText              etSearch;
     @Bind(B.id.btnDoneSearch)   protected Button                btnDoneSearch;
     @Bind(B.id.rvContacts)      protected DividedRecyclerView   rvContacts;
+    @Bind(B.id.vListDim)        protected View                  vListDim;
     @Bind(B.id.llSendView)      protected LinearLayout          llSendView;
     @Bind(B.id.etShareMessage)  protected EditText              etShareMessage;
     @Bind(B.id.btnEdit)         protected ImageButton           btnEdit;
@@ -340,6 +342,12 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         etShareMessage.requestFocus();
         etShareMessage.setSelection(0);
         device.openSoftKeyboard(etShareMessage);
+        vListDim.setVisibility(View.VISIBLE);
+        vListDim.animate()
+                .alpha(0.75f)
+                .setDuration(150)
+                .setListener(null)
+                .start();
     }
 
     private void btnDoneClicked() {
@@ -347,6 +355,30 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         btnEdit.setVisibility(View.VISIBLE);
         btnDone.setVisibility(View.GONE);
         etShareMessage.setEnabled(false);
+        vListDim.animate()
+                .alpha(0f)
+                .setDuration(150)
+                .setListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        vListDim.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        vListDim.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                }).start();
     }
     // endregion
 
@@ -367,6 +399,9 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         });
 
         if (finalHeight != 0) { // show search
+            if (etShareMessage.isEnabled()) {
+                btnDoneClicked();
+            }
             shrinkSendView(true);
             etSearch.requestFocus();
             device.openSoftKeyboard(etSearch);
