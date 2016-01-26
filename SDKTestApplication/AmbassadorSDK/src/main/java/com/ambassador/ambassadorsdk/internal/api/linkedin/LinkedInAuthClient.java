@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal.api.linkedin2;
+package com.ambassador.ambassadorsdk.internal.api.linkedin;
 
 import retrofit.Callback;
 import retrofit.http.Body;
