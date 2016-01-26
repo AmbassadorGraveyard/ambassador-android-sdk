@@ -74,8 +74,8 @@ public final class DividedRecyclerView extends RecyclerView {
         }
 
         public void drawVertical(Canvas c, RecyclerView parent) {
-            final int left = parent.getPaddingLeft();
-            final int right = parent.getWidth() - parent.getPaddingRight();
+            final int left = parent.getPaddingLeft() + 40;
+            final int right = parent.getWidth() - parent.getPaddingRight() - 40;
 
             final int childCount = parent.getChildCount();
             for (int i = 0; i < childCount; i++) {
