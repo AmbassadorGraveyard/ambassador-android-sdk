@@ -3,11 +3,11 @@ package com.ambassador.demoapp.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.ambassador.demoapp.R;
 
@@ -32,7 +32,11 @@ public final class StoreFragment extends Fragment {
     protected View.OnClickListener btnBuyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(), "hit", Toast.LENGTH_SHORT).show();
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Purchase successful")
+                    .setMessage("Thank you for buying from Ambassador!")
+                    .setPositiveButton("Done", null)
+                    .show();
         }
     };
 
