@@ -46,9 +46,9 @@ import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskUrlDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
-import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.ContactList;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView;
@@ -299,7 +299,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
             tvSendCount.setVisibility(View.GONE);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tvSendContacts.getLayoutParams();
             params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
+            if (android.os.Build.VERSION.SDK_INT >= 17) params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
             params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
             tvSendContacts.setLayoutParams(params);
             tvSendContacts.setGravity(CrossfadedTextView.Gravity.CENTER);
@@ -497,7 +497,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
         if (showPhoneNumbers) contactList = new ContactList(ContactList.Type.PHONE).get(this);
         else contactList = new ContactList(ContactList.Type.EMAIL).get(this);
-        contactList = (contactList.size() == 0 && AmbassadorConfig.isReleaseBuild)
+        contactList = (contactList.size() == 0 && !AmbassadorConfig.isReleaseBuild)
                 ? new ContactList(ContactList.Type.DUMMY).get(this) : contactList;
 
         if (contactList.size() == 0) {
