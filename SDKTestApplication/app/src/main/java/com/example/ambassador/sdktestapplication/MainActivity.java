@@ -1,12 +1,16 @@
 package com.example.ambassador.sdktestapplication;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -20,8 +24,8 @@ import butterknife.ButterKnife;
 
 public final class MainActivity extends AppCompatActivity {
 
-    @Bind(R.id.tlTabs)  protected TabLayout tlTabs;
-    @Bind(R.id.vpPages) protected ViewPager vpPages;
+    @Bind(R.id.tlTabs)      protected TabLayout     tlTabs;
+    @Bind(R.id.vpPages)     protected ViewPager     vpPages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,12 @@ public final class MainActivity extends AppCompatActivity {
 
         vpPages.setAdapter(new TabFragmentPagerAdapter(getSupportFragmentManager()));
         tlTabs.setupWithViewPager(vpPages);
+
+        setTitle(Html.fromHtml("<small>Ambassador Demo</small>"));
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
+        }
     }
 
     @Override
