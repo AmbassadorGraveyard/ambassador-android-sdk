@@ -1,4 +1,4 @@
-package com.example.ambassador.sdktestapplication.fragments;
+package com.ambassador.demoapp.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,14 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ambassador.sdktestapplication.R;
+import com.ambassador.demoapp.R;
 
-public final class StoreFragment extends Fragment {
+public final class LoginFragment extends Fragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_store, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         return view;
     }
