@@ -12,7 +12,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.example.ambassador.sdktestapplication"
+        applicationId "com.ambasasdor.demoapp"
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 1
