@@ -4,11 +4,8 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.TestUtils;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
-import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
-import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInAuthClient;
-import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInClient;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,9 +30,9 @@ import retrofit.mime.TypedInput;
 })
 public class LinkedInApiTest {
 
-    LinkedInApi linkedInApi;
-    LinkedInClient linkedInClient;
-    LinkedInAuthClient linkedInAuthClient;
+    private LinkedInApi linkedInApi;
+    private LinkedInClient linkedInClient;
+    private LinkedInAuthClient linkedInAuthClient;
 
     @Before
     public void setUp() throws Exception {

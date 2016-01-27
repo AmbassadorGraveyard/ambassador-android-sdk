@@ -1,6 +1,8 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
+import com.ambassador.ambassadorsdk.internal.models.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +17,7 @@ import javax.inject.Inject;
 public class BulkShareHelper {
 
     /** */
-    @Inject
-    RequestManager requestManager;
+    @Inject protected RequestManager requestManager;
 
     /**
      *
@@ -63,7 +64,7 @@ public class BulkShareHelper {
      * @param phoneNumbers
      * @param completion
      */
-    public void bulkShare(final String messageToShare, final List<ContactObject> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
+    public void bulkShare(final String messageToShare, final List<Contact> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
         if (phoneNumbers) {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
@@ -95,12 +96,12 @@ public class BulkShareHelper {
 
     /**
      *
-     * @param contactObjects
+     * @param contacts
      * @return
      */
-    static ArrayList<String> verifiedSMSList(List<ContactObject> contactObjects) {
+    public static ArrayList<String> verifiedSMSList(List<Contact> contacts) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
-        for (ContactObject contact : contactObjects) {
+        for (Contact contact : contacts) {
             String strippedNum = contact.getPhoneNumber().replaceAll("[^0-9]", "");
             if ((strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7) && !verifiedNumbers.contains(strippedNum)) {
                 verifiedNumbers.add(strippedNum);
@@ -112,12 +113,12 @@ public class BulkShareHelper {
 
     /**
      *
-     * @param contactObjects
+     * @param contacts
      * @return
      */
-    static ArrayList<String> verifiedEmailList(List<ContactObject> contactObjects) {
+    public static ArrayList<String> verifiedEmailList(List<Contact> contacts) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
-        for (ContactObject contact : contactObjects) {
+        for (Contact contact : contacts) {
             if (BulkShareHelper.isValidEmail(contact.getEmailAddress()) && !verifiedEmails.contains(contact.getEmailAddress())) {
                 verifiedEmails.add(contact.getEmailAddress());
             }
@@ -142,7 +143,7 @@ public class BulkShareHelper {
      * @param shortCode
      * @return
      */
-    static BulkShareApi.BulkShareTrackBody[] contactArray(SocialServiceTrackType trackType, String shortCode, String fromEmail) {
+    public static BulkShareApi.BulkShareTrackBody[] contactArray(SocialServiceTrackType trackType, String shortCode, String fromEmail) {
         return contactArray(null, trackType, shortCode, fromEmail);
     }
 
@@ -153,7 +154,7 @@ public class BulkShareHelper {
      * @param shortCode
      * @return
      */
-    static BulkShareApi.BulkShareTrackBody[] contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode, String fromEmail) {
+    public static BulkShareApi.BulkShareTrackBody[] contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode, String fromEmail) {
         String short_code = shortCode;
         String social_name = trackType.toString();
 
@@ -191,7 +192,7 @@ public class BulkShareHelper {
      * @param message
      * @return
      */
-    static BulkShareApi.BulkShareEmailBody payloadObjectForEmail(List<String> emailsList, String shortCode, String emailSubject, String message, String fromEmail) {
+    public static BulkShareApi.BulkShareEmailBody payloadObjectForEmail(List<String> emailsList, String shortCode, String emailSubject, String message, String fromEmail) {
         String[] emails = emailsList.toArray(new String[emailsList.size()]);
         return new BulkShareApi.BulkShareEmailBody(emailSubject, message, shortCode, fromEmail, emails);
     }
@@ -203,7 +204,7 @@ public class BulkShareHelper {
      * @param smsMessage
      * @return
      */
-    static BulkShareApi.BulkShareSmsBody payloadObjectForSMS(List<String> numbersList, String fullName, String smsMessage, String fromEmail) {
+    public static BulkShareApi.BulkShareSmsBody payloadObjectForSMS(List<String> numbersList, String fullName, String smsMessage, String fromEmail) {
         String[] numbers = numbersList.toArray(new String[numbersList.size()]);
         return new BulkShareApi.BulkShareSmsBody(fullName, smsMessage, fromEmail, numbers);
     }

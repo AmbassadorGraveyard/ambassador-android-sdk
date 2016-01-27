@@ -2,6 +2,9 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationModule;
+
 import junit.framework.Assert;
 
 import org.junit.Before;
@@ -19,9 +22,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 })
 public class AmbassadorSingletonTest {
 
-    Context context;
-    AmbassadorApplicationComponent component;
-    AmbassadorApplicationModule module;
+    private Context context;
+    private AmbassadorApplicationComponent component;
+    private AmbassadorApplicationModule module;
 
     @Before
     public void setUp() {

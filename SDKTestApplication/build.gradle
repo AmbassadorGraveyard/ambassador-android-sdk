@@ -56,6 +56,7 @@ subprojects { prj ->
                     excludes: [
                             '**/R*.class',
                             '**/BuildConfig*',
+                            '**/*$$ViewBinder*.*',
 
                             '**/AmbassadorSDK_MembersInjector.class',
                             '**/AmbassadorActivity_MembersInjector.class',
@@ -113,7 +114,7 @@ subprojects { prj ->
 
             doFirst {
                 files('build/intermediates/classes/debug').getFiles().each { file ->
-                    if (file.name.contains('$$')) {
+                    if (file.name.contains('$$') && !file.name.contains('ViewBinder')) {
                         file.renameTo(file.path.replace('$$', '$'))
                     }
                 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rlMaster"
+    android:id="@+id/rlParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -46,7 +46,7 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView
         android:id="@+id/rvContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -123,7 +123,8 @@
                 android:id="@+id/tvSendContacts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:paddingLeft="10dp"
                 android:text="NO CONTACTS SELECTED"

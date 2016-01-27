@@ -15,17 +15,17 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.view.View;
 import android.widget.TextView;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
-import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.internal.AmbassadorApplicationModule;
+import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationModule;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
-import com.ambassador.ambassadorsdk.internal.api.linkedIn.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -123,7 +123,6 @@ public class AmbassadorActivityTest {
         //application component which is created in the Application (and uses the real tweetRequest)
         AmbassadorSingleton.init(context);
         AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
-        amb.setMockMode(true);
         AmbassadorSingleton.setInstanceAmbModule(amb);
         TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
         AmbassadorSingleton.setInstanceComponent(component);
@@ -277,7 +276,7 @@ public class AmbassadorActivityTest {
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(1, R.id.tvNumberOrEmail)).check(matches(_withRegex(EMAIL_PATTERN)));
 
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        //onData(is(instanceOf(ContactObject.class))).inAdapterView(withId(R.id.rvContacts)).atPosition(0).perform(click());
+        //onData(is(instanceOf(Contact.class))).inAdapterView(withId(R.id.rvContacts)).atPosition(0).perform(click());
         onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
 
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));

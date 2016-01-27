@@ -1,6 +1,9 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
+import com.ambassador.ambassadorsdk.internal.models.Contact;
 
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -21,12 +24,13 @@ import java.util.List;
 @PrepareForTest({
         AmbassadorSingleton.class,
         JSONObject.class,
-        BulkShareHelper.class
+        BulkShareHelper.class,
+        RequestManager.class
 })
 public class BulkShareHelperTest {
 
-    BulkShareHelper bulkShareHelper;
-    RequestManager requestManager;
+    private BulkShareHelper bulkShareHelper;
+    private RequestManager requestManager;
 
     @Before
     public void setUpMock() {
@@ -42,7 +46,7 @@ public class BulkShareHelperTest {
 
         bulkShareHelper = Mockito.spy(new BulkShareHelper());
 
-        requestManager = Mockito.mock(RequestManager.class);
+        requestManager = PowerMockito.mock(RequestManager.class);
         bulkShareHelper.requestManager = requestManager;
     }
 
@@ -50,7 +54,7 @@ public class BulkShareHelperTest {
     public void bulkShareSMSTest() {
         // ARRANGE
         String message = "message";
-        List<ContactObject> contacts = new ArrayList<>();
+        List<Contact> contacts = new ArrayList<>();
         BulkShareHelper.BulkShareCompletion bulkShareCompletion = Mockito.mock(BulkShareHelper.BulkShareCompletion.class);
 
         Mockito.doAnswer(new Answer() {
@@ -83,7 +87,7 @@ public class BulkShareHelperTest {
     public void bulkShareEmailTest() {
         // ARRANGE
         String message = "message";
-        List<ContactObject> contacts = new ArrayList<>();
+        List<Contact> contacts = new ArrayList<>();
         BulkShareHelper.BulkShareCompletion bulkShareCompletion = Mockito.mock(BulkShareHelper.BulkShareCompletion.class);
 
         Mockito.doAnswer(new Answer() {
@@ -116,18 +120,18 @@ public class BulkShareHelperTest {
     @Test
     public void verifiedSMSListTest() {
         // ARRANGE
-        List<ContactObject> contacts = new ArrayList<>();
-        contacts.add(new ContactObject.Builder().setPhoneNumber("313-329-1104").build());
-        contacts.add(new ContactObject.Builder().setPhoneNumber("1-313-329-1104").build());
-        contacts.add(new ContactObject.Builder().setPhoneNumber("3133291104").build());
-        contacts.add(new ContactObject.Builder().setPhoneNumber("13233291104").build());
-        contacts.add(new ContactObject.Builder().setPhoneNumber("+1-313-329-1104").build());
-        contacts.add(new ContactObject.Builder().setPhoneNumber("123456789012341223122").build());
-        contacts.add(new ContactObject.Builder().setPhoneNumber("+1-cats-333-329-1104").build());
-        contacts.add(new ContactObject.Builder().setPhoneNumber("1-313").build());
-        contacts.add(new ContactObject.Builder().setPhoneNumber("12345").build());
-        contacts.add(new ContactObject.Builder().setPhoneNumber("phoneNumber").build());
-        contacts.add(new ContactObject.Builder().setPhoneNumber("1-3-1-3-3-2-9-1-1-0-4").build());
+        List<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact.Builder().setPhoneNumber("313-329-1104").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("1-313-329-1104").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("3133291104").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("13233291104").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("+1-313-329-1104").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("123456789012341223122").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("+1-cats-333-329-1104").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("1-313").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("12345").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("phoneNumber").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("1-3-1-3-3-2-9-1-1-0-4").build());
 
         // ACT
         List<String> verified = BulkShareHelper.verifiedSMSList(contacts);
@@ -143,13 +147,13 @@ public class BulkShareHelperTest {
     @Test
     public void verifiedEmailListTest() {
         // ARRANGE
-        List<ContactObject> contacts = new ArrayList<>();
-        contacts.add(new ContactObject.Builder().setEmailAddress("test@getambassador.com").build());
-        contacts.add(new ContactObject.Builder().setEmailAddress("test").build());
-        contacts.add(new ContactObject.Builder().setEmailAddress("test@getambassador").build());
-        contacts.add(new ContactObject.Builder().setEmailAddress("c@a.io").build());
-        contacts.add(new ContactObject.Builder().setEmailAddress("c@a.io").build());
-        contacts.add(new ContactObject.Builder().setEmailAddress("test@").build());
+        List<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact.Builder().setEmailAddress("test@getambassador.com").build());
+        contacts.add(new Contact.Builder().setEmailAddress("test").build());
+        contacts.add(new Contact.Builder().setEmailAddress("test@getambassador").build());
+        contacts.add(new Contact.Builder().setEmailAddress("c@a.io").build());
+        contacts.add(new Contact.Builder().setEmailAddress("c@a.io").build());
+        contacts.add(new Contact.Builder().setEmailAddress("test@").build());
 
         // ACT
         List<String> verified = BulkShareHelper.verifiedEmailList(contacts);

@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.TestUtils;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 
 import org.junit.Before;
@@ -29,12 +29,13 @@ import retrofit.mime.TypedString;
 @PrepareForTest({
         AmbassadorSingleton.class,
         ServiceGenerator.class,
-        Log.class
+        Log.class,
+        IdentifyApi.class
 })
 public class IdentifyApiTest {
 
-    IdentifyApi identifyApi;
-    IdentifyClient identifyClient;
+    private IdentifyApi identifyApi;
+    private IdentifyClient identifyClient;
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +47,7 @@ public class IdentifyApiTest {
         TestUtils.mockStrings();
         
         IdentifyApi ia = new IdentifyApi(false);
-        identifyApi = Mockito.spy(ia);
+        identifyApi = PowerMockito.spy(ia);
 
         identifyClient = Mockito.mock(IdentifyClient.class);
         identifyApi.setIdentifyClient(identifyClient);

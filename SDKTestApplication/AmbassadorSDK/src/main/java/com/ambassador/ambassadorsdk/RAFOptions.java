@@ -1,10 +1,13 @@
 package com.ambassador.ambassadorsdk;
 
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 
-import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.factories.ResourceFactory;
 
+/**
+ *
+ */
 public final class RAFOptions {
 
     private static RAFOptions instance;
@@ -495,6 +498,7 @@ public final class RAFOptions {
             this.socialOptionCornerRadius = socialOptionCornerRadius;
         }
 
+        @NonNull
         public RAFOptions build() {
             RAFOptions tmp = new RAFOptions();
 
@@ -546,16 +550,18 @@ public final class RAFOptions {
             return tmp;
         }
 
+        @NonNull
         public static RAFOptions.Builder newInstance() {
             return new RAFOptions.Builder();
         }
 
     }
 
-    public static void set(RAFOptions rafOptions) {
+    public static void set(@NonNull RAFOptions rafOptions) {
         instance = rafOptions;
     }
 
+    @NonNull
     public static RAFOptions get() {
         if (instance == null) instance = RAFOptions.Builder.newInstance().build();
         return instance;

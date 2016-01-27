@@ -1,13 +1,13 @@
-<com.ambassador.ambassadorsdk.internal.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ambassador.ambassadorsdk.internal.views.LockableScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
+    android:id="@+id/svParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/transparent"
     android:fillViewport="true">
 
     <LinearLayout
-        android:id="@+id/llMainLayout"
+        android:id="@+id/llParent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -46,7 +46,7 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
 
-            <com.ambassador.ambassadorsdk.internal.CustomEditText
+            <com.ambassador.ambassadorsdk.internal.views.ShakableEditText
                 android:id="@+id/etShortURL"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -58,7 +58,7 @@
                 android:text="" />
 
             <ImageButton
-                android:id="@+id/btnCopyPaste"
+                android:id="@+id/btnCopy"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_gravity="end|center_vertical"
@@ -70,7 +70,7 @@
 
         </FrameLayout>
 
-        <com.ambassador.ambassadorsdk.internal.StaticGridView
+        <com.ambassador.ambassadorsdk.internal.views.StaticGridView
             android:id="@+id/gvSocialGrid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,4 +89,4 @@
 
     </LinearLayout>
 
-</com.ambassador.ambassadorsdk.internal.LockableScrollView>
+</com.ambassador.ambassadorsdk.internal.views.LockableScrollView>

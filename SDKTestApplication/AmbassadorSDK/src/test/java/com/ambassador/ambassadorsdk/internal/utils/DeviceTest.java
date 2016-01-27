@@ -1,0 +1,142 @@
+package com.ambassador.ambassadorsdk.internal.utils;
+
+import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({
+        AmbassadorSingleton.class
+})
+public class DeviceTest {
+
+    private Context context;
+    private Resources resources;
+    private Configuration configuration;
+
+    @Before
+    public void setUp() {
+        PowerMockito.mockStatic(
+                AmbassadorSingleton.class
+        );
+
+        context = Mockito.mock(Context.class);
+        resources = Mockito.mock(Resources.class);
+        configuration = Mockito.mock(Configuration.class);
+
+        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(context.getResources()).thenReturn(resources);
+        Mockito.when(resources.getConfiguration()).thenReturn(configuration);
+    }
+
+    @Test
+    public void isTabletSizeSmallTest() {
+        // ARRANGE
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
+
+        // ACT
+        boolean smallCase = new Device().isTablet();
+
+        // ASSERT
+        Assert.assertFalse(smallCase);
+    }
+
+    @Test
+    public void isTabletSizeNormalTest() {
+        // ARRANGE
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
+
+        // ACT
+        boolean normalCase = new Device().isTablet();
+
+        // ASSERT
+        Assert.assertFalse(normalCase);
+    }
+
+    @Test
+    public void isTabletSizeLargeTest() {
+        // ARRANGE
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_LARGE;
+
+        // ACT
+        boolean largeCase = new Device().isTablet();
+
+        // ASSERT
+        Assert.assertTrue(largeCase);
+    }
+
+    @Test
+    public void isTabletSizeXLargeTest() {
+        // ARRANGE
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_XLARGE;
+
+        // ACT
+        boolean xlargeCase = new Device().isTablet();
+
+        // ASSERT
+        Assert.assertTrue(xlargeCase);
+
+    }
+
+    @Test
+    public void deviceTypeSizeSmallTest() {
+        // ARRANGE
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_SMALL;
+
+        // ACT
+        String smallCase = new Device().getType();
+
+        // ASSERT
+        Assert.assertEquals(smallCase, "SmartPhone");
+    }
+
+    @Test
+    public void deviceTypeSizeNormalTest() {
+        // ARRANGE
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_NORMAL;
+
+        // ACT
+        String normalCase = new Device().getType();
+
+        // ASSERT
+        Assert.assertEquals(normalCase, "SmartPhone");
+    }
+
+    @Test
+    public void deviceTypeSizeLargeTest() {
+        // ARRANGE
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_LARGE;
+
+        // ACT
+        String largeCase = new Device().getType();
+
+        // ASSERT
+        Assert.assertEquals(largeCase, "Tablet");
+    }
+
+    @Test
+    public void deviceTypeSizeXLargeTest() {
+        // ARRANGE
+        configuration.screenLayout = Configuration.SCREENLAYOUT_SIZE_XLARGE;
+
+        // ACT
+        String xlargeCase = new Device().getType();
+
+        // ASSERT
+        Assert.assertEquals(xlargeCase, "Tablet");
+
+    }
+
+}

@@ -1,9 +1,9 @@
 package com.ambassador.ambassadorsdk.internal.api.bulkshare;
 
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
-import com.ambassador.ambassadorsdk.utils.ResponseCode;
+import com.ambassador.ambassadorsdk.internal.utils.ResponseCode;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -12,7 +12,7 @@ import retrofit.client.Response;
 /**
  * Handles Ambassador API bulkshare methods using Retrofit services and contains all relevant pojo classes.
  */
-public class BulkShareApi {
+public final class BulkShareApi {
 
     /** Client for making BulkShare requests to the Ambassador API */
     private BulkShareClient bulkShareClient;
@@ -21,6 +21,7 @@ public class BulkShareApi {
      * Default constructor.
      * Instantiates BulkShareApi and automatically initializes client.
      */
+    @SuppressWarnings("unused")
     public BulkShareApi() {
         this(true);
     }
