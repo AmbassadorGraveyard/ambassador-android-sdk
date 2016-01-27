@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
@@ -13,8 +12,9 @@ import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
-import com.ambassador.ambassadorsdk.internal.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 
@@ -24,13 +24,16 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+/**
+ * Static methods called by the end-developer to utilize the SDK.
+ */
 public final class AmbassadorSDK {
 
     @Inject
-    static AmbassadorConfig ambassadorConfig;
+    protected static AmbassadorConfig ambassadorConfig;
 
     @Inject
-    static PusherSDK pusherSDK;
+    protected static PusherSDK pusherSDK;
 
     @Inject
     static RequestManager requestManager;
@@ -134,7 +137,7 @@ public final class AmbassadorSDK {
         startConversionTimer();
     }
 
-    static void registerInstallReceiver(Context context) {
+    protected static void registerInstallReceiver(Context context) {
         IntentFilter intentFilter = buildIntentFilter();
         intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
         context.registerReceiver(InstallReceiver.getInstance(), intentFilter);
@@ -144,7 +147,7 @@ public final class AmbassadorSDK {
         return new IntentFilter();
     }
 
-    static void startConversionTimer() {
+    protected static void startConversionTimer() {
         final ConversionUtility utility = buildConversionUtility(AmbassadorSingleton.getInstanceContext());
         Timer timer = buildTimer();
         timer.scheduleAtFixedRate(new TimerTask() {

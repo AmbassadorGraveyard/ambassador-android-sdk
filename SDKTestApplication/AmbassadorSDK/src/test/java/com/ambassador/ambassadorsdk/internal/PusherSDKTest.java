@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.ambassador.ambassadorsdk.TestUtils;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.pusher.client.Authorizer;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
@@ -21,7 +23,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
@@ -29,10 +30,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.HashMap;
-
-import javax.inject.Singleton;
-
-import dagger.Component;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
@@ -42,29 +39,17 @@ import dagger.Component;
         LocalBroadcastManager.class,
         Context.class,
         AmbassadorConfig.class,
-        Utilities.class
+        Utilities.class,
+        RequestManager.class
 })
 public class PusherSDKTest {
 
-    PusherSDK pusherSDK;
-    RequestManager mockRequestManager;
-    AmbassadorConfig mockAmbassadorConfig;
-
-    @Singleton
-    @Component(modules = {AmbassadorApplicationModule.class})
-    public interface TestComponent {
-        void inject(PusherSDKTest pusherSDKTest);
-    }
+    private PusherSDK pusherSDK;
+    private RequestManager mockRequestManager;
+    private AmbassadorConfig mockAmbassadorConfig;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
-        amb.setMockMode(true);
-
-        TestComponent component = DaggerPusherSDKTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
-        component.inject(this);
-
         PowerMockito.mockStatic(AmbassadorSingleton.class);
         TestUtils.mockStrings();
 
@@ -75,7 +60,7 @@ public class PusherSDKTest {
 
         PowerMockito.spy(Utilities.class);
 
-        mockRequestManager = Mockito.mock(RequestManager.class);
+        mockRequestManager = PowerMockito.mock(RequestManager.class);
         mockAmbassadorConfig = Mockito.mock(AmbassadorConfig.class);
         pusherSDK.requestManager = mockRequestManager;
         pusherSDK.ambassadorConfig = mockAmbassadorConfig;

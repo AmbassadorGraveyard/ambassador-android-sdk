@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.TestUtils;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterApiClient;
@@ -301,7 +302,10 @@ public class AmbassadorConfigTest {
     @Test
     public void setRafParametersTest() throws Exception {
         // ARRANGE
-        String testValue1 = "test1", testValue2 = "test2", testValue3 = "test3", testValue4 = "test4";
+        String testValue1 = "test1";
+        String testValue2 = "test2";
+        String testValue3 = "test3";
+        String testValue4 = "test4";
         AmbassadorConfig ambassadorConfig = new AmbassadorConfig();
 
         // ACT

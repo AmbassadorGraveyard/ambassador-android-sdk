@@ -28,7 +28,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 })
 public class UtilitiesTest {
 
-    Context context;
+    private Context context;
 
     @Before
     public void setUp() {

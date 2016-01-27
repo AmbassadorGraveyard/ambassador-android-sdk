@@ -2,6 +2,9 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationModule;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
@@ -17,8 +20,8 @@ public class AmbassadorSingleton {
     @Singleton
     @Component(modules=AmbassadorApplicationModule.class)
     public interface ApplicationComponent extends AmbassadorApplicationComponent {
-        //dummy component which will not override anything from parent interface
-        //the testing component will provide its own overrides to inject into the tests
+        // Dummy component which will not override anything from parent interface.
+        // The testing component will provide its own overrides to inject into the tests.
     }
 
     public static void init(Context context) {
@@ -92,5 +95,7 @@ public class AmbassadorSingleton {
     public static AmbassadorSingleton getInstance() {
         return instance == null ? (instance = new AmbassadorSingleton()) : instance;
     }
+
+
 
 }

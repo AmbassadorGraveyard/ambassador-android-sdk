@@ -24,12 +24,13 @@ public class MainActivityTest {
 
     @Test
     public void testPresentRaf() {
-        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
+        //onView(withId(R.id.btnPresentRAF1)).perform(click());
+        onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
         onView(withId(R.id.etShortURL)).check(matches(isDisplayed()));
         onView(withId(R.id.etShortURL)).check(matches(not(withText(""))));
-        onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnCopy)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
     }
 }

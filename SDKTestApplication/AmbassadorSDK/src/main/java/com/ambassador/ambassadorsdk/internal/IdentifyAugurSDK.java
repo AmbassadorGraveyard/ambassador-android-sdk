@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.internal;
 import android.os.Handler;
 import android.os.Message;
 
-import com.ambassador.ambassadorsdk.utils.Device;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import org.json.JSONObject;
 
@@ -63,7 +63,7 @@ public class IdentifyAugurSDK implements IIdentify {
                         device.put("ID", ambassadorConfig.getWebDeviceId());
                     }
 
-                    device.put("type", new Device(AmbassadorSingleton.getInstanceContext()).getType());
+                    device.put("type", new Device().getType());
                     jsonObject.put("device", device);
 
                     Utilities.debugLog("Augur", "Augur successfully received through SDK call");

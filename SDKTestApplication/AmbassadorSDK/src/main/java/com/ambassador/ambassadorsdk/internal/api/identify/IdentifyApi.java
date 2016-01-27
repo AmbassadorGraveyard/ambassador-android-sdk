@@ -1,9 +1,9 @@
 package com.ambassador.ambassadorsdk.internal.api.identify;
 
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
-import com.ambassador.ambassadorsdk.utils.ResponseCode;
+import com.ambassador.ambassadorsdk.internal.utils.ResponseCode;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,7 +23,7 @@ import retrofit.client.Response;
 /**
  * Handles Ambassador API identify methods using Retrofit services and contains all relevant pojo classes.
  */
-public class IdentifyApi {
+public final class IdentifyApi {
 
     /** Client for making Identify requests to the Ambassador API */
     private IdentifyClient identifyClient;
@@ -32,6 +32,7 @@ public class IdentifyApi {
      * Default constructor.
      * Instantiates IdentifyApi and automatically initializes client.
      */
+    @SuppressWarnings("unused")
     public IdentifyApi() {
         this(true);
     }

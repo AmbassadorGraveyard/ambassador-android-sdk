@@ -4,6 +4,7 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
@@ -24,27 +25,15 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 
-/**
- * Created by JakeDunahee on 9/1/15.
- */
 public class PusherSDK {
 
-    public interface PusherSubscribeCallback {
-        void pusherSubscribed();
-        void pusherFailed();
-    }
-
-    public interface IdentifyListener {
-        void identified(long requestId);
-    }
-
-    IdentifyListener identifyListener;
+    protected IdentifyListener identifyListener;
 
     @Inject
-    AmbassadorConfig ambassadorConfig;
+    protected AmbassadorConfig ambassadorConfig;
 
     @Inject
-    RequestManager requestManager;
+    protected RequestManager requestManager;
 
     public PusherSDK() {
         AmbassadorSingleton.getInstanceComponent().inject(this);
@@ -238,6 +227,15 @@ public class PusherSDK {
 
     public void setIdentifyListener(IdentifyListener listener) {
         this.identifyListener = listener;
+    }
+
+    public interface PusherSubscribeCallback {
+        void pusherSubscribed();
+        void pusherFailed();
+    }
+
+    public interface IdentifyListener {
+        void identified(long requestId);
     }
 
 }

@@ -11,7 +11,7 @@ import retrofit.client.OkClient;
  * Class containing static method createService which will generate service implementations
  * for working with different APIs.
  */
-public class ServiceGenerator {
+public final class ServiceGenerator {
 
     /**
      * Generates and returns an object that implements one of the API service interfaces and handles
@@ -46,7 +46,7 @@ public class ServiceGenerator {
      * @return the String value of the field
      * @throws NoEndpointFoundException when the field is not declared in serviceClass
      */
-    static String extractEndpoint(Class<?> serviceClass) throws NoEndpointFoundException {
+    protected static String extractEndpoint(Class<?> serviceClass) throws NoEndpointFoundException {
         try {
            return (String) serviceClass.getField("ENDPOINT").get(null);
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class ServiceGenerator {
      * Instantiates a new RestAdapter.Builder and returns it.
      * @return a RestBuilder.Builder object
      */
-    static RestAdapter.Builder getBuilder() {
+    protected static RestAdapter.Builder getBuilder() {
         return new RestAdapter.Builder();
     }
 

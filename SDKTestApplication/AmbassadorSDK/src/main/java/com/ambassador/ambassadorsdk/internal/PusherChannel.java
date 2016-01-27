@@ -4,57 +4,54 @@ import com.pusher.client.connection.ConnectionState;
 
 import java.util.Date;
 
-/**
- * Created by coreyfields on 10/15/15.
- */
-class PusherChannel {
+public class PusherChannel {
     private static String sessionId;
     private static String channelName;
     private static Date expiresAt;
     private static long requestId;
     private static ConnectionState connectionState;
 
-    static void setSessionId(String id) {
+    public static void setSessionId(String id) {
         sessionId = id;
     }
 
-    static void setChannelName(String name) {
+    public static void setChannelName(String name) {
         channelName = name;
     }
     
-    static void setExpiresAt(Date expires) {
+    public static void setExpiresAt(Date expires) {
         expiresAt = expires;
     }
 
-    static void setRequestId(long rId) {
+    public static void setRequestId(long rId) {
         requestId = rId;
     }
 
-    static void setConnectionState(ConnectionState connState) {
+    public static void setConnectionState(ConnectionState connState) {
         connectionState = connState;
     }
 
-    static String getSessionId() {
+    public static String getSessionId() {
         return sessionId;
     }
     
-    static String getChannelName() {
+    public static String getChannelName() {
         return channelName;
     }
     
-    static Date getExpiresAt() {
+    public static Date getExpiresAt() {
         return expiresAt;
     }
 
-    static long getRequestId() {
+    public static long getRequestId() {
         return requestId;
     }
 
-    static Boolean isExpired() {
+    public static Boolean isExpired() {
         return expiresAt.getTime() < System.currentTimeMillis();
     }
 
-    static ConnectionState getConnectionState() {
+    public static ConnectionState getConnectionState() {
         return connectionState;
     }
 }

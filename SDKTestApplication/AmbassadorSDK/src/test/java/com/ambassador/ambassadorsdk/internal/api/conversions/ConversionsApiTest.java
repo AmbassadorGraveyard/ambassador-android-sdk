@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.TestUtils;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 
 import org.junit.Before;
@@ -29,12 +29,13 @@ import retrofit.mime.TypedByteArray;
 @PrepareForTest({
         AmbassadorSingleton.class,
         ServiceGenerator.class,
-        Log.class
+        Log.class,
+        ConversionsApi.class
 })
 public class ConversionsApiTest {
 
-    ConversionsApi conversionsApi;
-    ConversionsClient conversionsClient;
+    private ConversionsApi conversionsApi;
+    private ConversionsClient conversionsClient;
 
     @Before
     public void setUp() throws Exception {
@@ -46,7 +47,7 @@ public class ConversionsApiTest {
         TestUtils.mockStrings();
 
         ConversionsApi ca = new ConversionsApi(false);
-        conversionsApi = Mockito.spy(ca);
+        conversionsApi = PowerMockito.spy(ca);
 
         conversionsClient = Mockito.mock(ConversionsClient.class);
         conversionsApi.setConversionsClient(conversionsClient);

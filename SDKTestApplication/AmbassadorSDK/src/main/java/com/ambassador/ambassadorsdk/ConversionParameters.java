@@ -1,10 +1,14 @@
 package com.ambassador.ambassadorsdk;
 
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 
-public class ConversionParameters {
+/**
+ * Stores information relevant for registering a conversion on the backend.
+ */
+public final class ConversionParameters {
 
     public int campaign;
     public String email;
@@ -129,7 +133,7 @@ public class ConversionParameters {
     }
 
     public boolean isValid() {
-        return campaign > -1 && !email.equals("") && revenue > -1;
+        return campaign > -1 && !"".equals(email) && revenue > -1;
     }
 
     public ConversionsApi.RegisterConversionRequestBody.FieldsObject getFieldsObject() {
@@ -165,99 +169,118 @@ public class ConversionParameters {
 
         public Builder() {}
 
+        @NonNull
         public Builder setCampaign(int mbsy_campaign) {
             this.campaign = mbsy_campaign;
             this.campaignCheck = true;
             return this;
         }
 
+        @NonNull
         public Builder setEmail(String mbsy_email) {
             this.email = mbsy_email;
             this.emailCheck = true;
             return this;
         }
 
+        @NonNull
         public Builder setFirstName(String mbsy_first_name) {
             this.firstName = mbsy_first_name;
             return this;
         }
 
+        @NonNull
         public Builder setLastName(String mbsy_last_name) {
             this.lastName = mbsy_last_name;
             return this;
         }
 
+        @NonNull
         public Builder setEmailNewAmbassador(int mbsy_email_new_ambassador) {
             this.mbsy_email_new_ambassador = mbsy_email_new_ambassador;
             return this;
         }
 
+        @NonNull
         public Builder setUid(String mbsy_uid) {
             this.mbsy_uid = mbsy_uid;
             return this;
         }
 
+        @NonNull
         public Builder setCustom1(String mbsy_custom1) {
             this.mbsy_custom1 = mbsy_custom1;
             return this;
         }
 
+        @NonNull
         public Builder setCustom2(String mbsy_custom2) {
             this.mbsy_custom2 = mbsy_custom2;
             return this;
         }
 
+        @NonNull
         public Builder setCustom3(String mbsy_custom3) {
             this.mbsy_custom3 = mbsy_custom3;
             return this;
         }
 
+        @NonNull
         public Builder setAutoCreate(int mbsy_auto_create) {
             this.mbsy_auto_create = mbsy_auto_create;
             return this;
         }
 
+        @NonNull
         public Builder setRevenue(int mbsy_revenue) {
             this.mbsy_revenue = mbsy_revenue;
             this.revenueCheck = true;
             return this;
         }
 
+        @NonNull
         public Builder setDeactivateNewAmbassador(int mbsy_deactivate_new_ambassador) {
             this.mbsy_deactivate_new_ambassador = mbsy_deactivate_new_ambassador;
             return this;
         }
 
+        @NonNull
         public Builder setTransactionUid(String mbsy_transaction_uid) {
             this.mbsy_transaction_uid = mbsy_transaction_uid;
             return this;
         }
 
+        @NonNull
         public Builder setAddToGroupId(String mbsy_add_to_group_id) {
             this.mbsy_add_to_group_id = mbsy_add_to_group_id;
             return this;
         }
 
+        @NonNull
         public Builder setEventData1(String mbsy_event_data1) {
             this.mbsy_event_data1 = mbsy_event_data1;
             return this;
         }
 
+        @NonNull
         public Builder setEventData2(String mbsy_event_data2) {
             this.mbsy_event_data2 = mbsy_event_data2;
             return this;
         }
 
+        @NonNull
         public Builder setEventData3(String mbsy_event_data3) {
             this.mbsy_event_data3 = mbsy_event_data3;
             return this;
         }
 
+        @NonNull
         public Builder setIsApproved(int mbsy_is_approved) {
             this.mbsy_is_approved = mbsy_is_approved;
             return this;
         }
 
+        @NonNull
         public ConversionParameters build() {
             validateRequiredFields();
 
@@ -296,6 +319,7 @@ public class ConversionParameters {
             }
         }
 
+        @NonNull
         public static Builder newInstance() {
             return new Builder();
         }

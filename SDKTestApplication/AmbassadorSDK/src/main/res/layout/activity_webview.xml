@@ -4,14 +4,14 @@
     android:layout_height="match_parent">
 
     <WebView
-        android:id="@+id/wvSocial"
+        android:id="@+id/wvLogin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
     <ProgressBar
-        android:id="@+id/loadingPanel"
+        android:id="@+id/pbLoading"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

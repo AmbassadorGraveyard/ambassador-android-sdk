@@ -3,10 +3,12 @@ package com.ambassador.ambassadorsdk.internal.factories;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.utils.Font;
+import com.ambassador.ambassadorsdk.internal.utils.Font;
 import com.google.common.base.Joiner;
 
 import org.w3c.dom.Document;
@@ -21,6 +23,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 public final class RAFOptionsFactory {
 
+    @NonNull
     public static RAFOptions decodeCustomValues(Context context) {
         RAFOptions.Builder builder = new RAFOptions.Builder();
 
@@ -163,6 +166,7 @@ public final class RAFOptionsFactory {
         return densityPixels / scaledDensity;
     }
 
+    @NonNull
     public static RAFOptions decodeResources(InputStream inputStream, Context context) throws Exception {
         RAFOptions.Builder rafBuilder = RAFOptions.Builder.newInstance();
 
@@ -180,7 +184,7 @@ public final class RAFOptionsFactory {
 
             String type = entry.getNodeName();
             String key = entry.getAttributes().getNamedItem("name").getNodeValue();
-            String value = "";
+            String value;
             if (!"array".equals(type)) {
                 value = entry.getFirstChild().getNodeValue();
             } else {
@@ -228,27 +232,31 @@ public final class RAFOptionsFactory {
 
         }
 
-        public ResourceProcessor withContext(Context context) {
+        @NonNull
+        public ResourceProcessor withContext(@NonNull Context context) {
             this.context = context;
             return this;
         }
 
-        public ResourceProcessor withType(String type) {
+        @NonNull
+        public ResourceProcessor withType(@NonNull String type) {
             this.type = type;
             return this;
         }
 
-        public ResourceProcessor withKey(String key) {
+        @NonNull
+        public ResourceProcessor withKey(@NonNull String key) {
             this.key = key;
             return this;
         }
 
-        public ResourceProcessor withValue(String value) {
+        @NonNull
+        public ResourceProcessor withValue(@NonNull String value) {
             this.value = value;
             return this;
         }
 
-        public void applyTo(RAFOptions.Builder builder) {
+        public void applyTo(@NonNull RAFOptions.Builder builder) {
             switch (type) {
                 case TYPE_STRING:
                     new RAFOptionsMethod(key)
@@ -296,17 +304,17 @@ public final class RAFOptionsFactory {
             }
         }
 
-        private int getColor(String value) {
+        private int getColor(@NonNull String value) {
             String resName;
             if (value.matches(REGEX_ANDROID_RESOURCE_COLOR)) {
                 resName = value.substring(value.indexOf("/") + 1);
                 int identifier = context.getResources().getIdentifier(resName, "color", "android");
-                return context.getResources().getColor(identifier);
+                return ContextCompat.getColor(context, identifier);
 
             } else if (value.matches(REGEX_LOCAL_RESOURCE_COLOR)) {
                 resName = value.substring(value.indexOf("/") + 1);
-                int identifer = context.getResources().getIdentifier(resName, "color", context.getPackageName());
-                return context.getResources().getColor(identifer);
+                int identifier = context.getResources().getIdentifier(resName, "color", context.getPackageName());
+                return ContextCompat.getColor(context, identifier);
 
             } else if (value.matches(REGEX_HEX_COLOR)) {
                 return Color.parseColor(value);
@@ -315,7 +323,7 @@ public final class RAFOptionsFactory {
             return 0;
         }
 
-        private float getDimen(String value) {
+        private float getDimen(@NonNull String value) {
             if (value.startsWith("-")) {
                 return -Float.parseFloat(value.replaceAll("\\D+", ""));
             }
@@ -333,38 +341,44 @@ public final class RAFOptionsFactory {
 
             private String key;
 
+            @SuppressWarnings("unused")
             private RAFOptionsMethod() {}
 
-            public RAFOptionsMethod(String key) {
+            public RAFOptionsMethod(@NonNull String key) {
                 this.key = key;
             }
 
-            public RAFOptionsMethod withType(String type) {
+            @NonNull
+            public RAFOptionsMethod withType(@NonNull String type) {
                 this.type = type;
                 return this;
             }
 
-            public RAFOptionsMethod withParam(String value) {
+            @NonNull
+            public RAFOptionsMethod withParam(@NonNull String value) {
                 this.paramString = value;
                 return this;
             }
 
+            @NonNull
             public RAFOptionsMethod withParam(int value) {
                 this.paramInt = value;
                 return this;
             }
 
+            @NonNull
             public RAFOptionsMethod withParam(float value) {
                 this.paramFloat = value;
                 return this;
             }
 
+            @NonNull
             public RAFOptionsMethod withParam(String[] value) {
                 this.paramStringArray = value;
                 return this;
             }
 
-            public void invoke(RAFOptions.Builder builder) {
+            public void invoke(@NonNull RAFOptions.Builder builder) {
                 try {
                     execute(builder);
                 } catch (NullPointerException e) {
@@ -372,7 +386,7 @@ public final class RAFOptionsFactory {
                 }
             }
 
-            private void execute(RAFOptions.Builder builder) throws NullPointerException {
+            private void execute(@NonNull RAFOptions.Builder builder) throws NullPointerException {
                 switch (key.toLowerCase()) {
                     case "rafdefaultsharemessage":
                         builder.setDefaultShareMessage(paramString);
