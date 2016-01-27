@@ -1,4 +1,4 @@
-package com.example.ambassador.sdktestapplication.fragments;
+package com.ambassador.demoapp.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ambassador.sdktestapplication.R;
+import com.ambassador.demoapp.R;
 
 public final class SignupFragment extends Fragment {
 

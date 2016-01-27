@@ -1,4 +1,4 @@
-package com.example.ambassador.sdktestapplication;
+package com.ambassador.demoapp;
 
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -14,10 +14,10 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.example.ambassador.sdktestapplication.fragments.LoginFragment;
-import com.example.ambassador.sdktestapplication.fragments.ReferFragment;
-import com.example.ambassador.sdktestapplication.fragments.SignupFragment;
-import com.example.ambassador.sdktestapplication.fragments.StoreFragment;
+import com.ambassador.demoapp.fragments.LoginFragment;
+import com.ambassador.demoapp.fragments.ReferFragment;
+import com.ambassador.demoapp.fragments.SignupFragment;
+import com.ambassador.demoapp.fragments.StoreFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
