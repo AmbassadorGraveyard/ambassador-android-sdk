@@ -62,6 +62,7 @@
     </RelativeLayout>
 
     <Button
+        android:id="@+id/btnBuy"
         android:layout_width="200dp"
         android:layout_height="36dp"
         android:layout_below="@+id/rvPrice"
