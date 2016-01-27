@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
@@ -14,7 +13,10 @@ import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
+import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 
 import java.io.InputStream;
 import java.util.Timer;
@@ -33,7 +35,19 @@ public final class AmbassadorSDK {
     @Inject
     protected static PusherSDK pusherSDK;
 
+    @Inject
+    static RequestManager requestManager;
+
     public static void presentRAF(Context context, String campaignID) {
+        if (context.getResources().getIdentifier("homeWelcomeTitle", "color", context.getPackageName()) != 0) {
+            try {
+                presentRAF(context, campaignID, RAFOptionsFactory.decodeCustomValues(context));
+                return;
+            } catch (Exception e) {
+                // catch all to go to defaults
+            }
+        }
+
         presentRAF(context, campaignID, new RAFOptions.Builder().build());
     }
 
@@ -116,6 +130,7 @@ public final class AmbassadorSDK {
         AmbassadorSingleton.getInstanceComponent().inject(new AmbassadorSDK());
 
         registerInstallReceiver(context);
+        setupGcm(context);
 
         ambassadorConfig.setUniversalToken(universalToken);
         ambassadorConfig.setUniversalID(universalID);
@@ -150,5 +165,32 @@ public final class AmbassadorSDK {
     private static Timer buildTimer() {
         return new Timer();
     }
+
+    protected static void setupGcm(final Context context) {
+        new GcmHandler(context).getRegistrationToken(new GcmHandler.RegistrationListener() {
+            @Override
+            public void registrationSuccess(final String token) {
+                requestManager.updateGcmRegistrationToken(token, new RequestManager.RequestCompletion() {
+                    @Override
+                    public void onSuccess(Object successResponse) {
+                        ambassadorConfig.setGcmRegistrationToken(token);
+                        Log.v("AMB_GCM", token);
+                    }
+
+                    @Override
+                    public void onFailure(Object failureResponse) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void registrationFailure(Throwable e) {
+                Log.e("AmbassadorSDK", e.toString());
+            }
+        });
+    }
+
+
 
 }
