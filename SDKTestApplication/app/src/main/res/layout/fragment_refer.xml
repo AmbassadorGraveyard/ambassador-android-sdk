@@ -1,8 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/raf_img" />
+
+    <TextView
+        android:id="@+id/tvTitle1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Refer a Friend"
+        android:textColor="#787878"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvTitle2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvTitle1"
+        android:layout_centerHorizontal="true"
+        android:text="Integrations"
+        android:textColor="#6b6b6b"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvCampaignId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvTitle2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:text="Campaign ID:"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-thin"/>
+
+    <EditText
+        android:id="@+id/etCampaignId"
+        android:layout_width="72dp"
+        android:layout_height="24dp"
+        android:layout_below="@+id/tvCampaignId"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/et_only"
+        android:ems="10"
+        android:gravity="center"
+        android:inputType="number"
+        android:textSize="12sp" />
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/etCampaignId"
+        android:layout_marginTop="34dp" />
 
 </RelativeLayout>
