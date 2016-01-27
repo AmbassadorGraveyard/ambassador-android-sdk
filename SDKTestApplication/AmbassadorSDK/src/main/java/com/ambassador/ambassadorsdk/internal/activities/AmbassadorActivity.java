@@ -90,7 +90,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // region Fields
 
     // region Views
+    @Nullable
     @Bind(B.id.action_bar)      protected Toolbar               toolbar;
+
     @Bind(B.id.svParent)        protected LockableScrollView    svParent;
     @Bind(B.id.llParent)        protected LinearLayout          llParent;
     @Bind(B.id.tvWelcomeTitle)  protected TextView              tvWelcomeTitle;
