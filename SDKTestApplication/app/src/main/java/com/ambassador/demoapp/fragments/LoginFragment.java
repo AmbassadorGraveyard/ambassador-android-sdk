@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 
 import butterknife.Bind;
@@ -35,7 +36,10 @@ public final class LoginFragment extends Fragment {
     protected View.OnClickListener btnLoginOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(), "hit", Toast.LENGTH_LONG).show();
+            String email = etEmail.getText().toString();
+            String password = etPassword.getText().toString();
+            Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
+            Demo.get().identify(email);
         }
     };
 
