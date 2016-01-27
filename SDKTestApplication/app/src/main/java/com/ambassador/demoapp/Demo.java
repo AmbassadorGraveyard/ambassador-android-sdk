@@ -22,6 +22,10 @@ public final class Demo extends Application {
         }
     }
 
+    public void identify(String email) {
+        AmbassadorSDK.identify(email);
+    }
+
     public static Demo get() {
         return instance;
     }
