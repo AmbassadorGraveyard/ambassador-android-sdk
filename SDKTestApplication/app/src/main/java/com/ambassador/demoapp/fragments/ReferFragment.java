@@ -76,9 +76,9 @@ public final class ReferFragment extends Fragment {
 
         public RafAdapter() {
             items = new RafItem[3];
-            items[0] = new RafItem("Shoes RAF", "description", "raf1.xml");
-            items[1] = new RafItem("Ambassador RAF", "description", "raf2.xml");
-            items[2] = new RafItem("Shirt RAF", "description", "raf3.xml");
+            items[0] = new RafItem("Shoes RAF", "description", "raf_shoes.xml");
+            items[1] = new RafItem("Shirt RAF", "description", "raf_shirt.xml");
+            items[2] = new RafItem("Ambassador RAF", "description", "raf_ambassador.xml");
         }
 
         @Override
