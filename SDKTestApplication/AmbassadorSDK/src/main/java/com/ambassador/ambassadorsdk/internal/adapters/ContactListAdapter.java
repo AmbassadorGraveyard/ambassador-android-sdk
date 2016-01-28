@@ -56,7 +56,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         this.selectedContacts = new ArrayList<>();
         this.filteredContacts = new ArrayList<>(contacts);
         this.shouldShowPhoneNumbers = shouldShowPhoneNumbers;
-        this.checkmarkXPos = Utilities.getPixelSizeForDimension(R.dimen.contact_select_checkmark_x);
         this.noPicBmp = generateNoPicBitmap(context);
     }
 
