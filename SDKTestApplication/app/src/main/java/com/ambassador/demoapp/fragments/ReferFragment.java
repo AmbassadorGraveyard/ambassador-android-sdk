@@ -1,5 +1,6 @@
 package com.ambassador.demoapp.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -97,6 +99,9 @@ public final class ReferFragment extends Fragment {
 
             TextView tvDescription = (TextView) convertView.findViewById(R.id.tvDescription);
             tvDescription.setText(item.getDescription());
+
+            ImageView ivArrow = (ImageView) convertView.findViewById(R.id.ivArrow);
+            ivArrow.setColorFilter(Color.BLACK);
 
             return convertView;
         }
