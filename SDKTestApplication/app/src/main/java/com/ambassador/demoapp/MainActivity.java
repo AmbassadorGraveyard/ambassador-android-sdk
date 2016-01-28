@@ -31,15 +31,18 @@ public final class MainActivity extends AppCompatActivity {
     @Bind(R.id.tlTabs)      protected TabLayout     tlTabs;
     @Bind(R.id.vpPages)     protected ViewPager     vpPages;
 
+    protected TabFragmentPagerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        TabFragmentPagerAdapter adapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
+        adapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
         vpPages.setOffscreenPageLimit(4);
         vpPages.setAdapter(adapter);
+        vpPages.addOnPageChangeListener(vpPagesChangeListener);
         tlTabs.setupWithViewPager(vpPages);
 
         for (int i = 0; i < tlTabs.getTabCount(); i++) {
@@ -59,6 +62,23 @@ public final class MainActivity extends AppCompatActivity {
     public void switchToTabAtIndex(int position) {
         vpPages.setCurrentItem(position);
     }
+
+    protected ViewPager.OnPageChangeListener vpPagesChangeListener = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            adapter.getItem(position).onResume();
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
 
     private final class TabFragmentPagerAdapter extends FragmentPagerAdapter {
 
