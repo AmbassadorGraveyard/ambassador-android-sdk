@@ -214,7 +214,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPaint(paint);
 
-        canvas.drawBitmap(bitmap, null, new Rect(0, 0, bitmap.getWidth(), bitmap.getWidth()), new Paint(Paint.ANTI_ALIAS_FLAG));
+        canvas.drawBitmap(bitmap, null, new Rect(20, 20, bitmap.getWidth() - 20, bitmap.getWidth() - 20), new Paint(Paint.ANTI_ALIAS_FLAG));
 
         return tmp;
     }
