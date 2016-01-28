@@ -47,7 +47,10 @@ public final class Demo extends Application {
                         .build()
                 , false
         );
+    }
 
+    public void presentRAF(String path) {
+        AmbassadorSDK.presentRAF(this, getCampaignId(), path);
     }
 
     public void setEmail(String email) {

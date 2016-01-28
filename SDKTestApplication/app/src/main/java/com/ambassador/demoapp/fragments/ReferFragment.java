@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -35,7 +36,16 @@ public final class ReferFragment extends Fragment {
         etCampaignId.setText(Demo.get().getCampaignId());
         etCampaignId.addTextChangedListener(etCampaignIdTextWatcher);
 
-        lvRafs.setAdapter(new RafAdapter());
+        final RafAdapter adapter = new RafAdapter();
+        lvRafs.setAdapter(adapter);
+        lvRafs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                RafAdapter.RafItem item = adapter.getItem(position);
+                String path = item.getOptionsPath();
+                Demo.get().presentRAF(path);
+            }
+        });
 
         return view;
     }
@@ -66,9 +76,9 @@ public final class ReferFragment extends Fragment {
 
         public RafAdapter() {
             items = new RafItem[3];
-            items[0] = new RafItem("Shoes RAF", "description", "path");
-            items[1] = new RafItem("Ambassador RAF", "description", "path");
-            items[2] = new RafItem("Shirt RAF", "description", "path");
+            items[0] = new RafItem("Shoes RAF", "description", "raf1.xml");
+            items[1] = new RafItem("Ambassador RAF", "description", "raf2.xml");
+            items[2] = new RafItem("Shirt RAF", "description", "raf3.xml");
         }
 
         @Override
