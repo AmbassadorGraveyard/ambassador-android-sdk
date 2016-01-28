@@ -7,6 +7,4 @@
         android:width="1dp"
         android:color="@color/etHint" />
 
-    <solid android:color="@android:color/white" />
-
 </shape>
