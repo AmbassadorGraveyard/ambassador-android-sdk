@@ -713,6 +713,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
             twitterAuthClient.onActivityResult(requestCode, resultCode, data);
+            onShareRequested();
         }
 
     }
@@ -750,13 +751,13 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 linkedInDialog.show();
             } else {
                 Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 123);
             }
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
+            onShareRequested();
         }
 
     }
@@ -767,7 +768,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         public void onShareRequested() {
             Intent contactIntent = new Intent(AmbassadorActivity.this, ContactSelectorActivity.class);
             contactIntent.putExtra("showPhoneNumbers", false);
-            startActivity(contactIntent);
+            startActivityForResult(contactIntent, 123);
         }
 
         @Override
@@ -783,7 +784,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         public void onShareRequested() {
             Intent contactIntent = new Intent(AmbassadorActivity.this, ContactSelectorActivity.class);
             contactIntent.putExtra("showPhoneNumbers", true);
-            startActivity(contactIntent);
+            startActivityForResult(contactIntent, 123);
         }
 
         @Override
