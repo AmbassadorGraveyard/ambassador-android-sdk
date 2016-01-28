@@ -9,14 +9,14 @@
         android:id="@+id/ivPic"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginLeft="10dp"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/ivPic"
-        android:layout_centerVertical="true">
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/ivPic">
 
         <TextView
             android:id="@+id/tvName"
@@ -57,7 +57,6 @@
 
     </RelativeLayout>
 
-
     <ImageView
         android:id="@+id/ivCheckMark"
         android:layout_width="20dp"
@@ -65,8 +64,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="-20dp"
-        android:layout_marginRight="-20dp"
-        android:src="@drawable/checkmark" />
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/checkmark"
+        android:visibility="invisible" />
 
 </RelativeLayout>

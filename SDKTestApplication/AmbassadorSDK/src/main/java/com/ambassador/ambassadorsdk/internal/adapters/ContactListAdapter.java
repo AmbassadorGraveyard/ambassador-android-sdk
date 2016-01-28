@@ -16,7 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,8 +23,8 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.dialogs.ContactInfoDialog;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.dialogs.ContactInfoDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 
 import java.io.IOException;
@@ -47,8 +46,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
 
     private boolean shouldShowPhoneNumbers;
     private float maxNameWidth;
-    private float checkmarkXPos;
-    private int itemWidth;
     private Bitmap noPicBmp;
 
     private OnSelectedContactsChangedListener onSelectedContactsChangedListener;
@@ -71,14 +68,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_contacts, parent, false);
-
-        v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                v.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                itemWidth = v.getWidth();
-            }
-        });
 
         ContactViewHolder cvh = new ContactViewHolder(v, new ContactViewHolder.OnContactClickListener() {
             @Override
@@ -127,9 +116,9 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
 
         /** Checks whether the view should be selected or not and correctly positions the checkmark image */
         if (selectedContacts.contains(filteredContacts.get(position))) {
-            holder.ivCheckMark.setX(itemWidth - holder.ivCheckMark.getWidth() - checkmarkXPos);
+            holder.ivCheckMark.setVisibility(View.VISIBLE);
         } else {
-            holder.ivCheckMark.setX(itemWidth);
+            holder.ivCheckMark.setVisibility(View.INVISIBLE);
         }
 
         if (contact.getThumbnailBitmap() != null) {
@@ -173,21 +162,23 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
             selectedContacts.remove(filteredContacts.get(position));
             imageView.animate()
                     .setDuration(100)
-                    .x(view.getWidth()).setListener(new AnimatorListenerAdapter() {
+                    .translationX(100).setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationCancel(animation);
-                            imageView.setVisibility(View.GONE);
+                            imageView.setVisibility(View.INVISIBLE);
+                            imageView.setTranslationX(0);
                         }
                     })
                     .start();
         } else {
             selectedContacts.add(filteredContacts.get(position));
+            imageView.setTranslationX(100);
             imageView.setVisibility(View.VISIBLE);
             imageView.animate()
                     .setDuration(300)
                     .setInterpolator(new OvershootInterpolator())
-                    .x(view.getWidth() - imageView.getWidth() - checkmarkXPos)
+                    .translationX(0)
                     .setListener(null)
                     .start();
         }
