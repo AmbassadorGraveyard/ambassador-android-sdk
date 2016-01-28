@@ -74,6 +74,10 @@ public final class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void switchToTabAtIndex(int position) {
+        vpPages.setCurrentItem(position);
+    }
+
     private final class TabFragmentPagerAdapter extends FragmentPagerAdapter {
 
         private TabModel[] tabs;
