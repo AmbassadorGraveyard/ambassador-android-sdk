@@ -40,6 +40,7 @@ public final class LoginFragment extends Fragment {
             String password = etPassword.getText().toString();
             Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
             Demo.get().identify(email);
+            Demo.get().setEmail(email);
         }
     };
 
