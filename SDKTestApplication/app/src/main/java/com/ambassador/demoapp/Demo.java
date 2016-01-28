@@ -60,7 +60,11 @@ public final class Demo extends Application {
     }
 
     public void setCampaignId(String campaignId) {
-        prefs.edit().putString("campaignId", campaignId).apply();
+        if (campaignId != null && campaignId.length() == 0) {
+            prefs.edit().putString("campaignId", null).apply();
+        } else {
+            prefs.edit().putString("campaignId", campaignId).apply();
+        }
     }
 
     @NonNull

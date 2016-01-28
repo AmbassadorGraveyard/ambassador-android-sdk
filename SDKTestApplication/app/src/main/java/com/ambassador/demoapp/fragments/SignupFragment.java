@@ -20,7 +20,7 @@ public final class SignupFragment extends Fragment {
     @Bind(R.id.etEmail)     protected EditText  etEmail;
     @Bind(R.id.etUsername)  protected EditText  etUsername;
     @Bind(R.id.etPassword)  protected EditText  etPassword;
-    @Bind(R.id.btnSignup)    protected Button   btnSignup;
+    @Bind(R.id.btnSignup)   protected Button    btnSignup;
 
     @Nullable
     @Override
