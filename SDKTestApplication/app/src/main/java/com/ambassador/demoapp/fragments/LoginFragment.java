@@ -42,5 +42,5 @@ public final class LoginFragment extends Fragment {
             Demo.get().setEmail(email);
         }
     };
-    
+
 }
