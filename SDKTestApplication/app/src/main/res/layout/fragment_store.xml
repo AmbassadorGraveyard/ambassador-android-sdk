@@ -40,7 +40,7 @@
             android:layout_marginLeft="8dp"
             android:text="Total"
             android:textColor="#aaaaaa"
-            android:textSize="11sp" />
+            android:textSize="12sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
             android:layout_marginRight="8dp"
             android:text="$24.00"
             android:textColor="#aaaaaa"
-            android:textSize="11sp" />
+            android:textSize="12sp" />
 
     </FrameLayout>
 
@@ -68,6 +68,6 @@
         android:background="@drawable/buy_button"
         android:text="Buy Now"
         android:textColor="@android:color/white"
-        android:textSize="10sp" />
+        android:textSize="14sp" />
 
 </LinearLayout>
