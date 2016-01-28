@@ -19,7 +19,6 @@ import butterknife.ButterKnife;
 public final class LoginFragment extends Fragment {
 
     @Bind(R.id.etEmail)     protected EditText  etEmail;
-    @Bind(R.id.etPassword)  protected EditText  etPassword;
     @Bind(R.id.btnLogin)    protected Button    btnLogin;
 
     @Nullable

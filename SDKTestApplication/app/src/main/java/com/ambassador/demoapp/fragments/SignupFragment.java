@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 
 import butterknife.Bind;
@@ -19,7 +20,6 @@ public final class SignupFragment extends Fragment {
 
     @Bind(R.id.etEmail)     protected EditText  etEmail;
     @Bind(R.id.etUsername)  protected EditText  etUsername;
-    @Bind(R.id.etPassword)  protected EditText  etPassword;
     @Bind(R.id.btnSignup)   protected Button    btnSignup;
 
     @Nullable
@@ -36,7 +36,10 @@ public final class SignupFragment extends Fragment {
     protected View.OnClickListener btnLoginOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Toast.makeText(getActivity(), "hit", Toast.LENGTH_LONG).show();
+            String email = etEmail.getText().toString();
+            String username = etUsername.getText().toString();
+            Toast.makeText(getActivity(), "Signing up!", Toast.LENGTH_LONG).show();
+            Demo.get().signupConversion(email, username);
         }
     };
 }
