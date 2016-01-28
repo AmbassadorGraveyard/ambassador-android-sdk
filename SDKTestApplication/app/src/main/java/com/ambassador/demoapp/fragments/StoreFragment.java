@@ -42,7 +42,7 @@ public final class StoreFragment extends Fragment {
                         .setPositiveButton("Done", null)
                         .show();
 
-                Demo.get().conversion();
+                Demo.get().buyConversion();
             } else {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Authentication needed")

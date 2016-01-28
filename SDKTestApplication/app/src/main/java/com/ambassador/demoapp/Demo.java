@@ -34,16 +34,28 @@ public final class Demo extends Application {
         AmbassadorSDK.identify(email);
     }
 
-    public void conversion() {
+    public void signupConversion(@NonNull String email, @NonNull String username) {
+        AmbassadorSDK.registerConversion(
+                new ConversionParameters.Builder()
+                        .setEmail(email)
+                        .setCampaign(Integer.parseInt(getCampaignId()))
+                        .setCustom1("This is a buyConversion from the Ambassador SDK Android test application.")
+                        .setCustom2("Username registered: " + username)
+                        .build()
+                , true
+        );
+    }
+
+    public void buyConversion() {
         String email = getEmail();
         if (email == null) return;
         AmbassadorSDK.registerConversion(
                 new ConversionParameters.Builder()
                         .setEmail(email)
-                        .setCampaign(260)
+                        .setCampaign(Integer.parseInt(getCampaignId()))
                         .setRevenue(24)
-                        .setCustom1("This is a conversion from the Ambassador SDK Android test application.")
-                        .setCustom2("Buy conversion registered for $24.00")
+                        .setCustom1("This is a buyConversion from the Ambassador SDK Android test application.")
+                        .setCustom2("Buy buyConversion registered for $24.00")
                         .build()
                 , false
         );
