@@ -78,6 +78,7 @@ public final class DividedRecyclerView extends RecyclerView {
             final int right = parent.getWidth() - parent.getPaddingRight() - 40;
 
             final int childCount = parent.getChildCount();
+            if (childCount == 0) return;
             for (int i = 0; i < childCount + 10; i++) {
                 int top;
                 int bottom;
