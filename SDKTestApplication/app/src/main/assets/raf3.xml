@@ -37,7 +37,7 @@
     <color name="contactsDoneButtonText">#D9232E</color>
     <color name="contactsSearchBar">@android:color/transparent</color>
     <color name="contactsSearchIcon">@android:color/white</color>
-    <color name="contactNoPhotoAvailableBackground">@color/ambassador_blue</color>
+    <color name="contactNoPhotoAvailableBackground">#D9232E</color>
     <color name="linkedinToolBar">#D9232E</color>
     <color name="linkedinToolBarText">@android:color/white</color>
     <color name="linkedinToolBarArrow">@android:color/white</color>
