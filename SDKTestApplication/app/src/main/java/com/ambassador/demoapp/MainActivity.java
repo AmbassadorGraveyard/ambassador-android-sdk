@@ -38,6 +38,7 @@ public final class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         TabFragmentPagerAdapter adapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
+        vpPages.setOffscreenPageLimit(4);
         vpPages.setAdapter(adapter);
         tlTabs.setupWithViewPager(vpPages);
 
