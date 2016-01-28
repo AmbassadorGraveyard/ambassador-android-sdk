@@ -37,11 +37,10 @@ public final class LoginFragment extends Fragment {
         @Override
         public void onClick(View v) {
             String email = etEmail.getText().toString();
-            String password = etPassword.getText().toString();
             Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
             Demo.get().identify(email);
             Demo.get().setEmail(email);
         }
     };
-
+    
 }
