@@ -485,7 +485,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         }
 
         if (!campaignFound) {
-            showNetworkError();
+            Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
