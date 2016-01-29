@@ -272,4 +272,26 @@ public class AmbassadorConfig {
         void nullifyComplete();
     }
 
+
+    public void resetForNewCampaign() {
+        String email = getUserEmail();
+        String universalKey = getUniversalKey();
+        String universalId = getUniversalID();
+        String twitterToken = getTwitterAccessToken();
+        String twitterSecret = getTwitterAccessTokenSecret();
+        String linkedInToken = getLinkedInToken();
+        String identifyString = getIdentifyObject();
+
+        sharePrefs.edit().clear().apply();
+
+        setUserEmail(email);
+        setUniversalToken(universalKey);
+        setUniversalID(universalId);
+        setTwitterAccessToken(twitterToken);
+        setTwitterAccessTokenSecret(twitterSecret);
+        setLinkedInToken(linkedInToken);
+        setIdentifyObject(identifyString);
+    }
+
+
 }
