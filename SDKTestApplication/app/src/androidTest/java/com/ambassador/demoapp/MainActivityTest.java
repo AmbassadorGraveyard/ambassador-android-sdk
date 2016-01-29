@@ -214,6 +214,7 @@ public class MainActivityTest {
 
         // ACT
         referTab.click();
+        shoeRaf.click();
     }
 
     @Test
@@ -224,6 +225,10 @@ public class MainActivityTest {
 
         // ACT
         referTab.click();
+        shoeRaf.clickAndWaitForNewWindow();
+        device.pressBack();
+        shirtRaf.clickAndWaitForNewWindow();
+        device.pressBack();
     }
 
     @Test
