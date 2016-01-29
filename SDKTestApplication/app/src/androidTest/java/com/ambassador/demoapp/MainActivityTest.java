@@ -25,10 +25,15 @@ public class MainActivityTest {
     private static final String PACKAGE_NAME = "com.ambassador.demoapp";
 
     private UiDevice device;
+    private int width;
+    private int height;
 
     @Before
     public void startMainActivityFromHomeScreen() {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        this.width = device.getDisplayWidth();
+        this.height = device.getDisplayWidth();
+
         device.pressHome();
 
         String launcherPackage = device.getLauncherPackageName();
@@ -46,8 +51,8 @@ public class MainActivityTest {
     @Test
     public void loginFilledInputsDoesIdentifyTest() throws Exception {
         // ARRANGE
-        UiObject usernameField = device.findObject(new UiSelector().description("usernameField").className("android.widget.EditText"));
-        UiObject passwordField = device.findObject(new UiSelector().description("passwordField").className("android.widget.EditText"));
+        UiObject usernameField = device.findObject(new UiSelector().description("loginUsernameField").className("android.widget.EditText"));
+        UiObject passwordField = device.findObject(new UiSelector().description("loginPasswordField").className("android.widget.EditText"));
         UiObject loginButton = device.findObject(new UiSelector().description("loginButton").className("android.widget.Button"));
 
         // ACT
@@ -115,12 +120,49 @@ public class MainActivityTest {
 
     @Test
     public void pagesDoSwipeTest() throws Exception {
+        // ARRANGE
+        UiObject loginFragment = getUi("loginFragment");
+        UiObject singupFragment = getUi("signupFragment");
+        UiObject storeFragment = getUi("storeFragment");
+        UiObject referFragment = getUi("referFragment");
 
+        // ACT & ASSERT
+        Assert.assertTrue(loginFragment.exists());
+        swipeToRightPage();
+
+        Assert.assertTrue(singupFragment.exists());
+        swipeToRightPage();
+
+        Assert.assertTrue(storeFragment.exists());
+        swipeToRightPage();
+
+        Assert.assertTrue(referFragment.exists());
+        swipeToLeftPage();
+
+        Assert.assertTrue(storeFragment.exists());
+        swipeToLeftPage();
+
+        Assert.assertTrue(singupFragment.exists());
+        swipeToLeftPage();
+
+        Assert.assertTrue(loginFragment.exists());
     }
 
     @Test
     public void keyboardClosesAndFocusResetsOnPageChangeTest() throws Exception {
-        
+
+    }
+
+    private UiObject getUi(String contentDescription) {
+        return device.findObject(new UiSelector().description(contentDescription));
+    }
+
+    private void swipeToRightPage() {
+        device.swipe(width - 100, height / 2, 100, height / 2, 10);
+    }
+
+    private void swipeToLeftPage() {
+        device.swipe(100, height / 2, width - 100, height / 2, 10);
     }
 
 }

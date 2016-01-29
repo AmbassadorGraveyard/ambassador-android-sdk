@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:contentDescription="loginFragment"
     android:orientation="vertical">
 
     <ImageView
@@ -33,7 +34,7 @@
         android:layout_marginRight="50dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/et_top"
-        android:contentDescription="usernameField"
+        android:contentDescription="loginUsernameField"
         android:fontFamily="sans-serif"
         android:hint="Username"
         android:inputType="textEmailAddress"
@@ -55,7 +56,7 @@
         android:layout_marginRight="50dp"
         android:layout_marginTop="-1dp"
         android:background="@drawable/et_bottom"
-        android:contentDescription="passwordField"
+        android:contentDescription="loginPasswordField"
         android:fontFamily="sans-serif"
         android:hint="Password"
         android:inputType="textPassword"
