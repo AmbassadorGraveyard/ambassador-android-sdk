@@ -94,49 +94,49 @@ public class MainActivityTest {
 
     @Test
     public void signupFilledInputsDoesConversionTest() throws Exception {
-        // ARRANGE
+        // ACT
         signupTab.click();
     }
 
     @Test
     public void signupEmptyInputsFailsTest() throws Exception {
-        // ARRANGE
+        // ACT
         signupTab.click();
     }
 
     @Test
     public void buyNowAuthenticatedDoesConversionTest() throws Exception {
-        // ARRANGE
+        // ACT
         storeTab.click();
     }
 
     @Test
     public void buyNowUnauthenticatedFailsCancelledTest() throws Exception {
-        // ARRANGE
+        // ACT
         storeTab.click();
     }
 
     @Test
     public void rafIdentifiedSucceedsTest() throws Exception {
-        // ARRANGE
+        // ACT
         referTab.click();
     }
 
     @Test
     public void rafUnidentifiedFailsTest() throws Exception {
-        // ARRANGE
+        // ACT
         referTab.click();
     }
 
     @Test
     public void rafCampaignIdChangeTest() throws Exception {
-        // ARRANGE
+        // ACT
         referTab.click();
     }
 
     @Test
     public void rafsAreStyledDifferentlyTest() throws Exception {
-        // ARRANGE
+        // ACT
         referTab.click();
     }
 
