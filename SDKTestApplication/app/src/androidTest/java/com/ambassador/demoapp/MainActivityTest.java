@@ -60,6 +60,9 @@ public class MainActivityTest {
         this.signupTab = getUi("signupTab");
         this.storeTab = getUi("storeTab");
         this.referTab = getUi("referTab");
+
+        Demo.get().setEmail(null);
+        Demo.get().setCampaignId(null);
     }
 
     @Test
@@ -115,11 +118,24 @@ public class MainActivityTest {
     @Test
     public void buyNowAuthenticatedDoesConversionTest() throws Exception {
         // ARRANGE
+        UiObject storeFragment = getUi("storeFragment");
         UiObject buyButton = getUi("buyButton");
+        UiObject alertTextView = device.findObject(new UiSelector().text("Purchase successful"));
+        UiObject alertDoneButton = device.findObject(new UiSelector().text("Done"));
+        Demo.get().setEmail("jake@getambassador.com");
 
         // ACT
         storeTab.click();
         buyButton.click();
+
+        // ASSERT
+        Assert.assertTrue(alertTextView.exists());
+
+        // ACT
+        alertDoneButton.click();
+
+        // ASSERT
+        Assert.assertTrue(storeFragment.exists());
     }
 
     @Test
@@ -172,24 +188,40 @@ public class MainActivityTest {
 
     @Test
     public void rafIdentifiedSucceedsTest() throws Exception {
+        // ARRANGE
+        UiObject shoeRaf = getUi("shoeRaf");
+
         // ACT
         referTab.click();
+        shoeRaf.clickAndWaitForNewWindow();
+        device.pressBack();
     }
 
     @Test
     public void rafUnidentifiedFailsTest() throws Exception {
+        // ARRANGE
+        UiObject shoeRaf = getUi("shoeRaf");
+
         // ACT
         referTab.click();
+        shoeRaf.clickAndWaitForNewWindow();
     }
 
     @Test
     public void rafCampaignIdChangeTest() throws Exception {
+        // ARRANGE
+        UiObject shoeRaf = getUi("shoeRaf");
+
         // ACT
         referTab.click();
     }
 
     @Test
     public void rafsAreStyledDifferentlyTest() throws Exception {
+        // ARRANGE
+        UiObject shoeRaf = getUi("shoeRaf");
+        UiObject shirtRaf = getUi("shirtRaf");
+
         // ACT
         referTab.click();
     }
