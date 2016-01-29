@@ -38,8 +38,7 @@ public final class LoginFragment extends Fragment {
     public void onResume() {
         super.onResume();
         etEmail.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
+        closeSoftKeyboard();
     }
 
     protected View.OnClickListener btnLoginOnClickListener = new View.OnClickListener() {
@@ -49,7 +48,13 @@ public final class LoginFragment extends Fragment {
             Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
             Demo.get().identify(email);
             Demo.get().setEmail(email);
+            closeSoftKeyboard();
         }
     };
+
+    private void closeSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
+    }
 
 }

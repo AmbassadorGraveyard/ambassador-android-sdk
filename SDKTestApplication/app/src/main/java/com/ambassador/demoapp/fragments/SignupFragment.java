@@ -39,6 +39,10 @@ public final class SignupFragment extends Fragment {
     public void onResume() {
         super.onResume();
         etEmail.requestFocus();
+        closeSoftKeyboard();
+    }
+
+    private void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
     }
@@ -50,6 +54,7 @@ public final class SignupFragment extends Fragment {
             String username = etUsername.getText().toString();
             Toast.makeText(getActivity(), "Signing up!", Toast.LENGTH_LONG).show();
             Demo.get().signupConversion(email, username);
+            closeSoftKeyboard();
         }
     };
 }

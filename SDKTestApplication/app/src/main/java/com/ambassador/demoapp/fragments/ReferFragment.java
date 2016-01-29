@@ -55,6 +55,10 @@ public final class ReferFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        closeSoftKeyboard();
+    }
+
+    private void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
     }
