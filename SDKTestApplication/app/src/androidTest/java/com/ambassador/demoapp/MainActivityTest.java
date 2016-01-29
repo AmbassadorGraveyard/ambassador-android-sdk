@@ -65,9 +65,9 @@ public class MainActivityTest {
     @Test
     public void loginFilledInputsDoesIdentifyTest() throws Exception {
         // ARRANGE
-        UiObject usernameField = device.findObject(new UiSelector().description("loginUsernameField").className("android.widget.EditText"));
-        UiObject passwordField = device.findObject(new UiSelector().description("loginPasswordField").className("android.widget.EditText"));
-        UiObject loginButton = device.findObject(new UiSelector().description("loginButton").className("android.widget.Button"));
+        UiObject usernameField = getUi("loginUsernameField");
+        UiObject passwordField = getUi("loginPasswordField");
+        UiObject loginButton = getUi("loginButton");
 
         // ACT
         usernameField.click();
@@ -84,7 +84,7 @@ public class MainActivityTest {
     @Test
     public void loginEmptyInputsFailsTest() throws Exception {
         // ARRANGE
-        UiObject loginButton = device.findObject(new UiSelector().description("loginButton").className("android.widget.Button"));
+        UiObject loginButton = getUi("loginButton");
 
         // ACT
         loginButton.click();
@@ -94,26 +94,42 @@ public class MainActivityTest {
 
     @Test
     public void signupFilledInputsDoesConversionTest() throws Exception {
+        // ARRANGE
+        UiObject signupButton = getUi("signupButton");
+
         // ACT
         signupTab.click();
+        signupButton.click();
     }
 
     @Test
     public void signupEmptyInputsFailsTest() throws Exception {
+        // ARRANGE
+        UiObject signupButton = getUi("signupButton");
+
         // ACT
         signupTab.click();
+        signupButton.click();
     }
 
     @Test
     public void buyNowAuthenticatedDoesConversionTest() throws Exception {
+        // ARRANGE
+        UiObject buyButton = getUi("buyButton");
+
         // ACT
         storeTab.click();
+        buyButton.click();
     }
 
     @Test
     public void buyNowUnauthenticatedFailsCancelledTest() throws Exception {
+        // ARRANGE
+        UiObject buyButton = getUi("buyButton");
+
         // ACT
         storeTab.click();
+        buyButton.click();
     }
 
     @Test
