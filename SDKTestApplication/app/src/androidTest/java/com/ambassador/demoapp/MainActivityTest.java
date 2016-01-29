@@ -11,8 +11,6 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
 
-import com.ambassador.demoapp.MainActivity;
-
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,6 +60,67 @@ public class MainActivityTest {
         loginButton.click();
 
         // ASSERT
+    }
+
+    @Test
+    public void loginEmptyInputsFailsTest() throws Exception {
+        // ARRANGE
+        UiObject loginButton = device.findObject(new UiSelector().description("loginButton").className("android.widget.Button"));
+
+        // ACT
+        loginButton.click();
+
+        // ASSERT
+    }
+
+    @Test
+    public void signupFilledInputsDoesConversionTest() throws Exception {
+
+    }
+
+    @Test
+    public void signupEmptyInputsFailsTest() throws Exception {
+
+    }
+
+    @Test
+    public void buyNowAuthenticatedDoesConversionTest() throws Exception {
+
+    }
+
+    @Test
+    public void buyNowUnauthenticatedFailsCancelledTest() throws Exception {
+
+    }
+
+    @Test
+    public void rafIdentifiedSucceedsTest() throws Exception {
+
+    }
+
+    @Test
+    public void rafUnidentifiedFailsTest() throws Exception {
+
+    }
+
+    @Test
+    public void rafCampaignIdChangeTest() throws Exception {
+
+    }
+
+    @Test
+    public void rafsAreStyledDifferentlyTest() throws Exception {
+
+    }
+
+    @Test
+    public void pagesDoSwipeTest() throws Exception {
+
+    }
+
+    @Test
+    public void keyboardClosesAndFocusResetsOnPageChangeTest() throws Exception {
+        
     }
 
 }
