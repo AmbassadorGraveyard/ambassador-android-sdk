@@ -1,4 +1,4 @@
-package com.ambasasdor.demoapp;
+package com.ambassador.demoapp;
 
 import android.content.Context;
 import android.content.Intent;
@@ -37,7 +37,7 @@ public class MainActivityTest {
 
     @Before
     public void startMainActivityFromHomeScreen() {
-        device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         this.width = device.getDisplayWidth();
         this.height = device.getDisplayWidth();
 
@@ -48,7 +48,7 @@ public class MainActivityTest {
         device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
 
         Context context = InstrumentationRegistry.getContext();
-        imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        this.imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
         Intent intent  = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -56,10 +56,10 @@ public class MainActivityTest {
 
         device.wait(Until.hasObject(By.pkg(PACKAGE_NAME).depth(0)), LAUNCH_TIMEOUT);
 
-        loginTab = getUi("loginTab");
-        signupTab = getUi("signupTab");
-        storeTab = getUi("storeTab");
-        referTab = getUi("referTab");
+        this.loginTab = getUi("loginTab");
+        this.signupTab = getUi("signupTab");
+        this.storeTab = getUi("storeTab");
+        this.referTab = getUi("referTab");
     }
 
     @Test
