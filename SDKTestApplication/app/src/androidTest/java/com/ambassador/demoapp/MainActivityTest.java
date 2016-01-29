@@ -125,11 +125,49 @@ public class MainActivityTest {
     @Test
     public void buyNowUnauthenticatedFailsCancelledTest() throws Exception {
         // ARRANGE
+        UiObject storeFragment = getUi("storeFragment");
         UiObject buyButton = getUi("buyButton");
+        UiObject alertTextView = device.findObject(new UiSelector().text("Authentication needed"));
+        UiObject alertCancelButton = device.findObject(new UiSelector().text("Cancel").resourceId("android:id/button2"));
 
         // ACT
         storeTab.click();
         buyButton.click();
+
+        // ASSERT
+        Assert.assertTrue(alertTextView.exists());
+
+        // ACT
+        alertCancelButton.click();
+
+        // ASSERT
+        Assert.assertFalse(alertTextView.exists());
+        Assert.assertTrue(storeFragment.exists());
+    }
+
+    @Test
+    public void buyNowUnauthenticatedFailsLoginTest() throws Exception {
+        // ARRANGE
+        UiObject storeFragment = getUi("storeFragment");
+        UiObject loginFragment = getUi("loginFragment");
+        UiObject buyButton = getUi("buyButton");
+        UiObject alertTextView = device.findObject(new UiSelector().text("Authentication needed"));
+        UiObject alertLoginButton = device.findObject(new UiSelector().text("Login").resourceId("android:id/button1"));
+
+        // ACT
+        storeTab.click();
+        buyButton.click();
+
+        // ASSERT
+        Assert.assertTrue(alertTextView.exists());
+
+        // ACT
+        alertLoginButton.click();
+
+        // ASSERT
+        Assert.assertFalse(alertTextView.exists());
+        Assert.assertFalse(storeFragment.exists());
+        Assert.assertTrue(loginFragment.exists());
     }
 
     @Test
@@ -194,7 +232,6 @@ public class MainActivityTest {
         UiObject signupEmailField = getUi("signupEmailField");
         UiObject signupPasswordField = getUi("signupPasswordField");
 
-        UiObject tabs = getUi("tabLayout");
         // ACT & ASSERT
        // Assert.assertFalse(keyboardIsOpen());
 
