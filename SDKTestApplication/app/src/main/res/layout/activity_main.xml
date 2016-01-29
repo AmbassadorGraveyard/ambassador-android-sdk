@@ -2,118 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vpPages"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_above="@+id/tlTabs"
+        android:layout_alignParentTop="true" />
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal"
-            android:weightSum="3">
-
-            <Button
-                android:id="@+id/btnPresentRAF1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="RAF DEFAULT" />
-
-            <Button
-                android:id="@+id/btnPresentRAF2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="RAF CUSTOM 1" />
-
-            <Button
-                android:id="@+id/btnPresentRAF3"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="RAF CUSTOM 2" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            android:layout_marginTop="5dp">
-
-            <Button
-                android:id="@+id/btnPresentRAF4"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="RAF OLD CUSTOMVALUES" />
-
-            <Button
-                android:id="@+id/btnPresentRAF5"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="RAF MISSING TAGS" />
-
-            <Button
-                android:id="@+id/btnPresentRAF6"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="RAF DIFFERENT CAMPID" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal"
-            android:weightSum="3"
-            android:layout_marginTop="5dp">
-
-            <Button
-                android:id="@+id/btnPresentRAF7"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="RAF INVALID VALUES" />
-
-            <Button
-                android:id="@+id/btnPresentRAF8"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="RAF INVALID KEYS" />
-
-            <Button
-                android:id="@+id/btnPresentRAF9"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="bad campaign id" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnPurchase"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tlTabs"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="Purchase this thing" />
+        style="@style/TabLayout"/>
 
 </RelativeLayout>

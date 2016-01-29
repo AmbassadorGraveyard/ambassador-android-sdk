@@ -79,6 +79,7 @@ public final class AmbassadorSDK {
     private static void intentAmbassadorActivity(Context context, String campaignID) {
         ambassadorConfig.resetForNewCampaign();
         Intent intent = buildIntent(context, AmbassadorActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         ambassadorConfig.setCampaignID(campaignID);
         context.startActivity(intent);
     }
