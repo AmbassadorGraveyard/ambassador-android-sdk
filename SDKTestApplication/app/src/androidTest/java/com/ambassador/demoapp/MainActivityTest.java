@@ -10,6 +10,7 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
+import android.view.inputmethod.InputMethodManager;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -27,6 +28,12 @@ public class MainActivityTest {
     private UiDevice device;
     private int width;
     private int height;
+    private InputMethodManager imm;
+
+    private UiObject loginTab;
+    private UiObject signupTab;
+    private UiObject storeTab;
+    private UiObject referTab;
 
     @Before
     public void startMainActivityFromHomeScreen() {
@@ -41,11 +48,18 @@ public class MainActivityTest {
         device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
 
         Context context = InstrumentationRegistry.getContext();
+        imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+
         Intent intent  = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
 
         device.wait(Until.hasObject(By.pkg(PACKAGE_NAME).depth(0)), LAUNCH_TIMEOUT);
+
+        loginTab = getUi("loginTab");
+        signupTab = getUi("signupTab");
+        storeTab = getUi("storeTab");
+        referTab = getUi("referTab");
     }
 
     @Test
@@ -80,42 +94,50 @@ public class MainActivityTest {
 
     @Test
     public void signupFilledInputsDoesConversionTest() throws Exception {
-
+        // ARRANGE
+        signupTab.click();
     }
 
     @Test
     public void signupEmptyInputsFailsTest() throws Exception {
-
+        // ARRANGE
+        signupTab.click();
     }
 
     @Test
     public void buyNowAuthenticatedDoesConversionTest() throws Exception {
-
+        // ARRANGE
+        storeTab.click();
     }
 
     @Test
     public void buyNowUnauthenticatedFailsCancelledTest() throws Exception {
-
+        // ARRANGE
+        storeTab.click();
     }
 
     @Test
     public void rafIdentifiedSucceedsTest() throws Exception {
-
+        // ARRANGE
+        referTab.click();
     }
 
     @Test
     public void rafUnidentifiedFailsTest() throws Exception {
-
+        // ARRANGE
+        referTab.click();
     }
 
     @Test
     public void rafCampaignIdChangeTest() throws Exception {
-
+        // ARRANGE
+        referTab.click();
     }
 
     @Test
     public void rafsAreStyledDifferentlyTest() throws Exception {
-
+        // ARRANGE
+        referTab.click();
     }
 
     @Test
@@ -150,7 +172,31 @@ public class MainActivityTest {
 
     @Test
     public void keyboardClosesAndFocusResetsOnPageChangeTest() throws Exception {
+        // ARRANGE
+        UiObject loginUsernameField = getUi("loginUsernameField");
+        UiObject loginPasswordField = getUi("loginPasswordField");
+        UiObject signupEmailField = getUi("signupEmailField");
+        UiObject signupPasswordField = getUi("signupPasswordField");
 
+        UiObject tabs = getUi("tabLayout");
+        // ACT & ASSERT
+       // Assert.assertFalse(keyboardIsOpen());
+
+        Assert.assertTrue(loginUsernameField.isFocused());
+        loginPasswordField.click();
+       // Assert.assertTrue(keyboardIsOpen());
+        loginPasswordField.setText("password");
+        swipeToRightPage();
+
+       // Assert.assertFalse(keyboardIsOpen());
+        Assert.assertTrue(signupEmailField.isFocused());
+        signupPasswordField.click();
+        //Assert.assertTrue(keyboardIsOpen());
+        signupPasswordField.setText("password");
+        swipeToLeftPage();
+
+        //Assert.assertFalse(keyboardIsOpen());
+        Assert.assertTrue(loginUsernameField.isFocused());
     }
 
     private UiObject getUi(String contentDescription) {
