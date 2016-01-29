@@ -719,7 +719,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
             twitterAuthClient.onActivityResult(requestCode, resultCode, data);
-            onShareRequested();
+            if (ambassadorConfig.getTwitterAccessToken() != null && ambassadorConfig.getTwitterAccessTokenSecret() != null) {
+                onShareRequested();
+            }
         }
 
     }
@@ -763,7 +765,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            onShareRequested();
+            if (ambassadorConfig.getLinkedInToken() != null) {
+                onShareRequested();
+            }
         }
 
     }

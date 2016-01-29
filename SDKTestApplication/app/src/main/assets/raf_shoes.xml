@@ -5,7 +5,7 @@
     <string name="RAFdescriptionText">Share using any of the methods below:</string>
     <string name="RAFtoolbarTitle">Refer a Friend!</string>
     <string name="RAFLogoPosition">1</string>
-    <string name="RAFLogo">raf2.png</string>
+    <string name="RAFLogo">shoes.png</string>
     <color name="homeBackground">#ffffff</color>
     <color name="homeWelcomeTitle">#000000</color>
     <dimen name="homeWelcomeTitle">16sp</dimen>
