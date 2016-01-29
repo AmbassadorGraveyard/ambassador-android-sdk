@@ -67,6 +67,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
         android:background="@drawable/buy_button"
+        android:contentDescription="buyButton"
         android:text="Buy Now"
         android:textColor="@android:color/white"
         android:textSize="14sp" />
