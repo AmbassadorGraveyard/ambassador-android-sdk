@@ -450,13 +450,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     void tryAndSetURL(String pusherString, String initialShareMessage) {
-        // Functionality: Gets URL from PusherSDK
-        // First checks to see if PusherSDK info has already been saved to SharedPreferencs
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-            networkTimer.cancel();
-        }
-
+        boolean campaignFound = false;
         try {
             // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
             JSONObject pusherData = new JSONObject(pusherString);
@@ -472,6 +466,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     ambassadorConfig.setURL(urlObj.getString("url"));
                     ambassadorConfig.setReferrerShortCode(urlObj.getString("short_code"));
                     ambassadorConfig.setEmailSubject(urlObj.getString("subject"));
+                    campaignFound = true;
 
                     //check for weird multiple URL issue seen occasionally
                     if (!initialShareMessage.contains(urlObj.getString("url"))) {
@@ -479,8 +474,19 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     }
                 }
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+            networkTimer.cancel();
+        }
+
+        if (!campaignFound) {
+            Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 
