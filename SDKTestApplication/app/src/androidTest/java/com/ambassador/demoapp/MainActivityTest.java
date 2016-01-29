@@ -1,36 +1,50 @@
-package com.example.ambassador.sdktestapplication;
+package com.ambasasdor.demoapp;
 
-import android.support.test.rule.ActivityTestRule;
+import android.content.Context;
+import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.SdkSuppress;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
+import android.support.test.uiautomator.By;
+import android.support.test.uiautomator.UiDevice;
+import android.support.test.uiautomator.Until;
 
-import org.junit.Rule;
+import com.ambassador.demoapp.MainActivity;
+
+import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.not;
-
 @RunWith(AndroidJUnit4.class)
-@LargeTest
+@SdkSuppress(minSdkVersion = 18)
 public class MainActivityTest {
 
-    @Rule
-    public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule(MainActivity.class);
+    private static final int LAUNCH_TIMEOUT = 5000;
+    private static final String PACKAGE_NAME = "com.ambassador.demoapp";
+
+    private UiDevice device;
+
+    @Before
+    public void startMainActivityFromHomeScreen() {
+        device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        device.pressHome();
+
+        String launcherPackage = device.getLauncherPackageName();
+        Assert.assertThat(launcherPackage, Matchers.notNullValue());
+        device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
+
+        Context context = InstrumentationRegistry.getContext();
+        Intent intent  = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
+        context.startActivity(intent);
+
+        device.wait(Until.hasObject(By.pkg(PACKAGE_NAME).depth(0)), LAUNCH_TIMEOUT);
+    }
 
     @Test
-    public void testPresentRaf() {
-        //onView(withId(R.id.btnPresentRAF1)).perform(click());
-        onView(withId(R.id.llParent)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
-        onView(withId(R.id.etShortURL)).check(matches(isDisplayed()));
-        onView(withId(R.id.etShortURL)).check(matches(not(withText(""))));
-        onView(withId(R.id.btnCopy)).check(matches(isDisplayed()));
-        onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
+    public void test() {
+
     }
+
 }
