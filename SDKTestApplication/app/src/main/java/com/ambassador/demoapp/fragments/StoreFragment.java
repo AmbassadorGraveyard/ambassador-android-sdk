@@ -43,14 +43,14 @@ public final class StoreFragment extends Fragment {
     protected View.OnClickListener btnBuyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (Demo.get().getEmail() != null) {
+            if (Demo.getAmb().getEmail() != null) {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Purchase successful")
                         .setMessage("Thank you for buying from Ambassador!")
                         .setPositiveButton("Done", null)
                         .show();
 
-                Demo.get().buyConversion();
+                Demo.getAmb().buyConversion();
             } else {
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Authentication needed")
