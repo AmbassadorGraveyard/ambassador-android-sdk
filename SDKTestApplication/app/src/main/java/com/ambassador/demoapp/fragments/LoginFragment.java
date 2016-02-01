@@ -47,7 +47,6 @@ public final class LoginFragment extends Fragment {
             String email = etEmail.getText().toString();
             Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
             Demo.get().identify(email);
-            Demo.get().setEmail(email);
             closeSoftKeyboard();
         }
     };
