@@ -32,6 +32,7 @@ public class MainActivityTest {
     private UiObject signupTab;
     private UiObject storeTab;
     private UiObject referTab;
+    private UiObject shortCodeEditText;
 
     @Before
     public void startMainActivityFromHomeScreen() {
@@ -57,6 +58,8 @@ public class MainActivityTest {
         this.signupTab = getUi("signupTab");
         this.storeTab = getUi("storeTab");
         this.referTab = getUi("referTab");
+
+        shortCodeEditText = device.findObject(new UiSelector().resourceId("com.ambassador.demoapp:id/etShortURL"));
 
         Demo.get().setEmail(null);
         Demo.get().setCampaignId(null);
@@ -211,7 +214,9 @@ public class MainActivityTest {
         Demo.get().identify("jake@getambassador.com");
         referTab.click();
         shoeRaf.clickAndWaitForNewWindow();
-        device.pressBack();
+
+        // ASSERT
+        Assert.assertTrue(shortCodeEditText.exists());
     }
 
     @Test
@@ -223,6 +228,9 @@ public class MainActivityTest {
         Demo.get().setEmail(null);
         referTab.click();
         shoeRaf.clickAndWaitForNewWindow();
+
+        // ASSERT
+        Assert.assertFalse(shortCodeEditText.exists());
     }
 
     @Test
@@ -232,18 +240,24 @@ public class MainActivityTest {
         UiObject shoeRaf = getUi("shoeRaf");
 
         // ACT
-        Demo.get().identify("jake@getambassdor.com");
+        Demo.get().identify("jake@getambassador.com");
         referTab.click();
 
         campaignIdField.click();
         campaignIdField.setText("260");
-        shoeRaf.click();
+        shoeRaf.clickAndWaitForNewWindow();
+        String url1 = shortCodeEditText.getText();
         device.pressBack();
 
         campaignIdField.click();
         campaignIdField.setText("999");
         shoeRaf.click();
+        String url2 = shortCodeEditText.getText();
         device.pressBack();
+
+        Assert.assertNotEquals(url1, url2);
+        Assert.assertTrue(url1.endsWith("jzqC"));
+        Assert.assertTrue(url2.endsWith("ljTq"));
     }
 
     @Test
