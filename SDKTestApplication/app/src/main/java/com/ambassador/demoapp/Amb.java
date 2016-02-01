@@ -32,6 +32,10 @@ public class Amb {
     public void identify(String email) {
         setEmail(email);
         conversions = new ArrayList<>();
+        ambIdentify(email);
+    }
+
+    protected void ambIdentify(String email) {
         AmbassadorSDK.identify(email);
     }
 
@@ -43,7 +47,7 @@ public class Amb {
                 .setCustom2("Username registered: " + username)
                 .build();
 
-        AmbassadorSDK.registerConversion(parameters, true);
+        ambConversion(parameters, true);
         conversions.add(parameters);
     }
 
@@ -59,8 +63,12 @@ public class Amb {
                 .setCustom2("Buy buyConversion registered for $24.00")
                 .build();
 
-        AmbassadorSDK.registerConversion(parameters, false);
+        ambConversion(parameters, false);
         conversions.add(parameters);
+    }
+
+    protected void ambConversion(ConversionParameters conversionParameters, boolean install) {
+        AmbassadorSDK.registerConversion(conversionParameters, install);
     }
 
     public void presentRAF(String path) {

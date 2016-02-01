@@ -11,7 +11,7 @@ public final class Demo extends Application {
 
     private static Demo instance;
 
-    private static Amb amb;
+    public static Amb amb;
 
     @Override
     public void onCreate() {

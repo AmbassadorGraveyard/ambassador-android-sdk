@@ -16,6 +16,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
@@ -35,6 +36,8 @@ public class MainActivityTest {
     private UiObject shortCodeEditText;
 
     private Context context;
+
+    private Amb amb;
 
     @Before
     public void startMainActivityFromHomeScreen() {
@@ -62,6 +65,9 @@ public class MainActivityTest {
         this.referTab = getUi("referTab");
 
         shortCodeEditText = device.findObject(new UiSelector().resourceId("com.ambassador.demoapp:id/etShortURL"));
+
+        this.amb = Mockito.mock(Amb.class);
+        Demo.amb = this.amb;
 
         Demo.getAmb().setEmail(null);
         Demo.getAmb().setCampaignId(null);
