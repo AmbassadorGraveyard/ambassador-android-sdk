@@ -68,7 +68,8 @@ public class MainActivityTest {
 
         shortCodeEditText = device.findObject(new UiSelector().resourceId("com.ambassador.demoapp:id/etShortURL"));
 
-        this.amb = Mockito.mock(Amb.class);
+        Amb ambReal = new Amb(context);
+        this.amb = Mockito.spy(ambReal);
         Demo.amb = this.amb;
 
         Mockito.doNothing().when(amb).ambIdentify(Mockito.anyString());
