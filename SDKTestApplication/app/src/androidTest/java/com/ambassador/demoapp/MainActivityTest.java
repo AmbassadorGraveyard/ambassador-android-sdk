@@ -134,9 +134,9 @@ public class MainActivityTest {
         UiObject buyButton = getUi("buyButton");
         UiObject alertTextView = device.findObject(new UiSelector().text("Purchase successful"));
         UiObject alertDoneButton = device.findObject(new UiSelector().text("Done"));
-        Demo.get().setEmail("jake@getambassador.com");
 
         // ACT
+        Demo.get().identify("jake@getambassador.com");
         storeTab.click();
         buyButton.click();
 
