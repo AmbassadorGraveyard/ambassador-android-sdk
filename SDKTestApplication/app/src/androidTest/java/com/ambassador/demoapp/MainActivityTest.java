@@ -226,17 +226,21 @@ public class MainActivityTest {
     @Test
     public void rafCampaignIdChangeTest() throws Exception {
         // ARRANGE
+        UiObject campaignIdField = getUi("campaignIdField");
         UiObject shoeRaf = getUi("shoeRaf");
 
         // ACT
         Demo.get().identify("jake@getambassdor.com");
         referTab.click();
-        shoeRaf.click();
 
+        campaignIdField.click();
+        campaignIdField.setText("260");
+        shoeRaf.click();
         device.pressBack();
 
+        campaignIdField.click();
+        campaignIdField.setText("999");
         shoeRaf.click();
-
         device.pressBack();
     }
 
