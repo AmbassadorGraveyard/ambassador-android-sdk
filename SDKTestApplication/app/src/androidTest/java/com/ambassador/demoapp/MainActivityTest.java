@@ -11,6 +11,8 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
 
+import com.ambassador.ambassadorsdk.ConversionParameters;
+
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,7 +71,10 @@ public class MainActivityTest {
         this.amb = Mockito.mock(Amb.class);
         Demo.amb = this.amb;
 
-        Demo.getAmb().setEmail(null);
+        Mockito.doNothing().when(amb).ambIdentify(Mockito.anyString());
+        Mockito.doNothing().when(amb).ambConversion(Mockito.any(ConversionParameters.class), Mockito.anyBoolean());
+
+        Demo.getAmb().identify(null);
         Demo.getAmb().setCampaignId(null);
     }
 
