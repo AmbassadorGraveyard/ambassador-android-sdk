@@ -18,7 +18,7 @@ import com.twitter.sdk.android.core.models.User;
 
 import org.json.JSONObject;
 
-public class AmbassadorConfig {
+public class AmbassadorConfig { // TODO: Make final after UI tests figured out
 
     public static final String LINKED_IN_CLIENT_ID = new StringResource(R.string.linked_in_client_id).getValue();
     public static final String LINKED_IN_CLIENT_SECRET = new StringResource(R.string.linked_in_client_secret).getValue();
