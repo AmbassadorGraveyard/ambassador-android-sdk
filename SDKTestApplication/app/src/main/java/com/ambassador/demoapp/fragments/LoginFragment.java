@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 public final class LoginFragment extends Fragment {
 
     @Bind(R.id.etEmail)     protected EditText  etEmail;
+    @Bind(R.id.etPassword)  protected EditText  etPassword;
     @Bind(R.id.btnLogin)    protected Button    btnLogin;
 
     @Nullable
@@ -44,10 +45,14 @@ public final class LoginFragment extends Fragment {
     protected View.OnClickListener btnLoginOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String email = etEmail.getText().toString();
-            Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
-            Demo.get().identify(email);
-            closeSoftKeyboard();
+            if (!(etEmail.getText().length() == 0) && !(etPassword.getText().length() == 0)) {
+                String email = etEmail.getText().toString();
+                Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
+                Demo.get().identify(email);
+                closeSoftKeyboard();
+            } else {
+                Toast.makeText(getActivity(), "Please enter an email and password!", Toast.LENGTH_LONG).show();
+            }
         }
     };
 
