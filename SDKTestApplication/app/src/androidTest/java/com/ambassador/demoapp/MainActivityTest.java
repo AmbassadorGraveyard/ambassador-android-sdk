@@ -10,7 +10,6 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
-import android.view.inputmethod.InputMethodManager;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -28,7 +27,6 @@ public class MainActivityTest {
     private UiDevice device;
     private int width;
     private int height;
-    private InputMethodManager imm;
 
     private UiObject loginTab;
     private UiObject signupTab;
@@ -48,7 +46,6 @@ public class MainActivityTest {
         device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
 
         Context context = InstrumentationRegistry.getContext();
-        this.imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 
         Intent intent  = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -98,11 +95,26 @@ public class MainActivityTest {
     @Test
     public void signupFilledInputsDoesConversionTest() throws Exception {
         // ARRANGE
+        UiObject emailField = getUi("signupEmailField");
+        UiObject usernameField = getUi("signupUsernameField");
+        UiObject passwordField = getUi("signupPasswordField");
         UiObject signupButton = getUi("signupButton");
 
         // ACT
         signupTab.click();
+
+        emailField.click();
+        emailField.setText("jake@getambassador.com");
+
+        usernameField.click();
+        usernameField.setText("jake");
+
+        passwordField.click();
+        passwordField.setText("password");
+
         signupButton.click();
+
+        // ASSERT
     }
 
     @Test
@@ -215,6 +227,12 @@ public class MainActivityTest {
         // ACT
         referTab.click();
         shoeRaf.click();
+
+        device.pressBack();
+
+        shoeRaf.click();
+
+        device.pressBack();
     }
 
     @Test
@@ -222,12 +240,15 @@ public class MainActivityTest {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
         UiObject shirtRaf = getUi("shirtRaf");
+        UiObject ambassadorRaf = getUi("ambassadorRaf");
 
         // ACT
         referTab.click();
         shoeRaf.clickAndWaitForNewWindow();
         device.pressBack();
         shirtRaf.clickAndWaitForNewWindow();
+        device.pressBack();
+        ambassadorRaf.clickAndWaitForNewWindow();
         device.pressBack();
     }
 
