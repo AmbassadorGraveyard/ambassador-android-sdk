@@ -216,6 +216,7 @@ public class MainActivityTest {
     public void rafIdentifiedSucceedsTest() throws Exception {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
+        UiObject progressDialog = device.findObject(new UiSelector().resourceId("android:id/parentPanel").className("android.widget.LinearLayout"));
 
         // ACT
         Demo.get().identify("jake@getambassador.com");
@@ -225,12 +226,14 @@ public class MainActivityTest {
 
         // ASSERT
         Assert.assertTrue(shortCodeEditText.exists());
+        Assert.assertTrue(!progressDialog.exists());
     }
 
     @Test
     public void rafUnidentifiedFailsTest() throws Exception {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
+        UiObject referFragment = getUi("referFragment");
 
         // ACT
         Demo.get().setEmail(null);
@@ -238,6 +241,7 @@ public class MainActivityTest {
         shoeRaf.clickAndWaitForNewWindow();
 
         // ASSERT
+        Assert.assertTrue(referFragment.exists());
         Assert.assertFalse(shortCodeEditText.exists());
     }
 
