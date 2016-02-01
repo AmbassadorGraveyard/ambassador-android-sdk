@@ -206,6 +206,7 @@ public class MainActivityTest {
         UiObject shoeRaf = getUi("shoeRaf");
 
         // ACT
+        Demo.get().identify("jake@getambassador.com");
         referTab.click();
         shoeRaf.clickAndWaitForNewWindow();
         device.pressBack();
@@ -217,6 +218,7 @@ public class MainActivityTest {
         UiObject shoeRaf = getUi("shoeRaf");
 
         // ACT
+        Demo.get().setEmail(null);
         referTab.click();
         shoeRaf.clickAndWaitForNewWindow();
     }
@@ -227,6 +229,7 @@ public class MainActivityTest {
         UiObject shoeRaf = getUi("shoeRaf");
 
         // ACT
+        Demo.get().identify("jake@getambassdor.com");
         referTab.click();
         shoeRaf.click();
 
