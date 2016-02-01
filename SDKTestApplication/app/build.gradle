@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
     maven { url 'http://clojars.org/repo' }
@@ -37,6 +38,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.google.dagger:dagger:2.0'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
     compile project(':AmbassadorSDK')
 
     //Automated UI testing (Espresso) dependencies
@@ -57,6 +60,8 @@ dependencies {
     androidTestCompile ('com.google.dexmaker:dexmaker-mockito:1.2') {
         exclude module: 'hamcrest-core'
     }
+
+    androidTestApt 'com.google.dagger:dagger-compiler:2.0'
 }
 
 
