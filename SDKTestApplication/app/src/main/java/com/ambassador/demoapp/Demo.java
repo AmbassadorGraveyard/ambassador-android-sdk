@@ -31,6 +31,7 @@ public final class Demo extends Application {
     }
 
     public void identify(String email) {
+        Demo.get().setEmail(email);
         AmbassadorSDK.identify(email);
     }
 
