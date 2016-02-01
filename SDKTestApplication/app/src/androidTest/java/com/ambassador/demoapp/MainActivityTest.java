@@ -266,15 +266,28 @@ public class MainActivityTest {
         UiObject shoeRaf = getUi("shoeRaf");
         UiObject shirtRaf = getUi("shirtRaf");
         UiObject ambassadorRaf = getUi("ambassadorRaf");
+        UiObject titleText = device.findObject(new UiSelector().resourceId("com.ambassador.demoapp:id/tvWelcomeTitle"));
 
         // ACT
+        Demo.get().identify("jake@getambassador.com");
         referTab.click();
+
         shoeRaf.clickAndWaitForNewWindow();
+        String title1 = titleText.getText();
         device.pressBack();
+
         shirtRaf.clickAndWaitForNewWindow();
+        String title2 = titleText.getText();
         device.pressBack();
+
         ambassadorRaf.clickAndWaitForNewWindow();
+        String title3 = titleText.getText();
         device.pressBack();
+
+        // ASSERT
+        Assert.assertNotEquals(title1, title2);
+        Assert.assertNotEquals(title2, title3);
+        Assert.assertNotEquals(title3, title1);
     }
 
     @Test
