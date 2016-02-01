@@ -14,7 +14,7 @@ import javax.inject.Inject;
 /**
  *
  */
-public class BulkShareHelper {
+public class BulkShareHelper { // TODO: Make final after UI tests figured out
 
     /** */
     @Inject protected RequestManager requestManager;
