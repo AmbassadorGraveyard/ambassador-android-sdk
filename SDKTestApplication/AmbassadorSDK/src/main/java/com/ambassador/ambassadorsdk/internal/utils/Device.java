@@ -14,7 +14,7 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 /**
  *
  */
-public final class Device {
+public class Device { // TODO: Make final after UI tests figured out
 
     protected Configuration         configuration;
     protected ConnectivityManager   connectivityManager;

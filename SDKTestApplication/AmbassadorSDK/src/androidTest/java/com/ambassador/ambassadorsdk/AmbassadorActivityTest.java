@@ -15,21 +15,21 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.view.View;
 import android.widget.TextView;
 
-import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationModule;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
-import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
+import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -97,7 +97,7 @@ public class AmbassadorActivityTest {
 
     //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
     @Singleton
-    @Component(modules = {AmbassadorApplicationModule.class})
+    @Component(modules = TestModule.class)
     public interface TestComponent extends AmbassadorApplicationComponent {
         void inject(AmbassadorActivityTest ambassadorActivityTest);
     }
@@ -122,9 +122,9 @@ public class AmbassadorActivityTest {
         //tell the application which component we want to use - in this case use the the one created above instead of the
         //application component which is created in the Application (and uses the real tweetRequest)
         AmbassadorSingleton.init(context);
-        AmbassadorApplicationModule amb = new AmbassadorApplicationModule();
-        AmbassadorSingleton.setInstanceAmbModule(amb);
-        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().ambassadorApplicationModule(amb).build();
+        TestModule amb = new TestModule();
+        //AmbassadorSingleton.setInstanceAmbModule(amb);
+        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().testModule(amb).build();
         AmbassadorSingleton.setInstanceComponent(component);
         //perform injection
         component.inject(this);
@@ -194,14 +194,14 @@ public class AmbassadorActivityTest {
 
     @Test
     public void testMainLayout() {
-        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(withText(parameters.titleText)));
         onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeDesc)).check(matches(withText(parameters.descriptionText)));
         onView(withId(R.id.etShortURL)).check(matches(isDisplayed()));
         onView(withId(R.id.etShortURL)).check(matches(withText("http://staging.mbsy.co/jHjl")));
-        onView(withId(R.id.btnCopyPaste)).check(matches(isDisplayed()));
+        onView(withId(R.id.btnCopy)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -233,13 +233,13 @@ public class AmbassadorActivityTest {
 
         pressBack();
         //make sure after we backed out that expected views are there
-        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
         onView(withId(R.id.rvContacts)).check(ViewAssertions.doesNotExist());
 
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(3).perform(click());
 
-        onView(withId(R.id.rlMaster)).check(matches(isDisplayed()));
+        onView(withId(R.id.rlParent)).check(matches(isDisplayed()));
         onView(withId(R.id.rlSearch)).check(matches(not(isDisplayed())));
         onView(withId(R.id.etSearch)).check(matches(not(isDisplayed())));
         onView(withId(R.id.btnDoneSearch)).check(matches(not(isDisplayed())));
@@ -340,7 +340,7 @@ public class AmbassadorActivityTest {
         .when(bulkShareHelper).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
         onView(withId(R.id.rlSend)).perform(click());
-        onView(withId(R.id.rlMaster)).check(matches(isDisplayed()));
+        onView(withId(R.id.rlParent)).check(matches(isDisplayed()));
         onView(withId(R.id.rlSend)).perform(click());
         verify(bulkShareHelper, times(2)).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
@@ -360,7 +360,7 @@ public class AmbassadorActivityTest {
 
         pressBack();
         //make sure after we backed out that expected views are there
-        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
         onView(withId(R.id.rvContacts)).check(ViewAssertions.doesNotExist());
 
@@ -382,6 +382,7 @@ public class AmbassadorActivityTest {
         //this email will force the contact name dialog to come up when submitting
         String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
         when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
+        when(ambassadorConfig.getPusherInfoObject()).thenReturn(new JSONObject(pusherResponse));
 
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
@@ -400,7 +401,7 @@ public class AmbassadorActivityTest {
         //contact name dialog should be displayed
         onView(withId(R.id.dialog_contact_name)).check(matches(isDisplayed()));
         Espresso.closeSoftKeyboard();
-        Thread.sleep(100);
+        Thread.sleep(1000);
         onView(withId(R.id.btnContinue)).perform(click());
         verify(bulkShareHelper, never()).bulkShare(anyString(), anyList(), anyBoolean(), any(BulkShareHelper.BulkShareCompletion.class));
 
@@ -460,14 +461,14 @@ public class AmbassadorActivityTest {
         //in that case the view will stay on the list of contacts
         onView(withId(R.id.rvContacts)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(ViewAssertions.doesNotExist());
-        onView(withId(R.id.llMainLayout)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.llParent)).check(ViewAssertions.doesNotExist());
     }
 
     @Test
     public void testLinkedIn() {
         //TODO: test linkedInLoginActivity (see strategy in testTwitter)
 
-        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         when(ambassadorConfig.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
@@ -489,7 +490,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.ivHeaderImg)).check(matches(isDisplayed()));
         onView(withId(R.id.btnCancel)).check(matches(isDisplayed()));
         onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
-        onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.pbLoading)).check(matches(not(isDisplayed())));
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
         Espresso.closeSoftKeyboard();
         pressBack();
@@ -542,7 +543,7 @@ public class AmbassadorActivityTest {
 
         onView(withId(R.id.btnSend)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
-        onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.pbLoading)).check(ViewAssertions.doesNotExist());
 
         //test sending an unsuccessful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
@@ -554,13 +555,13 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnSend)).perform(click());
         //failure shouldn't dismiss the dialog
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
-        onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.pbLoading)).check(matches(not(isDisplayed())));
         verify(requestManager, times(2)).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnCancel)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
-        onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.pbLoading)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         //TODO: testing toast (didn't work)
@@ -568,7 +569,7 @@ public class AmbassadorActivityTest {
     }
 
     @Test
-    public void testTwitter() {
+    public void testTwitter() throws Exception {
         //TODO: finish the test for twitterloginactivity once we can type into webviews, strategy outlined below
         //mock token as null so login screen gets presented
         //when(ambassadorConfig.getTwitterAccessToken()).thenReturn(null);
@@ -599,10 +600,10 @@ public class AmbassadorActivityTest {
         //TODO: to this later to attempt to enter text into WebView fields to authenticate
         //onWebView().withElement(findElement(Locator.ID, "username")).perform(webKeys("test@sf.com"));
 
-        //onView(withId(R.id.llMainLayout)).check(matches(not(isDisplayed())));
+        //onView(withId(R.id.llParent)).check(matches(not(isDisplayed())));
         //pressBack();
 
-        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         when(ambassadorConfig.getTwitterAccessToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
@@ -625,7 +626,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.ivHeaderImg)).check(matches(isDisplayed()));
         onView(withId(R.id.btnCancel)).check(matches(isDisplayed()));
         onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
-        onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));onView(withText("Twitter Post")).check(matches(isDisplayed()));
+        onView(withId(R.id.pbLoading)).check(matches(not(isDisplayed())));onView(withText("Twitter Post")).check(matches(isDisplayed()));
 
         Espresso.closeSoftKeyboard();
         pressBack();
@@ -643,6 +644,9 @@ public class AmbassadorActivityTest {
 
         //since text was cleared, ensure dialog is present, then click "send anyway"
         onView(withText("Hold on!")).check(matches(isDisplayed()));
+        Thread.sleep(200);
+        Espresso.closeSoftKeyboard();
+        Thread.sleep(200);
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         pressBack();
@@ -678,7 +682,7 @@ public class AmbassadorActivityTest {
 
         onView(withId(R.id.btnSend)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
-        onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.pbLoading)).check(ViewAssertions.doesNotExist());
 
         //test sending an unsuccessful (mocked) tweet
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
@@ -691,36 +695,17 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.btnSend)).perform(click());
         //failure shouldn't dismiss the dialog
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
-        onView(withId(R.id.loadingPanel)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.pbLoading)).check(matches(not(isDisplayed())));
         verify(requestManager, times(2)).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnCancel)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
-        onView(withId(R.id.loadingPanel)).check(ViewAssertions.doesNotExist());
-        onView(withId(R.id.llMainLayout)).check(matches(isDisplayed()));
+        onView(withId(R.id.pbLoading)).check(ViewAssertions.doesNotExist());
+        onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
         //TODO: testing toast (didn't work)
         //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void testCustomImages() {
-        int drawableId = context.getResources().getIdentifier("raf_logo", "drawable", context.getPackageName());
-        int pos;
-        try {
-            pos = Integer.parseInt(context.getString(R.string.RAFLogoPosition));
-        }
-        catch (NumberFormatException e) {
-            pos = 0;
-        }
-
-        if (drawableId != 0 && pos >= 1 && pos <= 5) {
-            onView(withId(drawableId)).check(matches(isDisplayed()));
-        }
-        else {
-            onView(withId(drawableId)).check(ViewAssertions.doesNotExist());
-        }
     }
 
     private String _getRandomNumber() {
