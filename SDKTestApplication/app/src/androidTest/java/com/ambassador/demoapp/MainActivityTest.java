@@ -34,6 +34,8 @@ public class MainActivityTest {
     private UiObject referTab;
     private UiObject shortCodeEditText;
 
+    private Context context;
+
     @Before
     public void startMainActivityFromHomeScreen() {
         this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
@@ -46,7 +48,7 @@ public class MainActivityTest {
         Assert.assertThat(launcherPackage, Matchers.notNullValue());
         device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
 
-        Context context = InstrumentationRegistry.getContext();
+        this.context = InstrumentationRegistry.getContext();
 
         Intent intent  = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -236,9 +238,10 @@ public class MainActivityTest {
         UiObject referFragment = getUi("referFragment");
 
         // ACT
-        Demo.get().setEmail(null);
+        Demo.get().identify(null);
         referTab.click();
         shoeRaf.clickAndWaitForNewWindow();
+        device.waitForWindowUpdate(PACKAGE_NAME, 5000);
 
         // ASSERT
         Assert.assertTrue(referFragment.exists());
@@ -341,22 +344,16 @@ public class MainActivityTest {
         UiObject signupPasswordField = getUi("signupPasswordField");
 
         // ACT & ASSERT
-       // Assert.assertFalse(keyboardIsOpen());
-
         Assert.assertTrue(loginUsernameField.isFocused());
         loginPasswordField.click();
-       // Assert.assertTrue(keyboardIsOpen());
         loginPasswordField.setText("password");
         swipeToRightPage();
 
-       // Assert.assertFalse(keyboardIsOpen());
         Assert.assertTrue(signupEmailField.isFocused());
         signupPasswordField.click();
-        //Assert.assertTrue(keyboardIsOpen());
         signupPasswordField.setText("password");
         swipeToLeftPage();
 
-        //Assert.assertFalse(keyboardIsOpen());
         Assert.assertTrue(loginUsernameField.isFocused());
     }
 
