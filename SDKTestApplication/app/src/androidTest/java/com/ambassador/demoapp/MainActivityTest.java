@@ -79,6 +79,7 @@ public class MainActivityTest {
         loginButton.click();
 
         // ASSERT
+        Assert.assertEquals("jake@getambassador.com", Demo.get().getEmail());
     }
 
     @Test
@@ -90,6 +91,7 @@ public class MainActivityTest {
         loginButton.click();
 
         // ASSERT
+        Assert.assertNull(Demo.get().getEmail());
     }
 
     @Test
