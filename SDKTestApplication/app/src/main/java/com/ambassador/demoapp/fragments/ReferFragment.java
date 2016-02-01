@@ -45,7 +45,7 @@ public final class ReferFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RafAdapter.RafItem item = adapter.getItem(position);
                 String path = item.getOptionsPath();
-                Demo.getAmb().presentRAF(path);
+                Demo.getAmb().presentRAF(getActivity(), path);
             }
         });
 

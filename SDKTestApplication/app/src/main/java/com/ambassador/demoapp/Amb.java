@@ -16,15 +16,12 @@ import java.util.List;
  */
 public class Amb {
 
-    private Context context;
-
     private SharedPreferences prefs;
     private List<ConversionParameters> conversions;
 
     private Amb() {}
 
     public Amb(Context context) {
-        this.context = context.getApplicationContext();
         prefs = context.getSharedPreferences("amb_demo", Context.MODE_PRIVATE);
         conversions = new ArrayList<>();
     }
@@ -71,7 +68,7 @@ public class Amb {
         AmbassadorSDK.registerConversion(conversionParameters, install);
     }
 
-    public void presentRAF(String path) {
+    public void presentRAF(Context context, String path) {
         AmbassadorSDK.presentRAF(context, getCampaignId(), path);
     }
 
