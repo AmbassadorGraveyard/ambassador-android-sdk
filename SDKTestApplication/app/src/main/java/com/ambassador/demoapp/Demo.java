@@ -96,6 +96,11 @@ public final class Demo extends Application {
         return prefs.getString("campaignId", "260");
     }
 
+    @Nullable
+    public List<ConversionParameters> getConversions() {
+        return this.conversions;
+    }
+
     public static Demo get() {
         return instance;
     }
