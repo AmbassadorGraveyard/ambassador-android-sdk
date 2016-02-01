@@ -36,7 +36,8 @@ public final class TestModule {
     @Provides
     @Singleton
     public AmbassadorConfig provideAmbassadorConfig() {
-        return Mockito.mock(AmbassadorConfig.class);
+        AmbassadorConfig ambassadorConfig = new AmbassadorConfig();
+        return Mockito.spy(ambassadorConfig);
     }
 
     @NonNull

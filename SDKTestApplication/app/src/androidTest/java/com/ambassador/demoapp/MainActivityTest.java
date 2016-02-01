@@ -10,9 +10,13 @@ import android.support.test.uiautomator.UiDevice;
 import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
+import android.support.v4.content.LocalBroadcastManager;
 
+import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
+import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 
 import org.hamcrest.Matchers;
@@ -21,6 +25,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,10 +51,13 @@ public class MainActivityTest {
     private UiObject shortCodeEditText;
 
     private Context context;
-
     private Amb amb;
 
+    private ServiceSelectorPreferences parameters;
+
     @Inject protected PusherSDK pusherSDK;
+    @Inject protected AmbassadorConfig ambassadorConfig;
+    @Inject protected RequestManager requestManager;
 
     @Singleton
     @Component(modules = { TestModule.class })
@@ -75,6 +84,8 @@ public class MainActivityTest {
         TestComponent component = DaggerMainActivityTest_TestComponent.builder().testModule(testModule).build();
         AmbassadorSingleton.setInstanceComponent(component);
         component.inject(this);
+
+        mockAmbassadorSDK();
 
         Intent intent  = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -397,6 +408,37 @@ public class MainActivityTest {
 
     private void swipeToLeftPage() {
         device.swipe(100, height / 2, width - 100, height / 2, 10);
+    }
+
+    private void mockAmbassadorSDK() {
+        String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jzqC\",\"short_code\":\"jzqC\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}, {\"url\":\"http://staging.mbsy.co\\/ljTq\",\"short_code\":\"ljTq\",\"campaign_uid\":999,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
+        Mockito.when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
+
+        Mockito.doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                sendPusherIntent();
+                return null;
+            }
+        }).when(requestManager).identifyRequest();
+
+        Mockito.doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                sendPusherIntent();
+                return null;
+            }
+        }).when(pusherSDK).subscribePusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
+
+        Mockito.doAnswer(new Answer<Void>() {
+            public Void answer(InvocationOnMock invocation) {
+                sendPusherIntent();
+                return null;
+            }
+        }).when(pusherSDK).createPusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
+    }
+
+    private void sendPusherIntent() {
+        Intent intent = new Intent("pusherData");
+        LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
     }
 
 }
