@@ -11,7 +11,9 @@ import android.support.test.uiautomator.UiObject;
 import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
 
-import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.PusherSDK;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -19,6 +21,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.Component;
 
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
@@ -41,6 +48,14 @@ public class MainActivityTest {
 
     private Amb amb;
 
+    @Inject protected PusherSDK pusherSDK;
+
+    @Singleton
+    @Component(modules = { TestModule.class })
+    public interface TestComponent extends AmbassadorApplicationComponent {
+        void inject(MainActivityTest ambassadorActivityTest);
+    }
+
     @Before
     public void startMainActivityFromHomeScreen() {
         this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
@@ -54,6 +69,12 @@ public class MainActivityTest {
         device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
 
         this.context = InstrumentationRegistry.getContext();
+
+        AmbassadorSingleton.init(context);
+        TestModule testModule = new TestModule();
+        TestComponent component = DaggerMainActivityTest_TestComponent.builder().testModule(testModule).build();
+        AmbassadorSingleton.setInstanceComponent(component);
+        component.inject(this);
 
         Intent intent  = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -71,9 +92,6 @@ public class MainActivityTest {
         Amb ambReal = new Amb(context);
         this.amb = Mockito.spy(ambReal);
         Demo.amb = this.amb;
-
-        Mockito.doNothing().when(amb).ambIdentify(Mockito.anyString());
-        Mockito.doNothing().when(amb).ambConversion(Mockito.any(ConversionParameters.class), Mockito.anyBoolean());
 
         Demo.getAmb().identify(null);
         Demo.getAmb().setCampaignId(null);
@@ -278,7 +296,7 @@ public class MainActivityTest {
 
         campaignIdField.click();
         campaignIdField.setText("999");
-        shoeRaf.click();
+        shoeRaf.clickAndWaitForNewWindow();
         String url2 = shortCodeEditText.getText();
         device.pressBack();
 
