@@ -55,7 +55,7 @@ public final class SignupFragment extends Fragment {
                 String email = etEmail.getText().toString();
                 String username = etUsername.getText().toString();
                 Toast.makeText(getActivity(), "Signing up!", Toast.LENGTH_LONG).show();
-                Demo.get().signupConversion(email, username);
+                Demo.getAmb().signupConversion(email, username);
                 closeSoftKeyboard();
             } else {
                 Toast.makeText(getActivity(), "Please enter an email, username, and password!", Toast.LENGTH_LONG).show();

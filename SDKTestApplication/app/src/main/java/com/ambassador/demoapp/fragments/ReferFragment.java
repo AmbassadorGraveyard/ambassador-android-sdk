@@ -35,7 +35,7 @@ public final class ReferFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_refer, container, false);
         ButterKnife.bind(this, view);
 
-        etCampaignId.setText(Demo.get().getCampaignId());
+        etCampaignId.setText(Demo.getAmb().getCampaignId());
         etCampaignId.addTextChangedListener(etCampaignIdTextWatcher);
 
         final RafAdapter adapter = new RafAdapter();
@@ -45,7 +45,7 @@ public final class ReferFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RafAdapter.RafItem item = adapter.getItem(position);
                 String path = item.getOptionsPath();
-                Demo.get().presentRAF(path);
+                Demo.getAmb().presentRAF(path);
             }
         });
 
@@ -73,7 +73,7 @@ public final class ReferFragment extends Fragment {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String text = etCampaignId.getText().toString();
-            Demo.get().setCampaignId(text);
+            Demo.getAmb().setCampaignId(text);
         }
 
         @Override
