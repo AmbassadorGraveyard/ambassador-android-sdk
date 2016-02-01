@@ -120,6 +120,7 @@ public class MainActivityTest {
         signupButton.click();
 
         // ASSERT
+        Assert.assertEquals(1, Demo.get().getConversions().size());
     }
 
     @Test
@@ -130,6 +131,9 @@ public class MainActivityTest {
         // ACT
         signupTab.click();
         signupButton.click();
+
+        // ASSERT
+        Assert.assertEquals(0, Demo.get().getConversions().size());
     }
 
     @Test
@@ -153,6 +157,7 @@ public class MainActivityTest {
 
         // ASSERT
         Assert.assertTrue(storeFragment.exists());
+        Assert.assertEquals(1, Demo.get().getConversions().size());
     }
 
     @Test
@@ -177,6 +182,7 @@ public class MainActivityTest {
         // ASSERT
         Assert.assertFalse(alertTextView.exists());
         Assert.assertTrue(storeFragment.exists());
+        Assert.assertEquals(0, Demo.get().getConversions().size());
     }
 
     @Test
@@ -203,6 +209,7 @@ public class MainActivityTest {
         Assert.assertFalse(alertTextView.exists());
         Assert.assertFalse(storeFragment.exists());
         Assert.assertTrue(loginFragment.exists());
+        Assert.assertEquals(0, Demo.get().getConversions().size());
     }
 
     @Test
