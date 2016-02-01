@@ -159,6 +159,7 @@ public class MainActivityTest {
         UiObject alertCancelButton = device.findObject(new UiSelector().text("Cancel").resourceId("android:id/button2"));
 
         // ACT
+        Demo.get().setEmail(null);
         storeTab.click();
         buyButton.click();
 
@@ -183,6 +184,7 @@ public class MainActivityTest {
         UiObject alertLoginButton = device.findObject(new UiSelector().text("Login").resourceId("android:id/button1"));
 
         // ACT
+        Demo.get().setEmail(null);
         storeTab.click();
         buyButton.click();
 
