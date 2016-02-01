@@ -221,6 +221,7 @@ public class MainActivityTest {
         Demo.get().identify("jake@getambassador.com");
         referTab.click();
         shoeRaf.clickAndWaitForNewWindow();
+        shortCodeEditText.waitForExists(5000);
 
         // ASSERT
         Assert.assertTrue(shortCodeEditText.exists());
