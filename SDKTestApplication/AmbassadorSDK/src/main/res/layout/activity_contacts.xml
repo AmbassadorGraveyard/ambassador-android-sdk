@@ -29,6 +29,7 @@
             android:enabled="true"
             android:focusable="true"
             android:hint="Search"
+            android:imeOptions="actionDone"
             android:singleLine="true"
             android:textSize="16sp" />
 
