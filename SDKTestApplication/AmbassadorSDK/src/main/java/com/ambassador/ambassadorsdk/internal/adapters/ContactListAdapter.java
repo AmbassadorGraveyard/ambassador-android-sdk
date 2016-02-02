@@ -1,7 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.adapters;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,14 +22,18 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.dialogs.ContactInfoDialog;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.dialogs.ContactInfoDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
@@ -50,6 +52,9 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     private float checkmarkXPos;
     private int itemWidth;
     private Bitmap noPicBmp;
+    private float checkmarkSize;
+
+    @Inject protected Device device;
 
     private OnSelectedContactsChangedListener onSelectedContactsChangedListener;
 
@@ -61,6 +66,10 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         this.shouldShowPhoneNumbers = shouldShowPhoneNumbers;
         this.checkmarkXPos = Utilities.getPixelSizeForDimension(R.dimen.contact_select_checkmark_x);
         this.noPicBmp = generateNoPicBitmap(context);
+        this.checkmarkSize = Utilities.getPixelSizeForDimension(R.dimen.checkmark_size);
+
+        AmbassadorSingleton.getInstanceComponent().inject(this);
+        this.itemWidth = device.getScreenWidth();
     }
 
     @Override
@@ -71,14 +80,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     @Override
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_contacts, parent, false);
-
-        v.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                v.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                itemWidth = v.getWidth();
-            }
-        });
 
         ContactViewHolder cvh = new ContactViewHolder(v, new ContactViewHolder.OnContactClickListener() {
             @Override
@@ -127,9 +128,9 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
 
         /** Checks whether the view should be selected or not and correctly positions the checkmark image */
         if (selectedContacts.contains(filteredContacts.get(position))) {
-            holder.ivCheckMark.setX(itemWidth - holder.ivCheckMark.getWidth() - checkmarkXPos);
+            holder.ivCheckMark.setTranslationX(-(checkmarkSize + checkmarkXPos));
         } else {
-            holder.ivCheckMark.setX(itemWidth);
+            holder.ivCheckMark.setTranslationX(0);
         }
 
         if (contact.getThumbnailBitmap() != null) {
@@ -171,25 +172,15 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         final ImageView imageView = (ImageView) view.findViewById(R.id.ivCheckMark);
         if (selectedContacts.contains(filteredContacts.get(position))) {
             selectedContacts.remove(filteredContacts.get(position));
-            imageView.animate()
-                    .setDuration(100)
-                    .x(view.getWidth()).setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationCancel(animation);
-                            imageView.setVisibility(View.GONE);
-                        }
-                    })
-                    .start();
+            ObjectAnimator animator = ObjectAnimator.ofFloat(imageView, "translationX", -(checkmarkSize + checkmarkXPos), 0);
+            animator.setDuration(100);
+            animator.start();
         } else {
             selectedContacts.add(filteredContacts.get(position));
-            imageView.setVisibility(View.VISIBLE);
-            imageView.animate()
-                    .setDuration(300)
-                    .setInterpolator(new OvershootInterpolator())
-                    .x(view.getWidth() - imageView.getWidth() - checkmarkXPos)
-                    .setListener(null)
-                    .start();
+            ObjectAnimator animator = ObjectAnimator.ofFloat(imageView, "translationX", 0, -(checkmarkSize + checkmarkXPos));
+            animator.setDuration(300);
+            animator.setInterpolator(new OvershootInterpolator());
+            animator.start();
         }
     }
 
@@ -217,6 +208,10 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         canvas.drawBitmap(bitmap, null, new Rect(0, 0, bitmap.getWidth(), bitmap.getWidth()), new Paint(Paint.ANTI_ALIAS_FLAG));
 
         return tmp;
+    }
+
+    public void refreshItemWidth() {
+        this.itemWidth = device.getScreenWidth();
     }
 
     private class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {

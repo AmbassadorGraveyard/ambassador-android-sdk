@@ -22,39 +22,43 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".internal.activities.AmbassadorActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/ActivityTheme">
-        </activity>
+            android:theme="@style/ActivityTheme" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="Ambassador SDK"
-            android:screenOrientation="portrait"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <activity
             android:name=".internal.activities.LinkedInLoginActivity"
-            android:label="LinkedInLogin"
-            android:screenOrientation="portrait"
-            android:theme="@style/ActivityTheme"/>
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@style/ActivityTheme" />
+
         <activity
             android:name=".internal.activities.ContactSelectorActivity"
-            android:label="Contacts Activity"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:screenOrientation="portrait"
-            android:theme="@style/ActivityTheme"/>
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@style/ActivityTheme"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider***REMOVED***"
+        <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:exported="true"/>
+            android:authorities="com.facebook.app.FacebookContentProvider***REMOVED***"
+            android:exported="true" />
 
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
-        <receiver android:name=".internal.InstallReceiver"
+
+        <receiver
+            android:name=".internal.InstallReceiver"
             android:exported="true"
             android:permission="android.permission.INSTALL_PACKAGES">
             <intent-filter>
@@ -93,4 +97,5 @@
         </service>
 
     </application>
+
 </manifest>
