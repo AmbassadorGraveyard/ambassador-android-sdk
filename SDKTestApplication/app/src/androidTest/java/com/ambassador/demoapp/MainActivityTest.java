@@ -51,7 +51,6 @@ public class MainActivityTest {
     private UiObject shortCodeEditText;
 
     private Context context;
-    private Amb amb;
 
     private ServiceSelectorPreferences parameters;
 
@@ -100,12 +99,8 @@ public class MainActivityTest {
 
         shortCodeEditText = device.findObject(new UiSelector().resourceId("com.ambassador.demoapp:id/etShortURL"));
 
-        Amb ambReal = new Amb(context);
-        this.amb = Mockito.spy(ambReal);
-        Demo.amb = this.amb;
-
-        Demo.getAmb().identify(null);
-        Demo.getAmb().setCampaignId(null);
+        Demo.get().identify(null);
+        Demo.get().setCampaignId(null);
     }
 
     @Test
@@ -125,7 +120,7 @@ public class MainActivityTest {
         loginButton.click();
 
         // ASSERT
-        Assert.assertEquals("jake@getambassador.com", Demo.getAmb().getEmail());
+        Assert.assertEquals("jake@getambassador.com", Demo.get().getEmail());
     }
 
     @Test
@@ -137,7 +132,7 @@ public class MainActivityTest {
         loginButton.click();
 
         // ASSERT
-        Assert.assertNull(Demo.getAmb().getEmail());
+        Assert.assertNull(Demo.get().getEmail());
     }
 
     @Test
@@ -163,7 +158,7 @@ public class MainActivityTest {
         signupButton.click();
 
         // ASSERT
-        Assert.assertEquals(1, Demo.getAmb().getConversions().size());
+        Assert.assertEquals(1, Demo.get().getConversions().size());
     }
 
     @Test
@@ -176,7 +171,7 @@ public class MainActivityTest {
         signupButton.click();
 
         // ASSERT
-        Assert.assertEquals(0, Demo.getAmb().getConversions().size());
+        Assert.assertEquals(0, Demo.get().getConversions().size());
     }
 
     @Test
@@ -188,7 +183,7 @@ public class MainActivityTest {
         UiObject alertDoneButton = device.findObject(new UiSelector().text("Done"));
 
         // ACT
-        Demo.getAmb().identify("jake@getambassador.com");
+        Demo.get().identify("jake@getambassador.com");
         storeTab.click();
         buyButton.click();
 
@@ -200,7 +195,7 @@ public class MainActivityTest {
 
         // ASSERT
         Assert.assertTrue(storeFragment.exists());
-        Assert.assertEquals(1, Demo.getAmb().getConversions().size());
+        Assert.assertEquals(1, Demo.get().getConversions().size());
     }
 
     @Test
@@ -212,7 +207,7 @@ public class MainActivityTest {
         UiObject alertCancelButton = device.findObject(new UiSelector().text("Cancel").resourceId("android:id/button2"));
 
         // ACT
-        Demo.getAmb().setEmail(null);
+        Demo.get().setEmail(null);
         storeTab.click();
         buyButton.click();
 
@@ -225,7 +220,7 @@ public class MainActivityTest {
         // ASSERT
         Assert.assertFalse(alertTextView.exists());
         Assert.assertTrue(storeFragment.exists());
-        Assert.assertEquals(0, Demo.getAmb().getConversions().size());
+        Assert.assertEquals(0, Demo.get().getConversions().size());
     }
 
     @Test
@@ -238,7 +233,7 @@ public class MainActivityTest {
         UiObject alertLoginButton = device.findObject(new UiSelector().text("Login").resourceId("android:id/button1"));
 
         // ACT
-        Demo.getAmb().setEmail(null);
+        Demo.get().setEmail(null);
         storeTab.click();
         buyButton.click();
 
@@ -252,7 +247,7 @@ public class MainActivityTest {
         Assert.assertFalse(alertTextView.exists());
         Assert.assertFalse(storeFragment.exists());
         Assert.assertTrue(loginFragment.exists());
-        Assert.assertEquals(0, Demo.getAmb().getConversions().size());
+        Assert.assertEquals(0, Demo.get().getConversions().size());
     }
 
     @Test
@@ -262,7 +257,7 @@ public class MainActivityTest {
         UiObject progressDialog = device.findObject(new UiSelector().resourceId("android:id/parentPanel").className("android.widget.LinearLayout"));
 
         // ACT
-        Demo.getAmb().identify("jake@getambassador.com");
+        Demo.get().identify("jake@getambassador.com");
         referTab.click();
         shoeRaf.clickAndWaitForNewWindow();
         shortCodeEditText.waitForExists(5000);
@@ -279,10 +274,9 @@ public class MainActivityTest {
         UiObject referFragment = getUi("referFragment");
 
         // ACT
-        Demo.getAmb().identify(null);
+        Demo.get().identify(null);
         referTab.click();
         shoeRaf.clickAndWaitForNewWindow();
-        device.waitForWindowUpdate(PACKAGE_NAME, 5000);
 
         // ASSERT
         Assert.assertTrue(referFragment.exists());
@@ -296,7 +290,7 @@ public class MainActivityTest {
         UiObject shoeRaf = getUi("shoeRaf");
 
         // ACT
-        Demo.getAmb().identify("jake@getambassador.com");
+        Demo.get().identify("jake@getambassador.com");
         referTab.click();
 
         campaignIdField.click();
@@ -325,7 +319,7 @@ public class MainActivityTest {
         UiObject titleText = device.findObject(new UiSelector().resourceId("com.ambassador.demoapp:id/tvWelcomeTitle"));
 
         // ACT
-        Demo.getAmb().identify("jake@getambassador.com");
+        Demo.get().identify("jake@getambassador.com");
         referTab.click();
 
         shoeRaf.clickAndWaitForNewWindow();
