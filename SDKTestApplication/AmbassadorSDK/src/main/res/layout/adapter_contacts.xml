@@ -57,10 +57,10 @@
     <ImageView
         android:id="@+id/ivCheckMark"
         android:layout_width="20dp"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/tvName"
+        android:layout_centerVertical="true"
         android:layout_marginEnd="-20dp"
         android:layout_marginRight="-20dp"
         android:src="@drawable/checkmark" />
