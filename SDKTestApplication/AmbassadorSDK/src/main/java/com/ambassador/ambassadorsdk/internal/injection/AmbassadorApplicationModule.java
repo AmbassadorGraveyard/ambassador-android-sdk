@@ -7,6 +7,7 @@ import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.squareup.otto.Bus;
 
 import javax.inject.Singleton;
 
@@ -49,6 +50,13 @@ public final class AmbassadorApplicationModule {
     @Singleton
     public Device provideDevice() {
         return new Device();
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public Bus provideBus() {
+        return new Bus();
     }
 
 }
