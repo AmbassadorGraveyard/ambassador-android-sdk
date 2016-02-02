@@ -184,6 +184,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         } else {
             selectedContacts.add(filteredContacts.get(position));
             imageView.setVisibility(View.VISIBLE);
+            imageView.setTranslationX(imageView.getWidth());
             imageView.animate()
                     .setDuration(300)
                     .setInterpolator(new OvershootInterpolator())
