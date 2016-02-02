@@ -12,10 +12,10 @@ import android.support.test.uiautomator.UiSelector;
 import android.support.test.uiautomator.Until;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
-import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 
@@ -51,8 +51,6 @@ public class MainActivityTest {
     private UiObject shortCodeEditText;
 
     private Context context;
-
-    private ServiceSelectorPreferences parameters;
 
     @Inject protected PusherSDK pusherSDK;
     @Inject protected AmbassadorConfig ambassadorConfig;
@@ -121,6 +119,7 @@ public class MainActivityTest {
 
         // ASSERT
         Assert.assertEquals("jake@getambassador.com", Demo.get().getEmail());
+        Mockito.verify(requestManager).identifyRequest();
     }
 
     @Test
@@ -133,6 +132,7 @@ public class MainActivityTest {
 
         // ASSERT
         Assert.assertNull(Demo.get().getEmail());
+        Mockito.verify(requestManager, Mockito.times(0)).identifyRequest();
     }
 
     @Test
@@ -159,6 +159,7 @@ public class MainActivityTest {
 
         // ASSERT
         Assert.assertEquals(1, Demo.get().getConversions().size());
+        Mockito.verify(requestManager).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
@@ -172,6 +173,7 @@ public class MainActivityTest {
 
         // ASSERT
         Assert.assertEquals(0, Demo.get().getConversions().size());
+        Mockito.verify(requestManager, Mockito.times(0)).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
@@ -196,6 +198,7 @@ public class MainActivityTest {
         // ASSERT
         Assert.assertTrue(storeFragment.exists());
         Assert.assertEquals(1, Demo.get().getConversions().size());
+        Mockito.verify(requestManager).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
@@ -221,6 +224,8 @@ public class MainActivityTest {
         Assert.assertFalse(alertTextView.exists());
         Assert.assertTrue(storeFragment.exists());
         Assert.assertEquals(0, Demo.get().getConversions().size());
+        Mockito.verify(requestManager, Mockito.times(0)).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
+
     }
 
     @Test
@@ -248,6 +253,7 @@ public class MainActivityTest {
         Assert.assertFalse(storeFragment.exists());
         Assert.assertTrue(loginFragment.exists());
         Assert.assertEquals(0, Demo.get().getConversions().size());
+        Mockito.verify(requestManager, Mockito.times(0)).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
@@ -265,6 +271,7 @@ public class MainActivityTest {
         // ASSERT
         Assert.assertTrue(shortCodeEditText.exists());
         Assert.assertTrue(!progressDialog.exists());
+        Mockito.verify(requestManager).identifyRequest();
     }
 
     @Test
@@ -305,6 +312,7 @@ public class MainActivityTest {
         String url2 = shortCodeEditText.getText();
         device.pressBack();
 
+        // ASSERT
         Assert.assertNotEquals(url1, url2);
         Assert.assertTrue(url1.endsWith("jzqC"));
         Assert.assertTrue(url2.endsWith("ljTq"));
