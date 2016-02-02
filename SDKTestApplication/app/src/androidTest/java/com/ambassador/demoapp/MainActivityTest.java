@@ -15,9 +15,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.pusher.client.connection.ConnectionState;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -27,6 +29,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+
+import java.util.Date;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -279,9 +283,37 @@ public class MainActivityTest {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
         UiObject referFragment = getUi("referFragment");
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                PusherSDK.PusherSubscribeCallback callback = (PusherSDK.PusherSubscribeCallback) invocationOnMock.getArguments()[0];
+                callback.pusherFailed();
+                return null;
+            }
+        }).when(pusherSDK).createPusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
 
         // ACT
-        Demo.get().identify(null);
+        referTab.click();
+        PusherChannel.setChannelName(null);
+        PusherChannel.setConnectionState(ConnectionState.DISCONNECTED);
+        PusherChannel.setExpiresAt(new Date(100));
+        shoeRaf.clickAndWaitForNewWindow();
+
+        // ASSERT
+        Assert.assertTrue(referFragment.exists());
+        Assert.assertFalse(shortCodeEditText.exists());
+    }
+
+    @Test
+    public void rafNoMatchingCampaignIdsFailsTest() throws Exception {
+        // ARRANGE
+        UiObject shoeRaf = getUi("shoeRaf");
+        UiObject referFragment = getUi("referFragment");
+        String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[]}";
+        Mockito.when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
+
+        // ACT
+        Demo.get().identify("jake@getambassador.com");
         referTab.click();
         shoeRaf.clickAndWaitForNewWindow();
 
