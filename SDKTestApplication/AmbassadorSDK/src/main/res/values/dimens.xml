@@ -11,4 +11,6 @@
     <dimen name="ambassador_activity_scroll_lock_buffer">20dp</dimen>
 
     <dimen name="social_option_size">50dp</dimen>
+
+    <dimen name="checkmark_size">20dp</dimen>
 </resources>

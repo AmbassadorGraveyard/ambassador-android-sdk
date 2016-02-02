@@ -8,7 +8,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 
 /**
@@ -20,6 +22,7 @@ public class Device { // TODO: Make final after UI tests figured out
     protected ConnectivityManager   connectivityManager;
     protected InputMethodManager    inputMethodManager;
     protected ClipboardManager      clipboardManager;
+    protected WindowManager         windowManager;
 
     public Device() {
         Context context = AmbassadorSingleton.getInstanceContext();
@@ -30,6 +33,16 @@ public class Device { // TODO: Make final after UI tests figured out
                 (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         clipboardManager =
                 (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        windowManager =
+                (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+    }
+
+    public int getScreenWidth() {
+        return windowManager.getDefaultDisplay().getWidth();
+    }
+
+    public int getScreenHeight() {
+        return windowManager.getDefaultDisplay().getHeight();
     }
 
     public boolean isTablet() {
