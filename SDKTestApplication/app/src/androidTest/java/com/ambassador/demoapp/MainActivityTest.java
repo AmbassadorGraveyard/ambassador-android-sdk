@@ -123,7 +123,6 @@ public class MainActivityTest {
 
         // ASSERT
         Assert.assertEquals("jake@getambassador.com", Demo.get().getEmail());
-        Mockito.verify(requestManager).identifyRequest();
     }
 
     @Test
@@ -163,7 +162,6 @@ public class MainActivityTest {
 
         // ASSERT
         Assert.assertEquals(1, Demo.get().getConversions().size());
-        Mockito.verify(requestManager).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
@@ -202,7 +200,6 @@ public class MainActivityTest {
         // ASSERT
         Assert.assertTrue(storeFragment.exists());
         Assert.assertEquals(1, Demo.get().getConversions().size());
-        Mockito.verify(requestManager).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
