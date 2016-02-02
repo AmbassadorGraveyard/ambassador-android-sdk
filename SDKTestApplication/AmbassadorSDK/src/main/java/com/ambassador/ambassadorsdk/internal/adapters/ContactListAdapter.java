@@ -1,7 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.adapters;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -53,6 +52,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     private float checkmarkXPos;
     private int itemWidth;
     private Bitmap noPicBmp;
+    private float checkmarkSize;
 
     @Inject protected Device device;
 
@@ -66,6 +66,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         this.shouldShowPhoneNumbers = shouldShowPhoneNumbers;
         this.checkmarkXPos = Utilities.getPixelSizeForDimension(R.dimen.contact_select_checkmark_x);
         this.noPicBmp = generateNoPicBitmap(context);
+        this.checkmarkSize = Utilities.getPixelSizeForDimension(R.dimen.checkmark_size);
 
         AmbassadorSingleton.getInstanceComponent().inject(this);
         this.itemWidth = device.getScreenWidth();
@@ -127,9 +128,9 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
 
         /** Checks whether the view should be selected or not and correctly positions the checkmark image */
         if (selectedContacts.contains(filteredContacts.get(position))) {
-            holder.ivCheckMark.setX(itemWidth - holder.ivCheckMark.getWidth() - checkmarkXPos);
+            holder.ivCheckMark.setTranslationX(-(checkmarkSize + checkmarkXPos));
         } else {
-            holder.ivCheckMark.setX(itemWidth);
+            holder.ivCheckMark.setTranslationX(0);
         }
 
         if (contact.getThumbnailBitmap() != null) {
@@ -171,26 +172,15 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         final ImageView imageView = (ImageView) view.findViewById(R.id.ivCheckMark);
         if (selectedContacts.contains(filteredContacts.get(position))) {
             selectedContacts.remove(filteredContacts.get(position));
-            imageView.animate()
-                    .setDuration(100)
-                    .x(view.getWidth()).setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationCancel(animation);
-                            imageView.setVisibility(View.GONE);
-                        }
-                    })
-                    .start();
+            ObjectAnimator animator = ObjectAnimator.ofFloat(imageView, "translationX", -(checkmarkSize + checkmarkXPos), 0);
+            animator.setDuration(100);
+            animator.start();
         } else {
             selectedContacts.add(filteredContacts.get(position));
-            imageView.setVisibility(View.VISIBLE);
-            imageView.setTranslationX(imageView.getWidth());
-            imageView.animate()
-                    .setDuration(300)
-                    .setInterpolator(new OvershootInterpolator())
-                    .x(view.getWidth() - imageView.getWidth() - checkmarkXPos)
-                    .setListener(null)
-                    .start();
+            ObjectAnimator animator = ObjectAnimator.ofFloat(imageView, "translationX", 0, -(checkmarkSize + checkmarkXPos));
+            animator.setDuration(300);
+            animator.setInterpolator(new OvershootInterpolator());
+            animator.start();
         }
     }
 
