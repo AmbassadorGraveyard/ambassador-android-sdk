@@ -95,7 +95,7 @@ public class CircleImageView extends ImageView {
 
     @Override
     public void setScaleType(ScaleType scaleType) {
-        if (scaleType != SCALE_TYPE) {
+        if (!scaleType.equals(SCALE_TYPE)) {
             throw new IllegalArgumentException(String.format("ScaleType %s not supported.", scaleType));
         }
     }
@@ -220,7 +220,7 @@ public class CircleImageView extends ImageView {
 
     @Override
     public void setColorFilter(ColorFilter cf) {
-        if (cf == mColorFilter) {
+        if (cf.equals(mColorFilter)) {
             return;
         }
 
