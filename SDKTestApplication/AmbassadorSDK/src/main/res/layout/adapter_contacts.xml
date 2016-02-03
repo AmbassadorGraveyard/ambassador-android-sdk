@@ -30,6 +30,7 @@
             android:text="Large Text"
             android:textColor="@color/darkGray" />
 
+
         <TextView
             android:id="@+id/tvDots"
             android:layout_width="wrap_content"
@@ -59,14 +60,13 @@
 
     <ImageView
         android:id="@+id/ivCheckMark"
-        android:layout_width="20dp"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/checkmark_size"
+        android:layout_height="@dimen/checkmark_size"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:src="@drawable/checkmark"
-        android:visibility="invisible" />
+        android:layout_marginRight="-20dp"
+        android:layout_marginEnd="-20dp"
+        android:src="@drawable/checkmark" />
 
 </RelativeLayout>

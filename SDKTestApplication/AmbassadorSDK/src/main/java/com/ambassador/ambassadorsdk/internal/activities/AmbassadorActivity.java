@@ -90,7 +90,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // region Fields
 
     // region Views
+    @Nullable
     @Bind(B.id.action_bar)      protected Toolbar               toolbar;
+
     @Bind(B.id.svParent)        protected LockableScrollView    svParent;
     @Bind(B.id.llParent)        protected LinearLayout          llParent;
     @Bind(B.id.tvWelcomeTitle)  protected TextView              tvWelcomeTitle;
@@ -450,13 +452,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     void tryAndSetURL(String pusherString, String initialShareMessage) {
-        // Functionality: Gets URL from PusherSDK
-        // First checks to see if PusherSDK info has already been saved to SharedPreferencs
-        if (progressDialog != null) {
-            progressDialog.dismiss();
-            networkTimer.cancel();
-        }
-
+        boolean campaignFound = false;
         try {
             // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
             JSONObject pusherData = new JSONObject(pusherString);
@@ -472,6 +468,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     ambassadorConfig.setURL(urlObj.getString("url"));
                     ambassadorConfig.setReferrerShortCode(urlObj.getString("short_code"));
                     ambassadorConfig.setEmailSubject(urlObj.getString("subject"));
+                    campaignFound = true;
 
                     //check for weird multiple URL issue seen occasionally
                     if (!initialShareMessage.contains(urlObj.getString("url"))) {
@@ -479,8 +476,19 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     }
                 }
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+            networkTimer.cancel();
+        }
+
+        if (!campaignFound) {
+            Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 
@@ -713,6 +721,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
             twitterAuthClient.onActivityResult(requestCode, resultCode, data);
+            if (ambassadorConfig.getTwitterAccessToken() != null && ambassadorConfig.getTwitterAccessTokenSecret() != null) {
+                onShareRequested();
+            }
         }
 
     }
@@ -750,13 +761,15 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 linkedInDialog.show();
             } else {
                 Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, 123);
             }
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
+            if (ambassadorConfig.getLinkedInToken() != null) {
+                onShareRequested();
+            }
         }
 
     }
@@ -767,7 +780,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         public void onShareRequested() {
             Intent contactIntent = new Intent(AmbassadorActivity.this, ContactSelectorActivity.class);
             contactIntent.putExtra("showPhoneNumbers", false);
-            startActivity(contactIntent);
+            startActivityForResult(contactIntent, 123);
         }
 
         @Override
@@ -783,7 +796,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         public void onShareRequested() {
             Intent contactIntent = new Intent(AmbassadorActivity.this, ContactSelectorActivity.class);
             contactIntent.putExtra("showPhoneNumbers", true);
-            startActivity(contactIntent);
+            startActivityForResult(contactIntent, 123);
         }
 
         @Override

@@ -29,7 +29,7 @@ import javax.inject.Inject;
  * Handles all requests at the highest level. This is what all other internal classes use.
  * Prepares parameters and calls the different Api classes.
  */
-public final class RequestManager {
+public class RequestManager { // TODO: Make final after UI tests figured out
 
     @Inject protected AmbassadorConfig ambassadorConfig;
 

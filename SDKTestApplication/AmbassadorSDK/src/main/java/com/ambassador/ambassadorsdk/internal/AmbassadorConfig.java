@@ -18,7 +18,7 @@ import com.twitter.sdk.android.core.models.User;
 
 import org.json.JSONObject;
 
-public class AmbassadorConfig {
+public class AmbassadorConfig { // TODO: Make final after UI tests figured out
 
     public static final String LINKED_IN_CLIENT_ID = new StringResource(R.string.linked_in_client_id).getValue();
     public static final String LINKED_IN_CLIENT_SECRET = new StringResource(R.string.linked_in_client_secret).getValue();
@@ -271,5 +271,27 @@ public class AmbassadorConfig {
     public interface NullifyCompleteListener {
         void nullifyComplete();
     }
+
+
+    public void resetForNewCampaign() {
+        String email = getUserEmail();
+        String universalKey = getUniversalKey();
+        String universalId = getUniversalID();
+        String twitterToken = getTwitterAccessToken();
+        String twitterSecret = getTwitterAccessTokenSecret();
+        String linkedInToken = getLinkedInToken();
+        String identifyString = getIdentifyObject();
+
+        sharePrefs.edit().clear().apply();
+
+        setUserEmail(email);
+        setUniversalToken(universalKey);
+        setUniversalID(universalId);
+        setTwitterAccessToken(twitterToken);
+        setTwitterAccessTokenSecret(twitterSecret);
+        setLinkedInToken(linkedInToken);
+        setIdentifyObject(identifyString);
+    }
+
 
 }

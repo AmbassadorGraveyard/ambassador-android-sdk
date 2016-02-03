@@ -7,12 +7,14 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -77,7 +79,9 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     // endregion
     
     // region Views
+    @Nullable
     @Bind(B.id.action_bar)      protected Toolbar               toolbar;
+
     @Bind(B.id.rlSearch)        protected RelativeLayout        rlSearch;
     @Bind(B.id.etSearch)        protected EditText              etSearch;
     @Bind(B.id.btnDoneSearch)   protected Button                btnDoneSearch;
@@ -190,6 +194,12 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        contactListAdapter.refreshItemWidth();
     }
     // endregion
 
