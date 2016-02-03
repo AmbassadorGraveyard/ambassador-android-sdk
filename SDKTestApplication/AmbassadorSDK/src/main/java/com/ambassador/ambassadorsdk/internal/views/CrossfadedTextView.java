@@ -108,6 +108,9 @@ public final class CrossfadedTextView extends RelativeLayout {
                 setTextViewAlignmentCenter(tvA);
                 setTextViewAlignmentCenter(tvB);
                 break;
+
+            default:
+                break;
         }
     }
 
