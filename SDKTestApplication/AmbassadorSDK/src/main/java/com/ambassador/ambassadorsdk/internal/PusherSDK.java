@@ -25,7 +25,7 @@ import java.util.TimeZone;
 
 import javax.inject.Inject;
 
-public class PusherSDK {
+public class PusherSDK { // TODO: Make final after UI tests figured out
 
     protected IdentifyListener identifyListener;
 

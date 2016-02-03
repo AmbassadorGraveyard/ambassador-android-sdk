@@ -37,15 +37,16 @@ public final class ShakableEditText extends EditText {
     private void init() {
         shakeAnimation = new AnimatorSet();
         ObjectAnimator originToRight = ObjectAnimator.ofFloat(this, "translationX", 0, 5);
-        ObjectAnimator rightToLeft = ObjectAnimator.ofFloat(this, "translationX", 5, -5);
+        ObjectAnimator rightToLeft1 = ObjectAnimator.ofFloat(this, "translationX", 5, -5);
         ObjectAnimator leftToRight = ObjectAnimator.ofFloat(this, "translationX", -5, 5);
+        ObjectAnimator rightToLeft2 = ObjectAnimator.ofFloat(this, "translationX", 5, -5);
         ObjectAnimator leftToOrigin = ObjectAnimator.ofFloat(this, "translationX", -5, 0);
 
         List<Animator> animatorItems = new ArrayList<>();
         animatorItems.add(originToRight);
-        animatorItems.add(rightToLeft);
+        animatorItems.add(rightToLeft1);
         animatorItems.add(leftToRight);
-        animatorItems.add(rightToLeft);
+        animatorItems.add(rightToLeft2);
         animatorItems.add(leftToOrigin);
 
         shakeAnimation.playSequentially(animatorItems);
