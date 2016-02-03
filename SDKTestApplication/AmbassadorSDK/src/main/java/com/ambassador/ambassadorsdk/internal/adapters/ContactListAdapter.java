@@ -50,7 +50,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     private boolean shouldShowPhoneNumbers;
     private float maxNameWidth;
     private Bitmap noPicBmp;
-    private int itemWidth;
     private float checkmarkXPos;
     private float checkmarkSize;
 
@@ -69,7 +68,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         this.checkmarkSize = Utilities.getPixelSizeForDimension(R.dimen.checkmark_size);
 
         AmbassadorSingleton.getInstanceComponent().inject(this);
-        this.itemWidth = device.getScreenWidth();
     }
 
     @Override
@@ -208,10 +206,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         canvas.drawBitmap(bitmap, null, new Rect(20, 20, bitmap.getWidth() - 20, bitmap.getWidth() - 20), new Paint(Paint.ANTI_ALIAS_FLAG));
 
         return tmp;
-    }
-
-    public void refreshItemWidth() {
-        this.itemWidth = device.getScreenWidth();
     }
 
     private class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {

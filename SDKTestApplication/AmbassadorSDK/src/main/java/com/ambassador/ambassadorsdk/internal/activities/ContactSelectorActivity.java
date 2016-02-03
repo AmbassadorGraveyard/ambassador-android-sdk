@@ -195,12 +195,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        contactListAdapter.refreshItemWidth();
-    }
     // endregion
 
     // region Requirement checks
