@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -365,12 +366,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         vListDim.animate()
                 .alpha(0f)
                 .setDuration(150)
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
+                .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         vListDim.setVisibility(View.GONE);
@@ -379,11 +375,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
                     @Override
                     public void onAnimationCancel(Animator animation) {
                         vListDim.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
                     }
                 }).start();
     }
