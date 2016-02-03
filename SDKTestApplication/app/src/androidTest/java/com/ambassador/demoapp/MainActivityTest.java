@@ -48,13 +48,10 @@ public class MainActivityTest {
     private int width;
     private int height;
 
-    private UiObject loginTab;
     private UiObject signupTab;
     private UiObject storeTab;
     private UiObject referTab;
     private UiObject shortCodeEditText;
-
-    private Context context;
 
     @Inject protected PusherSDK pusherSDK;
     @Inject protected AmbassadorConfig ambassadorConfig;
@@ -78,7 +75,7 @@ public class MainActivityTest {
         Assert.assertThat(launcherPackage, Matchers.notNullValue());
         device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
 
-        this.context = InstrumentationRegistry.getContext();
+        Context context = InstrumentationRegistry.getContext();
 
         AmbassadorSingleton.init(context);
         TestModule testModule = new TestModule();
@@ -94,7 +91,6 @@ public class MainActivityTest {
 
         device.wait(Until.hasObject(By.pkg(PACKAGE_NAME).depth(0)), LAUNCH_TIMEOUT);
 
-        this.loginTab = getUi("loginTab");
         this.signupTab = getUi("signupTab");
         this.storeTab = getUi("storeTab");
         this.referTab = getUi("referTab");
