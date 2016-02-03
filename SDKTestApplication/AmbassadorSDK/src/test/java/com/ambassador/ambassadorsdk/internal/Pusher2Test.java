@@ -4,9 +4,9 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Context;
 
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.events.AmbassaBus;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.pusher.client.Pusher;
-import com.squareup.otto.Bus;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
         AmbassadorSingleton.class,
-        Pusher2.class
+        Pusher2.class,
+        Pusher2.Channel.class
 })
 public class Pusher2Test {
 
@@ -29,7 +30,7 @@ public class Pusher2Test {
 
     protected Context context;
 
-    protected Bus bus;
+    protected AmbassaBus ambassaBus;
     protected AmbassadorConfig ambassadorConfig;
     protected RequestManager requestManager;
 
@@ -37,7 +38,7 @@ public class Pusher2Test {
     protected Pusher pusher;
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         PowerMockito.mockStatic(
                 AmbassadorSingleton.class
         );
@@ -49,7 +50,7 @@ public class Pusher2Test {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Pusher2 pusher2 = (Pusher2) invocation.getArguments()[0];
-                pusher2.ambassaBus = bus;
+                pusher2.ambassaBus = ambassaBus;
                 pusher2.ambassadorConfig = ambassadorConfig;
                 pusher2.requestManager = requestManager;
                 return null;
@@ -57,12 +58,14 @@ public class Pusher2Test {
         }).when(component).inject(Mockito.any(Pusher2.class));
 
         context = Mockito.mock(Context.class);
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        PowerMockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
 
-        this.bus = Mockito.mock(Bus.class);
+        this.ambassaBus = Mockito.mock(AmbassaBus.class);
         this.ambassadorConfig = Mockito.mock(AmbassadorConfig.class);
         this.requestManager = Mockito.mock(RequestManager.class);
-        this.channel = new Pusher2.Channel.Builder().build();
+        this.channel = Mockito.spy(new Pusher2.Channel.Builder().build());
+        PowerMockito.whenNew(Pusher2.Channel.class).withAnyArguments().thenReturn(channel);
+
         this.pusher = Mockito.mock(Pusher.class);
         channel.pusher = this.pusher;
 
@@ -73,7 +76,8 @@ public class Pusher2Test {
     public void connectToNewChannel_connectionIsNull_doesNotCallDisconnect() {
         // ARRANGE
         pusher2.channel = null;
-        Mockito.doNothing().when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
+        Mockito.doNothing().when(channel).init();
+        Mockito.doNothing().when(channel).connect();
 
         // ACT
         pusher2.startNewChannel();
@@ -86,7 +90,8 @@ public class Pusher2Test {
     public void connectToNewChannel_connectionNotNull_doesCallDisconnect() {
         // ARRANGE
         pusher2.channel = this.channel;
-        Mockito.doNothing().when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
+        Mockito.doNothing().when(channel).init();
+        Mockito.doNothing().when(channel).connect();
 
         // ACT
         pusher2.startNewChannel();
