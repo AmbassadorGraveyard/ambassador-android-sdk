@@ -45,7 +45,7 @@ public final class LoginFragment extends Fragment {
     protected View.OnClickListener btnLoginOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (!(etEmail.getText().length() == 0) && !(etPassword.getText().length() == 0)) {
+            if (etEmail.getText().length() != 0 && etPassword.getText().length() != 0) {
                 String email = etEmail.getText().toString();
                 Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
                 Demo.get().identify(email);
