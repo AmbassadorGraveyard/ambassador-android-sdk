@@ -37,12 +37,16 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.Pusher2;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
+import com.ambassador.ambassadorsdk.internal.events.AmbassaBus;
+import com.ambassador.ambassadorsdk.internal.events.PusherConnectedEvent;
+import com.ambassador.ambassadorsdk.internal.events.PusherSubscribedEvent;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
@@ -57,6 +61,7 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.pusher.client.connection.ConnectionState;
+import com.squareup.otto.Subscribe;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -104,9 +109,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // endregion
 
     // region Dependencies
+    @Inject protected AmbassaBus            ambassaBus;
     @Inject protected RequestManager        requestManager;
     @Inject protected AmbassadorConfig      ambassadorConfig;
     @Inject protected PusherSDK             pusherSDK;
+    @Inject protected Pusher2               pusher2;
     @Inject protected Device                device;
     // endregion
 
@@ -135,6 +142,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         // Injection
         AmbassadorSingleton.getInstanceComponent().inject(this);
         ButterFork.bind(this);
+        ambassaBus.register(this);
 
         // Requirement checks
         finishIfSingletonInvalid();
@@ -357,6 +365,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
             return;
         }
 
+        pusher2.subscribeChannelToAmbassador();
+
         // if we have a channel and it's not expired but it's not currently connected, subscribe to the existing channel
         if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() != ConnectionState.CONNECTED) {
             pusherSDK.subscribePusher(new PusherSDK.PusherSubscribeCallback() {
@@ -392,6 +402,18 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+    // endregion
+
+    // region Events
+    @Subscribe
+    public void pusherSubscribed(PusherSubscribedEvent pusherSubscribedEvent) {
+        Log.v("TAG", "TAG");
+    }
+
+    @Subscribe
+    public static void pusherConnected(PusherConnectedEvent pusherConnectedEvent) {
+        Log.v("TAG", "TAG");
     }
     // endregion
 

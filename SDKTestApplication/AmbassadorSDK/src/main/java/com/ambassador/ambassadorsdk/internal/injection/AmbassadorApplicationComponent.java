@@ -28,6 +28,7 @@ public interface AmbassadorApplicationComponent {
     void inject(IdentifyAugurSDK identify);
     void inject(PusherSDK pusherSDK);
     void inject(Pusher2 pusher2);
+    void inject(Pusher2.Channel channel);
     void inject(InstallReceiver installReceiver);
 
 }

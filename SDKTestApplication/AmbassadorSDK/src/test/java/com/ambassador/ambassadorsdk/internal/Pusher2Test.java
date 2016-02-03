@@ -49,7 +49,7 @@ public class Pusher2Test {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Pusher2 pusher2 = (Pusher2) invocation.getArguments()[0];
-                pusher2.bus = bus;
+                pusher2.ambassaBus = bus;
                 pusher2.ambassadorConfig = ambassadorConfig;
                 pusher2.requestManager = requestManager;
                 return null;
@@ -76,7 +76,7 @@ public class Pusher2Test {
         Mockito.doNothing().when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
 
         // ACT
-        pusher2.connectToNewChannel();
+        pusher2.startNewChannel();
 
         // ASSERT
         Mockito.verify(pusher, Mockito.never()).disconnect();
@@ -89,7 +89,7 @@ public class Pusher2Test {
         Mockito.doNothing().when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
 
         // ACT
-        pusher2.connectToNewChannel();
+        pusher2.startNewChannel();
 
         // ASSERT
         Mockito.verify(pusher, Mockito.times(1)).disconnect();

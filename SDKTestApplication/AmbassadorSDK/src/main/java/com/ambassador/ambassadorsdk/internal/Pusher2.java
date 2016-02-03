@@ -1,6 +1,14 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
+import com.ambassador.ambassadorsdk.internal.events.AmbassaBus;
+import com.ambassador.ambassadorsdk.internal.events.IdentifyEvent;
+import com.ambassador.ambassadorsdk.internal.events.PusherConnectedEvent;
+import com.ambassador.ambassadorsdk.internal.events.PusherSubscribedEvent;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.PrivateChannelEventListener;
@@ -8,17 +16,21 @@ import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 import com.pusher.client.connection.ConnectionStateChange;
 import com.pusher.client.util.HttpAuthorizer;
-import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
 /**
  * Handles everything to do with Pusher, our socket to the backend.
  * Keeps track of a single channel and does the connecting, subscribing, disposing of it all.
- * Handles incoming events and dispatches them on the otto event bus after processing.
+ * Handles incoming events and dispatches them on the otto event ambassaBus after processing.
  */
 public class Pusher2 {
 
@@ -26,31 +38,51 @@ public class Pusher2 {
 
     protected Channel channel;
 
-    @Inject protected Bus bus;
+    @Inject protected AmbassaBus ambassaBus;
     @Inject protected AmbassadorConfig ambassadorConfig;
     @Inject protected RequestManager requestManager;
 
     /**
-     * Default constructor handling injection and event bus registration.
+     * Default constructor handling injection and event ambassaBus registration.
      */
     public Pusher2() {
         AmbassadorSingleton.getInstanceComponent().inject(this);
-        bus.register(this);
+        ambassaBus.register(this);
         Pusher2.universalKey = ambassadorConfig.getUniversalKey();
     }
 
     /**
-     * Creates a new pusher channel and connects.
-     * Will re-use the old Pusher connection if open but not subscription to backend.
-     * If there is an existing subscription it will dispose of it.
+     * Creates a new Pusher channel and connects to Pusher.
+     * No subscription is made here.
      */
-    public void connectToNewChannel() {
+    public void startNewChannel() {
         if (channel != null) channel.disconnect();
-        channel = null;
+        channel = new Channel();
+        channel.init();
+        channel.connect();
+    }
+
+    /**
+     * Sets up the channel with a new subscription to the Ambassador backend.
+     */
+    public void subscribeChannelToAmbassador() {
+        if (channel != null && !channel.isConnected()) {
+            startNewChannel();
+            return;
+        }
+
+        requestSubscription();
+    }
+
+    /**
+     * Requests the channel details from Ambassador and subscribes the Pusher client.
+     */
+    private void requestSubscription() {
         requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-
+                IdentifyApi.CreatePusherChannelResponse channelData = (IdentifyApi.CreatePusherChannelResponse) successResponse;
+                channel.subscribe(channelData.channel_name, channelData.expires_at, channelData.client_session_uid);
             }
 
             @Override
@@ -60,7 +92,11 @@ public class Pusher2 {
         });
     }
 
-    private void setNewConnection() {
+    /**
+     * Hit when Pusher makes a connection to the Pusher backend.
+     */
+    @Subscribe
+    public void pusherConnected(PusherConnectedEvent pusherConnectedEvent) {
 
     }
 
@@ -69,7 +105,9 @@ public class Pusher2 {
      * Connects and subscribes with this information and receives events, which are pushed back
      * to parent.
      */
-    protected static final class Channel {
+    public static final class Channel {
+
+        @Inject protected AmbassaBus ambassaBus;
 
         protected Pusher pusher;
 
@@ -82,7 +120,9 @@ public class Pusher2 {
         private Channel() {}
 
         public void init() {
+            AmbassadorSingleton.getInstanceComponent().inject(this);
             this.pusher = setupPusher();
+            ambassaBus.register(this);
         }
 
         /**
@@ -122,6 +162,14 @@ public class Pusher2 {
             @Override
             public void onConnectionStateChange(ConnectionStateChange change) {
                 connectionState = change.getCurrentState();
+                switch (change.getCurrentState()) {
+                    case CONNECTED:
+                        ambassaBus.post(new PusherConnectedEvent());
+                        break;
+
+                    default:
+                        break;
+                }
             }
 
             @Override
@@ -132,28 +180,48 @@ public class Pusher2 {
 
         /**
          * Subscribes Pusher connection to the channel's channel name.
-         * Listens for events and dispatches on the {@link Pusher2#bus} accordingly.
+         * Listens for events and dispatches on the {@link Pusher2#ambassaBus} accordingly.
          */
-        public void subscribe() {
+        public void subscribe(@NonNull String channelName, @NonNull String expiry, @NonNull String sessionId) {
+            this.channelName = channelName;
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            try {
+                this.expiry = sdf.parse(expiry);
+            } catch (ParseException e) {
+                Log.e("AmbassadorSDK", e.toString());
+            }
+
+            this.sessionId = sessionId;
+
             pusher.subscribePrivate(channelName, privateChannelEventListener);
         }
 
         private PrivateChannelEventListener privateChannelEventListener = new PrivateChannelEventListener() {
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
-
+                Log.v("TAG", "TAG");
             }
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-
+                ambassaBus.post(new PusherSubscribedEvent());
             }
 
             @Override
             public void onEvent(String channelName, String eventName, String data) {
-
+                ambassaBus.post(new IdentifyEvent());
             }
         };
+
+        /**
+         * Un-subscribes from a Pusher channel.
+         * @param channelName String for name of channel to disconnect from.
+         */
+        public void unsubscribe(String channelName) {
+            pusher.unsubscribe(channelName);
+        }
 
         /**
          * Disconnects connection to Pusher.
@@ -180,6 +248,10 @@ public class Pusher2 {
 
         public ConnectionState getConnectionState() {
             return connectionState;
+        }
+
+        public boolean isConnected() {
+            return connectionState != null && connectionState.equals(ConnectionState.CONNECTED);
         }
 
         protected static class Builder {

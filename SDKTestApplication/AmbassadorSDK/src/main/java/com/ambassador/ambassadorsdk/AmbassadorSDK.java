@@ -11,6 +11,7 @@ import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
+import com.ambassador.ambassadorsdk.internal.Pusher2;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
@@ -29,11 +30,9 @@ import javax.inject.Inject;
  */
 public final class AmbassadorSDK {
 
-    @Inject
-    protected static AmbassadorConfig ambassadorConfig;
-
-    @Inject
-    protected static PusherSDK pusherSDK;
+    @Inject protected static AmbassadorConfig ambassadorConfig;
+    @Inject protected static PusherSDK pusherSDK;
+    @Inject protected static Pusher2 pusher2;
 
     @Inject
     static RequestManager requestManager;
@@ -95,6 +94,7 @@ public final class AmbassadorSDK {
         identify.getIdentity();
 
         pusherSDK.createPusher(null);
+        pusher2.startNewChannel();
     }
 
     private static IIdentify buildIdentify() {
