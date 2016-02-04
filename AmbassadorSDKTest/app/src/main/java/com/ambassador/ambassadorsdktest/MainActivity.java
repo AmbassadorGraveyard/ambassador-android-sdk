@@ -43,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 AmbassadorSDK.presentRAF(context, "260");
             }
         });
-
-        AmbassadorConf
-
+        
         Button btnPurchase = (Button)findViewById(R.id.btnPurchase);
         btnPurchase.setOnClickListener(new View.OnClickListener() {
             @Override
