@@ -1,12 +1,13 @@
 package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -51,6 +52,7 @@ import com.ambassador.ambassadorsdk.internal.utils.ContactList;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
+import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView;
 
 import org.json.JSONObject;
@@ -84,12 +86,13 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     @Bind(B.id.etSearch)        protected EditText              etSearch;
     @Bind(B.id.btnDoneSearch)   protected Button                btnDoneSearch;
     @Bind(B.id.rvContacts)      protected DividedRecyclerView   rvContacts;
+    @Bind(B.id.vListDim)        protected View                  vListDim;
     @Bind(B.id.llSendView)      protected LinearLayout          llSendView;
     @Bind(B.id.etShareMessage)  protected EditText              etShareMessage;
     @Bind(B.id.btnEdit)         protected ImageButton           btnEdit;
     @Bind(B.id.btnDone)         protected Button                btnDone;
     @Bind(B.id.rlSend)          protected RelativeLayout        rlSend;
-    @Bind(B.id.tvSendContacts)  protected TextView              tvSendContacts;
+    @Bind(B.id.tvSendContacts)  protected CrossfadedTextView    tvSendContacts;
     @Bind(B.id.tvSendCount)     protected TextView              tvSendCount;
     @Bind(B.id.tvNoContacts)    protected TextView              tvNoContacts;
     // endregion
@@ -192,12 +195,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
         return super.onOptionsItemSelected(item);
     }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        contactListAdapter.refreshItemWidth();
-    }
     // endregion
 
     // region Requirement checks
@@ -278,6 +275,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     }
 
     private void setUpUI() {
+        tvSendContacts.setTextNoAnimation("NO CONTACTS SELECTED");
         etShareMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
         btnEdit.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
@@ -300,6 +298,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
                 }
             });
+            tvSendContacts.setGravity(CrossfadedTextView.Gravity.LEFT);
         } else {
             tvSendCount.setVisibility(View.GONE);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tvSendContacts.getLayoutParams();
@@ -307,6 +306,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
             if (android.os.Build.VERSION.SDK_INT >= 17) params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
             params.addRule(RelativeLayout.CENTER_HORIZONTAL, RelativeLayout.TRUE);
             tvSendContacts.setLayoutParams(params);
+            tvSendContacts.setGravity(CrossfadedTextView.Gravity.CENTER);
         }
 
         etSearch.addTextChangedListener(new TextWatcher() {
@@ -350,6 +350,12 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         etShareMessage.requestFocus();
         etShareMessage.setSelection(0);
         device.openSoftKeyboard(etShareMessage);
+        vListDim.setVisibility(View.VISIBLE);
+        vListDim.animate()
+                .alpha(0.75f)
+                .setDuration(150)
+                .setListener(null)
+                .start();
     }
 
     private void btnDoneClicked() {
@@ -357,6 +363,20 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         btnEdit.setVisibility(View.VISIBLE);
         btnDone.setVisibility(View.GONE);
         etShareMessage.setEnabled(false);
+        vListDim.animate()
+                .alpha(0f)
+                .setDuration(150)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        vListDim.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        vListDim.setVisibility(View.GONE);
+                    }
+                }).start();
     }
     // endregion
 
@@ -377,6 +397,9 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         });
 
         if (finalHeight != 0) { // show search
+            if (etShareMessage.isEnabled()) {
+                btnDoneClicked();
+            }
             shrinkSendView(true);
             etSearch.requestFocus();
             device.openSoftKeyboard(etSearch);
@@ -409,7 +432,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         }
     }
 
-    private void negativeTextViewFeedback(TextView textView) {
+    private void negativeTextViewFeedback(View textView) {
         Animation shake = new TranslateAnimation(-3, 3, 0, 0);
         shake.setInterpolator(new CycleInterpolator(3));
         shake.setDuration(500);

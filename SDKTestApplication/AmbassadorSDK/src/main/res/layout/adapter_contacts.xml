@@ -1,56 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
+    android:layout_height="56dp"
     android:clickable="true"
     android:focusable="true">
 
-    <ImageView
+    <com.ambassador.ambassadorsdk.internal.views.CircleImageView
         android:id="@+id/ivPic"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp" />
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp" />
 
-    <TextView
-        android:id="@+id/tvName"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_marginLeft="6dp"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="12dp"
-        android:layout_toRightOf="@+id/ivPic"
-        android:ellipsize="none"
-        android:maxWidth="220dp"
-        android:singleLine="true"
-        android:text="Large Text"
-        android:textColor="@color/darkGray" />
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@+id/ivPic">
 
-    <TextView
-        android:id="@+id/tvDots"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_marginTop="12dp"
-        android:layout_toEndOf="@+id/tvName"
-        android:layout_toRightOf="@+id/tvName"
-        android:text="..."
-        android:textColor="@color/darkGray"
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:ellipsize="none"
+            android:maxWidth="220dp"
+            android:singleLine="true"
+            android:text="Large Text"
+            android:textColor="@color/darkGray" />
 
-    <TextView
-        android:id="@+id/tvNumberOrEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_alignLeft="@+id/tvName"
-        android:layout_alignStart="@+id/tvName"
-        android:layout_below="@+id/tvName"
-        android:layout_marginEnd="50dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginStart="0dp"
-        android:layout_toRightOf="@+id/ivPic"
-        android:text="Medium Text"
-        android:textColor="@color/lightGray" />
+
+        <TextView
+            android:id="@+id/tvDots"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/tvName"
+            android:layout_toRightOf="@+id/tvName"
+            android:text="..."
+            android:textColor="@color/darkGray"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvNumberOrEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tvName"
+            android:layout_alignStart="@+id/tvName"
+            android:layout_below="@+id/tvName"
+            android:layout_marginEnd="50dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="2dp"
+            android:text="Medium Text"
+            android:textColor="@color/lightGray" />
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/ivCheckMark"

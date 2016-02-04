@@ -74,16 +74,30 @@ public final class DividedRecyclerView extends RecyclerView {
         }
 
         public void drawVertical(Canvas c, RecyclerView parent) {
-            final int left = parent.getPaddingLeft();
-            final int right = parent.getWidth() - parent.getPaddingRight();
+            final int left = parent.getPaddingLeft() + 40;
+            final int right = parent.getWidth() - parent.getPaddingRight() - 40;
 
             final int childCount = parent.getChildCount();
-            for (int i = 0; i < childCount; i++) {
-                final View child = parent.getChildAt(i);
-                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
-                        .getLayoutParams();
-                final int top = child.getBottom() + params.bottomMargin;
-                final int bottom = top + mDivider.getIntrinsicHeight();
+            if (childCount == 0) return;
+            for (int i = 0; i < childCount + 10; i++) {
+                int top;
+                int bottom;
+                if (i < childCount) {
+                    final View child = parent.getChildAt(i);
+                    final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+                    top = child.getBottom() + params.bottomMargin;
+                    bottom = top + mDivider.getIntrinsicHeight();
+                } else {
+                    final View child = parent.getChildAt(childCount - 1);
+                    final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
+                    final int height = params.height;
+                    final int lastChildTop = child.getBottom() + params.bottomMargin;
+                    final int lastChildBottom = lastChildTop + mDivider.getIntrinsicHeight();
+                    final int positionFake = i - childCount + 1;
+                    top = lastChildTop + height * positionFake;
+                    bottom = lastChildBottom + height * positionFake;
+                }
+
                 mDivider.setBounds(left, top, right, bottom);
                 mDivider.draw(c);
             }
