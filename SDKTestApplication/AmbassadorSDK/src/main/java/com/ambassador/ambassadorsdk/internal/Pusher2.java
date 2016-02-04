@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -98,6 +99,14 @@ public class Pusher2 {
     @Subscribe
     public void pusherConnected(PusherConnectedEvent pusherConnectedEvent) {
 
+    }
+
+    /**
+     * Get the existing channel pusher channel.
+     */
+    @Nullable
+    public Channel getChannel() {
+        return channel;
     }
 
     /**

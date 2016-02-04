@@ -40,17 +40,19 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskUrlDialog;
+import com.ambassador.ambassadorsdk.internal.events.IdentifyEvent;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.ambassador.ambassadorsdk.internal.utils.ContactList;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import org.json.JSONObject;
 
@@ -64,7 +66,7 @@ import butterfork.ButterFork;
 /**
  * Activity that handles contact selection and sharing using email or SMS.
  */
-public final class ContactSelectorActivity extends AppCompatActivity implements PusherSDK.IdentifyListener {
+public final class ContactSelectorActivity extends AppCompatActivity {
 
     // region Fields
 
@@ -94,7 +96,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     // endregion
 
     // region Dependencies
-    @Inject protected PusherSDK         pusherSDK;
+    @Inject protected Bus               bus;
     @Inject protected BulkShareHelper   bulkShareHelper;
     @Inject protected AmbassadorConfig  ambassadorConfig;
     @Inject protected Device            device;
@@ -124,6 +126,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         // Injection
         AmbassadorSingleton.getInstanceComponent().inject(this);
         ButterFork.bind(this);
+        bus.register(this);
 
         // Requirement checks
         finishIfSingletonInvalid();
@@ -143,7 +146,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        pusherSDK.setIdentifyListener(null);
         if (askNameDialog != null && askNameDialog.isShowing()) {
             askNameDialog.dismiss();
         }
@@ -320,7 +322,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     private void setUpPusher() {
         pusherData = ambassadorConfig.getPusherInfoObject();
-        pusherSDK.setIdentifyListener(this);
     }
     // endregion
 
@@ -577,8 +578,8 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         }
     }
 
-    @Override
-    public void identified(long requestId) {
+    @Subscribe
+    public void identify(IdentifyEvent identifyEvent) {
         send();
     }
 

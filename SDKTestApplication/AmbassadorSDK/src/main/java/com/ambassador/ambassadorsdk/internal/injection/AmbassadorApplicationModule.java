@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.Pusher2;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.events.AmbassaBus;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
@@ -37,13 +36,6 @@ public final class AmbassadorApplicationModule {
     @Singleton
     public AmbassadorConfig provideAmbassadorConfig() {
         return new AmbassadorConfig();
-    }
-
-    @NonNull
-    @Provides
-    @Singleton
-    public PusherSDK providePusherSDK() {
-        return new PusherSDK();
     }
 
     @NonNull

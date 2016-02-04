@@ -11,9 +11,6 @@ import javax.inject.Inject;
 
 import io.augur.wintermute.Augur;
 
-/**
- * Created by JakeDunahee on 9/1/15.
- */
 public class IdentifyAugurSDK implements IIdentify {
 
     @Inject

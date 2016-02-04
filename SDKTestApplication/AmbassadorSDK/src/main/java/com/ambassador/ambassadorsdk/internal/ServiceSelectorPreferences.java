@@ -2,9 +2,6 @@ package com.ambassador.ambassadorsdk.internal;
 
 import java.io.Serializable;
 
-/**
- * Created by JakeDunahee on 7/22/15.
- */
 public class ServiceSelectorPreferences implements Serializable {
     public String toolbarTitle, titleText, descriptionText, defaultShareMessage;
 

@@ -15,10 +15,6 @@ import com.google.gson.JsonObject;
 
 import javax.inject.Inject;
 
-
-/**
- * Created by JakeDunahee on 8/21/15.
- */
 public class ConversionUtility {
 
     private ConversionParameters parameters;
