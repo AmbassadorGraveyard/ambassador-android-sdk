@@ -20,18 +20,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         //dev
-        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
+        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
 
         //prod
-        AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
+        //AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
 
         AmbassadorSDK.identify("test12345@getambassador.com");
 
         //convert on install - this would normally happen after a user is authenticated because email is required on all conversions
         ConversionParameters conversionParameters = new ConversionParameters();
-        conversionParameters.mbsy_email = "test12345@getambassador.com";
-        conversionParameters.mbsy_campaign = 260;
-        conversionParameters.mbsy_revenue = 100;
+        conversionParameters.email = "test12345@getambassador.com";
+        conversionParameters.campaign = 260;
+        conversionParameters.revenue = 100;
         AmbassadorSDK.registerConversion(conversionParameters, true);
 
         Button btnRaf = (Button) findViewById(R.id.btnRAF2);
@@ -44,16 +44,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        AmbassadorConf
+
         Button btnPurchase = (Button)findViewById(R.id.btnPurchase);
         btnPurchase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ConversionParameters conversionParameters = new ConversionParameters();
-                conversionParameters.mbsy_first_name = "ATest";
-                conversionParameters.mbsy_last_name = "User";
-                conversionParameters.mbsy_email = "test12345@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
-                conversionParameters.mbsy_campaign = 260;
-                conversionParameters.mbsy_revenue = 200;
+                conversionParameters.firstName = "ATest";
+                conversionParameters.lastName = "User";
+                conversionParameters.email = "test12345@getambassador.com"; // COMMENT OUT THIS LINE TO THROW ConversionParametersException
+                conversionParameters.campaign = 260;
+                conversionParameters.revenue = 200;
 
                 AmbassadorSDK.registerConversion(conversionParameters, false);
 
