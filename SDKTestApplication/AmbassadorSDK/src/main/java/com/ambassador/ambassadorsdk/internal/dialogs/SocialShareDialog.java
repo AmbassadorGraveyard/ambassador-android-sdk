@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
@@ -51,6 +52,7 @@ public final class SocialShareDialog extends Dialog {
     // region Dependencies
     @Inject protected RequestManager    requestManager;
     @Inject protected AmbassadorConfig  ambassadorConfig;
+    @Inject protected RAFOptions        raf;
     // endregion
 
     // region Local members
@@ -115,7 +117,7 @@ public final class SocialShareDialog extends Dialog {
         setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-                etMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
+                etMessage.setText(raf.getDefaultShareMessage());
             }
         });
     }

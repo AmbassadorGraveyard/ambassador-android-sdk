@@ -253,6 +253,10 @@ public final class RAFOptions {
         return socialOptionCornerRadius;
     }
 
+    public void setDefaultShareMessage(String defaultShareMessage) {
+        this.defaultShareMessage = defaultShareMessage;
+    }
+
     public static class Builder {
 
         private String defaultShareMessage = "Check out this company!";
