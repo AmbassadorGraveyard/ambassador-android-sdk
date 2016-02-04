@@ -5,7 +5,7 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.PusherChannel;
+import com.ambassador.ambassadorsdk.internal.Pusher2;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
@@ -31,6 +31,7 @@ import javax.inject.Inject;
  */
 public class RequestManager { // TODO: Make final after UI tests figured out
 
+    @Inject protected Pusher2          pusher2;
     @Inject protected AmbassadorConfig ambassadorConfig;
 
     protected BulkShareApi bulkShareApi;
@@ -166,9 +167,11 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * and the identify info returned from augur.
      */
     public void identifyRequest() {
+        if (pusher2.getChannel() == null) return;
+
         updateRequestId();
 
-        String sessionId = PusherChannel.getSessionId();
+        String sessionId = pusher2.getChannel().getSessionId();
         String requestId = String.valueOf(PusherChannel.getRequestId());
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();
@@ -189,9 +192,11 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param completion callback for request completion
      */
     public void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
+        if (pusher2.getChannel() == null) return;
+
         updateRequestId();
 
-        String sessionId = PusherChannel.getSessionId();
+        String sessionId = pusher2.getChannel().getSessionId();
         String requestId = String.valueOf(PusherChannel.getRequestId());
         String uid = ambassadorConfig.getUniversalID();
         String auth = ambassadorConfig.getUniversalKey();

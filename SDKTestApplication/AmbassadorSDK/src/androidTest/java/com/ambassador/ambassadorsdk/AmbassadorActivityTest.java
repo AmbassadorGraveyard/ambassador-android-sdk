@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;

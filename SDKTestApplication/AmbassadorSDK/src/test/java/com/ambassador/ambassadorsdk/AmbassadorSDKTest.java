@@ -4,14 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
+import com.ambassador.ambassadorsdk.internal.Pusher2;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +40,7 @@ public class AmbassadorSDKTest {
     private Context context;
     private AmbassadorConfig ambassadorConfig;
     private PusherSDK pusherSDK;
+    private Pusher2 pusher2;
 
     @Before
     public void setUp() {
@@ -59,6 +60,9 @@ public class AmbassadorSDKTest {
 
         pusherSDK = Mockito.mock(PusherSDK.class);
         AmbassadorSDK.pusherSDK = pusherSDK;
+
+        pusher2 = Mockito.mock(Pusher2.class);
+        AmbassadorSDK.pusher2 = pusher2;
     }
 
     @Test

@@ -8,7 +8,6 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
