@@ -19,7 +19,6 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
-import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -146,7 +145,7 @@ public class AmbassadorActivityTest {
         when(ambassadorConfig.getCampaignID()).thenReturn("260");
         when(ambassadorConfig.getURL()).thenReturn("http://staging.mbsy.co/jHjl");
         when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
-        when(ambassadorConfig.getRafParameters()).thenReturn(parameters);
+        //when(ambassadorConfig.getRafParameters()).thenReturn(parameters);
         when(ambassadorConfig.getUniversalKey()).thenReturn("SDKToken ***REMOVED***");
         when(ambassadorConfig.getUniversalID()).thenReturn("***REMOVED***");
 
