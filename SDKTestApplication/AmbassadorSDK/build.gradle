@@ -20,6 +20,7 @@ apply plugin: 'io.fabric'
 apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.oguzbabaoglu.butterfork-plugin'
+apply plugin: 'maven'
 // endregion
 
 // region Repositories
