@@ -268,7 +268,6 @@ public class MainActivityTest {
         // ASSERT
         Assert.assertTrue(shortCodeEditText.exists());
         Assert.assertTrue(!progressDialog.exists());
-        Mockito.verify(requestManager).identifyRequest();
     }
 
     @Test
