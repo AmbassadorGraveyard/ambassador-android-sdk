@@ -7,6 +7,7 @@ import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import javax.inject.Singleton;
@@ -57,6 +58,13 @@ public final class AmbassadorApplicationModule {
     @Singleton
     public Campaign provideCampaign() {
         return new Campaign();
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public User provideUser() {
+        return new User();
     }
 
 }
