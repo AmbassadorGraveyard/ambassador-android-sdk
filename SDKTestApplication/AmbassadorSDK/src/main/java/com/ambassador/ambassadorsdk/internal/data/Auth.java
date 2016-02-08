@@ -28,6 +28,7 @@ public class Auth {
 
     public void setUniversalId(String universalId) {
         this.universalId = universalId;
+        save();
     }
 
     public String getUniversalToken() {
@@ -36,6 +37,7 @@ public class Auth {
 
     public void setUniversalToken(String universalToken) {
         this.universalToken = universalToken;
+        save();
     }
 
     public String getLinkedInToken() {
@@ -44,6 +46,7 @@ public class Auth {
 
     public void setLinkedInToken(String linkedInToken) {
         this.linkedInToken = linkedInToken;
+        save();
     }
 
     public String getTwitterToken() {
@@ -52,6 +55,7 @@ public class Auth {
 
     public void setTwitterToken(String twitterToken) {
         this.twitterToken = twitterToken;
+        save();
     }
 
     public String getTwitterSecret() {
@@ -60,6 +64,7 @@ public class Auth {
 
     public void setTwitterSecret(String twitterSecret) {
         this.twitterSecret = twitterSecret;
+        save();
     }
     // endregion
 
