@@ -29,6 +29,7 @@ public class User {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+        save();
     }
 
     public String getLastName() {
@@ -37,6 +38,7 @@ public class User {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+        save();
     }
 
     public String getEmail() {
@@ -45,6 +47,7 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+        save();
     }
 
     public String getGcmToken() {
@@ -53,6 +56,7 @@ public class User {
 
     public void setGcmToken(String gcmToken) {
         this.gcmToken = gcmToken;
+        save();
     }
 
     public AugurData getAugurData() {
@@ -61,6 +65,7 @@ public class User {
 
     public void setAugurData(AugurData augurData) {
         this.augurData = augurData;
+        save();
     }
     // endregion
 
