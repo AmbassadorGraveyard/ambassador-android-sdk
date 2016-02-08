@@ -151,6 +151,8 @@ public final class AmbassadorSDK {
                         if (element.getClassName().contains("com.ambassador.ambassadorsdk")) {
                             DefaultRavenFactory.ravenInstance("***REMOVED***")
                                     .sendException((Exception) ex);
+                            Log.v("amb", "Sending exception to Sentry:");
+                            Log.v("amb", ex.toString());
                             break;
                         }
                     }
