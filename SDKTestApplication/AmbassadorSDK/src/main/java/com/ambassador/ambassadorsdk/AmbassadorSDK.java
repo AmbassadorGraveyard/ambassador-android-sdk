@@ -140,6 +140,7 @@ public final class AmbassadorSDK {
         ambassadorConfig.setUniversalID(universalID);
         startConversionTimer();
 
+        final Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
@@ -147,6 +148,8 @@ public final class AmbassadorSDK {
                     DefaultRavenFactory.ravenInstance("***REMOVED***")
                             .sendException((Exception) ex);
                 }
+
+                defaultHandler.uncaughtException(thread, ex);
             }
         });
     }
