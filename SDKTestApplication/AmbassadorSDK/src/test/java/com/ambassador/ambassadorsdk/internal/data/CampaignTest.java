@@ -42,7 +42,7 @@ public class CampaignTest {
     }
 
     @Test
-    public void save_withNonNullContext_doesSaveSerialized() {
+    public void saveWithNonNullContextDoesSaveSerialized() {
         // ARRANGE
         Campaign campaign = new Campaign();
         campaign.id = "260";
@@ -61,7 +61,7 @@ public class CampaignTest {
     }
 
     @Test
-    public void save_withNullContext_doesNotSave() {
+    public void saveWithNullContextDoesNotSave() {
         // ARRANGE
         Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(null);
 
@@ -84,7 +84,7 @@ public class CampaignTest {
     }
 
     @Test
-    public void clear_doesClearAllFields() {
+    public void clearDoesClearAllFields() {
         // ARRANGE
         Campaign campaign = new Campaign();
         campaign.id = "260";
@@ -105,7 +105,7 @@ public class CampaignTest {
     }
 
     @Test
-    public void setters_doSaveOnInvocation() {
+    public void settersDoSaveOnInvocation() {
         // ARRANGE
         Campaign campaign = Mockito.spy(new Campaign());
         Mockito.doNothing().when(campaign).save();

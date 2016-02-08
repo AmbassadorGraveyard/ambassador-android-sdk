@@ -43,7 +43,7 @@ public class UserTest {
     }
 
     @Test
-    public void save_withNonNullContext_doesSaveSerialized() {
+    public void saveWithNonNullContextDoesSaveSerialized() {
         // ARRANGE
         User user = new User();
         user.email = "jake@getambassador.com";
@@ -62,7 +62,7 @@ public class UserTest {
     }
 
     @Test
-    public void save_withNullContext_doesNotSave() {
+    public void saveWithNullContextDoesNotSave() {
         // ARRANGE
         Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(null);
 
@@ -84,7 +84,7 @@ public class UserTest {
     }
 
     @Test
-    public void clear_doesClearAllFields() {
+    public void clearDoesClearAllFields() {
         // ARRANGE
         User user = new User();
         user.email = "jake@getambassador.com";
@@ -105,7 +105,7 @@ public class UserTest {
     }
 
     @Test
-    public void setters_doSaveOnInvocation() {
+    public void settersDoSaveOnInvocation() {
         // ARRANGE
         User user = Mockito.spy(new User());
         Mockito.doNothing().when(user).save();
