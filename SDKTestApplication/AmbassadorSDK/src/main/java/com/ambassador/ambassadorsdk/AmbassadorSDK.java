@@ -143,7 +143,7 @@ public final class AmbassadorSDK {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
-                if (ex instanceof Exception) {
+                if (ex instanceof Exception && AmbassadorConfig.isReleaseBuild) {
                     DefaultRavenFactory.ravenInstance("***REMOVED***")
                             .sendException((Exception) ex);
                 }
