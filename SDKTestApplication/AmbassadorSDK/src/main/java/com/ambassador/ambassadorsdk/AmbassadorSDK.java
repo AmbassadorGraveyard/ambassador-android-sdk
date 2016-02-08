@@ -145,8 +145,15 @@ public final class AmbassadorSDK {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
                 if (ex instanceof Exception && AmbassadorConfig.isReleaseBuild) {
-                    DefaultRavenFactory.ravenInstance("***REMOVED***")
-                            .sendException((Exception) ex);
+                    Exception exception = (Exception) ex;
+                    for (StackTraceElement element : exception.getStackTrace()) {
+                        element.getClassName();
+                        if (element.getClassName().contains("com.ambassador.ambassadorsdk")) {
+                            DefaultRavenFactory.ravenInstance("***REMOVED***")
+                                    .sendException((Exception) ex);
+                            break;
+                        }
+                    }
                 }
 
                 defaultHandler.uncaughtException(thread, ex);
