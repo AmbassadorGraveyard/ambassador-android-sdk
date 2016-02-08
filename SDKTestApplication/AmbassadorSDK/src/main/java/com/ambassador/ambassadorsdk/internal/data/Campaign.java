@@ -27,6 +27,7 @@ public class Campaign {
 
     public void setId(String id) {
         this.id = id;
+        save();
     }
 
     public String getShortCode() {
@@ -35,6 +36,7 @@ public class Campaign {
 
     public void setShortCode(String shortCode) {
         this.shortCode = shortCode;
+        save();
     }
 
     public String getShareMessage() {
@@ -43,6 +45,7 @@ public class Campaign {
 
     public void setShareMessage(String shareMessage) {
         this.shareMessage = shareMessage;
+        save();
     }
 
     public String getEmailSubject() {
@@ -51,6 +54,7 @@ public class Campaign {
 
     public void setEmailSubject(String emailSubject) {
         this.emailSubject = emailSubject;
+        save();
     }
 
     public String getReferredByShortCode() {
@@ -59,6 +63,7 @@ public class Campaign {
 
     public void setReferredByShortCode(String referredByShortCode) {
         this.referredByShortCode = referredByShortCode;
+        save();
     }
     // endregion
 
