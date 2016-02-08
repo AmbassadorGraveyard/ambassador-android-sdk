@@ -18,6 +18,8 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 
+import net.kencochrane.raven.DefaultRavenFactory;
+
 import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -137,6 +139,16 @@ public final class AmbassadorSDK {
         ambassadorConfig.setUniversalToken(universalToken);
         ambassadorConfig.setUniversalID(universalID);
         startConversionTimer();
+
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable ex) {
+                if (ex instanceof Exception) {
+                    DefaultRavenFactory.ravenInstance("https://627333068b7242a1a2c0f036900211cc:c0c5651dd83b4b48bf0fad28e2757e32@app.getsentry.com/66262")
+                            .sendException((Exception) ex);
+                }
+            }
+        });
     }
 
     protected static void registerInstallReceiver(Context context) {
