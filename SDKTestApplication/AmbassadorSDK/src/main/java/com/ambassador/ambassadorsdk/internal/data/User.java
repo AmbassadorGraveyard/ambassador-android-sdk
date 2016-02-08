@@ -14,12 +14,57 @@ import com.google.gson.Gson;
  */
 public class User {
 
+    // region Fields
     protected String firstName;
     protected String lastName;
     protected String email;
     protected String gcmToken;
     protected AugurData augurData;
+    // endregion
 
+    // region Getters / Setters
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getGcmToken() {
+        return gcmToken;
+    }
+
+    public void setGcmToken(String gcmToken) {
+        this.gcmToken = gcmToken;
+    }
+
+    public AugurData getAugurData() {
+        return augurData;
+    }
+
+    public void setAugurData(AugurData augurData) {
+        this.augurData = augurData;
+    }
+    // endregion
+
+    // region Persistence methods
     /**
      * Serializes data into a JSON string and saves in SharedPreferences,
      * keyed on the user's email.
@@ -42,5 +87,6 @@ public class User {
         gcmToken = null;
         augurData = null;
     }
+    // endregion
 
 }
