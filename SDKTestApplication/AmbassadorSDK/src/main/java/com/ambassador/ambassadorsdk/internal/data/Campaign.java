@@ -12,12 +12,57 @@ import com.google.gson.Gson;
  */
 public class Campaign {
 
+    // region Fields
     protected String id;
     protected String shortCode;
     protected String shareMessage;
     protected String emailSubject;
     protected String referredByShortCode;
+    // endregion
 
+    // region Getters / Setters
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getShortCode() {
+        return shortCode;
+    }
+
+    public void setShortCode(String shortCode) {
+        this.shortCode = shortCode;
+    }
+
+    public String getShareMessage() {
+        return shareMessage;
+    }
+
+    public void setShareMessage(String shareMessage) {
+        this.shareMessage = shareMessage;
+    }
+
+    public String getEmailSubject() {
+        return emailSubject;
+    }
+
+    public void setEmailSubject(String emailSubject) {
+        this.emailSubject = emailSubject;
+    }
+
+    public String getReferredByShortCode() {
+        return referredByShortCode;
+    }
+
+    public void setReferredByShortCode(String referredByShortCode) {
+        this.referredByShortCode = referredByShortCode;
+    }
+    // endregion
+
+    // region Persistence methods
     /**
      * Serializes data into a JSON string and saves in SharedPreferences,
      * keyed on the campaign ID.
@@ -40,5 +85,6 @@ public class Campaign {
         emailSubject = null;
         referredByShortCode = null;
     }
+    // endregion
 
 }
