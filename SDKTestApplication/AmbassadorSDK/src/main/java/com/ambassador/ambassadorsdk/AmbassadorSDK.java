@@ -145,8 +145,15 @@ public final class AmbassadorSDK {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
                 if (ex instanceof Exception && AmbassadorConfig.isReleaseBuild) {
-                    DefaultRavenFactory.ravenInstance("https://627333068b7242a1a2c0f036900211cc:c0c5651dd83b4b48bf0fad28e2757e32@app.getsentry.com/66262")
-                            .sendException((Exception) ex);
+                    Exception exception = (Exception) ex;
+                    for (StackTraceElement element : exception.getStackTrace()) {
+                        element.getClassName();
+                        if (element.getClassName().contains("com.ambassador.ambassadorsdk")) {
+                            DefaultRavenFactory.ravenInstance("https://627333068b7242a1a2c0f036900211cc:c0c5651dd83b4b48bf0fad28e2757e32@app.getsentry.com/66262")
+                                    .sendException((Exception) ex);
+                            break;
+                        }
+                    }
                 }
 
                 defaultHandler.uncaughtException(thread, ex);
