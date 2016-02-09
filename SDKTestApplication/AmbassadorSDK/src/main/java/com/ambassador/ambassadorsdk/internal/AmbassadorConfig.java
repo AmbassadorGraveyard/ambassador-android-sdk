@@ -174,14 +174,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
         sharePrefs.edit().putBoolean("installConversion", true).apply();
     }
 
-    public String getGcmRegistrationToken() {
-        return sharePrefs.getString("gcmRegistrationToken", null);
-    }
-
-    public void setGcmRegistrationToken(String gcmRegistrationToken) {
-        sharePrefs.edit().putString("gcmRegistrationToken", gcmRegistrationToken).apply();
-    }
-
     public void nullifyTwitterIfInvalid(final NullifyCompleteListener listener) {
         if (TwitterCore.getInstance() != null && TwitterCore.getInstance().getSessionManager() != null) {
             final SessionManager sm = TwitterCore.getInstance().getSessionManager();

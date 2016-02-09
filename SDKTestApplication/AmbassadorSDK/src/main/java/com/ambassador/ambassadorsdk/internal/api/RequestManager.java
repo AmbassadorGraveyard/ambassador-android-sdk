@@ -11,6 +11,9 @@ import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -32,6 +35,10 @@ import javax.inject.Inject;
 public class RequestManager { // TODO: Make final after UI tests figured out
 
     @Inject protected AmbassadorConfig ambassadorConfig;
+
+    @Inject protected Auth auth;
+    @Inject protected User user;
+    @Inject protected Campaign campaign;
 
     protected BulkShareApi bulkShareApi;
     protected ConversionsApi conversionsApi;
@@ -80,14 +87,14 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param completion callback for request completion
      */
     public void bulkShareSms(final List<Contact> contacts, final String messageToShare, final RequestCompletion completion) {
-        String uid = ambassadorConfig.getUniversalID();
-        String auth = ambassadorConfig.getUniversalKey();
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
         List<String> numberList = BulkShareHelper.verifiedSMSList(contacts);
-        String name = ambassadorConfig.getUserFullName();
-        String fromEmail = ambassadorConfig.getUserEmail();
+        String name = user.getFirstName() + " " + user.getLastName();
+        String fromEmail = user.getEmail();
         BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numberList, name, messageToShare, fromEmail);
 
-        bulkShareApi.bulkShareSms(uid, auth, body, completion);
+        bulkShareApi.bulkShareSms(uid, authKey, body, completion);
     }
 
     /**
@@ -98,13 +105,13 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param completion callback for request completion
      */
     public void bulkShareEmail(final List<Contact> contacts, final String messageToShare, final RequestCompletion completion) {
-        String uid = ambassadorConfig.getUniversalID();
-        String auth = ambassadorConfig.getUniversalKey();
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
         List<String> emailList = BulkShareHelper.verifiedEmailList(contacts);
-        String fromEmail = ambassadorConfig.getUserEmail();
-        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emailList, ambassadorConfig.getReferralShortCode(), ambassadorConfig.getEmailSubjectLine(), messageToShare, fromEmail);
+        String fromEmail = user.getEmail();
+        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emailList, campaign.getReferredByShortCode(), campaign.getEmailSubject(), messageToShare, fromEmail);
 
-        bulkShareApi.bulkShareEmail(uid, auth, body, completion);
+        bulkShareApi.bulkShareEmail(uid, authKey, body, completion);
     }
 
     /**
@@ -122,23 +129,23 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param shareType enum that describes the source of the share: Facebook, SMS, etc.
      */
     public void bulkShareTrack(final List<Contact> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
-        String uid = ambassadorConfig.getUniversalID();
-        String auth = ambassadorConfig.getUniversalKey();
-        String fromEmail = ambassadorConfig.getUserEmail();
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
+        String fromEmail = user.getEmail();
         BulkShareApi.BulkShareTrackBody[] body;
         switch (shareType) {
             case SMS:
-                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, ambassadorConfig.getReferrerShortCode(), fromEmail);
+                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, campaign.getReferredByShortCode(), fromEmail);
                 break;
             case EMAIL:
-                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, ambassadorConfig.getReferrerShortCode(), fromEmail);
+                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, campaign.getReferredByShortCode(), fromEmail);
                 break;
             default:
-                body = BulkShareHelper.contactArray(shareType, ambassadorConfig.getReferrerShortCode(), fromEmail);
+                body = BulkShareHelper.contactArray(shareType, campaign.getReferredByShortCode(), fromEmail);
                 break;
         }
 
-        bulkShareApi.bulkShareTrack(uid, auth, body);
+        bulkShareApi.bulkShareTrack(uid, authKey, body);
     }
 
     /**
@@ -147,10 +154,10 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param completion callback for request completion
      */
     public void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
-        String uid = ambassadorConfig.getUniversalID();
-        String auth = ambassadorConfig.getUniversalKey();
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
         ConversionsApi.RegisterConversionRequestBody body = ConversionUtility.createConversionRequestBody(conversionParameters, ambassadorConfig.getIdentifyObject());
-        conversionsApi.registerConversionRequest(uid, auth, body, completion);
+        conversionsApi.registerConversionRequest(uid, authKey, body, completion);
     }
 
     /**
@@ -170,15 +177,15 @@ public class RequestManager { // TODO: Make final after UI tests figured out
 
         String sessionId = PusherChannel.getSessionId();
         String requestId = String.valueOf(PusherChannel.getRequestId());
-        String uid = ambassadorConfig.getUniversalID();
-        String auth = ambassadorConfig.getUniversalKey();
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
 
-        String campaignId = ambassadorConfig.getCampaignID();
-        String userEmail = ambassadorConfig.getUserEmail();
+        String campaignId = campaign.getId();
+        String userEmail = user.getEmail();
         String augur = ambassadorConfig.getIdentifyObject();
         IdentifyApi.IdentifyRequestBody body = new IdentifyApi.IdentifyRequestBody(campaignId, userEmail, augur);
 
-        identifyApi.identifyRequest(sessionId, requestId, uid, auth, body);
+        identifyApi.identifyRequest(sessionId, requestId, uid, authKey, body);
     }
 
     /**
@@ -193,11 +200,11 @@ public class RequestManager { // TODO: Make final after UI tests figured out
 
         String sessionId = PusherChannel.getSessionId();
         String requestId = String.valueOf(PusherChannel.getRequestId());
-        String uid = ambassadorConfig.getUniversalID();
-        String auth = ambassadorConfig.getUniversalKey();
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
         IdentifyApi.UpdateNameRequestBody body = new IdentifyApi.UpdateNameRequestBody(email, firstName, lastName);
 
-        identifyApi.updateNameRequest(sessionId, requestId, uid, auth, body, completion);
+        identifyApi.updateNameRequest(sessionId, requestId, uid, authKey, body, completion);
     }
 
     /**
@@ -216,10 +223,10 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param completion callback for request completion
      */
     public void createPusherChannel(final RequestCompletion completion) {
-        String uid = ambassadorConfig.getUniversalID();
-        String auth = ambassadorConfig.getUniversalKey();
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
 
-        identifyApi.createPusherChannel(uid, auth, completion);
+        identifyApi.createPusherChannel(uid, authKey, completion);
     }
 
     /**
@@ -228,9 +235,9 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param completion callback for request completion
      */
     public void externalPusherRequest(final String url, final RequestCompletion completion) {
-        String uid = ambassadorConfig.getUniversalID();
-        String auth = ambassadorConfig.getUniversalKey();
-        identifyApi.externalPusherRequest(url, uid, auth, completion);
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
+        identifyApi.externalPusherRequest(url, uid, authKey, completion);
     }
 
     /**
@@ -270,7 +277,7 @@ public class RequestManager { // TODO: Make final after UI tests figured out
         linkedInApi.login(urlParams, completion, new LinkedInAuthorizedListener() {
             @Override
             public void linkedInAuthorized(String accessToken) {
-                ambassadorConfig.setLinkedInToken(accessToken);
+                auth.setLinkedInToken(accessToken);
             }
         });
     }
@@ -307,7 +314,7 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param completion callback for request completion
      */
     public void postToLinkedIn(LinkedInApi.LinkedInPostRequest requestBody, final RequestCompletion completion) {
-        linkedInApi.post(ambassadorConfig.getLinkedInToken(), requestBody, completion);
+        linkedInApi.post(auth.getLinkedInToken(), requestBody, completion);
     }
 
     /**
@@ -316,7 +323,7 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param completion callback for request completion
      */
     public void getProfileLinkedIn(final RequestCompletion completion) {
-        linkedInApi.getProfile(ambassadorConfig.getLinkedInToken(), completion);
+        linkedInApi.getProfile(auth.getLinkedInToken(), completion);
     }
 
 }
