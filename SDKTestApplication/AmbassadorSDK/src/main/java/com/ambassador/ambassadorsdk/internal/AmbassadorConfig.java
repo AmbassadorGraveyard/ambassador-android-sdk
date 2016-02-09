@@ -5,16 +5,7 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.SessionManager;
-import com.twitter.sdk.android.core.TwitterAuthToken;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
-import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.models.User;
 
 import org.json.JSONObject;
 
@@ -52,18 +43,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
         sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     }
 
-    public void setLinkedInToken(String token) {
-        sharePrefs.edit().putString("linkedInToken", token).apply();
-    }
-
-    public void setTwitterAccessToken(String token) {
-        sharePrefs.edit().putString("twitterToken", token).apply();
-    }
-
-    public void setTwitterAccessTokenSecret(String twitterTokenSecret) {
-        sharePrefs.edit().putString("twitterTokenSecret", twitterTokenSecret).apply();
-    }
-
     void setIdentifyObject(String objectString) {
         sharePrefs.edit().putString("identifyObject", objectString).apply();
     }
@@ -80,10 +59,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
 
     public String getTwitterAccessToken() {
         return sharePrefs.getString("twitterToken", null);
-    }
-
-    public String getTwitterAccessTokenSecret() {
-        return sharePrefs.getString("twitterTokenSecret", null);
     }
 
     public String getIdentifyObject() { return sharePrefs.getString("identifyObject", null); }
@@ -107,80 +82,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
 
     public void setConvertOnInstall() {
         sharePrefs.edit().putBoolean("installConversion", true).apply();
-    }
-
-    public void nullifyTwitterIfInvalid(final NullifyCompleteListener listener) {
-        if (TwitterCore.getInstance() != null && TwitterCore.getInstance().getSessionManager() != null) {
-            final SessionManager sm = TwitterCore.getInstance().getSessionManager();
-            TwitterSession activeSession = (TwitterSession) sm.getActiveSession();
-
-            /** if TwitterSDK has an active session, store it in place of what we have */
-            if (activeSession != null) {
-                String key = activeSession.getAuthToken().token;
-                String secret = activeSession.getAuthToken().secret;
-                setTwitterAccessToken(key);
-                setTwitterAccessTokenSecret(secret);
-            }
-
-            if (getTwitterAccessToken() != null && getTwitterAccessTokenSecret() != null) {
-                TwitterAuthToken tat = new TwitterAuthToken(getTwitterAccessToken(), getTwitterAccessTokenSecret());
-                TwitterSession twitterSession = new TwitterSession(tat, -1, null);
-                sm.setActiveSession(twitterSession);
-                TwitterCore.getInstance().getApiClient().getAccountService().verifyCredentials(null, null, new Callback<User>() {
-                    @Override
-                    public void success(Result<User> result) {
-                        callNullifyComplete(listener);
-                    }
-
-                    @Override
-                    public void failure(TwitterException e) {
-                        setTwitterAccessToken(null);
-                        setTwitterAccessTokenSecret(null);
-                        sm.clearActiveSession();
-                        callNullifyComplete(listener);
-                    }
-                });
-            } else {
-                callNullifyComplete(listener);
-
-            }
-        } else {
-            callNullifyComplete(listener);
-        }
-    }
-
-    public void nullifyLinkedInIfInvalid(final NullifyCompleteListener listener) {
-        if (getLinkedInToken() != null) {
-            RequestManager rm = buildRequestManager();
-            rm.getProfileLinkedIn(new RequestManager.RequestCompletion() {
-                @Override
-                public void onSuccess(Object successResponse) {
-                    callNullifyComplete(listener);
-                }
-
-                @Override
-                public void onFailure(Object failureResponse) {
-                    setLinkedInToken(null);
-                    callNullifyComplete(listener);
-                }
-            });
-        } else {
-            callNullifyComplete(listener);
-        }
-    }
-
-    RequestManager buildRequestManager() {
-        return new RequestManager();
-    }
-
-    void callNullifyComplete(NullifyCompleteListener listener) {
-        if (listener != null) {
-            listener.nullifyComplete();
-        }
-    }
-
-    public interface NullifyCompleteListener {
-        void nullifyComplete();
     }
 
 }

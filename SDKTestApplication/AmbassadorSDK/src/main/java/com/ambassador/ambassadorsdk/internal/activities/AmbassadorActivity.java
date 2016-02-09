@@ -201,8 +201,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     protected void setUpAmbassadorConfig() {
-        ambassadorConfig.nullifyTwitterIfInvalid(null);
-        ambassadorConfig.nullifyLinkedInIfInvalid(null);
+        auth.nullifyTwitterIfInvalid(null);
+        auth.nullifyLinkedInIfInvalid(null);
     }
 
     protected void setUpLockingScrollView() {
