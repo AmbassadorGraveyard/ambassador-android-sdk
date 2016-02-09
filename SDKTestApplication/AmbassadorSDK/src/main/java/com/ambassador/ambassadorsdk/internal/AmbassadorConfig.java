@@ -12,7 +12,7 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
 
     private Context context = AmbassadorSingleton.getInstanceContext();
     private SharedPreferences sharePrefs;
-    
+
     public AmbassadorConfig() {
         sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     }

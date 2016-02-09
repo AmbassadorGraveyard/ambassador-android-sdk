@@ -65,9 +65,6 @@ public class RequestManagerTest {
     private RequestManager requestManager;
 
     private Auth auth;
-    private User user;
-    private Campaign campaign;
-    private AmbassadorConfig ambassadorConfig;
 
     private BulkShareApi bulkShareApi;
     private ConversionsApi conversionsApi;
@@ -114,10 +111,10 @@ public class RequestManagerTest {
         RequestManager rm = new RequestManager(false);
         requestManager = PowerMockito.spy(rm);
 
-        ambassadorConfig = Mockito.mock(AmbassadorConfig.class);
+        AmbassadorConfig ambassadorConfig = Mockito.mock(AmbassadorConfig.class);
         auth = Mockito.mock(Auth.class);
-        user = Mockito.mock(User.class);
-        campaign = Mockito.mock(Campaign.class);
+        User user = Mockito.mock(User.class);
+        Campaign campaign = Mockito.mock(Campaign.class);
 
         Mockito.when(auth.getUniversalId()).thenReturn(universalId);
         Mockito.when(auth.getUniversalToken()).thenReturn(universalToken);
@@ -318,7 +315,7 @@ public class RequestManagerTest {
         RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
 
         String urlParams = "params";
-        Mockito.when(requestManager.createLinkedInLoginBody(code)).thenReturn(urlParams);
+        Mockito.doReturn(urlParams).when(requestManager).createLinkedInLoginBody(Mockito.eq(code));
 
         Mockito.doAnswer(new Answer() {
             @Override
