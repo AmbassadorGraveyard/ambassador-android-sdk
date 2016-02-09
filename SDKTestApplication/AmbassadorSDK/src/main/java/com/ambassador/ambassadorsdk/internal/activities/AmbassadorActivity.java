@@ -454,7 +454,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
     }
 
-    void tryAndSetURL(JSONObject pusherData, String initialShareMessage) {
+    protected void tryAndSetURL(JSONObject pusherData, String initialShareMessage) {
         boolean campaignFound = false;
         try {
             // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
