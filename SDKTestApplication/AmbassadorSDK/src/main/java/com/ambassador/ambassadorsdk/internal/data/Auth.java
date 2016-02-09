@@ -155,7 +155,7 @@ public class Auth {
      */
     public void nullifyLinkedInIfInvalid(final NullifyCompleteListener listener) {
         if (getLinkedInToken() != null) {
-            RequestManager rm = new RequestManager();
+            RequestManager rm = buildRequestManager();
             rm.getProfileLinkedIn(new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
@@ -171,6 +171,10 @@ public class Auth {
         } else {
             callNullifyComplete(listener);
         }
+    }
+
+    protected RequestManager buildRequestManager() {
+        return new RequestManager();
     }
 
     protected void callNullifyComplete(NullifyCompleteListener listener) {
