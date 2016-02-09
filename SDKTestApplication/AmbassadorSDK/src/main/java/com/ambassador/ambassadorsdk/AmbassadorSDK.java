@@ -39,7 +39,7 @@ public final class AmbassadorSDK {
     @Inject protected static Campaign campaign;
 
     @Inject protected static PusherSDK pusherSDK;
-    @Inject static RequestManager requestManager;
+    @Inject protected static RequestManager requestManager;
 
     public static void presentRAF(Context context, String campaignID) {
         if (context.getResources().getIdentifier("homeWelcomeTitle", "color", context.getPackageName()) != 0) {
