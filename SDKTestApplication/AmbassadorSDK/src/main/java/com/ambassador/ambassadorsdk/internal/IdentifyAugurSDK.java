@@ -3,7 +3,9 @@ package com.ambassador.ambassadorsdk.internal;
 import android.os.Handler;
 import android.os.Message;
 
+import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 import org.json.JSONObject;
 
@@ -25,12 +27,13 @@ public class IdentifyAugurSDK implements IIdentify {
 
     @Override
     public void getIdentity() {
+        String augurKey = new StringResource(R.string.augur_api_key).getValue();
         JSONObject augurConfig = new JSONObject();
 
         try {
             // required
             augurConfig.put("context", AmbassadorSingleton.getInstanceContext());
-            augurConfig.put("apiKey", AmbassadorConfig.AUGUR_API_KEY);
+            augurConfig.put("apiKey", augurKey);
             // optional
             //augurConfig.put("timeout", 1000); // default: 5000 (5 seconds)
             augurConfig.put("maxRetries", 5); // default: 5

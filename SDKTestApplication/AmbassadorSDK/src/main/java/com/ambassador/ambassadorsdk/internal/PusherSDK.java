@@ -4,10 +4,12 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.PrivateChannelEventListener;
@@ -126,7 +128,9 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
         options.setAuthorizer(authorizer);
         options.setEncrypted(true);
 
-        String key = AmbassadorConfig.isReleaseBuild ? AmbassadorConfig.PUSHER_KEY_PROD : AmbassadorConfig.PUSHER_KEY_DEV;
+        String pusherProd = new StringResource(R.string.pusher_key_prod).getValue();
+        String pusherDev = new StringResource(R.string.pusher_key_dev).getValue();
+        String key = AmbassadorConfig.isReleaseBuild ? pusherProd : pusherDev;
         final Pusher pusher = new com.pusher.client.Pusher(key, options);
         pusher.connect(new ConnectionEventListener() {
             @Override
