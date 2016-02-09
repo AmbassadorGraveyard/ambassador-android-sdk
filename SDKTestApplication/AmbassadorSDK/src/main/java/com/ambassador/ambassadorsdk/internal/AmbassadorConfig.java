@@ -17,16 +17,10 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
         sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     }
 
-    void setIdentifyObject(String objectString) {
-        sharePrefs.edit().putString("identifyObject", objectString).apply();
-    }
-
     public void setPusherInfo(String pusherObject) {
         sharePrefs.edit().putString("pusherObject", pusherObject).apply();
     }
-
-    public String getIdentifyObject() { return sharePrefs.getString("identifyObject", null); }
-
+    
     public String getPusherInfo() { return sharePrefs.getString("pusherObject", null); }
 
     @Nullable
