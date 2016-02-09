@@ -13,6 +13,9 @@ import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.twitter.sdk.android.core.Callback;
@@ -60,6 +63,10 @@ import java.util.List;
 public class RequestManagerTest {
 
     private RequestManager requestManager;
+
+    private Auth auth;
+    private User user;
+    private Campaign campaign;
     private AmbassadorConfig ambassadorConfig;
 
     private BulkShareApi bulkShareApi;
@@ -69,7 +76,8 @@ public class RequestManagerTest {
 
     private String universalId = "abfd1c89-4379-44e2-8361-ee7b87332e32";
     private String universalToken = "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a";
-    private String userFullName = "Test User";
+    private String userFirstName = "Test";
+    private String userLastName = "User";
     private String identifyObject = "identifyObject";
     private String campaignId = "260";
     private String userEmail = "user@test.com";
@@ -107,15 +115,24 @@ public class RequestManagerTest {
         requestManager = PowerMockito.spy(rm);
 
         ambassadorConfig = Mockito.mock(AmbassadorConfig.class);
-        Mockito.when(ambassadorConfig.getUniversalID()).thenReturn(universalId);
-        Mockito.when(ambassadorConfig.getUniversalKey()).thenReturn(universalToken);
-        Mockito.when(ambassadorConfig.getUserFullName()).thenReturn(userFullName);
+        auth = Mockito.mock(Auth.class);
+        user = Mockito.mock(User.class);
+        campaign = Mockito.mock(Campaign.class);
+
+        Mockito.when(auth.getUniversalId()).thenReturn(universalId);
+        Mockito.when(auth.getUniversalToken()).thenReturn(universalToken);
+        Mockito.when(user.getFirstName()).thenReturn(userFirstName);
+        Mockito.when(user.getLastName()).thenReturn(userLastName);
         Mockito.when(ambassadorConfig.getIdentifyObject()).thenReturn(identifyObject);
-        Mockito.when(ambassadorConfig.getCampaignID()).thenReturn(campaignId);
-        Mockito.when(ambassadorConfig.getUserEmail()).thenReturn(userEmail);
-        Mockito.when(ambassadorConfig.getLinkedInToken()).thenReturn(linkedInToken);
+        Mockito.when(campaign.getId()).thenReturn(campaignId);
+        Mockito.when(user.getEmail()).thenReturn(userEmail);
+        Mockito.when(auth.getLinkedInToken()).thenReturn(linkedInToken);
 
         requestManager.ambassadorConfig = ambassadorConfig;
+        requestManager.auth = auth;
+        requestManager.user = user;
+        requestManager.campaign = campaign;
+
         requestManager.bulkShareApi = bulkShareApi;
         requestManager.conversionsApi = conversionsApi;
         requestManager.identifyApi = identifyApi;
@@ -317,7 +334,7 @@ public class RequestManagerTest {
 
         // ASSERT
         Mockito.verify(linkedInApi).login(Mockito.eq(urlParams), Mockito.eq(requestCompletion), Mockito.any(RequestManager.LinkedInAuthorizedListener.class));
-        Mockito.verify(ambassadorConfig).setLinkedInToken(Mockito.eq("accessToken"));
+        Mockito.verify(auth).setLinkedInToken(Mockito.eq("accessToken"));
     }
 
     @Test
