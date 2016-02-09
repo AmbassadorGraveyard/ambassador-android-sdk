@@ -6,6 +6,8 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.PrivateChannelEventListener;
@@ -31,6 +33,9 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
 
     @Inject
     protected AmbassadorConfig ambassadorConfig;
+
+    @Inject protected Auth auth;
+    @Inject protected User user;
 
     @Inject
     protected RequestManager requestManager;
@@ -109,7 +114,7 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
         HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
 
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("Authorization", ambassadorConfig.getUniversalKey());
+        headers.put("Authorization", auth.getUniversalToken());
         authorizer.setHeaders(headers);
 
         HashMap<String, String> queryParams = new HashMap<>();
@@ -215,7 +220,8 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
             ambassadorConfig.setPusherInfo(pusherSave.toString());
 
             //update full name for SMS sending "from" name
-            ambassadorConfig.setUserFullName(pusherObject.getString("first_name"), pusherObject.getString("last_name"));
+            user.setFirstName(pusherObject.getString("first_name"));
+            user.setLastName(pusherObject.getString("last_name"));
 
             //tell MainActivity to update edittext with url
             Intent intent = new Intent("pusherData");
