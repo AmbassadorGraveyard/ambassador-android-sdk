@@ -72,24 +72,8 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
         sharePrefs.edit().putString("pusherObject", pusherObject).apply();
     }
 
-    public void setURL(String url) {
-        sharePrefs.edit().putString("url", url).apply();
-    }
-
-    public void setReferrerShortCode(String shortCode) {
-        sharePrefs.edit().putString("referrerShortCode", shortCode).apply();
-    }
-
-    public void setReferralShortCode(String shortCode) {
-        sharePrefs.edit().putString("referralShortCode", shortCode).apply();
-    }
-
     public void setWebDeviceId(String deviceId) {
         sharePrefs.edit().putString("webDeviceId", deviceId).apply();
-    }
-
-    public void setEmailSubject(String subjectLine) {
-        sharePrefs.edit().putString("subjectLine", subjectLine).apply();
     }
 
     public String getLinkedInToken() { return sharePrefs.getString("linkedInToken", null); }
@@ -114,12 +98,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
             return null;
         }
     }
-
-    public String getURL() {
-        return sharePrefs.getString("url", null);
-    }
-
-    public String getReferralShortCode() { return sharePrefs.getString("referralShortCode", null); }
 
     public String getWebDeviceId() {
         return sharePrefs.getString("webDeviceId", null);

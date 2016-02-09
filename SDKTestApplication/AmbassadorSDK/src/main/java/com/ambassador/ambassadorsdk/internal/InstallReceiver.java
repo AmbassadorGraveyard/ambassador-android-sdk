@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,6 +16,8 @@ public final class InstallReceiver extends BroadcastReceiver {
 
     @Inject
     protected AmbassadorConfig ambassadorConfig;
+
+    @Inject protected Campaign campaign;
 
     public InstallReceiver() {
         AmbassadorSingleton.getInstanceComponent().inject(this);
@@ -45,7 +49,8 @@ public final class InstallReceiver extends BroadcastReceiver {
         }
 
         ambassadorConfig.setWebDeviceId(webDeviceId);
-        ambassadorConfig.setReferralShortCode(referralShortCode);
+        campaign.setReferredByShortCode(referralShortCode);
+
         Utilities.debugLog("Conversion", "webDeviceId: " + webDeviceId);
         Utilities.debugLog("Conversion", "referralShortCode: " + referralShortCode);
         //Toast.makeText(context, "webDeviceId: " + webDeviceId + " referralShortCode: " + referralShortCode, Toast.LENGTH_LONG).show();
