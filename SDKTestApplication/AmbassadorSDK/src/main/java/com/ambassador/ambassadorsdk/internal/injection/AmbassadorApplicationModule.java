@@ -3,7 +3,6 @@ package com.ambassador.ambassadorsdk.internal.injection;
 import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -32,13 +31,6 @@ public final class AmbassadorApplicationModule {
     @Singleton
     public BulkShareHelper provideBulkShareHelper() {
         return new BulkShareHelper();
-    }
-
-    @NonNull
-    @Provides
-    @Singleton
-    public AmbassadorConfig provideAmbassadorConfig() {
-        return new AmbassadorConfig();
     }
 
     @NonNull

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
@@ -31,8 +30,6 @@ import javax.inject.Inject;
  * Static methods called by the end-developer to utilize the SDK.
  */
 public final class AmbassadorSDK {
-
-    @Inject protected static AmbassadorConfig ambassadorConfig;
 
     @Inject protected static Auth auth;
     @Inject protected static User user;

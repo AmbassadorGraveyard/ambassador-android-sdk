@@ -34,9 +34,6 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
 
     protected IdentifyListener identifyListener;
 
-    @Inject
-    protected AmbassadorConfig ambassadorConfig;
-
     @Inject protected Auth auth;
     @Inject protected User user;
 

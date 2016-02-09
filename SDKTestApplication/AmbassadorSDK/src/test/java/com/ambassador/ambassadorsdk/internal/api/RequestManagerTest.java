@@ -4,7 +4,6 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.TestUtils;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
@@ -58,8 +57,7 @@ import java.util.List;
         BulkShareApi.class,
         ConversionsApi.class,
         IdentifyApi.class,
-        LinkedInApi.class,
-        AmbassadorConfig.class
+        LinkedInApi.class
 })
 public class RequestManagerTest {
 
@@ -112,7 +110,6 @@ public class RequestManagerTest {
         RequestManager rm = new RequestManager(false);
         requestManager = PowerMockito.spy(rm);
 
-        AmbassadorConfig ambassadorConfig = Mockito.mock(AmbassadorConfig.class);
         auth = Mockito.mock(Auth.class);
         User user = Mockito.mock(User.class);
         Campaign campaign = Mockito.mock(Campaign.class);
@@ -126,7 +123,6 @@ public class RequestManagerTest {
         Mockito.when(user.getEmail()).thenReturn(userEmail);
         Mockito.when(auth.getLinkedInToken()).thenReturn(linkedInToken);
 
-        requestManager.ambassadorConfig = ambassadorConfig;
         requestManager.auth = auth;
         requestManager.user = user;
         requestManager.campaign = campaign;

@@ -40,7 +40,6 @@ import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
@@ -103,7 +102,6 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     // region Dependencies
     @Inject protected PusherSDK         pusherSDK;
     @Inject protected BulkShareHelper   bulkShareHelper;
-    @Inject protected AmbassadorConfig  ambassadorConfig;
     @Inject protected User              user;
     @Inject protected Campaign          campaign;
     @Inject protected Device            device;
