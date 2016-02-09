@@ -131,7 +131,6 @@ public class PusherSDKTest {
         PusherSDK.PusherSubscribeCallback mockPusherSubscribeCallback = Mockito.mock(PusherSDK.PusherSubscribeCallback.class);
 
         PowerMockito.mockStatic(AmbassadorConfig.class);
-        Mockito.when(AmbassadorConfig.pusherCallbackURL()).thenReturn("fakeResponse");
 
         HttpAuthorizer mockHttpAuthorizer = Mockito.mock(HttpAuthorizer.class);
         PowerMockito.whenNew(HttpAuthorizer.class).withAnyArguments().thenReturn(mockHttpAuthorizer);
