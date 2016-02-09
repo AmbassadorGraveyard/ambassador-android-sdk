@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.models.AugurData;
 import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 
 /**
@@ -19,7 +20,7 @@ public class User {
     protected String lastName;
     protected String email;
     protected String gcmToken;
-    protected AugurData augurData;
+    protected JSONObject augurData;
     protected String webDeviceId;
     // endregion
 
@@ -60,11 +61,11 @@ public class User {
         save();
     }
 
-    public AugurData getAugurData() {
+    public JSONObject getAugurData() {
         return augurData;
     }
 
-    public void setAugurData(AugurData augurData) {
+    public void setAugurData(JSONObject augurData) {
         this.augurData = augurData;
         save();
     }
