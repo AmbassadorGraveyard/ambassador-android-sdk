@@ -32,10 +32,4 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
         }
     }
 
-    public boolean getConvertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
-
-    public void setConvertOnInstall() {
-        sharePrefs.edit().putBoolean("installConversion", true).apply();
-    }
-
 }

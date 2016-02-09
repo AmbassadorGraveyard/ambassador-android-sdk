@@ -107,28 +107,20 @@ public final class AmbassadorSDK {
 
     public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
         //do conversion if it's not an install conversion, or if it is, make sure that we haven't already converted on install by checking sharedprefs
-        if (!restrictToInstall || !getConvertedOnInstall()) {
+        if (!restrictToInstall || !campaign.isConvertedOnInstall()) {
             Utilities.debugLog("Conversion", "restrictToInstall: " + restrictToInstall);
 
             ConversionUtility conversionUtility = buildConversionUtility(conversionParameters);
             conversionUtility.registerConversion();
         }
 
-        if (restrictToInstall) setConvertedOnInstall();
+        if (restrictToInstall) {
+            campaign.setConvertedOnInstall(true);
+        }
     }
 
     private static ConversionUtility buildConversionUtility(ConversionParameters conversionParameters) {
         return new ConversionUtility(AmbassadorSingleton.getInstanceContext(), conversionParameters);
-    }
-
-    private static Boolean getConvertedOnInstall() {
-        return ambassadorConfig.getConvertedOnInstall();
-    }
-
-    private static void setConvertedOnInstall() {
-        if (!ambassadorConfig.getConvertedOnInstall()) {
-            ambassadorConfig.setConvertOnInstall();
-        }
     }
 
     public static void runWithKeys(Context context, String universalToken, String universalId) {

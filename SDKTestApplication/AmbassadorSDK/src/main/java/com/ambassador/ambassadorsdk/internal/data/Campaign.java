@@ -19,6 +19,7 @@ public class Campaign {
     protected String shareMessage;
     protected String emailSubject;
     protected String referredByShortCode;
+    protected boolean convertedOnInstall;
     // endregion
 
     // region Getters / Setters
@@ -75,6 +76,15 @@ public class Campaign {
         this.referredByShortCode = referredByShortCode;
         save();
     }
+
+    public boolean isConvertedOnInstall() {
+        return convertedOnInstall;
+    }
+
+    public void setConvertedOnInstall(boolean convertedOnInstall) {
+        this.convertedOnInstall = convertedOnInstall;
+        save();
+    }
     // endregion
 
     // region Persistence methods
@@ -100,6 +110,7 @@ public class Campaign {
         shareMessage = null;
         emailSubject = null;
         referredByShortCode = null;
+        convertedOnInstall = false;
     }
     // endregion
 

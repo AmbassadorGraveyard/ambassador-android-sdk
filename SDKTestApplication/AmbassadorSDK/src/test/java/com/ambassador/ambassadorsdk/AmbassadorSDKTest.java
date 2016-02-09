@@ -48,6 +48,7 @@ public class AmbassadorSDKTest {
 
     private Auth auth;
     private User user;
+    private Campaign campaign;
 
     private PusherSDK pusherSDK;
 
@@ -73,7 +74,7 @@ public class AmbassadorSDKTest {
         user = Mockito.mock(User.class);
         AmbassadorSDK.user = user;
 
-        Campaign campaign = Mockito.mock(Campaign.class);
+        campaign = Mockito.mock(Campaign.class);
         AmbassadorSDK.campaign = campaign;
 
         pusherSDK = Mockito.mock(PusherSDK.class);
@@ -107,13 +108,13 @@ public class AmbassadorSDKTest {
         // ARRANGE
         ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
         boolean restrictToInstall = true;
-        Mockito.when(ambassadorConfig.getConvertedOnInstall()).thenReturn(true);
+        Mockito.when(campaign.isConvertedOnInstall()).thenReturn(true);
 
         // ACT
         AmbassadorSDK.registerConversion(conversionParameters, restrictToInstall);
 
         // ASSERT
-        Mockito.verify(ambassadorConfig, Mockito.times(2)).getConvertedOnInstall();
+        Mockito.verify(campaign, Mockito.times(2)).isConvertedOnInstall();
     }
 
     @Test
@@ -121,7 +122,7 @@ public class AmbassadorSDKTest {
         // ARRANGE
         ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
         boolean restrictToInstall = false;
-        Mockito.when(ambassadorConfig.getConvertedOnInstall()).thenReturn(false);
+        Mockito.when(campaign.isConvertedOnInstall()).thenReturn(false);
         ConversionUtility conversionUtility = Mockito.mock(ConversionUtility.class);
         PowerMockito.doReturn(conversionUtility).when(AmbassadorSDK.class, "buildConversionUtility", conversionParameters);
         Mockito.doNothing().when(conversionUtility).registerConversion();
