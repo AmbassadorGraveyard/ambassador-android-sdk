@@ -45,6 +45,7 @@ import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskUrlDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
@@ -101,6 +102,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     @Inject protected PusherSDK         pusherSDK;
     @Inject protected BulkShareHelper   bulkShareHelper;
     @Inject protected AmbassadorConfig  ambassadorConfig;
+    @Inject protected Campaign          campaign;
     @Inject protected Device            device;
     // endregion
 
@@ -523,7 +525,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         boolean lengthToShort = showPhoneNumbers && !(etShareMessage.getText().length() <= MAX_SMS_LENGTH);
         boolean noneSelected = contactListAdapter.getSelectedContacts().size() <= 0;
         boolean emptyMessage = etShareMessage.getText().toString().length() <= 0;
-        boolean haveUrl = Utilities.containsURL(etShareMessage.getText().toString(), ambassadorConfig.getURL());
+        boolean haveUrl = Utilities.containsURL(etShareMessage.getText().toString(), campaign.getUrl());
         boolean haveName = pusherHasKey("firstName") && pusherHasKey("lastName");
 
         if (lengthToShort && noneSelected) {
@@ -551,7 +553,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     }
 
     private void askForUrl() {
-        final String url = ambassadorConfig.getURL();
+        final String url = campaign.getUrl();
         new AskUrlDialog(this, url)
                 .setOnCompleteListener(new AskUrlDialog.OnCompleteListener() {
                     @Override
