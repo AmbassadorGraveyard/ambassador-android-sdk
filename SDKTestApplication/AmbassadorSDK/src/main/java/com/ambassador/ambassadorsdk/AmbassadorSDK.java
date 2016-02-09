@@ -15,6 +15,7 @@ import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 
@@ -31,6 +32,8 @@ public final class AmbassadorSDK {
 
     @Inject
     protected static AmbassadorConfig ambassadorConfig;
+
+    @Inject protected static User user;
 
     @Inject
     protected static PusherSDK pusherSDK;
@@ -89,7 +92,8 @@ public final class AmbassadorSDK {
     }
 
     public static void identify(String emailAddress) {
-        ambassadorConfig.setUserEmail(emailAddress);
+        user.clear();
+        user.setEmail(emailAddress);
 
         IIdentify identify = buildIdentify();
         identify.getIdentity();
