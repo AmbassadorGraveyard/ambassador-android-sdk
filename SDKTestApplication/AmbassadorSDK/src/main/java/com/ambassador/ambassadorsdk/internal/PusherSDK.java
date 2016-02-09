@@ -4,6 +4,7 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
@@ -113,7 +114,7 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
 
     public void subscribePusher(final PusherSubscribeCallback pusherSubscribeCallback) {
         // HttpAuthorizer is used to append headers and extra parameters to the initial PusherSDK authorization request
-        int res = AmbassadorConfig.isReleaseBuild ? R.string.pusher_callback_url : R.string.pusher_callback_url_dev;
+        int res = BuildConfig.IS_RELEASE_BUILD ? R.string.pusher_callback_url : R.string.pusher_callback_url_dev;
         String callback = new StringResource(res).getValue();
         HttpAuthorizer authorizer = new HttpAuthorizer(callback);
 
@@ -132,7 +133,7 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
 
         String pusherProd = new StringResource(R.string.pusher_key_prod).getValue();
         String pusherDev = new StringResource(R.string.pusher_key_dev).getValue();
-        String key = AmbassadorConfig.isReleaseBuild ? pusherProd : pusherDev;
+        String key = BuildConfig.IS_RELEASE_BUILD ? pusherProd : pusherDev;
         final Pusher pusher = new com.pusher.client.Pusher(key, options);
         pusher.connect(new ConnectionEventListener() {
             @Override

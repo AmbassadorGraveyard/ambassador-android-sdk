@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
@@ -56,13 +57,13 @@ public class Utilities {
     }
 
     public static void debugLog(String tagString, String logMessage) {
-        if (!AmbassadorConfig.isReleaseBuild) {
+        if (!BuildConfig.IS_RELEASE_BUILD) {
             Log.d(tagString, logMessage);
         }
     }
 
     public static void debugLog(String logMessage) {
-        if (!AmbassadorConfig.isReleaseBuild) {
+        if (!BuildConfig.IS_RELEASE_BUILD) {
             StackTraceElement stackTrace = new Exception().getStackTrace()[1];
             String tag = stackTrace.getClassName()
                     .substring(stackTrace.getClassName().lastIndexOf(".") + 1)
