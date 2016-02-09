@@ -135,6 +135,8 @@ public final class AmbassadorSDK {
         AmbassadorSingleton.init(context);
         AmbassadorSingleton.getInstanceComponent().inject(new AmbassadorSDK());
 
+        auth.clear();
+
         registerInstallReceiver(context);
         setupGcm(context);
 
