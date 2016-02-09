@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal.injection;
 
 import android.support.annotation.NonNull;
 
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
@@ -73,6 +74,13 @@ public final class AmbassadorApplicationModule {
     @Singleton
     public Auth provideAuth() {
         return new Auth();
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public RAFOptions provideRAFOptions() {
+        return RAFOptions.get();
     }
 
 }
