@@ -225,7 +225,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     private void setUpToolbar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(ambassadorConfig.getRafParameters().toolbarTitle);
+            actionBar.setTitle(raf.getToolbarTitle());
         }
 
         Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
@@ -276,7 +276,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     private void setUpUI() {
         tvSendContacts.setTextNoAnimation("NO CONTACTS SELECTED");
-        etShareMessage.setText(ambassadorConfig.getRafParameters().defaultShareMessage);
+        etShareMessage.setText(raf.getDefaultShareMessage());
         btnEdit.setColorFilter(getResources().getColor(R.color.ultraLightGray));
 
         if (showPhoneNumbers) {
