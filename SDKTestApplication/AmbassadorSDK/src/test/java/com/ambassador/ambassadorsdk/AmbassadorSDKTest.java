@@ -114,7 +114,7 @@ public class AmbassadorSDKTest {
         AmbassadorSDK.registerConversion(conversionParameters, restrictToInstall);
 
         // ASSERT
-        Mockito.verify(campaign, Mockito.times(2)).isConvertedOnInstall();
+        Mockito.verify(campaign).isConvertedOnInstall();
     }
 
     @Test
