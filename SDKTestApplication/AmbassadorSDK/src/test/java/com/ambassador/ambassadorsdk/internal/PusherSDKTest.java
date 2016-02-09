@@ -224,7 +224,7 @@ public class PusherSDKTest {
         pusherSDK.setPusherInfo(jsonObject);
 
         // ASSERT
-        Mockito.verify(user).setPusherInfo(Mockito.eq(pusherSave));
+        Mockito.verify(user).setPusherInfo(Mockito.any(JSONObject.class));
         Mockito.verify(mockLocalBroadcastManager).sendBroadcast(Mockito.any(Intent.class));
     }
 

@@ -57,7 +57,7 @@ public class CampaignTest {
 
         // ASSERT
         Mockito.verify(context).getSharedPreferences(Mockito.eq("campaign"), Mockito.eq(Context.MODE_PRIVATE));
-        Mockito.verify(editor).putString(Mockito.eq("260"), Mockito.eq("{\"id\":\"260\",\"url\":\"url\",\"shortCode\":\"shortCode\",\"shareMessage\":\"shareMessage\",\"emailSubject\":\"emailSubject\",\"referredByShortCode\":\"shortCode\"}"));
+        Mockito.verify(editor).putString(Mockito.eq("260"), Mockito.eq("{\"id\":\"260\",\"url\":\"url\",\"shortCode\":\"shortCode\",\"shareMessage\":\"shareMessage\",\"emailSubject\":\"emailSubject\",\"referredByShortCode\":\"shortCode\",\"convertedOnInstall\":false}"));
         Mockito.verify(editor).apply();
     }
 
