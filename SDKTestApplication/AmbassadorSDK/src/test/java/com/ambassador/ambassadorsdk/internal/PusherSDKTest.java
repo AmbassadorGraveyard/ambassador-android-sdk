@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.ambassador.ambassadorsdk.TestUtils;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.pusher.client.Authorizer;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
@@ -47,6 +49,8 @@ public class PusherSDKTest {
     private PusherSDK pusherSDK;
     private RequestManager mockRequestManager;
     private AmbassadorConfig mockAmbassadorConfig;
+    private Auth auth;
+    private User user;
 
     @Before
     public void setUp() throws Exception {
@@ -62,8 +66,12 @@ public class PusherSDKTest {
 
         mockRequestManager = PowerMockito.mock(RequestManager.class);
         mockAmbassadorConfig = Mockito.mock(AmbassadorConfig.class);
+        auth = Mockito.mock(Auth.class);
+        user = Mockito.mock(User.class);
         pusherSDK.requestManager = mockRequestManager;
         pusherSDK.ambassadorConfig = mockAmbassadorConfig;
+        pusherSDK.auth = auth;
+        pusherSDK.user = user;
     }
 
     @Test
