@@ -9,7 +9,6 @@ import android.support.test.espresso.util.HumanReadables;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
 public class TestUtils {
@@ -38,8 +37,8 @@ public class TestUtils {
             this.viewId = viewId;
         }
 
-        public Matcher<View> getConstraints() {
-            return Matchers.allOf(new Matcher[] {
+        public org.hamcrest.Matcher<View> getConstraints() {
+            return Matchers.allOf(new org.hamcrest.Matcher[]{
                     ViewMatchers.isAssignableFrom(RecyclerView.class), ViewMatchers.isDisplayed()
             });
         }
@@ -82,8 +81,8 @@ public class TestUtils {
             this.position = position;
         }
 
-        public Matcher<View> getConstraints() {
-            return Matchers.allOf(new Matcher[]{
+        public org.hamcrest.Matcher<View> getConstraints() {
+            return Matchers.allOf(new org.hamcrest.Matcher[]{
                     ViewMatchers.isAssignableFrom(RecyclerView.class), ViewMatchers.isDisplayed()
             });
         }

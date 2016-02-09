@@ -37,8 +37,7 @@ public final class StoreFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
+        closeSoftKeyboard();
     }
 
     protected View.OnClickListener btnBuyOnClickListener = new View.OnClickListener() {
@@ -66,5 +65,10 @@ public final class StoreFragment extends Fragment {
             }
         }
     };
+
+    private void closeSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
+    }
 
 }

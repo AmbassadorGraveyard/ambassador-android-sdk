@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
+    android:contentDescription="referFragment"
     android:orientation="vertical">
 
     <ImageView
@@ -51,6 +52,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"
         android:background="@drawable/et_only"
+        android:contentDescription="campaignIdField"
         android:ems="10"
         android:gravity="center"
         android:inputType="number"
