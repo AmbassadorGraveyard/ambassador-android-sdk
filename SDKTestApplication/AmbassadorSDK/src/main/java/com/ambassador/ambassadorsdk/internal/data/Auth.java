@@ -4,7 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.google.gson.Gson;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.SessionManager;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.models.User;
 
 
 /**
@@ -89,6 +98,89 @@ public class Auth {
         linkedInToken = null;
         twitterToken = null;
         twitterSecret = null;
+    }
+    // endregion
+
+    // region Nullify methods
+
+    /**
+     * Checks the User's twitter token and secret for validity, and returns
+     * results through the passed in callback.
+     * @param listener completion listener to pass back result of nullify
+     */
+    public void nullifyTwitterIfInvalid(final NullifyCompleteListener listener) {
+        if (TwitterCore.getInstance() != null && TwitterCore.getInstance().getSessionManager() != null) {
+            final SessionManager sm = TwitterCore.getInstance().getSessionManager();
+            TwitterSession activeSession = (TwitterSession) sm.getActiveSession();
+
+            /** if TwitterSDK has an active session, store it in place of what we have */
+            if (activeSession != null) {
+                String key = activeSession.getAuthToken().token;
+                String secret = activeSession.getAuthToken().secret;
+                setTwitterToken(key);
+                setTwitterSecret(secret);
+            }
+
+            if (getTwitterToken() != null && getTwitterSecret() != null) {
+                TwitterAuthToken tat = new TwitterAuthToken(getTwitterToken(), getTwitterSecret());
+                TwitterSession twitterSession = new TwitterSession(tat, -1, null);
+                sm.setActiveSession(twitterSession);
+                TwitterCore.getInstance().getApiClient().getAccountService().verifyCredentials(null, null, new Callback<com.twitter.sdk.android.core.models.User>() {
+                    @Override
+                    public void success(Result<User> result) {
+                        callNullifyComplete(listener);
+                    }
+
+                    @Override
+                    public void failure(TwitterException e) {
+                        setTwitterToken(null);
+                        setTwitterSecret(null);
+                        sm.clearActiveSession();
+                        callNullifyComplete(listener);
+                    }
+                });
+            } else {
+                callNullifyComplete(listener);
+
+            }
+        } else {
+            callNullifyComplete(listener);
+        }
+    }
+
+    /**
+     * Checks the User's linkedin token for validity, and returns
+     * results through the passed in callback.
+     * @param listener completion listener to pass back result of nullify
+     */
+    public void nullifyLinkedInIfInvalid(final NullifyCompleteListener listener) {
+        if (getLinkedInToken() != null) {
+            RequestManager rm = new RequestManager();
+            rm.getProfileLinkedIn(new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(Object successResponse) {
+                    callNullifyComplete(listener);
+                }
+
+                @Override
+                public void onFailure(Object failureResponse) {
+                    setLinkedInToken(null);
+                    callNullifyComplete(listener);
+                }
+            });
+        } else {
+            callNullifyComplete(listener);
+        }
+    }
+
+    protected void callNullifyComplete(NullifyCompleteListener listener) {
+        if (listener != null) {
+            listener.nullifyComplete();
+        }
+    }
+
+    public interface NullifyCompleteListener {
+        void nullifyComplete();
     }
     // endregion
 
