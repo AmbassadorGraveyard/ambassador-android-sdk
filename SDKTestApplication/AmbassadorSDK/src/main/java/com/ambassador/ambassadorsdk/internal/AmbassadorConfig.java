@@ -31,7 +31,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
 
     private Context context = AmbassadorSingleton.getInstanceContext();
     private SharedPreferences sharePrefs;
-    private ServiceSelectorPreferences rafParameters;
 
     public static String ambassadorApiUrl() {
         if (AmbassadorConfig.isReleaseBuild) {
@@ -96,20 +95,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
     public void setEmailSubject(String subjectLine) {
         sharePrefs.edit().putString("subjectLine", subjectLine).apply();
     }
-
-    public void setRafDefaultMessage(String message) {
-        rafParameters.defaultShareMessage = message;
-    }
-
-    public void setRafParameters(String defaultShareMessage, String titleText, String descriptionText, String toolbarTitle) {
-        rafParameters = new ServiceSelectorPreferences();
-        rafParameters.defaultShareMessage = defaultShareMessage;
-        rafParameters.titleText = titleText;
-        rafParameters.descriptionText = descriptionText;
-        rafParameters.toolbarTitle = toolbarTitle;
-    }
-
-    public ServiceSelectorPreferences getRafParameters() { return rafParameters; }
 
     public String getLinkedInToken() { return sharePrefs.getString("linkedInToken", null); }
 

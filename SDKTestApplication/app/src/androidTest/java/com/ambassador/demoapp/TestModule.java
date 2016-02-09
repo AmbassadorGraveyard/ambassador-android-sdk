@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk;
+package com.ambassador.demoapp;
 
 import android.support.annotation.NonNull;
 
@@ -36,7 +36,8 @@ public final class TestModule {
     @Provides
     @Singleton
     public AmbassadorConfig provideAmbassadorConfig() {
-        return Mockito.mock(AmbassadorConfig.class);
+        AmbassadorConfig ambassadorConfig = new AmbassadorConfig();
+        return Mockito.spy(ambassadorConfig);
     }
 
     @NonNull
@@ -51,12 +52,6 @@ public final class TestModule {
     @Singleton
     public Device provideDevice() {
         return Mockito.mock(Device.class);
-    }
-
-    @NonNull
-    @Provides
-    public RAFOptions provideRAFOptions() {
-        return RAFOptions.get();
     }
 
 }

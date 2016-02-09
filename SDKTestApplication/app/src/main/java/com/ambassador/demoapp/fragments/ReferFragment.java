@@ -45,7 +45,7 @@ public final class ReferFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RafAdapter.RafItem item = adapter.getItem(position);
                 String path = item.getOptionsPath();
-                Demo.get().presentRAF(path);
+                Demo.get().presentRAF(getActivity(), path);
             }
         });
 
@@ -55,6 +55,10 @@ public final class ReferFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        closeSoftKeyboard();
+    }
+
+    private void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
     }
@@ -85,9 +89,12 @@ public final class ReferFragment extends Fragment {
 
         public RafAdapter() {
             items = new RafItem[3];
-            items[0] = new RafItem("Shoes RAF", "description", "raf_shoes.xml");
-            items[1] = new RafItem("Shirt RAF", "description", "raf_shirt.xml");
-            items[2] = new RafItem("Ambassador RAF", "description", "raf_ambassador.xml");
+            items[0] = new RafItem("Shoes RAF", "description", "raf_shoes.xml")
+                    .setContentDescription("shoeRaf");
+            items[1] = new RafItem("Shirt RAF", "description", "raf_shirt.xml")
+                    .setContentDescription("shirtRaf");
+            items[2] = new RafItem("Ambassador RAF", "description", "raf_ambassador.xml")
+                    .setContentDescription("ambassadorRaf");
         }
 
         @Override
@@ -122,6 +129,8 @@ public final class ReferFragment extends Fragment {
             ImageView ivArrow = (ImageView) convertView.findViewById(R.id.ivArrow);
             ivArrow.setColorFilter(Color.BLACK);
 
+            convertView.setContentDescription(item.getContentDescription());
+
             return convertView;
         }
 
@@ -130,6 +139,7 @@ public final class ReferFragment extends Fragment {
             private String title;
             private String description;
             private String optionsPath;
+            private String contentDescription;
 
             public RafItem(String title, String description, String optionsPath) {
                 this.title = title;
@@ -147,6 +157,15 @@ public final class ReferFragment extends Fragment {
 
             public String getOptionsPath() {
                 return optionsPath;
+            }
+
+            public RafItem setContentDescription(String contentDescription) {
+                this.contentDescription = contentDescription;
+                return this;
+            }
+
+            public String getContentDescription() {
+                return contentDescription;
             }
 
         }
