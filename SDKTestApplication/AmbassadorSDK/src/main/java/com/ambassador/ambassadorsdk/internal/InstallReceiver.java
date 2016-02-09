@@ -59,10 +59,10 @@ public final class InstallReceiver extends BroadcastReceiver {
 
         //if augur came back first, update our device id
         JSONObject identity;
-        if (ambassadorConfig.getIdentifyObject() != null) {
+        if (user.getAugurData() != null) {
             //Toast.makeText(context, "augur", Toast.LENGTH_LONG).show();
             try {
-                identity = new JSONObject(ambassadorConfig.getIdentifyObject());
+                identity = user.getAugurData();
                 JSONObject device = identity.getJSONObject("device");
 
                 //if the webDeviceId has been received on the querystring and it's different than what augur returns, override augur deviceId
@@ -71,7 +71,7 @@ public final class InstallReceiver extends BroadcastReceiver {
                     device.put("ID",  user.getWebDeviceId());
                     identity.remove("device");
                     identity.put("device", device);
-                    ambassadorConfig.setIdentifyObject(identity.toString());
+                    user.setAugurData(identity);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

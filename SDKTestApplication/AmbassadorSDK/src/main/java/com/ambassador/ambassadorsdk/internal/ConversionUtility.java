@@ -10,6 +10,7 @@ import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -17,9 +18,6 @@ import com.google.gson.JsonObject;
 import javax.inject.Inject;
 
 
-/**
- * Created by JakeDunahee on 8/21/15.
- */
 public class ConversionUtility {
 
     private ConversionParameters parameters;
@@ -32,6 +30,7 @@ public class ConversionUtility {
     @Inject
     AmbassadorConfig ambassadorConfig;
 
+    @Inject protected User user;
     @Inject protected Campaign campaign;
 
     // Constructors for ConversionUtility
@@ -50,7 +49,7 @@ public class ConversionUtility {
 
     public void registerConversion() {
         //if either augur identify or install intent hasn't come back yet, insert into DB for later retry
-        if (ambassadorConfig.getIdentifyObject() == null || campaign.getReferredByShortCode() == null) {
+        if (user.getAugurData() == null || campaign.getReferredByShortCode() == null) {
             ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
             db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
             Utilities.debugLog("Conversion", "Inserted row into table");
@@ -88,7 +87,7 @@ public class ConversionUtility {
     public void readAndSaveDatabaseEntries() {
         //if we don't have an identify object yet, that means neither the intent nor augur has returned
         //so bail out and try again later
-        if (ambassadorConfig.getIdentifyObject() == null || campaign.getReferredByShortCode() == null) return;
+        if (user.getAugurData() == null || campaign.getReferredByShortCode() == null) return;
 
         String[] projection = {
                 ConversionSQLStrings.ConversionSQLEntry._ID,

@@ -74,7 +74,7 @@ public class IdentifyAugurSDK implements IIdentify {
                     jsonObject.put("device", device);
 
                     Utilities.debugLog("Augur", "Augur successfully received through SDK call");
-                    ambassadorConfig.setIdentifyObject(jsonObject.toString());
+                    user.setAugurData(jsonObject);
                     //deviceID = Augur.DID;
                     //universalID = Augur.UID;
                 } catch (Exception e) {

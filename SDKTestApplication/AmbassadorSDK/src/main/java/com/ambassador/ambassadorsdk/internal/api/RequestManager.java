@@ -160,7 +160,7 @@ public class RequestManager { // TODO: Make final after UI tests figured out
     public void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
-        ConversionsApi.RegisterConversionRequestBody body = ConversionUtility.createConversionRequestBody(conversionParameters, ambassadorConfig.getIdentifyObject());
+        ConversionsApi.RegisterConversionRequestBody body = ConversionUtility.createConversionRequestBody(conversionParameters, user.getAugurData().toString());
         conversionsApi.registerConversionRequest(uid, authKey, body, completion);
     }
 
@@ -186,7 +186,7 @@ public class RequestManager { // TODO: Make final after UI tests figured out
 
         String campaignId = campaign.getId();
         String userEmail = user.getEmail();
-        String augur = ambassadorConfig.getIdentifyObject();
+        String augur = user.getAugurData().toString();
         IdentifyApi.IdentifyRequestBody body = new IdentifyApi.IdentifyRequestBody(campaignId, userEmail, augur);
 
         identifyApi.identifyRequest(sessionId, requestId, uid, authKey, body);
