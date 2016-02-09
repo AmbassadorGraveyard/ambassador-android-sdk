@@ -37,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
+import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
@@ -495,7 +496,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
         if (showPhoneNumbers) contactList = new ContactList(ContactList.Type.PHONE).get(this);
         else contactList = new ContactList(ContactList.Type.EMAIL).get(this);
-        contactList = (contactList.size() == 0 && !AmbassadorConfig.isReleaseBuild)
+        contactList = (contactList.size() == 0 && !BuildConfig.IS_RELEASE_BUILD)
                 ? new ContactList(ContactList.Type.DUMMY).get(this) : contactList;
 
         if (contactList.size() == 0) {

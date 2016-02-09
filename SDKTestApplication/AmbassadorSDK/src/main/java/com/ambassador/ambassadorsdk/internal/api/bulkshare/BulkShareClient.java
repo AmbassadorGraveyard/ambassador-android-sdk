@@ -1,7 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.api.bulkshare;
 
+import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 import retrofit.Callback;
@@ -15,7 +15,7 @@ import retrofit.http.POST;
 public interface BulkShareClient {
 
     /** Base url for api methods */
-    String ENDPOINT = new StringResource(AmbassadorConfig.isReleaseBuild ? R.string.ambassador_api_url : R.string.ambassador_api_url_dev).getValue();
+    String ENDPOINT = new StringResource(BuildConfig.IS_RELEASE_BUILD ? R.string.ambassador_api_url : R.string.ambassador_api_url_dev).getValue();
 
     /**
      * https://api.getambassador.com/share/sms/
