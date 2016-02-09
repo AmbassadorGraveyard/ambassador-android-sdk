@@ -223,7 +223,7 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
             pusherSave.put("lastName", pusherObject.getString("last_name"));
             pusherSave.put("phoneNumber", pusherObject.getString("phone"));
             pusherSave.put("urls", pusherObject.getJSONArray("urls"));
-            ambassadorConfig.setPusherInfo(pusherSave.toString());
+            user.setPusherInfo(pusherSave);
 
             //update full name for SMS sending "from" name
             user.setFirstName(pusherObject.getString("first_name"));

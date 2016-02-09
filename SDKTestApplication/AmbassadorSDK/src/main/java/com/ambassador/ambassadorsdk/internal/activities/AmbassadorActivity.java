@@ -44,6 +44,7 @@ import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
@@ -109,6 +110,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Inject protected RequestManager        requestManager;
     @Inject protected AmbassadorConfig      ambassadorConfig;
     @Inject protected Auth                  auth;
+    @Inject protected User                  user;
     @Inject protected Campaign              campaign;
     @Inject protected PusherSDK             pusherSDK;
     @Inject protected Device                device;
@@ -403,7 +405,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(ambassadorConfig.getPusherInfo(), raf.getDefaultShareMessage());
+            tryAndSetURL(user.getPusherInfo(), raf.getDefaultShareMessage());
         }
     };
 
@@ -454,11 +456,10 @@ public final class AmbassadorActivity extends AppCompatActivity {
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
     }
 
-    void tryAndSetURL(String pusherString, String initialShareMessage) {
+    void tryAndSetURL(JSONObject pusherData, String initialShareMessage) {
         boolean campaignFound = false;
         try {
             // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
-            JSONObject pusherData = new JSONObject(pusherString);
             JSONArray urlArray = pusherData.getJSONArray("urls");
 
             // Iterates throught all the urls in the PusherSDK object until we find one will a matching campaign ID
