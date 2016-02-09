@@ -4,7 +4,6 @@ import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
@@ -37,8 +36,6 @@ import javax.inject.Inject;
  * Prepares parameters and calls the different Api classes.
  */
 public class RequestManager { // TODO: Make final after UI tests figured out
-
-    @Inject protected AmbassadorConfig ambassadorConfig;
 
     @Inject protected Auth auth;
     @Inject protected User user;

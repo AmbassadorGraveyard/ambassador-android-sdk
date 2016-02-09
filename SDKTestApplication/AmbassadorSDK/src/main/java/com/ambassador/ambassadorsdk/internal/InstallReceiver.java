@@ -15,9 +15,6 @@ import javax.inject.Inject;
 
 public final class InstallReceiver extends BroadcastReceiver {
 
-    @Inject
-    protected AmbassadorConfig ambassadorConfig;
-
     @Inject protected User user;
     @Inject protected Campaign campaign;
 

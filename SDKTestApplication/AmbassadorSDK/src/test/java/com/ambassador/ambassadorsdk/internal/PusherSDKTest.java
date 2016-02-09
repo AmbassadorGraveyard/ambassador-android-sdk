@@ -40,7 +40,6 @@ import java.util.HashMap;
         PusherChannel.class,
         LocalBroadcastManager.class,
         Context.class,
-        AmbassadorConfig.class,
         Utilities.class,
         RequestManager.class
 })
@@ -48,7 +47,6 @@ public class PusherSDKTest {
 
     private PusherSDK pusherSDK;
     private RequestManager mockRequestManager;
-    private AmbassadorConfig mockAmbassadorConfig;
     private User user;
 
     @Before
@@ -64,11 +62,9 @@ public class PusherSDKTest {
         PowerMockito.spy(Utilities.class);
 
         mockRequestManager = PowerMockito.mock(RequestManager.class);
-        mockAmbassadorConfig = Mockito.mock(AmbassadorConfig.class);
         Auth auth = Mockito.mock(Auth.class);
         user = Mockito.mock(User.class);
         pusherSDK.requestManager = mockRequestManager;
-        pusherSDK.ambassadorConfig = mockAmbassadorConfig;
         pusherSDK.auth = auth;
         pusherSDK.user = user;
     }
@@ -128,8 +124,6 @@ public class PusherSDKTest {
     public void subscribePusherTest() throws Exception {
         // ARRANGE
         PusherSDK.PusherSubscribeCallback mockPusherSubscribeCallback = Mockito.mock(PusherSDK.PusherSubscribeCallback.class);
-
-        PowerMockito.mockStatic(AmbassadorConfig.class);
 
         HttpAuthorizer mockHttpAuthorizer = Mockito.mock(HttpAuthorizer.class);
         PowerMockito.whenNew(HttpAuthorizer.class).withAnyArguments().thenReturn(mockHttpAuthorizer);

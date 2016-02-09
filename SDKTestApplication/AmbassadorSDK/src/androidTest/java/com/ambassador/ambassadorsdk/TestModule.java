@@ -2,7 +2,6 @@ package com.ambassador.ambassadorsdk;
 
 import android.support.annotation.NonNull;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -30,13 +29,6 @@ public final class TestModule {
     @Singleton
     public BulkShareHelper provideBulkShareHelper() {
         return Mockito.mock(BulkShareHelper.class);
-    }
-
-    @NonNull
-    @Provides
-    @Singleton
-    public AmbassadorConfig provideAmbassadorConfig() {
-        return Mockito.mock(AmbassadorConfig.class);
     }
 
     @NonNull

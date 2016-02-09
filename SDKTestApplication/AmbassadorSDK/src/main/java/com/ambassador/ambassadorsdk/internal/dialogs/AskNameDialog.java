@@ -13,12 +13,11 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 
@@ -44,7 +43,6 @@ public final class AskNameDialog extends Dialog {
 
     // region Dependencies
     @Inject protected RequestManager    requestManager;
-    @Inject protected AmbassadorConfig  ambassadorConfig;
     @Inject protected User              user;
     @Inject protected Device            device;
     // endregion

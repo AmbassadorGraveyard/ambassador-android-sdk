@@ -14,7 +14,6 @@ import android.support.test.uiautomator.Until;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
@@ -57,7 +56,6 @@ public class MainActivityTest {
     private UiObject shortCodeEditText;
 
     @Inject protected PusherSDK pusherSDK;
-    @Inject protected AmbassadorConfig ambassadorConfig;
     @Inject protected User user;
     @Inject protected RequestManager requestManager;
 

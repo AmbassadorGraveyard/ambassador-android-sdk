@@ -34,7 +34,6 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
@@ -108,7 +107,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     // region Dependencies
     @Inject protected RequestManager        requestManager;
-    @Inject protected AmbassadorConfig      ambassadorConfig;
     @Inject protected Auth                  auth;
     @Inject protected User                  user;
     @Inject protected Campaign              campaign;
@@ -148,7 +146,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         // Other setup
         setUpShareManagers();
-        setUpAmbassadorConfig();
+        setUpAuth();
         setUpLockingScrollView();
         setUpOptions();
         setUpToolbar();
@@ -202,7 +200,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         smsManager = new SmsManager();
     }
 
-    protected void setUpAmbassadorConfig() {
+    protected void setUpAuth() {
         auth.nullifyTwitterIfInvalid(null);
         auth.nullifyLinkedInIfInvalid(null);
     }

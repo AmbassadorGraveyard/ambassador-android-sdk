@@ -17,19 +17,13 @@ import com.google.gson.JsonObject;
 
 import javax.inject.Inject;
 
-
 public class ConversionUtility {
 
     private ConversionParameters parameters;
     private ConversionDBHelper helper;
     private SQLiteDatabase db;
 
-    @Inject
-    RequestManager requestManager;
-
-    @Inject
-    AmbassadorConfig ambassadorConfig;
-
+    @Inject protected RequestManager requestManager;
     @Inject protected User user;
     @Inject protected Campaign campaign;
 
