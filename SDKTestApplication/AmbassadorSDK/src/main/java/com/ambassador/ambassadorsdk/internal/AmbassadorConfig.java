@@ -133,24 +133,10 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
         return sharePrefs.getString("universalID", null);
     }
 
-    public String getReferrerShortCode() { return sharePrefs.getString("referrerShortCode", null); }
-
     public String getReferralShortCode() { return sharePrefs.getString("referralShortCode", null); }
 
     public String getWebDeviceId() {
         return sharePrefs.getString("webDeviceId", null);
-    }
-
-    public String getUserFullName() {
-        return sharePrefs.getString("fullName", null);
-    }
-
-    public String getEmailSubjectLine() {
-        return sharePrefs.getString("subjectLine", null);
-    }
-
-    public String getUserEmail() {
-        return sharePrefs.getString("userEmail", null);
     }
 
     public boolean getConvertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }
