@@ -10,7 +10,7 @@ import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import org.json.JSONObject;
 
 public class AmbassadorConfig { // TODO: Make final after UI tests figured out
-    
+
     public static final Boolean isReleaseBuild = false;
 
     private Context context = AmbassadorSingleton.getInstanceContext();
@@ -21,14 +21,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
             return new StringResource(R.string.ambassador_api_url).getValue();
         } else {
             return new StringResource(R.string.ambassador_api_url_dev).getValue();
-        }
-    }
-
-    static String pusherCallbackURL() {
-        if (AmbassadorConfig.isReleaseBuild) {
-            return new StringResource(R.string.pusher_callback_url).getValue();
-        } else {
-            return new StringResource(R.string.pusher_callback_url_dev).getValue();
         }
     }
 

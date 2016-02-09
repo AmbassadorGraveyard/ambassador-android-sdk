@@ -113,7 +113,9 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
 
     public void subscribePusher(final PusherSubscribeCallback pusherSubscribeCallback) {
         // HttpAuthorizer is used to append headers and extra parameters to the initial PusherSDK authorization request
-        HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
+        int res = AmbassadorConfig.isReleaseBuild ? R.string.pusher_callback_url : R.string.pusher_callback_url_dev;
+        String callback = new StringResource(res).getValue();
+        HttpAuthorizer authorizer = new HttpAuthorizer(callback);
 
         HashMap<String, String> headers = new HashMap<>();
         headers.put("Authorization", auth.getUniversalToken());
