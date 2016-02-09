@@ -27,6 +27,7 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.services.StatusesService;
 
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +76,7 @@ public class RequestManagerTest {
     private String universalToken = "SDKToken ***REMOVED***";
     private String userFirstName = "Test";
     private String userLastName = "User";
-    private String identifyObject = "identifyObject";
+    private JSONObject identifyObject = Mockito.mock(JSONObject.class);
     private String campaignId = "260";
     private String userEmail = "user@test.com";
     private String linkedInToken = "linkedInToken";
@@ -191,7 +192,7 @@ public class RequestManagerTest {
         ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
         RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
         ConversionsApi.RegisterConversionRequestBody requestBody = Mockito.mock(ConversionsApi.RegisterConversionRequestBody.class);
-        BDDMockito.given(ConversionUtility.createConversionRequestBody(conversionParameters, identifyObject)).willReturn(requestBody);
+        BDDMockito.given(ConversionUtility.createConversionRequestBody(conversionParameters, identifyObject.toString())).willReturn(requestBody);
 
         // ACT
         requestManager.registerConversionRequest(conversionParameters, requestCompletion);

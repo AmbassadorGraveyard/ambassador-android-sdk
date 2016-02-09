@@ -20,7 +20,7 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
     public void setPusherInfo(String pusherObject) {
         sharePrefs.edit().putString("pusherObject", pusherObject).apply();
     }
-    
+
     public String getPusherInfo() { return sharePrefs.getString("pusherObject", null); }
 
     @Nullable
