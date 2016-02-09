@@ -3,6 +3,7 @@ package com.ambassador.demoapp;
 import android.content.Context;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
 import android.support.test.filters.SdkSuppress;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.test.uiautomator.By;
@@ -290,6 +291,7 @@ public class MainActivityTest {
         PusherChannel.setConnectionState(ConnectionState.DISCONNECTED);
         PusherChannel.setExpiresAt(new Date(100));
         shoeRaf.clickAndWaitForNewWindow();
+        Thread.sleep(1000); // Give it time to close with error
 
         // ASSERT
         Assert.assertTrue(referFragment.exists());
@@ -326,12 +328,14 @@ public class MainActivityTest {
 
         campaignIdField.click();
         campaignIdField.setText("260");
+        closeSoftKeyboard();
         shoeRaf.clickAndWaitForNewWindow();
         String url1 = shortCodeEditText.getText();
         device.pressBack();
 
         campaignIdField.click();
         campaignIdField.setText("999");
+        closeSoftKeyboard();
         shoeRaf.clickAndWaitForNewWindow();
         String url2 = shortCodeEditText.getText();
         device.pressBack();
@@ -434,6 +438,15 @@ public class MainActivityTest {
 
     private void swipeToLeftPage() {
         device.swipe(100, height / 2, width - 100, height / 2, 10);
+    }
+
+    private void closeSoftKeyboard() {
+        Espresso.closeSoftKeyboard();
+        try {
+            Thread.sleep(500);
+        } catch (Exception e) {
+            //
+        }
     }
 
     private void mockAmbassadorSDK() {
