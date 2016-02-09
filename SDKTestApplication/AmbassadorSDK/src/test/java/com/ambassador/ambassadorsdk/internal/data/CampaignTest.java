@@ -46,6 +46,7 @@ public class CampaignTest {
         // ARRANGE
         Campaign campaign = new Campaign();
         campaign.id = "260";
+        campaign.url = "url";
         campaign.shortCode = "shortCode";
         campaign.emailSubject = "emailSubject";
         campaign.shareMessage = "shareMessage";
@@ -56,7 +57,7 @@ public class CampaignTest {
 
         // ASSERT
         Mockito.verify(context).getSharedPreferences(Mockito.eq("campaign"), Mockito.eq(Context.MODE_PRIVATE));
-        Mockito.verify(editor).putString(Mockito.eq("260"), Mockito.eq("{\"id\":\"260\",\"shortCode\":\"shortCode\",\"shareMessage\":\"shareMessage\",\"emailSubject\":\"emailSubject\",\"referredByShortCode\":\"shortCode\"}"));
+        Mockito.verify(editor).putString(Mockito.eq("260"), Mockito.eq("{\"id\":\"260\",\"url\":\"url\",\"shortCode\":\"shortCode\",\"shareMessage\":\"shareMessage\",\"emailSubject\":\"emailSubject\",\"referredByShortCode\":\"shortCode\"}"));
         Mockito.verify(editor).apply();
     }
 
@@ -67,11 +68,11 @@ public class CampaignTest {
 
         Campaign campaign = new Campaign();
         campaign.id = "260";
+        campaign.url = "url";
         campaign.shortCode = "shortCode";
         campaign.emailSubject = "emailSubject";
         campaign.shareMessage = "shareMessage";
         campaign.referredByShortCode = "shortCode";
-
 
         // ACT
         campaign.save();
@@ -88,6 +89,7 @@ public class CampaignTest {
         // ARRANGE
         Campaign campaign = new Campaign();
         campaign.id = "260";
+        campaign.url = "url";
         campaign.shortCode = "shortCode";
         campaign.emailSubject = "emailSubject";
         campaign.shareMessage = "shareMessage";
@@ -98,6 +100,7 @@ public class CampaignTest {
 
         // ASSERT
         Assert.assertNull(campaign.getId());
+        Assert.assertNull(campaign.getUrl());
         Assert.assertNull(campaign.getShortCode());
         Assert.assertNull(campaign.getEmailSubject());
         Assert.assertNull(campaign.getShareMessage());
@@ -112,13 +115,14 @@ public class CampaignTest {
 
         // ACT
         campaign.setId("260");
+        campaign.setUrl("url");
         campaign.setShortCode("shortCode");
         campaign.setEmailSubject("emailSubject");
         campaign.setShareMessage("shareMessage");
         campaign.setReferredByShortCode("shortCode");
 
         // ASSERT
-        Mockito.verify(campaign, Mockito.times(5)).save();
+        Mockito.verify(campaign, Mockito.times(6)).save();
     }
 
 }

@@ -14,6 +14,7 @@ public class Campaign {
 
     // region Fields
     protected String id;
+    protected String url;
     protected String shortCode;
     protected String shareMessage;
     protected String emailSubject;
@@ -27,6 +28,15 @@ public class Campaign {
 
     public void setId(String id) {
         this.id = id;
+        save();
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
         save();
     }
 
@@ -85,6 +95,7 @@ public class Campaign {
      */
     public void clear() {
         id = null;
+        url = null;
         shortCode = null;
         shareMessage = null;
         emailSubject = null;
