@@ -1,6 +1,9 @@
 package com.ambassador.ambassadorsdk.internal.api;
 
+import android.support.annotation.Nullable;
+
 import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
@@ -15,6 +18,7 @@ import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterApiClient;
@@ -287,17 +291,22 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param code the request code that the OAuth gave us
      * @return a String form of LinkedIn's required form urlencoded params
      */
-    String createLinkedInLoginBody(String code) {
+    @Nullable
+    protected String createLinkedInLoginBody(String code) {
         String urlParams = "";
         String charset = "UTF-8";
+        String callbackUrl = new StringResource(R.string.linked_in_callback_url).getValue();
+        String clientId = new StringResource(R.string.linked_in_client_id).getValue();
+        String clientSecret = new StringResource(R.string.linked_in_client_secret).getValue();
         try {
             urlParams = "grant_type=authorization_code&code=" + URLEncoder.encode(code, charset) +
-                    "&redirect_uri=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CALLBACK_URL, charset) +
-                    "&client_id=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_ID, charset) +
-                    "&client_secret=" + URLEncoder.encode(AmbassadorConfig.LINKED_IN_CLIENT_SECRET, charset);
+                    "&redirect_uri=" + URLEncoder.encode(callbackUrl, charset) +
+                    "&client_id=" + URLEncoder.encode(clientId, charset) +
+                    "&client_secret=" + URLEncoder.encode(clientSecret, charset);
         } catch (UnsupportedEncodingException e) {
-
+            return null;
         }
+
         return urlParams;
     }
 
