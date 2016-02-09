@@ -468,9 +468,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 int myUID = Integer.parseInt(campaign.getId());
                 if (campID == myUID) {
                     etShortUrl.setText(urlObj.getString("url"));
-                    ambassadorConfig.setURL(urlObj.getString("url"));
-                    ambassadorConfig.setReferrerShortCode(urlObj.getString("short_code"));
-                    ambassadorConfig.setEmailSubject(urlObj.getString("subject"));
+                    campaign.setUrl(urlObj.getString("url"));
+                    campaign.setShortCode(urlObj.getString("short_code"));
+                    campaign.setEmailSubject(urlObj.getString("subject"));
                     campaignFound = true;
 
                     //check for weird multiple URL issue seen occasionally
@@ -626,7 +626,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         public void onShareRequested() {
             ShareLinkContent content = new ShareLinkContent.Builder()
                     .setContentTitle(raf.getDefaultShareMessage())
-                    .setContentUrl(Uri.parse(ambassadorConfig.getURL()))
+                    .setContentUrl(Uri.parse(campaign.getUrl()))
                     .build();
             callbackManager = CallbackManager.Factory.create();
 
@@ -696,8 +696,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void needAuth() {
-                        ambassadorConfig.setTwitterAccessTokenSecret(null);
-                        ambassadorConfig.setTwitterAccessToken(null);
+                        auth.setTwitterSecret(null);
+                        auth.setTwitterToken(null);
                         TwitterCore.getInstance().getSessionManager().clearActiveSession();
                         requestReauthTwitter();
                     }
@@ -708,8 +708,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 twitterAuthClient.authorize(AmbassadorActivity.this, new Callback<TwitterSession>() {
                     @Override
                     public void success(Result<TwitterSession> result) {
-                        ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
-                        ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
+                        auth.setTwitterToken(result.data.getAuthToken().token);
+                        auth.setTwitterSecret(result.data.getAuthToken().secret);
                         Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
                     }
 
@@ -757,7 +757,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void needAuth() {
-                        ambassadorConfig.setLinkedInToken(null);
+                        auth.setLinkedInToken(null);
                         requestReauthLinkedIn();
                     }
                 });
