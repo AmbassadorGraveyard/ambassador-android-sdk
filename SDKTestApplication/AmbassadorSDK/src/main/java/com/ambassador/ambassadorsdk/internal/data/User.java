@@ -20,6 +20,7 @@ public class User {
     protected String email;
     protected String gcmToken;
     protected AugurData augurData;
+    protected String webDeviceId;
     // endregion
 
     // region Getters / Setters
@@ -67,6 +68,15 @@ public class User {
         this.augurData = augurData;
         save();
     }
+
+    public String getWebDeviceId() {
+        return webDeviceId;
+    }
+
+    public void setWebDeviceId(String webDeviceId) {
+        this.webDeviceId = webDeviceId;
+        save();
+    }
     // endregion
 
     // region Persistence methods
@@ -91,6 +101,7 @@ public class User {
         email = null;
         gcmToken = null;
         augurData = null;
+        webDeviceId = null;
     }
     // endregion
 
