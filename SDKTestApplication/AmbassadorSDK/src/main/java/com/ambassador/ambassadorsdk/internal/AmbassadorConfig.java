@@ -69,24 +69,12 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
         sharePrefs.edit().putString("identifyObject", objectString).apply();
     }
 
-    public void setCampaignID(String campaignID) {
-        sharePrefs.edit().putString("campaignID", campaignID).apply();
-    }
-
     public void setPusherInfo(String pusherObject) {
         sharePrefs.edit().putString("pusherObject", pusherObject).apply();
     }
 
     public void setURL(String url) {
         sharePrefs.edit().putString("url", url).apply();
-    }
-
-    public void setUniversalToken(String univKey) {
-        sharePrefs.edit().putString("universalToken", univKey).apply();
-    }
-
-    public void setUniversalID(String univID) {
-        sharePrefs.edit().putString("universalID", univID).apply();
     }
 
     public void setReferrerShortCode(String shortCode) {
@@ -111,10 +99,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
 
     public void setRafDefaultMessage(String message) {
         rafParameters.defaultShareMessage = message;
-    }
-
-    public void setUserEmail(String email) {
-        sharePrefs.edit().putString("userEmail", email).apply();
     }
 
     public void setRafParameters(String defaultShareMessage, String titleText, String descriptionText, String toolbarTitle) {
