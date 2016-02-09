@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
-import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
-
 import org.json.JSONObject;
 
 public class AmbassadorConfig { // TODO: Make final after UI tests figured out
@@ -15,15 +12,7 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
 
     private Context context = AmbassadorSingleton.getInstanceContext();
     private SharedPreferences sharePrefs;
-
-    public static String ambassadorApiUrl() {
-        if (AmbassadorConfig.isReleaseBuild) {
-            return new StringResource(R.string.ambassador_api_url).getValue();
-        } else {
-            return new StringResource(R.string.ambassador_api_url_dev).getValue();
-        }
-    }
-
+    
     public AmbassadorConfig() {
         sharePrefs = context.getSharedPreferences("appContext", Context.MODE_PRIVATE);
     }

@@ -1,6 +1,8 @@
 package com.ambassador.ambassadorsdk.internal.api.identify;
 
+import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 import retrofit.Callback;
 import retrofit.http.Body;
@@ -15,7 +17,7 @@ import retrofit.http.Query;
 public interface IdentifyClient {
 
     /** Base url for api methods */
-    String ENDPOINT = AmbassadorConfig.ambassadorApiUrl();
+    String ENDPOINT = new StringResource(AmbassadorConfig.isReleaseBuild ? R.string.ambassador_api_url : R.string.ambassador_api_url_dev).getValue();
 
     /**
      * https://api.getambassador.com/universal/action/identify/
