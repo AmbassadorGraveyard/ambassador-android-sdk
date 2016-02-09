@@ -25,10 +25,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
         sharePrefs.edit().putString("pusherObject", pusherObject).apply();
     }
 
-    public void setWebDeviceId(String deviceId) {
-        sharePrefs.edit().putString("webDeviceId", deviceId).apply();
-    }
-    
     public String getIdentifyObject() { return sharePrefs.getString("identifyObject", null); }
 
     public String getPusherInfo() { return sharePrefs.getString("pusherObject", null); }
@@ -40,10 +36,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
         } catch (Exception e) {
             return null;
         }
-    }
-
-    public String getWebDeviceId() {
-        return sharePrefs.getString("webDeviceId", null);
     }
 
     public boolean getConvertedOnInstall() { return sharePrefs.getBoolean("installConversion", false); }

@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
@@ -20,6 +21,8 @@ public class IdentifyAugurSDK implements IIdentify {
 
     @Inject
     AmbassadorConfig ambassadorConfig;
+
+    @Inject protected User user;
 
     public IdentifyAugurSDK() {
         AmbassadorSingleton.getInstanceComponent().inject(this);
@@ -61,9 +64,9 @@ public class IdentifyAugurSDK implements IIdentify {
                     JSONObject device = jsonObject.getJSONObject("device");
 
                     //if the webDeviceId has been received on the querystring and it's different than what augur returns, override augur deviceId
-                    if (ambassadorConfig.getWebDeviceId() != null && !device.getString("ID").equals(ambassadorConfig.getWebDeviceId())) {
+                    if (user.getWebDeviceId() != null && !device.getString("ID").equals(user.getWebDeviceId())) {
                         device.remove("ID");
-                        device.put("ID", ambassadorConfig.getWebDeviceId());
+                        device.put("ID", user.getWebDeviceId());
                     }
 
                     device.put("type", new Device().getType());

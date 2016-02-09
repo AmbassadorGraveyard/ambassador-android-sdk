@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,6 +18,7 @@ public final class InstallReceiver extends BroadcastReceiver {
     @Inject
     protected AmbassadorConfig ambassadorConfig;
 
+    @Inject protected User user;
     @Inject protected Campaign campaign;
 
     public InstallReceiver() {
@@ -48,7 +50,7 @@ public final class InstallReceiver extends BroadcastReceiver {
             return;
         }
 
-        ambassadorConfig.setWebDeviceId(webDeviceId);
+        user.setWebDeviceId(webDeviceId);
         campaign.setReferredByShortCode(referralShortCode);
 
         Utilities.debugLog("Conversion", "webDeviceId: " + webDeviceId);
@@ -66,7 +68,7 @@ public final class InstallReceiver extends BroadcastReceiver {
                 //if the webDeviceId has been received on the querystring and it's different than what augur returns, override augur deviceId
                 if (webDeviceId != null && !device.getString("ID").equals(webDeviceId)) {
                     device.remove("ID");
-                    device.put("ID", ambassadorConfig.getWebDeviceId());
+                    device.put("ID",  user.getWebDeviceId());
                     identity.remove("device");
                     identity.put("device", device);
                     ambassadorConfig.setIdentifyObject(identity.toString());
