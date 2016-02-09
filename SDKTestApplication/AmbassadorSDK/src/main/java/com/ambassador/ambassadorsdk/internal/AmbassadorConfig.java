@@ -28,13 +28,7 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
     public void setWebDeviceId(String deviceId) {
         sharePrefs.edit().putString("webDeviceId", deviceId).apply();
     }
-
-    public String getLinkedInToken() { return sharePrefs.getString("linkedInToken", null); }
-
-    public String getTwitterAccessToken() {
-        return sharePrefs.getString("twitterToken", null);
-    }
-
+    
     public String getIdentifyObject() { return sharePrefs.getString("identifyObject", null); }
 
     public String getPusherInfo() { return sharePrefs.getString("pusherObject", null); }
