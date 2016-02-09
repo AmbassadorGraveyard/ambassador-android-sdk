@@ -88,10 +88,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
         sharePrefs.edit().putString("webDeviceId", deviceId).apply();
     }
 
-    public void setUserFullName(String firstName, String lastName) {
-        sharePrefs.edit().putString("fullName", firstName + " " + lastName).apply();
-    }
-
     public void setEmailSubject(String subjectLine) {
         sharePrefs.edit().putString("subjectLine", subjectLine).apply();
     }
@@ -108,10 +104,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
 
     public String getIdentifyObject() { return sharePrefs.getString("identifyObject", null); }
 
-    public String getCampaignID() {
-        return sharePrefs.getString("campaignID", null);
-    }
-
     public String getPusherInfo() { return sharePrefs.getString("pusherObject", null); }
 
     @Nullable
@@ -125,12 +117,6 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
 
     public String getURL() {
         return sharePrefs.getString("url", null);
-    }
-
-    public String getUniversalKey() { return sharePrefs.getString("universalToken", null); }
-
-    public String getUniversalID() {
-        return sharePrefs.getString("universalID", null);
     }
 
     public String getReferralShortCode() { return sharePrefs.getString("referralShortCode", null); }

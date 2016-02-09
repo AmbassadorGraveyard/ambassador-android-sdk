@@ -16,6 +16,7 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
@@ -44,6 +45,7 @@ public final class AskNameDialog extends Dialog {
     // region Dependencies
     @Inject protected RequestManager    requestManager;
     @Inject protected AmbassadorConfig  ambassadorConfig;
+    @Inject protected User              user;
     @Inject protected Device            device;
     // endregion
 
@@ -85,7 +87,6 @@ public final class AskNameDialog extends Dialog {
                 cancelClicked();
             }
         });
-
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +128,8 @@ public final class AskNameDialog extends Dialog {
         requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-                ambassadorConfig.setUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
+                user.setFirstName(etFirstName.getText().toString());
+                user.setLastName(etLastName.getText().toString());
                 pd.dismiss();
                 hide();
             }
