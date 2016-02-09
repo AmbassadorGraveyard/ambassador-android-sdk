@@ -49,8 +49,6 @@ public class PusherSDKTest {
     private PusherSDK pusherSDK;
     private RequestManager mockRequestManager;
     private AmbassadorConfig mockAmbassadorConfig;
-    private Auth auth;
-    private User user;
 
     @Before
     public void setUp() throws Exception {
@@ -66,8 +64,8 @@ public class PusherSDKTest {
 
         mockRequestManager = PowerMockito.mock(RequestManager.class);
         mockAmbassadorConfig = Mockito.mock(AmbassadorConfig.class);
-        auth = Mockito.mock(Auth.class);
-        user = Mockito.mock(User.class);
+        Auth auth = Mockito.mock(Auth.class);
+        User user = Mockito.mock(User.class);
         pusherSDK.requestManager = mockRequestManager;
         pusherSDK.ambassadorConfig = mockAmbassadorConfig;
         pusherSDK.auth = auth;

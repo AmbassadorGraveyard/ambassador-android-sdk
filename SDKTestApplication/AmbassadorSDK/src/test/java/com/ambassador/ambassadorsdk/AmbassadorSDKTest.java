@@ -48,7 +48,6 @@ public class AmbassadorSDKTest {
 
     private Auth auth;
     private User user;
-    private Campaign campaign;
 
     private PusherSDK pusherSDK;
 
@@ -74,7 +73,7 @@ public class AmbassadorSDKTest {
         user = Mockito.mock(User.class);
         AmbassadorSDK.user = user;
 
-        campaign = Mockito.mock(Campaign.class);
+        Campaign campaign = Mockito.mock(Campaign.class);
         AmbassadorSDK.campaign = campaign;
 
         pusherSDK = Mockito.mock(PusherSDK.class);
