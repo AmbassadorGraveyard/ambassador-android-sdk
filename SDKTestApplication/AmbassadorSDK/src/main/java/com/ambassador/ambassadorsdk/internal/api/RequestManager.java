@@ -183,7 +183,7 @@ public class RequestManager { // TODO: Make final after UI tests figured out
 
         String campaignId = campaign.getId();
         String userEmail = user.getEmail();
-        String augur = user.getAugurData().toString();
+        String augur = user.getAugurData() != null ? user.getAugurData().toString() : null;
         IdentifyApi.IdentifyRequestBody body = new IdentifyApi.IdentifyRequestBody(campaignId, userEmail, augur);
 
         identifyApi.identifyRequest(sessionId, requestId, uid, authKey, body);
