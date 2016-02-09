@@ -116,14 +116,14 @@ public final class AskNameDialog extends Dialog {
     }
 
     private void updateName(@NonNull final String firstName, @NonNull final String lastName) throws JSONException {
-        JSONObject pusherData = ambassadorConfig.getPusherInfoObject();
+        JSONObject pusherData = user.getPusherInfo();
         if (pusherData == null) return;
 
         pusherData.put("firstName", firstName);
         pusherData.put("lastName", lastName);
 
         pd.show();
-        ambassadorConfig.setPusherInfo(pusherData.toString());
+        user.setPusherInfo(pusherData);
 
         requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
             @Override

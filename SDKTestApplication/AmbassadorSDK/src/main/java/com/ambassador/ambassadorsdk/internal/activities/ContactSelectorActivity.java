@@ -46,6 +46,7 @@ import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskUrlDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
@@ -102,6 +103,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     @Inject protected PusherSDK         pusherSDK;
     @Inject protected BulkShareHelper   bulkShareHelper;
     @Inject protected AmbassadorConfig  ambassadorConfig;
+    @Inject protected User              user;
     @Inject protected Campaign          campaign;
     @Inject protected Device            device;
     // endregion
@@ -328,7 +330,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     }
 
     private void setUpPusher() {
-        pusherData = ambassadorConfig.getPusherInfoObject();
+        pusherData = user.getPusherInfo();
         pusherSDK.setIdentifyListener(this);
     }
     // endregion

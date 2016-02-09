@@ -19,10 +19,12 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.pusher.client.connection.ConnectionState;
 
 import org.hamcrest.Matchers;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,6 +58,7 @@ public class MainActivityTest {
 
     @Inject protected PusherSDK pusherSDK;
     @Inject protected AmbassadorConfig ambassadorConfig;
+    @Inject protected User user;
     @Inject protected RequestManager requestManager;
 
     @Singleton
@@ -65,7 +68,7 @@ public class MainActivityTest {
     }
 
     @Before
-    public void startMainActivityFromHomeScreen() {
+    public void startMainActivityFromHomeScreen() throws Exception {
         this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         this.width = device.getDisplayWidth();
         this.height = device.getDisplayWidth();
@@ -303,8 +306,8 @@ public class MainActivityTest {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
         UiObject referFragment = getUi("referFragment");
-        String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[]}";
-        Mockito.when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
+        JSONObject pusherResponse = new JSONObject("{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[]}");
+        Mockito.when(user.getPusherInfo()).thenReturn(pusherResponse);
 
         // ACT
         Demo.get().identify("jake@getambassador.com");
@@ -449,9 +452,9 @@ public class MainActivityTest {
         }
     }
 
-    private void mockAmbassadorSDK() {
-        String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jzqC\",\"short_code\":\"jzqC\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}, {\"url\":\"http://staging.mbsy.co\\/ljTq\",\"short_code\":\"ljTq\",\"campaign_uid\":999,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
-        Mockito.when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
+    private void mockAmbassadorSDK() throws Exception {
+        JSONObject pusherResponse = new JSONObject("{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jzqC\",\"short_code\":\"jzqC\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}, {\"url\":\"http://staging.mbsy.co\\/ljTq\",\"short_code\":\"ljTq\",\"campaign_uid\":999,\"subject\":\"Check out BarderrTahwn ®!\"}]}");
+        Mockito.when(user.getPusherInfo()).thenReturn(pusherResponse);
 
         Mockito.doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {

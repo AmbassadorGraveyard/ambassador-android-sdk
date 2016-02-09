@@ -49,6 +49,7 @@ public class PusherSDKTest {
     private PusherSDK pusherSDK;
     private RequestManager mockRequestManager;
     private AmbassadorConfig mockAmbassadorConfig;
+    private User user;
 
     @Before
     public void setUp() throws Exception {
@@ -65,7 +66,7 @@ public class PusherSDKTest {
         mockRequestManager = PowerMockito.mock(RequestManager.class);
         mockAmbassadorConfig = Mockito.mock(AmbassadorConfig.class);
         Auth auth = Mockito.mock(Auth.class);
-        User user = Mockito.mock(User.class);
+        user = Mockito.mock(User.class);
         pusherSDK.requestManager = mockRequestManager;
         pusherSDK.ambassadorConfig = mockAmbassadorConfig;
         pusherSDK.auth = auth;
@@ -209,7 +210,7 @@ public class PusherSDKTest {
         Mockito.when(pusherObject.getJSONArray(Mockito.anyString())).thenReturn(new JSONArray());
         Mockito.when(pusherSave.put(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
         Mockito.when(pusherSave.put(Mockito.anyString(), Mockito.any(JSONArray.class))).thenReturn(null);
-        Mockito.doNothing().when(mockAmbassadorConfig).setPusherInfo(Mockito.anyString());
+        Mockito.doNothing().when(user).setPusherInfo(Mockito.any(JSONObject.class));
 
         PowerMockito.mockStatic(LocalBroadcastManager.class);
         PowerMockito.mockStatic(AmbassadorSingleton.class);
@@ -223,7 +224,7 @@ public class PusherSDKTest {
         pusherSDK.setPusherInfo(jsonObject);
 
         // ASSERT
-        Mockito.verify(mockAmbassadorConfig).setPusherInfo(Mockito.anyString());
+        Mockito.verify(user).setPusherInfo(Mockito.eq(pusherSave));
         Mockito.verify(mockLocalBroadcastManager).sendBroadcast(Mockito.any(Intent.class));
     }
 

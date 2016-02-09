@@ -20,6 +20,7 @@ public class User {
     protected String lastName;
     protected String email;
     protected String gcmToken;
+    protected JSONObject pusherInfo;
     protected JSONObject augurData;
     protected String webDeviceId;
     // endregion
@@ -58,6 +59,15 @@ public class User {
 
     public void setGcmToken(String gcmToken) {
         this.gcmToken = gcmToken;
+        save();
+    }
+
+    public JSONObject getPusherInfo() {
+        return pusherInfo;
+    }
+
+    public void setPusherInfo(JSONObject pusherInfo) {
+        this.pusherInfo = pusherInfo;
         save();
     }
 
