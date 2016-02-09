@@ -29,7 +29,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -297,25 +296,6 @@ public class AmbassadorConfigTest {
         // ASSERT
         verify(editor).putString("userEmail", testValue);
         verify(editor).apply();
-    }
-
-    @Test
-    public void setRafParametersTest() throws Exception {
-        // ARRANGE
-        String testValue1 = "test1";
-        String testValue2 = "test2";
-        String testValue3 = "test3";
-        String testValue4 = "test4";
-        AmbassadorConfig ambassadorConfig = new AmbassadorConfig();
-
-        // ACT
-        ambassadorConfig.setRafParameters(testValue1, testValue2, testValue3, testValue4);
-
-        // ASSERT
-        assertEquals(testValue1, ambassadorConfig.getRafParameters().defaultShareMessage);
-        assertEquals(testValue2, ambassadorConfig.getRafParameters().titleText);
-        assertEquals(testValue3, ambassadorConfig.getRafParameters().descriptionText);
-        assertEquals(testValue4, ambassadorConfig.getRafParameters().toolbarTitle);
     }
 
     /** End Setter Tests */
