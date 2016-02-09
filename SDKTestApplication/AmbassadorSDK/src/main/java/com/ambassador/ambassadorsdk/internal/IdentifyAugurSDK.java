@@ -22,6 +22,7 @@ public class IdentifyAugurSDK implements IIdentify {
     @Inject
     AmbassadorConfig ambassadorConfig;
 
+    @Inject protected Device deviceObj;
     @Inject protected User user;
 
     public IdentifyAugurSDK() {
@@ -69,7 +70,7 @@ public class IdentifyAugurSDK implements IIdentify {
                         device.put("ID", user.getWebDeviceId());
                     }
 
-                    device.put("type", new Device().getType());
+                    device.put("type", deviceObj.getType());
                     jsonObject.put("device", device);
 
                     Utilities.debugLog("Augur", "Augur successfully received through SDK call");
