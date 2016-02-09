@@ -53,4 +53,10 @@ public final class TestModule {
         return Mockito.mock(Device.class);
     }
 
+    @NonNull
+    @Provides
+    public RAFOptions provideRAFOptions() {
+        return RAFOptions.get();
+    }
+
 }
