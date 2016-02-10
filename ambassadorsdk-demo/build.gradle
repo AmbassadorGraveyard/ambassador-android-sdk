@@ -4,7 +4,7 @@ apply plugin: 'com.neenbedankt.android-apt'
 repositories {
     maven { url 'http://clojars.org/repo' }
     flatDir {
-        dirs '../AmbassadorSDK/libs'
+        dirs '../ambassadorsdk/libs'
     }
 }
 
@@ -40,7 +40,7 @@ dependencies {
             'com.google.dagger:dagger:2.0'
     )
 
-    compile project(':ambassadorsdk2')
+    compile project(':ambassadorsdk')
 
     provided (
             'org.glassfish:javax.annotation:10.0-b28'
