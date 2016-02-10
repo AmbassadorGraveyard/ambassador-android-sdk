@@ -5,8 +5,8 @@ def ignoredByJacoco = [
         'app'
 ]
 
-subprojects { prj ->
-    if (!ignoredByJacoco.contains(prj.name)) {
+subprojects { project ->
+    if (!ignoredByJacoco.contains(project.name)) {
 
         apply plugin: 'jacoco'
 
@@ -97,64 +97,4 @@ subprojects { prj ->
 
 jacoco {
     toolVersion '0.7.2.201409121644'
-}
-
-task jacocoFullReport(type: JacocoReport, group: 'Coverage reports') {
-    group = 'Reporting'
-    description = 'Generates an aggregate report from all subprojects'
-
-    def projects = new ArrayList()
-    subprojects.each { prj ->
-        if (!ignoredByJacoco.contains(prj.name)) {
-            projects.add(prj)
-        }
-    }
-
-    dependsOn(projects.jacocoReport)
-
-    additionalSourceDirs = generateSourceFiles(projects)
-    sourceDirectories = generateSourceFiles(projects)
-    classDirectories = generateClassDirs(projects)
-    executionData = files(projects.jacocoReport.executionData)
-
-    reports {
-        html {
-            enabled true
-            destination 'build/reports/jacoco/full'
-        }
-        xml {
-            enabled true
-            destination 'build/reports/jacoco/full/jacocoFullReport.xml'
-        }
-    }
-
-    doFirst {
-        executionData = files(executionData.findAll { it.exists() })
-    }
-}
-
-FileCollection generateSourceFiles(Collection projects) {
-    def dirs = []
-
-    projects.each { prj ->
-        dirs.add("${prj.name}/src/main/java")
-    }
-
-    return files(dirs)
-}
-
-FileCollection generateClassDirs(Collection projects) {
-    def tree = fileTree('directory does not exists')
-
-    projects.each { prj ->
-        tree += fileTree(
-                dir: "${prj.name}/build/intermediates/classes/debug",
-                excludes: [
-                        '**/R*.class',
-                        '**/BuildConfig*'
-                ]
-        )
-    }
-
-    return tree
 }
