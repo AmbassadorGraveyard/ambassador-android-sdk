@@ -79,3 +79,5 @@ dependencies {
         provided "${it}"
     }
 }
+
+apply from: rootProject.file('gradle/jacoco.gradle')
