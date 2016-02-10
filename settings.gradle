@@ -1,2 +1,2 @@
-include ':app', ':AmbassadorSDK'
+include ':ambassadorsdk-demo', ':AmbassadorSDK'
 
