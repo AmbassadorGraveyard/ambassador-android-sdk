@@ -40,7 +40,7 @@ dependencies {
             'com.google.dagger:dagger:2.0'
     )
 
-    compile project(':AmbassadorSDK')
+    compile project(':ambassadorsdk2')
 
     provided (
             'org.glassfish:javax.annotation:10.0-b28'

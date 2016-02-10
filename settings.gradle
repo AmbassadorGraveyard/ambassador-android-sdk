@@ -1,2 +1,2 @@
-include ':ambassadorsdk-demo', ':AmbassadorSDK'
+include ':ambassadorsdk-demo', ':ambassadorsdk2'
 
