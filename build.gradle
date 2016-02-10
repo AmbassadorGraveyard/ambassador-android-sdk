@@ -19,6 +19,8 @@ subprojects { -> project
     }
 }
 
+apply from: file('gradle/jacoco.gradle')
+
 ext {
     minSdkVersion = 16
     targetSdkVersion = 23
@@ -47,30 +49,20 @@ ext.deps = [
         dagger_compiler:'com.google.dagger:dagger-compiler:2.0',
 
         // provided
-        glassfish_annotation: 'org.glassfish:javax.annotation:10.0-b28'
+        glassfish_annotation: 'org.glassfish:javax.annotation:10.0-b28',
+
+
+        // tests
+        mockito: 'org.mockito:mockito-core:1.10.19',
+        dexmaker: 'com.google.dexmaker:dexmaker:1.2',
+        dexmaker_mockito: 'com.google.dexmaker:dexmaker-mockito:1.2',
+        test_runner: 'com.android.support.test:runner:0.3',
+        test_rules: 'com.android.support.test:rules:0.3',
+        espresso_core: 'com.android.support.test.espresso:espresso-core:2.2',
+        espresso_intents: 'com.android.support.test.espresso:espresso-intents:2.2',
+        espresso_contrib: 'com.android.support.test.espresso:espresso-contrib:2.2',
+        junit: 'junit:junit:4.12',
+        powermock: 'org.powermock:powermock-module-junit4:1.6.2',
+        powermock_mockito: 'org.powermock:powermock-module-test-mockito-junit4:1.6.2',
 ]
 
-ext.sdkCompile = [
-        deps.appCompat,
-        deps.recyclerView,
-        deps.ga,
-        deps.gcm,
-        deps.guava,
-        deps.pusher,
-        deps.slf4j,
-        deps.okhttp,
-        deps.retrofit,
-        deps.gson,
-        deps.dagger,
-        deps.facebook,
-        deps.butterfork,
-]
-
-ext.sdkApt = [
-        deps.butterfork_compiler,
-        deps.dagger_compiler,
-]
-
-ext.sdkProvided = [
-        deps.glassfish_annotation,
-]

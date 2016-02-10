@@ -49,6 +49,8 @@ android {
     }
 }
 
+apply from: rootProject.file('gradle/dependencies.gradle')
+
 dependencies {
     compile (name: 'augur', ext: 'aar')
     compile (name: 'fabric', ext: 'aar')
@@ -65,6 +67,20 @@ dependencies {
     rootProject.ext.sdkProvided.each {
         provided "${it}"
     }
-}
 
-apply from: rootProject.file('gradle/jacoco.gradle')
+    rootProject.ext.sdkTestCompile.each {
+        testCompile "${it}"
+    }
+
+    rootProject.ext.sdkTestApt.each {
+        testApt "${it}"
+    }
+
+    rootProject.ext.sdkAndroidTestCompile.each {
+        androidTestCompile "${it}"
+    }
+
+    rootProject.ext.sdkAndroidTestApt.each {
+        androidTestApt "${it}"
+    }
+}
