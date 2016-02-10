@@ -4,6 +4,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -87,10 +88,14 @@ public final class MainActivity extends AppCompatActivity {
         public TabFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             tabs = new TabModel[4];
-            tabs[0] = new TabModel("Login", R.drawable.ic_login, new LoginFragment());
-            tabs[1] = new TabModel("Sign Up", R.drawable.ic_signup, new SignupFragment());
-            tabs[2] = new TabModel("Buy Now", R.drawable.ic_buy, new StoreFragment());
-            tabs[3] = new TabModel("Refer a Friend", R.drawable.ic_raf, new ReferFragment());
+            tabs[0] = new TabModel("Login", R.drawable.ic_login, new LoginFragment())
+                    .setContentDescription("loginTab");
+            tabs[1] = new TabModel("Sign Up", R.drawable.ic_signup, new SignupFragment())
+                    .setContentDescription("signupTab");
+            tabs[2] = new TabModel("Buy Now", R.drawable.ic_buy, new StoreFragment())
+                    .setContentDescription("storeTab");
+            tabs[3] = new TabModel("Refer a Friend", R.drawable.ic_raf, new ReferFragment())
+                    .setContentDescription("referTab");
         }
 
         @Override
@@ -113,7 +118,14 @@ public final class MainActivity extends AppCompatActivity {
             TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
             tvTitle.setText(tabs[position].getTitle());
 
+            view.setContentDescription(getContentDescription(position));
+
             return view;
+        }
+
+        @Nullable
+        public String getContentDescription(int position) {
+            return tabs[position].getContentDescription();
         }
 
         private final class TabModel {
@@ -121,6 +133,7 @@ public final class MainActivity extends AppCompatActivity {
             private String title;
             private int drawableId;
             private Fragment fragment;
+            private String contentDescription;
 
             public TabModel(String title, @DrawableRes int drawableId, Fragment fragment) {
                 this.title = title;
@@ -138,6 +151,15 @@ public final class MainActivity extends AppCompatActivity {
 
             public Fragment getFragment() {
                 return fragment;
+            }
+
+            public TabModel setContentDescription(String contentDescription) {
+                this.contentDescription = contentDescription;
+                return this;
+            }
+
+            public String getContentDescription() {
+                return contentDescription;
             }
 
         }

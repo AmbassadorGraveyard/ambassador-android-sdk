@@ -197,7 +197,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     protected void setUpAmbassadorConfig() {
-        ambassadorConfig.setRafParameters(raf.getDefaultShareMessage(), raf.getTitleText(), raf.getDescriptionText(), raf.getToolbarTitle());
         ambassadorConfig.nullifyTwitterIfInvalid(null);
         ambassadorConfig.nullifyLinkedInIfInvalid(null);
     }
@@ -224,12 +223,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
     protected void setUpOptions() {
         llParent.setBackgroundColor(raf.getHomeBackgroundColor());
 
-        tvWelcomeTitle.setText(ambassadorConfig.getRafParameters().titleText);
+        tvWelcomeTitle.setText(raf.getTitleText());
         tvWelcomeTitle.setTextColor(raf.getHomeWelcomeTitleColor());
         tvWelcomeTitle.setTextSize(raf.getHomeWelcomeTitleSize());
         tvWelcomeTitle.setTypeface(raf.getHomeWelcomeTitleFont());
 
-        tvWelcomeDesc.setText(ambassadorConfig.getRafParameters().descriptionText);
+        tvWelcomeDesc.setText(raf.getDescriptionText());
         tvWelcomeDesc.setTextColor(raf.getHomeWelcomeDescriptionColor());
         tvWelcomeDesc.setTextSize(raf.getHomeWelcomeDescriptionSize());
         tvWelcomeDesc.setTypeface(raf.getHomeWelcomeDescriptionFont());
@@ -247,7 +246,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     protected void setUpToolbar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
-            actionBar.setTitle(ambassadorConfig.getRafParameters().toolbarTitle);
+            actionBar.setTitle(raf.getToolbarTitle());
         }
 
         if (toolbar == null) return;
@@ -400,7 +399,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(ambassadorConfig.getPusherInfo(), ambassadorConfig.getRafParameters().defaultShareMessage);
+            tryAndSetURL(ambassadorConfig.getPusherInfo(), raf.getDefaultShareMessage());
         }
     };
 
@@ -472,7 +471,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     //check for weird multiple URL issue seen occasionally
                     if (!initialShareMessage.contains(urlObj.getString("url"))) {
-                        ambassadorConfig.setRafDefaultMessage(initialShareMessage + " " + urlObj.getString("url"));
+                        raf.setDefaultShareMessage(initialShareMessage + " " + urlObj.getString("url"));
                     }
                 }
             }
@@ -622,7 +621,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         @Override
         public void onShareRequested() {
             ShareLinkContent content = new ShareLinkContent.Builder()
-                    .setContentTitle(ambassadorConfig.getRafParameters().defaultShareMessage)
+                    .setContentTitle(raf.getDefaultShareMessage())
                     .setContentUrl(Uri.parse(ambassadorConfig.getURL()))
                     .build();
             callbackManager = CallbackManager.Factory.create();
