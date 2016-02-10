@@ -21,6 +21,7 @@ import butterknife.ButterKnife;
 public final class LoginFragment extends Fragment {
 
     @Bind(R.id.etEmail)     protected EditText  etEmail;
+    @Bind(R.id.etPassword)  protected EditText  etPassword;
     @Bind(R.id.btnLogin)    protected Button    btnLogin;
 
     @Nullable
@@ -38,18 +39,26 @@ public final class LoginFragment extends Fragment {
     public void onResume() {
         super.onResume();
         etEmail.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
+        closeSoftKeyboard();
     }
 
     protected View.OnClickListener btnLoginOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String email = etEmail.getText().toString();
-            Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
-            Demo.get().identify(email);
-            Demo.get().setEmail(email);
+            if (etEmail.getText().length() != 0 && etPassword.getText().length() != 0) {
+                String email = etEmail.getText().toString();
+                Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
+                Demo.get().identify(email);
+                closeSoftKeyboard();
+            } else {
+                Toast.makeText(getActivity(), "Please enter an email and password!", Toast.LENGTH_LONG).show();
+            }
         }
     };
+
+    private void closeSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
+    }
 
 }

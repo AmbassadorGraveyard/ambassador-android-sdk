@@ -19,7 +19,6 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
-import com.ambassador.ambassadorsdk.internal.ServiceSelectorPreferences;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -77,7 +76,6 @@ import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 @MediumTest
 public class AmbassadorActivityTest {
-    private ServiceSelectorPreferences parameters;
     private static final String EMAIL_PATTERN = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+(?:[A-Z]{2}|com|org|net|edu|gov|mil|biz|info|mobi|name|aero|asia|jobs|museum)\\b";
     private static final String SMS_PATTERN = "(Home|Work|Mobile|Other) (.*)";
     private Context context;
@@ -94,6 +92,9 @@ public class AmbassadorActivityTest {
 
     @Inject
     PusherSDK pusher;
+
+    @Inject
+    RAFOptions raf;
 
     //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
     @Singleton
@@ -113,12 +114,6 @@ public class AmbassadorActivityTest {
         SystemAnimations systemAnimations = new SystemAnimations(context);
         systemAnimations.disableAll();
 
-        parameters = new ServiceSelectorPreferences();
-        parameters.defaultShareMessage = "Check out this company!";
-        parameters.titleText = "RAF Params Welcome Title";
-        parameters.descriptionText = "RAF Params Welcome Description";
-        parameters.toolbarTitle = "RAF Params Toolbar Title";
-
         //tell the application which component we want to use - in this case use the the one created above instead of the
         //application component which is created in the Application (and uses the real tweetRequest)
         AmbassadorSingleton.init(context);
@@ -130,23 +125,13 @@ public class AmbassadorActivityTest {
         component.inject(this);
 
         String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
-        doNothing().when(ambassadorConfig).setRafParameters(anyString(), anyString(), anyString(), anyString());
         doNothing().when(ambassadorConfig).setURL(anyString());
         doNothing().when(ambassadorConfig).setReferrerShortCode(anyString());
         doNothing().when(ambassadorConfig).setEmailSubject(anyString());
 
-        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                parameters.defaultShareMessage += " http://staging.mbsy.co/jHjl";
-                return null;
-            }
-        })
-        .when(ambassadorConfig).setRafDefaultMessage(anyString());
-
         when(ambassadorConfig.getCampaignID()).thenReturn("260");
         when(ambassadorConfig.getURL()).thenReturn("http://staging.mbsy.co/jHjl");
         when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
-        when(ambassadorConfig.getRafParameters()).thenReturn(parameters);
         when(ambassadorConfig.getUniversalKey()).thenReturn("SDKToken ***REMOVED***");
         when(ambassadorConfig.getUniversalID()).thenReturn("***REMOVED***");
 
@@ -196,9 +181,10 @@ public class AmbassadorActivityTest {
     public void testMainLayout() {
         onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.tvWelcomeTitle)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvWelcomeTitle)).check(matches(withText(parameters.titleText)));
+        // TODO: mark
+        onView(withId(R.id.tvWelcomeTitle)).check(matches(withText(raf.getTitleText())));
         onView(withId(R.id.tvWelcomeDesc)).check(matches(isDisplayed()));
-        onView(withId(R.id.tvWelcomeDesc)).check(matches(withText(parameters.descriptionText)));
+        onView(withId(R.id.tvWelcomeDesc)).check(matches(withText(raf.getDescriptionText())));
         onView(withId(R.id.etShortURL)).check(matches(isDisplayed()));
         onView(withId(R.id.etShortURL)).check(matches(withText("http://staging.mbsy.co/jHjl")));
         onView(withId(R.id.btnCopy)).check(matches(isDisplayed()));
@@ -277,10 +263,7 @@ public class AmbassadorActivityTest {
 
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
         //onData(is(instanceOf(Contact.class))).inAdapterView(withId(R.id.rvContacts)).atPosition(0).perform(click());
-        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(isDisplayed()));
-
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(not(isDisplayed())));
 
         // long press dialog
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, longClick()));
@@ -295,8 +278,6 @@ public class AmbassadorActivityTest {
         //select a contact
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
 
-        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(1, R.id.ivCheckMark)).check(matches(isDisplayed()));
-        onView(TestUtils.withRecyclerView(R.id.rvContacts).atPositionOnView(0, R.id.ivCheckMark)).check(matches(not(isDisplayed())));
         onView(withId(R.id.etShareMessage)).check(matches(not(isEnabled())));
         onView(withId(R.id.btnEdit)).perform(click());
         onView(withId(R.id.etShareMessage)).check(matches(isEnabled()));
@@ -516,7 +497,8 @@ public class AmbassadorActivityTest {
         //test sending a successful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
         //make sure message has been restored
-        onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
+        // TODO: mark
+        onView(withId(R.id.etMessage)).check(matches(withText(containsString(raf.getDefaultShareMessage()))));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         String linkedInText = _getRandomNumber();
@@ -548,7 +530,8 @@ public class AmbassadorActivityTest {
         //test sending an unsuccessful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
         //make sure message has been restored
-        onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
+        // TODO: mark
+        onView(withId(R.id.etMessage)).check(matches(withText(containsString(raf.getDefaultShareMessage()))));
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         onView(withId(R.id.etMessage)).perform(typeTextIntoFocusedView(linkedInText), closeSoftKeyboard());
 
@@ -655,7 +638,8 @@ public class AmbassadorActivityTest {
         //test sending a successful (mocked) tweet
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         //make sure message has been restored
-        onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
+        // TODO: mark
+        onView(withId(R.id.etMessage)).check(matches(withText(containsString(raf.getDefaultShareMessage()))));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         String tweetText = _getRandomNumber();
@@ -687,7 +671,9 @@ public class AmbassadorActivityTest {
         //test sending an unsuccessful (mocked) tweet
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
         //make sure message has been restored
-        onView(withId(R.id.etMessage)).check(matches(withText(containsString(parameters.defaultShareMessage))));
+
+        // TODO: mark
+        onView(withId(R.id.etMessage)).check(matches(withText(containsString(raf.getDefaultShareMessage()))));
 
         //type a link with a random number appended to circumvent twitter complaining about duplicate post
         onView(withId(R.id.etMessage)).perform(typeTextIntoFocusedView(tweetText), closeSoftKeyboard());
