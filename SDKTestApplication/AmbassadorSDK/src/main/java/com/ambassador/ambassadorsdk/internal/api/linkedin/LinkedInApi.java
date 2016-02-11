@@ -102,7 +102,7 @@ public final class LinkedInApi {
      * @param completion callback interface for request completion
      */
     public void post(String token, LinkedInApi.LinkedInPostRequest requestBody, final RequestManager.RequestCompletion completion) {
-        linkedInClient.post("Bearer " + token, requestBody, new retrofit.Callback<Object>() {
+        linkedInClient.post("Bearer " + token, requestBody, new Callback<Object>() {
             @Override
             public void success(Object linkedInPostResponse, Response response) {
                 completion.onSuccess("success");
