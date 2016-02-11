@@ -42,6 +42,10 @@ subprojects { project ->
                             '**/PusherSDK_MembersInjector.class',
                             '**/RequestManager_MembersInjector.class',
                             '**/SocialShareDialog_MembersInjector.class',
+                            '**/AskNameDialog_MembersInjector.class',
+                            '**/ContactListAdapter_MembersInjector.class',
+                            '**/B.class',
+                            '**/Manifest.class'
 
                             '**/AmbassadorApplicationModule_ProvideAmbassadorConfigFactory.class',
                             '**/AmbassadorApplicationModule_ProvideBulkShareHelperFactory.class',
@@ -49,6 +53,8 @@ subprojects { project ->
                             '**/AmbassadorApplicationModule_ProvideFbShareDialogFactory.class',
                             '**/AmbassadorApplicationModule_ProvidePusherSDKFactory.class',
                             '**/AmbassadorApplicationModule_ProvideRequestManagerFactory.class',
+                            '**/AmbassadorApplicationModule_ProvideRAFOptionsFactory.class',
+                            '**/AmbassadorApplicationModule_ProvideDeviceFactory.class',
 
                             '**/DaggerAmbassadorSingleton_ApplicationComponent.class',
                             '**/DaggerAmbassadorSingleton_ApplicationComponent$Builder.class',
