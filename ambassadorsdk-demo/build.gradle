@@ -2,64 +2,57 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 repositories {
-    maven { url 'http://clojars.org/repo' }
     flatDir {
         dirs '../ambassadorsdk/libs'
     }
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.2"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         applicationId "com.ambassador.demoapp"
         minSdkVersion 18
-        targetSdkVersion 23
+        targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     packagingOptions {
         exclude 'LICENSE.txt'
     }
 }
 
-dependencies {
-    compile (
-            'com.android.support:appcompat-v7:23.0.1',
-            'com.android.support:design:23.0.1',
-            'com.jakewharton:butterknife:7.0.1',
-            'com.google.dagger:dagger:2.0'
-    )
+apply from: file('dependencies.gradle')
 
+dependencies {
     compile project(':ambassadorsdk')
 
-    provided (
-            'org.glassfish:javax.annotation:10.0-b28'
-    )
+    rootProject.ext.demoCompile.each {
+        compile "${it}"
+    }
 
-    androidTestCompile (
-            'org.hamcrest:hamcrest-all:1.3',
-            'com.android.support.test.uiautomator:uiautomator-v18:2.1.1',
-            'com.android.support.test.espresso:espresso-core:2.2.1',
-            'junit:junit:4.12',
-            'com.android.support.test:runner:0.4.1',
-            'org.mockito:mockito-core:1.9.5',
-            'com.google.dexmaker:dexmaker:1.2',
-            'com.google.dexmaker:dexmaker-mockito:1.2'
-    )
+    rootProject.ext.demoProvided.each {
+        provided "${it}"
+    }
 
-    androidTestApt (
-            'com.google.dagger:dagger-compiler:2.0'
-    )
+    rootProject.ext.demoAndroidTestCompile.each {
+        androidTestCompile "${it}"
+    }
+
+    rootProject.ext.demoAndroidTestApt.each {
+        androidTestApt "${it}"
+    }
 }
 
 

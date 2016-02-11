@@ -6,15 +6,6 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.oguzbabaoglu.butterfork-plugin'
 apply plugin: 'maven-publish'
 
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-    maven { url 'http://clojars.org/repo' }
-    jcenter()
-    flatDir {
-        dirs 'libs'
-    }
-}
-
 android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -49,7 +40,7 @@ android {
     }
 }
 
-apply from: rootProject.file('gradle/dependencies.gradle')
+apply from: file('dependencies.gradle')
 
 dependencies {
     compile (name: 'augur', ext: 'aar')
