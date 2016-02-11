@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.google.gson.Gson;
@@ -26,6 +27,7 @@ public class User {
     // endregion
 
     // region Getters / Setters
+    @Nullable
     public String getFirstName() {
         return firstName;
     }
@@ -35,6 +37,7 @@ public class User {
         save();
     }
 
+    @Nullable
     public String getLastName() {
         return lastName;
     }
@@ -44,6 +47,7 @@ public class User {
         save();
     }
 
+    @Nullable
     public String getEmail() {
         return email;
     }
@@ -53,6 +57,7 @@ public class User {
         save();
     }
 
+    @Nullable
     public String getGcmToken() {
         return gcmToken;
     }
@@ -62,6 +67,7 @@ public class User {
         save();
     }
 
+    @Nullable
     public JSONObject getPusherInfo() {
         return pusherInfo;
     }
@@ -71,6 +77,7 @@ public class User {
         save();
     }
 
+    @Nullable
     public JSONObject getAugurData() {
         return augurData;
     }
@@ -80,6 +87,7 @@ public class User {
         save();
     }
 
+    @Nullable
     public String getWebDeviceId() {
         return webDeviceId;
     }
