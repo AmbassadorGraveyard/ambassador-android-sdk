@@ -2,7 +2,7 @@
 apply plugin: 'jacoco'
 
 def ignoredByJacoco = [
-        'app'
+        'ambassadorsdk-demo'
 ]
 
 subprojects { project ->
