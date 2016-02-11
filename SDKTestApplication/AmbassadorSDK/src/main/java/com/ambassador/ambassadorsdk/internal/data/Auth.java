@@ -2,6 +2,8 @@ package com.ambassador.ambassadorsdk.internal.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -31,6 +33,7 @@ public class Auth {
     // endregion
 
     // region Getters / Setters
+    @Nullable
     public String getUniversalId() {
         return universalId;
     }
@@ -40,6 +43,7 @@ public class Auth {
         save();
     }
 
+    @Nullable
     public String getUniversalToken() {
         return universalToken;
     }
@@ -49,6 +53,7 @@ public class Auth {
         save();
     }
 
+    @Nullable
     public String getLinkedInToken() {
         return linkedInToken;
     }
@@ -58,6 +63,7 @@ public class Auth {
         save();
     }
 
+    @Nullable
     public String getTwitterToken() {
         return twitterToken;
     }
@@ -67,6 +73,7 @@ public class Auth {
         save();
     }
 
+    @Nullable
     public String getTwitterSecret() {
         return twitterSecret;
     }
@@ -191,6 +198,7 @@ public class Auth {
         }
     }
 
+    @NonNull
     protected RequestManager buildRequestManager() {
         return new RequestManager();
     }
