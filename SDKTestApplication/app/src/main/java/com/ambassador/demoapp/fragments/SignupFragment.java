@@ -22,6 +22,7 @@ public final class SignupFragment extends Fragment {
 
     @Bind(R.id.etEmail)     protected EditText  etEmail;
     @Bind(R.id.etUsername)  protected EditText  etUsername;
+    @Bind(R.id.etPassword)  protected EditText  etPassword;
     @Bind(R.id.btnSignup)   protected Button    btnSignup;
 
     @Nullable
@@ -39,6 +40,10 @@ public final class SignupFragment extends Fragment {
     public void onResume() {
         super.onResume();
         etEmail.requestFocus();
+        closeSoftKeyboard();
+    }
+
+    private void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
     }
@@ -46,10 +51,15 @@ public final class SignupFragment extends Fragment {
     protected View.OnClickListener btnLoginOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String email = etEmail.getText().toString();
-            String username = etUsername.getText().toString();
-            Toast.makeText(getActivity(), "Signing up!", Toast.LENGTH_LONG).show();
-            Demo.get().signupConversion(email, username);
+            if (etEmail.getText().length() != 0 && etUsername.getText().length() != 0 && etPassword.getText().length() != 0) {
+                String email = etEmail.getText().toString();
+                String username = etUsername.getText().toString();
+                Toast.makeText(getActivity(), "Signing up!", Toast.LENGTH_LONG).show();
+                Demo.get().signupConversion(email, username);
+                closeSoftKeyboard();
+            } else {
+                Toast.makeText(getActivity(), "Please enter an email, username, and password!", Toast.LENGTH_LONG).show();
+            }
         }
     };
 }
