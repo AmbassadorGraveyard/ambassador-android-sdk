@@ -99,6 +99,24 @@ public class Auth {
         twitterToken = null;
         twitterSecret = null;
     }
+
+    /**
+     * Clears the object and sets the data based on the currently saved
+     * values for authentication.
+     */
+    public void refresh() {
+        clear();
+        String json = AmbassadorSingleton.getInstanceContext().getSharedPreferences("auth", Context.MODE_PRIVATE).getString("auth", null);
+
+        if (json == null) return;
+
+        Auth auth = new Gson().fromJson(json, Auth.class);
+        setUniversalId(auth.getUniversalId());
+        setUniversalToken(auth.getUniversalToken());
+        setLinkedInToken(auth.getLinkedInToken());
+        setTwitterToken(auth.getTwitterToken());
+        setTwitterSecret(auth.getTwitterSecret());
+    }
     // endregion
 
     // region Nullify methods
