@@ -153,8 +153,8 @@ public final class LinkedInApi {
     /** Pojo for post request body */
     public static class LinkedInPostRequest {
 
-        String comment;
-        Visibility visibility;
+        public String comment;
+        public Visibility visibility;
 
         public LinkedInPostRequest(String comment) {
             this.comment = comment;
@@ -163,7 +163,7 @@ public final class LinkedInApi {
 
         public static class Visibility {
 
-            String code;
+            public String code;
 
             public Visibility(String code) {
                 this.code = code;
