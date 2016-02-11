@@ -174,6 +174,9 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
                     });
                 }
                 break;
+
+            default:
+                break;
         }
     }
 
@@ -523,7 +526,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     }
 
     private boolean ableToSend() {
-        boolean lengthToShort = showPhoneNumbers && !(etShareMessage.getText().length() <= MAX_SMS_LENGTH);
+        boolean lengthToShort = showPhoneNumbers && etShareMessage.getText().length() > MAX_SMS_LENGTH;
         boolean noneSelected = contactListAdapter.getSelectedContacts().size() <= 0;
         boolean emptyMessage = etShareMessage.getText().toString().length() <= 0;
         boolean haveUrl = Utilities.containsURL(etShareMessage.getText().toString(), campaign.getUrl());
