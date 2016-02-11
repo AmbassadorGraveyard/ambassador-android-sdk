@@ -131,7 +131,7 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
         String pusherProd = new StringResource(R.string.pusher_key_prod).getValue();
         String pusherDev = new StringResource(R.string.pusher_key_dev).getValue();
         String key = BuildConfig.IS_RELEASE_BUILD ? pusherProd : pusherDev;
-        final Pusher pusher = new com.pusher.client.Pusher(key, options);
+        final Pusher pusher = new Pusher(key, options);
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
