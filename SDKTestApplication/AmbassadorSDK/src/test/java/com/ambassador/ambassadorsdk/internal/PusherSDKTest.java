@@ -196,7 +196,7 @@ public class PusherSDKTest {
     @Test
     public void setPusherInfoTest() throws Exception {
         // ARRANGE
-        String jsonObject = "fakeJson";
+        String jsonObject = "{\"body\":{\"email\":\"email\", \"first_name\":\"first_name\", \"last_name\":\"last_name\", \"phone\":\"12345\", \"urls\":[\"cats\"]}}";
         JSONObject pusherSave = Mockito.mock(JSONObject.class);
         JSONObject pusherObject = Mockito.mock(JSONObject.class);
         PowerMockito.whenNew(JSONObject.class).withNoArguments().thenReturn(pusherSave);

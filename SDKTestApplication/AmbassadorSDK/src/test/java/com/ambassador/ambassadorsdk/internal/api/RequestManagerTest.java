@@ -74,7 +74,7 @@ public class RequestManagerTest {
     private String universalToken = "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a";
     private String userFirstName = "Test";
     private String userLastName = "User";
-    private JsonObject identifyObject = Mockito.mock(JsonObject.class);
+    private JsonObject identifyObject = new JsonObject();
     private String campaignId = "260";
     private String userEmail = "user@test.com";
     private String linkedInToken = "linkedInToken";

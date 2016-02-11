@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,7 +91,7 @@ public class UserTest {
         user.firstName = "jake";
         user.lastName = "dunahee";
         user.gcmToken = "gcmToken";
-        user.augurData = new JSONObject();
+        user.augurData = new JsonObject();
 
         // ACT
         user.clear();
@@ -115,7 +115,7 @@ public class UserTest {
         user.setFirstName("firstName");
         user.setLastName("lastName");
         user.setGcmToken("gcmToken");
-        user.setAugurData(new JSONObject());
+        user.setAugurData(new JsonObject());
 
         // ASSERT
         Mockito.verify(user, Mockito.times(5)).save();

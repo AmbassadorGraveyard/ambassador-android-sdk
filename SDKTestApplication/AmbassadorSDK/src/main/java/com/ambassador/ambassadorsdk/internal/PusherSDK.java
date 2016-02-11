@@ -215,7 +215,7 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
         // Functionality: Saves PusherSDK object to SharedPreferences
         JsonObject pusherSave = new JsonObject();
 
-        JsonObject pusherRootObject = (JsonObject) new JsonParser().parse(jsonObject);
+        JsonObject pusherRootObject = new JsonParser().parse(jsonObject).getAsJsonObject();
         JsonObject pusherObject = (JsonObject) new JsonParser().parse(pusherRootObject.get("body").toString());
         pusherSave.addProperty("email", pusherObject.get("email").toString());
         pusherSave.addProperty("firstName", pusherObject.get("first_name").toString());
