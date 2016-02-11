@@ -114,6 +114,29 @@ public class User {
         augurData = null;
         webDeviceId = null;
     }
+
+    /**
+     * Clears the object and sets the data based on the currently saved
+     * values for the current email address.
+     */
+    public void refresh() {
+        clear();
+        String email = AmbassadorSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("email", null);
+
+        if (email == null) return;
+
+        String json = AmbassadorSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString(email, null);
+
+        if (json == null) return;
+
+        User user = new Gson().fromJson(json, User.class);
+        setFirstName(user.getFirstName());
+        setLastName(user.getLastName());
+        setEmail(user.getEmail());
+        setGcmToken(user.getGcmToken());
+        setAugurData(user.getAugurData());
+        setWebDeviceId(user.getWebDeviceId());
+    }
     // endregion
 
 }
