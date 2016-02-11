@@ -43,7 +43,7 @@ dependencies {
 }
 ```
 
-* Now sync your project's gradle.
+Now sync your project's gradle.
 
 ## Initializing Ambassador
 
