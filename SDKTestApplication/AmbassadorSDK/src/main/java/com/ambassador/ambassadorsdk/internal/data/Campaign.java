@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.google.gson.Gson;
@@ -23,6 +24,7 @@ public class Campaign {
     // endregion
 
     // region Getters / Setters
+    @Nullable
     public String getId() {
         return id;
     }
@@ -37,6 +39,7 @@ public class Campaign {
                 .apply();
     }
 
+    @Nullable
     public String getUrl() {
         return url;
     }
@@ -46,6 +49,7 @@ public class Campaign {
         save();
     }
 
+    @Nullable
     public String getShortCode() {
         return shortCode;
     }
@@ -55,6 +59,7 @@ public class Campaign {
         save();
     }
 
+    @Nullable
     public String getShareMessage() {
         return shareMessage;
     }
@@ -64,6 +69,7 @@ public class Campaign {
         save();
     }
 
+    @Nullable
     public String getEmailSubject() {
         return emailSubject;
     }
@@ -73,6 +79,7 @@ public class Campaign {
         save();
     }
 
+    @Nullable
     public String getReferredByShortCode() {
         return referredByShortCode;
     }
