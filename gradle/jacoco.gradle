@@ -45,7 +45,7 @@ subprojects { project ->
                             '**/AskNameDialog_MembersInjector.class',
                             '**/ContactListAdapter_MembersInjector.class',
                             '**/B.class',
-                            '**/Manifest.class'
+                            '**/Manifest.class',
 
                             '**/AmbassadorApplicationModule_ProvideAmbassadorConfigFactory.class',
                             '**/AmbassadorApplicationModule_ProvideBulkShareHelperFactory.class',
