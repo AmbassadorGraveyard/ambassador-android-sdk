@@ -55,6 +55,11 @@ public class User implements Data {
     public void setEmail(String email) {
         this.email = email;
         save();
+        AmbassadorSingleton.getInstanceContext()
+                .getSharedPreferences("user", Context.MODE_PRIVATE)
+                .edit()
+                .putString("email", email)
+                .apply();
     }
 
     @Nullable
