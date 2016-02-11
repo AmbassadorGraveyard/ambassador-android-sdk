@@ -6,8 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.google.gson.Gson;
-
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 
 /**
@@ -21,8 +20,8 @@ public class User implements Data {
     protected String lastName;
     protected String email;
     protected String gcmToken;
-    protected JSONObject pusherInfo;
-    protected JSONObject augurData;
+    protected JsonObject pusherInfo;
+    protected JsonObject augurData;
     protected String webDeviceId;
     // endregion
 
@@ -73,21 +72,21 @@ public class User implements Data {
     }
 
     @Nullable
-    public JSONObject getPusherInfo() {
+    public JsonObject getPusherInfo() {
         return pusherInfo;
     }
 
-    public void setPusherInfo(JSONObject pusherInfo) {
+    public void setPusherInfo(JsonObject pusherInfo) {
         this.pusherInfo = pusherInfo;
         save();
     }
 
     @Nullable
-    public JSONObject getAugurData() {
+    public JsonObject getAugurData() {
         return augurData;
     }
 
-    public void setAugurData(JSONObject augurData) {
+    public void setAugurData(JsonObject augurData) {
         this.augurData = augurData;
         save();
     }

@@ -9,6 +9,7 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.google.gson.JsonObject;
 import com.pusher.client.Authorizer;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
@@ -204,7 +205,7 @@ public class PusherSDKTest {
         Mockito.when(pusherObject.getJSONArray(Mockito.anyString())).thenReturn(new JSONArray());
         Mockito.when(pusherSave.put(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
         Mockito.when(pusherSave.put(Mockito.anyString(), Mockito.any(JSONArray.class))).thenReturn(null);
-        Mockito.doNothing().when(user).setPusherInfo(Mockito.any(JSONObject.class));
+        Mockito.doNothing().when(user).setPusherInfo(Mockito.any(JsonObject.class));
 
         PowerMockito.mockStatic(LocalBroadcastManager.class);
         PowerMockito.mockStatic(AmbassadorSingleton.class);
@@ -218,7 +219,7 @@ public class PusherSDKTest {
         pusherSDK.setPusherInfo(jsonObject);
 
         // ASSERT
-        Mockito.verify(user).setPusherInfo(Mockito.any(JSONObject.class));
+        Mockito.verify(user).setPusherInfo(Mockito.any(JsonObject.class));
         Mockito.verify(mockLocalBroadcastManager).sendBroadcast(Mockito.any(Intent.class));
     }
 

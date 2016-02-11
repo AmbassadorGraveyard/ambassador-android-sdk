@@ -56,8 +56,7 @@ import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView;
-
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -111,7 +110,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     protected  RAFOptions               raf = RAFOptions.get();
     protected List<Contact>             contactList;
     protected ContactListAdapter        contactListAdapter;
-    protected JSONObject                pusherData;
+    protected JsonObject                pusherData;
     protected boolean                   showPhoneNumbers;
     protected AskNameDialog             askNameDialog;
     protected ProgressDialog            progressDialog;
@@ -194,7 +193,8 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             toggleSearch();
-            return true;
+            //return true;
+            throw new RuntimeException("cats");
         } else {
             finish();
         }
@@ -606,7 +606,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     private boolean pusherHasKey(String key) {
         try {
-            String value = pusherData.getString(key);
+            String value = pusherData.get(key).toString();
             return value != null && !value.equals("null") && !value.isEmpty();
         } catch (Exception e) {
             return false;

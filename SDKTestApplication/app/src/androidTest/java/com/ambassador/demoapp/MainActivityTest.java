@@ -21,10 +21,11 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.pusher.client.connection.ConnectionState;
 
 import org.hamcrest.Matchers;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -308,7 +309,7 @@ public class MainActivityTest {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
         UiObject referFragment = getUi("referFragment");
-        JSONObject pusherResponse = new JSONObject("{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[]}");
+        JsonObject pusherResponse = new JsonParser().parse("{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[]}").getAsJsonObject();
         Mockito.when(user.getPusherInfo()).thenReturn(pusherResponse);
 
         // ACT
@@ -455,7 +456,7 @@ public class MainActivityTest {
     }
 
     private void mockAmbassadorSDK() throws Exception {
-        JSONObject pusherResponse = new JSONObject("{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jzqC\",\"short_code\":\"jzqC\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}, {\"url\":\"http://staging.mbsy.co\\/ljTq\",\"short_code\":\"ljTq\",\"campaign_uid\":999,\"subject\":\"Check out BarderrTahwn ®!\"}]}");
+        JsonObject pusherResponse = new JsonParser().parse("{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jzqC\",\"short_code\":\"jzqC\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}, {\"url\":\"http://staging.mbsy.co\\/ljTq\",\"short_code\":\"ljTq\",\"campaign_uid\":999,\"subject\":\"Check out BarderrTahwn ®!\"}]}").getAsJsonObject();
         Mockito.when(user.getPusherInfo()).thenReturn(pusherResponse);
 
         Mockito.doAnswer(new Answer<Void>() {

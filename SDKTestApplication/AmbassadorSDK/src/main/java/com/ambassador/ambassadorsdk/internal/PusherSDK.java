@@ -11,6 +11,8 @@ import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.PrivateChannelEventListener;
@@ -211,28 +213,24 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
 
     void setPusherInfo(String jsonObject) {
         // Functionality: Saves PusherSDK object to SharedPreferences
-        JSONObject pusherSave = new JSONObject();
+        JsonObject pusherSave = new JsonObject();
 
-        try {
-            JSONObject pusherRootObject = new JSONObject(jsonObject);
-            JSONObject pusherObject = new JSONObject(pusherRootObject.getString("body"));
-            pusherSave.put("email", pusherObject.getString("email"));
-            pusherSave.put("firstName", pusherObject.getString("first_name"));
-            pusherSave.put("lastName", pusherObject.getString("last_name"));
-            pusherSave.put("phoneNumber", pusherObject.getString("phone"));
-            pusherSave.put("urls", pusherObject.getJSONArray("urls"));
-            user.setPusherInfo(pusherSave);
+        JsonObject pusherRootObject = (JsonObject) new JsonParser().parse(jsonObject);
+        JsonObject pusherObject = (JsonObject) new JsonParser().parse(pusherRootObject.get("body").toString());
+        pusherSave.addProperty("email", pusherObject.get("email").toString());
+        pusherSave.addProperty("firstName", pusherObject.get("first_name").toString());
+        pusherSave.addProperty("lastName", pusherObject.get("last_name").toString());
+        pusherSave.addProperty("phoneNumber", pusherObject.get("phone").toString());
+        pusherSave.add("urls", pusherObject.get("urls").getAsJsonArray());
+        user.setPusherInfo(pusherSave);
 
-            //update full name for SMS sending "from" name
-            user.setFirstName(pusherObject.getString("first_name"));
-            user.setLastName(pusherObject.getString("last_name"));
+        //update full name for SMS sending "from" name
+        user.setFirstName(pusherObject.get("first_name").toString());
+        user.setLastName(pusherObject.get("last_name").toString());
 
-            //tell MainActivity to update edittext with url
-            Intent intent = new Intent("pusherData");
-            LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        //tell MainActivity to update edittext with url
+        Intent intent = new Intent("pusherData");
+        LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
     }
 
     public void setIdentifyListener(IdentifyListener listener) {
