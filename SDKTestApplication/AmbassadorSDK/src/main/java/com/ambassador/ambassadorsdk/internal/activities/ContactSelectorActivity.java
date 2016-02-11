@@ -193,8 +193,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_search) {
             toggleSearch();
-            //return true;
-            throw new RuntimeException("cats");
+            return true;
         } else {
             finish();
         }
