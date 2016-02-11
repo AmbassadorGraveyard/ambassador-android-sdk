@@ -75,3 +75,30 @@ dependencies {
         androidTestApt "${it}"
     }
 }
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'ambassadorsdk'
+
+    publishedGroupId = 'com.ambassador'
+    libraryName = 'AmbassadorSDK'
+    artifact = 'ambassadorsdk'
+
+    libraryDescription = 'Android SDK for http://getambassador.com'
+
+    siteUrl = 'http://getambassador.com'
+    gitUrl = 'https://github.com/GetAmbassador/ambassador-android-sdk.git'
+
+    libraryVersion = '0.0.1'
+
+    developerId = 'dwillmc'
+    developerName = 'Dylan McIntyre'
+    developerEmail = 'dylan@getambassador.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: rootProject.file('gradle/mvn_install.gradle')
+apply from: rootProject.file('gradle/mvn_bintray.gradle')
