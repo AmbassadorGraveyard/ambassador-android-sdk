@@ -145,6 +145,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         if (isFinishing()) return;
 
         // Other setup
+        setUpData();
         setUpShareManagers();
         setUpAuth();
         setUpLockingScrollView();
@@ -192,6 +193,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // endregion
 
     // region Setup
+    protected void setUpData() {
+        user.refresh();
+        campaign.refresh();
+    }
+
     protected void setUpShareManagers() {
         facebookManager = new FacebookManager();
         twitterManager = new TwitterManager();
@@ -276,7 +282,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
             }
         });
     }
-
 
     protected void setUpCustomImages() {
         String drawablePath = raf.getLogo();
