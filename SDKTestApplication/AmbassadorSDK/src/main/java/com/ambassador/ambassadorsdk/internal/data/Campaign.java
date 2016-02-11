@@ -128,7 +128,7 @@ public class Campaign {
 
         if (campaignId == null) return;
 
-        String json = AmbassadorSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString(id, null);
+        String json = AmbassadorSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString(campaignId, null);
 
         if (json == null) return;
 
