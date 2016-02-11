@@ -18,6 +18,7 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.pusher.client.connection.ConnectionState;
@@ -57,6 +58,7 @@ public class MainActivityTest {
 
     @Inject protected PusherSDK pusherSDK;
     @Inject protected User user;
+    @Inject protected Campaign campaign;
     @Inject protected RequestManager requestManager;
 
     @Singleton
@@ -101,6 +103,8 @@ public class MainActivityTest {
 
         Demo.get().identify(null);
         Demo.get().setCampaignId(null);
+
+        Demo.get().runWithKeys();
     }
 
     @Test
@@ -281,7 +285,7 @@ public class MainActivityTest {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 PusherSDK.PusherSubscribeCallback callback = (PusherSDK.PusherSubscribeCallback) invocationOnMock.getArguments()[0];
-                callback.pusherFailed();
+                if (callback != null) callback.pusherFailed();
                 return null;
             }
         }).when(pusherSDK).createPusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
