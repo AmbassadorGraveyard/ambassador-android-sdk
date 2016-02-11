@@ -30,6 +30,11 @@ public class Campaign {
     public void setId(String id) {
         this.id = id;
         save();
+        AmbassadorSingleton.getInstanceContext()
+                .getSharedPreferences("campaign", Context.MODE_PRIVATE)
+                .edit()
+                .putString("campaignId", id)
+                .apply();
     }
 
     public String getUrl() {
@@ -111,6 +116,30 @@ public class Campaign {
         emailSubject = null;
         referredByShortCode = null;
         convertedOnInstall = false;
+    }
+
+    /**
+     * Clears the object and sets the data based on the currently saved
+     * values for the current campaign id.
+     */
+    public void refresh() {
+        clear();
+        String campaignId = AmbassadorSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("campaignId", null);
+
+        if (campaignId == null) return;
+
+        String json = AmbassadorSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString(id, null);
+
+        if (json == null) return;
+
+        Campaign campaign = new Gson().fromJson(json, Campaign.class);
+        setId(campaign.getId());
+        setUrl(campaign.getUrl());
+        setShortCode(campaign.getShortCode());
+        setShareMessage(campaign.getShareMessage());
+        setEmailSubject(campaign.getEmailSubject());
+        setReferredByShortCode(campaign.getReferredByShortCode());
+        setConvertedOnInstall(campaign.isConvertedOnInstall());
     }
     // endregion
 
