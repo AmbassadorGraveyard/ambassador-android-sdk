@@ -58,6 +58,8 @@ import com.facebook.FacebookSdk;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.pusher.client.connection.ConnectionState;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -66,10 +68,6 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -459,33 +457,28 @@ public final class AmbassadorActivity extends AppCompatActivity {
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
     }
 
-    protected void tryAndSetURL(JSONObject pusherData, String initialShareMessage) {
+    protected void tryAndSetURL(JsonObject pusherData, String initialShareMessage) {
         boolean campaignFound = false;
-        try {
             // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
-            JSONArray urlArray = pusherData.getJSONArray("urls");
+        JsonArray urlArray = pusherData.get("urls").getAsJsonArray();
 
-            // Iterates throught all the urls in the PusherSDK object until we find one will a matching campaign ID
-            for (int i = 0; i < urlArray.length(); i++) {
-                JSONObject urlObj = urlArray.getJSONObject(i);
-                int campID = urlObj.getInt("campaign_uid");
-                int myUID = Integer.parseInt(campaign.getId());
-                if (campID == myUID) {
-                    etShortUrl.setText(urlObj.getString("url"));
-                    campaign.setUrl(urlObj.getString("url"));
-                    campaign.setShortCode(urlObj.getString("short_code"));
-                    campaign.setEmailSubject(urlObj.getString("subject"));
-                    campaignFound = true;
+        // Iterates throught all the urls in the PusherSDK object until we find one will a matching campaign ID
+        for (int i = 0; i < urlArray.size(); i++) {
+            JsonObject urlObj = urlArray.get(i).getAsJsonObject();
+            int campID = urlObj.get("campaign_uid").getAsInt();
+            int myUID = Integer.parseInt(campaign.getId());
+            if (campID == myUID) {
+                etShortUrl.setText(urlObj.get("url").toString());
+                campaign.setUrl(urlObj.get("url").toString());
+                campaign.setShortCode(urlObj.get("short_code").toString());
+                campaign.setEmailSubject(urlObj.get("subject").toString());
+                campaignFound = true;
 
-                    //check for weird multiple URL issue seen occasionally
-                    if (!initialShareMessage.contains(urlObj.getString("url"))) {
-                        raf.setDefaultShareMessage(initialShareMessage + " " + urlObj.getString("url"));
-                    }
+                //check for weird multiple URL issue seen occasionally
+                if (!initialShareMessage.contains(urlObj.get("url").toString())) {
+                    raf.setDefaultShareMessage(initialShareMessage + " " + urlObj.get("url").toString());
                 }
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
         if (progressDialog != null) {

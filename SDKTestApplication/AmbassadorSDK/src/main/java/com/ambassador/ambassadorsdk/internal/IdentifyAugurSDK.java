@@ -7,6 +7,8 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONObject;
 
@@ -68,7 +70,7 @@ public class IdentifyAugurSDK implements IIdentify {
                     jsonObject.put("device", device);
 
                     Utilities.debugLog("Augur", "Augur successfully received through SDK call");
-                    user.setAugurData(jsonObject);
+                    user.setAugurData((JsonObject) new JsonParser().parse(jsonObject.toString()));
                     //deviceID = Augur.DID;
                     //universalID = Augur.UID;
                 } catch (Exception e) {

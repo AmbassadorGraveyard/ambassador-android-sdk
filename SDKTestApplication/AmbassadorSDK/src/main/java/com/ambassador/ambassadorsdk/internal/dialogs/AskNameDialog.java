@@ -20,9 +20,9 @@ import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
+import com.google.gson.JsonObject;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.inject.Inject;
 
@@ -114,16 +114,18 @@ public final class AskNameDialog extends Dialog {
     }
 
     private void updateName(@NonNull final String firstName, @NonNull final String lastName) throws JSONException {
-        JSONObject pusherData = user.getPusherInfo();
+        JsonObject pusherData = user.getPusherInfo();
         if (pusherData == null) return;
 
-        pusherData.put("firstName", firstName);
-        pusherData.put("lastName", lastName);
+        pusherData.remove("firstName");
+        pusherData.addProperty("firstName", firstName);
+        pusherData.remove("lastName");
+        pusherData.addProperty("lastName", lastName);
 
         pd.show();
         user.setPusherInfo(pusherData);
 
-        requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
+        requestManager.updateNameRequest(pusherData.get("email").toString(), firstName, lastName, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
                 user.setFirstName(etFirstName.getText().toString());

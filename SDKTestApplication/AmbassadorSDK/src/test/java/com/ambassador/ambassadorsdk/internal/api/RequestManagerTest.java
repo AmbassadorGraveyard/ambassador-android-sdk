@@ -17,6 +17,7 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
+import com.google.gson.JsonObject;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
@@ -26,7 +27,6 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.services.StatusesService;
 
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,7 +74,7 @@ public class RequestManagerTest {
     private String universalToken = "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a";
     private String userFirstName = "Test";
     private String userLastName = "User";
-    private JSONObject identifyObject = Mockito.mock(JSONObject.class);
+    private JsonObject identifyObject = Mockito.mock(JsonObject.class);
     private String campaignId = "260";
     private String userEmail = "user@test.com";
     private String linkedInToken = "linkedInToken";
