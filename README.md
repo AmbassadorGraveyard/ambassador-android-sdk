@@ -29,7 +29,7 @@ Follow these steps to add the Ambassador SDK to your Android Studio project.
 
 Make sure *jcenter* is an available repository in your **build.gradle**:
 
-```
+```groovy
 repositories {
     jcenter()
 }
@@ -37,7 +37,7 @@ repositories {
 
 Compile **AmbassadorSDK** under dependencies:
 
-```
+```groovy
 dependencies {
     compile 'com.ambassador:ambassadorsdk:1.0.0'
 }
