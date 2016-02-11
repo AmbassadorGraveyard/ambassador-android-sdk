@@ -22,7 +22,7 @@ import com.twitter.sdk.android.core.models.User;
  * Stores, serializes and unserializes data pertaining to a Ambassador authentication
  * data, including social API tokens and Ambassador API tokens.
  */
-public class Auth {
+public class Auth implements Data {
 
     // region Fields
     protected String universalId;
@@ -88,6 +88,7 @@ public class Auth {
     /**
      * Serializes data into a JSON string and saves in SharedPreferences.
      */
+    @Override
     public void save() {
         if (AmbassadorSingleton.getInstanceContext() != null) {
             String data = new Gson().toJson(this);
@@ -99,6 +100,7 @@ public class Auth {
     /**
      * Clears instance data from this object's fields.
      */
+    @Override
     public void clear() {
         universalId = null;
         universalToken = null;
@@ -111,6 +113,7 @@ public class Auth {
      * Clears the object and sets the data based on the currently saved
      * values for authentication.
      */
+    @Override
     public void refresh() {
         clear();
         String json = AmbassadorSingleton.getInstanceContext().getSharedPreferences("auth", Context.MODE_PRIVATE).getString("auth", null);

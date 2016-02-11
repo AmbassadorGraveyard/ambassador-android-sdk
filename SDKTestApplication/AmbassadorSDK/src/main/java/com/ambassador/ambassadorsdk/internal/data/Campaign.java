@@ -11,7 +11,7 @@ import com.google.gson.Gson;
  * Stores, serializes and unserializes data pertaining to an Ambassador campaign, and what
  * the SDK needs to present a RAF and provide proper functionality.
  */
-public class Campaign {
+public class Campaign implements Data {
 
     // region Fields
     protected String id;
@@ -104,6 +104,7 @@ public class Campaign {
      * Serializes data into a JSON string and saves in SharedPreferences,
      * keyed on the campaign ID.
      */
+    @Override
     public void save() {
         if (AmbassadorSingleton.getInstanceContext() != null) {
             String data = new Gson().toJson(this);
@@ -115,6 +116,7 @@ public class Campaign {
     /**
      * Clears instance data from this object's fields.
      */
+    @Override
     public void clear() {
         id = null;
         url = null;
@@ -129,6 +131,7 @@ public class Campaign {
      * Clears the object and sets the data based on the currently saved
      * values for the current campaign id.
      */
+    @Override
     public void refresh() {
         clear();
         String campaignId = AmbassadorSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("campaignId", null);

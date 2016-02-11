@@ -14,7 +14,7 @@ import org.json.JSONObject;
  * Stores, serializes and unserializes data pertaining to an Ambassador identified user,
  * and what the backend needs to register conversions and track shares.
  */
-public class User {
+public class User implements Data {
 
     // region Fields
     protected String firstName;
@@ -103,6 +103,7 @@ public class User {
      * Serializes data into a JSON string and saves in SharedPreferences,
      * keyed on the user's email.
      */
+    @Override
     public void save() {
         if (AmbassadorSingleton.getInstanceContext() != null) {
             String data = new Gson().toJson(this);
@@ -114,6 +115,7 @@ public class User {
     /**
      * Clears instance data from this object's fields.
      */
+    @Override
     public void clear() {
         firstName = null;
         lastName = null;
@@ -127,6 +129,7 @@ public class User {
      * Clears the object and sets the data based on the currently saved
      * values for the current email address.
      */
+    @Override
     public void refresh() {
         clear();
         String email = AmbassadorSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("email", null);
