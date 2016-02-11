@@ -22,12 +22,6 @@ subprojects { -> project
             classpath 'com.oguzbabaoglu:butterfork-plugin:1.0.0'
         }
     }
-
-//    configurations.all {
-//        resolutionStrategy {
-//            force 'com.android.support:support-annotations:23.0.1'
-//        }
-//    }
 }
 
 apply from: file('gradle/jacoco.gradle')
