@@ -6,6 +6,7 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.pusher.client.Pusher;
+import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
 
 import org.junit.Before;
@@ -144,6 +145,44 @@ public class PusherManagerTest {
         // ASSERT
         Mockito.verify(pusherManager).requestSubscription();
         Mockito.verify(pusherManager, Mockito.never()).startNewChannel();
+    }
+
+
+    /*****************
+     * Channel tests *
+     *****************/
+
+    @RunWith(PowerMockRunner.class)
+    @PrepareForTest({
+
+    })
+    public static class ChannelTest {
+
+        protected PusherManager.Channel channel;
+
+        protected Pusher pusher;
+        protected ConnectionEventListener connectionEventListener = Mockito.mock(ConnectionEventListener.class);
+
+        @Before
+        public void setUp() {
+            this.channel = Mockito.spy(PusherManager.Channel.class);
+
+            this.pusher = Mockito.mock(Pusher.class);
+            channel.pusher = pusher;
+
+            this.connectionEventListener = Mockito.mock(ConnectionEventListener.class);
+            channel.connectionEventListener = connectionEventListener;
+        }
+
+        @Test
+        public void connectDoesCallConnect() {
+            // ACT
+            channel.connect();
+
+            // ASSERT
+            Mockito.verify(pusher).connect(Mockito.eq(connectionEventListener), Mockito.eq(ConnectionState.ALL));
+        }
+
     }
 
 }

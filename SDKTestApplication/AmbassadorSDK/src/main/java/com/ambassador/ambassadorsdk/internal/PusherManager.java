@@ -103,7 +103,7 @@ public class PusherManager {
      * Connects and subscribes with this information and receives events, which are pushed back
      * to parent.
      */
-    public static final class Channel {
+    public static class Channel {
 
         protected Pusher pusher;
 
@@ -113,7 +113,7 @@ public class PusherManager {
         protected long requestId;
         protected ConnectionState connectionState;
 
-        private Channel() {}
+        protected Channel() {}
 
         /**
          * Injects dependencies and sets up a Pusher client object.
@@ -127,7 +127,7 @@ public class PusherManager {
          * Sets up a Pusher object from the Pusher Android SDK.
          * @return a Pusher object configured with the channel name from Ambassador.
          */
-        private Pusher setupPusher() {
+        protected Pusher setupPusher() {
             int pusherCallbackId = BuildConfig.IS_RELEASE_BUILD ? R.string.pusher_callback_url : R.string.pusher_callback_url_dev;
             String pusherCallbackUrl = new StringResource(pusherCallbackId).getValue();
             HttpAuthorizer authorizer = new HttpAuthorizer(pusherCallbackUrl);
@@ -159,7 +159,7 @@ public class PusherManager {
             pusher.connect(connectionEventListener, ConnectionState.ALL);
         }
 
-        private ConnectionEventListener connectionEventListener = new ConnectionEventListener() {
+        protected ConnectionEventListener connectionEventListener = new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange change) {
                 connectionState = change.getCurrentState();
