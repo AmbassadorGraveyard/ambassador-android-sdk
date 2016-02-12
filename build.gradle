@@ -3,6 +3,7 @@ subprojects { -> project
     repositories {
         jcenter()
         maven { url 'https://maven.fabric.io/public' }
+        maven { url 'https://twittersdk.artifactoryonline.com/twittersdk/public/' }
         maven { url 'http://clojars.org/repo' }
         flatDir {
             dirs 'libs'
