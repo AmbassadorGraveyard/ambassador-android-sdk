@@ -44,8 +44,8 @@ apply from: file('dependencies.gradle')
 
 dependencies {
     compile (name: 'augur', ext: 'aar')
-    compile (name: 'fabric', ext: 'aar')
-    compile (name: 'twitter-core', ext: 'aar')
+    compile 'io.fabric.sdk.android:fabric:1.3.9'
+    compile 'com.twitter.sdk.android:twitter-core:1.6.4'
 
     rootProject.ext.sdkCompile.each {
         compile "${it}"
@@ -81,7 +81,7 @@ ext {
     bintrayName = 'ambassadorsdk'
 
     publishedGroupId = 'com.ambassador'
-    libraryName = 'AmbassadorSDK'
+    libraryName = 'ambassadorsdk'
     artifact = 'ambassadorsdk'
 
     libraryDescription = 'Android SDK for http://getambassador.com'
@@ -89,7 +89,7 @@ ext {
     siteUrl = 'http://getambassador.com'
     gitUrl = 'https://github.com/GetAmbassador/ambassador-android-sdk.git'
 
-    libraryVersion = '0.0.1'
+    libraryVersion = '0.0.6'
 
     developerId = 'dwillmc'
     developerName = 'Dylan McIntyre'
