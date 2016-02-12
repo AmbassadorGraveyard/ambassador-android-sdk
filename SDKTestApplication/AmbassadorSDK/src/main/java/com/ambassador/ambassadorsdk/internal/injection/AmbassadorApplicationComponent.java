@@ -5,6 +5,7 @@ import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
+import com.ambassador.ambassadorsdk.internal.PusherManager;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
@@ -28,6 +29,8 @@ public interface AmbassadorApplicationComponent {
     void inject(AskNameDialog askNameDialog);
     void inject(IdentifyAugurSDK identify);
     void inject(PusherSDK pusherSDK);
+    void inject(PusherManager pusherManager);
+    void inject(PusherManager.Channel channel);
     void inject(InstallReceiver installReceiver);
 
 }

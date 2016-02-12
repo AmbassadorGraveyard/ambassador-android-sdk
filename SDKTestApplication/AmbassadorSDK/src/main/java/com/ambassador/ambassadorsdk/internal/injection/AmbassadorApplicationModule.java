@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.PusherManager;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
@@ -38,6 +39,13 @@ public final class AmbassadorApplicationModule {
     @Singleton
     public PusherSDK providePusherSDK() {
         return new PusherSDK();
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public PusherManager providePusherManager() {
+        return new PusherManager();
     }
 
     @NonNull
