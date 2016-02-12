@@ -75,7 +75,7 @@ public class PusherManager {
     /**
      * Requests the channel details from Ambassador and subscribes the Pusher client.
      */
-    private void requestSubscription() {
+    protected void requestSubscription() {
         requestManager.createPusherChannel(new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {

@@ -6,6 +6,7 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.pusher.client.Pusher;
+import com.pusher.client.connection.ConnectionState;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class PusherManagerTest {
     }
 
     @Test
-    public void connectToNewChannel_connectionIsNull_doesNotCallDisconnect() {
+    public void connectToNewChannelDoesNotCallDisconnectWhenConnectionIsNull() {
         // ARRANGE
         pusherManager.channel = null;
         Mockito.doNothing().when(channel).init();
@@ -87,7 +88,7 @@ public class PusherManagerTest {
     }
 
     @Test
-    public void connectToNewChannel_connectionNotNull_doesCallDisconnect() {
+    public void connectToNewChannelDoesCallDisconnectWhenConnectionNotNull() {
         // ARRANGE
         pusherManager.channel = this.channel;
         Mockito.doNothing().when(channel).init();
@@ -100,5 +101,49 @@ public class PusherManagerTest {
         Mockito.verify(pusher, Mockito.times(1)).disconnect();
     }
 
+    @Test
+    public void subscribeChannelToAmbassadorDoesCallStartNewChannelWhenChannelNotConnected() {
+        // ARRANGE
+        Mockito.doNothing().when(pusherManager).startNewChannel();
+        Mockito.doNothing().when(pusherManager).requestSubscription();
+        channel.connectionState = ConnectionState.DISCONNECTED;
+
+        // ACT
+        pusherManager.subscribeChannelToAmbassador();
+
+        // ASSERT
+        Mockito.verify(pusherManager).requestSubscription();
+        Mockito.verify(pusherManager, Mockito.never()).startNewChannel();
+    }
+
+    @Test
+    public void subscribeChannelToAmbassadorDoesCallRequestSubscriptionWhenChannelNull() {
+        // ARRANGE
+        Mockito.doNothing().when(pusherManager).startNewChannel();
+        Mockito.doNothing().when(pusherManager).requestSubscription();
+        pusherManager.channel = null;
+
+        // ACT
+        pusherManager.subscribeChannelToAmbassador();
+
+        // ASSERT
+        Mockito.verify(pusherManager).requestSubscription();
+        Mockito.verify(pusherManager, Mockito.never()).startNewChannel();
+    }
+
+    @Test
+    public void subscribeChannelToAmbassadorDoesCallRequestSubscriptionWhenChannelConnected() {
+        // ARRANGE
+        Mockito.doNothing().when(pusherManager).startNewChannel();
+        Mockito.doNothing().when(pusherManager).requestSubscription();
+        channel.connectionState = ConnectionState.CONNECTED;
+
+        // ACT
+        pusherManager.subscribeChannelToAmbassador();
+
+        // ASSERT
+        Mockito.verify(pusherManager).requestSubscription();
+        Mockito.verify(pusherManager, Mockito.never()).startNewChannel();
+    }
 
 }
