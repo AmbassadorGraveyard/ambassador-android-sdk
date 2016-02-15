@@ -605,7 +605,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     private boolean pusherHasKey(String key) {
         try {
-            String value = pusherData.get(key).toString();
+            String value = pusherData.get(key).getAsString();
             return value != null && !value.equals("null") && !value.isEmpty();
         } catch (Exception e) {
             return false;

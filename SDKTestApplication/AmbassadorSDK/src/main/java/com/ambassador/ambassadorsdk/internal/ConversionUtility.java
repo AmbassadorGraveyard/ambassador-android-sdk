@@ -67,9 +67,9 @@ public class ConversionUtility {
         JsonObject augurConsumer = augur.getAsJsonObject("consumer");
         JsonObject augurDevice = augur.getAsJsonObject("device");
 
-        String augurUid = augurConsumer.get("UID").toString();
-        String augurType = augurDevice.get("type").toString();
-        String augurId = augurDevice.get("ID").toString();
+        String augurUid = augurConsumer.get("UID").getAsString();
+        String augurType = augurDevice.get("type").getAsString();
+        String augurId = augurDevice.get("ID").getAsString();
 
         ConversionsApi.RegisterConversionRequestBody.AugurObject augurObject = new ConversionsApi.RegisterConversionRequestBody.AugurObject(augurUid, augurType, augurId);
         ConversionsApi.RegisterConversionRequestBody.FieldsObject fieldsObject = parameters.getFieldsObject();
