@@ -57,7 +57,7 @@ public final class InstallReceiver extends BroadcastReceiver {
             JsonObject device = identity.get("device").getAsJsonObject();
 
             //if the webDeviceId has been received on the querystring and it's different than what augur returns, override augur deviceId
-            if (webDeviceId != null && !device.get("ID").toString().equals(webDeviceId)) {
+            if (webDeviceId != null && !device.get("ID").getAsString().equals(webDeviceId)) {
                 device.remove("ID");
                 device.addProperty("ID",  user.getWebDeviceId());
                 identity.remove("device");
