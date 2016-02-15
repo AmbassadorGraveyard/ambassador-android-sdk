@@ -8,6 +8,9 @@ import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComp
 import com.pusher.client.Pusher;
 import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
+import com.pusher.client.connection.ConnectionStateChange;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -161,7 +164,7 @@ public class PusherManagerTest {
         protected PusherManager.Channel channel;
 
         protected Pusher pusher;
-        protected ConnectionEventListener connectionEventListener = Mockito.mock(ConnectionEventListener.class);
+        protected ConnectionEventListener connectionEventListener;
 
         @Before
         public void setUp() {
@@ -170,17 +173,55 @@ public class PusherManagerTest {
             this.pusher = Mockito.mock(Pusher.class);
             channel.pusher = pusher;
 
-            this.connectionEventListener = Mockito.mock(ConnectionEventListener.class);
+            this.connectionEventListener = Mockito.spy(ConnectionEventListener.class);
             channel.connectionEventListener = connectionEventListener;
         }
 
         @Test
         public void connectDoesCallConnect() {
+            // ARRANGE
+            Mockito.doNothing().when(pusher).connect();
+
             // ACT
             channel.connect();
 
             // ASSERT
             Mockito.verify(pusher).connect(Mockito.eq(connectionEventListener), Mockito.eq(ConnectionState.ALL));
+        }
+
+        @Test
+        public void connectDoesSetConnectionState() {
+            // ARRANGE
+            final ConnectionStateChange connectionStateChange = Mockito.mock(ConnectionStateChange.class);
+            Mockito.doReturn(ConnectionState.CONNECTED).doReturn(ConnectionState.DISCONNECTED).when(connectionStateChange).getCurrentState();
+
+            Mockito.doAnswer(new Answer() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    ConnectionEventListener connectionEventListener = (ConnectionEventListener) invocation.getArguments()[0];
+                    connectionEventListener.onConnectionStateChange(connectionStateChange);
+                    return null;
+                }
+            }).doAnswer(new Answer() {
+                @Override
+                public Object answer(InvocationOnMock invocation) throws Throwable {
+                    ConnectionEventListener connectionEventListener = (ConnectionEventListener) invocation.getArguments()[0];
+                    connectionEventListener.onConnectionStateChange(connectionStateChange);
+                    return null;
+                }
+            }).when(pusher).connect(Mockito.eq(connectionEventListener), Mockito.eq(ConnectionState.CONNECTED));
+
+            // ACT
+            channel.connect();
+
+            // ASSERT
+            Assert.assertEquals(ConnectionState.CONNECTED, channel.connectionState);
+
+            // ACT
+            channel.disconnect();
+
+            // ASSERT
+            Assert.assertEquals(ConnectionState.DISCONNECTED, channel.connectionState);
         }
 
     }
