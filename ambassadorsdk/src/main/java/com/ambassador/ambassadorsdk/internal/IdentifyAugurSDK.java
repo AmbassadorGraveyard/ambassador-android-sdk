@@ -3,17 +3,13 @@ package com.ambassador.ambassadorsdk.internal;
 import android.os.Handler;
 import android.os.Message;
 
+import com.ambassador.ambassadorsdk.internal.augur.Augur;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import org.json.JSONObject;
 
 import javax.inject.Inject;
 
-import io.augur.wintermute.Augur;
-
-/**
- * Created by JakeDunahee on 9/1/15.
- */
 public class IdentifyAugurSDK implements IIdentify {
 
     @Inject
@@ -42,7 +38,7 @@ public class IdentifyAugurSDK implements IIdentify {
 
         Augur.getJSON(augurConfig, new Handler.Callback() {
             @Override
-            public boolean handleMessage(final Message msg) {
+            public boolean handleMessage(Message msg) {
                 // json == the full sever response from the Augur API
                 String json = msg.getData().getString("json");
                 String error = msg.getData().getString("error");
