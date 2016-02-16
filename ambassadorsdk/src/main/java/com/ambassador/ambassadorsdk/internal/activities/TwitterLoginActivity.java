@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -35,6 +34,10 @@ import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
+import twitter4j.TwitterAdapter;
+import twitter4j.auth.RequestToken;
 
 /**
  * Activity that handles OAuth authentication with Twitter.
@@ -141,8 +144,20 @@ public class TwitterLoginActivity extends AppCompatActivity {
     }
 
     private void loadLoginPage() {
-        wvLogin.loadUrl(authUrl);
-        Log.v("url", authUrl);
+        AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
+        twitter.addListener(new TwitterAdapter() {
+
+            @Override
+            public void gotOAuthRequestToken(RequestToken token) {
+                super.gotOAuthRequestToken(token);
+                String authUrl = token.getAuthenticationURL();
+                wvLogin.loadUrl(authUrl);
+            }
+
+        });
+
+        twitter.getOAuthRequestTokenAsync();
+
     }
     // endregion
 

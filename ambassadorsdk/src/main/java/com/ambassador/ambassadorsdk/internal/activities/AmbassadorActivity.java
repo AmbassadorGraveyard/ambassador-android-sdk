@@ -699,21 +699,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 });
                 tweetDialog.show();
             } else {
-                twitter.addListener(new TwitterAdapter() {
-
-                    @Override
-                    public void gotOAuthRequestToken(RequestToken token) {
-                        super.gotOAuthRequestToken(token);
-                        requestToken = token;
-                        String authUrl = token.getAuthenticationURL();
-                        Intent twitterLogin = new Intent(AmbassadorActivity.this, TwitterLoginActivity.class);
-                        twitterLogin.putExtra("url", authUrl);
-                        startActivityForResult(twitterLogin, 5555);
-                    }
-
-                });
-
-                twitter.getOAuthRequestTokenAsync();
+                Intent twitterLogin = new Intent(AmbassadorActivity.this, TwitterLoginActivity.class);
+                startActivityForResult(twitterLogin, 5555);
             }
         }
 
