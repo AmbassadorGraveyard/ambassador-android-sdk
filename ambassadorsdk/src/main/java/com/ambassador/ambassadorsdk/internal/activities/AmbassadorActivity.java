@@ -57,13 +57,6 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.pusher.client.connection.ConnectionState;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
-import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -80,7 +73,11 @@ import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
-import io.fabric.sdk.android.Fabric;
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
+import twitter4j.TwitterAdapter;
+import twitter4j.auth.AccessToken;
+import twitter4j.auth.RequestToken;
 
 /**
  * Activity that handles sharing options and copying the share URL.
@@ -658,14 +655,17 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     protected class TwitterManager implements ShareManager {
 
-        protected TwitterAuthClient twitterAuthClient;
+        protected AsyncTwitter twitter;
+        protected RequestToken requestToken;
 
         protected TwitterManager() {
+            AsyncTwitter asyncTwitter = new AsyncTwitterFactory().getInstance();
             String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
             String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
-            TwitterAuthConfig twitterAuthConfig = new TwitterAuthConfig(twitterConsumerKey, twitterConsumerSecret);
-            Fabric.with(AmbassadorSingleton.getInstanceContext(), new TwitterCore(twitterAuthConfig));
-            twitterAuthClient = new TwitterAuthClient();
+
+            asyncTwitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
+
+            this.twitter = asyncTwitter;
         }
 
         @Override
@@ -694,34 +694,54 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     public void needAuth() {
                         ambassadorConfig.setTwitterAccessTokenSecret(null);
                         ambassadorConfig.setTwitterAccessToken(null);
-                        TwitterCore.getInstance().getSessionManager().clearActiveSession();
                         requestReauthTwitter();
                     }
                 });
                 tweetDialog.show();
             } else {
-                twitterAuthClient = new TwitterAuthClient();
-                twitterAuthClient.authorize(AmbassadorActivity.this, new Callback<TwitterSession>() {
-                    @Override
-                    public void success(Result<TwitterSession> result) {
-                        ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
-                        ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
-                        Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
-                    }
+                twitter.addListener(new TwitterAdapter() {
 
                     @Override
-                    public void failure(TwitterException e) {
-                        Log.e("AmbassadorSDK", e.toString());
+                    public void gotOAuthRequestToken(RequestToken token) {
+                        super.gotOAuthRequestToken(token);
+                        requestToken = token;
+                        String authUrl = token.getAuthenticationURL();
+                        Intent twitterLogin = new Intent(AmbassadorActivity.this, TwitterLoginActivity.class);
+                        twitterLogin.putExtra("url", authUrl);
+                        startActivityForResult(twitterLogin, 5555);
                     }
+
                 });
+
+                twitter.getOAuthRequestTokenAsync();
             }
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            twitterAuthClient.onActivityResult(requestCode, resultCode, data);
-            if (ambassadorConfig.getTwitterAccessToken() != null && ambassadorConfig.getTwitterAccessTokenSecret() != null) {
-                onShareRequested();
+            if (data != null) {
+                String verifier = data.getStringExtra("verifier");
+
+                twitter.addListener(new TwitterAdapter() {
+
+                    @Override
+                    public void gotOAuthAccessToken(AccessToken token) {
+                        super.gotOAuthAccessToken(token);
+                        String accessToken = token.getToken();
+                        String accessSecret = token.getTokenSecret();
+
+                        ambassadorConfig.setTwitterAccessToken(accessToken);
+                        ambassadorConfig.setTwitterAccessTokenSecret(accessSecret);
+
+                        if (accessToken != null && accessSecret != null) {
+                            Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
+                            onShareRequested();
+                        }
+                    }
+
+                });
+
+                twitter.getOAuthAccessTokenAsync(requestToken, verifier);
             }
         }
 
