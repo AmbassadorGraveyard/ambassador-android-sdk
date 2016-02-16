@@ -755,6 +755,52 @@ public class RAFOptionsFactoryTest {
     }
 
     @Test
+    public void decodeResourcesTwitterToolbarTest() throws Exception {
+        // ARRANGE
+        String type = "color";
+        String key = "twittertoolbar";
+        String value = "#ffffff";
+        mockOption(type, key, value);
+
+        // ACT
+        RAFOptions rafOptions = RAFOptionsFactory.decodeResources(inputStream, context);
+
+        // ASSERT
+        Assert.assertEquals(-2, rafOptions.getTwitterToolbarColor());
+    }
+
+    @Test
+    public void decodeResourcesTwitterToolbarTextTest() throws Exception {
+        // ARRANGE
+        String type = "color";
+        String key = "twittertoolbartext";
+        String value = "#ffffff";
+        mockOption(type, key, value);
+
+        // ACT
+        RAFOptions rafOptions = RAFOptionsFactory.decodeResources(inputStream, context);
+
+        // ASSERT
+        Assert.assertEquals(-2, rafOptions.getTwitterToolbarTextColor());
+    }
+
+    @Test
+    public void decodeResourcesTwitterToolbarArrowTest() throws Exception {
+        // ARRANGE
+        String type = "color";
+        String key = "twittertoolbararrow";
+        String value = "#ffffff";
+        mockOption(type, key, value);
+
+        // ACT
+        RAFOptions rafOptions = RAFOptionsFactory.decodeResources(inputStream, context);
+
+        // ASSERT
+        Assert.assertEquals(-2, rafOptions.getTwitterToolbarArrowColor());
+    }
+
+
+    @Test
     public void decodeResourcesChannelsTest() throws Exception {
         // ARRANGE
         String type = "array";
