@@ -31,8 +31,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.ArrayList;
 import java.util.List;
 
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
+import twitter4j.TwitterAdapter;
+import twitter4j.auth.AccessToken;
+
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({
+@PrepareForTest(value = {
         AmbassadorSingleton.class,
         BulkShareHelper.class,
         ConversionUtility.class,
@@ -45,7 +50,9 @@ import java.util.List;
         ConversionsApi.class,
         IdentifyApi.class,
         LinkedInApi.class,
-        AmbassadorConfig.class
+        AmbassadorConfig.class,
+        AsyncTwitterFactory.class,
+        TwitterAdapter.class
 })
 public class RequestManagerTest {
 
@@ -75,7 +82,9 @@ public class RequestManagerTest {
                 BulkShareHelper.class,
                 ConversionUtility.class,
                 IdentifyApi.IdentifyRequestBody.class,
-                Log.class
+                Log.class,
+                AsyncTwitterFactory.class,
+                TwitterAdapter.class
         );
 
         TestUtils.mockStrings();
@@ -226,58 +235,44 @@ public class RequestManagerTest {
     }
 
     @Test
-    public void postToTwitterTest() {
+    public void postToTwitterTest() throws Exception {
         // ARRANGE
-//        String tweetString = "tweetString";
-//        RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
-//        TwitterCore twitterCore = Mockito.mock(TwitterCore.class);
-//        Mockito.when(TwitterCore.getInstance()).thenReturn(twitterCore);
-//        Mockito.when(twitterCore.getSessionManager()).thenReturn(sessionManager);
-//        TwitterSession twitterSession = Mockito.mock(TwitterSession.class);
-//        Mockito.when(sessionManager.getActiveSession()).thenReturn(twitterSession);
-//        TwitterApiClient twitterApiClient = Mockito.mock(TwitterApiClient.class);
-//        Mockito.when(twitterCore.getApiClient(twitterSession)).thenReturn(twitterApiClient);
-//        StatusesService statusesService = Mockito.mock(StatusesService.class);
-//        Mockito.when(twitterApiClient.getStatusesService()).thenReturn(statusesService);
-//
-//        Mockito.doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                Callback callback = (Callback) invocation.getArguments()[8];
-//                Result result = Mockito.mock(Result.class);
-//                callback.success(result);
-//                return null;
-//            }
-//        }).doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                Callback callback = (Callback) invocation.getArguments()[8];
-//                TwitterException out = Mockito.mock(TwitterException.class);
-//                Mockito.when(out.toString()).thenReturn("sad no authentication sadad");
-//                callback.failure(out);
-//                return null;
-//            }
-//        }).doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                Callback callback = (Callback) invocation.getArguments()[8];
-//                TwitterException out = Mockito.mock(TwitterException.class);
-//                Mockito.when(out.toString()).thenReturn("asffa");
-//                callback.failure(out);
-//                return null;
-//            }
-//        }).when(statusesService).update(Mockito.anyString(), Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyDouble(), Mockito.anyDouble(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.any(Callback.class));
-//
-//        // ACT & ASSERT
-//        requestManager.postToTwitter(tweetString, requestCompletion);
-//        Mockito.verify(requestCompletion).onSuccess("Successfully posted to Twitter");
-//
-//        // ACT & ASSERT
-//        requestManager.postToTwitter(tweetString, requestCompletion);
-//        Mockito.verify(requestCompletion).onFailure("auth");
-//
-//        requestManager.postToTwitter(tweetString, requestCompletion);
-//        Mockito.verify(requestCompletion).onFailure("Failure Posting to Twitter");
+        String tweetString = "tweetString";
+        RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
+
+        AsyncTwitter twitter = Mockito.mock(AsyncTwitter.class);
+        Mockito.doReturn(twitter).when(requestManager).getTwitter();
+        Mockito.doNothing().when(twitter).setOAuthConsumer(Mockito.anyString(), Mockito.anyString());
+        Mockito.doNothing().when(twitter).setOAuthAccessToken(Mockito.any(AccessToken.class));
+
+        Mockito.doReturn("token").when(ambassadorConfig).getTwitterAccessToken();
+        Mockito.doReturn("secret").when(ambassadorConfig).getTwitterAccessTokenSecret();
+
+        RequestManager.AmbTwitterAdapter currentAdapter = requestManager.twitterAdapter;
+        final RequestManager.AmbTwitterAdapter twitterAdapter = Mockito.spy(currentAdapter);
+        requestManager.twitterAdapter = twitterAdapter;
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                twitterAdapter.completion.onSuccess("success");
+                return null;
+            }
+        }).doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                twitterAdapter.completion.onFailure("failure");
+                return null;
+            }
+        }).when(twitter).updateStatus(Mockito.anyString());
+
+        // ACT & ASSERT
+        requestManager.postToTwitter(tweetString, requestCompletion);
+        Mockito.verify(requestCompletion).onSuccess("success");
+
+
+        requestManager.postToTwitter(tweetString, requestCompletion);
+        Mockito.verify(requestCompletion).onFailure("failure");
     }
 
     @Test

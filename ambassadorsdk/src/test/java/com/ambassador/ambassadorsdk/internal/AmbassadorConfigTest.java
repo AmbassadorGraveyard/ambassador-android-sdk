@@ -20,6 +20,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import twitter4j.AsyncTwitter;
+import twitter4j.auth.AccessToken;
+
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -462,87 +465,69 @@ public class AmbassadorConfigTest {
     }
 
     @Test
-    public void nullifyTwitterIfInvalidNullSessionManagerTest() {
+    public void nullifyTwitterIfInvalidNullTokensTest() {
         // ARRANGE
-//        AmbassadorConfig ambassadorConfig = Mockito.spy(AmbassadorConfig.class);
-//        TwitterCore twitterCore = Mockito.mock(TwitterCore.class);
-//        Mockito.when(TwitterCore.getInstance()).thenReturn(twitterCore);
-//        Mockito.when(twitterCore.getSessionManager()).thenReturn(null);
-//        AmbassadorConfig.NullifyCompleteListener listener = Mockito.mock(AmbassadorConfig.NullifyCompleteListener.class);
-//
-//        // ACT
-//        ambassadorConfig.nullifyTwitterIfInvalid(listener);
-//
-//        // ASSERT
-//        Mockito.verify(ambassadorConfig).callNullifyComplete(Mockito.eq(listener));
+        AmbassadorConfig ambassadorConfig = Mockito.spy(AmbassadorConfig.class);
+        Mockito.doReturn(null).when(ambassadorConfig).getTwitterAccessToken();
+        Mockito.doReturn(null).when(ambassadorConfig).getTwitterAccessTokenSecret();
+
+        AmbassadorConfig.NullifyCompleteListener listener = Mockito.mock(AmbassadorConfig.NullifyCompleteListener.class);
+
+        // ACT
+        ambassadorConfig.nullifyTwitterIfInvalid(listener);
+
+        // ASSERT
+        Mockito.verify(ambassadorConfig).setTwitterAccessToken(null);
+        Mockito.verify(ambassadorConfig).setTwitterAccessTokenSecret(null);
+        Mockito.verify(ambassadorConfig).callNullifyComplete(Mockito.eq(listener));
     }
 
     @Test
-    public void nullifyTwitterInvalidTest() {
-//        // ARRANGE
-//        AmbassadorConfig.NullifyCompleteListener listener = Mockito.mock(AmbassadorConfig.NullifyCompleteListener.class);
-//
-//        String token = "token";
-//        String secret = "secret";
-//
-//        AmbassadorConfig ambassadorConfig = Mockito.spy(AmbassadorConfig.class);
-//        TwitterCore twitterCore = Mockito.mock(TwitterCore.class);
-//        SessionManager sessionManager = Mockito.mock(SessionManager.class);
-//        TwitterSession twitterSession = Mockito.mock(TwitterSession.class);
-//        TwitterAuthToken authToken = Mockito.spy(new TwitterAuthToken("token", "secret"));
-//
-//        Mockito.when(TwitterCore.getInstance()).thenReturn(twitterCore);
-//        Mockito.when(twitterCore.getSessionManager()).thenReturn(sessionManager);
-//        Mockito.when(sessionManager.getActiveSession()).thenReturn(twitterSession);
-//        Mockito.when(twitterSession.getAuthToken()).thenReturn(authToken);
-//
-//        Mockito.doNothing().when(sessionManager).clearActiveSession();
-//
-//        Mockito.doNothing().when(ambassadorConfig).setTwitterAccessToken(Mockito.anyString());
-//        Mockito.doNothing().when(ambassadorConfig).setTwitterAccessTokenSecret(Mockito.anyString());
-//        Mockito.when(ambassadorConfig.getTwitterAccessToken()).thenReturn(token);
-//        Mockito.when(ambassadorConfig.getTwitterAccessTokenSecret()).thenReturn(secret);
-//
-//        Mockito.doNothing().when(sessionManager).setActiveSession(Mockito.any(TwitterSession.class));
-//
-//        TwitterApiClient apiClient = Mockito.mock(TwitterApiClient.class);
-//        AccountService accountService = Mockito.mock(AccountService.class);
-//        Mockito.when(twitterCore.getApiClient()).thenReturn(apiClient);
-//        Mockito.when(apiClient.getAccountService()).thenReturn(accountService);
-//
-//        Mockito.doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                Callback<User> callback = (Callback<User>) invocation.getArguments()[2];
-//                callback.success(null);
-//                return null;
-//            }
-//        }).doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                Callback<User> callback = (Callback<User>) invocation.getArguments()[2];
-//                callback.failure(new TwitterException("ex"));
-//                return null;
-//            }
-//        }).when(accountService).verifyCredentials(Mockito.anyBoolean(), Mockito.anyBoolean(), Mockito.any(Callback.class));
-//
-//        // ACT
-//        ambassadorConfig.nullifyTwitterIfInvalid(listener);
-//
-//        // ASSERT
-//        Mockito.verify(ambassadorConfig).setTwitterAccessToken(Mockito.eq(token));
-//        Mockito.verify(ambassadorConfig).setTwitterAccessTokenSecret(Mockito.eq(secret));
-//        Mockito.verify(sessionManager).setActiveSession(Mockito.any(TwitterSession.class));
+    public void nullifyTwitterIfInvalidNonNullTokensTest() {
+        // ARRANGE
+        AmbassadorConfig ambassadorConfig = Mockito.spy(AmbassadorConfig.class);
+        AsyncTwitter twitter = Mockito.mock(AsyncTwitter.class);
+        Mockito.doReturn(twitter).when(ambassadorConfig).getTwitter();
+
+        Mockito.doReturn("token").when(ambassadorConfig).getTwitterAccessToken();
+        Mockito.doReturn("secret").when(ambassadorConfig).getTwitterAccessTokenSecret();
+
+        Mockito.doNothing().when(twitter).setOAuthConsumer(Mockito.anyString(), Mockito.anyString());
+        Mockito.doNothing().when(twitter).setOAuthAccessToken(Mockito.any(AccessToken.class));
+
+        AmbassadorConfig.NullifyCompleteListener listener = Mockito.mock(AmbassadorConfig.NullifyCompleteListener.class);
+
+        final AmbassadorConfig.AmbTwitterAdapter adapter = Mockito.spy(ambassadorConfig.ambTwitterAdapter);
+        ambassadorConfig.ambTwitterAdapter = adapter;
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                adapter.gotUserTimeline(null);
+                return null;
+            }
+        }).doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                adapter.onException(null, null);
+                return null;
+            }
+        }).when(twitter).getUserTimeline();
+
+        // ACT
+        ambassadorConfig.nullifyTwitterIfInvalid(listener);
+
+        // ASSERT
+//        Mockito.verify(ambassadorConfig).setTwitterAccessToken(null);
+//        Mockito.verify(ambassadorConfig).setTwitterAccessTokenSecret(null);
 //        Mockito.verify(ambassadorConfig).callNullifyComplete(Mockito.eq(listener));
-//
-//        // ACT
-//        ambassadorConfig.nullifyTwitterIfInvalid(listener);
-//
-//        // ASSERT
-//        Mockito.verify(ambassadorConfig, Mockito.times(2)).setTwitterAccessToken(Mockito.eq(token));
-//        Mockito.verify(ambassadorConfig, Mockito.times(2)).setTwitterAccessTokenSecret(Mockito.eq(secret));
-//        Mockito.verify(sessionManager, Mockito.times(2)).setActiveSession(Mockito.any(TwitterSession.class));
-//        Mockito.verify(sessionManager).clearActiveSession();
+
+        // ACT
+        ambassadorConfig.nullifyTwitterIfInvalid(listener);
+
+        // ASSERT
+//        Mockito.verify(ambassadorConfig, Mockito.times(1)).setTwitterAccessToken(null);
+//        Mockito.verify(ambassadorConfig, Mockito.times(1)).setTwitterAccessTokenSecret(null);
 //        Mockito.verify(ambassadorConfig, Mockito.times(2)).callNullifyComplete(Mockito.eq(listener));
     }
 
