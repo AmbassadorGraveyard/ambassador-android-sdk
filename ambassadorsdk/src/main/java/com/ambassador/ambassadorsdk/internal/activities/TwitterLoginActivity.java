@@ -11,7 +11,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -199,7 +198,6 @@ public class TwitterLoginActivity extends AppCompatActivity {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.v("twurl", url);
             if (!isHandled(url) && !isPopupOpen()) {
                 Uri uri = Uri.parse(url);
                 List<String> toOpenInBrowser = new ArrayList<>();
@@ -215,6 +213,8 @@ public class TwitterLoginActivity extends AppCompatActivity {
                 }
 
                 if (uri != null && uri.getPath().equals("/login/error")) {
+                    view.stopLoading();
+                    Toast.makeText(TwitterLoginActivity.this, "Incorrect Username/Password!", Toast.LENGTH_SHORT).show();
                     return false;
                 }
 
