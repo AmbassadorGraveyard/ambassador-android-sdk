@@ -128,10 +128,10 @@ public class TwitterLoginActivity extends AppCompatActivity {
         if (toolbar == null) return;
 
         toolbar.setNavigationIcon(arrow);
-        toolbar.setBackgroundColor(raf.getLinkedinToolbarColor());
+        toolbar.setBackgroundColor(raf.getLinkedInToolbarColor());
         toolbar.setTitleTextColor(raf.getLinkedInToolbarTextColor());
 
-        Utilities.setStatusBar(getWindow(), raf.getLinkedinToolbarColor());
+        Utilities.setStatusBar(getWindow(), raf.getLinkedInToolbarColor());
     }
     // endregion
 

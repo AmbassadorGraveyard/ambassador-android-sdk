@@ -721,7 +721,7 @@ public class RAFOptionsFactoryTest {
         RAFOptions rafOptions = RAFOptionsFactory.decodeResources(inputStream, context);
 
         // ASSERT
-        Assert.assertEquals(-2, rafOptions.getLinkedinToolbarColor());
+        Assert.assertEquals(-2, rafOptions.getLinkedInToolbarColor());
     }
 
     @Test
