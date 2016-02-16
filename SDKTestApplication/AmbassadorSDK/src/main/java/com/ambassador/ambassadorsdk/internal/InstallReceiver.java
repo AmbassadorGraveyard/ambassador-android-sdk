@@ -65,6 +65,9 @@ public final class InstallReceiver extends BroadcastReceiver {
                 user.setAugurData(identity);
             }
         } else {
+            /*
+             * Can't rely on Augur definitively.  If no augur data, then use our own.  
+             */
             identity = new JsonObject();
             JsonObject consumer = new JsonObject();
             JsonObject device = new JsonObject();
