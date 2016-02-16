@@ -71,4 +71,10 @@
     <color name="linkedinToolBarArrow">@android:color/white</color>
     <!-- /LINKEDIN LOGIN -->
 
+    <!-- TWITTER LOGIN -->
+    <color name="twitterToolBar">@color/twitter_blue</color>
+    <color name="twitterToolBarText">@android:color/white</color>
+    <color name="twitterToolBarArrow">@android:color/white</color>
+    <!-- /TWITTER LOGIN -->
+
 </resources>

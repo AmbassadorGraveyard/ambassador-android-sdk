@@ -334,7 +334,7 @@ public final class RAFOptions {
         private int linkedInToolbarTextColor = ResourceFactory.getColor(android.R.color.white).getColor();
         private int linkedInToolbarArrowColor = ResourceFactory.getColor(android.R.color.white).getColor();
 
-        private int twitterToolbarColor = ResourceFactory.getColor(R.color.linkedin_blue).getColor();
+        private int twitterToolbarColor = ResourceFactory.getColor(R.color.twitter_blue).getColor();
         private int twitterToolbarTextColor = ResourceFactory.getColor(android.R.color.white).getColor();
         private int twitterToolbarArrowColor = ResourceFactory.getColor(android.R.color.white).getColor();
 
