@@ -216,23 +216,33 @@ public final class SocialShareDialog extends Dialog {
     private RequestManager.RequestCompletion twitterCompletion = new RequestManager.RequestCompletion() {
         @Override
         public void onSuccess(Object successResponse) {
-            pbLoading.setVisibility(View.GONE);
-            Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-            requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.TWITTER);
-            dismiss();
-            attemptNotifySuccess();
+            getOwnerActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pbLoading.setVisibility(View.GONE);
+                    Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
+                    requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.TWITTER);
+                    dismiss();
+                    attemptNotifySuccess();
+                }
+            });
         }
 
         @Override
-        public void onFailure(Object failureResponse) {
-            pbLoading.setVisibility(View.GONE);
-            if (((String) failureResponse).equals("auth")) {
-                dismiss();
-                attemptNotifyReauth();
-            } else {
-                Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
-                attemptNotifyFailed();
-            }
+        public void onFailure(final Object failureResponse) {
+            getOwnerActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pbLoading.setVisibility(View.GONE);
+                    if (((String) failureResponse).equals("auth")) {
+                        dismiss();
+                        attemptNotifyReauth();
+                    } else {
+                        Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
+                        attemptNotifyFailed();
+                    }
+                }
+            });
         }
     };
 
