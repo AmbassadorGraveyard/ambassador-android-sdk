@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -37,6 +39,8 @@ import butterfork.ButterFork;
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
 import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
 import twitter4j.auth.RequestToken;
 
 /**
@@ -53,6 +57,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
     @Inject protected Device device;
     @Inject protected RAFOptions raf;
 
+    protected RequestToken requestToken;
     protected String authUrl;
     protected WebPopupDialog popupDialog;
 
@@ -86,6 +91,12 @@ public class TwitterLoginActivity extends AppCompatActivity {
         if (popupDialog != null && popupDialog.isShowing()) {
             popupDialog.dismiss();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return super.onOptionsItemSelected(item);
     }
     // endregion
 
@@ -145,13 +156,29 @@ public class TwitterLoginActivity extends AppCompatActivity {
 
     private void loadLoginPage() {
         AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
+        String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
+        String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
+        twitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
+
         twitter.addListener(new TwitterAdapter() {
 
             @Override
             public void gotOAuthRequestToken(RequestToken token) {
                 super.gotOAuthRequestToken(token);
-                String authUrl = token.getAuthenticationURL();
-                wvLogin.loadUrl(authUrl);
+                requestToken = token;
+                authUrl = token.getAuthenticationURL();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        wvLogin.loadUrl(authUrl);
+                    }
+                });
+            }
+
+            @Override
+            public void onException(TwitterException te, TwitterMethod method) {
+                super.onException(te, method);
             }
 
         });
@@ -172,6 +199,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.v("twurl", url);
             if (!isHandled(url) && !isPopupOpen()) {
                 Uri uri = Uri.parse(url);
                 List<String> toOpenInBrowser = new ArrayList<>();
@@ -183,6 +211,10 @@ public class TwitterLoginActivity extends AppCompatActivity {
                     i.setData(uri);
                     startActivity(i);
                     view.stopLoading();
+                    return false;
+                }
+
+                if (uri != null && uri.getPath().equals("/login/error")) {
                     return false;
                 }
 
@@ -206,6 +238,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
                     Intent data = new Intent();
                     data.putExtra("token", token);
                     data.putExtra("verifier", verifier);
+                    data.putExtra("request", requestToken);
                     setResult(5, data);
                 }
 
