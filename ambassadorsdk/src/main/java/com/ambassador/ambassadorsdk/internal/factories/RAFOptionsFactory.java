@@ -155,6 +155,15 @@ public final class RAFOptionsFactory {
         id = resources.getIdentifier("linkedinToolBarArrow", "color", packageName);
         builder.setLinkedInToolbarArrowColor(resources.getColor(id));
 
+        id = resources.getIdentifier("twitterToolBar", "color", packageName);
+        builder.setTwitterToolbarColor(resources.getColor(id));
+
+        id = resources.getIdentifier("twitterToolBarText", "color", packageName);
+        builder.setTwitterToolbarTextColor(resources.getColor(id));
+
+        id = resources.getIdentifier("twitterToolBarArrow", "color", packageName);
+        builder.setTwitterToolbarArrowColor(resources.getColor(id));
+
         id = resources.getIdentifier("socialOptionCornerRadius", "dimen", packageName);
         builder.setSocialOptionCornerRadius(removeDensity(context, resources.getDimension(id)));
 
@@ -571,6 +580,18 @@ public final class RAFOptionsFactory {
 
                     case "linkedintoolbararrow":
                         builder.setLinkedInToolbarArrowColor(paramInt);
+                        break;
+
+                    case "twittertoolbar":
+                        builder.setTwitterToolbarColor(paramInt);
+                        break;
+
+                    case "twittertoolbartext":
+                        builder.setTwitterToolbarTextColor(paramInt);
+                        break;
+
+                    case "twittertoolbararrow":
+                        builder.setTwitterToolbarArrowColor(paramInt);
                         break;
 
                     case "channels":
