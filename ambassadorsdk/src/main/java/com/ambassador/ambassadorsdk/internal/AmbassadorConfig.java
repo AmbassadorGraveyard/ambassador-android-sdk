@@ -195,31 +195,46 @@ public class AmbassadorConfig { // TODO: Make final after UI tests figured out
             return;
         }
 
-        AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
+        AsyncTwitter twitter = getTwitter();
         String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
         String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
         twitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
         twitter.setOAuthAccessToken(new AccessToken(accessToken, accessSecret));
 
-        twitter.addListener(new TwitterAdapter() {
-
-            @Override
-            public void gotUserTimeline(ResponseList<Status> statuses) {
-                super.gotUserTimeline(statuses);
-                callNullifyComplete(listener);
-            }
-
-            @Override
-            public void onException(TwitterException te, TwitterMethod method) {
-                super.onException(te, method);
-                setTwitterAccessTokenSecret(null);
-                setTwitterAccessToken(null);
-                callNullifyComplete(listener);
-            }
-
-        });
+        ambTwitterAdapter.setListener(listener);
+        twitter.addListener(ambTwitterAdapter);
 
         twitter.getUserTimeline();
+    }
+
+    protected AsyncTwitter getTwitter() {
+        return new AsyncTwitterFactory().getInstance();
+    }
+
+    protected AmbTwitterAdapter ambTwitterAdapter = new AmbTwitterAdapter() {
+
+        @Override
+        public void gotUserTimeline(ResponseList<Status> statuses) {
+            callNullifyComplete(listener);
+        }
+
+        @Override
+        public void onException(TwitterException te, TwitterMethod method) {
+            setTwitterAccessTokenSecret(null);
+            setTwitterAccessToken(null);
+            callNullifyComplete(listener);
+        }
+
+    };
+
+    protected class AmbTwitterAdapter extends TwitterAdapter {
+
+        protected NullifyCompleteListener listener;
+
+        public void setListener(NullifyCompleteListener listener) {
+            this.listener = listener;
+        }
+
     }
 
     public void nullifyLinkedInIfInvalid(final NullifyCompleteListener listener) {

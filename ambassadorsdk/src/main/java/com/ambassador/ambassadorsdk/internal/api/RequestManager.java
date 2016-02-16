@@ -243,31 +243,52 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param completion callback for request completion
      */
     public void postToTwitter(final String tweetString, final RequestCompletion completion) {
-        AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
+        AsyncTwitter twitter = getTwitter();
         String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
         String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
         twitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
         twitter.setOAuthAccessToken(new AccessToken(ambassadorConfig.getTwitterAccessToken(), ambassadorConfig.getTwitterAccessTokenSecret()));
 
-        twitter.addListener(new TwitterAdapter() {
-
-            @Override
-            public void updatedStatus(Status status) {
-                super.updatedStatus(status);
-                Utilities.debugLog("amb-request", "SUCCESS: RequestManager.postToTwitter(...)");
-                completion.onSuccess("success");
-            }
-
-            @Override
-            public void onException(TwitterException te, TwitterMethod method) {
-                super.onException(te, method);
-                Utilities.debugLog("amb-request", "FAILURE: RequestManager.postToTwitter(...)");
-                completion.onFailure("failure");
-            }
-
-        });
+        twitterAdapter.setCompletion(completion);
+        twitter.addListener(twitterAdapter);
 
         twitter.updateStatus(tweetString);
+    }
+
+    protected AmbTwitterAdapter twitterAdapter = new AmbTwitterAdapter() {
+
+        @Override
+        public void updatedStatus(Status status) {
+            super.updatedStatus(status);
+            Utilities.debugLog("amb-request", "SUCCESS: RequestManager.postToTwitter(...)");
+            if (completion != null) completion.onSuccess("success");
+        }
+
+        @Override
+        public void onException(TwitterException te, TwitterMethod method) {
+            super.onException(te, method);
+            Utilities.debugLog("amb-request", "FAILURE: RequestManager.postToTwitter(...)");
+            if (completion != null) completion.onFailure("failure");
+        }
+
+    };
+
+    protected class AmbTwitterAdapter extends TwitterAdapter {
+
+        protected RequestCompletion completion;
+
+        public void setCompletion(RequestCompletion completion) {
+            this.completion = completion;
+        }
+
+    }
+
+    /**
+     * Creates a factory and returns a new AsyncTwitter client.
+     * @return a brand new AsyncTwitter client object.
+     */
+    protected AsyncTwitter getTwitter() {
+        return new AsyncTwitterFactory().getInstance();
     }
 
     /**
