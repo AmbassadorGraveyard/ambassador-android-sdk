@@ -123,15 +123,15 @@ public class TwitterLoginActivity extends AppCompatActivity {
         }
 
         Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(raf.getLinkedInToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
+        arrow.setColorFilter(raf.getTwitterToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
 
         if (toolbar == null) return;
 
         toolbar.setNavigationIcon(arrow);
-        toolbar.setBackgroundColor(raf.getLinkedInToolbarColor());
-        toolbar.setTitleTextColor(raf.getLinkedInToolbarTextColor());
+        toolbar.setBackgroundColor(raf.getTwitterToolbarColor());
+        toolbar.setTitleTextColor(raf.getTwitterToolbarTextColor());
 
-        Utilities.setStatusBar(getWindow(), raf.getLinkedInToolbarColor());
+        Utilities.setStatusBar(getWindow(), raf.getTwitterToolbarColor());
     }
     // endregion
 
