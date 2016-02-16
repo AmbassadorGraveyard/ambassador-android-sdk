@@ -64,6 +64,16 @@ public final class InstallReceiver extends BroadcastReceiver {
                 identity.add("device", device);
                 user.setAugurData(identity);
             }
+        } else {
+            identity = new JsonObject();
+            JsonObject consumer = new JsonObject();
+            JsonObject device = new JsonObject();
+            consumer.addProperty("UID", "");
+            device.addProperty("ID", webDeviceId);
+            device.addProperty("type", "Android");
+            identity.add("consumer", consumer);
+            identity.add("device", device);
+            user.setAugurData(identity);
         }
     }
 
