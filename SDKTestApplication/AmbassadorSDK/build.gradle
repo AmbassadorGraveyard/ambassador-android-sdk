@@ -97,6 +97,7 @@ dependencies {
             'com.google.dagger:dagger:2.0',
             'com.facebook.android:facebook-android-sdk:4.7.0',
             'com.oguzbabaoglu:butterfork-binder:1.0.0',
+            'net.kencochrane.raven:raven:6.0.0',
     )
 
     compile(name: 'augur', ext: 'aar')
