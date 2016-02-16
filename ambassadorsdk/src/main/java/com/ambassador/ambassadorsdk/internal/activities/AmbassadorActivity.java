@@ -76,6 +76,8 @@ import butterfork.ButterFork;
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
 import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
@@ -656,13 +658,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
     protected class TwitterManager implements ShareManager {
 
         protected AsyncTwitter twitter;
-        protected RequestToken requestToken;
 
         protected TwitterManager() {
             AsyncTwitter asyncTwitter = new AsyncTwitterFactory().getInstance();
             String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
             String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
-
             asyncTwitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
 
             this.twitter = asyncTwitter;
@@ -708,6 +708,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
             if (data != null) {
                 String verifier = data.getStringExtra("verifier");
+                RequestToken requestToken = (RequestToken) data.getExtras().get("request");
 
                 twitter.addListener(new TwitterAdapter() {
 
@@ -721,9 +722,19 @@ public final class AmbassadorActivity extends AppCompatActivity {
                         ambassadorConfig.setTwitterAccessTokenSecret(accessSecret);
 
                         if (accessToken != null && accessSecret != null) {
-                            Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
-                            onShareRequested();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(AmbassadorActivity.this, new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
+                                    onShareRequested();
+                                }
+                            });
                         }
+                    }
+
+                    @Override
+                    public void onException(TwitterException te, TwitterMethod method) {
+                        super.onException(te, method);
                     }
 
                 });
