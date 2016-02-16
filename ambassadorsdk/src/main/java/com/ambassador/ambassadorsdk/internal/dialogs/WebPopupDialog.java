@@ -7,7 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -33,6 +33,8 @@ public final class WebPopupDialog extends Dialog {
     @Bind(B.id.pbLoading)   protected ProgressBar   pbLoading;
     // endregion
 
+    protected String url;
+
     public WebPopupDialog(Context context) {
         super(context);
 
@@ -51,10 +53,17 @@ public final class WebPopupDialog extends Dialog {
         configureDialog();
         configureWebView();
         enableDismissOnTouchOutside();
+
+        if (url != null) {
+            wvPopup.loadUrl(url);
+        }
     }
 
-    public void load(@NonNull String url) {
-        wvPopup.loadUrl(url);
+    public void load(@Nullable String url) {
+        this.url = url;
+        if (url != null && wvPopup != null) {
+            wvPopup.loadUrl(url);
+        }
     }
 
     private void configureDialog() {

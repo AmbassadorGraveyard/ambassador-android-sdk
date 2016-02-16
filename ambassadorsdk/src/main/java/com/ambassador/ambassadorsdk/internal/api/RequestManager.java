@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.api;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
@@ -12,18 +13,21 @@ import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterApiClient;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterSession;
-import com.twitter.sdk.android.core.models.Tweet;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import twitter4j.AsyncTwitter;
+import twitter4j.AsyncTwitterFactory;
+import twitter4j.Status;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
+import twitter4j.auth.AccessToken;
 
 /**
  * Handles all requests at the highest level. This is what all other internal classes use.
@@ -239,25 +243,31 @@ public class RequestManager { // TODO: Make final after UI tests figured out
      * @param completion callback for request completion
      */
     public void postToTwitter(final String tweetString, final RequestCompletion completion) {
-        TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient(twitterSession);
-        twitterApiClient.getStatusesService().update(tweetString, null, null, null, null, null, null, null, new Callback<Tweet>() {
+        AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
+        String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
+        String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
+        twitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
+        twitter.setOAuthAccessToken(new AccessToken(ambassadorConfig.getTwitterAccessToken(), ambassadorConfig.getTwitterAccessTokenSecret()));
+
+        twitter.addListener(new TwitterAdapter() {
+
             @Override
-            public void success(Result<Tweet> result) {
-                completion.onSuccess("Successfully posted to Twitter");
+            public void updatedStatus(Status status) {
+                super.updatedStatus(status);
                 Utilities.debugLog("amb-request", "SUCCESS: RequestManager.postToTwitter(...)");
+                completion.onSuccess("success");
             }
 
             @Override
-            public void failure(com.twitter.sdk.android.core.TwitterException e) {
-                if (e.toString().toLowerCase().contains("no authentication")) {
-                    completion.onFailure("auth");
-                } else {
-                    completion.onFailure("Failure Posting to Twitter");
-                }
+            public void onException(TwitterException te, TwitterMethod method) {
+                super.onException(te, method);
                 Utilities.debugLog("amb-request", "FAILURE: RequestManager.postToTwitter(...)");
+                completion.onFailure("failure");
             }
+
         });
+
+        twitter.updateStatus(tweetString);
     }
 
     /**

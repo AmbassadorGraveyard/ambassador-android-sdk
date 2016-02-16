@@ -9,6 +9,7 @@ import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.LinkedInLoginActivity;
+import com.ambassador.ambassadorsdk.internal.activities.TwitterLoginActivity;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
@@ -19,6 +20,7 @@ public interface AmbassadorApplicationComponent {
     void inject(AmbassadorActivity ambassadorActivity);
     void inject(SocialShareDialog socialShareDialog);
     void inject(LinkedInLoginActivity linkedInLoginActivity);
+    void inject(TwitterLoginActivity twitterLoginActivity);
     void inject(ContactSelectorActivity contactSelectorActivity);
     void inject(ContactListAdapter contactListAdapter);
     void inject(BulkShareHelper bulkShareHelper);
