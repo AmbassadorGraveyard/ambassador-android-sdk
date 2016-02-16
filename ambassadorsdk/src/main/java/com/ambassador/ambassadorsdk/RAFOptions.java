@@ -237,7 +237,7 @@ public final class RAFOptions {
         return contactNoPhotoAvailableBackgroundColor;
     }
 
-    public int getLinkedinToolbarColor() {
+    public int getLinkedInToolbarColor() {
         return linkedInToolbarColor;
     }
 
