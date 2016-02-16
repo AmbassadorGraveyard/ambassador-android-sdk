@@ -31,6 +31,8 @@ import javax.inject.Inject;
  */
 public class RequestManager { // TODO: Make final after UI tests figured out
 
+    private static boolean SEND_GCM = false;
+
     @Inject protected AmbassadorConfig ambassadorConfig;
 
     protected BulkShareApi bulkShareApi;
@@ -214,7 +216,9 @@ public class RequestManager { // TODO: Make final after UI tests figured out
         String auth = ambassadorConfig.getUniversalKey();
         IdentifyApi.UpdateGcmTokenBody body = new IdentifyApi.UpdateGcmTokenBody(email, registrationToken);
 
-        identifyApi.updateGcmToken(sessionId, requestId, uid, auth, body, completion);
+        if (SEND_GCM) {
+            identifyApi.updateGcmToken(sessionId, requestId, uid, auth, body, completion);
+        }
     }
 
     /**
