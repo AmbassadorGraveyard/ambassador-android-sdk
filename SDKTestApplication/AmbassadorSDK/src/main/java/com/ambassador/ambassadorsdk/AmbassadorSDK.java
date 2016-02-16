@@ -93,7 +93,7 @@ public final class AmbassadorSDK {
     public static void identify(String emailAddress) {
         ambassadorConfig.setUserEmail(emailAddress);
         if (ambassadorConfig.getGcmRegistrationToken() != null) {
-
+            updateGcm();
         }
 
         IIdentify identify = buildIdentify();
