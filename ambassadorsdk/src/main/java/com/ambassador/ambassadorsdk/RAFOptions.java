@@ -71,6 +71,10 @@ public final class RAFOptions {
     private int linkedInToolbarTextColor;
     private int linkedInToolbarArrowColor;
 
+    private int twitterToolbarColor;
+    private int twitterToolbarTextColor;
+    private int twitterToolbarArrowColor;
+
     private String[] channels;
 
     private float socialOptionCornerRadius;
@@ -245,6 +249,18 @@ public final class RAFOptions {
         return linkedInToolbarArrowColor;
     }
 
+    public int getTwitterToolbarColor() {
+        return twitterToolbarColor;
+    }
+
+    public int getTwitterToolbarTextColor() {
+        return twitterToolbarTextColor;
+    }
+
+    public int getTwitterToolbarArrowColor() {
+        return twitterToolbarArrowColor;
+    }
+
     public String[] getChannels() {
         return channels;
     }
@@ -317,6 +333,10 @@ public final class RAFOptions {
         private int linkedInToolbarColor = ResourceFactory.getColor(R.color.linkedin_blue).getColor();
         private int linkedInToolbarTextColor = ResourceFactory.getColor(android.R.color.white).getColor();
         private int linkedInToolbarArrowColor = ResourceFactory.getColor(android.R.color.white).getColor();
+
+        private int twitterToolbarColor = ResourceFactory.getColor(R.color.linkedin_blue).getColor();
+        private int twitterToolbarTextColor = ResourceFactory.getColor(android.R.color.white).getColor();
+        private int twitterToolbarArrowColor = ResourceFactory.getColor(android.R.color.white).getColor();
 
         private String[] channels = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
 
@@ -494,6 +514,18 @@ public final class RAFOptions {
             this.linkedInToolbarArrowColor = linkedInToolbarArrowColor;
         }
 
+        public void setTwitterToolbarColor(int twitterToolbarColor) {
+            this.twitterToolbarColor = twitterToolbarColor;
+        }
+
+        public void setTwitterToolbarTextColor(int twitterToolbarTextColor) {
+            this.twitterToolbarTextColor = twitterToolbarTextColor;
+        }
+
+        public void setTwitterToolbarArrowColor(int twitterToolbarArrowColor) {
+            this.twitterToolbarArrowColor = twitterToolbarArrowColor;
+        }
+
         public void setChannels(String[] channels) {
             this.channels = channels;
         }
@@ -548,6 +580,9 @@ public final class RAFOptions {
             tmp.linkedInToolbarColor = this.linkedInToolbarColor;
             tmp.linkedInToolbarTextColor = this.linkedInToolbarTextColor;
             tmp.linkedInToolbarArrowColor = this.linkedInToolbarArrowColor;
+            tmp.twitterToolbarColor = this.twitterToolbarColor;
+            tmp.twitterToolbarTextColor = this.twitterToolbarTextColor;
+            tmp.twitterToolbarArrowColor = this.twitterToolbarArrowColor;
             tmp.channels = this.channels;
             tmp.socialOptionCornerRadius = this.socialOptionCornerRadius;
 
