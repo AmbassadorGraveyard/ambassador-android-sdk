@@ -13,6 +13,7 @@ rootProject.ext.sdkCompile = [
         rootProject.ext.deps.dagger,
         rootProject.ext.deps.facebook,
         rootProject.ext.deps.butterfork,
+        rootProject.ext.deps.raven,
 ]
 
 rootProject.ext.sdkApt = [

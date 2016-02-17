@@ -3,7 +3,12 @@ package com.ambassador.ambassadorsdk.internal;
 import android.os.Handler;
 import android.os.Message;
 
+import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONObject;
 
@@ -13,10 +18,8 @@ import io.augur.wintermute.Augur;
 
 public class IdentifyAugurSDK implements IIdentify {
 
-    @Inject
-    AmbassadorConfig ambassadorConfig;
-
-    @Inject Device deviceObj;
+    @Inject protected Device deviceObj;
+    @Inject protected User user;
 
     public IdentifyAugurSDK() {
         AmbassadorSingleton.getInstanceComponent().inject(this);
@@ -24,12 +27,13 @@ public class IdentifyAugurSDK implements IIdentify {
 
     @Override
     public void getIdentity() {
+        String augurKey = new StringResource(R.string.augur_api_key).getValue();
         JSONObject augurConfig = new JSONObject();
 
         try {
             // required
             augurConfig.put("context", AmbassadorSingleton.getInstanceContext());
-            augurConfig.put("apiKey", AmbassadorConfig.AUGUR_API_KEY);
+            augurConfig.put("apiKey", augurKey);
             // optional
             //augurConfig.put("timeout", 1000); // default: 5000 (5 seconds)
             augurConfig.put("maxRetries", 5); // default: 5
@@ -57,16 +61,16 @@ public class IdentifyAugurSDK implements IIdentify {
                     JSONObject device = jsonObject.getJSONObject("device");
 
                     //if the webDeviceId has been received on the querystring and it's different than what augur returns, override augur deviceId
-                    if (ambassadorConfig.getWebDeviceId() != null && !device.getString("ID").equals(ambassadorConfig.getWebDeviceId())) {
+                    if (user.getWebDeviceId() != null && !device.getString("ID").equals(user.getWebDeviceId())) {
                         device.remove("ID");
-                        device.put("ID", ambassadorConfig.getWebDeviceId());
+                        device.put("ID", user.getWebDeviceId());
                     }
 
                     device.put("type", deviceObj.getType());
                     jsonObject.put("device", device);
 
                     Utilities.debugLog("Augur", "Augur successfully received through SDK call");
-                    ambassadorConfig.setIdentifyObject(jsonObject.toString());
+                    user.setAugurData((JsonObject) new JsonParser().parse(jsonObject.toString()));
                     //deviceID = Augur.DID;
                     //universalID = Augur.UID;
                 } catch (Exception e) {

@@ -19,13 +19,13 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.injection.ForActivity;
-import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.injection.ForActivity;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 
@@ -51,7 +51,7 @@ public final class SocialShareDialog extends Dialog {
 
     // region Dependencies
     @Inject protected RequestManager    requestManager;
-    @Inject protected AmbassadorConfig  ambassadorConfig;
+    @Inject protected Campaign          campaign;
     @Inject protected RAFOptions        raf;
     // endregion
 
@@ -139,7 +139,7 @@ public final class SocialShareDialog extends Dialog {
     }
 
     private void shareClicked() {
-        if (Utilities.containsURL(etMessage.getText().toString(), ambassadorConfig.getURL())) {
+        if (Utilities.containsURL(etMessage.getText().toString(), campaign.getUrl())) {
             share();
         } else {
             askForUrl();
@@ -177,7 +177,7 @@ public final class SocialShareDialog extends Dialog {
     }
 
     private void askForUrl() {
-        final String url = ambassadorConfig.getURL();
+        final String url = campaign.getUrl();
         new AskUrlDialog(getContext(), url)
                 .setOnCompleteListener(new AskUrlDialog.OnCompleteListener() {
                     @Override

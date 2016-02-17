@@ -37,14 +37,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
+import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskUrlDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
@@ -54,8 +56,7 @@ import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView;
-
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -100,7 +101,8 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     // region Dependencies
     @Inject protected PusherSDK         pusherSDK;
     @Inject protected BulkShareHelper   bulkShareHelper;
-    @Inject protected AmbassadorConfig  ambassadorConfig;
+    @Inject protected User              user;
+    @Inject protected Campaign          campaign;
     @Inject protected Device            device;
     // endregion
 
@@ -108,7 +110,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     protected  RAFOptions               raf = RAFOptions.get();
     protected List<Contact>             contactList;
     protected ContactListAdapter        contactListAdapter;
-    protected JSONObject                pusherData;
+    protected JsonObject                pusherData;
     protected boolean                   showPhoneNumbers;
     protected AskNameDialog             askNameDialog;
     protected ProgressDialog            progressDialog;
@@ -170,6 +172,9 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
                         }
                     });
                 }
+                break;
+
+            default:
                 break;
         }
     }
@@ -326,7 +331,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     }
 
     private void setUpPusher() {
-        pusherData = ambassadorConfig.getPusherInfoObject();
+        pusherData = user.getPusherInfo();
         pusherSDK.setIdentifyListener(this);
     }
     // endregion
@@ -491,7 +496,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
         if (showPhoneNumbers) contactList = new ContactList(ContactList.Type.PHONE).get(this);
         else contactList = new ContactList(ContactList.Type.EMAIL).get(this);
-        contactList = (contactList.size() == 0 && !AmbassadorConfig.isReleaseBuild)
+        contactList = (contactList.isEmpty() && !BuildConfig.IS_RELEASE_BUILD)
                 ? new ContactList(ContactList.Type.DUMMY).get(this) : contactList;
 
         if (contactList.size() == 0) {
@@ -520,10 +525,10 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     }
 
     private boolean ableToSend() {
-        boolean lengthToShort = showPhoneNumbers && !(etShareMessage.getText().length() <= MAX_SMS_LENGTH);
+        boolean lengthToShort = showPhoneNumbers && etShareMessage.getText().length() > MAX_SMS_LENGTH;
         boolean noneSelected = contactListAdapter.getSelectedContacts().size() <= 0;
         boolean emptyMessage = etShareMessage.getText().toString().length() <= 0;
-        boolean haveUrl = Utilities.containsURL(etShareMessage.getText().toString(), ambassadorConfig.getURL());
+        boolean haveUrl = Utilities.containsURL(etShareMessage.getText().toString(), campaign.getUrl());
         boolean haveName = pusherHasKey("firstName") && pusherHasKey("lastName");
 
         if (lengthToShort && noneSelected) {
@@ -551,7 +556,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     }
 
     private void askForUrl() {
-        final String url = ambassadorConfig.getURL();
+        final String url = campaign.getUrl();
         new AskUrlDialog(this, url)
                 .setOnCompleteListener(new AskUrlDialog.OnCompleteListener() {
                     @Override
@@ -600,7 +605,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     private boolean pusherHasKey(String key) {
         try {
-            String value = pusherData.getString(key);
+            String value = pusherData.get(key).getAsString();
             return value != null && !value.equals("null") && !value.isEmpty();
         } catch (Exception e) {
             return false;

@@ -4,14 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +31,9 @@ import java.util.TimerTask;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest ({
         AmbassadorSDK.class,
-        AmbassadorConfig.class,
+        Auth.class,
+        User.class,
+        Campaign.class,
         AmbassadorSingleton.class,
         Utilities.class,
         InstallReceiver.class,
@@ -38,7 +42,11 @@ import java.util.TimerTask;
 public class AmbassadorSDKTest {
 
     private Context context;
-    private AmbassadorConfig ambassadorConfig;
+
+    private Auth auth;
+    private User user;
+    private Campaign campaign;
+
     private PusherSDK pusherSDK;
 
     @Before
@@ -54,8 +62,14 @@ public class AmbassadorSDKTest {
 
         PowerMockito.spy(AmbassadorSDK.class);
 
-        ambassadorConfig = Mockito.mock(AmbassadorConfig.class);
-        AmbassadorSDK.ambassadorConfig = ambassadorConfig;
+        auth = Mockito.mock(Auth.class);
+        AmbassadorSDK.auth = auth;
+
+        user = Mockito.mock(User.class);
+        AmbassadorSDK.user = user;
+
+        campaign = Mockito.mock(Campaign.class);
+        AmbassadorSDK.campaign = campaign;
 
         pusherSDK = Mockito.mock(PusherSDK.class);
         AmbassadorSDK.pusherSDK = pusherSDK;
@@ -77,7 +91,7 @@ public class AmbassadorSDKTest {
         AmbassadorSDK.identify(email);
 
         // ASSERT
-        Mockito.verify(ambassadorConfig).setUserEmail(Mockito.eq(email));
+        Mockito.verify(user).setEmail(Mockito.eq(email));
         Mockito.verify(identify).getIdentity();
         Mockito.verify(pusherSDK).createPusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
 
@@ -88,13 +102,13 @@ public class AmbassadorSDKTest {
         // ARRANGE
         ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
         boolean restrictToInstall = true;
-        Mockito.when(ambassadorConfig.getConvertedOnInstall()).thenReturn(true);
+        Mockito.when(campaign.isConvertedOnInstall()).thenReturn(true);
 
         // ACT
         AmbassadorSDK.registerConversion(conversionParameters, restrictToInstall);
 
         // ASSERT
-        Mockito.verify(ambassadorConfig, Mockito.times(2)).getConvertedOnInstall();
+        Mockito.verify(campaign).isConvertedOnInstall();
     }
 
     @Test
@@ -102,7 +116,7 @@ public class AmbassadorSDKTest {
         // ARRANGE
         ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
         boolean restrictToInstall = false;
-        Mockito.when(ambassadorConfig.getConvertedOnInstall()).thenReturn(false);
+        Mockito.when(campaign.isConvertedOnInstall()).thenReturn(false);
         ConversionUtility conversionUtility = Mockito.mock(ConversionUtility.class);
         PowerMockito.doReturn(conversionUtility).when(AmbassadorSDK.class, "buildConversionUtility", conversionParameters);
         Mockito.doNothing().when(conversionUtility).registerConversion();
@@ -125,15 +139,15 @@ public class AmbassadorSDKTest {
         PowerMockito.doNothing().when(AmbassadorSDK.class, "registerInstallReceiver", context);
         PowerMockito.doNothing().when(AmbassadorSDK.class, "startConversionTimer");
         PowerMockito.doNothing().when(AmbassadorSDK.class, "setupGcm", context);
-        Mockito.doNothing().when(ambassadorConfig).setUniversalToken(Mockito.anyString());
-        Mockito.doNothing().when(ambassadorConfig).setUniversalID(Mockito.anyString());
+        Mockito.doNothing().when(auth).setUniversalToken(Mockito.anyString());
+        Mockito.doNothing().when(auth).setUniversalId(Mockito.anyString());
 
         // ACT
         AmbassadorSDK.runWithKeys(context, universalToken, universalID);
 
         // ASSERT
-        Mockito.verify(ambassadorConfig).setUniversalToken(Mockito.eq(universalToken));
-        Mockito.verify(ambassadorConfig).setUniversalID(Mockito.eq(universalID));
+        Mockito.verify(auth).setUniversalToken(Mockito.eq(universalToken));
+        Mockito.verify(auth).setUniversalId(Mockito.eq(universalID));
     }
 
     @Test
