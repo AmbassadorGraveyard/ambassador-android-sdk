@@ -2,10 +2,13 @@ package com.ambassador.demoapp;
 
 import android.support.annotation.NonNull;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import org.mockito.Mockito;
@@ -35,14 +38,6 @@ public final class TestModule {
     @NonNull
     @Provides
     @Singleton
-    public AmbassadorConfig provideAmbassadorConfig() {
-        AmbassadorConfig ambassadorConfig = new AmbassadorConfig();
-        return Mockito.spy(ambassadorConfig);
-    }
-
-    @NonNull
-    @Provides
-    @Singleton
     public PusherSDK providePusherSDK() {
         return Mockito.mock(PusherSDK.class);
     }
@@ -52,6 +47,34 @@ public final class TestModule {
     @Singleton
     public Device provideDevice() {
         return Mockito.mock(Device.class);
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public Campaign provideCampaign() {
+        return Mockito.spy(new Campaign());
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public User provideUser() {
+        return Mockito.spy(new User());
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public Auth provideAuth() {
+        return Mockito.spy(new Auth());
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public RAFOptions provideRAFOptions() {
+        return RAFOptions.get();
     }
 
 }

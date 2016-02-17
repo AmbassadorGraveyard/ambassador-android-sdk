@@ -29,6 +29,10 @@ public final class Demo extends Application {
         prefs = getSharedPreferences("amb_demo", Context.MODE_PRIVATE);
         conversions = new ArrayList<>();
 
+        runWithKeys();
+    }
+
+    public void runWithKeys() {
         if (IS_RELEASE) {
             AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
         } else {

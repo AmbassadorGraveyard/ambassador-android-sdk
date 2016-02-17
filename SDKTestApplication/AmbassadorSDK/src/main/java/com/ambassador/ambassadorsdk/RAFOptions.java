@@ -5,8 +5,8 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.factories.ResourceFactory;
 import com.google.gson.Gson;
 
@@ -568,7 +568,7 @@ public final class RAFOptions {
 
     public static void set(@NonNull RAFOptions rafOptions) {
         instance = rafOptions;
-        String campaignId = new AmbassadorConfig().getCampaignID();
+        String campaignId = new Campaign().getId();
         String data = new Gson().toJson(rafOptions);
         if (AmbassadorSingleton.getInstanceContext() != null) {
             AmbassadorSingleton.getInstanceContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE).edit().putString(campaignId, data).apply();
@@ -578,7 +578,7 @@ public final class RAFOptions {
     @NonNull
     public static RAFOptions get() {
         if (instance == null) {
-            String campaignId = new AmbassadorConfig().getCampaignID();
+            String campaignId = new Campaign().getId();
             SharedPreferences prefs = AmbassadorSingleton.getInstanceContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE);
             String data = prefs.getString(campaignId, null);
             if (data != null) {

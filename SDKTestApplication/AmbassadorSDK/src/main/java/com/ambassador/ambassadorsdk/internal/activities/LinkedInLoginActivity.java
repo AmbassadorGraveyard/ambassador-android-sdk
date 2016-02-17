@@ -38,8 +38,8 @@ import butterfork.ButterFork;
 
 /**
  * Activity that handles OAuth authentication with LinkedIn.
- * Presents a WebView prompting the user to login, and handles getting
- * the access token stored in AmbassadorConfig.
+ * Presents a WebView prompting the user to login, and handles
+ * getting the access token stored in Auth.
  */
 public final class LinkedInLoginActivity extends AppCompatActivity {
 

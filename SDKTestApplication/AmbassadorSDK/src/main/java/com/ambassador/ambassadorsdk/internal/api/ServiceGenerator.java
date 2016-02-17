@@ -1,6 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.api;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
+import com.ambassador.ambassadorsdk.BuildConfig;
 import com.squareup.okhttp.OkHttpClient;
 
 import retrofit.RestAdapter;
@@ -29,7 +29,7 @@ public final class ServiceGenerator {
                     .setEndpoint(endpoint)
                     .setClient(new OkClient(client));
 
-            if (!AmbassadorConfig.isReleaseBuild) {
+            if (!BuildConfig.IS_RELEASE_BUILD) {
                 builder.setLogLevel(RestAdapter.LogLevel.FULL).setLog(new AndroidLog("amb-retrofit"));
             }
 

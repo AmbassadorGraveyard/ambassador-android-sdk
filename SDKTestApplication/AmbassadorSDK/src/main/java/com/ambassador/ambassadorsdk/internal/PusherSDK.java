@@ -4,8 +4,16 @@ package com.ambassador.ambassadorsdk.internal;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.ambassador.ambassadorsdk.BuildConfig;
+import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.PrivateChannelEventListener;
@@ -29,8 +37,8 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
 
     protected IdentifyListener identifyListener;
 
-    @Inject
-    protected AmbassadorConfig ambassadorConfig;
+    @Inject protected Auth auth;
+    @Inject protected User user;
 
     @Inject
     protected RequestManager requestManager;
@@ -106,10 +114,12 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
 
     public void subscribePusher(final PusherSubscribeCallback pusherSubscribeCallback) {
         // HttpAuthorizer is used to append headers and extra parameters to the initial PusherSDK authorization request
-        HttpAuthorizer authorizer = new HttpAuthorizer(AmbassadorConfig.pusherCallbackURL());
+        int res = BuildConfig.IS_RELEASE_BUILD ? R.string.pusher_callback_url : R.string.pusher_callback_url_dev;
+        String callback = new StringResource(res).getValue();
+        HttpAuthorizer authorizer = new HttpAuthorizer(callback);
 
         HashMap<String, String> headers = new HashMap<>();
-        headers.put("Authorization", ambassadorConfig.getUniversalKey());
+        headers.put("Authorization", auth.getUniversalToken());
         authorizer.setHeaders(headers);
 
         HashMap<String, String> queryParams = new HashMap<>();
@@ -121,8 +131,10 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
         options.setAuthorizer(authorizer);
         options.setEncrypted(true);
 
-        String key = AmbassadorConfig.isReleaseBuild ? AmbassadorConfig.PUSHER_KEY_PROD : AmbassadorConfig.PUSHER_KEY_DEV;
-        final Pusher pusher = new com.pusher.client.Pusher(key, options);
+        String pusherProd = new StringResource(R.string.pusher_key_prod).getValue();
+        String pusherDev = new StringResource(R.string.pusher_key_dev).getValue();
+        String key = BuildConfig.IS_RELEASE_BUILD ? pusherProd : pusherDev;
+        final Pusher pusher = new Pusher(key, options);
         pusher.connect(new ConnectionEventListener() {
             @Override
             public void onConnectionStateChange(ConnectionStateChange connectionStateChange) {
@@ -202,27 +214,33 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
 
     void setPusherInfo(String jsonObject) {
         // Functionality: Saves PusherSDK object to SharedPreferences
-        JSONObject pusherSave = new JSONObject();
+        JsonObject pusherSave = new JsonObject();
 
-        try {
-            JSONObject pusherRootObject = new JSONObject(jsonObject);
-            JSONObject pusherObject = new JSONObject(pusherRootObject.getString("body"));
-            pusherSave.put("email", pusherObject.getString("email"));
-            pusherSave.put("firstName", pusherObject.getString("first_name"));
-            pusherSave.put("lastName", pusherObject.getString("last_name"));
-            pusherSave.put("phoneNumber", pusherObject.getString("phone"));
-            pusherSave.put("urls", pusherObject.getJSONArray("urls"));
-            ambassadorConfig.setPusherInfo(pusherSave.toString());
+        JsonObject pusherRootObject = new JsonParser().parse(jsonObject).getAsJsonObject();
+        JsonObject pusherObject = (JsonObject) new JsonParser().parse(pusherRootObject.get("body").toString());
 
-            //update full name for SMS sending "from" name
-            ambassadorConfig.setUserFullName(pusherObject.getString("first_name"), pusherObject.getString("last_name"));
+        JsonElement eleEmail = pusherObject.get("email");
+        pusherSave.add("email", eleEmail);
 
-            //tell MainActivity to update edittext with url
-            Intent intent = new Intent("pusherData");
-            LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        JsonElement eleFirstName = pusherObject.get("first_name");
+        pusherSave.add("firstName", eleFirstName);
+
+        JsonElement eleLastName = pusherObject.get("last_name");
+        pusherSave.add("lastName", eleLastName);
+
+        JsonElement elePhone = pusherObject.get("phone");
+        pusherSave.add("phoneNumber", elePhone);
+
+        pusherSave.add("urls", pusherObject.get("urls").getAsJsonArray());
+        user.setPusherInfo(pusherSave);
+
+        //update full name for SMS sending "from" name
+        user.setFirstName(pusherObject.get("first_name").getAsString());
+        user.setLastName(pusherObject.get("last_name").getAsString());
+
+        //tell MainActivity to update edittext with url
+        Intent intent = new Intent("pusherData");
+        LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
     }
 
     public void setIdentifyListener(IdentifyListener listener) {
