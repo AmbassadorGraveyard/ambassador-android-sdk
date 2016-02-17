@@ -22,12 +22,16 @@ import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -86,8 +90,9 @@ public class AmbassadorActivityTest {
     @Inject
     BulkShareHelper bulkShareHelper;
 
-    @Inject
-    AmbassadorConfig ambassadorConfig;
+    @Inject User user;
+    @Inject Campaign campaign;
+    @Inject Auth auth;
 
     @Inject
     PusherSDK pusher;
@@ -124,15 +129,17 @@ public class AmbassadorActivityTest {
         component.inject(this);
 
         String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
-        doNothing().when(ambassadorConfig).setURL(anyString());
-        doNothing().when(ambassadorConfig).setReferrerShortCode(anyString());
-        doNothing().when(ambassadorConfig).setEmailSubject(anyString());
+        doNothing().when(campaign).setUrl(anyString());
+        doNothing().when(campaign).setShortCode(anyString());
+        doNothing().when(campaign).setEmailSubject(anyString());
 
-        when(ambassadorConfig.getCampaignID()).thenReturn("260");
-        when(ambassadorConfig.getURL()).thenReturn("http://staging.mbsy.co/jHjl");
-        when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
-        when(ambassadorConfig.getUniversalKey()).thenReturn("SDKToken ***REMOVED***");
-        when(ambassadorConfig.getUniversalID()).thenReturn("***REMOVED***");
+        when(campaign.getId()).thenReturn("260");
+        when(campaign.getUrl()).thenReturn("http://staging.mbsy.co/jHjl");
+        JsonParser parser = new JsonParser();
+        JsonObject o = parser.parse(pusherResponse).getAsJsonObject();
+        when(user.getPusherInfo()).thenReturn(o);
+        when(auth.getUniversalToken()).thenReturn("SDKToken ***REMOVED***");
+        when(auth.getUniversalId()).thenReturn("***REMOVED***");
 
         //app workflow is identify -> backend calls pusher and triggers a response which is received by our app and
         //calls tryAndSetURL
@@ -360,9 +367,10 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.dialog_contact_info)).check(ViewAssertions.doesNotExist());
 
         //this email will force the contact name dialog to come up when submitting
+        JsonParser parser = new JsonParser();
         String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
-        when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
-        when(ambassadorConfig.getPusherInfoObject()).thenReturn(new JSONObject(pusherResponse));
+        JsonObject o = parser.parse(pusherResponse).getAsJsonObject();
+        when(user.getPusherInfo()).thenReturn(o);
 
         onView(withId(R.id.rvContacts)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 
@@ -401,8 +409,9 @@ public class AmbassadorActivityTest {
         Espresso.closeSoftKeyboard();
         Thread.sleep(100);
 
-        doNothing().when(ambassadorConfig).setPusherInfo(anyString());
-        doNothing().when(ambassadorConfig).setUserFullName(anyString(), anyString());
+        doNothing().when(user).setPusherInfo(any(JsonObject.class));
+        doNothing().when(user).setFirstName(anyString());
+        doNothing().when(user).setLastName(anyString());
 
         //test will call updateNameRequest twice (fail and success)
         doAnswer(new Answer<Void>() {
@@ -451,17 +460,17 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
-        when(ambassadorConfig.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
+        when(auth.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
 
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Object[] object = invocation.getArguments();
-                AmbassadorConfig.NullifyCompleteListener completion = (AmbassadorConfig.NullifyCompleteListener) object[0];
+                Auth.NullifyCompleteListener completion = (Auth.NullifyCompleteListener) object[0];
                 completion.nullifyComplete();
                 return null;
             }
-        }).when(ambassadorConfig).nullifyLinkedInIfInvalid(any(AmbassadorConfig.NullifyCompleteListener.class));
+        }).when(auth).nullifyLinkedInIfInvalid(any(Auth.NullifyCompleteListener.class));
 
         onView(withText("LINKEDIN")).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
@@ -588,17 +597,17 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
-        when(ambassadorConfig.getTwitterAccessToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
+        when(auth.getTwitterToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
 
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Object[] object = invocation.getArguments();
-                AmbassadorConfig.NullifyCompleteListener completion = (AmbassadorConfig.NullifyCompleteListener) object[0];
+                Auth.NullifyCompleteListener completion = (Auth.NullifyCompleteListener) object[0];
                 completion.nullifyComplete();
                 return null;
             }
-        }).when(ambassadorConfig).nullifyTwitterIfInvalid(any(AmbassadorConfig.NullifyCompleteListener.class));
+        }).when(auth).nullifyTwitterIfInvalid(any(Auth.NullifyCompleteListener.class));
 
         onView(withText("TWITTER")).perform(click());
 

@@ -496,7 +496,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
         if (showPhoneNumbers) contactList = new ContactList(ContactList.Type.PHONE).get(this);
         else contactList = new ContactList(ContactList.Type.EMAIL).get(this);
-        contactList = (contactList.size() == 0 && !BuildConfig.IS_RELEASE_BUILD)
+        contactList = (contactList.isEmpty() && !BuildConfig.IS_RELEASE_BUILD)
                 ? new ContactList(ContactList.Type.DUMMY).get(this) : contactList;
 
         if (contactList.size() == 0) {
@@ -605,7 +605,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     private boolean pusherHasKey(String key) {
         try {
-            String value = pusherData.get(key).toString();
+            String value = pusherData.get(key).getAsString();
             return value != null && !value.equals("null") && !value.isEmpty();
         } catch (Exception e) {
             return false;

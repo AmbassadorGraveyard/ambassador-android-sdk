@@ -113,7 +113,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // endregion
 
     // region Local members
-    protected RAFOptions raf = RAFOptions.get();
+    protected RAFOptions            raf;
     protected ProgressDialog        progressDialog;
     protected Timer                 networkTimer;
     protected ShareManager          currentManager;
@@ -135,8 +135,10 @@ public final class AmbassadorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambassador);
 
         // Injection
+        AmbassadorSingleton.setInstanceContext(getApplicationContext());
         AmbassadorSingleton.getInstanceComponent().inject(this);
         ButterFork.bind(this);
+        raf = RAFOptions.get();
 
         // Requirement checks
         finishIfSingletonInvalid();
@@ -468,15 +470,16 @@ public final class AmbassadorActivity extends AppCompatActivity {
             int campID = urlObj.get("campaign_uid").getAsInt();
             int myUID = Integer.parseInt(campaign.getId());
             if (campID == myUID) {
-                etShortUrl.setText(urlObj.get("url").toString());
-                campaign.setUrl(urlObj.get("url").toString());
-                campaign.setShortCode(urlObj.get("short_code").toString());
-                campaign.setEmailSubject(urlObj.get("subject").toString());
+                etShortUrl.setText(urlObj.get("url").getAsString());
+                campaign.setUrl(urlObj.get("url").getAsString());
+                campaign.setShortCode(urlObj.get("short_code").getAsString());
+                campaign.setEmailSubject(urlObj.get("subject").getAsString());
                 campaignFound = true;
 
+
                 //check for weird multiple URL issue seen occasionally
-                if (!initialShareMessage.contains(urlObj.get("url").toString())) {
-                    raf.setDefaultShareMessage(initialShareMessage + " " + urlObj.get("url").toString());
+                if (!initialShareMessage.contains(urlObj.get("url").getAsString())) {
+                    raf.setDefaultShareMessage(initialShareMessage + " " + urlObj.get("url").getAsString());
                 }
             }
         }
