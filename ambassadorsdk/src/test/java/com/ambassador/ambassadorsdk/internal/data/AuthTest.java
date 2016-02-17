@@ -133,6 +133,7 @@ public class AuthTest {
         Auth auth = Mockito.spy(new Auth());
         Mockito.doReturn(null).when(auth).getTwitterToken();
         Mockito.doReturn(null).when(auth).getTwitterSecret();
+        Mockito.doNothing().when(auth).save();
 
         Auth.NullifyCompleteListener listener = Mockito.mock(Auth.NullifyCompleteListener.class);
 
