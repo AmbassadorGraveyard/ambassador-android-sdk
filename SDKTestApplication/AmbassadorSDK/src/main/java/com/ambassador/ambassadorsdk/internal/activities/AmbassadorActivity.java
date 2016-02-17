@@ -36,7 +36,6 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
@@ -46,6 +45,8 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
+import com.ambassador.ambassadorsdk.internal.pusher.PusherListenerAdapter;
+import com.ambassador.ambassadorsdk.internal.pusher.PusherManager;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.LockableScrollView;
@@ -60,7 +61,6 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.pusher.client.connection.ConnectionState;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -108,7 +108,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Inject protected Auth                  auth;
     @Inject protected User                  user;
     @Inject protected Campaign              campaign;
-    @Inject protected PusherSDK             pusherSDK;
+    @Inject protected PusherManager         pusherManager;
     @Inject protected Device                device;
     // endregion
 
@@ -356,50 +356,43 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     protected void setUpPusher() {
-        // set the broadcast receiver for pusher coming back
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
+        pusherManager.addPusherListener(new PusherListenerAdapter() {
 
-        // if we have a channel and it's not expired and connected, call API Identify
-        if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() == ConnectionState.CONNECTED) {
-            requestManager.identifyRequest();
-            return;
-        }
-
-        // if we have a channel and it's not expired but it's not currently connected, subscribe to the existing channel
-        if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() != ConnectionState.CONNECTED) {
-            pusherSDK.subscribePusher(new PusherSDK.PusherSubscribeCallback() {
-                @Override
-                public void pusherSubscribed() {
-                    requestManager.identifyRequest();
-                }
-
-                @Override
-                public void pusherFailed() {
-                    Toast.makeText(getApplicationContext(), new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            });
-
-            return;
-        }
-
-        // otherwise, resubscribe to pusher and then call API Identify
-        PusherChannel.setSessionId(null);
-        PusherChannel.setChannelName(null);
-        PusherChannel.setExpiresAt(null);
-        PusherChannel.setRequestId(-1);
-        pusherSDK.createPusher(new PusherSDK.PusherSubscribeCallback() {
             @Override
-            public void pusherSubscribed() {
-                requestManager.identifyRequest();
+            public void connected() {
+                super.connected();
+                pusherManager.subscribeChannelToAmbassador();
             }
 
             @Override
-            public void pusherFailed() {
-                Toast.makeText(getApplicationContext(), new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
-                finish();
+            public void disconnected() {
+                super.disconnected();
+                pusherManager.startNewChannel();
             }
+
+            @Override
+            public void subscribed() {
+                super.subscribed();
+                Intent intent = new Intent("pusherData");
+                LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
+            }
+
+            @Override
+            public void unsubscribed() {
+                super.unsubscribed();
+                pusherManager.subscribeChannelToAmbassador();
+            }
+
         });
+
+        if (pusherManager.getChannel() == null) {
+            pusherManager.startNewChannel();
+        } else if (!pusherManager.getChannel().isConnected()) {
+            pusherManager.startNewChannel();
+        } else if (pusherManager.getChannel().isConnected()) {
+            pusherManager.subscribeChannelToAmbassador();
+        }
     }
     // endregion
 

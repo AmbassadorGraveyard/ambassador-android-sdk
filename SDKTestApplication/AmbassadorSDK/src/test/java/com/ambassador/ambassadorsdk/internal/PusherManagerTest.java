@@ -5,6 +5,7 @@ import android.content.Context;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.pusher.PusherManager;
 import com.pusher.client.Pusher;
 import com.pusher.client.connection.ConnectionEventListener;
 import com.pusher.client.connection.ConnectionState;
