@@ -67,7 +67,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         this.checkmarkXPos = Utilities.getPixelSizeForDimension(R.dimen.contact_select_checkmark_x);
         this.checkmarkSize = Utilities.getPixelSizeForDimension(R.dimen.checkmark_size);
 
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbassadorSingleton.getGraph().inject(this);
     }
 
     @Override

@@ -134,7 +134,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         // Injection
         AmbassadorSingleton.setInstanceContext(getApplicationContext());
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbassadorSingleton.getGraph().inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
 

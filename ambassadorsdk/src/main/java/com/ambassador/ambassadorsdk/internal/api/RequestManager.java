@@ -23,6 +23,7 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
@@ -36,6 +37,7 @@ import twitter4j.auth.AccessToken;
  * Handles all requests at the highest level. This is what all other internal classes use.
  * Prepares parameters and calls the different Api classes.
  */
+@Singleton
 public class RequestManager {
 
     @Inject protected Auth auth;
@@ -69,7 +71,7 @@ public class RequestManager {
      * @param doInit whether or not to initialize Api objects.
      */
     public RequestManager(boolean doInit) {
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbassadorSingleton.getGraph().inject(this);
         bulkShareApi = new BulkShareApi(false);
         conversionsApi = new ConversionsApi(false);
         identifyApi = new IdentifyApi(false);

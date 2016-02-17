@@ -19,13 +19,12 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -41,9 +40,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import dagger.Component;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -100,13 +96,6 @@ public class AmbassadorActivityTest {
     @Inject
     RAFOptions raf;
 
-    //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
-    @Singleton
-    @Component(modules = TestModule.class)
-    public interface TestComponent extends AmbassadorApplicationComponent {
-        void inject(AmbassadorActivityTest ambassadorActivityTest);
-    }
-
     @Rule
     public ActivityTestRule<AmbassadorActivity> mActivityTestIntentRule = new ActivityTestRule<>(AmbassadorActivity.class, true, false);
 
@@ -123,7 +112,7 @@ public class AmbassadorActivityTest {
         AmbassadorSingleton.init(context);
         TestModule amb = new TestModule();
         //AmbassadorSingleton.setInstanceAmbModule(amb);
-        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().testModule(amb).build();
+        AmbassadorApplicationComponent component = new AmbassadorApplicationComponent(new TestModule());
         AmbassadorSingleton.setInstanceComponent(component);
         //perform injection
         component.inject(this);

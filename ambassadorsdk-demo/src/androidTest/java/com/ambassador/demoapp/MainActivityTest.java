@@ -15,11 +15,10 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
-import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -33,9 +32,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import dagger.Component;
 
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
@@ -58,12 +55,6 @@ public class MainActivityTest {
     @Inject protected Campaign campaign;
     @Inject protected RequestManager requestManager;
 
-    @Singleton
-    @Component(modules = { TestModule.class })
-    public interface TestComponent extends AmbassadorApplicationComponent {
-        void inject(MainActivityTest ambassadorActivityTest);
-    }
-
     @Before
     public void startMainActivityFromHomeScreen() throws Exception {
         this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
@@ -79,8 +70,7 @@ public class MainActivityTest {
         Context context = InstrumentationRegistry.getContext();
 
         AmbassadorSingleton.init(context);
-        TestModule testModule = new TestModule();
-        TestComponent component = DaggerMainActivityTest_TestComponent.builder().testModule(testModule).build();
+        AmbassadorApplicationComponent component = new AmbassadorApplicationComponent(new TestModule());
         AmbassadorSingleton.setInstanceComponent(component);
         component.inject(this);
 
