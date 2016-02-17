@@ -10,7 +10,6 @@ import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -19,6 +18,7 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
+import com.ambassador.ambassadorsdk.internal.pusher.PusherManager;
 
 import net.kencochrane.raven.DefaultRavenFactory;
 
@@ -37,7 +37,7 @@ public final class AmbassadorSDK {
     @Inject protected static User user;
     @Inject protected static Campaign campaign;
 
-    @Inject protected static PusherSDK pusherSDK;
+    @Inject protected static PusherManager pusherManager;
     @Inject protected static RequestManager requestManager;
 
     public static void presentRAF(Context context, String campaignID) {
@@ -97,7 +97,7 @@ public final class AmbassadorSDK {
         IIdentify identify = buildIdentify();
         identify.getIdentity();
 
-        pusherSDK.createPusher(null);
+        pusherManager.startNewChannel();
     }
 
     private static IIdentify buildIdentify() {

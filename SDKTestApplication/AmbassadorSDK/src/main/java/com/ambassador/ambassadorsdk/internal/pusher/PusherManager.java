@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal;
+package com.ambassador.ambassadorsdk.internal.pusher;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
@@ -43,7 +45,7 @@ public class PusherManager {
 
     protected Channel channel;
 
-    protected List<PusherListener> pusherListeners;
+    protected static List<PusherListener> pusherListeners;
 
     /**
      * Default constructor handling injection and dependencies.
@@ -52,6 +54,15 @@ public class PusherManager {
         AmbassadorSingleton.getInstanceComponent().inject(this);
         universalKey = auth.getUniversalToken();
         pusherListeners = new ArrayList<>();
+
+        addPusherListener(new PusherListenerAdapter() {
+            @Override
+            public void onEvent(String data) {
+                super.onEvent(data);
+                Utilities.debugLog("PusherSDK", "data = " + data);
+
+            }
+        });
     }
 
     /**
@@ -69,12 +80,13 @@ public class PusherManager {
      * Sets up the channel with a new subscription to the Ambassador backend.
      */
     public void subscribeChannelToAmbassador() {
-        if (channel != null && !channel.isConnected()) {
-            startNewChannel();
-            return;
-        }
+        if (channel != null && channel.isConnected()) {
+            if (channel.getChannelName() != null) {
+                channel.unsubscribe(channel.getChannelName());
+            }
 
-        requestSubscription();
+            requestSubscription();
+        }
     }
 
     /**
@@ -86,11 +98,16 @@ public class PusherManager {
             public void onSuccess(Object successResponse) {
                 IdentifyApi.CreatePusherChannelResponse channelData = (IdentifyApi.CreatePusherChannelResponse) successResponse;
                 channel.subscribe(channelData.channel_name, channelData.expires_at, channelData.client_session_uid);
+                for (PusherListener pusherListener : pusherListeners) {
+                    pusherListener.subscribed();
+                }
             }
 
             @Override
             public void onFailure(Object failureResponse) {
-
+                for (PusherListener pusherListener : pusherListeners) {
+                    pusherListener.subscriptionFailed();
+                }
             }
         });
     }
@@ -178,6 +195,15 @@ public class PusherManager {
                 connectionState = change.getCurrentState();
                 switch (change.getCurrentState()) {
                     case CONNECTED:
+                        for (PusherListener pusherListener : pusherListeners) {
+                            pusherListener.connected();
+                        }
+                        break;
+
+                    case DISCONNECTED:
+                        for (PusherListener pusherListener : pusherListeners) {
+                            pusherListener.disconnected();
+                        }
                         break;
 
                     default:
@@ -187,7 +213,9 @@ public class PusherManager {
 
             @Override
             public void onError(String message, String code, Exception e) {
-
+                for (PusherListener pusherListener : pusherListeners) {
+                    pusherListener.connectionFailed();
+                }
             }
         };
 
@@ -212,20 +240,28 @@ public class PusherManager {
         }
 
         private PrivateChannelEventListener privateChannelEventListener = new PrivateChannelEventListener() {
+
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
-
+                for (PusherListener pusherListener : pusherListeners) {
+                    pusherListener.subscriptionFailed();
+                }
             }
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-
+                for (PusherListener pusherListener : pusherListeners) {
+                    pusherListener.subscribed();
+                }
             }
 
             @Override
             public void onEvent(String channelName, String eventName, String data) {
-
+                for (PusherListener pusherListener : pusherListeners) {
+                    pusherListener.onEvent(data);
+                }
             }
+
         };
 
         /**
@@ -234,6 +270,9 @@ public class PusherManager {
          */
         public void unsubscribe(String channelName) {
             pusher.unsubscribe(channelName);
+            for (PusherListener pusherListener : pusherListeners) {
+                pusherListener.unsubscribed();
+            }
         }
 
         /**
@@ -320,35 +359,17 @@ public class PusherManager {
 
     }
 
+    /**
+     * Callback methods for Pusher events.
+     */
     public interface PusherListener {
-        void pusherConnected();
-        void pusherDisconnected();
-        void pusherSubscribed();
-        void pusherUnsubscribed();
-    }
-
-    public class PusherListenerAdapter implements PusherListener {
-
-        @Override
-        public void pusherConnected() {
-            // Adapter, do nothing
-        }
-
-        @Override
-        public void pusherDisconnected() {
-            // Adapter, do nothing
-        }
-
-        @Override
-        public void pusherSubscribed() {
-            // Adapter, do nothing
-        }
-
-        @Override
-        public void pusherUnsubscribed() {
-            // Adapter, do nothing
-        }
-
+        void connected();
+        void disconnected();
+        void subscribed();
+        void unsubscribed();
+        void connectionFailed();
+        void subscriptionFailed();
+        void onEvent(String data);
     }
 
 }
