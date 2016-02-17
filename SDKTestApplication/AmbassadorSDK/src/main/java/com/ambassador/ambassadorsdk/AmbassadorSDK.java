@@ -20,6 +20,8 @@ import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 
+import net.kencochrane.raven.DefaultRavenFactory;
+
 import java.io.InputStream;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -132,6 +134,28 @@ public final class AmbassadorSDK {
         auth.setUniversalToken(universalToken);
         auth.setUniversalId(universalId);
         startConversionTimer();
+
+        final Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable ex) {
+                if (ex instanceof Exception && AmbassadorConfig.isReleaseBuild) {
+                    Exception exception = (Exception) ex;
+                    for (StackTraceElement element : exception.getStackTrace()) {
+                        element.getClassName();
+                        if (element.getClassName().contains("com.ambassador.ambassadorsdk")) {
+                            DefaultRavenFactory.ravenInstance("***REMOVED***")
+                                    .sendException((Exception) ex);
+                            Log.v("amb", "Sending exception to Sentry:");
+                            Log.v("amb", ex.toString());
+                            break;
+                        }
+                    }
+                }
+
+                defaultHandler.uncaughtException(thread, ex);
+            }
+        });
     }
 
     protected static void registerInstallReceiver(Context context) {
