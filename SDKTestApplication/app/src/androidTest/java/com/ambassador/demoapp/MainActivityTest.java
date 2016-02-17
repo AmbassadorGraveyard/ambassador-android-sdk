@@ -16,7 +16,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;

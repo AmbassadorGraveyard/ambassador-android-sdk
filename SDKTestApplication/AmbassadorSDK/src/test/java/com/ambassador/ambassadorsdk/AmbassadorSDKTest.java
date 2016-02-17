@@ -8,7 +8,6 @@ import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
