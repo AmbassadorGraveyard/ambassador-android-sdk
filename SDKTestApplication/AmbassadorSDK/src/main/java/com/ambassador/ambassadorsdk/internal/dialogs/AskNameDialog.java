@@ -125,7 +125,7 @@ public final class AskNameDialog extends Dialog {
         pd.show();
         user.setPusherInfo(pusherData);
 
-        requestManager.updateNameRequest(pusherData.get("email").toString(), firstName, lastName, new RequestManager.RequestCompletion() {
+        requestManager.updateNameRequest(pusherData.get("email").getAsString(), firstName, lastName, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
                 user.setFirstName(etFirstName.getText().toString());

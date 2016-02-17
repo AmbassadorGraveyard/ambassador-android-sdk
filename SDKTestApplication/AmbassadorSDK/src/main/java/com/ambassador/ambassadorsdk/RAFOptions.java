@@ -1,9 +1,14 @@
 package com.ambassador.ambassadorsdk;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 
+import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.factories.ResourceFactory;
+import com.google.gson.Gson;
 
 /**
  *
@@ -563,11 +568,25 @@ public final class RAFOptions {
 
     public static void set(@NonNull RAFOptions rafOptions) {
         instance = rafOptions;
+        String campaignId = new Campaign().getId();
+        String data = new Gson().toJson(rafOptions);
+        if (AmbassadorSingleton.getInstanceContext() != null) {
+            AmbassadorSingleton.getInstanceContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE).edit().putString(campaignId, data).apply();
+        }
     }
 
     @NonNull
     public static RAFOptions get() {
-        if (instance == null) instance = RAFOptions.Builder.newInstance().build();
+        if (instance == null) {
+            String campaignId = new Campaign().getId();
+            SharedPreferences prefs = AmbassadorSingleton.getInstanceContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE);
+            String data = prefs.getString(campaignId, null);
+            if (data != null) {
+                instance = new Gson().fromJson(data, RAFOptions.class);
+            } else {
+                instance = RAFOptions.Builder.newInstance().build();
+            }
+        }
         return instance;
     }
 

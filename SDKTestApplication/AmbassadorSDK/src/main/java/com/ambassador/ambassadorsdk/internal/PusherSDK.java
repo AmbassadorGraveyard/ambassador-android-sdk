@@ -11,6 +11,7 @@ import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.pusher.client.Pusher;
@@ -217,16 +218,25 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
 
         JsonObject pusherRootObject = new JsonParser().parse(jsonObject).getAsJsonObject();
         JsonObject pusherObject = (JsonObject) new JsonParser().parse(pusherRootObject.get("body").toString());
-        pusherSave.addProperty("email", pusherObject.get("email").toString());
-        pusherSave.addProperty("firstName", pusherObject.get("first_name").toString());
-        pusherSave.addProperty("lastName", pusherObject.get("last_name").toString());
-        pusherSave.addProperty("phoneNumber", pusherObject.get("phone").toString());
+
+        JsonElement eleEmail = pusherObject.get("email");
+        pusherSave.add("email", eleEmail);
+
+        JsonElement eleFirstName = pusherObject.get("first_name");
+        pusherSave.add("firstName", eleFirstName);
+
+        JsonElement eleLastName = pusherObject.get("last_name");
+        pusherSave.add("lastName", eleLastName);
+
+        JsonElement elePhone = pusherObject.get("phone");
+        pusherSave.add("phoneNumber", elePhone);
+
         pusherSave.add("urls", pusherObject.get("urls").getAsJsonArray());
         user.setPusherInfo(pusherSave);
 
         //update full name for SMS sending "from" name
-        user.setFirstName(pusherObject.get("first_name").toString());
-        user.setLastName(pusherObject.get("last_name").toString());
+        user.setFirstName(pusherObject.get("first_name").getAsString());
+        user.setLastName(pusherObject.get("last_name").getAsString());
 
         //tell MainActivity to update edittext with url
         Intent intent = new Intent("pusherData");
