@@ -11,7 +11,10 @@ import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
 import com.pusher.client.channel.PrivateChannelEventListener;
@@ -42,6 +45,7 @@ public class PusherManager {
 
     @Inject protected RequestManager requestManager;
     @Inject protected Auth auth;
+    @Inject protected User user;
 
     protected Channel channel;
 
@@ -60,7 +64,14 @@ public class PusherManager {
             public void onEvent(String data) {
                 super.onEvent(data);
                 Utilities.debugLog("PusherSDK", "data = " + data);
-
+                JsonParser parser = new JsonParser();
+                JsonObject jsonData = parser.parse(data).getAsJsonObject();
+                if (jsonData.has("url")) {
+                    String url = jsonData.get("url").getAsString();
+                    externalRequest(url);
+                } else {
+                    setPusherInfo(jsonData);
+                }
             }
         });
     }
@@ -126,6 +137,41 @@ public class PusherManager {
 
     public void removePusherListener(@NonNull PusherListener pusherListener) {
         pusherListeners.remove(pusherListener);
+    }
+
+    /**
+     * Perfoms external pusher request on a passed in url, using RequestManager.
+     * @param url the url to make a request to.
+     */
+    protected void externalRequest(String url) {
+        requestManager.externalPusherRequest(url, new RequestManager.RequestCompletion() {
+
+            @Override
+            public void onSuccess(Object successResponse) {
+                Utilities.debugLog("PusherSDK External", "Saved pusher object as String = " + successResponse.toString());
+                String data = successResponse.toString();
+                JsonParser parser = new JsonParser();
+                JsonObject jsonData = parser.parse(data).getAsJsonObject();
+
+                if (jsonData.get("request_id").getAsLong() == channel.getRequestId()) {
+                    setPusherInfo(jsonData);
+                }
+            }
+
+            @Override
+            public void onFailure(Object failureResponse) {
+                Utilities.debugLog("PusherSDK External", "FAILED to save pusher object with error: " + failureResponse);
+            }
+
+        });
+    }
+
+    /**
+     * Processes and stores pusher data into User.
+     * @param data the json info to store.
+     */
+    protected void setPusherInfo(JsonObject data) {
+
     }
 
     /**
