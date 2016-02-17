@@ -12,13 +12,13 @@ import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
-import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 
 import net.kencochrane.raven.DefaultRavenFactory;
 
@@ -32,6 +32,8 @@ import javax.inject.Inject;
  * Static methods called by the end-developer to utilize the SDK.
  */
 public final class AmbassadorSDK {
+
+    protected static AmbassadorSDK instance;
 
     @Inject protected static Auth auth;
     @Inject protected static User user;
@@ -124,7 +126,7 @@ public final class AmbassadorSDK {
 
     public static void runWithKeys(Context context, String universalToken, String universalId) {
         AmbassadorSingleton.init(context);
-        AmbassadorSingleton.getInstanceComponent().inject(new AmbassadorSDK());
+        AmbassadorSingleton.getGraph().injectStatics();
 
         auth.clear();
 
@@ -210,6 +212,15 @@ public final class AmbassadorSDK {
                 Log.e("AmbassadorSDK", e.toString());
             }
         });
+    }
+
+    protected static AmbassadorSDK get() {
+        if (instance != null) {
+            return instance;
+        }
+
+        instance = new AmbassadorSDK();
+        return instance;
     }
 
 }

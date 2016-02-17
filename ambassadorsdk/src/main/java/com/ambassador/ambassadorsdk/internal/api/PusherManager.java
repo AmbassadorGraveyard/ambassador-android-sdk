@@ -32,12 +32,14 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 /**
  * Handles everything to do with Pusher, our socket to the backend.
  * Keeps track of a single channel and does the connecting, subscribing, disposing of it all.
  * Handles incoming events and dispatches them on the otto event ambassaBus after processing.
  */
+@Singleton
 public class PusherManager {
 
     protected static String universalKey;
@@ -54,7 +56,7 @@ public class PusherManager {
      * Default constructor handling injection and dependencies.
      */
     public PusherManager() {
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbassadorSingleton.getGraph().inject(this);
         universalKey = auth.getUniversalToken();
         pusherListeners = new ArrayList<>();
 
@@ -203,7 +205,7 @@ public class PusherManager {
          * Injects dependencies and sets up a Pusher client object.
          */
         public void init() {
-            AmbassadorSingleton.getInstanceComponent().inject(this);
+            AmbassadorSingleton.getGraph().inject(this);
             this.pusher = setupPusher();
         }
 

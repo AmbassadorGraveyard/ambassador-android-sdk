@@ -22,7 +22,7 @@ public class IdentifyAugurSDK implements IIdentify {
     @Inject protected User user;
 
     public IdentifyAugurSDK() {
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbassadorSingleton.getGraph().inject(this);
     }
 
     @Override

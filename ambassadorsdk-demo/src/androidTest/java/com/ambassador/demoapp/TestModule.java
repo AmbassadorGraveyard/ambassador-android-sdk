@@ -18,7 +18,9 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(injects = {
+        MainActivityTest.class
+}, library = true)
 public final class TestModule {
 
     @NonNull

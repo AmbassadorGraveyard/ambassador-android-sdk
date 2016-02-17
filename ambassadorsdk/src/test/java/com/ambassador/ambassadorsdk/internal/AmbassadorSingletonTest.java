@@ -2,7 +2,6 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationModule;
 
 import junit.framework.Assert;

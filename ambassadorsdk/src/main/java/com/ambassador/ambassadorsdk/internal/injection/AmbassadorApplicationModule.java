@@ -2,13 +2,24 @@ package com.ambassador.ambassadorsdk.internal.injection;
 
 import android.support.annotation.NonNull;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.ConversionUtility;
+import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
+import com.ambassador.ambassadorsdk.internal.InstallReceiver;
+import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.LinkedInLoginActivity;
+import com.ambassador.ambassadorsdk.internal.activities.TwitterLoginActivity;
+import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
+import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import javax.inject.Singleton;
@@ -16,14 +27,40 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(injects = {
+        AmbassadorActivity.class,
+        SocialShareDialog.class,
+        LinkedInLoginActivity.class,
+        TwitterLoginActivity.class,
+        ContactSelectorActivity.class,
+        ContactListAdapter.class,
+        BulkShareHelper.class,
+        ConversionUtility.class,
+        RequestManager.class,
+        AmbassadorSDK.class,
+        AskNameDialog.class,
+        IdentifyAugurSDK.class,
+        PusherManager.class,
+        PusherManager.Channel.class,
+        InstallReceiver.class
+
+}, staticInjections = {
+        AmbassadorSDK.class
+}, library = true)
 public final class AmbassadorApplicationModule {
+
+    protected RequestManager requestManager;
+    protected PusherManager pusherManager;
+
+    public void init() {
+        requestManager = new RequestManager();
+        pusherManager = new PusherManager();
+    }
 
     @NonNull
     @Provides
-    @Singleton
     public RequestManager provideRequestManager() {
-        return new RequestManager();
+        return requestManager;
     }
 
     @NonNull
@@ -35,9 +72,8 @@ public final class AmbassadorApplicationModule {
 
     @NonNull
     @Provides
-    @Singleton
     public PusherManager providePusherManager() {
-        return new PusherManager();
+        return pusherManager;
     }
 
     @NonNull
