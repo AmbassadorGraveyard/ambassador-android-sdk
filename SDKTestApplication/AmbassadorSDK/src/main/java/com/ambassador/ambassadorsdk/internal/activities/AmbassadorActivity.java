@@ -113,7 +113,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // endregion
 
     // region Local members
-    protected RAFOptions raf = RAFOptions.get();
+    protected RAFOptions            raf;
     protected ProgressDialog        progressDialog;
     protected Timer                 networkTimer;
     protected ShareManager          currentManager;
@@ -135,8 +135,10 @@ public final class AmbassadorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambassador);
 
         // Injection
+        AmbassadorSingleton.setInstanceContext(getApplicationContext());
         AmbassadorSingleton.getInstanceComponent().inject(this);
         ButterFork.bind(this);
+        raf = RAFOptions.get();
 
         // Requirement checks
         finishIfSingletonInvalid();
