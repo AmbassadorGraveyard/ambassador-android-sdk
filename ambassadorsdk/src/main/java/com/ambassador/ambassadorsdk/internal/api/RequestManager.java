@@ -39,8 +39,6 @@ import twitter4j.auth.AccessToken;
  */
 public class RequestManager {
 
-    private static boolean SEND_GCM = true;
-
     @Inject protected Auth auth;
     @Inject protected User user;
     @Inject protected Campaign campaign;
@@ -225,10 +223,7 @@ public class RequestManager {
         String uid = auth.getUniversalId();
         String authToken = auth.getUniversalToken();
         IdentifyApi.UpdateGcmTokenBody body = new IdentifyApi.UpdateGcmTokenBody(email, registrationToken);
-
-        if (SEND_GCM) {
-            identifyApi.updateGcmToken(sessionId, requestId, uid, authToken, body, completion);
-        }
+        identifyApi.updateGcmToken(sessionId, requestId, uid, authToken, body, completion);
     }
 
     /**

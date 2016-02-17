@@ -91,10 +91,12 @@ public final class AmbassadorSDK {
     }
 
     public static void identify(String emailAddress) {
+        String gcmToken = user.getGcmToken();
         user.clear();
         user.setEmail(emailAddress);
 
-        if (user.getGcmToken() != null) {
+        if (gcmToken != null) {
+            user.setGcmToken(gcmToken);
             updateGcm();
         }
 
