@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.ambassador.ambassadorsdk.TestUtils;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.google.gson.JsonObject;
 import com.pusher.client.Authorizer;
 import com.pusher.client.Pusher;
 import com.pusher.client.PusherOptions;
@@ -38,7 +41,6 @@ import java.util.HashMap;
         PusherChannel.class,
         LocalBroadcastManager.class,
         Context.class,
-        AmbassadorConfig.class,
         Utilities.class,
         RequestManager.class
 })
@@ -46,7 +48,7 @@ public class PusherSDKTest {
 
     private PusherSDK pusherSDK;
     private RequestManager mockRequestManager;
-    private AmbassadorConfig mockAmbassadorConfig;
+    private User user;
 
     @Before
     public void setUp() throws Exception {
@@ -61,9 +63,11 @@ public class PusherSDKTest {
         PowerMockito.spy(Utilities.class);
 
         mockRequestManager = PowerMockito.mock(RequestManager.class);
-        mockAmbassadorConfig = Mockito.mock(AmbassadorConfig.class);
+        Auth auth = Mockito.mock(Auth.class);
+        user = Mockito.mock(User.class);
         pusherSDK.requestManager = mockRequestManager;
-        pusherSDK.ambassadorConfig = mockAmbassadorConfig;
+        pusherSDK.auth = auth;
+        pusherSDK.user = user;
     }
 
     @Test
@@ -121,9 +125,6 @@ public class PusherSDKTest {
     public void subscribePusherTest() throws Exception {
         // ARRANGE
         PusherSDK.PusherSubscribeCallback mockPusherSubscribeCallback = Mockito.mock(PusherSDK.PusherSubscribeCallback.class);
-
-        PowerMockito.mockStatic(AmbassadorConfig.class);
-        Mockito.when(AmbassadorConfig.pusherCallbackURL()).thenReturn("fakeResponse");
 
         HttpAuthorizer mockHttpAuthorizer = Mockito.mock(HttpAuthorizer.class);
         PowerMockito.whenNew(HttpAuthorizer.class).withAnyArguments().thenReturn(mockHttpAuthorizer);
@@ -195,7 +196,7 @@ public class PusherSDKTest {
     @Test
     public void setPusherInfoTest() throws Exception {
         // ARRANGE
-        String jsonObject = "fakeJson";
+        String jsonObject = "{\"body\":{\"email\":\"email\", \"first_name\":\"first_name\", \"last_name\":\"last_name\", \"phone\":\"12345\", \"urls\":[\"cats\"]}}";
         JSONObject pusherSave = Mockito.mock(JSONObject.class);
         JSONObject pusherObject = Mockito.mock(JSONObject.class);
         PowerMockito.whenNew(JSONObject.class).withNoArguments().thenReturn(pusherSave);
@@ -204,7 +205,7 @@ public class PusherSDKTest {
         Mockito.when(pusherObject.getJSONArray(Mockito.anyString())).thenReturn(new JSONArray());
         Mockito.when(pusherSave.put(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
         Mockito.when(pusherSave.put(Mockito.anyString(), Mockito.any(JSONArray.class))).thenReturn(null);
-        Mockito.doNothing().when(mockAmbassadorConfig).setPusherInfo(Mockito.anyString());
+        Mockito.doNothing().when(user).setPusherInfo(Mockito.any(JsonObject.class));
 
         PowerMockito.mockStatic(LocalBroadcastManager.class);
         PowerMockito.mockStatic(AmbassadorSingleton.class);
@@ -218,7 +219,7 @@ public class PusherSDKTest {
         pusherSDK.setPusherInfo(jsonObject);
 
         // ASSERT
-        Mockito.verify(mockAmbassadorConfig).setPusherInfo(Mockito.anyString());
+        Mockito.verify(user).setPusherInfo(Mockito.any(JsonObject.class));
         Mockito.verify(mockLocalBroadcastManager).sendBroadcast(Mockito.any(Intent.class));
     }
 

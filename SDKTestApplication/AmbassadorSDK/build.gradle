@@ -64,6 +64,9 @@ android {
     }
 
     buildTypes {
+        all {
+            buildConfigField "boolean", "IS_RELEASE_BUILD", "false"
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -98,6 +101,8 @@ dependencies {
             'com.facebook.android:facebook-android-sdk:4.7.0',
             'com.oguzbabaoglu:butterfork-binder:1.0.0',
             'net.kencochrane.raven:raven:6.0.0',
+            'org.twitter4j:twitter4j-async:4.0.0'
+
     )
 
     compile(name: 'augur', ext: 'aar')

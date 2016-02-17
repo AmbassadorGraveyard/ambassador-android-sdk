@@ -3,10 +3,12 @@ package com.ambassador.ambassadorsdk.internal.injection;
 import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import javax.inject.Singleton;
@@ -34,13 +36,6 @@ public final class AmbassadorApplicationModule {
     @NonNull
     @Provides
     @Singleton
-    public AmbassadorConfig provideAmbassadorConfig() {
-        return new AmbassadorConfig();
-    }
-
-    @NonNull
-    @Provides
-    @Singleton
     public PusherSDK providePusherSDK() {
         return new PusherSDK();
     }
@@ -54,6 +49,28 @@ public final class AmbassadorApplicationModule {
 
     @NonNull
     @Provides
+    @Singleton
+    public Campaign provideCampaign() {
+        return new Campaign();
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public User provideUser() {
+        return new User();
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public Auth provideAuth() {
+        return new Auth();
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
     public RAFOptions provideRAFOptions() {
         return RAFOptions.get();
     }

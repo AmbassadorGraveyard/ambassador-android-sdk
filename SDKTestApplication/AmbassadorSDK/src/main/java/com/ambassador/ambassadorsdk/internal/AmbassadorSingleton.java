@@ -36,7 +36,7 @@ public class AmbassadorSingleton {
         }
     }
 
-    static AmbassadorApplicationModule buildAmbassadorApplicationModule() {
+    protected static AmbassadorApplicationModule buildAmbassadorApplicationModule() {
         return new AmbassadorApplicationModule();
     }
 
