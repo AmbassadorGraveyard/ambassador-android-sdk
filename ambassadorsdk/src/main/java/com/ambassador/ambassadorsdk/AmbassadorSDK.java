@@ -91,8 +91,14 @@ public final class AmbassadorSDK {
     }
 
     public static void identify(String emailAddress) {
+        String gcmToken = user.getGcmToken();
         user.clear();
         user.setEmail(emailAddress);
+
+        if (gcmToken != null) {
+            user.setGcmToken(gcmToken);
+            updateGcm();
+        }
 
         IIdentify identify = buildIdentify();
         identify.getIdentity();
@@ -191,23 +197,30 @@ public final class AmbassadorSDK {
         new GcmHandler(context).getRegistrationToken(new GcmHandler.RegistrationListener() {
             @Override
             public void registrationSuccess(final String token) {
-                requestManager.updateGcmRegistrationToken(token, new RequestManager.RequestCompletion() {
-                    @Override
-                    public void onSuccess(Object successResponse) {
-                        user.setGcmToken(token);
-                        Log.v("AMB_GCM", token);
-                    }
-
-                    @Override
-                    public void onFailure(Object failureResponse) {
-
-                    }
-                });
+                Log.v("AMB_GCM", token);
+                user.setGcmToken(token);
+                if (user.getEmail() != null) {
+                    updateGcm();
+                }
             }
 
             @Override
             public void registrationFailure(Throwable e) {
                 Log.e("AmbassadorSDK", e.toString());
+            }
+        });
+    }
+
+    protected static void updateGcm() {
+        requestManager.updateGcmRegistrationToken(user.getEmail(), user.getGcmToken(), new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess(Object successResponse) {
+                // No reaction currently required
+            }
+
+            @Override
+            public void onFailure(Object failureResponse) {
+                // No reaction currently required
             }
         });
     }
