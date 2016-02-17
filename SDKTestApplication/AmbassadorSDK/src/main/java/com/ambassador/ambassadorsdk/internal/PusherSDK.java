@@ -186,6 +186,7 @@ public class PusherSDK { // TODO: Make final after UI tests figured out
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
+
                                 setPusherInfo(successResponse.toString());
                             }
 
