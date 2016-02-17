@@ -1,0 +1,104 @@
+
+apply plugin: 'com.android.library'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.oguzbabaoglu.butterfork-plugin'
+apply plugin: 'maven-publish'
+
+android {
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+
+    buildTypes {
+        all {
+            buildConfigField "boolean", "IS_RELEASE_BUILD", "false"
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            consumerProguardFiles 'proguard-rules.pro'
+        }
+        debug {
+            testCoverageEnabled true
+        }
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+        exclude 'META-INF/LICENSE.txt'
+    }
+}
+
+apply from: file('dependencies.gradle')
+
+dependencies {
+    compile files('./src/main/resources/augur.jar')
+
+    rootProject.ext.sdkCompile.each {
+        compile "${it}"
+    }
+
+    rootProject.ext.sdkApt.each {
+        apt "${it}"
+    }
+
+    rootProject.ext.sdkProvided.each {
+        provided "${it}"
+    }
+
+    rootProject.ext.sdkTestCompile.each {
+        testCompile "${it}"
+    }
+
+    rootProject.ext.sdkTestApt.each {
+        testApt "${it}"
+    }
+
+    rootProject.ext.sdkAndroidTestCompile.each {
+        androidTestCompile "${it}"
+    }
+
+    rootProject.ext.sdkAndroidTestApt.each {
+        androidTestApt "${it}"
+    }
+}
+
+ext {
+    bintrayRepo = 'maven'
+    bintrayName = 'ambassadorsdk'
+
+    publishedGroupId = 'com.ambassador'
+    libraryName = 'ambassadorsdk'
+    artifact = 'ambassadorsdk'
+
+    libraryDescription = 'Android SDK for http://getambassador.com'
+
+    siteUrl = 'http://getambassador.com'
+    gitUrl = 'https://github.com/GetAmbassador/ambassador-android-sdk.git'
+
+    libraryVersion = '0.0.10'
+
+    developerId = 'ambassador'
+    developerName = 'Ambassador Software'
+    developerEmail = 'developers@getambassador.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+apply from: rootProject.file('gradle/mvn_install.gradle')
+apply from: rootProject.file('gradle/mvn_bintray.gradle')
