@@ -5,6 +5,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
@@ -30,8 +32,11 @@ public final class PushNotification {
         Intent result = new Intent(context, AmbassadorActivity.class);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, result, PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), context.getApplicationInfo().icon);
+
         Notification notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(context.getApplicationInfo().icon)
+                .setLargeIcon(icon)
                 .setContentTitle("AmbassadorSDK")
                 .setContentText("This is a push notification")
                 .setContentIntent(resultPendingIntent)
