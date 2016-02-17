@@ -103,6 +103,14 @@ public class PusherManager {
         return channel;
     }
 
+    public void addPusherListener(@NonNull PusherListener pusherListener) {
+        pusherListeners.add(pusherListener);
+    }
+
+    public void removePusherListener(@NonNull PusherListener pusherListener) {
+        pusherListeners.remove(pusherListener);
+    }
+
     /**
      * Handles a single connection to Pusher.  Keeps track of a channel name and session id.
      * Connects and subscribes with this information and receives events, which are pushed back
@@ -317,6 +325,30 @@ public class PusherManager {
         void pusherDisconnected();
         void pusherSubscribed();
         void pusherUnsubscribed();
+    }
+
+    public class PusherListenerAdapter implements PusherListener {
+
+        @Override
+        public void pusherConnected() {
+            // Adapter, do nothing
+        }
+
+        @Override
+        public void pusherDisconnected() {
+            // Adapter, do nothing
+        }
+
+        @Override
+        public void pusherSubscribed() {
+            // Adapter, do nothing
+        }
+
+        @Override
+        public void pusherUnsubscribed() {
+            // Adapter, do nothing
+        }
+
     }
 
 }
