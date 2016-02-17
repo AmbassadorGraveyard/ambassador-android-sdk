@@ -1,0 +1,53 @@
+
+rootProject.ext.sdkCompile = [
+        rootProject.ext.deps.appCompat,
+        rootProject.ext.deps.recyclerView,
+        rootProject.ext.deps.ga,
+        rootProject.ext.deps.gcm,
+        rootProject.ext.deps.guava,
+        rootProject.ext.deps.pusher,
+        rootProject.ext.deps.slf4j,
+        rootProject.ext.deps.okhttp,
+        rootProject.ext.deps.retrofit,
+        rootProject.ext.deps.gson,
+        rootProject.ext.deps.dagger,
+        rootProject.ext.deps.facebook,
+        rootProject.ext.deps.butterfork,
+        rootProject.ext.deps.raven,
+        rootProject.ext.deps.twitter,
+]
+
+rootProject.ext.sdkApt = [
+        rootProject.ext.deps.butterfork_compiler,
+        rootProject.ext.deps.dagger_compiler,
+]
+
+rootProject.ext.sdkProvided = [
+        rootProject.ext.deps.glassfish_annotation,
+]
+
+rootProject.ext.sdkTestCompile = [
+        rootProject.ext.deps.junit,
+        rootProject.ext.deps.mockito,
+        rootProject.ext.deps.powermock,
+        rootProject.ext.deps.powermock_mockito,
+]
+
+rootProject.ext.sdkTestApt = [
+        rootProject.ext.deps.dagger_compiler,
+]
+
+rootProject.ext.sdkAndroidTestCompile = [
+        rootProject.ext.deps.mockito,
+        rootProject.ext.deps.dexmaker,
+        rootProject.ext.deps.dexmaker_mockito,
+        rootProject.ext.deps.test_runner,
+        rootProject.ext.deps.test_rules,
+        rootProject.ext.deps.espresso_core,
+        rootProject.ext.deps.espresso_intents,
+        rootProject.ext.deps.espresso_contrib,
+]
+
+rootProject.ext.sdkAndroidTestApt = [
+        rootProject.ext.deps.dagger_compiler,
+]

@@ -1,0 +1,61 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+repositories {
+    flatDir {
+        dirs '../ambassadorsdk/libs'
+    }
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.ambassador.demoapp"
+        minSdkVersion 18
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+}
+
+apply from: file('dependencies.gradle')
+
+dependencies {
+    compile project(':ambassadorsdk')
+    //compile 'com.ambassador:ambassadorsdk:0.0.9'
+
+    rootProject.ext.demoCompile.each {
+        compile "${it}"
+    }
+
+    rootProject.ext.demoProvided.each {
+        provided "${it}"
+    }
+
+    rootProject.ext.demoAndroidTestCompile.each {
+        androidTestCompile "${it}"
+    }
+
+    rootProject.ext.demoAndroidTestApt.each {
+        androidTestApt "${it}"
+    }
+}
+
+
+
+
