@@ -39,7 +39,7 @@ import twitter4j.auth.AccessToken;
  */
 public class RequestManager {
 
-    private static boolean SEND_GCM = false;
+    private static boolean SEND_GCM = true;
 
     @Inject protected Auth auth;
     @Inject protected User user;
