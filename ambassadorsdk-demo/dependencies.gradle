@@ -1,0 +1,26 @@
+
+rootProject.ext.demoCompile = [
+        rootProject.ext.deps.appCompat,
+        rootProject.ext.deps.design,
+        rootProject.ext.deps.butterknife,
+        rootProject.ext.deps.dagger,
+]
+
+rootProject.ext.demoProvided = [
+        rootProject.ext.deps.glassfish_annotation,
+]
+
+rootProject.ext.demoAndroidTestCompile = [
+        rootProject.ext.deps.hamcrest,
+        rootProject.ext.deps.uiautomator,
+        rootProject.ext.deps.espresso_core,
+        rootProject.ext.deps.junit,
+        rootProject.ext.deps.test_runner,
+        rootProject.ext.deps.mockito,
+        rootProject.ext.deps.dexmaker,
+        rootProject.ext.deps.dexmaker_mockito,
+]
+
+rootProject.ext.demoAndroidTestApt = [
+        rootProject.ext.deps.dagger_compiler,
+]

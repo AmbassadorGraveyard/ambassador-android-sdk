@@ -27,76 +27,23 @@ $ chmod +x .git/hooks/pre-push
 
 Follow these steps to add the Ambassador SDK to your Android Studio project.
 
-_**Note**_: Make sure you have the latest version of **Android Studio** installed.
+Make sure *jcenter* is an available repository in your **build.gradle**:
 
-* Download the zip file, unzip it, and leave the **'ambassador'** folder on your
-desktop or another place that you can easily access.
+```groovy
+repositories {
+    jcenter()
+}
+```
 
- <img src="screenshots/addToDesktop.png" width="600" />
+Compile **AmbassadorSDK** under dependencies:
 
- * Open your project's top-level Gradle file
+```groovy
+dependencies {
+    compile 'com.ambassador:ambassadorsdk:1.0.0'
+}
+```
 
-  <img src="screenshots/topLevelGradle.png" width="600" />
-
- * Add the following line under the dependencies section
-
-  ```java
-  classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
-  ```
-  <img src="screenshots/daggerDependency.png" width="600" />
-
-* Open your project's structure by selecting **File -> Project Stucture** in the Menu Bar to bring up a dialog in Android Studio.
-
- <img src="screenshots/projStructureClick.png" width="500" />
-
-* Click the **'+'** sign in the top left corner of the dialog.
-
- <img src="screenshots/dialogAddClick.png" width="600" />
-
-* Select the **'Import Gradle Project'** option and click **'Next'**.
-
- <img src="screenshots/importGradle.png" width="600" />
-
-* Tap the **'...'** button and locate the **'ambassador'** folder where you chose to save it.
-
- <img src="screenshots/directoryDotTap.png" width="600" />
-
-* Select the **'ambassador'** folder and click **'OK'**.
-
- <img src="screenshots/chooseAmbassadorFolder.png" width="600" />
-
-* Click **'Finish'** and once the modal is closed, give Android Studio a moment to finish creating the module. Android Studio may take several minutes.
-
- <img src="screenshots/moduleImported.png" width="600" />
-
-* Once the Ambassador module has been created and added to the project, it should appear in the **Project Structure**.  You can then click the **'OK'** button to dismiss the Project Structure dialog.
-
- <img src="screenshots/moduleInStructure.png" width="600" />
-
-## Modify your app's Gradle file
-
-* Open your app's **Gradle** file that can be found in the **Project** view.
-
- <img src="screenshots/openAppGradle.png" width="600" />
-
-* Add the **repositories** code and the **ambassador module** to your Gradle file with the following code:
-
- ```java
- repositories {
-     maven { url 'http://clojars.org/repo'}
-     flatDir { dirs '../ambassador/libs' }
- }
- ```
-
-  ```java
-  compile project(':ambassador')
-  ```
-
-* You will want to make sure your compileSdkVersion and buildToolsVersion are set to the latest API version. While our SDK requires this to be a minimum of 23, this is also a best practice for Android development.
-
- <img src="screenshots/addRepo.png" width="600" />
-
-* Now sync your project's gradle.
+Now sync your project's gradle.
 
 ## Initializing Ambassador
 
