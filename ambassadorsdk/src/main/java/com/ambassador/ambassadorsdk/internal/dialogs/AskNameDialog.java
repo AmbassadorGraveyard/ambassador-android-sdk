@@ -13,16 +13,16 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
+import com.google.gson.JsonObject;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import javax.inject.Inject;
 
@@ -43,7 +43,7 @@ public final class AskNameDialog extends Dialog {
 
     // region Dependencies
     @Inject protected RequestManager    requestManager;
-    @Inject protected AmbassadorConfig  ambassadorConfig;
+    @Inject protected User              user;
     @Inject protected Device            device;
     // endregion
 
@@ -85,7 +85,6 @@ public final class AskNameDialog extends Dialog {
                 cancelClicked();
             }
         });
-
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,19 +114,22 @@ public final class AskNameDialog extends Dialog {
     }
 
     private void updateName(@NonNull final String firstName, @NonNull final String lastName) throws JSONException {
-        JSONObject pusherData = ambassadorConfig.getPusherInfoObject();
+        JsonObject pusherData = user.getPusherInfo();
         if (pusherData == null) return;
 
-        pusherData.put("firstName", firstName);
-        pusherData.put("lastName", lastName);
+        pusherData.remove("firstName");
+        pusherData.addProperty("firstName", firstName);
+        pusherData.remove("lastName");
+        pusherData.addProperty("lastName", lastName);
 
         pd.show();
-        ambassadorConfig.setPusherInfo(pusherData.toString());
+        user.setPusherInfo(pusherData);
 
-        requestManager.updateNameRequest(pusherData.getString("email"), firstName, lastName, new RequestManager.RequestCompletion() {
+        requestManager.updateNameRequest(pusherData.get("email").getAsString(), firstName, lastName, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-                ambassadorConfig.setUserFullName(etFirstName.getText().toString(), etLastName.getText().toString());
+                user.setFirstName(etFirstName.getText().toString());
+                user.setLastName(etLastName.getText().toString());
                 pd.dismiss();
                 hide();
             }

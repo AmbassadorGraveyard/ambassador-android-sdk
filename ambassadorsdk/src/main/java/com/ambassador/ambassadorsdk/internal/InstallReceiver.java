@@ -5,15 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
+import com.google.gson.JsonObject;
 
 import javax.inject.Inject;
 
 public final class InstallReceiver extends BroadcastReceiver {
 
-    @Inject
-    protected AmbassadorConfig ambassadorConfig;
+    @Inject protected User user;
+    @Inject protected Campaign campaign;
 
     public InstallReceiver() {
         AmbassadorSingleton.getInstanceComponent().inject(this);
@@ -23,7 +24,6 @@ public final class InstallReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle b = intent.getExtras();
         final String qstring = b.getString("referrer"); //"mbsy_cookie_code=jwnZ&device_id=test1234";
-        //Toast.makeText(context, qstring, Toast.LENGTH_LONG).show();
 
         if (qstring == null) return;
 
@@ -39,56 +39,45 @@ public final class InstallReceiver extends BroadcastReceiver {
             webDeviceId = param2[0].equals("device_id") ? param2[1] : param1[1];
         }
         catch (ArrayIndexOutOfBoundsException e) {
-            //Toast.makeText(context, "parse exception" + e.toString(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
             return;
         }
 
-        ambassadorConfig.setWebDeviceId(webDeviceId);
-        ambassadorConfig.setReferralShortCode(referralShortCode);
+        user.setWebDeviceId(webDeviceId);
+        campaign.setReferredByShortCode(referralShortCode);
+
         Utilities.debugLog("Conversion", "webDeviceId: " + webDeviceId);
         Utilities.debugLog("Conversion", "referralShortCode: " + referralShortCode);
-        //Toast.makeText(context, "webDeviceId: " + webDeviceId + " referralShortCode: " + referralShortCode, Toast.LENGTH_LONG).show();
 
         //if augur came back first, update our device id
-        JSONObject identity;
-        if (ambassadorConfig.getIdentifyObject() != null) {
-            //Toast.makeText(context, "augur", Toast.LENGTH_LONG).show();
-            try {
-                identity = new JSONObject(ambassadorConfig.getIdentifyObject());
-                JSONObject device = identity.getJSONObject("device");
+        JsonObject identity;
+        if (user.getAugurData() != null) {
+            identity = user.getAugurData();
+           // JsonObject device = identity.getJSONObject("device");
+            JsonObject device = identity.get("device").getAsJsonObject();
 
-                //if the webDeviceId has been received on the querystring and it's different than what augur returns, override augur deviceId
-                if (webDeviceId != null && !device.getString("ID").equals(webDeviceId)) {
-                    device.remove("ID");
-                    device.put("ID", ambassadorConfig.getWebDeviceId());
-                    identity.remove("device");
-                    identity.put("device", device);
-                    ambassadorConfig.setIdentifyObject(identity.toString());
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            //if the webDeviceId has been received on the querystring and it's different than what augur returns, override augur deviceId
+            if (webDeviceId != null && !device.get("ID").getAsString().equals(webDeviceId)) {
+                device.remove("ID");
+                device.addProperty("ID",  user.getWebDeviceId());
+                identity.remove("device");
+                identity.add("device", device);
+                user.setAugurData(identity);
             }
+        } else {
+            /*
+             * Can't rely on Augur definitively.  If no augur data, then use our own.  
+             */
+            identity = new JsonObject();
+            JsonObject consumer = new JsonObject();
+            JsonObject device = new JsonObject();
+            consumer.addProperty("UID", "");
+            device.addProperty("ID", webDeviceId);
+            device.addProperty("type", "Android");
+            identity.add("consumer", consumer);
+            identity.add("device", device);
+            user.setAugurData(identity);
         }
-        //USE THE CODE BELOW IF WE DECIDE TO NOT DEPEND ON THE AUGUR RESPONSE COMING BACK
-        //CURRENTLY IF NO AUGUR, THEN NO CONVERSIONS
-        //in the case of the augur request never returning, create an identify object so conversion can still go through
-        /*else {
-            try {
-                identity = new JSONObject();
-                JSONObject consumer = new JSONObject();
-                JSONObject device = new JSONObject();
-                consumer.put("UID", "");
-                device.put("ID", webDeviceId);
-                device.put("type", "Android");
-                identity.put("consumer", consumer);
-                identity.put("device", device);
-                ambassadorConfig.setIdentifyObject(identity.toString());
-            }
-            catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }*/
     }
 
     public static InstallReceiver getInstance() {

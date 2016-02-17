@@ -14,12 +14,15 @@ import android.support.test.uiautomator.Until;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.pusher.client.connection.ConnectionState;
 
 import org.hamcrest.Matchers;
@@ -55,7 +58,8 @@ public class MainActivityTest {
     private UiObject shortCodeEditText;
 
     @Inject protected PusherSDK pusherSDK;
-    @Inject protected AmbassadorConfig ambassadorConfig;
+    @Inject protected User user;
+    @Inject protected Campaign campaign;
     @Inject protected RequestManager requestManager;
 
     @Singleton
@@ -65,7 +69,7 @@ public class MainActivityTest {
     }
 
     @Before
-    public void startMainActivityFromHomeScreen() {
+    public void startMainActivityFromHomeScreen() throws Exception {
         this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
         this.width = device.getDisplayWidth();
         this.height = device.getDisplayWidth();
@@ -100,6 +104,8 @@ public class MainActivityTest {
 
         Demo.get().identify(null);
         Demo.get().setCampaignId(null);
+
+        Demo.get().runWithKeys();
     }
 
     @Test
@@ -280,7 +286,7 @@ public class MainActivityTest {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 PusherSDK.PusherSubscribeCallback callback = (PusherSDK.PusherSubscribeCallback) invocationOnMock.getArguments()[0];
-                callback.pusherFailed();
+                if (callback != null) callback.pusherFailed();
                 return null;
             }
         }).when(pusherSDK).createPusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
@@ -303,8 +309,8 @@ public class MainActivityTest {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
         UiObject referFragment = getUi("referFragment");
-        String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[]}";
-        Mockito.when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
+        JsonObject pusherResponse = new JsonParser().parse("{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[]}").getAsJsonObject();
+        Mockito.when(user.getPusherInfo()).thenReturn(pusherResponse);
 
         // ACT
         Demo.get().identify("jake@getambassador.com");
@@ -449,9 +455,9 @@ public class MainActivityTest {
         }
     }
 
-    private void mockAmbassadorSDK() {
-        String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jzqC\",\"short_code\":\"jzqC\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}, {\"url\":\"http://staging.mbsy.co\\/ljTq\",\"short_code\":\"ljTq\",\"campaign_uid\":999,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
-        Mockito.when(ambassadorConfig.getPusherInfo()).thenReturn(pusherResponse);
+    private void mockAmbassadorSDK() throws Exception {
+        JsonObject pusherResponse = new JsonParser().parse("{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jzqC\",\"short_code\":\"jzqC\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}, {\"url\":\"http://staging.mbsy.co\\/ljTq\",\"short_code\":\"ljTq\",\"campaign_uid\":999,\"subject\":\"Check out BarderrTahwn ®!\"}]}").getAsJsonObject();
+        Mockito.when(user.getPusherInfo()).thenReturn(pusherResponse);
 
         Mockito.doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
