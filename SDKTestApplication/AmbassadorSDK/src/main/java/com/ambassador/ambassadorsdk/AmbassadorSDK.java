@@ -139,7 +139,7 @@ public final class AmbassadorSDK {
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
-                if (ex instanceof Exception && AmbassadorConfig.isReleaseBuild) {
+                if (ex instanceof Exception && BuildConfig.IS_RELEASE_BUILD) {
                     Exception exception = (Exception) ex;
                     for (StackTraceElement element : exception.getStackTrace()) {
                         element.getClassName();
