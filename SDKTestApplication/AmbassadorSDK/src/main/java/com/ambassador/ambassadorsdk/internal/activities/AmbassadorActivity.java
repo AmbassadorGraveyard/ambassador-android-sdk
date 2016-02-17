@@ -34,7 +34,6 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.PusherChannel;
@@ -42,6 +41,9 @@ import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
@@ -56,6 +58,8 @@ import com.facebook.FacebookSdk;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.pusher.client.connection.ConnectionState;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -64,10 +68,6 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -105,7 +105,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     // region Dependencies
     @Inject protected RequestManager        requestManager;
-    @Inject protected AmbassadorConfig      ambassadorConfig;
+    @Inject protected Auth                  auth;
+    @Inject protected User                  user;
+    @Inject protected Campaign              campaign;
     @Inject protected PusherSDK             pusherSDK;
     @Inject protected Device                device;
     // endregion
@@ -143,8 +145,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
         if (isFinishing()) return;
 
         // Other setup
+        setUpData();
         setUpShareManagers();
-        setUpAmbassadorConfig();
+        setUpAuth();
         setUpLockingScrollView();
         setUpOptions();
         setUpToolbar();
@@ -190,6 +193,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // endregion
 
     // region Setup
+    protected void setUpData() {
+        user.refresh();
+        campaign.refresh();
+    }
+
     protected void setUpShareManagers() {
         facebookManager = new FacebookManager();
         twitterManager = new TwitterManager();
@@ -198,9 +206,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
         smsManager = new SmsManager();
     }
 
-    protected void setUpAmbassadorConfig() {
-        ambassadorConfig.nullifyTwitterIfInvalid(null);
-        ambassadorConfig.nullifyLinkedInIfInvalid(null);
+    protected void setUpAuth() {
+        auth.nullifyTwitterIfInvalid(null);
+        auth.nullifyLinkedInIfInvalid(null);
     }
 
     protected void setUpLockingScrollView() {
@@ -274,7 +282,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
             }
         });
     }
-
 
     protected void setUpCustomImages() {
         String drawablePath = raf.getLogo();
@@ -401,7 +408,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(ambassadorConfig.getPusherInfo(), raf.getDefaultShareMessage());
+            tryAndSetURL(user.getPusherInfo(), raf.getDefaultShareMessage());
         }
     };
 
@@ -452,34 +459,29 @@ public final class AmbassadorActivity extends AppCompatActivity {
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
     }
 
-    void tryAndSetURL(String pusherString, String initialShareMessage) {
+    protected void tryAndSetURL(JsonObject pusherData, String initialShareMessage) {
         boolean campaignFound = false;
-        try {
             // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
-            JSONObject pusherData = new JSONObject(pusherString);
-            JSONArray urlArray = pusherData.getJSONArray("urls");
+        JsonArray urlArray = pusherData.get("urls").getAsJsonArray();
 
-            // Iterates throught all the urls in the PusherSDK object until we find one will a matching campaign ID
-            for (int i = 0; i < urlArray.length(); i++) {
-                JSONObject urlObj = urlArray.getJSONObject(i);
-                int campID = urlObj.getInt("campaign_uid");
-                int myUID = Integer.parseInt(ambassadorConfig.getCampaignID());
-                if (campID == myUID) {
-                    etShortUrl.setText(urlObj.getString("url"));
-                    ambassadorConfig.setURL(urlObj.getString("url"));
-                    ambassadorConfig.setReferrerShortCode(urlObj.getString("short_code"));
-                    ambassadorConfig.setEmailSubject(urlObj.getString("subject"));
-                    campaignFound = true;
+        // Iterates throught all the urls in the PusherSDK object until we find one will a matching campaign ID
+        for (int i = 0; i < urlArray.size(); i++) {
+            JsonObject urlObj = urlArray.get(i).getAsJsonObject();
+            int campID = urlObj.get("campaign_uid").getAsInt();
+            int myUID = Integer.parseInt(campaign.getId());
+            if (campID == myUID) {
+                etShortUrl.setText(urlObj.get("url").getAsString());
+                campaign.setUrl(urlObj.get("url").getAsString());
+                campaign.setShortCode(urlObj.get("short_code").getAsString());
+                campaign.setEmailSubject(urlObj.get("subject").getAsString());
+                campaignFound = true;
 
-                    //check for weird multiple URL issue seen occasionally
-                    if (!initialShareMessage.contains(urlObj.getString("url"))) {
-                        raf.setDefaultShareMessage(initialShareMessage + " " + urlObj.getString("url"));
-                    }
+
+                //check for weird multiple URL issue seen occasionally
+                if (!initialShareMessage.contains(urlObj.get("url").getAsString())) {
+                    raf.setDefaultShareMessage(initialShareMessage + " " + urlObj.get("url").getAsString());
                 }
             }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
         if (progressDialog != null) {
@@ -624,7 +626,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         public void onShareRequested() {
             ShareLinkContent content = new ShareLinkContent.Builder()
                     .setContentTitle(raf.getDefaultShareMessage())
-                    .setContentUrl(Uri.parse(ambassadorConfig.getURL()))
+                    .setContentUrl(Uri.parse(campaign.getUrl()))
                     .build();
             callbackManager = CallbackManager.Factory.create();
 
@@ -672,7 +674,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onShareRequested() {
-            if (ambassadorConfig.getTwitterAccessToken() != null) {
+            if (auth.getTwitterToken() != null) {
                 SocialShareDialog tweetDialog = new SocialShareDialog(AmbassadorActivity.this);
                 tweetDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.TWITTER);
                 tweetDialog.setOwnerActivity(AmbassadorActivity.this);
@@ -694,8 +696,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void needAuth() {
-                        ambassadorConfig.setTwitterAccessTokenSecret(null);
-                        ambassadorConfig.setTwitterAccessToken(null);
+                        auth.setTwitterSecret(null);
+                        auth.setTwitterToken(null);
                         TwitterCore.getInstance().getSessionManager().clearActiveSession();
                         requestReauthTwitter();
                     }
@@ -706,8 +708,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 twitterAuthClient.authorize(AmbassadorActivity.this, new Callback<TwitterSession>() {
                     @Override
                     public void success(Result<TwitterSession> result) {
-                        ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().token);
-                        ambassadorConfig.setTwitterAccessToken(result.data.getAuthToken().secret);
+                        auth.setTwitterToken(result.data.getAuthToken().token);
+                        auth.setTwitterSecret(result.data.getAuthToken().secret);
                         Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
                     }
 
@@ -722,7 +724,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
             twitterAuthClient.onActivityResult(requestCode, resultCode, data);
-            if (ambassadorConfig.getTwitterAccessToken() != null && ambassadorConfig.getTwitterAccessTokenSecret() != null) {
+            if (auth.getTwitterToken() != null && auth.getTwitterSecret() != null) {
                 onShareRequested();
             }
         }
@@ -733,7 +735,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onShareRequested() {
-            if (ambassadorConfig.getLinkedInToken() != null) {
+            if (auth.getLinkedInToken() != null) {
                 SocialShareDialog linkedInDialog = new SocialShareDialog(AmbassadorActivity.this);
                 linkedInDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.LINKEDIN);
                 linkedInDialog.setOwnerActivity(AmbassadorActivity.this);
@@ -755,7 +757,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void needAuth() {
-                        ambassadorConfig.setLinkedInToken(null);
+                        auth.setLinkedInToken(null);
                         requestReauthLinkedIn();
                     }
                 });
@@ -768,7 +770,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            if (ambassadorConfig.getLinkedInToken() != null) {
+            if (auth.getLinkedInToken() != null) {
                 onShareRequested();
             }
         }

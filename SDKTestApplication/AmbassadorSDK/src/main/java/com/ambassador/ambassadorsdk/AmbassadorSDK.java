@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorConfig;
 import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
@@ -15,6 +14,9 @@ import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.Campaign;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 
@@ -31,14 +33,12 @@ import javax.inject.Inject;
  */
 public final class AmbassadorSDK {
 
-    @Inject
-    protected static AmbassadorConfig ambassadorConfig;
+    @Inject protected static Auth auth;
+    @Inject protected static User user;
+    @Inject protected static Campaign campaign;
 
-    @Inject
-    protected static PusherSDK pusherSDK;
-
-    @Inject
-    static RequestManager requestManager;
+    @Inject protected static PusherSDK pusherSDK;
+    @Inject protected static RequestManager requestManager;
 
     public static void presentRAF(Context context, String campaignID) {
         if (context.getResources().getIdentifier("homeWelcomeTitle", "color", context.getPackageName()) != 0) {
@@ -79,10 +79,10 @@ public final class AmbassadorSDK {
     }
 
     private static void intentAmbassadorActivity(Context context, String campaignID) {
-        ambassadorConfig.resetForNewCampaign();
+        campaign.clear();
+        campaign.setId(campaignID);
         Intent intent = buildIntent(context, AmbassadorActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ambassadorConfig.setCampaignID(campaignID);
         context.startActivity(intent);
     }
 
@@ -91,7 +91,8 @@ public final class AmbassadorSDK {
     }
 
     public static void identify(String emailAddress) {
-        ambassadorConfig.setUserEmail(emailAddress);
+        user.clear();
+        user.setEmail(emailAddress);
 
         IIdentify identify = buildIdentify();
         identify.getIdentity();
@@ -105,46 +106,40 @@ public final class AmbassadorSDK {
 
     public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
         //do conversion if it's not an install conversion, or if it is, make sure that we haven't already converted on install by checking sharedprefs
-        if (!restrictToInstall || !getConvertedOnInstall()) {
+        if (!restrictToInstall || !campaign.isConvertedOnInstall()) {
             Utilities.debugLog("Conversion", "restrictToInstall: " + restrictToInstall);
 
             ConversionUtility conversionUtility = buildConversionUtility(conversionParameters);
             conversionUtility.registerConversion();
         }
 
-        if (restrictToInstall) setConvertedOnInstall();
+        if (restrictToInstall) {
+            campaign.setConvertedOnInstall(true);
+        }
     }
 
     private static ConversionUtility buildConversionUtility(ConversionParameters conversionParameters) {
         return new ConversionUtility(AmbassadorSingleton.getInstanceContext(), conversionParameters);
     }
 
-    private static Boolean getConvertedOnInstall() {
-        return ambassadorConfig.getConvertedOnInstall();
-    }
-
-    private static void setConvertedOnInstall() {
-        if (!ambassadorConfig.getConvertedOnInstall()) {
-            ambassadorConfig.setConvertOnInstall();
-        }
-    }
-
-    public static void runWithKeys(Context context, String universalToken, String universalID) {
+    public static void runWithKeys(Context context, String universalToken, String universalId) {
         AmbassadorSingleton.init(context);
         AmbassadorSingleton.getInstanceComponent().inject(new AmbassadorSDK());
+
+        auth.clear();
 
         registerInstallReceiver(context);
         setupGcm(context);
 
-        ambassadorConfig.setUniversalToken(universalToken);
-        ambassadorConfig.setUniversalID(universalID);
+        auth.setUniversalToken(universalToken);
+        auth.setUniversalId(universalId);
         startConversionTimer();
 
         final Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, Throwable ex) {
-                if (ex instanceof Exception && AmbassadorConfig.isReleaseBuild) {
+                if (ex instanceof Exception && BuildConfig.IS_RELEASE_BUILD) {
                     Exception exception = (Exception) ex;
                     for (StackTraceElement element : exception.getStackTrace()) {
                         element.getClassName();
@@ -199,7 +194,7 @@ public final class AmbassadorSDK {
                 requestManager.updateGcmRegistrationToken(token, new RequestManager.RequestCompletion() {
                     @Override
                     public void onSuccess(Object successResponse) {
-                        ambassadorConfig.setGcmRegistrationToken(token);
+                        user.setGcmToken(token);
                         Log.v("AMB_GCM", token);
                     }
 

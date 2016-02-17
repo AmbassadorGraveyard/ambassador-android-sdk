@@ -168,7 +168,7 @@ public final class IdentifyApi {
      * @return an instantiated URL object for the parameter
      * @throws MalformedURLException
      */
-    URL createURL(String url) throws MalformedURLException {
+    protected URL createURL(String url) throws MalformedURLException {
         return new URL(url);
     }
 
@@ -178,7 +178,7 @@ public final class IdentifyApi {
      * @return an instantiated HttpURLConnection object for the parameter
      * @throws IOException
      */
-    HttpURLConnection createConnection(String url) throws IOException {
+    protected HttpURLConnection createConnection(String url) throws IOException {
         return (HttpURLConnection) createURL(url).openConnection();
     }
 
@@ -189,7 +189,7 @@ public final class IdentifyApi {
      * @param auth the universalToken identifier
      * @param completion callback for request completion
      */
-    void handleExternalPusherRequest(String url, String uid, String auth, RequestManager.RequestCompletion completion) {
+    protected void handleExternalPusherRequest(String url, String uid, String auth, RequestManager.RequestCompletion completion) {
         HttpURLConnection connection = null;
         try {
             connection = createConnection(url);
@@ -231,7 +231,7 @@ public final class IdentifyApi {
      * @param runnable the runnable to place on the thread
      * @return the instantiated Runnable object
      */
-    Thread createThread(Runnable runnable) {
+    protected Thread createThread(Runnable runnable) {
         return new Thread(runnable);
     }
 
@@ -240,7 +240,7 @@ public final class IdentifyApi {
      * @param is the InputStream to open a BufferedReader for
      * @return the opened BufferedReader
      */
-    BufferedReader createBufferedReader(InputStream is) {
+    protected BufferedReader createBufferedReader(InputStream is) {
         return new BufferedReader(new InputStreamReader(is));
     }
 

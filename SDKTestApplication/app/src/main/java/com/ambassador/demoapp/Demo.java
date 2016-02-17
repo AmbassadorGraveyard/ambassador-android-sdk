@@ -29,6 +29,10 @@ public final class Demo extends Application {
         prefs = getSharedPreferences("amb_demo", Context.MODE_PRIVATE);
         conversions = new ArrayList<>();
 
+        runWithKeys();
+    }
+
+    public void runWithKeys() {
         if (IS_RELEASE) {
             AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
         } else {
