@@ -20,8 +20,10 @@ import com.pusher.client.util.HttpAuthorizer;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -41,12 +43,15 @@ public class PusherManager {
 
     protected Channel channel;
 
+    protected List<PusherListener> pusherListeners;
+
     /**
      * Default constructor handling injection and dependencies.
      */
     public PusherManager() {
         AmbassadorSingleton.getInstanceComponent().inject(this);
         universalKey = auth.getUniversalToken();
+        pusherListeners = new ArrayList<>();
     }
 
     /**
@@ -305,6 +310,13 @@ public class PusherManager {
 
         }
 
+    }
+
+    public interface PusherListener {
+        void pusherConnected();
+        void pusherDisconnected();
+        void pusherSubscribed();
+        void pusherUnsubscribed();
     }
 
 }
