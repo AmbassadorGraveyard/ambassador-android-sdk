@@ -14,6 +14,7 @@ import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
+import com.ambassador.ambassadorsdk.internal.notifications.InstanceIdListener;
 
 public interface AmbassadorApplicationComponent {
 
@@ -31,5 +32,6 @@ public interface AmbassadorApplicationComponent {
     void inject(IdentifyAugurSDK identify);
     void inject(PusherSDK pusherSDK);
     void inject(InstallReceiver installReceiver);
+    void inject(InstanceIdListener instanceIdListener);
 
 }

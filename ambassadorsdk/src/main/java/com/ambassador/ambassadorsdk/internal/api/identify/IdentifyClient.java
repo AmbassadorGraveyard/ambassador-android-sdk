@@ -64,6 +64,28 @@ public interface IdentifyClient {
     );
 
     /**
+     * https://api.getambassador.com/universal/action/identify/
+     * https://dev-ambassador-api.herokuapp.com/universal/action/identify/
+     * @param sessionId the Pusher session id
+     * @param requestId the Pusher request id
+     * @param universalId the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param uid the Ambassador universal id
+     * @param body the POST request body pojo
+     * @param callback the Retrofit callback
+     */
+    @POST("/universal/action/identify/")
+    void updateGcmToken(
+            @Header("X-Mbsy-Client-Session-ID") String sessionId,
+            @Header("X-Mbsy-Client-Request-ID") String requestId,
+            @Header("MBSY_UNIVERSAL_ID") String universalId,
+            @Header("Authorization") String auth,
+            @Query("u") String uid,
+            @Body IdentifyApi.UpdateGcmTokenBody body,
+            Callback<IdentifyApi.UpdateGcmTokenResponse> callback
+    );
+
+    /**
      * https://api.getambassador.com/auth/session/
      * https://dev-ambassador-api.herokuapp.com/auth/session/
      * @param universalId the Ambassador universal id

@@ -54,6 +54,7 @@ ext.deps = [
         butterknife:    'com.jakewharton:butterknife:7.0.1',
         annotations:    'com.android.support:support-annotations:23.0.1',
         raven:          'net.kencochrane.raven:raven:6.0.0',
+        twitter:        'org.twitter4j:twitter4j-async:4.0.4',
 
         // apt
         butterfork_compiler:    'com.oguzbabaoglu:butterfork-compiler:1.0.0',
