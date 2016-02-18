@@ -362,6 +362,18 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 super.subscribed();
                 requestManager.identifyRequest();
             }
+
+            @Override
+            public void subscriptionFailed() {
+                super.subscriptionFailed();
+                showNetworkError();
+            }
+
+            @Override
+            public void connectionFailed() {
+                super.connectionFailed();
+                showNetworkError();
+            }
         });
 
         pusherManager.startNewChannel();
