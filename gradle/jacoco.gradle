@@ -29,6 +29,10 @@ subprojects { project ->
                             '**/R*.class',
                             '**/BuildConfig*',
                             '**/*$$ViewBinder*.*',
+                            '**/*$$InjectAdapter.*',
+                            '**/*$$StaticInjection.*',
+                            '**/*$$ModuleAdapter$Provide*ProvidesAdapter.*',
+                            '**/*$$ModuleAdapter.*',
 
                             '**/AmbassadorSDK_MembersInjector.class',
                             '**/AmbassadorActivity_MembersInjector.class',
