@@ -21,6 +21,7 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
+import com.ambassador.ambassadorsdk.internal.notifications.InstanceIdListener;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import javax.inject.Singleton;
@@ -43,7 +44,8 @@ import dagger.Provides;
         IdentifyAugurSDK.class,
         PusherManager.class,
         PusherManager.Channel.class,
-        InstallReceiver.class
+        InstallReceiver.class,
+        InstanceIdListener.class
 
 }, staticInjections = {
         AmbassadorSDK.class
