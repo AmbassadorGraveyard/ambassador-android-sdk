@@ -89,7 +89,7 @@ ext {
     siteUrl = 'http://getambassador.com'
     gitUrl = 'https://github.com/GetAmbassador/ambassador-android-sdk.git'
 
-    libraryVersion = '0.0.10'
+    libraryVersion = '1.1.0'
 
     developerId = 'ambassador'
     developerName = 'Ambassador Software'
