@@ -6,15 +6,15 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.ambassador.ambassadorsdk.AmbassadorSDK;
-import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.*;
+import com.ambassador.ambassadorsdk.BuildConfig;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public final class Demo extends Application {
 
-    private static final boolean IS_RELEASE = false;
+    private static final boolean IS_RELEASE = BuildConfig.IS_RELEASE_BUILD;
 
     private static Demo instance;
 

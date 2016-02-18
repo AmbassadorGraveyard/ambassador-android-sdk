@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
@@ -44,8 +43,6 @@ import javax.inject.Singleton;
 @Singleton
 public class PusherManager {
 
-    protected static String universalKey;
-
     @Inject protected RequestManager requestManager;
     @Inject protected Auth auth;
     @Inject protected User user;
@@ -59,7 +56,6 @@ public class PusherManager {
      */
     public PusherManager() {
         AmbSingleton.inject(this);
-        universalKey = auth.getUniversalToken();
         pusherListeners = new ArrayList<>();
 
         addPusherListener(new PusherListenerAdapter() {
@@ -114,7 +110,11 @@ public class PusherManager {
             @Override
             public void onSuccess(Object successResponse) {
                 IdentifyApi.CreatePusherChannelResponse channelData = (IdentifyApi.CreatePusherChannelResponse) successResponse;
-                channel.subscribe(channelData.channel_name, channelData.expires_at, channelData.client_session_uid);
+                try {
+                    channel.subscribe(channelData.channel_name, channelData.expires_at, channelData.client_session_uid);
+                } catch (ParseException e) {
+                    // TODO: handle this
+                }
             }
 
             @Override
@@ -216,6 +216,8 @@ public class PusherManager {
         protected long requestId;
         protected ConnectionState connectionState;
 
+        @Inject protected Auth auth;
+
         protected Channel() {}
 
         /**
@@ -235,7 +237,7 @@ public class PusherManager {
             HttpAuthorizer authorizer = new HttpAuthorizer(pusherCallbackUrl);
 
             HashMap<String, String> headers = new HashMap<>();
-            headers.put("Authorization", universalKey);
+            headers.put("Authorization", auth.getUniversalToken());
             authorizer.setHeaders(headers);
 
             HashMap<String, String> queryParams = new HashMap<>();
@@ -250,7 +252,7 @@ public class PusherManager {
             int keyId = BuildConfig.IS_RELEASE_BUILD ? R.string.pusher_key_prod : R.string.pusher_key_dev;
             String key = new StringResource(keyId).getValue();
 
-            return new Pusher(key, options);
+             return new Pusher(key, options);
         }
 
         protected ConnectionEventListener connectionEventListener = new ConnectionEventListener() {
@@ -287,22 +289,17 @@ public class PusherManager {
          * Subscribes Pusher connection to the channel's channel name.
          * Listens for events and dispatches them accordingly.
          */
-        public void subscribe(@NonNull final String channelName, @NonNull String expiry, @NonNull String sessionId) {
+        public void subscribe(@NonNull final String channelName, @NonNull String expiry, @NonNull String sessionId) throws ParseException {
             this.channelName = channelName;
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            try {
-                this.expiry = sdf.parse(expiry);
-            } catch (ParseException e) {
-                Log.e("AmbassadorSDK", e.toString());
-            }
-
+            this.expiry = sdf.parse(expiry);
             this.sessionId = sessionId;
 
             pusher = setupPusher();
             pusher.connect(connectionEventListener, ConnectionState.ALL);
-            pusher.subscribePrivate(channelName, privateChannelEventListener);
+            pusher.subscribePrivate(channelName, privateChannelEventListener, "identify_action");
         }
 
         private PrivateChannelEventListener privateChannelEventListener = new PrivateChannelEventListener() {
@@ -345,7 +342,9 @@ public class PusherManager {
          * Disconnects connection to Pusher.
          */
         public void disconnect() {
-            pusher.disconnect();
+            if (pusher != null) {
+                pusher.disconnect();
+            }
         }
 
         public Pusher getPusher() {
@@ -390,53 +389,6 @@ public class PusherManager {
 
         public boolean isConnected() {
             return connectionState != null && connectionState.equals(ConnectionState.CONNECTED);
-        }
-
-        protected static class Builder {
-
-            private String sessionId;
-            private String channelName;
-            private Date expiry;
-            private long requestId;
-            private ConnectionState connectionState;
-
-            public Builder() {}
-
-            public Builder setSessionId(String sessionId) {
-                this.sessionId = sessionId;
-                return this;
-            }
-
-            public Builder setChannelName(String channelName) {
-                this.channelName = channelName;
-                return this;
-            }
-
-            public Builder setExpiry(Date expiry) {
-                this.expiry = expiry;
-                return this;
-            }
-
-            public Builder setRequestId(long requestId) {
-                this.requestId = requestId;
-                return this;
-            }
-
-            public Builder setConnectionState(ConnectionState connectionState) {
-                this.connectionState = connectionState;
-                return this;
-            }
-
-            public Channel build() {
-                Channel channel = new Channel();
-                channel.sessionId = this.sessionId;
-                channel.channelName = this.channelName;
-                channel.expiry = this.expiry;
-                channel.requestId = this.requestId;
-                channel.connectionState = this.connectionState;
-                return channel;
-            }
-
         }
 
     }
