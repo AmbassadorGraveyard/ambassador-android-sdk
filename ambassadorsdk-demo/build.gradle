@@ -35,6 +35,12 @@ android {
 
 apply from: file('dependencies.gradle')
 
+configurations {
+    androidTestCompile.exclude group: 'org.hamcrest', module: 'hamcrest-library'
+    androidTestCompile.exclude group: 'org.hamcrest', module: 'hamcrest-integration'
+    androidTestCompile.exclude group: 'org.hamcrest', module: 'hamcrest-core'
+}
+
 dependencies {
     compile project(':ambassadorsdk')
 
