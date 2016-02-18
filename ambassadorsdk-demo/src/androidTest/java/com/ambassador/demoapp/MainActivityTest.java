@@ -271,7 +271,7 @@ public class MainActivityTest {
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                PusherManager.PusherListener callback = (PusherManager.PusherListener) PusherManager.getPusherListeners().get(0);
+                PusherManager.PusherListener callback = (PusherManager.PusherListener) pusherManager.getPusherListeners().get(0);
                 if (callback != null) callback.connectionFailed();
                 return null;
             }

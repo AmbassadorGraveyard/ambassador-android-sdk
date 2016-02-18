@@ -1,5 +1,7 @@
-package com.ambassador.ambassadorsdk.internal.api;
+package com.ambassador.ambassadorsdk.internal.api.pusher;
 
+
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 
 /**
  * Adapter class for the PusherListener interface. Serves to be overriden and passed as the listener

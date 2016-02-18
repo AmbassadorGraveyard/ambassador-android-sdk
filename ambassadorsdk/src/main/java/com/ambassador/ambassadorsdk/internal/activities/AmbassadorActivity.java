@@ -38,7 +38,7 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
-import com.ambassador.ambassadorsdk.internal.api.PusherListenerAdapter;
+import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
