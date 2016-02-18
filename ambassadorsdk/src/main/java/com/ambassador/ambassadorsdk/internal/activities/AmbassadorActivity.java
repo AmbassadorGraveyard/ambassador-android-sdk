@@ -38,14 +38,14 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
+import com.ambassador.ambassadorsdk.internal.api.PusherListenerAdapter;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
-import com.ambassador.ambassadorsdk.internal.api.PusherListenerAdapter;
-import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.LockableScrollView;
@@ -355,42 +355,16 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     protected void setUpPusher() {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
+
         pusherManager.addPusherListener(new PusherListenerAdapter() {
-
-            @Override
-            public void connected() {
-                super.connected();
-                pusherManager.subscribeChannelToAmbassador();
-            }
-
-            @Override
-            public void disconnected() {
-                super.disconnected();
-                pusherManager.startNewChannel();
-            }
-
             @Override
             public void subscribed() {
                 super.subscribed();
-                Intent intent = new Intent("pusherData");
-                LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
             }
-
-            @Override
-            public void unsubscribed() {
-                super.unsubscribed();
-                pusherManager.subscribeChannelToAmbassador();
-            }
-
         });
 
-        if (pusherManager.getChannel() == null) {
-            pusherManager.startNewChannel();
-        } else if (!pusherManager.getChannel().isConnected()) {
-            pusherManager.startNewChannel();
-        } else if (pusherManager.getChannel().isConnected()) {
-            pusherManager.subscribeChannelToAmbassador();
-        }
+        pusherManager.startNewChannel();
+        pusherManager.subscribeChannelToAmbassador();
     }
     // endregion
 

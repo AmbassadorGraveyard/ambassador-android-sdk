@@ -32,7 +32,7 @@ import javax.inject.Inject;
  * Static methods called by the end-developer to utilize the SDK.
  */
 public final class AmbassadorSDK {
-    
+
     @Inject protected static Auth auth;
     @Inject protected static User user;
     @Inject protected static Campaign campaign;

@@ -1,7 +1,9 @@
 package com.ambassador.ambassadorsdk.internal.api;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.BuildConfig;
@@ -85,7 +87,6 @@ public class PusherManager {
         if (channel != null) channel.disconnect();
         channel = new Channel();
         channel.init();
-        channel.connect();
     }
 
     /**
@@ -94,11 +95,15 @@ public class PusherManager {
     public void subscribeChannelToAmbassador() {
         if (channel != null && channel.isConnected()) {
             if (channel.getChannelName() != null) {
-                channel.unsubscribe(channel.getChannelName());
+                try {
+                    channel.unsubscribe(channel.getChannelName());
+                } catch (Exception e) {
+                    // this doesn't matter
+                }
             }
-
-            requestSubscription();
         }
+
+        requestSubscription();
     }
 
     /**
@@ -110,9 +115,6 @@ public class PusherManager {
             public void onSuccess(Object successResponse) {
                 IdentifyApi.CreatePusherChannelResponse channelData = (IdentifyApi.CreatePusherChannelResponse) successResponse;
                 channel.subscribe(channelData.channel_name, channelData.expires_at, channelData.client_session_uid);
-                for (PusherListener pusherListener : pusherListeners) {
-                    pusherListener.subscribed();
-                }
             }
 
             @Override
@@ -181,7 +183,22 @@ public class PusherManager {
      * @param data the json info to store.
      */
     protected void setPusherInfo(JsonObject data) {
+        JsonObject pusherSave = new JsonObject();
+        JsonObject pusherObject = data.get("body").getAsJsonObject();
 
+        pusherSave.add("email", pusherObject.get("email"));
+        pusherSave.add("firstName", pusherObject.get("first_name"));
+        pusherSave.add("lastName", pusherObject.get("last_name"));
+        pusherSave.add("phoneNumber", pusherObject.get("phone"));
+        pusherSave.add("urls", pusherObject.get("urls").getAsJsonArray());
+
+        user.setPusherInfo(pusherSave);
+
+        user.setFirstName(pusherObject.get("first_name").getAsString());
+        user.setLastName(pusherObject.get("last_name").getAsString());
+
+        Intent intent = new Intent("pusherData");
+        LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
     }
 
     /**
@@ -206,7 +223,6 @@ public class PusherManager {
          */
         public void init() {
             AmbSingleton.inject(this);
-            this.pusher = setupPusher();
         }
 
         /**
@@ -235,14 +251,6 @@ public class PusherManager {
             String key = new StringResource(keyId).getValue();
 
             return new Pusher(key, options);
-        }
-
-        /**
-         * Establishes a connection to Pusher and listens to connection state changes,
-         * changing {@link Channel#connectionState} accordingly.
-         */
-        public void connect() {
-            pusher.connect(connectionEventListener, ConnectionState.ALL);
         }
 
         protected ConnectionEventListener connectionEventListener = new ConnectionEventListener() {
@@ -279,7 +287,7 @@ public class PusherManager {
          * Subscribes Pusher connection to the channel's channel name.
          * Listens for events and dispatches them accordingly.
          */
-        public void subscribe(@NonNull String channelName, @NonNull String expiry, @NonNull String sessionId) {
+        public void subscribe(@NonNull final String channelName, @NonNull String expiry, @NonNull String sessionId) {
             this.channelName = channelName;
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
@@ -292,6 +300,8 @@ public class PusherManager {
 
             this.sessionId = sessionId;
 
+            pusher = setupPusher();
+            pusher.connect(connectionEventListener, ConnectionState.ALL);
             pusher.subscribePrivate(channelName, privateChannelEventListener);
         }
 
