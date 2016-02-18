@@ -28,7 +28,7 @@ rootProject.ext.sdkProvided = [
 
 rootProject.ext.sdkTestCompile = [
         rootProject.ext.deps.junit,
-        rootProject.ext.deps.mockito,
+        rootProject.ext.deps.mockito_new,
         rootProject.ext.deps.powermock,
         rootProject.ext.deps.powermock_mockito,
 ]

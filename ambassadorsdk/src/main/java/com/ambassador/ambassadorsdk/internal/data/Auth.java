@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.google.gson.Gson;
@@ -93,9 +93,9 @@ public class Auth implements Data {
      */
     @Override
     public void save() {
-        if (AmbassadorSingleton.getInstanceContext() != null) {
+        if (AmbSingleton.getContext() != null) {
             String data = new Gson().toJson(this);
-            SharedPreferences sharedPreferences = AmbassadorSingleton.getInstanceContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString("auth", data).apply();
         }
     }
@@ -119,7 +119,7 @@ public class Auth implements Data {
     @Override
     public void refresh() {
         clear();
-        String json = AmbassadorSingleton.getInstanceContext().getSharedPreferences("auth", Context.MODE_PRIVATE).getString("auth", null);
+        String json = AmbSingleton.getContext().getSharedPreferences("auth", Context.MODE_PRIVATE).getString("auth", null);
 
         if (json == null) return;
 

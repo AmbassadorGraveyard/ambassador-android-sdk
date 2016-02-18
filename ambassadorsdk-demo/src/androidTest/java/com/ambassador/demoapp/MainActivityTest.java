@@ -14,16 +14,13 @@ import android.support.test.uiautomator.Until;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.PusherChannel;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.pusher.client.connection.ConnectionState;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -34,12 +31,8 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.util.Date;
-
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-import dagger.Component;
 
 @RunWith(AndroidJUnit4.class)
 @SdkSuppress(minSdkVersion = 18)
@@ -57,16 +50,10 @@ public class MainActivityTest {
     private UiObject referTab;
     private UiObject shortCodeEditText;
 
-    @Inject protected PusherSDK pusherSDK;
+    @Inject protected PusherManager pusherManager;
     @Inject protected User user;
     @Inject protected Campaign campaign;
     @Inject protected RequestManager requestManager;
-
-    @Singleton
-    @Component(modules = { TestModule.class })
-    public interface TestComponent extends AmbassadorApplicationComponent {
-        void inject(MainActivityTest ambassadorActivityTest);
-    }
 
     @Before
     public void startMainActivityFromHomeScreen() throws Exception {
@@ -82,11 +69,8 @@ public class MainActivityTest {
 
         Context context = InstrumentationRegistry.getContext();
 
-        AmbassadorSingleton.init(context);
-        TestModule testModule = new TestModule();
-        TestComponent component = DaggerMainActivityTest_TestComponent.builder().testModule(testModule).build();
-        AmbassadorSingleton.setInstanceComponent(component);
-        component.inject(this);
+        AmbSingleton.init(context, new TestModule());
+        AmbSingleton.inject(this);
 
         mockAmbassadorSDK();
 
@@ -277,6 +261,7 @@ public class MainActivityTest {
         Assert.assertTrue(!progressDialog.exists());
     }
 
+    // TODO: fix
     @Test
     public void rafUnidentifiedFailsTest() throws Exception {
         // ARRANGE
@@ -285,17 +270,15 @@ public class MainActivityTest {
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                PusherSDK.PusherSubscribeCallback callback = (PusherSDK.PusherSubscribeCallback) invocationOnMock.getArguments()[0];
-                if (callback != null) callback.pusherFailed();
+                for (PusherManager.PusherListener callback : pusherManager.getPusherListeners()) {
+                    if (callback != null) callback.connectionFailed();
+                }
                 return null;
             }
-        }).when(pusherSDK).createPusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
+        }).when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
 
         // ACT
         referTab.click();
-        PusherChannel.setChannelName(null);
-        PusherChannel.setConnectionState(ConnectionState.DISCONNECTED);
-        PusherChannel.setExpiresAt(new Date(100));
         shoeRaf.clickAndWaitForNewWindow();
         Thread.sleep(1000); // Give it time to close with error
 
@@ -466,24 +449,18 @@ public class MainActivityTest {
             }
         }).when(requestManager).identifyRequest();
 
-        Mockito.doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
                 sendPusherIntent();
                 return null;
             }
-        }).when(pusherSDK).subscribePusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
-
-        Mockito.doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                sendPusherIntent();
-                return null;
-            }
-        }).when(pusherSDK).createPusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
+        }).when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     private void sendPusherIntent() {
         Intent intent = new Intent("pusherData");
-        LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
     }
 
 }

@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.internal.utils.res;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 public final class ColorResource {
 
@@ -13,7 +13,7 @@ public final class ColorResource {
     private ColorResource() {}
 
     public ColorResource(@ColorRes int resId) {
-        this.color = ContextCompat.getColor(AmbassadorSingleton.getInstanceContext(), resId);
+        this.color = ContextCompat.getColor(AmbSingleton.getContext(), resId);
     }
 
     public int getColor() {

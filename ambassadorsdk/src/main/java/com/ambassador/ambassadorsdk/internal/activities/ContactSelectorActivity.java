@@ -40,9 +40,8 @@ import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
@@ -50,6 +49,8 @@ import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskUrlDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
+import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.utils.ContactList;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
@@ -68,7 +69,7 @@ import butterfork.ButterFork;
 /**
  * Activity that handles contact selection and sharing using email or SMS.
  */
-public final class ContactSelectorActivity extends AppCompatActivity implements PusherSDK.IdentifyListener {
+public final class ContactSelectorActivity extends AppCompatActivity {
 
     // region Fields
 
@@ -99,7 +100,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     // endregion
 
     // region Dependencies
-    @Inject protected PusherSDK         pusherSDK;
+    @Inject protected PusherManager     pusherManager;
     @Inject protected BulkShareHelper   bulkShareHelper;
     @Inject protected User              user;
     @Inject protected Campaign          campaign;
@@ -128,7 +129,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         setContentView(R.layout.activity_contacts);
 
         // Injection
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbSingleton.inject(this);
         ButterFork.bind(this);
 
         // Requirement checks
@@ -149,7 +150,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        pusherSDK.setIdentifyListener(null);
+        pusherManager.removePusherListener(pusherListener);
         if (askNameDialog != null && askNameDialog.isShowing()) {
             askNameDialog.dismiss();
         }
@@ -204,7 +205,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     // region Requirement checks
     private void finishIfSingletonInvalid() {
-        if (!AmbassadorSingleton.isValid()) {
+        if (!AmbSingleton.isValid()) {
             finish();
         }
     }
@@ -332,8 +333,17 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
 
     private void setUpPusher() {
         pusherData = user.getPusherInfo();
-        pusherSDK.setIdentifyListener(this);
+        pusherManager.addPusherListener(pusherListener);
     }
+
+    protected PusherListenerAdapter pusherListener = new PusherListenerAdapter() {
+        @Override
+        public void onEvent(String data) {
+            super.onEvent(data);
+            identified();
+            pusherManager.removePusherListener(this);
+        }
+    };
     // endregion
 
     // region OnClickListeners
@@ -612,8 +622,7 @@ public final class ContactSelectorActivity extends AppCompatActivity implements 
         }
     }
 
-    @Override
-    public void identified(long requestId) {
+    public void identified() {
         send();
     }
 

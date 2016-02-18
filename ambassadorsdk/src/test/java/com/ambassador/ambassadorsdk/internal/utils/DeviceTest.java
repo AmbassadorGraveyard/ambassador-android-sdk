@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 import junit.framework.Assert;
 
@@ -18,7 +18,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class
+        AmbSingleton.class
 })
 public class DeviceTest {
 
@@ -29,14 +29,14 @@ public class DeviceTest {
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class
+                AmbSingleton.class
         );
 
         context = Mockito.mock(Context.class);
         resources = Mockito.mock(Resources.class);
         configuration = Mockito.mock(Configuration.class);
 
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
         Mockito.when(context.getResources()).thenReturn(resources);
         Mockito.when(resources.getConfiguration()).thenReturn(configuration);
     }

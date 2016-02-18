@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.internal.api;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.TestUtils;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +20,7 @@ import retrofit.client.Client;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         ServiceGenerator.class,
         Log.class
 })

@@ -5,14 +5,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
@@ -28,6 +28,8 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import dagger.ObjectGraph;
+
 /**
  * Static methods called by the end-developer to utilize the SDK.
  */
@@ -37,7 +39,7 @@ public final class AmbassadorSDK {
     @Inject protected static User user;
     @Inject protected static Campaign campaign;
 
-    @Inject protected static PusherSDK pusherSDK;
+    @Inject protected static PusherManager pusherManager;
     @Inject protected static RequestManager requestManager;
 
     public static void presentRAF(Context context, String campaignID) {
@@ -103,7 +105,7 @@ public final class AmbassadorSDK {
         IIdentify identify = buildIdentify();
         identify.getIdentity();
 
-        pusherSDK.createPusher(null);
+        pusherManager.startNewChannel();
     }
 
     private static IIdentify buildIdentify() {
@@ -125,12 +127,17 @@ public final class AmbassadorSDK {
     }
 
     private static ConversionUtility buildConversionUtility(ConversionParameters conversionParameters) {
-        return new ConversionUtility(AmbassadorSingleton.getInstanceContext(), conversionParameters);
+        return new ConversionUtility(AmbSingleton.getContext(), conversionParameters);
     }
 
     public static void runWithKeys(Context context, String universalToken, String universalId) {
-        AmbassadorSingleton.init(context);
-        AmbassadorSingleton.getInstanceComponent().inject(new AmbassadorSDK());
+        AmbSingleton.init(context);
+
+        ObjectGraph objectGraph = AmbSingleton.getGraph();
+        if (objectGraph == null) {
+            return;
+        }
+        objectGraph.injectStatics();
 
         auth.clear();
 
@@ -175,7 +182,7 @@ public final class AmbassadorSDK {
     }
 
     protected static void startConversionTimer() {
-        final ConversionUtility utility = buildConversionUtility(AmbassadorSingleton.getInstanceContext());
+        final ConversionUtility utility = buildConversionUtility(AmbSingleton.getContext());
         Timer timer = buildTimer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override

@@ -27,12 +27,12 @@ public class Utilities {
     }
 
     public static int getPixelSizeForDimension(int dimension) {
-        Context cxt = AmbassadorSingleton.getInstanceContext();
+        Context cxt = AmbSingleton.getContext();
         return cxt.getResources().getDimensionPixelSize(dimension);
     }
     
     public static float getDpSizeForPixels(int pixels) {
-        Context cxt = AmbassadorSingleton.getInstanceContext();
+        Context cxt = AmbSingleton.getContext();
         Resources resources = cxt.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float dp = pixels / (metrics.densityDpi / 160f);
@@ -74,7 +74,7 @@ public class Utilities {
     }
 
     public static float getScreenDensity() {
-        return AmbassadorSingleton.getInstanceContext().getResources().getDisplayMetrics().density;
+        return AmbSingleton.getContext().getResources().getDisplayMetrics().density;
     }
 
     public static boolean isConnected(Context context) {

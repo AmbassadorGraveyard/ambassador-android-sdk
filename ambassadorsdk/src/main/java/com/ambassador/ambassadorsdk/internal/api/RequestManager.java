@@ -4,10 +4,9 @@ import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
@@ -24,6 +23,7 @@ import java.net.URLEncoder;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
@@ -37,11 +37,13 @@ import twitter4j.auth.AccessToken;
  * Handles all requests at the highest level. This is what all other internal classes use.
  * Prepares parameters and calls the different Api classes.
  */
+@Singleton
 public class RequestManager {
 
     @Inject protected Auth auth;
     @Inject protected User user;
     @Inject protected Campaign campaign;
+    @Inject protected PusherManager pusherManager;
 
     protected BulkShareApi bulkShareApi;
     protected ConversionsApi conversionsApi;
@@ -69,7 +71,7 @@ public class RequestManager {
      * @param doInit whether or not to initialize Api objects.
      */
     public RequestManager(boolean doInit) {
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbSingleton.inject(this);
         bulkShareApi = new BulkShareApi(false);
         conversionsApi = new ConversionsApi(false);
         identifyApi = new IdentifyApi(false);
@@ -168,7 +170,7 @@ public class RequestManager {
      * milliseconds.
      */
     private void updateRequestId() {
-        PusherChannel.setRequestId(System.currentTimeMillis());
+        pusherManager.newRequest();
     }
 
     /**
@@ -176,10 +178,14 @@ public class RequestManager {
      * and the identify info returned from augur.
      */
     public void identifyRequest() {
+        if (pusherManager.getChannel() == null) {
+            return;
+        }
+
         updateRequestId();
 
-        String sessionId = PusherChannel.getSessionId();
-        String requestId = String.valueOf(PusherChannel.getRequestId());
+        String sessionId = pusherManager.getSessionId();
+        String requestId = String.valueOf(pusherManager.getRequestId());
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
 
@@ -199,10 +205,14 @@ public class RequestManager {
      * @param completion callback for request completion
      */
     public void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
+        if (pusherManager.getChannel() == null) {
+            return;
+        }
+
         updateRequestId();
 
-        String sessionId = PusherChannel.getSessionId();
-        String requestId = String.valueOf(PusherChannel.getRequestId());
+        String sessionId = pusherManager.getSessionId();
+        String requestId = String.valueOf(pusherManager.getRequestId());
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
         IdentifyApi.UpdateNameRequestBody body = new IdentifyApi.UpdateNameRequestBody(email, firstName, lastName);
@@ -218,8 +228,8 @@ public class RequestManager {
     public void updateGcmRegistrationToken(final String email, final String registrationToken, final RequestCompletion completion) {
         updateRequestId();
 
-        String sessionId = PusherChannel.getSessionId();
-        String requestId = String.valueOf(PusherChannel.getRequestId());
+        String sessionId = pusherManager.getSessionId();
+        String requestId = String.valueOf(pusherManager.getRequestId());
         String uid = auth.getUniversalId();
         String authToken = auth.getUniversalToken();
         IdentifyApi.UpdateGcmTokenBody body = new IdentifyApi.UpdateGcmTokenBody(email, registrationToken);

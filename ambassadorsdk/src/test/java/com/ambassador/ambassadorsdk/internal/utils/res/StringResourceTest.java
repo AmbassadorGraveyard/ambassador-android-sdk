@@ -2,8 +2,7 @@ package com.ambassador.ambassadorsdk.internal.utils.res;
 
 import android.content.Context;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 import junit.framework.Assert;
 
@@ -17,7 +16,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-    AmbassadorSingleton.class
+    AmbSingleton.class
 })
 public class StringResourceTest {
 
@@ -26,11 +25,11 @@ public class StringResourceTest {
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class
+                AmbSingleton.class
         );
 
         context = Mockito.mock(Context.class);
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
     }
 
     @Test
