@@ -27,6 +27,9 @@ public class AmbSingleton {
 
         if (AmbSingleton.module == null) {
             AmbSingleton.module = new AmbModule();
+        }
+
+        if (AmbSingleton.graph == null) {
             AmbSingleton.graph = ObjectGraph.create(AmbSingleton.module);
             AmbSingleton.module.init();
         }

@@ -27,6 +27,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import dagger.ObjectGraph;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest ({
         AmbassadorSDK.class,
@@ -132,9 +134,9 @@ public class AmbassadorSDKTest {
         // ARRANGE
         String universalToken = "universalToken";
         String universalID = "universalID";
-//        AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
-//        PowerMockito.doReturn(component).when(AmbSingleton.class, "getInstanceComponent");
-//        Mockito.doNothing().when(component).inject(Mockito.any(AmbassadorSDK.class));
+        ObjectGraph objectGraph = Mockito.mock(ObjectGraph.class);
+        PowerMockito.doReturn(objectGraph).when(AmbSingleton.class, "getGraph");
+        Mockito.doNothing().when(objectGraph).injectStatics();
         PowerMockito.doNothing().when(AmbassadorSDK.class, "registerInstallReceiver", context);
         PowerMockito.doNothing().when(AmbassadorSDK.class, "startConversionTimer");
         PowerMockito.doNothing().when(AmbassadorSDK.class, "setupGcm", context);
