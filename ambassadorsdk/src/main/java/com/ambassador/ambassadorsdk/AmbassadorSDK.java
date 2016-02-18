@@ -32,9 +32,7 @@ import javax.inject.Inject;
  * Static methods called by the end-developer to utilize the SDK.
  */
 public final class AmbassadorSDK {
-
-    protected static AmbassadorSDK instance;
-
+    
     @Inject protected static Auth auth;
     @Inject protected static User user;
     @Inject protected static Campaign campaign;
@@ -212,15 +210,6 @@ public final class AmbassadorSDK {
                 Log.e("AmbassadorSDK", e.toString());
             }
         });
-    }
-
-    protected static AmbassadorSDK get() {
-        if (instance != null) {
-            return instance;
-        }
-
-        instance = new AmbassadorSDK();
-        return instance;
     }
 
 }
