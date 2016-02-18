@@ -360,6 +360,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             @Override
             public void subscribed() {
                 super.subscribed();
+                requestManager.identifyRequest();
             }
         });
 
