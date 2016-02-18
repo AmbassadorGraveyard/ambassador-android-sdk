@@ -97,9 +97,7 @@ public class RequestManagerTest {
 
         TestUtils.mockStrings();
 
-//        AmbassadorApplicationComponent mockComponent = Mockito.mock(AmbassadorApplicationComponent.class);
-//        Mockito.when(AmbSingleton.getInstanceComponent()).thenReturn(mockComponent);
-//        Mockito.doNothing().when(mockComponent).inject(Mockito.any(RequestManager.class));
+        PowerMockito.doNothing().when(AmbSingleton.class, "inject", Mockito.any(RequestManager.class));
 
         bulkShareApi = PowerMockito.mock(BulkShareApi.class);
         conversionsApi = PowerMockito.mock(ConversionsApi.class);
@@ -131,17 +129,17 @@ public class RequestManagerTest {
         requestManager.identifyApi = identifyApi;
         requestManager.linkedInApi = linkedInApi;
 
-//        Mockito.doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) throws Throwable {
-//                PusherManager pusherManager = (PusherManager) invocation.getArguments()[0];
-//                pusherManager.auth = auth;
-//                return null;
-//            }
-//        }).when(mockComponent).inject(Mockito.any(PusherManager.class));
+        PowerMockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                PusherManager pusherManager = (PusherManager) invocation.getArguments()[0];
+                pusherManager.auth = auth;
+                return null;
+            }
+        }).when(AmbSingleton.class, "inject", Mockito.any(PusherManager.class));
 
-        pusherManager = Mockito.spy(PusherManager.class);
-        PusherManager.Channel channel = Mockito.spy(PusherManager.Channel.class);
+        pusherManager = Mockito.spy(new PusherManager());
+        PusherManager.Channel channel = Mockito.spy(new PusherManager.Channel());
         pusherManager.channel = channel;
         channel.requestId = requestId;
         channel.sessionId = sessionId;
