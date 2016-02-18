@@ -94,7 +94,7 @@ public class PusherManager {
             try {
                 channel.unsubscribe(channel.channelName);
             } catch (Exception e) {
-                // this doesn't matter
+                // Exception thrown when no subscription exists.  This is fine.
             }
         }
 
