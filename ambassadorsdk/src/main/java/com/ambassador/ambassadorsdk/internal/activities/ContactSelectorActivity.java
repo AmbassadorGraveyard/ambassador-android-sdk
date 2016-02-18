@@ -49,7 +49,7 @@ import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskUrlDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
-import com.ambassador.ambassadorsdk.internal.api.PusherListenerAdapter;
+import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.utils.ContactList;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
@@ -341,6 +341,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         public void onEvent(String data) {
             super.onEvent(data);
             identified();
+            pusherManager.removePusherListener(this);
         }
     };
     // endregion

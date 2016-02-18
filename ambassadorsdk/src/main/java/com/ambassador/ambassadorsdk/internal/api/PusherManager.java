@@ -10,6 +10,8 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
+import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
+import com.ambassador.ambassadorsdk.internal.api.pusher.PusherLogger;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
@@ -71,6 +73,8 @@ public class PusherManager {
                 }
             }
         });
+
+        addPusherListener(new PusherLogger());
     }
 
     /**
@@ -397,6 +401,15 @@ public class PusherManager {
      */
     public void removePusherListener(@NonNull PusherListener pusherListener) {
         pusherListeners.remove(pusherListener);
+    }
+
+    /**
+     * Returns all of the pusher listeners.
+     * @return PusherListener
+     */
+    @Nullable
+    public List<PusherListener> getPusherListeners() {
+        return pusherListeners;
     }
 
 }

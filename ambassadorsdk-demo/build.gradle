@@ -37,7 +37,6 @@ apply from: file('dependencies.gradle')
 
 dependencies {
     compile project(':ambassadorsdk')
-    //compile 'com.ambassador:ambassadorsdk:0.0.9'
 
     rootProject.ext.demoCompile.each {
         compile "${it}"
