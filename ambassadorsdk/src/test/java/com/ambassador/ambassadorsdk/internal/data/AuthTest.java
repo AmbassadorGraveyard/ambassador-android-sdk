@@ -199,7 +199,7 @@ public class AuthTest {
     public void nullifyLinkedInIfInvalidNullTest() {
         // ARRANGE
         Auth.NullifyCompleteListener listener = Mockito.mock(Auth.NullifyCompleteListener.class);
-        Auth auth = Mockito.spy(Auth.class);
+        Auth auth = Mockito.spy(new Auth());
         Mockito.when(auth.getLinkedInToken()).thenReturn(null);
 
         // ACT
@@ -213,7 +213,7 @@ public class AuthTest {
     public void nullifyLinkedInIfInvalidTest() {
         // ARRANGE
         Auth.NullifyCompleteListener listener = Mockito.mock(Auth.NullifyCompleteListener.class);
-        Auth auth = Mockito.spy(Auth.class);
+        Auth auth = Mockito.spy(new Auth());
         String token = "token";
         Mockito.when(auth.getLinkedInToken()).thenReturn(token);
         RequestManager requestManager = Mockito.mock(RequestManager.class);
@@ -249,7 +249,7 @@ public class AuthTest {
     @Test
     public void callNullifyCompleteNotNullTest() {
         // ARRANGE
-        Auth auth = Mockito.spy(Auth.class);
+        Auth auth = Mockito.spy(new Auth());
         Auth.NullifyCompleteListener listener = Mockito.mock(Auth.NullifyCompleteListener.class);
         Mockito.doNothing().when(listener).nullifyComplete();
 
@@ -263,7 +263,7 @@ public class AuthTest {
     @Test
     public void callNullifyCompleteNullTest() {
         // ARRANGE
-        Auth auth = Mockito.spy(Auth.class);
+        Auth auth = Mockito.spy(new Auth());
         Auth.NullifyCompleteListener listener = null;
 
         // ACT
