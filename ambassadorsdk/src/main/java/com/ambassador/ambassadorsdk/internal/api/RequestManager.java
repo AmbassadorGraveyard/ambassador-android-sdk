@@ -228,8 +228,8 @@ public class RequestManager {
     public void updateGcmRegistrationToken(final String email, final String registrationToken, final RequestCompletion completion) {
         updateRequestId();
 
-        String sessionId = PusherChannel.getSessionId();
-        String requestId = String.valueOf(PusherChannel.getRequestId());
+        String sessionId = pusherManager.getSessionId();
+        String requestId = String.valueOf(pusherManager.getRequestId());
         String uid = auth.getUniversalId();
         String authToken = auth.getUniversalToken();
         IdentifyApi.UpdateGcmTokenBody body = new IdentifyApi.UpdateGcmTokenBody(email, registrationToken);
