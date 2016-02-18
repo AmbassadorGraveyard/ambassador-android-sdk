@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
@@ -67,7 +67,7 @@ public final class AskNameDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_contact_name);
         ButterFork.bind(this);
-        AmbassadorSingleton.getGraph().inject(this);
+        AmbSingleton.getGraph().inject(this);
 
         setupTheme();
         setupButtons();

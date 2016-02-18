@@ -3,8 +3,7 @@ package com.ambassador.ambassadorsdk.internal.utils.res;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
-import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 import junit.framework.Assert;
 
@@ -18,7 +17,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class
+        AmbSingleton.class
 })
 public class ColorResourceTest {
 
@@ -27,11 +26,11 @@ public class ColorResourceTest {
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class
+                AmbSingleton.class
         );
 
         Context context = Mockito.mock(Context.class);
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
         resources = Mockito.mock(Resources.class);
         Mockito.when(context.getResources()).thenReturn(resources);
     }

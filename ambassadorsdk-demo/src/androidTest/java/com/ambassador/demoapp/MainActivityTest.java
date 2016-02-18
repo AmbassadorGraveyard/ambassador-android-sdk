@@ -14,7 +14,7 @@ import android.support.test.uiautomator.Until;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
@@ -69,10 +69,10 @@ public class MainActivityTest {
 
         Context context = InstrumentationRegistry.getContext();
 
-        AmbassadorSingleton.init(context);
-        AmbassadorApplicationComponent component = new AmbassadorApplicationComponent(new TestModule());
-        AmbassadorSingleton.setInstanceComponent(component);
-        component.inject(this);
+        AmbSingleton.init(context);
+//        AmbassadorApplicationComponent component = new AmbassadorApplicationComponent(new TestModule());
+//        AmbSingleton.setInstanceComponent(component);
+//        component.inject(this);
 
         mockAmbassadorSDK();
 
@@ -466,7 +466,7 @@ public class MainActivityTest {
 
     private void sendPusherIntent() {
         Intent intent = new Intent("pusherData");
-        LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(AmbSingleton.getInstanceContext()).sendBroadcast(intent);
     }
 
 }

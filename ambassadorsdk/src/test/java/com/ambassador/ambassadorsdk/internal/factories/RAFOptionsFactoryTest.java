@@ -8,7 +8,7 @@ import android.graphics.Typeface;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 
 import junit.framework.Assert;
@@ -36,7 +36,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
         ResourceFactory.class,
         DocumentBuilderFactory.class,
         Color.class,
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         Typeface.class,
         Log.class,
         ColorResource.class
@@ -55,7 +55,7 @@ public class RAFOptionsFactoryTest {
                 ResourceFactory.class,
                 DocumentBuilderFactory.class,
                 Color.class,
-                AmbassadorSingleton.class,
+                AmbSingleton.class,
                 Typeface.class,
                 Log.class
         );
@@ -94,7 +94,7 @@ public class RAFOptionsFactoryTest {
 
         PowerMockito.doReturn(-2).when(Color.class, "parseColor", Mockito.anyString());
 
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
         AssetManager assets = Mockito.mock(AssetManager.class);
         Mockito.when(context.getAssets()).thenReturn(assets);
         font = Mockito.mock(Typeface.class);

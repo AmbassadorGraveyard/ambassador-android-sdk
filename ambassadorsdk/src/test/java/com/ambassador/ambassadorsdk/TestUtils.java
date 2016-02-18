@@ -2,7 +2,7 @@ package com.ambassador.ambassadorsdk;
 
 import android.content.Context;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
@@ -22,8 +22,8 @@ public class TestUtils {
     }
 
     public static void mockStrings(Context context) {
-        PowerMockito.mockStatic(AmbassadorSingleton.class);
-        PowerMockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        PowerMockito.mockStatic(AmbSingleton.class);
+        PowerMockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
         PowerMockito.doReturn("string").when(context).getString(Mockito.anyInt());
         for (int key : overrides.keySet()) {
             PowerMockito.doReturn(overrides.get(key)).when(context).getString(key);

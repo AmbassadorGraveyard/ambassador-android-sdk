@@ -31,14 +31,14 @@ public class ConversionUtility {
     public ConversionUtility(Context context) {
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
-        AmbassadorSingleton.getGraph().inject(this);
+        AmbSingleton.getGraph().inject(this);
     }
 
     public ConversionUtility(Context context, ConversionParameters parameters) {
         this.parameters = parameters;
         helper = new ConversionDBHelper(context);
         db = helper.getWritableDatabase();
-        AmbassadorSingleton.getGraph().inject(this);
+        AmbSingleton.getGraph().inject(this);
     }
 
     public void registerConversion() {

@@ -6,7 +6,7 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
@@ -56,7 +56,7 @@ public class PusherManager {
      * Default constructor handling injection and dependencies.
      */
     public PusherManager() {
-        AmbassadorSingleton.getGraph().inject(this);
+        AmbSingleton.getGraph().inject(this);
         universalKey = auth.getUniversalToken();
         pusherListeners = new ArrayList<>();
 
@@ -205,7 +205,7 @@ public class PusherManager {
          * Injects dependencies and sets up a Pusher client object.
          */
         public void init() {
-            AmbassadorSingleton.getGraph().inject(this);
+            AmbSingleton.getGraph().inject(this);
             this.pusher = setupPusher();
         }
 

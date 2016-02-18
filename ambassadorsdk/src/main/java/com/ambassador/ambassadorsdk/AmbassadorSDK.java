@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
@@ -121,12 +121,12 @@ public final class AmbassadorSDK {
     }
 
     private static ConversionUtility buildConversionUtility(ConversionParameters conversionParameters) {
-        return new ConversionUtility(AmbassadorSingleton.getInstanceContext(), conversionParameters);
+        return new ConversionUtility(AmbSingleton.getInstanceContext(), conversionParameters);
     }
 
     public static void runWithKeys(Context context, String universalToken, String universalId) {
-        AmbassadorSingleton.init(context);
-        AmbassadorSingleton.getGraph().injectStatics();
+        AmbSingleton.init(context);
+        AmbSingleton.getGraph().injectStatics();
 
         auth.clear();
 
@@ -171,7 +171,7 @@ public final class AmbassadorSDK {
     }
 
     protected static void startConversionTimer() {
-        final ConversionUtility utility = buildConversionUtility(AmbassadorSingleton.getInstanceContext());
+        final ConversionUtility utility = buildConversionUtility(AmbSingleton.getInstanceContext());
         Timer timer = buildTimer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override

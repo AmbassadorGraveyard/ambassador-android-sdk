@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 /**
  *
@@ -25,7 +25,7 @@ public class Device { // TODO: Make final after UI tests figured out
     protected WindowManager         windowManager;
 
     public Device() {
-        Context context = AmbassadorSingleton.getInstanceContext();
+        Context context = AmbSingleton.getInstanceContext();
         configuration = context.getResources().getConfiguration();
         connectivityManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

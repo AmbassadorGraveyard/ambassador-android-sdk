@@ -54,7 +54,7 @@ public class BulkShareHelper { // TODO: Make final after UI tests figured out
      *
      */
     public BulkShareHelper() {
-        AmbassadorSingleton.getGraph().inject(this);
+        AmbSingleton.getGraph().inject(this);
     }
 
     /**

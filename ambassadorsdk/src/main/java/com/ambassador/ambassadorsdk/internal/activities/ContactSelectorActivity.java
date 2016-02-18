@@ -40,7 +40,7 @@ import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
@@ -129,7 +129,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contacts);
 
         // Injection
-        AmbassadorSingleton.getGraph().inject(this);
+        AmbSingleton.getGraph().inject(this);
         ButterFork.bind(this);
 
         // Requirement checks
@@ -205,7 +205,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
 
     // region Requirement checks
     private void finishIfSingletonInvalid() {
-        if (!AmbassadorSingleton.isValid()) {
+        if (!AmbSingleton.isValid()) {
             finish();
         }
     }

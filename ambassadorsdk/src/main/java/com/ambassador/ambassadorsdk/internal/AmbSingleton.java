@@ -6,9 +6,9 @@ import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationModu
 
 import dagger.ObjectGraph;
 
-public class AmbassadorSingleton {
+public class AmbSingleton {
 
-    private static AmbassadorSingleton instance;
+    private static AmbSingleton instance;
     private Context context;
     public static AmbassadorApplicationModule module;
     public static ObjectGraph graph;
@@ -49,12 +49,12 @@ public class AmbassadorSingleton {
         return getModule() != null;
     }
 
-    public static AmbassadorSingleton getInstance() {
+    public static AmbSingleton getInstance() {
         if (instance != null) {
             return instance;
         }
 
-        instance = new AmbassadorSingleton();
+        instance = new AmbSingleton();
         return instance;
     }
 
