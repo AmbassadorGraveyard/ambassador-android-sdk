@@ -25,6 +25,10 @@ public class AmbSingleton {
     public static void init(@NonNull Context context) {
         AmbSingleton.context = context.getApplicationContext();
 
+        if (AmbSingleton.context == null) {
+            AmbSingleton.context = context;
+        }
+
         if (AmbSingleton.module == null) {
             AmbSingleton.module = new AmbModule();
         }

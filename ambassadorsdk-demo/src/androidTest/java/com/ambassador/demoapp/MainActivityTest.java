@@ -69,10 +69,8 @@ public class MainActivityTest {
 
         Context context = InstrumentationRegistry.getContext();
 
-        AmbSingleton.init(context);
-//        AmbassadorApplicationComponent component = new AmbassadorApplicationComponent(new TestModule());
-//        AmbSingleton.setInstanceComponent(component);
-//        component.inject(this);
+        AmbSingleton.init(context, new TestModule());
+        AmbSingleton.inject(this);
 
         mockAmbassadorSDK();
 
@@ -263,6 +261,7 @@ public class MainActivityTest {
         Assert.assertTrue(!progressDialog.exists());
     }
 
+    // TODO: fix
     @Test
     public void rafUnidentifiedFailsTest() throws Exception {
         // ARRANGE
@@ -271,11 +270,12 @@ public class MainActivityTest {
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                PusherManager.PusherListener callback = (PusherManager.PusherListener) pusherManager.getPusherListeners().get(0);
-                if (callback != null) callback.connectionFailed();
+                for (PusherManager.PusherListener callback : pusherManager.getPusherListeners()) {
+                    if (callback != null) callback.connectionFailed();
+                }
                 return null;
             }
-        }).when(pusherManager).startNewChannel();
+        }).when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
 
         // ACT
         referTab.click();
@@ -448,20 +448,6 @@ public class MainActivityTest {
                 return null;
             }
         }).when(requestManager).identifyRequest();
-
-        Mockito.doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                sendPusherIntent();
-                return null;
-            }
-        }).when(pusherManager).subscribeChannelToAmbassador();
-
-        Mockito.doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                sendPusherIntent();
-                return null;
-            }
-        }).when(pusherManager).startNewChannel();
     }
 
     private void sendPusherIntent() {

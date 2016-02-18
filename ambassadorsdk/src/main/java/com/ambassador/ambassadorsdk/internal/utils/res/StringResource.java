@@ -1,5 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.utils.res;
 
+import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
@@ -16,7 +17,11 @@ public final class StringResource {
     private StringResource() {}
 
     public StringResource(@StringRes int resId) {
-        this.value = AmbSingleton.getContext().getString(resId);
+        try {
+            this.value = AmbSingleton.getContext().getString(resId);
+        } catch (Resources.NotFoundException e) {
+            this.value = null;
+        }
     }
 
     @Nullable

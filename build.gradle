@@ -65,7 +65,7 @@ ext.deps = [
 
 
         // tests
-        mockito:            'org.mockito:mockito-core:1.10.19',
+        mockito:            'org.mockito:mockito-core:1.9.5',
         dexmaker:           'com.google.dexmaker:dexmaker:1.2',
         dexmaker_mockito:   'com.google.dexmaker:dexmaker-mockito:1.2',
         test_runner:        'com.android.support.test:runner:0.3',
