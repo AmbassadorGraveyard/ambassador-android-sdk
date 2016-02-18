@@ -43,6 +43,15 @@ public class AmbSingleton {
     }
 
     /**
+     * Injects dependencies onto a passed in object using the ObjectGraph created during
+     * initialization.
+     * @param object the object to inject dependencies into.
+     */
+    public static void inject(Object object) {
+        graph.inject(object);
+    }
+
+    /**
      * Singleton is valid if all fields are not null.  If any given field is null and the singleton
      * is used, unexpected behaviour will occur.
      * @return a boolean telling whether or not all fields are not null.
