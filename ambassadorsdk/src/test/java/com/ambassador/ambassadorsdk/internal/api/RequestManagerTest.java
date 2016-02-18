@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.TestUtils;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
@@ -38,7 +38,7 @@ import twitter4j.auth.AccessToken;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         BulkShareHelper.class,
         ConversionUtility.class,
         IdentifyApi.IdentifyRequestBody.class,
@@ -84,7 +84,7 @@ public class RequestManagerTest {
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class,
+                AmbSingleton.class,
                 BulkShareHelper.class,
                 ConversionUtility.class,
                 IdentifyApi.IdentifyRequestBody.class,
@@ -96,9 +96,9 @@ public class RequestManagerTest {
 
         TestUtils.mockStrings();
 
-        AmbassadorApplicationComponent mockComponent = Mockito.mock(AmbassadorApplicationComponent.class);
-        Mockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(mockComponent);
-        Mockito.doNothing().when(mockComponent).inject(Mockito.any(RequestManager.class));
+//        AmbassadorApplicationComponent mockComponent = Mockito.mock(AmbassadorApplicationComponent.class);
+//        Mockito.when(AmbSingleton.getInstanceComponent()).thenReturn(mockComponent);
+//        Mockito.doNothing().when(mockComponent).inject(Mockito.any(RequestManager.class));
 
         bulkShareApi = PowerMockito.mock(BulkShareApi.class);
         conversionsApi = PowerMockito.mock(ConversionsApi.class);
@@ -130,14 +130,14 @@ public class RequestManagerTest {
         requestManager.identifyApi = identifyApi;
         requestManager.linkedInApi = linkedInApi;
 
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                PusherManager pusherManager = (PusherManager) invocation.getArguments()[0];
-                pusherManager.auth = auth;
-                return null;
-            }
-        }).when(mockComponent).inject(Mockito.any(PusherManager.class));
+//        Mockito.doAnswer(new Answer() {
+//            @Override
+//            public Object answer(InvocationOnMock invocation) throws Throwable {
+//                PusherManager pusherManager = (PusherManager) invocation.getArguments()[0];
+//                pusherManager.auth = auth;
+//                return null;
+//            }
+//        }).when(mockComponent).inject(Mockito.any(PusherManager.class));
 
         pusherManager = Mockito.spy(PusherManager.class);
         PusherManager.Channel channel = Mockito.spy(PusherManager.Channel.class);

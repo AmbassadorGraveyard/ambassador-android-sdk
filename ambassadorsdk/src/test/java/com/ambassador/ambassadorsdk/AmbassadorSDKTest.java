@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
@@ -33,7 +33,7 @@ import java.util.TimerTask;
         Auth.class,
         User.class,
         Campaign.class,
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         Utilities.class,
         InstallReceiver.class,
         ConversionParameters.class
@@ -51,7 +51,7 @@ public class AmbassadorSDKTest {
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class,
+                AmbSingleton.class,
                 Utilities.class,
                 InstallReceiver.class
         );
@@ -132,9 +132,9 @@ public class AmbassadorSDKTest {
         // ARRANGE
         String universalToken = "universalToken";
         String universalID = "universalID";
-        AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
-        PowerMockito.doReturn(component).when(AmbassadorSingleton.class, "getInstanceComponent");
-        Mockito.doNothing().when(component).inject(Mockito.any(AmbassadorSDK.class));
+//        AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
+//        PowerMockito.doReturn(component).when(AmbSingleton.class, "getInstanceComponent");
+//        Mockito.doNothing().when(component).inject(Mockito.any(AmbassadorSDK.class));
         PowerMockito.doNothing().when(AmbassadorSDK.class, "registerInstallReceiver", context);
         PowerMockito.doNothing().when(AmbassadorSDK.class, "startConversionTimer");
         PowerMockito.doNothing().when(AmbassadorSDK.class, "setupGcm", context);
@@ -172,7 +172,7 @@ public class AmbassadorSDKTest {
         // ARRANGE
         ConversionUtility conversionUtility = Mockito.mock(ConversionUtility.class);
         Mockito.doNothing().when(conversionUtility).readAndSaveDatabaseEntries();
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
         PowerMockito.doReturn(conversionUtility).when(AmbassadorSDK.class, "buildConversionUtility", context);
         Timer timer = Mockito.mock(Timer.class);
         PowerMockito.doReturn(timer).when(AmbassadorSDK.class, "buildTimer");

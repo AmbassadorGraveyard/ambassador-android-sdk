@@ -22,7 +22,7 @@ public class IdentifyAugurSDK implements IIdentify {
     @Inject protected User user;
 
     public IdentifyAugurSDK() {
-        AmbassadorSingleton.getGraph().inject(this);
+        AmbSingleton.getGraph().inject(this);
     }
 
     @Override
@@ -32,7 +32,7 @@ public class IdentifyAugurSDK implements IIdentify {
 
         try {
             // required
-            augurConfig.put("context", AmbassadorSingleton.getInstanceContext());
+            augurConfig.put("context", AmbSingleton.getInstanceContext());
             augurConfig.put("apiKey", augurKey);
             // optional
             //augurConfig.put("timeout", 1000); // default: 5000 (5 seconds)

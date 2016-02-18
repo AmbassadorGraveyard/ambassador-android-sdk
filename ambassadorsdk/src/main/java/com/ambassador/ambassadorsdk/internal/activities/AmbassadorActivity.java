@@ -34,7 +34,7 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
@@ -133,8 +133,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambassador);
 
         // Injection
-        AmbassadorSingleton.setInstanceContext(getApplicationContext());
-        AmbassadorSingleton.getGraph().inject(this);
+        AmbSingleton.setInstanceContext(getApplicationContext());
+        AmbSingleton.getGraph().inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
 
@@ -184,7 +184,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     // region Requirement checks
     protected void finishIfSingletonInvalid() {
-        if (!AmbassadorSingleton.isValid()) {
+        if (!AmbSingleton.isValid()) {
             finish();
         }
     }
@@ -373,7 +373,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             public void subscribed() {
                 super.subscribed();
                 Intent intent = new Intent("pusherData");
-                LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(AmbSingleton.getInstanceContext()).sendBroadcast(intent);
             }
 
             @Override
@@ -609,7 +609,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         protected CallbackManager callbackManager;
 
         protected FacebookManager() {
-            FacebookSdk.sdkInitialize(AmbassadorSingleton.getInstanceContext());
+            FacebookSdk.sdkInitialize(AmbSingleton.getInstanceContext());
             callbackManager = CallbackManager.Factory.create();
         }
 

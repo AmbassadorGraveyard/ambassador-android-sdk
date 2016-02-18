@@ -21,7 +21,7 @@ import java.util.List;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         JSONObject.class,
         BulkShareHelper.class,
         RequestManager.class
@@ -34,14 +34,14 @@ public class BulkShareHelperTest {
     @Before
     public void setUpMock() {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class
+                AmbSingleton.class
         );
 
         PowerMockito.spy(BulkShareHelper.class);
 
-        AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
-        Mockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(component);
-        Mockito.doNothing().when(component).inject(Mockito.any(BulkShareHelper.class));
+//        AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
+//        Mockito.when(AmbSingleton.getInstanceComponent()).thenReturn(component);
+//        Mockito.doNothing().when(component).inject(Mockito.any(BulkShareHelper.class));
 
         bulkShareHelper = Mockito.spy(new BulkShareHelper());
 

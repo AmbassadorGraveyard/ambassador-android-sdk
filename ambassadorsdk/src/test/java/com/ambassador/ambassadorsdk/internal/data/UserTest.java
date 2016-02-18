@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.internal.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.google.gson.JsonObject;
 
 import org.junit.Assert;
@@ -17,7 +17,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
 })
 public class UserTest {
 
@@ -28,11 +28,11 @@ public class UserTest {
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class
+                AmbSingleton.class
         );
 
         context = Mockito.mock(Context.class);
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
 
         sharedPreferences = Mockito.mock(SharedPreferences.class);
         Mockito.when(context.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(sharedPreferences);
@@ -64,7 +64,7 @@ public class UserTest {
     @Test
     public void saveWithNullContextDoesNotSave() {
         // ARRANGE
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(null);
+        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(null);
 
         User user = new User();
         user.email = "jake@getambassador.com";

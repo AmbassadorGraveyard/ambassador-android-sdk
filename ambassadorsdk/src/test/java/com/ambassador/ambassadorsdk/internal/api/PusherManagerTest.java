@@ -2,7 +2,7 @@ package com.ambassador.ambassadorsdk.internal.api;
 
 import android.content.Context;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.pusher.client.Pusher;
 import com.pusher.client.connection.ConnectionEventListener;
@@ -23,7 +23,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         PusherManager.class,
         PusherManager.Channel.class,
         Auth.class
@@ -44,24 +44,24 @@ public class PusherManagerTest {
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class
+                AmbSingleton.class
         );
 
-        AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
-        PowerMockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(component);
-        Mockito.doNothing().when(component).inject(Mockito.any(PusherManager.class));
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                PusherManager pusher2 = (PusherManager) invocation.getArguments()[0];
-                pusher2.auth = auth;
-                pusher2.requestManager = requestManager;
-                return null;
-            }
-        }).when(component).inject(Mockito.any(PusherManager.class));
+//        AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
+//        PowerMockito.when(AmbSingleton.getInstanceComponent()).thenReturn(component);
+//        Mockito.doNothing().when(component).inject(Mockito.any(PusherManager.class));
+//        Mockito.doAnswer(new Answer() {
+//            @Override
+//            public Object answer(InvocationOnMock invocation) throws Throwable {
+//                PusherManager pusher2 = (PusherManager) invocation.getArguments()[0];
+//                pusher2.auth = auth;
+//                pusher2.requestManager = requestManager;
+//                return null;
+//            }
+//        }).when(component).inject(Mockito.any(PusherManager.class));
 
         context = Mockito.mock(Context.class);
-        PowerMockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        PowerMockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
 
         this.auth = Mockito.spy(Auth.class);
         Mockito.doNothing().when(auth).save();

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.google.gson.Gson;
 
 /**
@@ -32,7 +32,7 @@ public class Campaign implements Data {
     public void setId(String id) {
         this.id = id;
         save();
-        AmbassadorSingleton.getInstanceContext()
+        AmbSingleton.getInstanceContext()
                 .getSharedPreferences("campaign", Context.MODE_PRIVATE)
                 .edit()
                 .putString("campaignId", id)
@@ -106,9 +106,9 @@ public class Campaign implements Data {
      */
     @Override
     public void save() {
-        if (AmbassadorSingleton.getInstanceContext() != null) {
+        if (AmbSingleton.getInstanceContext() != null) {
             String data = new Gson().toJson(this);
-            SharedPreferences sharedPreferences = AmbassadorSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = AmbSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString(id, data).apply();
         }
     }
@@ -134,11 +134,11 @@ public class Campaign implements Data {
     @Override
     public void refresh() {
         clear();
-        String campaignId = AmbassadorSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("campaignId", null);
+        String campaignId = AmbSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("campaignId", null);
 
         if (campaignId == null) return;
 
-        String json = AmbassadorSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString(campaignId, null);
+        String json = AmbSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString(campaignId, null);
 
         if (json == null) return;
 

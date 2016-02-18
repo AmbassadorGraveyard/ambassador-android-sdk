@@ -15,7 +15,7 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.view.View;
 import android.widget.TextView;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
@@ -109,13 +109,13 @@ public class AmbassadorActivityTest {
 
         //tell the application which component we want to use - in this case use the the one created above instead of the
         //application component which is created in the Application (and uses the real tweetRequest)
-        AmbassadorSingleton.init(context);
+        AmbSingleton.init(context);
         TestModule amb = new TestModule();
-        //AmbassadorSingleton.setInstanceAmbModule(amb);
-        AmbassadorApplicationComponent component = new AmbassadorApplicationComponent(new TestModule());
-        AmbassadorSingleton.setInstanceComponent(component);
-        //perform injection
-        component.inject(this);
+        //AmbSingleton.setInstanceAmbModule(amb);
+//        AmbassadorApplicationComponent component = new AmbassadorApplicationComponent(new TestModule());
+//        AmbSingleton.setInstanceComponent(component);
+//        //perform injection
+//        component.inject(this);
 
         String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
         doNothing().when(campaign).setUrl(anyString());
@@ -165,7 +165,7 @@ public class AmbassadorActivityTest {
 
     private void _sendPusherIntent() {
         Intent intent = new Intent("pusherData");
-        LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(AmbSingleton.getInstanceContext()).sendBroadcast(intent);
     }
 
     @After

@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.internal.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 
 import org.junit.Assert;
@@ -22,7 +22,7 @@ import twitter4j.auth.AccessToken;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         RequestManager.class,
 })
 public class AuthTest {
@@ -34,11 +34,11 @@ public class AuthTest {
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class
+                AmbSingleton.class
         );
 
         context = Mockito.mock(Context.class);
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
 
         sharedPreferences = Mockito.mock(SharedPreferences.class);
         Mockito.when(context.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(sharedPreferences);
@@ -70,7 +70,7 @@ public class AuthTest {
     @Test
     public void saveWithNullContextDoesNotSave() {
         // ARRANGE
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(null);
+        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(null);
 
         Auth auth = new Auth();
         auth.universalId = "universalId";

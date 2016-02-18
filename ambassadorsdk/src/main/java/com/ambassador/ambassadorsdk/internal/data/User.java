@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -54,7 +54,7 @@ public class User implements Data {
     public void setEmail(String email) {
         this.email = email;
         save();
-        AmbassadorSingleton.getInstanceContext()
+        AmbSingleton.getInstanceContext()
                 .getSharedPreferences("user", Context.MODE_PRIVATE)
                 .edit()
                 .putString("email", email)
@@ -109,9 +109,9 @@ public class User implements Data {
      */
     @Override
     public void save() {
-        if (AmbassadorSingleton.getInstanceContext() != null) {
+        if (AmbSingleton.getInstanceContext() != null) {
             String data = new Gson().toJson(this);
-            SharedPreferences sharedPreferences = AmbassadorSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = AmbSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString(email, data).apply();
         }
     }
@@ -136,11 +136,11 @@ public class User implements Data {
     @Override
     public void refresh() {
         clear();
-        String email = AmbassadorSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("email", null);
+        String email = AmbSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("email", null);
 
         if (email == null) return;
 
-        String json = AmbassadorSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString(email, null);
+        String json = AmbSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString(email, null);
 
         if (json == null) return;
 
