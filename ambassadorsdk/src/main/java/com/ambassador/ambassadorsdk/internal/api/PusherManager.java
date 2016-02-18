@@ -43,13 +43,12 @@ import javax.inject.Singleton;
 @Singleton
 public class PusherManager {
 
-    @Inject protected RequestManager requestManager;
+    protected Channel channel;
+    protected List<PusherListener> pusherListeners;
+
     @Inject protected Auth auth;
     @Inject protected User user;
-
-    protected Channel channel;
-
-    protected static List<PusherListener> pusherListeners;
+    @Inject protected RequestManager requestManager;
 
     /**
      * Default constructor handling injection and dependencies.
@@ -63,8 +62,7 @@ public class PusherManager {
             public void onEvent(String data) {
                 super.onEvent(data);
                 Utilities.debugLog("PusherSDK", "data = " + data);
-                JsonParser parser = new JsonParser();
-                JsonObject jsonData = parser.parse(data).getAsJsonObject();
+                JsonObject jsonData = new JsonParser().parse(data).getAsJsonObject();
                 if (jsonData.has("url")) {
                     String url = jsonData.get("url").getAsString();
                     externalRequest(url);
@@ -82,7 +80,6 @@ public class PusherManager {
     public void startNewChannel() {
         if (channel != null) channel.disconnect();
         channel = new Channel();
-        channel.init();
     }
 
     /**
@@ -90,9 +87,9 @@ public class PusherManager {
      */
     public void subscribeChannelToAmbassador() {
         if (channel != null && channel.isConnected()) {
-            if (channel.getChannelName() != null) {
+            if (channel.channelName != null) {
                 try {
-                    channel.unsubscribe(channel.getChannelName());
+                    channel.unsubscribe(channel.channelName);
                 } catch (Exception e) {
                     // this doesn't matter
                 }
@@ -111,7 +108,7 @@ public class PusherManager {
             public void onSuccess(Object successResponse) {
                 IdentifyApi.CreatePusherChannelResponse channelData = (IdentifyApi.CreatePusherChannelResponse) successResponse;
                 try {
-                    channel.subscribe(channelData.channel_name, channelData.expires_at, channelData.client_session_uid);
+                    channel.connectAndSubscribe(channelData.channel_name, channelData.expires_at, channelData.client_session_uid);
                 } catch (ParseException e) {
                     // TODO: handle this
                 }
@@ -136,19 +133,25 @@ public class PusherManager {
     }
 
     /**
+     * @return sessionId of the channel if the channel is not null, else null.
+     */
+    public String getSessionId() {
+        return channel != null ? channel.sessionId : null;
+    }
+
+    /**
+     * @return requestid of the channel if the channel is not null, else -1.
+     */
+    public long getRequestId() {
+        return channel != null ? channel.requestId : -1;
+    }
+
+    /**
      * Get the existing channel pusher channel.
      */
     @Nullable
     public Channel getChannel() {
         return channel;
-    }
-
-    public void addPusherListener(@NonNull PusherListener pusherListener) {
-        pusherListeners.add(pusherListener);
-    }
-
-    public void removePusherListener(@NonNull PusherListener pusherListener) {
-        pusherListeners.remove(pusherListener);
     }
 
     /**
@@ -165,7 +168,7 @@ public class PusherManager {
                 JsonParser parser = new JsonParser();
                 JsonObject jsonData = parser.parse(data).getAsJsonObject();
 
-                if (jsonData.get("request_id").getAsLong() == channel.getRequestId()) {
+                if (jsonData.get("request_id").getAsLong() == channel.requestId) {
                     setPusherInfo(jsonData);
                 }
             }
@@ -217,13 +220,13 @@ public class PusherManager {
         protected ConnectionState connectionState;
 
         @Inject protected Auth auth;
-
-        protected Channel() {}
+        @Inject protected PusherManager pusherManager;
 
         /**
-         * Injects dependencies and sets up a Pusher client object.
+         * Default non-accessible constructor. Injects dependencies.
+         * Not accessible outside of PusherManager.
          */
-        public void init() {
+        protected Channel() {
             AmbSingleton.inject(this);
         }
 
@@ -252,7 +255,7 @@ public class PusherManager {
             int keyId = BuildConfig.IS_RELEASE_BUILD ? R.string.pusher_key_prod : R.string.pusher_key_dev;
             String key = new StringResource(keyId).getValue();
 
-             return new Pusher(key, options);
+            return new Pusher(key, options);
         }
 
         protected ConnectionEventListener connectionEventListener = new ConnectionEventListener() {
@@ -261,13 +264,13 @@ public class PusherManager {
                 connectionState = change.getCurrentState();
                 switch (change.getCurrentState()) {
                     case CONNECTED:
-                        for (PusherListener pusherListener : pusherListeners) {
+                        for (PusherListener pusherListener : pusherManager.pusherListeners) {
                             pusherListener.connected();
                         }
                         break;
 
                     case DISCONNECTED:
-                        for (PusherListener pusherListener : pusherListeners) {
+                        for (PusherListener pusherListener : pusherManager.pusherListeners) {
                             pusherListener.disconnected();
                         }
                         break;
@@ -279,17 +282,21 @@ public class PusherManager {
 
             @Override
             public void onError(String message, String code, Exception e) {
-                for (PusherListener pusherListener : pusherListeners) {
+                for (PusherListener pusherListener : pusherManager.pusherListeners) {
                     pusherListener.connectionFailed();
                 }
             }
         };
 
         /**
-         * Subscribes Pusher connection to the channel's channel name.
-         * Listens for events and dispatches them accordingly.
+         * Takes information about a channel returned by the Ambassador API and attempts to establish
+         * the Pusher connection and connectAndSubscribe to the channel.
+         * @param channelName the channel name to connect to.
+         * @param expiry channel expiry in milliseconds.
+         * @param sessionId sessionId for pusher.
+         * @throws ParseException if the expiry date cannot be parsed properly.
          */
-        public void subscribe(@NonNull final String channelName, @NonNull String expiry, @NonNull String sessionId) throws ParseException {
+        public void connectAndSubscribe(@NonNull final String channelName, @NonNull String expiry, @NonNull String sessionId) throws ParseException {
             this.channelName = channelName;
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.US);
@@ -306,21 +313,21 @@ public class PusherManager {
 
             @Override
             public void onAuthenticationFailure(String message, Exception e) {
-                for (PusherListener pusherListener : pusherListeners) {
+                for (PusherListener pusherListener : pusherManager.pusherListeners) {
                     pusherListener.subscriptionFailed();
                 }
             }
 
             @Override
             public void onSubscriptionSucceeded(String channelName) {
-                for (PusherListener pusherListener : pusherListeners) {
+                for (PusherListener pusherListener : pusherManager.pusherListeners) {
                     pusherListener.subscribed();
                 }
             }
 
             @Override
             public void onEvent(String channelName, String eventName, String data) {
-                for (PusherListener pusherListener : pusherListeners) {
+                for (PusherListener pusherListener : pusherManager.pusherListeners) {
                     pusherListener.onEvent(data);
                 }
             }
@@ -333,7 +340,7 @@ public class PusherManager {
          */
         public void unsubscribe(String channelName) {
             pusher.unsubscribe(channelName);
-            for (PusherListener pusherListener : pusherListeners) {
+            for (PusherListener pusherListener : pusherManager.pusherListeners) {
                 pusherListener.unsubscribed();
             }
         }
@@ -345,48 +352,16 @@ public class PusherManager {
             if (pusher != null) {
                 pusher.disconnect();
             }
+            for (PusherListener pusherListener : pusherManager.pusherListeners) {
+                pusherListener.disconnected();
+            }
         }
 
-        public Pusher getPusher() {
-            return pusher;
-        }
-
-        public String getSessionId() {
-            return sessionId;
-        }
-
-        public String getChannelName() {
-            return channelName;
-        }
-
-        public Date getExpiry() {
-            return expiry;
-        }
-
-        public long getRequestId() {
-            return requestId;
-        }
-
-        public ConnectionState getConnectionState() {
-            return connectionState;
-        }
-
-        public void setSessionId(String sessionId) {
-            this.sessionId = sessionId;
-        }
-
-        public void setChannelName(String channelName) {
-            this.channelName = channelName;
-        }
-
-        public void setExpiry(Date expiry) {
-            this.expiry = expiry;
-        }
-
-        public void setRequestId(long requestId) {
-            this.requestId = requestId;
-        }
-
+        /**
+         * It can be determined if the channel is connected by checking a ConnectionState enum
+         * object.  If connectionState is ConnectionState.CONNECTED, then Pusher is connected.
+         * @return boolean determining if Pusher is connected (not subscribed).
+         */
         public boolean isConnected() {
             return connectionState != null && connectionState.equals(ConnectionState.CONNECTED);
         }
@@ -406,8 +381,22 @@ public class PusherManager {
         void onEvent(String data);
     }
 
-    public static List<PusherListener> getPusherListeners() {
-        return pusherListeners;
+    /**
+     * Adds a PusherListener object to receive callbacks.
+     * @param pusherListener the PusherListener implementation (usually adapter) to add.
+     */
+    public void addPusherListener(@NonNull PusherListener pusherListener) {
+        pusherListeners.add(pusherListener);
+    }
+
+    /**
+     * Removes a PusherListener object from receiving callbacks.
+     * After this is called for a PusherListener, that implementation will usually be garbage
+     * collected soon after.
+     * @param pusherListener the PusherListener to remove.
+     */
+    public void removePusherListener(@NonNull PusherListener pusherListener) {
+        pusherListeners.remove(pusherListener);
     }
 
 }
