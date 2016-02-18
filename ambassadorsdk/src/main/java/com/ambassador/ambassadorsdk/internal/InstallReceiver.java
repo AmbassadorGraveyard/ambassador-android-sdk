@@ -17,7 +17,7 @@ public final class InstallReceiver extends BroadcastReceiver {
     @Inject protected Campaign campaign;
 
     public InstallReceiver() {
-        AmbSingleton.getGraph().inject(this);
+        AmbSingleton.inject(this);
     }
 
     @Override

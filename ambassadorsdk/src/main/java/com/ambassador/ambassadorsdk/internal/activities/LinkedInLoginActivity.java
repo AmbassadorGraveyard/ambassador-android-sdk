@@ -72,7 +72,7 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_webview);
 
         // Injection
-        AmbSingleton.getGraph().inject(this);
+        AmbSingleton.inject(this);
         ButterFork.bind(this);
 
         // Requirement checks
