@@ -35,6 +35,16 @@ public class AmbSingleton {
         }
     }
 
+    /**
+     * Does init with a custom module for creating the ObjectGraph.
+     * @param context the context to store and utilize throughout the codebase.
+     * @param module the module to use to provide injection dependencies.
+     */
+    public static void init(@NonNull Context context, @NonNull Object module) {
+        init(context);
+        AmbSingleton.graph = ObjectGraph.create(module);
+    }
+
     @Nullable
     public static Context getContext() {
         return context;
