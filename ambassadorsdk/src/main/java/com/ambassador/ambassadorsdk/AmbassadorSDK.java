@@ -28,6 +28,8 @@ import java.util.TimerTask;
 
 import javax.inject.Inject;
 
+import dagger.ObjectGraph;
+
 /**
  * Static methods called by the end-developer to utilize the SDK.
  */
@@ -124,7 +126,12 @@ public final class AmbassadorSDK {
 
     public static void runWithKeys(Context context, String universalToken, String universalId) {
         AmbSingleton.init(context);
-        AmbSingleton.getGraph().injectStatics();
+
+        ObjectGraph objectGraph = AmbSingleton.getGraph();
+        if (objectGraph == null) {
+            return;
+        }
+        objectGraph.injectStatics();
 
         auth.clear();
 
