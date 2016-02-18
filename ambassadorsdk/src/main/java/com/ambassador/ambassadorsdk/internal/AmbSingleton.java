@@ -1,65 +1,54 @@
 package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationModule;
+import com.ambassador.ambassadorsdk.internal.injection.AmbModule;
 
 import dagger.ObjectGraph;
 
+/**
+ * Stores a Context and injection data to be utilized statically throughout the codebase.
+ */
 public class AmbSingleton {
 
-    private static AmbSingleton instance;
-    private Context context;
-    public static AmbassadorApplicationModule module;
-    public static ObjectGraph graph;
+    protected static Context context;
+    protected static AmbModule module;
+    protected static ObjectGraph graph;
 
-    public static void init(Context context) {
-        if (getInstanceContext() == null) {
-            setInstanceContext(context);
+    /**
+     * Initializes the singleton using a context.  After this call the Singleton should be valid.
+     * Context is stored as an application context.  Module and graph are initialized and set.
+     * @param context the context to store and utilize throughout the codebase.
+     */
+    public static void init(@NonNull Context context) {
+        AmbSingleton.context = context.getApplicationContext();
+
+        if (AmbSingleton.module == null) {
+            AmbSingleton.module = new AmbModule();
+            AmbSingleton.graph = ObjectGraph.create(AmbSingleton.module);
+            AmbSingleton.module.init();
         }
-
-        if (getModule() == null) {
-            module = new AmbassadorApplicationModule();
-            graph = ObjectGraph.create(module);
-            module.init();
-        }
     }
 
-    private void setContext(Context context) {
-        this.context = context.getApplicationContext();
-    }
-
-    public static void setInstanceContext(Context context) {
-        getInstance().setContext(context);
-    }
-
-    public Context getContext() {
+    @Nullable
+    public static Context getContext() {
         return context;
     }
 
-    public static Context getInstanceContext() {
-        return getInstance().getContext();
-    }
-
-    public static AmbassadorApplicationModule getModule() {
-        return module;
-    }
-
-    public static boolean isValid() {
-        return getModule() != null;
-    }
-
-    public static AmbSingleton getInstance() {
-        if (instance != null) {
-            return instance;
-        }
-
-        instance = new AmbSingleton();
-        return instance;
-    }
-
+    @Nullable
     public static ObjectGraph getGraph() {
         return graph;
+    }
+
+    /**
+     * Singleton is valid if all fields are not null.  If any given field is null and the singleton
+     * is used, unexpected behaviour will occur.
+     * @return a boolean telling whether or not all fields are not null.
+     */
+    public static boolean isValid() {
+        return AmbSingleton.context != null && AmbSingleton.module != null && AmbSingleton.graph != null;
     }
 
 }

@@ -2,7 +2,7 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationModule;
+import com.ambassador.ambassadorsdk.internal.injection.AmbModule;
 
 import junit.framework.Assert;
 
@@ -17,19 +17,19 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
         AmbSingleton.class,
-        AmbassadorApplicationModule.class
+        AmbModule.class
 })
 public class AmbSingletonTest {
 
     private Context context;
-    private AmbassadorApplicationModule module;
+    private AmbModule module;
 
     @Before
     public void setUp() {
         PowerMockito.spy(AmbSingleton.class);
 
         context = Mockito.mock(Context.class);
-        module = Mockito.mock(AmbassadorApplicationModule.class);
+        module = Mockito.mock(AmbModule.class);
 
         Mockito.when(context.getApplicationContext()).thenReturn(context);
     }
@@ -45,7 +45,7 @@ public class AmbSingletonTest {
         AmbSingleton.init(context);
 
         // ASSERT
-        Assert.assertEquals(AmbSingleton.getInstanceContext(), context);
+        Assert.assertEquals(AmbSingleton.getContext(), context);
         Assert.assertEquals(AmbSingleton.getModule(), module);
     }
 

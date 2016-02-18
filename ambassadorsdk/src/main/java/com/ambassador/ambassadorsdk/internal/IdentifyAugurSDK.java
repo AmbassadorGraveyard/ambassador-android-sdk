@@ -32,7 +32,7 @@ public class IdentifyAugurSDK implements IIdentify {
 
         try {
             // required
-            augurConfig.put("context", AmbSingleton.getInstanceContext());
+            augurConfig.put("context", AmbSingleton.getContext());
             augurConfig.put("apiKey", augurKey);
             // optional
             //augurConfig.put("timeout", 1000); // default: 5000 (5 seconds)

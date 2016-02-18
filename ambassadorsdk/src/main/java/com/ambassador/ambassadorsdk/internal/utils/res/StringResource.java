@@ -16,7 +16,7 @@ public final class StringResource {
     private StringResource() {}
 
     public StringResource(@StringRes int resId) {
-        this.value = AmbSingleton.getInstanceContext().getString(resId);
+        this.value = AmbSingleton.getContext().getString(resId);
     }
 
     @Nullable

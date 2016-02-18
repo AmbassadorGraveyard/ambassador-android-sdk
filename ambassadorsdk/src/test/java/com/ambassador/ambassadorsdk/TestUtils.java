@@ -23,7 +23,7 @@ public class TestUtils {
 
     public static void mockStrings(Context context) {
         PowerMockito.mockStatic(AmbSingleton.class);
-        PowerMockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
+        PowerMockito.when(AmbSingleton.getContext()).thenReturn(context);
         PowerMockito.doReturn("string").when(context).getString(Mockito.anyInt());
         for (int key : overrides.keySet()) {
             PowerMockito.doReturn(overrides.get(key)).when(context).getString(key);

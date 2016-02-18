@@ -373,7 +373,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             public void subscribed() {
                 super.subscribed();
                 Intent intent = new Intent("pusherData");
-                LocalBroadcastManager.getInstance(AmbSingleton.getInstanceContext()).sendBroadcast(intent);
+                LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
             }
 
             @Override
@@ -609,7 +609,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         protected CallbackManager callbackManager;
 
         protected FacebookManager() {
-            FacebookSdk.sdkInitialize(AmbSingleton.getInstanceContext());
+            FacebookSdk.sdkInitialize(AmbSingleton.getContext());
             callbackManager = CallbackManager.Factory.create();
         }
 

@@ -54,7 +54,7 @@ public class User implements Data {
     public void setEmail(String email) {
         this.email = email;
         save();
-        AmbSingleton.getInstanceContext()
+        AmbSingleton.getContext()
                 .getSharedPreferences("user", Context.MODE_PRIVATE)
                 .edit()
                 .putString("email", email)
@@ -109,9 +109,9 @@ public class User implements Data {
      */
     @Override
     public void save() {
-        if (AmbSingleton.getInstanceContext() != null) {
+        if (AmbSingleton.getContext() != null) {
             String data = new Gson().toJson(this);
-            SharedPreferences sharedPreferences = AmbSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString(email, data).apply();
         }
     }
@@ -136,11 +136,11 @@ public class User implements Data {
     @Override
     public void refresh() {
         clear();
-        String email = AmbSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("email", null);
+        String email = AmbSingleton.getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("email", null);
 
         if (email == null) return;
 
-        String json = AmbSingleton.getInstanceContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString(email, null);
+        String json = AmbSingleton.getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString(email, null);
 
         if (json == null) return;
 

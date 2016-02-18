@@ -30,7 +30,7 @@ public class ColorResourceTest {
         );
 
         Context context = Mockito.mock(Context.class);
-        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
         resources = Mockito.mock(Resources.class);
         Mockito.when(context.getResources()).thenReturn(resources);
     }

@@ -466,7 +466,7 @@ public class MainActivityTest {
 
     private void sendPusherIntent() {
         Intent intent = new Intent("pusherData");
-        LocalBroadcastManager.getInstance(AmbSingleton.getInstanceContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
     }
 
 }
