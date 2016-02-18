@@ -32,7 +32,7 @@ public class Campaign implements Data {
     public void setId(String id) {
         this.id = id;
         save();
-        AmbSingleton.getInstanceContext()
+        AmbSingleton.getContext()
                 .getSharedPreferences("campaign", Context.MODE_PRIVATE)
                 .edit()
                 .putString("campaignId", id)
@@ -106,9 +106,9 @@ public class Campaign implements Data {
      */
     @Override
     public void save() {
-        if (AmbSingleton.getInstanceContext() != null) {
+        if (AmbSingleton.getContext() != null) {
             String data = new Gson().toJson(this);
-            SharedPreferences sharedPreferences = AmbSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("campaign", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString(id, data).apply();
         }
     }
@@ -134,11 +134,11 @@ public class Campaign implements Data {
     @Override
     public void refresh() {
         clear();
-        String campaignId = AmbSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("campaignId", null);
+        String campaignId = AmbSingleton.getContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("campaignId", null);
 
         if (campaignId == null) return;
 
-        String json = AmbSingleton.getInstanceContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString(campaignId, null);
+        String json = AmbSingleton.getContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString(campaignId, null);
 
         if (json == null) return;
 

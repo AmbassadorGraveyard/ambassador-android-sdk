@@ -32,7 +32,7 @@ public class UserTest {
         );
 
         context = Mockito.mock(Context.class);
-        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
 
         sharedPreferences = Mockito.mock(SharedPreferences.class);
         Mockito.when(context.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(sharedPreferences);
@@ -64,7 +64,7 @@ public class UserTest {
     @Test
     public void saveWithNullContextDoesNotSave() {
         // ARRANGE
-        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(null);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(null);
 
         User user = new User();
         user.email = "jake@getambassador.com";

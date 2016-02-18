@@ -35,7 +35,7 @@ public class FontTest {
         );
 
         Context context = Mockito.mock(Context.class);
-        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
 
         assets = Mockito.mock(AssetManager.class);
         Mockito.doReturn(assets).when(context).getAssets();

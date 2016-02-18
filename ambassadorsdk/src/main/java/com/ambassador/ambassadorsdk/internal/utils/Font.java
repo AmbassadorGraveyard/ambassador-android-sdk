@@ -27,7 +27,7 @@ public final class Font {
                 break;
 
             default:
-                AssetManager assets = AmbSingleton.getInstanceContext().getAssets();
+                AssetManager assets = AmbSingleton.getContext().getAssets();
                 try {
                     this.typeface = Typeface.createFromAsset(assets, path);
                 } catch (Exception e) {

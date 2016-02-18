@@ -47,7 +47,7 @@ public class UtilitiesTest {
         int parameter = android.R.dimen.app_icon_size;
         int expected = 25;
         Resources mockResources = Mockito.mock(Resources.class);
-        PowerMockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
+        PowerMockito.when(AmbSingleton.getContext()).thenReturn(context);
         Mockito.when(context.getResources()).thenReturn(mockResources);
         Mockito.when(mockResources.getDimensionPixelSize(Mockito.anyInt())).thenReturn(expected);
 
@@ -64,7 +64,7 @@ public class UtilitiesTest {
         int parameter = 200;
         Resources resources = Mockito.mock(Resources.class);
         DisplayMetrics displayMetrics = Mockito.mock(DisplayMetrics.class);
-        PowerMockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
+        PowerMockito.when(AmbSingleton.getContext()).thenReturn(context);
         Mockito.when(context.getResources()).thenReturn(resources);
         Mockito.when(resources.getDisplayMetrics()).thenReturn(displayMetrics);
         displayMetrics.densityDpi = 320;
@@ -102,7 +102,7 @@ public class UtilitiesTest {
         DisplayMetrics displayMetrics = Mockito.mock(DisplayMetrics.class);
         float density = 0.5f;
         displayMetrics.density = density;
-        PowerMockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
+        PowerMockito.when(AmbSingleton.getContext()).thenReturn(context);
         Mockito.when(context.getResources()).thenReturn(resources);
         Mockito.when(resources.getDisplayMetrics()).thenReturn(displayMetrics);
 

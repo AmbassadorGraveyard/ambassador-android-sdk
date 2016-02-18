@@ -93,9 +93,9 @@ public class Auth implements Data {
      */
     @Override
     public void save() {
-        if (AmbSingleton.getInstanceContext() != null) {
+        if (AmbSingleton.getContext() != null) {
             String data = new Gson().toJson(this);
-            SharedPreferences sharedPreferences = AmbSingleton.getInstanceContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString("auth", data).apply();
         }
     }
@@ -119,7 +119,7 @@ public class Auth implements Data {
     @Override
     public void refresh() {
         clear();
-        String json = AmbSingleton.getInstanceContext().getSharedPreferences("auth", Context.MODE_PRIVATE).getString("auth", null);
+        String json = AmbSingleton.getContext().getSharedPreferences("auth", Context.MODE_PRIVATE).getString("auth", null);
 
         if (json == null) return;
 

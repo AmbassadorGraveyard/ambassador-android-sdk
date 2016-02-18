@@ -121,7 +121,7 @@ public final class AmbassadorSDK {
     }
 
     private static ConversionUtility buildConversionUtility(ConversionParameters conversionParameters) {
-        return new ConversionUtility(AmbSingleton.getInstanceContext(), conversionParameters);
+        return new ConversionUtility(AmbSingleton.getContext(), conversionParameters);
     }
 
     public static void runWithKeys(Context context, String universalToken, String universalId) {
@@ -171,7 +171,7 @@ public final class AmbassadorSDK {
     }
 
     protected static void startConversionTimer() {
-        final ConversionUtility utility = buildConversionUtility(AmbSingleton.getInstanceContext());
+        final ConversionUtility utility = buildConversionUtility(AmbSingleton.getContext());
         Timer timer = buildTimer();
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override

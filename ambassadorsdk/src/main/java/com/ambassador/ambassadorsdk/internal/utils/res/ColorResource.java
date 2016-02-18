@@ -13,7 +13,7 @@ public final class ColorResource {
     private ColorResource() {}
 
     public ColorResource(@ColorRes int resId) {
-        this.color = ContextCompat.getColor(AmbSingleton.getInstanceContext(), resId);
+        this.color = ContextCompat.getColor(AmbSingleton.getContext(), resId);
     }
 
     public int getColor() {

@@ -36,7 +36,7 @@ public class DeviceTest {
         resources = Mockito.mock(Resources.class);
         configuration = Mockito.mock(Configuration.class);
 
-        Mockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
         Mockito.when(context.getResources()).thenReturn(resources);
         Mockito.when(resources.getConfiguration()).thenReturn(configuration);
     }

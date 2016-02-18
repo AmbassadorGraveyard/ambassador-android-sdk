@@ -47,7 +47,7 @@ import dagger.Provides;
 }, staticInjections = {
         AmbassadorSDK.class
 }, library = true)
-public final class AmbassadorApplicationModule {
+public final class AmbModule {
 
     protected RequestManager requestManager;
     protected PusherManager pusherManager;

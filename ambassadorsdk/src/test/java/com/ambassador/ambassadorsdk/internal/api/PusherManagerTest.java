@@ -61,7 +61,7 @@ public class PusherManagerTest {
 //        }).when(component).inject(Mockito.any(PusherManager.class));
 
         context = Mockito.mock(Context.class);
-        PowerMockito.when(AmbSingleton.getInstanceContext()).thenReturn(context);
+        PowerMockito.when(AmbSingleton.getContext()).thenReturn(context);
 
         this.auth = Mockito.spy(Auth.class);
         Mockito.doNothing().when(auth).save();
