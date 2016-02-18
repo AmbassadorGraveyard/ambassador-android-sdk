@@ -132,8 +132,12 @@ public class RequestManagerTest {
         PowerMockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                PusherManager pusherManager = (PusherManager) invocation.getArguments()[0];
-                pusherManager.auth = auth;
+                try {
+                    PusherManager pusherManager = (PusherManager) invocation.getArguments()[0];
+                    pusherManager.auth = auth;
+                } catch (Exception e) {
+                    
+                }
                 return null;
             }
         }).when(AmbSingleton.class, "inject", Mockito.any(PusherManager.class));
