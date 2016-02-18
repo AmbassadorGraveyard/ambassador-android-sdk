@@ -142,8 +142,8 @@ public class RequestManagerTest {
         pusherManager = Mockito.spy(PusherManager.class);
         PusherManager.Channel channel = Mockito.spy(PusherManager.Channel.class);
         pusherManager.channel = channel;
-        channel.setRequestId(requestId);
-        channel.setSessionId(sessionId);
+        channel.requestId = requestId;
+        channel.sessionId = sessionId;
 
         requestManager.pusherManager = pusherManager;
     }
@@ -212,7 +212,7 @@ public class RequestManagerTest {
     public void identifyRequestTest() throws Exception {
         // ACT
         requestManager.identifyRequest();
-        String reqId = "" + pusherManager.getChannel().getRequestId();
+        String reqId = "" + pusherManager.channel.requestId;
 
         // ASSERT
         Mockito.verify(pusherManager).newRequest();
@@ -229,7 +229,7 @@ public class RequestManagerTest {
 
         // ACT
         requestManager.updateNameRequest(email, firstName, lastName, requestCompletion);
-        String reqId = "" + pusherManager.getChannel().getRequestId();
+        String reqId = "" + pusherManager.channel.requestId;
 
         // ASSERT
         Mockito.verify(pusherManager).newRequest();

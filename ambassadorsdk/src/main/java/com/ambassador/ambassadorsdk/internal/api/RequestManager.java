@@ -184,8 +184,8 @@ public class RequestManager {
 
         updateRequestId();
 
-        String sessionId = pusherManager.getChannel().getSessionId();
-        String requestId = String.valueOf(pusherManager.getChannel().getRequestId());
+        String sessionId = pusherManager.getSessionId();
+        String requestId = String.valueOf(pusherManager.getRequestId());
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
 
@@ -211,8 +211,8 @@ public class RequestManager {
 
         updateRequestId();
 
-        String sessionId = pusherManager.getChannel().getSessionId();
-        String requestId = String.valueOf(pusherManager.getChannel().getRequestId());
+        String sessionId = pusherManager.getSessionId();
+        String requestId = String.valueOf(pusherManager.getRequestId());
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
         IdentifyApi.UpdateNameRequestBody body = new IdentifyApi.UpdateNameRequestBody(email, firstName, lastName);

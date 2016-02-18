@@ -141,8 +141,8 @@ public class AmbassadorActivityTest {
         })
         .when(requestManager).identifyRequest();
 
-        //if the app has a channel and it's not expired but it's not currently connected, it will subscribe to the existing channel
-        //mock the subscribe call, bypass identify in the callback, instead send the intent which will call tryAndSetURL
+        //if the app has a channel and it's not expired but it's not currently connected, it will connectAndSubscribe to the existing channel
+        //mock the connectAndSubscribe call, bypass identify in the callback, instead send the intent which will call tryAndSetURL
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 _sendPusherIntent();
