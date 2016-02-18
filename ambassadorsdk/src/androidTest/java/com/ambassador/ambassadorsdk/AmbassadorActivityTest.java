@@ -15,17 +15,16 @@ import android.test.suitebuilder.annotation.MediumTest;
 import android.view.View;
 import android.widget.TextView;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -41,9 +40,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
-
-import dagger.Component;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -95,17 +91,10 @@ public class AmbassadorActivityTest {
     @Inject Auth auth;
 
     @Inject
-    PusherSDK pusher;
+    PusherManager pusher;
 
     @Inject
     RAFOptions raf;
-
-    //set up inject method, which will inject the above into whatever is passed in (in this case, the test class)
-    @Singleton
-    @Component(modules = TestModule.class)
-    public interface TestComponent extends AmbassadorApplicationComponent {
-        void inject(AmbassadorActivityTest ambassadorActivityTest);
-    }
 
     @Rule
     public ActivityTestRule<AmbassadorActivity> mActivityTestIntentRule = new ActivityTestRule<>(AmbassadorActivity.class, true, false);
@@ -120,13 +109,13 @@ public class AmbassadorActivityTest {
 
         //tell the application which component we want to use - in this case use the the one created above instead of the
         //application component which is created in the Application (and uses the real tweetRequest)
-        AmbassadorSingleton.init(context);
+        AmbSingleton.init(context);
         TestModule amb = new TestModule();
-        //AmbassadorSingleton.setInstanceAmbModule(amb);
-        TestComponent component = DaggerAmbassadorActivityTest_TestComponent.builder().testModule(amb).build();
-        AmbassadorSingleton.setInstanceComponent(component);
-        //perform injection
-        component.inject(this);
+        //AmbSingleton.setInstanceAmbModule(amb);
+//        AmbassadorApplicationComponent component = new AmbassadorApplicationComponent(new TestModule());
+//        AmbSingleton.setInstanceComponent(component);
+//        //perform injection
+//        component.inject(this);
 
         String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
         doNothing().when(campaign).setUrl(anyString());
@@ -152,14 +141,14 @@ public class AmbassadorActivityTest {
         })
         .when(requestManager).identifyRequest();
 
-        //if the app has a channel and it's not expired but it's not currently connected, it will subscribe to the existing channel
-        //mock the subscribe call, bypass identify in the callback, instead send the intent which will call tryAndSetURL
+        //if the app has a channel and it's not expired but it's not currently connected, it will connectAndSubscribe to the existing channel
+        //mock the connectAndSubscribe call, bypass identify in the callback, instead send the intent which will call tryAndSetURL
         doAnswer(new Answer<Void>() {
             public Void answer(InvocationOnMock invocation) {
                 _sendPusherIntent();
                 return null;
             }
-        }).when(pusher).subscribePusher(any(PusherSDK.PusherSubscribeCallback.class));
+        }).when(pusher).subscribeChannelToAmbassador();
 
         //otherwise, the app will resubscribe to pusher and then call identify
         //mock the createPusher call, bypass identify in the callback, instead send the intent which will call tryAndSetURL
@@ -168,7 +157,7 @@ public class AmbassadorActivityTest {
                 _sendPusherIntent();
                 return null;
             }
-        }).when(pusher).createPusher(any(PusherSDK.PusherSubscribeCallback.class));
+        }).when(pusher).startNewChannel();
 
         Intent intent = new Intent();
         mActivityTestIntentRule.launchActivity(intent);
@@ -176,7 +165,7 @@ public class AmbassadorActivityTest {
 
     private void _sendPusherIntent() {
         Intent intent = new Intent("pusherData");
-        LocalBroadcastManager.getInstance(AmbassadorSingleton.getInstanceContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
     }
 
     @After

@@ -3,11 +3,11 @@ package com.ambassador.ambassadorsdk;
 import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import org.mockito.Mockito;
@@ -17,7 +17,9 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module
+@Module(injects = {
+        AmbassadorActivityTest.class
+}, library = true)
 public final class TestModule {
 
     @NonNull
@@ -37,8 +39,8 @@ public final class TestModule {
     @NonNull
     @Provides
     @Singleton
-    public PusherSDK providePusherSDK() {
-        return Mockito.mock(PusherSDK.class);
+    public PusherManager providePusherManager() {
+        return Mockito.mock(PusherManager.class);
     }
 
     @NonNull

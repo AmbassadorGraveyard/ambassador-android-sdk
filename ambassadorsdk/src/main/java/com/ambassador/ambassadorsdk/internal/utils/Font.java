@@ -4,7 +4,7 @@ import android.content.res.AssetManager;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 /**
  *
@@ -27,7 +27,7 @@ public final class Font {
                 break;
 
             default:
-                AssetManager assets = AmbassadorSingleton.getInstanceContext().getAssets();
+                AssetManager assets = AmbSingleton.getContext().getAssets();
                 try {
                     this.typeface = Typeface.createFromAsset(assets, path);
                 } catch (Exception e) {

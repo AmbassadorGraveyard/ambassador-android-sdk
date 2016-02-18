@@ -3,7 +3,7 @@ package com.ambassador.ambassadorsdk.internal.api.linkedin;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.TestUtils;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 
@@ -23,7 +23,7 @@ import retrofit.mime.TypedInput;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         ServiceGenerator.class,
         LinkedInApi.class,
         Log.class

@@ -54,7 +54,7 @@ public class BulkShareHelper { // TODO: Make final after UI tests figured out
      *
      */
     public BulkShareHelper() {
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbSingleton.inject(this);
     }
 
     /**

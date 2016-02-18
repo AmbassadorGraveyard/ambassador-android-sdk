@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Typeface;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 import junit.framework.Assert;
 
@@ -19,7 +19,7 @@ import org.powermock.reflect.Whitebox;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         Typeface.class
 })
 public class FontTest {
@@ -30,12 +30,12 @@ public class FontTest {
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class,
+                AmbSingleton.class,
                 Typeface.class
         );
 
         Context context = Mockito.mock(Context.class);
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
 
         assets = Mockito.mock(AssetManager.class);
         Mockito.doReturn(assets).when(context).getAssets();

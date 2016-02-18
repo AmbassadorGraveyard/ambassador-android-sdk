@@ -34,12 +34,12 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.PusherChannel;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
+import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
@@ -60,7 +60,6 @@ import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.pusher.client.connection.ConnectionState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,7 +106,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Inject protected Auth                  auth;
     @Inject protected User                  user;
     @Inject protected Campaign              campaign;
-    @Inject protected PusherSDK             pusherSDK;
+    @Inject protected PusherManager         pusherManager;
     @Inject protected Device                device;
     // endregion
 
@@ -134,8 +133,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambassador);
 
         // Injection
-        AmbassadorSingleton.setInstanceContext(getApplicationContext());
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbSingleton.init(this);
+        AmbSingleton.inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
 
@@ -185,7 +184,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     // region Requirement checks
     protected void finishIfSingletonInvalid() {
-        if (!AmbassadorSingleton.isValid()) {
+        if (!AmbSingleton.isValid()) {
             finish();
         }
     }
@@ -355,50 +354,30 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     protected void setUpPusher() {
-        // set the broadcast receiver for pusher coming back
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
-        // if we have a channel and it's not expired and connected, call API Identify
-        if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() == ConnectionState.CONNECTED) {
-            requestManager.identifyRequest();
-            return;
-        }
-
-        // if we have a channel and it's not expired but it's not currently connected, subscribe to the existing channel
-        if (PusherChannel.getSessionId() != null && !PusherChannel.isExpired() && PusherChannel.getConnectionState() != ConnectionState.CONNECTED) {
-            pusherSDK.subscribePusher(new PusherSDK.PusherSubscribeCallback() {
-                @Override
-                public void pusherSubscribed() {
-                    requestManager.identifyRequest();
-                }
-
-                @Override
-                public void pusherFailed() {
-                    Toast.makeText(getApplicationContext(), new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            });
-
-            return;
-        }
-
-        // otherwise, resubscribe to pusher and then call API Identify
-        PusherChannel.setSessionId(null);
-        PusherChannel.setChannelName(null);
-        PusherChannel.setExpiresAt(null);
-        PusherChannel.setRequestId(-1);
-        pusherSDK.createPusher(new PusherSDK.PusherSubscribeCallback() {
+        pusherManager.addPusherListener(new PusherListenerAdapter() {
             @Override
-            public void pusherSubscribed() {
+            public void subscribed() {
+                super.subscribed();
                 requestManager.identifyRequest();
             }
 
             @Override
-            public void pusherFailed() {
-                Toast.makeText(getApplicationContext(), new StringResource(R.string.connection_failure).getValue(), Toast.LENGTH_SHORT).show();
-                finish();
+            public void subscriptionFailed() {
+                super.subscriptionFailed();
+                showNetworkError();
+            }
+
+            @Override
+            public void connectionFailed() {
+                super.connectionFailed();
+                showNetworkError();
             }
         });
+
+        pusherManager.startNewChannel();
+        pusherManager.subscribeChannelToAmbassador();
     }
     // endregion
 
@@ -617,7 +596,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         protected CallbackManager callbackManager;
 
         protected FacebookManager() {
-            FacebookSdk.sdkInitialize(AmbassadorSingleton.getInstanceContext());
+            FacebookSdk.sdkInitialize(AmbSingleton.getContext());
             callbackManager = CallbackManager.Factory.create();
         }
 

@@ -1,9 +1,10 @@
-package com.ambassador.demoapp;
+package com.ambassador.ambassadorsdk.internal.injection;
 
 import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
@@ -13,17 +14,15 @@ import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.LinkedInLoginActivity;
 import com.ambassador.ambassadorsdk.internal.activities.TwitterLoginActivity;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.notifications.InstanceIdListener;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
-
-import org.mockito.Mockito;
 
 import javax.inject.Singleton;
 
@@ -31,7 +30,6 @@ import dagger.Module;
 import dagger.Provides;
 
 @Module(injects = {
-        MainActivityTest.class,
         AmbassadorActivity.class,
         SocialShareDialog.class,
         LinkedInLoginActivity.class,
@@ -48,58 +46,68 @@ import dagger.Provides;
         PusherManager.Channel.class,
         InstallReceiver.class,
         InstanceIdListener.class
+
 }, staticInjections = {
         AmbassadorSDK.class
 }, library = true)
-public final class TestModule {
+public final class AmbModule {
+
+    protected RequestManager requestManager;
+    protected PusherManager pusherManager;
+
+    public void init() {
+        requestManager = new RequestManager();
+        pusherManager = new PusherManager();
+
+        AmbSingleton.inject(requestManager);
+        AmbSingleton.inject(pusherManager);
+    }
 
     @NonNull
     @Provides
-    @Singleton
     public RequestManager provideRequestManager() {
-        return Mockito.mock(RequestManager.class);
+        return requestManager;
     }
 
     @NonNull
     @Provides
     @Singleton
     public BulkShareHelper provideBulkShareHelper() {
-        return Mockito.mock(BulkShareHelper.class);
+        return new BulkShareHelper();
     }
 
     @NonNull
     @Provides
-    @Singleton
     public PusherManager providePusherManager() {
-        return Mockito.spy(new PusherManager());
+        return pusherManager;
     }
 
     @NonNull
     @Provides
     @Singleton
     public Device provideDevice() {
-        return Mockito.mock(Device.class);
+        return new Device();
     }
 
     @NonNull
     @Provides
     @Singleton
     public Campaign provideCampaign() {
-        return Mockito.spy(new Campaign());
+        return new Campaign();
     }
 
     @NonNull
     @Provides
     @Singleton
     public User provideUser() {
-        return Mockito.spy(new User());
+        return new User();
     }
 
     @NonNull
     @Provides
     @Singleton
     public Auth provideAuth() {
-        return Mockito.spy(new Auth());
+        return new Auth();
     }
 
     @NonNull

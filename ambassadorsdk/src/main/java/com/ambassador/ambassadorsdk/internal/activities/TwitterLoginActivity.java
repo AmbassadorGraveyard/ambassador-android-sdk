@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.dialogs.WebPopupDialog;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
@@ -69,7 +69,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_webview);
 
         // Injection
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbSingleton.inject(this);
         ButterFork.bind(this);
 
         // Requirement checks
@@ -101,7 +101,7 @@ public class TwitterLoginActivity extends AppCompatActivity {
 
     // region Requirement checks
     private void finishIfSingletonInvalid() {
-        if (!AmbassadorSingleton.isValid()) {
+        if (!AmbSingleton.isValid()) {
             finish();
         }
     }

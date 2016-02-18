@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.dialogs.ContactInfoDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
@@ -67,7 +67,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         this.checkmarkXPos = Utilities.getPixelSizeForDimension(R.dimen.contact_select_checkmark_x);
         this.checkmarkSize = Utilities.getPixelSizeForDimension(R.dimen.checkmark_size);
 
-        AmbassadorSingleton.getInstanceComponent().inject(this);
+        AmbSingleton.inject(this);
     }
 
     @Override

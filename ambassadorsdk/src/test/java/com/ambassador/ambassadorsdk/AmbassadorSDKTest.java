@@ -4,16 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
-import com.ambassador.ambassadorsdk.internal.PusherSDK;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,13 +27,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import dagger.ObjectGraph;
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest ({
         AmbassadorSDK.class,
         Auth.class,
         User.class,
         Campaign.class,
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         Utilities.class,
         InstallReceiver.class,
         ConversionParameters.class
@@ -47,12 +48,12 @@ public class AmbassadorSDKTest {
     private User user;
     private Campaign campaign;
 
-    private PusherSDK pusherSDK;
+    private PusherManager pusherManager;
 
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class,
+                AmbSingleton.class,
                 Utilities.class,
                 InstallReceiver.class
         );
@@ -71,8 +72,8 @@ public class AmbassadorSDKTest {
         campaign = Mockito.mock(Campaign.class);
         AmbassadorSDK.campaign = campaign;
 
-        pusherSDK = Mockito.mock(PusherSDK.class);
-        AmbassadorSDK.pusherSDK = pusherSDK;
+        pusherManager = Mockito.mock(PusherManager.class);
+        AmbassadorSDK.pusherManager = pusherManager;
     }
 
     @Test
@@ -93,7 +94,7 @@ public class AmbassadorSDKTest {
         // ASSERT
         Mockito.verify(user).setEmail(Mockito.eq(email));
         Mockito.verify(identify).getIdentity();
-        Mockito.verify(pusherSDK).createPusher(Mockito.any(PusherSDK.PusherSubscribeCallback.class));
+        Mockito.verify(pusherManager).startNewChannel();
 
     }
 
@@ -133,9 +134,9 @@ public class AmbassadorSDKTest {
         // ARRANGE
         String universalToken = "universalToken";
         String universalID = "universalID";
-        AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
-        PowerMockito.doReturn(component).when(AmbassadorSingleton.class, "getInstanceComponent");
-        Mockito.doNothing().when(component).inject(Mockito.any(AmbassadorSDK.class));
+        ObjectGraph objectGraph = Mockito.mock(ObjectGraph.class);
+        PowerMockito.doReturn(objectGraph).when(AmbSingleton.class, "getGraph");
+        Mockito.doNothing().when(objectGraph).injectStatics();
         PowerMockito.doNothing().when(AmbassadorSDK.class, "registerInstallReceiver", context);
         PowerMockito.doNothing().when(AmbassadorSDK.class, "startConversionTimer");
         PowerMockito.doNothing().when(AmbassadorSDK.class, "setupGcm", context);
@@ -173,7 +174,7 @@ public class AmbassadorSDKTest {
         // ARRANGE
         ConversionUtility conversionUtility = Mockito.mock(ConversionUtility.class);
         Mockito.doNothing().when(conversionUtility).readAndSaveDatabaseEntries();
-        Mockito.when(AmbassadorSingleton.getInstanceContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
         PowerMockito.doReturn(conversionUtility).when(AmbassadorSDK.class, "buildConversionUtility", context);
         Timer timer = Mockito.mock(Timer.class);
         PowerMockito.doReturn(timer).when(AmbassadorSDK.class, "buildTimer");

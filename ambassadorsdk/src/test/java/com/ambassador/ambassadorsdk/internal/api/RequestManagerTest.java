@@ -4,21 +4,20 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.TestUtils;
-import com.ambassador.ambassadorsdk.internal.AmbassadorSingleton;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.PusherChannel;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.injection.AmbassadorApplicationComponent;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.google.gson.JsonObject;
-import org.junit.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,10 +39,9 @@ import twitter4j.auth.AccessToken;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(value = {
-        AmbassadorSingleton.class,
+        AmbSingleton.class,
         BulkShareHelper.class,
         ConversionUtility.class,
-        PusherChannel.class,
         IdentifyApi.IdentifyRequestBody.class,
         Log.class,
         RequestManager.class,
@@ -55,6 +53,9 @@ import twitter4j.auth.AccessToken;
         AsyncTwitterFactory.class,
         TwitterAdapter.class,
         LinkedInApi.class,
+        PusherManager.Channel.class,
+        PusherManager.class,
+        PusherListenerAdapter.class
 })
 public class RequestManagerTest {
 
@@ -66,6 +67,8 @@ public class RequestManagerTest {
     private ConversionsApi conversionsApi;
     private IdentifyApi identifyApi;
     private LinkedInApi linkedInApi;
+
+    private PusherManager pusherManager;
 
     private String universalId = "***REMOVED***";
     private String universalToken = "SDKToken ***REMOVED***";
@@ -82,20 +85,19 @@ public class RequestManagerTest {
     @Before
     public void setUp() throws Exception {
         PowerMockito.mockStatic(
-                AmbassadorSingleton.class,
+                AmbSingleton.class,
                 BulkShareHelper.class,
                 ConversionUtility.class,
                 IdentifyApi.IdentifyRequestBody.class,
                 Log.class,
                 AsyncTwitterFactory.class,
-                TwitterAdapter.class
+                TwitterAdapter.class,
+                PusherManager.Channel.class
         );
 
         TestUtils.mockStrings();
 
-        AmbassadorApplicationComponent mockComponent = Mockito.mock(AmbassadorApplicationComponent.class);
-        Mockito.when(AmbassadorSingleton.getInstanceComponent()).thenReturn(mockComponent);
-        Mockito.doNothing().when(mockComponent).inject(Mockito.any(RequestManager.class));
+        PowerMockito.doNothing().when(AmbSingleton.class, "inject", Mockito.any(RequestManager.class));
 
         bulkShareApi = PowerMockito.mock(BulkShareApi.class);
         conversionsApi = PowerMockito.mock(ConversionsApi.class);
@@ -127,9 +129,26 @@ public class RequestManagerTest {
         requestManager.identifyApi = identifyApi;
         requestManager.linkedInApi = linkedInApi;
 
-        PowerMockito.spy(PusherChannel.class);
-        PusherChannel.setRequestId(requestId);
-        PusherChannel.setSessionId(sessionId);
+        PowerMockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                try {
+                    PusherManager pusherManager = (PusherManager) invocation.getArguments()[0];
+                    pusherManager.auth = auth;
+                } catch (Exception e) {
+                    
+                }
+                return null;
+            }
+        }).when(AmbSingleton.class, "inject", Mockito.any(PusherManager.class));
+
+        pusherManager = Mockito.spy(new PusherManager());
+        PusherManager.Channel channel = Mockito.spy(new PusherManager.Channel());
+        pusherManager.channel = channel;
+        channel.requestId = requestId;
+        channel.sessionId = sessionId;
+
+        requestManager.pusherManager = pusherManager;
     }
 
     @Test
@@ -196,10 +215,10 @@ public class RequestManagerTest {
     public void identifyRequestTest() throws Exception {
         // ACT
         requestManager.identifyRequest();
-        String reqId = "" + PusherChannel.getRequestId();
+        String reqId = "" + pusherManager.channel.requestId;
 
         // ASSERT
-        Assert.assertTrue((System.currentTimeMillis() - PusherChannel.getRequestId()) < 1000 * 60 * 60 * 24);
+        Mockito.verify(pusherManager).newRequest();
         Mockito.verify(identifyApi).identifyRequest(Mockito.eq(sessionId), Mockito.eq(reqId), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.IdentifyRequestBody.class));
     }
 
@@ -213,10 +232,10 @@ public class RequestManagerTest {
 
         // ACT
         requestManager.updateNameRequest(email, firstName, lastName, requestCompletion);
-        String reqId = "" + PusherChannel.getRequestId();
+        String reqId = "" + pusherManager.channel.requestId;
 
         // ASSERT
-        Assert.assertTrue((System.currentTimeMillis() - PusherChannel.getRequestId()) < 1000 * 60 * 60 * 24);
+        Mockito.verify(pusherManager).newRequest();
         Mockito.verify(identifyApi).updateNameRequest(Mockito.eq(sessionId), Mockito.eq(reqId), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.UpdateNameRequestBody.class), Mockito.eq(requestCompletion));
     }
 
