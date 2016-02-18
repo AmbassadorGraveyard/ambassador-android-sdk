@@ -448,6 +448,14 @@ public class MainActivityTest {
                 return null;
             }
         }).when(requestManager).identifyRequest();
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                sendPusherIntent();
+                return null;
+            }
+        }).when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     private void sendPusherIntent() {
