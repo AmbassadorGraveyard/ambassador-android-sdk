@@ -112,7 +112,7 @@ public class PusherManager {
                 try {
                     channel.connectAndSubscribe(channelData.channel_name, channelData.expires_at, channelData.client_session_uid);
                 } catch (ParseException e) {
-                    // TODO: handle this
+                    Log.e("ambassador", e.toString());
                 }
             }
 
