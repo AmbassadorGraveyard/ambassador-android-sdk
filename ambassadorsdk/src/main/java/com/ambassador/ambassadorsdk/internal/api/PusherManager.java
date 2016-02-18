@@ -356,9 +356,6 @@ public class PusherManager {
             if (pusher != null) {
                 pusher.disconnect();
             }
-            for (PusherListener pusherListener : pusherManager.pusherListeners) {
-                pusherListener.disconnected();
-            }
         }
 
         /**
