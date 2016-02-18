@@ -129,7 +129,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contacts);
 
         // Injection
-        AmbSingleton.getGraph().inject(this);
+        AmbSingleton.inject(this);
         ButterFork.bind(this);
 
         // Requirement checks

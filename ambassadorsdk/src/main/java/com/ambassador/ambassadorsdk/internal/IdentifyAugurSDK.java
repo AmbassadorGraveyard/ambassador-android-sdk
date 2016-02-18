@@ -22,7 +22,7 @@ public class IdentifyAugurSDK implements IIdentify {
     @Inject protected User user;
 
     public IdentifyAugurSDK() {
-        AmbSingleton.getGraph().inject(this);
+        AmbSingleton.inject(this);
     }
 
     @Override

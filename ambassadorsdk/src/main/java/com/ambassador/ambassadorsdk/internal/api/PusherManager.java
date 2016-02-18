@@ -56,7 +56,7 @@ public class PusherManager {
      * Default constructor handling injection and dependencies.
      */
     public PusherManager() {
-        AmbSingleton.getGraph().inject(this);
+        AmbSingleton.inject(this);
         universalKey = auth.getUniversalToken();
         pusherListeners = new ArrayList<>();
 
@@ -205,7 +205,7 @@ public class PusherManager {
          * Injects dependencies and sets up a Pusher client object.
          */
         public void init() {
-            AmbSingleton.getGraph().inject(this);
+            AmbSingleton.inject(this);
             this.pusher = setupPusher();
         }
 

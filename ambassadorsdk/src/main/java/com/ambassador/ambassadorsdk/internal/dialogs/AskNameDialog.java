@@ -67,7 +67,7 @@ public final class AskNameDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_contact_name);
         ButterFork.bind(this);
-        AmbSingleton.getGraph().inject(this);
+        AmbSingleton.inject(this);
 
         setupTheme();
         setupButtons();

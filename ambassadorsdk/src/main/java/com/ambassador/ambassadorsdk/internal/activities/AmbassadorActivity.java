@@ -133,8 +133,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_ambassador);
 
         // Injection
-        AmbSingleton.setInstanceContext(getApplicationContext());
-        AmbSingleton.getGraph().inject(this);
+        AmbSingleton.init(this);
+        AmbSingleton.inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
 

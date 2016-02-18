@@ -54,7 +54,7 @@ public class BulkShareHelper { // TODO: Make final after UI tests figured out
      *
      */
     public BulkShareHelper() {
-        AmbSingleton.getGraph().inject(this);
+        AmbSingleton.inject(this);
     }
 
     /**
