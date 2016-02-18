@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
@@ -55,6 +56,9 @@ public final class AmbModule {
     public void init() {
         requestManager = new RequestManager();
         pusherManager = new PusherManager();
+
+        AmbSingleton.inject(requestManager);
+        AmbSingleton.inject(pusherManager);
     }
 
     @NonNull
