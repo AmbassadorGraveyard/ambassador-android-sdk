@@ -90,13 +90,11 @@ public class PusherManager {
      * Sets up the channel with a new subscription to the Ambassador backend.
      */
     public void subscribeChannelToAmbassador() {
-        if (channel != null && channel.isConnected()) {
-            if (channel.channelName != null) {
-                try {
-                    channel.unsubscribe(channel.channelName);
-                } catch (Exception e) {
-                    // this doesn't matter
-                }
+        if (channel != null && channel.isConnected() && channel.channelName != null) {
+            try {
+                channel.unsubscribe(channel.channelName);
+            } catch (Exception e) {
+                // this doesn't matter
             }
         }
 
