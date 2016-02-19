@@ -45,7 +45,9 @@ public final class PushNotification {
 
         int notificationId = 001;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notificationId, notification);
+
+        // TODO: uncomment this when it's time to use notifications
+        // notificationManager.notify(notificationId, notification);
     }
 
 }
