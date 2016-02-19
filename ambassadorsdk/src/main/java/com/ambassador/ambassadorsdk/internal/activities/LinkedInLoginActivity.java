@@ -296,7 +296,7 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
         public static boolean isSuccessUrl(String url) {
             try {
                 URL urlObj = new URL(url);
-                return urlObj.getHost().equals("localhost");
+                return urlObj.getHost().equals("getambassador.com");
             } catch (MalformedURLException e) {
                 return false;
             }
