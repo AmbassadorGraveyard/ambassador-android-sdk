@@ -13,6 +13,8 @@ import javax.inject.Inject;
 
 public final class InstallReceiver extends BroadcastReceiver {
 
+    protected static InstallReceiver instance;
+
     @Inject protected User user;
     @Inject protected Campaign campaign;
 
@@ -81,7 +83,12 @@ public final class InstallReceiver extends BroadcastReceiver {
     }
 
     public static InstallReceiver getInstance() {
-        return new InstallReceiver();
+        if (instance != null) {
+            return instance;
+        }
+
+        instance = new InstallReceiver();
+        return getInstance();
     }
 
 }
