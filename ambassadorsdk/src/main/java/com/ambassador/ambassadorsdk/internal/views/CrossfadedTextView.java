@@ -22,6 +22,8 @@ public final class CrossfadedTextView extends RelativeLayout {
     @Bind(B.id.tvB) protected TextView tvB;
 
     protected int toggle = 1;
+    protected Handler handler;
+    protected Runnable currentRunnable;
 
     public CrossfadedTextView(Context context) {
         super(context);
@@ -41,9 +43,11 @@ public final class CrossfadedTextView extends RelativeLayout {
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_crossfaded_text, this);
         ButterFork.bind(this);
+        handler = new Handler();
     }
 
     public void setText(@NonNull String text) {
+        handler.removeCallbacks(currentRunnable);
         if (toggle > 0) {
             tvB.setText(text);
             animateOut(tvA);
@@ -81,7 +85,7 @@ public final class CrossfadedTextView extends RelativeLayout {
     }
 
     private void animateIn(final TextView textView) {
-        new Handler().postDelayed(new Runnable() {
+        currentRunnable = new Runnable() {
             @Override
             public void run() {
                 textView.animate()
@@ -89,7 +93,8 @@ public final class CrossfadedTextView extends RelativeLayout {
                         .setDuration(ANIMATION_DURATION)
                         .start();
             }
-        }, ANIMATION_DURATION);
+        };
+        handler.postDelayed(currentRunnable, ANIMATION_DURATION);
     }
 
     public void setTextColor(int color) {
