@@ -36,6 +36,7 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
@@ -160,6 +161,13 @@ public final class AmbassadorActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
+        try {
+            unregisterReceiver(InstallReceiver.getInstance());
+        } catch (IllegalArgumentException e) {
+            // Due to Android bug, InstallReceiver can sometimes be unregistered somewhere else
+            // outside of our code.  Doesn't matter if this exception is thrown because the receiver
+            // is unregistered anyway, which is the end goal.
+        }
         if (progressDialog != null) progressDialog.dismiss();
         if (networkTimer != null) {
             networkTimer.cancel();
