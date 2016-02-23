@@ -48,6 +48,10 @@ public class WelcomeScreenDialog extends Dialog {
         setContentView(R.layout.dialog_welcome_screen);
         ButterFork.bind(this);
         isInflated = true;
+
+        if (welcomeScreenData != null) {
+            load(welcomeScreenData);
+        }
     }
 
     /**
