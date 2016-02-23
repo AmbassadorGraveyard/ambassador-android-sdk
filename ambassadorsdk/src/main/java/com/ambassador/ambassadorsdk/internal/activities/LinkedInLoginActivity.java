@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -22,8 +23,8 @@ import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.dialogs.WebPopupDialog;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
@@ -223,6 +224,20 @@ public final class LinkedInLoginActivity extends AppCompatActivity {
                     }
                 });
             }
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isFinishing()) return;
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            wvLogin.invalidate();
+                        }
+                    });
+                }
+            }, 2000);
         }
 
         private boolean isHandled(String url) {
