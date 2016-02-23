@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.views;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -126,7 +127,9 @@ public final class CrossfadedTextView extends RelativeLayout {
     private void setTextViewAlignmentLeft(TextView textView) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) textView.getLayoutParams();
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, TRUE);
-        params.addRule(RelativeLayout.ALIGN_PARENT_START, TRUE);
+        if (Build.VERSION.SDK_INT >= 17) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_START, TRUE);
+        }
         params.addRule(RelativeLayout.CENTER_HORIZONTAL, 0);
         textView.setLayoutParams(params);
     }
@@ -134,7 +137,9 @@ public final class CrossfadedTextView extends RelativeLayout {
     private void setTextViewAlignmentCenter(TextView textView) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) textView.getLayoutParams();
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-        params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
+        if (Build.VERSION.SDK_INT >= 17) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
+        }
         params.addRule(RelativeLayout.CENTER_HORIZONTAL, TRUE);
         textView.setLayoutParams(params);
     }
