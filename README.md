@@ -125,7 +125,7 @@ The RAF Screen provides UI components that allow users to share with their conta
 
 <img src="screenshots/standardIconOrder.png" width="320" />   <img src="screenshots/contactsPage.png" width="320"/>
 
-To launch the RAF Screen, simply add the following function call to your application. The parameter _context_ refers to your application's context, _campaignId_ refers to the campaign ID you want to associate with the RAF, and _optionsPath_ is the path to an assets xml file with customization options.
+To launch the RAF Screen, simply add the following function call to your application. The parameter _context_ refers to your application's context, _campaignId_ refers to the campaign ID you want to associate with the RAF, and _optionsPath_ is the path to an assets xml file with customization options (creating this is explained in the next section).
 
 ```java
 AmbassadorSDK.presentRAF(context, campaignId, optionsPath);
