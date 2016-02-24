@@ -45,7 +45,7 @@ dependencies {
 
 Now sync your project's gradle.
 
-***Note:*** Gradle tools 1.5.0 is required to compile the AmbassadorSDK. This is specified in the *buildscript*, usually found in the project level build.gradle.
+***Note:*** A minimum Gradle tools version of 1.5.0 is required to compile the AmbassadorSDK. This is specified in the *buildscript*, usually found in the project level build.gradle.
 
 ```groovy
 buildscript {
