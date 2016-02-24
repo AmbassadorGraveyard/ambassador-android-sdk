@@ -113,7 +113,7 @@ builder.setIsApproved(1); // Boolean represented by int (Defaults to true);
 // STEP FOUR: Build the object into a ConversionParameters object.
 ConversionParameters conversionParameters = builder.build();
 
-// (Also: you can chain the builder methods which is way easier)
+// Note: Chaining the methods offer a much more convenient way of building a conversion
 conversionParameters = new ConversionParameters.Builder()
         .setRevenue(10)
         .setCampaign(101)
