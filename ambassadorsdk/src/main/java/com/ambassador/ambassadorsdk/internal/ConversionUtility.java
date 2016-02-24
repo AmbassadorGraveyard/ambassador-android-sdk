@@ -50,6 +50,10 @@ public class ConversionUtility {
             return;
         }
 
+        if (parameters.getEmail() == null) {
+            parameters.email = user.getEmail();
+        }
+
         try {
             if (parameters.isValid()) {
                 makeConversionRequest(parameters);
