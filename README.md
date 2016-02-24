@@ -363,6 +363,8 @@ You can also display the options as circles by setting the value to -1dp.
 
 <img src="screenshots/cornerRadiusCircleExample.png" width="320" />
 
+---
+
 ## Troubleshooting
 
 ### Common build exceptions
