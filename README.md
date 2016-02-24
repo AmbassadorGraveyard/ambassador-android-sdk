@@ -45,6 +45,16 @@ dependencies {
 
 Now sync your project's gradle.
 
+***Note:*** Gradle tools 1.5.0 is required to compile the AmbassadorSDK. This is specified in the *buildscript*, usually found in the project level build.gradle.
+
+```
+buildscript {
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+    }
+}
+```
+
 ## Initializing Ambassador
 
  You will want to run Ambassador in your application as early in the application lifecycle as possible.  The ideal place to run would be in the **onCreate()** method of your **MainActivity**.  You will have the option to register a **conversion** the first time the app is launched.  You can read more on **conversions** and setting their parameters in [Conversions](#conversions).
