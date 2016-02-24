@@ -51,7 +51,12 @@ public class ConversionUtility {
         }
 
         if (parameters.getEmail() == null) {
-            parameters.email = user.getEmail();
+            String email = user.getEmail();
+            if (email == null) {
+                return;
+            }
+
+            parameters.email = email;
         }
 
         try {
