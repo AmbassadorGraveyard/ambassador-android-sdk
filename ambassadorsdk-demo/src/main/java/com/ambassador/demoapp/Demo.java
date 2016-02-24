@@ -6,8 +6,9 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.ambassador.ambassadorsdk.*;
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.BuildConfig;
+import com.ambassador.ambassadorsdk.ConversionParameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +31,18 @@ public final class Demo extends Application {
         conversions = new ArrayList<>();
 
         runWithKeys();
+        ConversionParameters parameters = new ConversionParameters.Builder()
+                .setCampaign(Integer.parseInt(getCampaignId()))
+                .setCustom1("This is a buyConversion from the Ambassador SDK Android test application.")
+                .setCustom2("Username registered: " + "dogs")
+                .build();
+
+        AmbassadorSDK.registerConversion(parameters, true);
     }
 
     public void runWithKeys() {
         if (IS_RELEASE) {
-            AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 84444f4022a8cd4fce299114bc2e323e57e32188", "830883cd-b2a7-449c-8a3c-d1850aa8bc6b");
+            AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken 236a3a2e7aa59a3016c687bddbde9f785e823ef9", "c067a011-bd39-4b6d-86e0-9210e5b5f53b");
         } else {
             AmbassadorSDK.runWithKeys(this, "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a", "abfd1c89-4379-44e2-8361-ee7b87332e32");
         }
@@ -105,7 +113,7 @@ public final class Demo extends Application {
 
     @NonNull
     public String getCampaignId() {
-        return prefs.getString("campaignId", "260");
+        return prefs.getString("campaignId", "30391");
     }
 
     @Nullable
