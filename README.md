@@ -156,7 +156,7 @@ btnRaf.setOnClickListener(new View.OnClickListener() {
 
 #### Customizing the RAF Screen
 
-Custom messages, colors, and font sizes are set in an xml file. Create a file named 'defaultValues.xml' and place it in your assets folder. Copy and paste the text below to start with our default values. The _color_ values can be replaced with any hexadecimal string (ex: #ff0000), and the _dimen_ values can be replaced with any font size. The _string_ values can be replaced with any text you wish to show on the RAF Screen.
+Custom messages, colors, and font sizes are set in an xml file. Create a file named 'defaultValues.xml' and place it in your assets folder. You can create multiple xml files with different options and names to customize multiple RAFs within one app. Copy and paste the text below to start with our default values. The _color_ values can be replaced with any hexadecimal string (ex: #ff0000), and the _dimen_ values can be replaced with any font size. The _string_ values can be replaced with any text you wish to show on the RAF Screen.
 
 <img src="screenshots/customValuesLocation.png" width="320"/>
 
