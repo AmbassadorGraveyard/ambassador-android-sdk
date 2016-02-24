@@ -160,6 +160,8 @@ Custom messages, colors, and font sizes are set in an xml file. Create a file na
 
 <img src="screenshots/customValuesLocation.png" width="320"/>
 
+The **assets** folder should be next to the **java** folder and the **res** inside of the **main** folder.
+
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
