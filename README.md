@@ -363,3 +363,24 @@ You can also display the options as circles by setting the value to -1dp.
 
 <img src="screenshots/cornerRadiusCircleExample.png" width="320" />
 
+## Troubleshooting
+
+### Common build exceptions
+
+```
+Error:Execution failed for task ':app:transformResourcesWithMergeJavaResForDebug'.
+> com.android.build.api.transform.TransformException: com.android.builder.packaging.DuplicateFileException: Duplicate files copied in APK META-INF/LICENSE.txt
+```
+
+If you see this exception when you try to sync gradle with our SDK, make sure you have the proper packagingOptions exclusions in your **app** build.gradle.  Here's an example:
+
+```groovy
+android {
+    
+    ...
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+    }
+}
+```
