@@ -19,7 +19,9 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.dialogs.WelcomeScreenDialog;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
+import com.ambassador.ambassadorsdk.internal.models.WelcomeScreenData;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 
 import net.kencochrane.raven.DefaultRavenFactory;
@@ -240,7 +242,12 @@ public final class AmbassadorSDK {
      * @param activity the Activity to launch the dialog from.
      */
     public static void presentWelcomeScreen(@NonNull Activity activity) {
-        
+        WelcomeScreenDialog welcomeScreenDialog = new WelcomeScreenDialog(activity);
+
+        WelcomeScreenData welcomeScreenData = new WelcomeScreenData();
+
+        welcomeScreenDialog.load(welcomeScreenData);
+        welcomeScreenDialog.show();
     }
 
 }
