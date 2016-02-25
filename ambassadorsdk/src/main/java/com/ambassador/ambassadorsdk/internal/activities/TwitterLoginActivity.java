@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -243,7 +244,22 @@ public class TwitterLoginActivity extends AppCompatActivity {
                 }
 
                 finish();
+                return;
             }
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (isFinishing()) return;
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            wvLogin.invalidate();
+                        }
+                    });
+                }
+            }, 2000);
         }
 
         private boolean isHandled(String url) {

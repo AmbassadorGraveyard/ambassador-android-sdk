@@ -59,7 +59,13 @@ public class PusherManager {
     public PusherManager() {
         AmbSingleton.inject(this);
         pusherListeners = new ArrayList<>();
+        addDefaultListeners();
+    }
 
+    /**
+     * Adds default listeners for handing onEvent data and logging events.
+     */
+    protected void addDefaultListeners() {
         addPusherListener(new PusherListenerAdapter() {
             @Override
             public void onEvent(String data) {
@@ -406,6 +412,14 @@ public class PusherManager {
     @Nullable
     public List<PusherListener> getPusherListeners() {
         return pusherListeners;
+    }
+
+    /**
+     * Clears listeners and re-adds defaults.
+     */
+    public void refreshListeners() {
+        pusherListeners.clear();
+        addDefaultListeners();
     }
 
 }
