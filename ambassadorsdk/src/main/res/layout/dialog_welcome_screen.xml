@@ -46,6 +46,12 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp">
 
+        <RelativeLayout
+            android:id="@+id/rvWhiteCircle"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"/>
+
         <com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView
             android:id="@+id/ivAvatar"
             android:layout_width="match_parent"

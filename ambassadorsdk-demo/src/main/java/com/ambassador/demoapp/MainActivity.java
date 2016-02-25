@@ -19,7 +19,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.demoapp.fragments.LoginFragment;
 import com.ambassador.demoapp.fragments.ReferFragment;
 import com.ambassador.demoapp.fragments.SignupFragment;
@@ -59,8 +58,6 @@ public final class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
         }
-
-        AmbassadorSDK.presentWelcomeScreen(this);
     }
 
     public void switchToTabAtIndex(int position) {
