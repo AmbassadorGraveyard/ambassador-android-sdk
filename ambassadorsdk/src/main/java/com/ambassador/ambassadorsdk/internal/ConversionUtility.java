@@ -42,24 +42,12 @@ public class ConversionUtility {
     }
 
     public void registerConversion() {
-        //if either augur identify or install intent hasn't come back yet, insert into DB for later retry
+        //if either augur identify or install intent (shortcode) hasn't come back yet, OR we don't know their email yet, insert into DB for later retry
         if (user.getAugurData() == null || campaign.getReferredByShortCode() == null || user.getEmail() == null) {
             ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
             db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
             Utilities.debugLog("Conversion", "Inserted row into table");
             return;
-        }
-
-        if (parameters.getEmail() == null) {
-            String email = user.getEmail();
-            if (email == null) {
-                ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
-                db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
-                Utilities.debugLog("Conversion", "Inserted row into table");
-                return;
-            }
-
-            parameters.email = email;
         }
 
         try {
@@ -168,6 +156,4 @@ public class ConversionUtility {
                     "'campaign', and 'email.");
         }
     }
-
-
 }
