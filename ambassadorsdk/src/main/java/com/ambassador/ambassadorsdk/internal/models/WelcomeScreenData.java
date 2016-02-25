@@ -1,5 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.models;
 
+import android.graphics.Color;
 import android.view.View;
 
 /**
@@ -13,7 +14,9 @@ public class WelcomeScreenData {
         TEST_DATA = new WelcomeScreenData.Builder()
                 .setTitle("John Doe has referred you to name of company")
                 .setMessage("Lorem ipsum dolor sit amet, adipiscing elit, sed do elusmod")
-                .setButtonText("Create an Account")
+                .setButtonText("CREATE AN ACCOUNT")
+                .setButtonBackgroundColor(Color.parseColor("#4198d1"))
+                .setButtonTextColor(Color.WHITE)
                 .setLink1Text("Link 1")
                 .setLink2Text("Link 2")
                 .build();
@@ -33,6 +36,12 @@ public class WelcomeScreenData {
 
     /** Action for the main button. */
     protected View.OnClickListener buttonOnClickListener;
+
+    /** Background color for the main button. */
+    protected int buttonBackgroundColor;
+
+    /** Text color for the main button. */
+    protected int buttonTextColor;
 
     /** Text for the bottom left button. */
     protected String link1Text;
@@ -68,6 +77,14 @@ public class WelcomeScreenData {
 
     public View.OnClickListener getButtonOnClickListener() {
         return buttonOnClickListener;
+    }
+
+    public int getButtonBackgroundColor() {
+        return buttonBackgroundColor;
+    }
+
+    public int getButtonTextColor() {
+        return buttonTextColor;
     }
 
     public String getLink1Text() {
@@ -116,6 +133,16 @@ public class WelcomeScreenData {
 
         public Builder setButtonOnClickListener(View.OnClickListener buttonOnClickListener) {
             welcomeScreenData.buttonOnClickListener = buttonOnClickListener;
+            return this;
+        }
+
+        public Builder setButtonBackgroundColor(int buttonBackgroundColor) {
+            welcomeScreenData.buttonBackgroundColor = buttonBackgroundColor;
+            return this;
+        }
+
+        public Builder setButtonTextColor(int buttonTextColor) {
+            welcomeScreenData.buttonTextColor = buttonTextColor;
             return this;
         }
 

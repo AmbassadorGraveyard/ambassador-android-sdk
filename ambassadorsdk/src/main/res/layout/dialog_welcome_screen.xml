@@ -6,8 +6,8 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
         android:background="@android:color/black">
@@ -17,10 +17,11 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
+        android:textSize="20sp"
         android:gravity="center"/>
 
     <Button
@@ -32,36 +33,32 @@
 
     <TextView
         android:id="@+id/tvMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="30dp"
+        android:textSize="16sp"
         android:gravity="center" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_gravity="center">
 
         <TextView
             android:id="@+id/tvLink1"
-            android:layout_width="100dp"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/strut"
-            android:layout_toStartOf="@+id/strut"
             android:gravity="center" />
-
-        <View
-            android:id="@+id/strut"
-            android:layout_width="0dp"
-            android:layout_height="0dp" />
 
         <TextView
             android:id="@+id/tvLink2"
-            android:layout_width="100dp"
+            android:layout_width="75dp"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/strut"
-            android:layout_toRightOf="@+id/strut"
+            android:layout_toEndOf="@+id/tvLink1"
+            android:layout_toRightOf="@+id/tvLink1"
             android:gravity="center" />
 
     </RelativeLayout>
