@@ -7,6 +7,18 @@ import android.view.View;
  */
 public class WelcomeScreenData {
 
+    /** */
+    public static final WelcomeScreenData TEST_DATA;
+    static {
+        TEST_DATA = new WelcomeScreenData.Builder()
+                .setTitle("John Doe has referred you to name of company")
+                .setMessage("Lorem ipsum dolor sit amet, adipiscing elit, sed do elusmod")
+                .setButtonText("Create an Account")
+                .setLink1Text("Link 1")
+                .setLink2Text("Link 2")
+                .build();
+    }
+
     /** URL to the image to display as the avatar. */
     protected String imageUrl;
 
@@ -35,7 +47,7 @@ public class WelcomeScreenData {
     protected View.OnClickListener link2OnClickListener;
 
     public WelcomeScreenData() {
-        
+
     }
 
     public String getImageUrl() {
