@@ -84,7 +84,7 @@ public class NetworkCircleImageView extends CircleImageView {
                 networkCircleImageView.setImageBitmap(bitmap);
                 networkCircleImageView.setAlpha(0f);
                 ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(networkCircleImageView, "alpha", 0f, 1f);
-                objectAnimator.setDuration(300);
+                objectAnimator.setDuration(750);
                 objectAnimator.start();
             }
         }
