@@ -1,8 +1,10 @@
 package com.ambassador.ambassadorsdk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
@@ -230,6 +232,15 @@ public final class AmbassadorSDK {
                 // No reaction currently required
             }
         });
+    }
+
+    /**
+     * Presents a welcome screen if the user was referred. Activity passed in must be currently visible
+     * and represent a non-stale context.
+     * @param activity the Activity to launch the dialog from.
+     */
+    public static void presentWelcomeScreen(@NonNull Activity activity) {
+        
     }
 
 }
