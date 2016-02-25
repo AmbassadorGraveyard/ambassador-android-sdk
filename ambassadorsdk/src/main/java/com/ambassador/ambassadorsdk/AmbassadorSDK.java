@@ -114,7 +114,7 @@ public final class AmbassadorSDK {
 
     public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
         //do conversion if it's not an install conversion, or if it is, make sure that we haven't already converted on install by checking sharedprefs
-        if (!restrictToInstall || !campaign.isConvertedOnInstall()) {
+        if (!restrictToInstall || (!campaign.isConvertedOnInstall() && restrictToInstall)) {
             Utilities.debugLog("Conversion", "restrictToInstall: " + restrictToInstall);
 
             ConversionUtility conversionUtility = buildConversionUtility(conversionParameters);
