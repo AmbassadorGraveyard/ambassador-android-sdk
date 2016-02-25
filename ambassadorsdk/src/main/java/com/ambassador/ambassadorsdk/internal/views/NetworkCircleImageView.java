@@ -1,5 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.views;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,39 +20,38 @@ import java.lang.ref.WeakReference;
  */
 public class NetworkCircleImageView extends CircleImageView {
 
+    /** Default constructor. */
     public NetworkCircleImageView(Context context) {
         super(context);
-        init();
     }
 
+    /** Default constructor. */
     public NetworkCircleImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
     }
 
+    /** Default constructor. */
     public NetworkCircleImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init();
+    }
+
+    /**
+     *
+     * @param url
+     */
+    public void load(String url) {
+        new LoadImageTask(this).execute(url);
     }
 
     /**
      *
      */
-    private void init() {
-        Bitmap image = Bitmap.createBitmap(5, 5, Bitmap.Config.ARGB_8888);
-        image.eraseColor(android.graphics.Color.WHITE);
-    }
-
-    public void load(String url) {
-        new LoadImageTask(this).execute(url);
-    }
-
     protected static class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
 
         protected WeakReference<NetworkCircleImageView> networkCircleImageViewWeakReference;
 
         public LoadImageTask(NetworkCircleImageView networkCircleImageView) {
-            networkCircleImageViewWeakReference = new WeakReference<NetworkCircleImageView>(networkCircleImageView);
+            networkCircleImageViewWeakReference = new WeakReference<>(networkCircleImageView);
         }
 
         @Override
@@ -82,6 +82,10 @@ public class NetworkCircleImageView extends CircleImageView {
             NetworkCircleImageView networkCircleImageView = networkCircleImageViewWeakReference.get();
             if (networkCircleImageView != null) {
                 networkCircleImageView.setImageBitmap(bitmap);
+                networkCircleImageView.setAlpha(0f);
+                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(networkCircleImageView, "alpha", 0f, 1f);
+                objectAnimator.setDuration(300);
+                objectAnimator.start();
             }
         }
 

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,14 +29,15 @@ import butterfork.ButterFork;
  */
 public class WelcomeScreenDialog extends Dialog {
 
-    @Bind(B.id.tvClose)     protected TextView                  tvClose;
-    @Bind(B.id.tvTitle)     protected TextView                  tvTitle;
-    @Bind(B.id.rvAvatar)    protected RelativeLayout            rvAvatar;
-    @Bind(B.id.ivAvatar)    protected NetworkCircleImageView    ivAvatar;
-    @Bind(B.id.tvMessage)   protected TextView                  tvMessage;
-    @Bind(B.id.btnMain)     protected Button                    btnMain;
-    @Bind(B.id.tvLink1)     protected TextView                  tvLink1;
-    @Bind(B.id.tvLink2)     protected TextView                  tvLink2;
+    @Bind(B.id.tvClose)         protected TextView                  tvClose;
+    @Bind(B.id.tvTitle)         protected TextView                  tvTitle;
+    @Bind(B.id.rvAvatar)        protected RelativeLayout            rvAvatar;
+    @Bind(B.id.rvWhiteCircle)   protected RelativeLayout            rvWhiteCircle;
+    @Bind(B.id.ivAvatar)        protected NetworkCircleImageView    ivAvatar;
+    @Bind(B.id.tvMessage)       protected TextView                  tvMessage;
+    @Bind(B.id.btnMain)         protected Button                    btnMain;
+    @Bind(B.id.tvLink1)         protected TextView                  tvLink1;
+    @Bind(B.id.tvLink2)         protected TextView                  tvLink2;
 
     /** Object containing the data to display. */
     protected WelcomeScreenData welcomeScreenData;
@@ -55,6 +57,7 @@ public class WelcomeScreenDialog extends Dialog {
         }
 
         isInflated = false;
+        getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
     }
 
     /**
@@ -70,6 +73,9 @@ public class WelcomeScreenDialog extends Dialog {
         isInflated = true;
 
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+        layoutParams.dimAmount = 0.85f;
+
 
         if (welcomeScreenData != null) {
             load(welcomeScreenData);
@@ -104,6 +110,11 @@ public class WelcomeScreenDialog extends Dialog {
             avatarBackground.setCornerRadius(500);
             avatarBackground.setColors(new int[]{ welcomeScreenData.getColorTheme(), getDarkenedColor(welcomeScreenData.getColorTheme()) });
             rvAvatar.setBackground(avatarBackground);
+
+            GradientDrawable whiteBackground = new GradientDrawable();
+            whiteBackground.setCornerRadius(500);
+            whiteBackground.setColor(Color.WHITE);
+            rvWhiteCircle.setBackground(whiteBackground);
 
             ivAvatar.load(welcomeScreenData.getImageUrl());
         }

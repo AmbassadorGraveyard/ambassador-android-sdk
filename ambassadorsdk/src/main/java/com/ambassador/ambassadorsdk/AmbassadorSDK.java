@@ -244,8 +244,6 @@ public final class AmbassadorSDK {
     public static void presentWelcomeScreen(@NonNull Activity activity) {
         WelcomeScreenDialog welcomeScreenDialog = new WelcomeScreenDialog(activity);
 
-        WelcomeScreenData welcomeScreenData = new WelcomeScreenData();
-
         welcomeScreenDialog.load(WelcomeScreenData.TEST_DATA);
         welcomeScreenDialog.show();
     }
