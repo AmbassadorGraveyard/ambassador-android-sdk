@@ -7,15 +7,36 @@ import android.view.View;
  */
 public class WelcomeScreenData {
 
+    /** URL to the image to display as the avatar. */
     protected String imageUrl;
+
+    /** Large text to display below picture. */
     protected String title;
+
+    /** Smaller text to display below button. */
     protected String message;
+
+    /** Text for the main button to have. */
     protected String buttonText;
+
+    /** Action for the main button. */
     protected View.OnClickListener buttonOnClickListener;
+
+    /** Text for the bottom left button. */
     protected String link1Text;
+
+    /** Action for the bottom left button. */
     protected View.OnClickListener link1OnClickListener;
+
+    /** Text for the bottom right button. */
     protected String link2Text;
+
+    /** Action for the bottom right button. */
     protected View.OnClickListener link2OnClickListener;
+
+    public WelcomeScreenData() {
+        
+    }
 
     public String getImageUrl() {
         return imageUrl;
@@ -109,7 +130,7 @@ public class WelcomeScreenData {
         public WelcomeScreenData build() {
             return welcomeScreenData;
         }
-        
+
     }
 
 }
