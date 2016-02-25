@@ -5,10 +5,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.models.WelcomeScreenData;
 
+import butterfork.Bind;
 import butterfork.ButterFork;
 
 /**
@@ -16,6 +20,12 @@ import butterfork.ButterFork;
  * WelcomeScreenData object.
  */
 public class WelcomeScreenDialog extends Dialog {
+
+    @Bind(B.id.tvTitle)     protected TextView      tvTitle;
+    @Bind(B.id.tvMessage)   protected TextView      tvMessage;
+    @Bind(B.id.btnMain)     protected Button        btnMain;
+    @Bind(B.id.tvLink1)     protected TextView      tvLink1;
+    @Bind(B.id.tvLink2)     protected TextView      tvLink2;
 
     /** Object containing the data to display. */
     protected WelcomeScreenData welcomeScreenData;
@@ -61,7 +71,16 @@ public class WelcomeScreenDialog extends Dialog {
     public void load(WelcomeScreenData welcomeScreenData) {
         this.welcomeScreenData = welcomeScreenData;
         if (isInflated) {
+            tvTitle.setText(welcomeScreenData.getTitle());
+            tvMessage.setText(welcomeScreenData.getMessage());
 
+            btnMain.setText(welcomeScreenData.getButtonText());
+            btnMain.setOnClickListener(welcomeScreenData.getButtonOnClickListener());
+            btnMain.setBackgroundColor(welcomeScreenData.getButtonBackgroundColor());
+            btnMain.setTextColor(welcomeScreenData.getButtonTextColor());
+
+            tvLink1.setText(welcomeScreenData.getLink1Text());
+            tvLink2.setText(welcomeScreenData.getLink2Text());
         }
     }
 
