@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -33,6 +35,7 @@ public class WelcomeScreenDialog extends Dialog {
     @Bind(B.id.tvTitle)         protected TextView                  tvTitle;
     @Bind(B.id.rvAvatar)        protected RelativeLayout            rvAvatar;
     @Bind(B.id.rvWhiteCircle)   protected RelativeLayout            rvWhiteCircle;
+    @Bind(B.id.pbLoading)       protected ProgressBar               pbLoading;
     @Bind(B.id.ivAvatar)        protected NetworkCircleImageView    ivAvatar;
     @Bind(B.id.tvMessage)       protected TextView                  tvMessage;
     @Bind(B.id.btnMain)         protected Button                    btnMain;
@@ -76,7 +79,6 @@ public class WelcomeScreenDialog extends Dialog {
         WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
         layoutParams.dimAmount = 0.85f;
 
-
         if (welcomeScreenData != null) {
             load(welcomeScreenData);
         }
@@ -89,6 +91,8 @@ public class WelcomeScreenDialog extends Dialog {
     public void load(WelcomeScreenData welcomeScreenData) {
         this.welcomeScreenData = welcomeScreenData;
         if (isInflated) {
+            pbLoading.getIndeterminateDrawable().setColorFilter(getDarkenedColor(welcomeScreenData.getColorTheme()), PorterDuff.Mode.SRC_IN);
+
             tvClose.setTextColor(welcomeScreenData.getColorTheme());
             tvClose.setOnClickListener(tvCloseOnClickListener);
 
