@@ -39,7 +39,7 @@ Compile **AmbassadorSDK** under dependencies:
 
 ```groovy
 dependencies {
-    compile 'com.ambassador:ambassadorsdk:1.1.2'
+    compile 'com.ambassador:ambassadorsdk:1.1.3'
 }
 ```
 
