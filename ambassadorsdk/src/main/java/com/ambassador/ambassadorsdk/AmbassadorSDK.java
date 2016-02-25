@@ -246,7 +246,7 @@ public final class AmbassadorSDK {
 
         WelcomeScreenData welcomeScreenData = new WelcomeScreenData();
 
-        welcomeScreenDialog.load(welcomeScreenData);
+        welcomeScreenDialog.load(WelcomeScreenData.TEST_DATA);
         welcomeScreenDialog.show();
     }
 
