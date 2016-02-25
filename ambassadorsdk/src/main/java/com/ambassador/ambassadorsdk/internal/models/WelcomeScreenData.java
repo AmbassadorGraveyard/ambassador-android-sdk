@@ -8,17 +8,17 @@ import android.view.View;
  */
 public class WelcomeScreenData {
 
-    /** */
+    /** WelcomeScreenData object populated with dummy data for testing */
     public static final WelcomeScreenData TEST_DATA;
     static {
         TEST_DATA = new WelcomeScreenData.Builder()
                 .setTitle("John Doe has referred you to name of company")
                 .setMessage("Lorem ipsum dolor sit amet, adipiscing elit, sed do elusmod")
                 .setButtonText("CREATE AN ACCOUNT")
-                .setButtonBackgroundColor(Color.parseColor("#4198d1"))
-                .setButtonTextColor(Color.WHITE)
                 .setLink1Text("Link 1")
                 .setLink2Text("Link 2")
+                .setColorTheme(Color.parseColor("#4198d1"))
+                .setImageUrl("https://upload.wikimedia.org/wikipedia/commons/7/77/Avatar_cat.png")
                 .build();
     }
 
@@ -37,12 +37,6 @@ public class WelcomeScreenData {
     /** Action for the main button. */
     protected View.OnClickListener buttonOnClickListener;
 
-    /** Background color for the main button. */
-    protected int buttonBackgroundColor;
-
-    /** Text color for the main button. */
-    protected int buttonTextColor;
-
     /** Text for the bottom left button. */
     protected String link1Text;
 
@@ -54,6 +48,9 @@ public class WelcomeScreenData {
 
     /** Action for the bottom right button. */
     protected View.OnClickListener link2OnClickListener;
+
+    /** Color to theme the welcome screen with. */
+    protected int colorTheme;
 
     public WelcomeScreenData() {
 
@@ -79,14 +76,6 @@ public class WelcomeScreenData {
         return buttonOnClickListener;
     }
 
-    public int getButtonBackgroundColor() {
-        return buttonBackgroundColor;
-    }
-
-    public int getButtonTextColor() {
-        return buttonTextColor;
-    }
-
     public String getLink1Text() {
         return link1Text;
     }
@@ -101,6 +90,10 @@ public class WelcomeScreenData {
 
     public View.OnClickListener getLink2OnClickListener() {
         return link2OnClickListener;
+    }
+
+    public int getColorTheme() {
+        return colorTheme;
     }
 
     public static class Builder {
@@ -136,16 +129,6 @@ public class WelcomeScreenData {
             return this;
         }
 
-        public Builder setButtonBackgroundColor(int buttonBackgroundColor) {
-            welcomeScreenData.buttonBackgroundColor = buttonBackgroundColor;
-            return this;
-        }
-
-        public Builder setButtonTextColor(int buttonTextColor) {
-            welcomeScreenData.buttonTextColor = buttonTextColor;
-            return this;
-        }
-
         public Builder setLink1Text(String link1Text) {
             welcomeScreenData.link1Text = link1Text;
             return this;
@@ -163,6 +146,11 @@ public class WelcomeScreenData {
 
         public Builder setLink2OnClickListener(View.OnClickListener link2OnClickListener) {
             welcomeScreenData.link2OnClickListener = link2OnClickListener;
+            return this;
+        }
+
+        public Builder setColorTheme(int colorTheme) {
+            welcomeScreenData.colorTheme = colorTheme;
             return this;
         }
 

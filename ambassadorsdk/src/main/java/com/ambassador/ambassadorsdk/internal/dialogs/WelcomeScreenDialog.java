@@ -3,14 +3,21 @@ package com.ambassador.ambassadorsdk.internal.dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.models.WelcomeScreenData;
+import com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
@@ -21,11 +28,14 @@ import butterfork.ButterFork;
  */
 public class WelcomeScreenDialog extends Dialog {
 
-    @Bind(B.id.tvTitle)     protected TextView      tvTitle;
-    @Bind(B.id.tvMessage)   protected TextView      tvMessage;
-    @Bind(B.id.btnMain)     protected Button        btnMain;
-    @Bind(B.id.tvLink1)     protected TextView      tvLink1;
-    @Bind(B.id.tvLink2)     protected TextView      tvLink2;
+    @Bind(B.id.tvClose)     protected TextView                  tvClose;
+    @Bind(B.id.tvTitle)     protected TextView                  tvTitle;
+    @Bind(B.id.rvAvatar)    protected RelativeLayout            rvAvatar;
+    @Bind(B.id.ivAvatar)    protected NetworkCircleImageView    ivAvatar;
+    @Bind(B.id.tvMessage)   protected TextView                  tvMessage;
+    @Bind(B.id.btnMain)     protected Button                    btnMain;
+    @Bind(B.id.tvLink1)     protected TextView                  tvLink1;
+    @Bind(B.id.tvLink2)     protected TextView                  tvLink2;
 
     /** Object containing the data to display. */
     protected WelcomeScreenData welcomeScreenData;
@@ -59,6 +69,8 @@ public class WelcomeScreenDialog extends Dialog {
         ButterFork.bind(this);
         isInflated = true;
 
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         if (welcomeScreenData != null) {
             load(welcomeScreenData);
         }
@@ -71,17 +83,53 @@ public class WelcomeScreenDialog extends Dialog {
     public void load(WelcomeScreenData welcomeScreenData) {
         this.welcomeScreenData = welcomeScreenData;
         if (isInflated) {
+            tvClose.setTextColor(welcomeScreenData.getColorTheme());
+            tvClose.setOnClickListener(tvCloseOnClickListener);
+
             tvTitle.setText(welcomeScreenData.getTitle());
             tvMessage.setText(welcomeScreenData.getMessage());
 
             btnMain.setText(welcomeScreenData.getButtonText());
             btnMain.setOnClickListener(welcomeScreenData.getButtonOnClickListener());
-            btnMain.setBackgroundColor(welcomeScreenData.getButtonBackgroundColor());
-            btnMain.setTextColor(welcomeScreenData.getButtonTextColor());
+            btnMain.setBackgroundColor(welcomeScreenData.getColorTheme());
+            btnMain.setTextColor(Color.WHITE);
 
             tvLink1.setText(welcomeScreenData.getLink1Text());
+            tvLink1.setTextColor(welcomeScreenData.getColorTheme());
+
             tvLink2.setText(welcomeScreenData.getLink2Text());
+            tvLink2.setTextColor(welcomeScreenData.getColorTheme());
+
+            GradientDrawable avatarBackground = new GradientDrawable();
+            avatarBackground.setCornerRadius(500);
+            avatarBackground.setColors(new int[]{ welcomeScreenData.getColorTheme(), getDarkenedColor(welcomeScreenData.getColorTheme()) });
+            rvAvatar.setBackground(avatarBackground);
+
+            ivAvatar.load(welcomeScreenData.getImageUrl());
         }
+    }
+
+    /**
+     * OnClickListener for the close button. Dismisses the dialog.
+     */
+    protected View.OnClickListener tvCloseOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            dismiss();
+        }
+    };
+
+    /**
+     * Darkens the theme color for the avatar gradient.
+     * @param color the color int (not resId) to darken.
+     * @return the darkened color int.
+     */
+    protected int getDarkenedColor(@ColorInt int color) {
+        float[] hsv = new float[3];
+        Color.colorToHSV(color, hsv);
+        hsv[2] *= 0.5f;
+        hsv[1] *= 1.25;
+        return Color.HSVToColor(hsv);
     }
 
 }
