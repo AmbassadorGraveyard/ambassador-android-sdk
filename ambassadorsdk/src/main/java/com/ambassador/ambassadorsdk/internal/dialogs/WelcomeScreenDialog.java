@@ -110,15 +110,8 @@ public class WelcomeScreenDialog extends Dialog {
             tvLink2.setText(welcomeScreenData.getLink2Text());
             tvLink2.setTextColor(welcomeScreenData.getColorTheme());
 
-            GradientDrawable avatarBackground = new GradientDrawable();
-            avatarBackground.setCornerRadius(500);
-            avatarBackground.setColors(new int[]{ welcomeScreenData.getColorTheme(), getDarkenedColor(welcomeScreenData.getColorTheme()) });
-            rvAvatar.setBackground(avatarBackground);
-
-            GradientDrawable whiteBackground = new GradientDrawable();
-            whiteBackground.setCornerRadius(500);
-            whiteBackground.setColor(Color.WHITE);
-            rvWhiteCircle.setBackground(whiteBackground);
+            rvAvatar.setBackground(getGradientCircleBackground());
+            rvWhiteCircle.setBackground(getWhiteCircleBackground());
 
             ivAvatar.load(welcomeScreenData.getImageUrl());
         }
@@ -133,6 +126,30 @@ public class WelcomeScreenDialog extends Dialog {
             dismiss();
         }
     };
+
+    /**
+     * Generates a white, circular Drawable to place onto the gradient before the avatar is loaded
+     * online.
+     * @return a white, circular GradientDrawable.
+     */
+    protected GradientDrawable getWhiteCircleBackground() {
+        GradientDrawable whiteBackground = new GradientDrawable();
+        whiteBackground.setCornerRadius(500);
+        whiteBackground.setColor(Color.WHITE);
+        return whiteBackground;
+    }
+
+    /**
+     * Generates a circular GradientDrawable with a gradient background to place behind the avatar.
+     * @return a circular GradientDrawable with a gradient based on the color theme.
+     */
+    protected GradientDrawable getGradientCircleBackground() {
+        GradientDrawable avatarBackground = new GradientDrawable();
+        avatarBackground.setCornerRadius(500);
+        avatarBackground.setColors(new int[]{ welcomeScreenData.getColorTheme(), getDarkenedColor(welcomeScreenData.getColorTheme()) });
+        return avatarBackground;
+    }
+
 
     /**
      * Darkens the theme color for the avatar gradient.
