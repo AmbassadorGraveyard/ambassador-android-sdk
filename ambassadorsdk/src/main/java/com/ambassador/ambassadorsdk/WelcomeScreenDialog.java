@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal.dialogs;
+package com.ambassador.ambassadorsdk;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -9,6 +9,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,10 +19,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ambassador.ambassadorsdk.B;
-import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.models.WelcomeScreenData;
 import com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView;
+
+import java.lang.ref.WeakReference;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
@@ -30,6 +32,12 @@ import butterfork.ButterFork;
  * WelcomeScreenData object.
  */
 public class WelcomeScreenDialog extends Dialog {
+
+    /** The activity reference that the default empty constructor will attempt to instantiate with. */
+    protected static WeakReference<Activity> activityWeakReference;
+
+    /** The availability callback reference that is stored statically for later use. */
+    protected static AvailabilityCallback availabilityCallback;
 
     @Bind(B.id.tvClose)         protected TextView                  tvClose;
     @Bind(B.id.tvTitle)         protected TextView                  tvTitle;
@@ -150,7 +158,6 @@ public class WelcomeScreenDialog extends Dialog {
         return avatarBackground;
     }
 
-
     /**
      * Darkens the theme color for the avatar gradient.
      * @param color the color int (not resId) to darken.
@@ -162,6 +169,49 @@ public class WelcomeScreenDialog extends Dialog {
         hsv[2] *= 0.5f;
         hsv[1] *= 1.25;
         return Color.HSVToColor(hsv);
+    }
+
+    /**
+     * Callback interface usable by the 3rd party developer. We pass them the dialog pre-loaded with
+     * data to do what they need to because there is a large number of ways to handle configuration
+     * changes such as orientation, so we leave it in their hands to deal with the dialog.
+     */
+    public interface AvailabilityCallback {
+        void available(WelcomeScreenDialog welcomeScreenDialog);
+    }
+
+    /**
+     * Returns the stored Activity, null or not.
+     * @return static Activity activity, originating from WeakReference.
+     */
+    @Nullable
+    public static Activity getActivity() {
+        return activityWeakReference != null ? activityWeakReference.get() : null;
+    }
+
+    /**
+     * Statically stores a WeakReference to an activity that the dialog will later attempt to present with.
+     * @param activity the activity to later attempt presentation with.
+     */
+    public static void setActivity(Activity activity) {
+        activityWeakReference = new WeakReference<>(activity);
+    }
+
+    /**
+     * Returns the stored availability callback, null or not.
+     * @return static AvailabilityCallback availabilityCallback.
+     */
+    @Nullable
+    public static AvailabilityCallback getAvailabilityCallback() {
+        return availabilityCallback;
+    }
+
+    /**
+     * Statically stores a WeakReference to an activity that the will later be accessed by the InstallReceiver.
+     * @param availabilityCallback the availability callback to callback to the activity with.
+     */
+    public static void setAvailabilityCallback(@NonNull AvailabilityCallback availabilityCallback) {
+        WelcomeScreenDialog.availabilityCallback = availabilityCallback;
     }
 
 }

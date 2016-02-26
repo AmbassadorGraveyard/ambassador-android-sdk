@@ -19,9 +19,7 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.dialogs.WelcomeScreenDialog;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
-import com.ambassador.ambassadorsdk.internal.models.WelcomeScreenData;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 
 import net.kencochrane.raven.DefaultRavenFactory;
@@ -237,15 +235,31 @@ public final class AmbassadorSDK {
     }
 
     /**
-     * Presents a welcome screen if the user was referred. Activity passed in must be currently visible
-     * and represent a non-stale context.
+     * Registers an activity and callback to pass a WelcomeScreenDialog through, once the InstallReceiver
+     * is used.
      * @param activity the Activity to launch the dialog from.
+     * @param availabilityCallback the callback interface to pass the dialog through, once available.
      */
-    public static void presentWelcomeScreen(@NonNull Activity activity) {
-        WelcomeScreenDialog welcomeScreenDialog = new WelcomeScreenDialog(activity);
+    public static void presentWelcomeScreen(@NonNull final Activity activity, @NonNull final WelcomeScreenDialog.AvailabilityCallback availabilityCallback) {
+        WelcomeScreenDialog.setActivity(activity);
+        WelcomeScreenDialog.setAvailabilityCallback(availabilityCallback);
 
-        welcomeScreenDialog.load(WelcomeScreenData.TEST_DATA);
-        welcomeScreenDialog.show();
+        final Activity ref = activity;
+        // Following is temporary for testing:
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                ref.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent data = new Intent();
+                        data.putExtra("referrer", "mbsy_cookie_code=jwnZ&device_id=test1234");
+                        InstallReceiver.getInstance().onReceive(activity, data);
+                    }
+                });
+
+            }
+        }, 5000);
     }
 
 }
