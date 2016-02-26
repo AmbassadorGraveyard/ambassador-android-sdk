@@ -111,11 +111,8 @@ public class AmbassadorActivityTest {
         //application component which is created in the Application (and uses the real tweetRequest)
         AmbSingleton.init(context);
         TestModule amb = new TestModule();
-        //AmbSingleton.setInstanceAmbModule(amb);
-//        AmbassadorApplicationComponent component = new AmbassadorApplicationComponent(new TestModule());
-//        AmbSingleton.setInstanceComponent(component);
-//        //perform injection
-//        component.inject(this);
+        AmbSingleton.init(context, amb);
+        AmbSingleton.inject(this);
 
         String pusherResponse = "{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jHjl\",\"short_code\":\"jHjl\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}]}";
         doNothing().when(campaign).setUrl(anyString());
@@ -430,7 +427,7 @@ public class AmbassadorActivityTest {
         Espresso.closeSoftKeyboard();
         Thread.sleep(100);
         onView(withId(R.id.btnContinue)).perform(click());
-        Thread.sleep(100);
+        Thread.sleep(250);
         onView(withId(R.id.dialog_contact_name)).check(ViewAssertions.doesNotExist());
         verify(requestManager, times(2)).updateNameRequest(anyString(), anyString(), anyString(), any(RequestManager.RequestCompletion.class));
 

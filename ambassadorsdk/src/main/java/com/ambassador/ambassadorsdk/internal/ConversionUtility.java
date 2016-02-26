@@ -42,8 +42,8 @@ public class ConversionUtility {
     }
 
     public void registerConversion() {
-        //if either augur identify or install intent hasn't come back yet, insert into DB for later retry
-        if (user.getAugurData() == null || campaign.getReferredByShortCode() == null) {
+        //if either augur identify or install intent (shortcode) hasn't come back yet, OR we don't know their email yet, insert into DB for later retry
+        if (user.getAugurData() == null || campaign.getReferredByShortCode() == null || user.getEmail() == null) {
             ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
             db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
             Utilities.debugLog("Conversion", "Inserted row into table");
@@ -81,7 +81,7 @@ public class ConversionUtility {
     public void readAndSaveDatabaseEntries() {
         //if we don't have an identify object yet, that means neither the intent nor augur has returned
         //so bail out and try again later
-        if (user.getAugurData() == null || campaign.getReferredByShortCode() == null) return;
+        if (user.getAugurData() == null || campaign.getReferredByShortCode() == null || user.getEmail() == null) return;
 
         String[] projection = {
                 ConversionSQLStrings.ConversionSQLEntry._ID,
@@ -133,6 +133,7 @@ public class ConversionUtility {
         //in the case of an install conversion, we didn't have the shortCode right away, so that conversion got stored in the database.
         //now that we know we have it (wouldn't have gotten this far if we didn't) set that parameter value.
         newParameters.updateShortCode(campaign.getReferredByShortCode());
+        newParameters.email = user.getEmail();
 
         requestManager.registerConversionRequest(newParameters, new RequestManager.RequestCompletion() {
             @Override
@@ -155,6 +156,4 @@ public class ConversionUtility {
                     "'campaign', and 'email.");
         }
     }
-
-
 }

@@ -39,11 +39,21 @@ Compile **AmbassadorSDK** under dependencies:
 
 ```groovy
 dependencies {
-    compile 'com.ambassador:ambassadorsdk:1.0.0'
+    compile 'com.ambassador:ambassadorsdk:1.1.3'
 }
 ```
 
 Now sync your project's gradle.
+
+***Note:*** A minimum Gradle tools version of 1.5.0 is required to compile the AmbassadorSDK. This is specified in the *buildscript*, usually found in the project level build.gradle.
+
+```groovy
+buildscript {
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+    }
+}
+```
 
 ## Initializing Ambassador
 
@@ -103,7 +113,7 @@ builder.setIsApproved(1); // Boolean represented by int (Defaults to true);
 // STEP FOUR: Build the object into a ConversionParameters object.
 ConversionParameters conversionParameters = builder.build();
 
-// (Also: you can chain the builder methods which is way easier)
+// Note: Chaining the methods offer a much more convenient way of building a conversion
 conversionParameters = new ConversionParameters.Builder()
         .setRevenue(10)
         .setCampaign(101)
@@ -146,9 +156,11 @@ btnRaf.setOnClickListener(new View.OnClickListener() {
 
 #### Customizing the RAF Screen
 
-Custom messages, colors, and font sizes are set in an xml file. Create a file named 'defaultValues.xml' and place it in your assets folder. Copy and paste the text below to start with our default values. The _color_ values can be replaced with any hexadecimal string (ex: #ff0000), and the _dimen_ values can be replaced with any font size. The _string_ values can be replaced with any text you wish to show on the RAF Screen.
+Custom messages, colors, and font sizes are set in an xml file. Create a file named 'defaultValues.xml' and place it in your assets folder. You can create multiple xml files with different options and names to customize multiple RAFs within one app. Copy and paste the text below to start with our default values. The _color_ values can be replaced with any hexadecimal string (ex: #ff0000), and the _dimen_ values can be replaced with any font size. The _string_ values can be replaced with any text you wish to show on the RAF Screen.
 
 <img src="screenshots/customValuesLocation.png" width="320"/>
+
+The **assets** folder should be next to the **java** folder and the **res** inside of the **main** folder.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -353,3 +365,26 @@ You can also display the options as circles by setting the value to -1dp.
 
 <img src="screenshots/cornerRadiusCircleExample.png" width="320" />
 
+---
+
+## Troubleshooting
+
+### Common build exceptions
+
+```
+Error:Execution failed for task ':app:transformResourcesWithMergeJavaResForDebug'.
+> com.android.build.api.transform.TransformException: com.android.builder.packaging.DuplicateFileException: Duplicate files copied in APK META-INF/LICENSE.txt
+```
+
+If you see this exception when you try to sync gradle with our SDK, make sure you have the proper packagingOptions exclusions in your **app** build.gradle.  Here's an example:
+
+```groovy
+android {
+    
+    ...
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+    }
+}
+```
