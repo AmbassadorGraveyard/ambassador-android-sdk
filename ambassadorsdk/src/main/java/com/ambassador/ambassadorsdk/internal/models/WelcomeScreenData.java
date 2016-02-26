@@ -1,26 +1,19 @@
 package com.ambassador.ambassadorsdk.internal.models;
 
-import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
+
+import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 
 /**
  * Represents data needed to properly show a WelcomeScreenDialog.
  */
 public class WelcomeScreenData {
 
-    /** WelcomeScreenData object populated with dummy data for testing */
-    public static final WelcomeScreenData TEST_DATA;
-    static {
-        TEST_DATA = new WelcomeScreenData.Builder()
-                .setTitle("John Doe has referred you Ambassador!")
-                .setMessage("You understand the value of referrals. Maybe you've even explored referral marketing software.")
-                .setButtonText("CREATE AN ACCOUNT")
-                .setLink1Text("Testimonials")
-                .setLink2Text("Request Demo")
-                .setColorTheme(Color.parseColor("#4198d1"))
-                .setImageUrl("https://upload.wikimedia.org/wikipedia/commons/7/77/Avatar_cat.png")
-                .build();
-    }
+    /** Text to display on the top bar where the "Close" button is. */
+    protected String topBarText;
 
     /** URL to the image to display as the avatar. */
     protected String imageUrl;
@@ -54,6 +47,10 @@ public class WelcomeScreenData {
 
     public WelcomeScreenData() {
 
+    }
+
+    public String getTopBarText() {
+        return topBarText;
     }
 
     public String getImageUrl() {
@@ -102,6 +99,11 @@ public class WelcomeScreenData {
 
         public Builder() {
             welcomeScreenData = new WelcomeScreenData();
+        }
+
+        public Builder setTopBarText(String topBarText) {
+            welcomeScreenData.topBarText = topBarText;
+            return this;
         }
 
         public Builder setImageUrl(String imageUrl) {
@@ -158,6 +160,51 @@ public class WelcomeScreenData {
             return welcomeScreenData;
         }
 
+    }
+
+    /**
+     * Appends information from WelcomeScreenDialog.Parameters to WelcomeScreenData, and returns the
+     * WelcomeScreenData object.
+     * @param parameters the Parameters object with info to append.
+     * @return WelcomeScreenData with info from parameters appended.
+     */
+    @NonNull
+    public WelcomeScreenData withParameters(@Nullable WelcomeScreenDialog.Parameters parameters) {
+        if (parameters == null) return this;
+
+        buttonOnClickListener = parameters.getButtonOnClickListener();
+        link1OnClickListener = parameters.getLink1OnClickListener();
+        link2OnClickListener = parameters.getLink2OnClickListener();
+
+        return this;
+    }
+
+
+    @NonNull
+    public WelcomeScreenData withBackendData(@Nullable WelcomeScreenDialog.BackendData backendData) {
+        if (backendData == null) return this;
+
+        imageUrl = backendData.getImageUrl();
+
+        return this;
+    }
+
+    /**
+     * Creates a WelcomeScreenData object based on information in RAFOptions, and returns it.
+     * @return WelcomeScreenData with information pre-filled from RAFOptions.
+     */
+    @NonNull
+    public static WelcomeScreenData getFromOptions() {
+        RAFOptions rafOptions = RAFOptions.get();
+        return new WelcomeScreenData.Builder()
+                .setTopBarText(rafOptions.getWelcomeScreenTopBarText())
+                .setTitle(rafOptions.getWelcomeScreenTitle())
+                .setMessage(rafOptions.getWelcomeScreenMessage())
+                .setButtonText(rafOptions.getWelcomeScreenButtonText())
+                .setLink1Text(rafOptions.getWelcomeScreenLink1Text())
+                .setLink2Text(rafOptions.getWelcomeScreenLink2Text())
+                .setColorTheme(rafOptions.getWelcomeScreenColorTheme())
+                .build();
     }
 
 }

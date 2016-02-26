@@ -39,7 +39,11 @@ public class WelcomeScreenDialog extends Dialog {
     /** The availability callback reference that is stored statically for later use. */
     protected static AvailabilityCallback availabilityCallback;
 
+    /** The parameters specified by the 3rd party to add to the WelcomeScreenData used. */
+    protected static Parameters parameters;
+
     @Bind(B.id.tvClose)         protected TextView                  tvClose;
+    @Bind(B.id.tvWelcome)       protected TextView                  tvWelcome;
     @Bind(B.id.tvTitle)         protected TextView                  tvTitle;
     @Bind(B.id.rvAvatar)        protected RelativeLayout            rvAvatar;
     @Bind(B.id.rvWhiteCircle)   protected RelativeLayout            rvWhiteCircle;
@@ -100,6 +104,8 @@ public class WelcomeScreenDialog extends Dialog {
         this.welcomeScreenData = welcomeScreenData;
         if (isInflated) {
             pbLoading.getIndeterminateDrawable().setColorFilter(getDarkenedColor(welcomeScreenData.getColorTheme()), PorterDuff.Mode.SRC_IN);
+
+            tvWelcome.setText(welcomeScreenData.getTopBarText());
 
             tvClose.setTextColor(welcomeScreenData.getColorTheme());
             tvClose.setOnClickListener(tvCloseOnClickListener);
@@ -212,6 +218,81 @@ public class WelcomeScreenDialog extends Dialog {
      */
     public static void setAvailabilityCallback(@NonNull AvailabilityCallback availabilityCallback) {
         WelcomeScreenDialog.availabilityCallback = availabilityCallback;
+    }
+
+    /**
+     * Returns the stored parameters, null or not.
+     * @return static Parameters parameters.
+     */
+    @Nullable
+    public static Parameters getParameters() {
+        return parameters;
+    }
+
+    /**
+     * Statically stores Parameters that the 3rd party wants added to the WelcomeScreenData presented
+     * onto the dialog.
+     * @param parameters the parameters to add to generated WelcomeScreenData.
+     */
+    public static void setParameters(@NonNull Parameters parameters) {
+        WelcomeScreenDialog.parameters = parameters;
+    }
+
+    /**
+     * Parameter builder accessible by the 3rd party dev for specifying values inside of a WelcomeScreenData
+     * object.
+     */
+    public static class Parameters {
+
+        protected View.OnClickListener buttonOnClickListener;
+        protected View.OnClickListener link1OnClickListener;
+        protected View.OnClickListener link2OnClickListener;
+
+        public View.OnClickListener getButtonOnClickListener() {
+            return buttonOnClickListener;
+        }
+
+        public Parameters setButtonOnClickListener(View.OnClickListener buttonOnClickListener) {
+            this.buttonOnClickListener = buttonOnClickListener;
+            return this;
+        }
+
+        public View.OnClickListener getLink1OnClickListener() {
+            return link1OnClickListener;
+        }
+
+        public Parameters setLink1OnClickListener(View.OnClickListener link1OnClickListener) {
+            this.link1OnClickListener = link1OnClickListener;
+            return this;
+        }
+
+        public View.OnClickListener getLink2OnClickListener() {
+            return link2OnClickListener;
+        }
+
+        public Parameters setLink2OnClickListener(View.OnClickListener link2OnClickListener) {
+            this.link2OnClickListener = link2OnClickListener;
+            return this;
+        }
+
+    }
+
+    /**
+     * Parameter build that we use internally to append data from the backend.
+     */
+    public static class BackendData {
+
+        protected String imageUrl;
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public BackendData setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+            return this;
+        }
+
     }
 
 }

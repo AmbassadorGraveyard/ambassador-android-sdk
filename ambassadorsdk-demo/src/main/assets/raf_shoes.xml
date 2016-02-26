@@ -49,4 +49,11 @@
         <item>EMAIL</item>
     </array>
     <dimen name="socialOptionCornerRadius">8dp</dimen>
+    <string name="welcomeScreenTopBarText">Welcome</string>
+    <string name="welcomeScreenTitle">John Doe has referred you to Ambassador!</string>
+    <string name="welcomeScreenMessage">You understand the value of referrals. Maybe you've even explored referral marketing software.</string>
+    <string name="welcomeScreenButtonText">CREATE AN ACCOUNT</string>
+    <string name="welcomeScreenLink1Text">Testimonials</string>
+    <string name="welcomeScreenLink2Text">Request Demo</string>
+    <color name="welcomeScreenColorTheme">#4198d1</color>
 </resources>
