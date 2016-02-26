@@ -12,11 +12,11 @@ public class WelcomeScreenData {
     public static final WelcomeScreenData TEST_DATA;
     static {
         TEST_DATA = new WelcomeScreenData.Builder()
-                .setTitle("John Doe has referred you to name of company")
-                .setMessage("Lorem ipsum dolor sit amet, adipiscing elit, sed do elusmod")
+                .setTitle("John Doe has referred you Ambassador!")
+                .setMessage("You understand the value of referrals. Maybe you've even explored referral marketing software.")
                 .setButtonText("CREATE AN ACCOUNT")
-                .setLink1Text("Link 1")
-                .setLink2Text("Link 2")
+                .setLink1Text("Testimonials")
+                .setLink2Text("Request Demo")
                 .setColorTheme(Color.parseColor("#4198d1"))
                 .setImageUrl("https://upload.wikimedia.org/wikipedia/commons/7/77/Avatar_cat.png")
                 .build();
