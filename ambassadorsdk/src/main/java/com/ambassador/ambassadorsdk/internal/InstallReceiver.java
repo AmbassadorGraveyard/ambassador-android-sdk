@@ -1,12 +1,17 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
+import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.models.WelcomeScreenData;
 import com.google.gson.JsonObject;
 
 import javax.inject.Inject;
@@ -15,6 +20,7 @@ public final class InstallReceiver extends BroadcastReceiver {
 
     @Inject protected User user;
     @Inject protected Campaign campaign;
+    @Inject protected RequestManager requestManager;
 
     public InstallReceiver() {
         AmbSingleton.inject(this);
@@ -78,6 +84,27 @@ public final class InstallReceiver extends BroadcastReceiver {
             identity.add("device", device);
             user.setAugurData(identity);
         }
+
+        requestManager.getUserFromShortCode(referralShortCode, new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess(Object successResponse) {
+                try {
+                    Activity activity = WelcomeScreenDialog.getActivity();
+                    WelcomeScreenDialog welcomeScreenDialog = new WelcomeScreenDialog(activity);
+                    welcomeScreenDialog.load(WelcomeScreenData.TEST_DATA);
+                    WelcomeScreenDialog.AvailabilityCallback callback = WelcomeScreenDialog.getAvailabilityCallback();
+                    callback.available(welcomeScreenDialog);
+                } catch (NullPointerException npe) {
+                    Log.e("AmbassadorSDK", npe.toString());
+                    // That dev screwed up
+                }
+            }
+
+            @Override
+            public void onFailure(Object failureResponse) {
+
+            }
+        });
     }
 
     public static InstallReceiver getInstance() {

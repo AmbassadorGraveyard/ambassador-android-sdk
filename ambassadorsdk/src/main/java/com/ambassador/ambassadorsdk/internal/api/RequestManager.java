@@ -242,7 +242,7 @@ public class RequestManager {
      * @param requestCompletion callback for request completion.
      */
     public void getUserFromShortCode(final String shortCode, final RequestCompletion requestCompletion) {
-
+        requestCompletion.onSuccess(null);
     }
 
     /**
