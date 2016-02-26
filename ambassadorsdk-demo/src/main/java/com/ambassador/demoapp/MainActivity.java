@@ -36,6 +36,8 @@ public final class MainActivity extends AppCompatActivity {
 
     protected TabFragmentPagerAdapter adapter;
 
+    protected WelcomeScreenDialog welcomeScreenDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +67,7 @@ public final class MainActivity extends AppCompatActivity {
             @Override
             public void available(WelcomeScreenDialog welcomeScreenDialog) {
                 welcomeScreenDialog.show();
+                MainActivity.this.welcomeScreenDialog = welcomeScreenDialog;
             }
         });
     }

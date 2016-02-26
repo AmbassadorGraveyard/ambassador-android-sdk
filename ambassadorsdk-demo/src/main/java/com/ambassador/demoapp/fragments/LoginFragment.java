@@ -27,6 +27,12 @@ public final class LoginFragment extends Fragment {
     @Bind(R.id.etPassword)  protected EditText  etPassword;
     @Bind(R.id.btnLogin)    protected Button    btnLogin;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
