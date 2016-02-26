@@ -243,23 +243,6 @@ public final class AmbassadorSDK {
     public static void presentWelcomeScreen(@NonNull final Activity activity, @NonNull final WelcomeScreenDialog.AvailabilityCallback availabilityCallback) {
         WelcomeScreenDialog.setActivity(activity);
         WelcomeScreenDialog.setAvailabilityCallback(availabilityCallback);
-
-        final Activity ref = activity;
-        // Following is temporary for testing:
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                ref.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent data = new Intent();
-                        data.putExtra("referrer", "mbsy_cookie_code=jwnZ&device_id=test1234");
-                        InstallReceiver.getInstance().onReceive(activity, data);
-                    }
-                });
-
-            }
-        }, 5000);
     }
 
 }
