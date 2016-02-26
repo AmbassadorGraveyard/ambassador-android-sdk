@@ -23,6 +23,12 @@ public final class StoreFragment extends Fragment {
 
     @Bind(R.id.btnBuy) protected Button btnBuy;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

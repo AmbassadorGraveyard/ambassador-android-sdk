@@ -29,6 +29,12 @@ public final class ReferFragment extends Fragment {
     @Bind(R.id.etCampaignId)    protected EditText etCampaignId;
     @Bind(R.id.lvRafs)          protected ListView lvRafs;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
