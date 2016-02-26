@@ -602,6 +602,34 @@ public final class RAFOptionsFactory {
                         builder.setSocialOptionCornerRadius(paramFloat);
                         break;
 
+                    case "welcomescreentopbartext":
+                        builder.setWelcomeScreenTopBarText(paramString);
+                        break;
+
+                    case "welcomescreentitle":
+                        builder.setWelcomeScreenTitle(paramString);
+                        break;
+
+                    case "welcomescreenmessage":
+                        builder.setWelcomeScreenMessage(paramString);
+                        break;
+
+                    case "welcomescreenbuttontext":
+                        builder.setWelcomeScreenButtonText(paramString);
+                        break;
+
+                    case "welcomescreenlink1text":
+                        builder.setWelcomeScreenLink1Text(paramString);
+                        break;
+
+                    case "welcomescreenlink2text":
+                        builder.setWelcomeScreenLink2Text(paramString);
+                        break;
+
+                    case "welcomescreencolortheme":
+                        builder.setWelcomeScreenColorTheme(paramInt);
+                        break;
+
                     default:
                         Log.e("Ambassador", "Key: " + key + " is not a valid attribute");
                         break;

@@ -63,13 +63,15 @@ public final class MainActivity extends AppCompatActivity {
             actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
         }
 
+        WelcomeScreenDialog.Parameters parameters = new WelcomeScreenDialog.Parameters();
+
         AmbassadorSDK.presentWelcomeScreen(this, new WelcomeScreenDialog.AvailabilityCallback() {
             @Override
             public void available(WelcomeScreenDialog welcomeScreenDialog) {
                 welcomeScreenDialog.show();
                 MainActivity.this.welcomeScreenDialog = welcomeScreenDialog;
             }
-        });
+        }, parameters);
     }
 
     public void switchToTabAtIndex(int position) {
