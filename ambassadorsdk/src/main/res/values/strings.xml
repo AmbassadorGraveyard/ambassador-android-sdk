@@ -59,9 +59,9 @@
     <!-- // -->
 
     <!-- LINKEDIN -->
-    <string name="linked_in_client_id">777z4czm3edaef</string>
-    <string name="linked_in_client_secret">lM1FzXJauTSfxdnW</string>
-    <string name="linked_in_callback_url">http://localhost:2999</string>
+    <string name="linked_in_client_id">772u9urfzgvdea</string>
+    <string name="linked_in_client_secret">nIWmR7NDsH8Xzp1n</string>
+    <string name="linked_in_callback_url">http://getambassador.com</string>
     <string name="linked_in_reauthenticate_message">We need you to re-authenticate LinkedIn. Continue?</string>
     <string name="linked_in_w_share_permission">w_share</string>
     <string name="linked_in_r_profile_permission">r_basicprofile</string>

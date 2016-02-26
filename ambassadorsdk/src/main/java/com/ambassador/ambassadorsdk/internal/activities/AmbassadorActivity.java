@@ -356,6 +356,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     protected void setUpPusher() {
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
 
+        pusherManager.refreshListeners();
         pusherManager.addPusherListener(new PusherListenerAdapter() {
             @Override
             public void subscribed() {
