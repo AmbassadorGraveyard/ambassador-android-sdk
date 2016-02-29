@@ -92,7 +92,8 @@ public final class InstallReceiver extends BroadcastReceiver {
                     Activity activity = WelcomeScreenDialog.getActivity();
                     WelcomeScreenDialog welcomeScreenDialog = new WelcomeScreenDialog(activity);
                     WelcomeScreenDialog.BackendData backendData = new WelcomeScreenDialog.BackendData().setImageUrl("https://upload.wikimedia.org/wikipedia/commons/7/77/Avatar_cat.png");
-                    welcomeScreenDialog.load(WelcomeScreenData.getFromOptions().withParameters(WelcomeScreenDialog.getParameters()).withBackendData(backendData));
+                    WelcomeScreenData welcomeScreenData = new WelcomeScreenData();
+                    welcomeScreenDialog.load(welcomeScreenData.withParameters(WelcomeScreenDialog.getParameters()).withBackendData(backendData));
                     WelcomeScreenDialog.AvailabilityCallback callback = WelcomeScreenDialog.getAvailabilityCallback();
                     callback.available(welcomeScreenDialog);
                 } catch (NullPointerException npe) {
