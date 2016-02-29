@@ -373,7 +373,51 @@ You can also display the options as circles by setting the value to -1dp.
 
 The SDK allows for a customized welcome dialog to be presented when a user is referred to install your application.
 
-<img src="screenshots/welcomeScreenExample.png" width="320 />
+<img src="screenshots/welcomeScreenExample.png" width="320" />
+
+To present a welcome screen use the following method call inside of the _onCreate_ of the __Activity__ where you want the screen to be presented. This call must be made __after__ _runWithKeys_.
+
+```java
+AmbassadorSDK.presentWelcomeScreen(Activity activity, WelcomeScreenDialog.AvailabilityCallback availabilityCallback, WelcomeScreenDialog.Parameters parameters);
+```
+
+The __Activity__ passed must be the activity that you want the dialog to be presented from.
+
+The __AvailabilityCallback__ is an interface implementation passed in. Through this callback we will pass you a _WelcomeScreenDialog_ object for you to present and handle configuration changes with.
+
+The __Parameters__ is an object that defines the OnClickListeners for the buttons and links on the dialog.
+
+The following is an example implementation of using a welcome screen.
+
+```java
+public class MainActivity extends Activity {
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AmbassadorSDK.runWithKeys(this, "UNIVERSAL_ID_HERE", "UNIVERSAL_TOKEN_HERE");
+
+        // Availability callback where we pass you the dialog to present when available.
+        WelcomeScreenDialog.AvailabilityCallback availabilityCallback = new WelcomeScreenDialog.AvailabilityCallback() {
+            @Override
+            public void available(WelcomeScreenDialog welcomeScreenDialog) {
+                welcomeScreenDialog.show();
+            }
+        };
+
+        // Parameters defining on click actions with standard View.OnClickListeners
+        WelcomeScreenDialog.Parameters parameters = 
+            new WelcomeScreenDialog.Parameters()
+                    .setButtonOnClickListener(buttonOnClickListener)
+                    .setLink1OnClickListener(link1OnClickListener)
+                    .setLink2OnClickListener(link2OnClickListener);
+
+        // Tell the SDK to pass the welcome screen through the callback when a new user is referred to the app.
+        AmbassadorSDK.presentWelcomeScreen(this, availabilityCallback, parameters);
+    }
+
+}
+```
 
 ---
 
