@@ -1,8 +1,10 @@
 package com.ambassador.ambassadorsdk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
@@ -230,6 +232,22 @@ public final class AmbassadorSDK {
                 // No reaction currently required
             }
         });
+    }
+
+    /**
+     * Registers an activity and callback to pass a WelcomeScreenDialog through, once the InstallReceiver
+     * is used.
+     * @param activity the Activity to launch the dialog from.
+     * @param availabilityCallback the callback interface to pass the dialog through, once available.
+     */
+    public static void presentWelcomeScreen(
+            @NonNull final Activity activity,
+            @NonNull final WelcomeScreenDialog.AvailabilityCallback availabilityCallback,
+            @NonNull final WelcomeScreenDialog.Parameters parameters) {
+
+        WelcomeScreenDialog.setActivity(activity);
+        WelcomeScreenDialog.setAvailabilityCallback(availabilityCallback);
+        WelcomeScreenDialog.setParameters(parameters);
     }
 
 }

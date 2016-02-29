@@ -1,5 +1,6 @@
 package com.ambassador.demoapp;
 
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -18,7 +19,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 import com.ambassador.demoapp.fragments.LoginFragment;
 import com.ambassador.demoapp.fragments.ReferFragment;
 import com.ambassador.demoapp.fragments.SignupFragment;
@@ -33,6 +37,8 @@ public final class MainActivity extends AppCompatActivity {
     @Bind(R.id.vpPages)     protected ViewPager     vpPages;
 
     protected TabFragmentPagerAdapter adapter;
+
+    protected WelcomeScreenDialog welcomeScreenDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,42 @@ public final class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
         }
+
+        WelcomeScreenDialog.Parameters parameters =
+                new WelcomeScreenDialog.Parameters()
+                        .setButtonOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "Button click", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setLink1OnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "Link1", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setLink2OnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "Link2", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setTopBarText("Welcome")
+                        .setTitleText("{{ name }} has referred you to Ambassador!")
+                        .setMessageText("You understand the value of referrals. Maybe you've even explored referral marketing software.")
+                        .setButtonText("CREATE AN ACCOUNT")
+                        .setLink1Text("Testimonials")
+                        .setLink2Text("Request Demo")
+                        .setColorTheme(Color.parseColor("#4198d1"));
+
+        AmbassadorSDK.presentWelcomeScreen(this, new WelcomeScreenDialog.AvailabilityCallback() {
+            @Override
+            public void available(WelcomeScreenDialog welcomeScreenDialog) {
+                welcomeScreenDialog.show();
+                MainActivity.this.welcomeScreenDialog = welcomeScreenDialog;
+            }
+        }, parameters);
     }
 
     public void switchToTabAtIndex(int position) {

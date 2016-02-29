@@ -127,6 +127,8 @@ AmbassadorSDK.registerConversion(conversionParameters, false);
 // To register a conversion for the application's installation, the call to registerConversion would be:
 AmbassadorSDK.registerConversion(conversionParameters, true);
 // Note that the installation conversion will only happen once. Any subsequent usages of the app will not register this conversion.
+
+#
  ```
 
 ## Present the 'Refer a Friend' Screen (RAF)
@@ -364,6 +366,67 @@ You can also display the options as circles by setting the value to -1dp.
 ```
 
 <img src="screenshots/cornerRadiusCircleExample.png" width="320" />
+
+---
+
+## Welcome Screens
+
+The SDK allows for a customized welcome dialog to be presented when a user is referred to install your application.
+
+<img src="screenshots/welcomeScreenExample.png" width="320" />
+
+To present a welcome screen use the following method call inside of the _onCreate_ of the __Activity__ where you want the screen to be presented. This call must be made __after__ _runWithKeys_.
+
+```java
+AmbassadorSDK.presentWelcomeScreen(Activity activity, WelcomeScreenDialog.AvailabilityCallback availabilityCallback, WelcomeScreenDialog.Parameters parameters);
+```
+
+The __Activity__ passed must be the activity that you want the dialog to be presented from.
+
+The __AvailabilityCallback__ is an interface implementation passed in. Through this callback we will pass you a _WelcomeScreenDialog_ object for you to present and handle configuration changes with.
+
+The __Parameters__ is an object that defines the OnClickListeners for the buttons and links on the dialog, and also defines the text and colors used. To use the name of the referrer anywhere in the text, use "**{{ name }}**".
+
+The following is an example implementation of using a welcome screen.
+
+```java
+public class MainActivity extends Activity {
+    
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AmbassadorSDK.runWithKeys(this, "UNIVERSAL_ID_HERE", "UNIVERSAL_TOKEN_HERE");
+
+        // Availability callback where we pass you the dialog to present when available.
+        WelcomeScreenDialog.AvailabilityCallback availabilityCallback = new WelcomeScreenDialog.AvailabilityCallback() {
+            @Override
+            public void available(WelcomeScreenDialog welcomeScreenDialog) {
+                welcomeScreenDialog.show();
+            }
+        };
+
+        // Parameters defining on click actions with standard View.OnClickListeners
+        WelcomeScreenDialog.Parameters parameters = 
+            new WelcomeScreenDialog.Parameters()
+                    .setButtonOnClickListener(buttonOnClickListener)
+                    .setLink1OnClickListener(link1OnClickListener)
+                    .setLink2OnClickListener(link2OnClickListener)
+                    .setTopBarText("Welcome")
+                    .setTitleText("{{ name }} has referred you to Ambassador!")
+                    .setMessageText("You understand the value of referrals. Maybe you've even explored referral marketing software.")
+                    .setButtonText("CREATE AN ACCOUNT")
+                    .setLink1Text("Testimonials")
+                    .setLink2Text("Request Demo")
+                    .setColorTheme(Color.parseColor("#4198d1"));
+
+        // Tell the SDK to pass the welcome screen through the callback when a new user is referred to the app.
+        AmbassadorSDK.presentWelcomeScreen(this, availabilityCallback, parameters);
+    }
+
+}
+```
+
+We pass you the WelcomeScreenDialog through the AvailabilityCallback because at that point your activity needs to handle presentation and configuration changes.  So for example if you handle orientation changes correctly and your activity is recreated, you need to save state and then re-launch that dialog on re-creation.
 
 ---
 
