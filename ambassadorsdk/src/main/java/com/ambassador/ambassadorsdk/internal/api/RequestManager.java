@@ -237,6 +237,15 @@ public class RequestManager {
     }
 
     /**
+     * Requests data about a short code so we can present a personalized welcome screen.
+     * @param shortCode the referred by short code to request data about.
+     * @param requestCompletion callback for request completion.
+     */
+    public void getUserFromShortCode(final String shortCode, final RequestCompletion requestCompletion) {
+        requestCompletion.onSuccess(null);
+    }
+
+    /**
      * Asks the Ambassador backend to open a Pusher channel.
      * Stores the channel information when it receives back.
      * @param completion callback for request completion

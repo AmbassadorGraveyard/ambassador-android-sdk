@@ -10,4 +10,13 @@
     <style name="ActivityTheme" parent="AppTheme">
         <!--<item name="android:colorPrimary">@color/homeToolBar</item>-->
     </style>
+
+    <style name="DialogSlideAnim" parent="@android:style/Theme.Dialog">
+        <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+    </style>
+
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_up</item>
+    </style>
+
 </resources>
