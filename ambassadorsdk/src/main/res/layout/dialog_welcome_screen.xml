@@ -24,7 +24,8 @@
                 android:paddingStart="12dp"
                 android:paddingTop="8dp"
                 android:text="Close"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tvWelcome"
