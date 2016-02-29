@@ -426,7 +426,7 @@ public class MainActivity extends Activity {
 }
 ```
 
-To customize your welcome screen
+We pass you the WelcomeScreenDialog through the AvailabilityCallback because at that point your activity needs to handle presentation and configuration changes.  So for example if you handle orientation changes correctly and your activity is recreated, you need to save state and then re-launch that dialog on re-creation.
 
 ---
 
