@@ -172,7 +172,10 @@ public class AutoResizeTextView extends TextView {
     }
 
     private int binarySearch(final int start, final int end, final SizeTester sizeTester, final RectF availableSpace) {
-        int lastBest = start, lo = start, hi = end - 1, mid;
+        int lastBest = start;
+        int lo = start;
+        int hi = end - 1;
+        int mid;
         while (lo <= hi) {
             mid = lo + hi >>> 1;
             final int midValCmp = sizeTester.onTestSize(mid, availableSpace);
