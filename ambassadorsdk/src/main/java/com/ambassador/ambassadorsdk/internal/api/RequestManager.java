@@ -114,7 +114,7 @@ public class RequestManager {
         String authKey = auth.getUniversalToken();
         List<String> emailList = BulkShareHelper.verifiedEmailList(contacts);
         String fromEmail = user.getEmail();
-        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emailList, campaign.getReferredByShortCode(), campaign.getEmailSubject(), messageToShare, fromEmail);
+        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emailList, campaign.getShortCode(), campaign.getEmailSubject(), messageToShare, fromEmail);
 
         bulkShareApi.bulkShareEmail(uid, authKey, body, completion);
     }

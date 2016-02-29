@@ -6,8 +6,9 @@ import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.ambassador.ambassadorsdk.*;
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.BuildConfig;
+import com.ambassador.ambassadorsdk.ConversionParameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,13 @@ public final class Demo extends Application {
         conversions = new ArrayList<>();
 
         runWithKeys();
+        ConversionParameters parameters = new ConversionParameters.Builder()
+                .setCampaign(Integer.parseInt(getCampaignId()))
+                .setCustom1("This is a buyConversion from the Ambassador SDK Android test application.")
+                .setCustom2("Username registered: " + "dogs")
+                .build();
+
+        AmbassadorSDK.registerConversion(parameters, true);
     }
 
     public void runWithKeys() {
@@ -105,7 +113,7 @@ public final class Demo extends Application {
 
     @NonNull
     public String getCampaignId() {
-        return prefs.getString("campaignId", "260");
+        return prefs.getString("campaignId", "30391");
     }
 
     @Nullable

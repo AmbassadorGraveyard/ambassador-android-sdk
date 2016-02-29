@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ambassador.demoapp.BuildConfig;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 
@@ -31,6 +32,13 @@ public final class LoginFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         btnLogin.setOnClickListener(btnLoginOnClickListener);
+        view.findViewById(R.id.ivFlags).setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(getActivity(), "Version Code: " + BuildConfig.VERSION_CODE, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        });
 
         return view;
     }
