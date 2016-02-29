@@ -120,9 +120,11 @@ public class WelcomeScreenDialog extends Dialog {
 
             tvLink1.setText(welcomeScreenData.getLink1Text());
             tvLink1.setTextColor(welcomeScreenData.getColorTheme());
+            tvLink1.setOnClickListener(welcomeScreenData.getLink1OnClickListener());
 
             tvLink2.setText(welcomeScreenData.getLink2Text());
             tvLink2.setTextColor(welcomeScreenData.getColorTheme());
+            tvLink2.setOnClickListener(welcomeScreenData.getLink2OnClickListener());
 
             rvAvatar.setBackground(getGradientCircleBackground());
             rvWhiteCircle.setBackground(getWhiteCircleBackground());

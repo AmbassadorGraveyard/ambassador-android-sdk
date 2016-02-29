@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
@@ -66,6 +67,24 @@ public final class MainActivity extends AppCompatActivity {
 
         WelcomeScreenDialog.Parameters parameters =
                 new WelcomeScreenDialog.Parameters()
+                        .setButtonOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "Button click", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setLink1OnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "Link1", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setLink2OnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(MainActivity.this, "Link2", Toast.LENGTH_SHORT).show();
+                            }
+                        })
                         .setTopBarText("Welcome")
                         .setTitleText("{{ name }} has referred you to Ambassador!")
                         .setMessageText("You understand the value of referrals. Maybe you've even explored referral marketing software.")
