@@ -411,12 +411,13 @@ public class MainActivity extends Activity {
                     .setButtonOnClickListener(buttonOnClickListener)
                     .setLink1OnClickListener(link1OnClickListener)
                     .setLink2OnClickListener(link2OnClickListener)
+                    .setTopBarText("Welcome")
                     .setTitleText("{{ name }} has referred you to Ambassador!")
                     .setMessageText("You understand the value of referrals. Maybe you've even explored referral marketing software.")
                     .setButtonText("CREATE AN ACCOUNT")
                     .setLink1Text("Testimonials")
                     .setLink2Text("Request Demo")
-                    .setColorTheme(Color.parse("#4198d1"));
+                    .setColorTheme(Color.parseColor("#4198d1"));
 
         // Tell the SDK to pass the welcome screen through the callback when a new user is referred to the app.
         AmbassadorSDK.presentWelcomeScreen(this, availabilityCallback, parameters);

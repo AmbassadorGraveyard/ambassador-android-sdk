@@ -192,6 +192,7 @@ public class WelcomeScreenData {
         buttonText = parameters.getButtonText();
         link1Text = parameters.getLink1Text();
         link2Text = parameters.getLink2Text();
+        colorTheme = parameters.getColorTheme();
 
         return this;
     }
@@ -209,6 +210,24 @@ public class WelcomeScreenData {
         imageUrl = backendData.getImageUrl();
         String space = " ";
         name = backendData.getFirstName() + space + backendData.getLastName();
+
+        return this;
+    }
+
+    /**
+     * Converts instances of {{ name }} in strings to the stored name.
+     * @return WelcomeScreenData with converted strings.
+     */
+    @NonNull
+    public WelcomeScreenData parseName() {
+        if (name == null) return this;
+
+        topBarText = topBarText.replace("{{ name }}", name);
+        title = title.replace("{{ name }}", name);
+        message = message.replace("{{ name }}", name);
+        buttonText = buttonText.replace("{{ name }}", name);
+        link1Text = link1Text.replace("{{ name }}", name);
+        link2Text = link2Text.replace("{{ name }}", name);
 
         return this;
     }
