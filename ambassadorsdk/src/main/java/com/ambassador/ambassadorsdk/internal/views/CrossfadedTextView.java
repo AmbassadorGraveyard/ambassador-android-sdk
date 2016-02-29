@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.views;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
@@ -22,6 +23,8 @@ public final class CrossfadedTextView extends RelativeLayout {
     @Bind(B.id.tvB) protected TextView tvB;
 
     protected int toggle = 1;
+    protected Handler handler;
+    protected Runnable currentRunnable;
 
     public CrossfadedTextView(Context context) {
         super(context);
@@ -41,9 +44,11 @@ public final class CrossfadedTextView extends RelativeLayout {
     private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_crossfaded_text, this);
         ButterFork.bind(this);
+        handler = new Handler();
     }
 
     public void setText(@NonNull String text) {
+        handler.removeCallbacks(currentRunnable);
         if (toggle > 0) {
             tvB.setText(text);
             animateOut(tvA);
@@ -81,7 +86,7 @@ public final class CrossfadedTextView extends RelativeLayout {
     }
 
     private void animateIn(final TextView textView) {
-        new Handler().postDelayed(new Runnable() {
+        currentRunnable = new Runnable() {
             @Override
             public void run() {
                 textView.animate()
@@ -89,7 +94,8 @@ public final class CrossfadedTextView extends RelativeLayout {
                         .setDuration(ANIMATION_DURATION)
                         .start();
             }
-        }, ANIMATION_DURATION);
+        };
+        handler.postDelayed(currentRunnable, ANIMATION_DURATION);
     }
 
     public void setTextColor(int color) {
@@ -121,7 +127,9 @@ public final class CrossfadedTextView extends RelativeLayout {
     private void setTextViewAlignmentLeft(TextView textView) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) textView.getLayoutParams();
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, TRUE);
-        params.addRule(RelativeLayout.ALIGN_PARENT_START, TRUE);
+        if (Build.VERSION.SDK_INT >= 17) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_START, TRUE);
+        }
         params.addRule(RelativeLayout.CENTER_HORIZONTAL, 0);
         textView.setLayoutParams(params);
     }
@@ -129,7 +137,9 @@ public final class CrossfadedTextView extends RelativeLayout {
     private void setTextViewAlignmentCenter(TextView textView) {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) textView.getLayoutParams();
         params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
-        params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
+        if (Build.VERSION.SDK_INT >= 17) {
+            params.addRule(RelativeLayout.ALIGN_PARENT_START, 0);
+        }
         params.addRule(RelativeLayout.CENTER_HORIZONTAL, TRUE);
         textView.setLayoutParams(params);
     }
