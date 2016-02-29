@@ -127,6 +127,8 @@ AmbassadorSDK.registerConversion(conversionParameters, false);
 // To register a conversion for the application's installation, the call to registerConversion would be:
 AmbassadorSDK.registerConversion(conversionParameters, true);
 // Note that the installation conversion will only happen once. Any subsequent usages of the app will not register this conversion.
+
+#
  ```
 
 ## Present the 'Refer a Friend' Screen (RAF)
@@ -364,6 +366,14 @@ You can also display the options as circles by setting the value to -1dp.
 ```
 
 <img src="screenshots/cornerRadiusCircleExample.png" width="320" />
+
+---
+
+## Welcome Screens
+
+The SDK allows for a customized welcome dialog to be presented when a user is referred to install your application.
+
+<img src="screenshots/welcomeScreenExample.png" width="320 />
 
 ---
 
