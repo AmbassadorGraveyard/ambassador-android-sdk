@@ -2,7 +2,6 @@ package com.ambassador.ambassadorsdk;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 
@@ -84,14 +83,6 @@ public final class RAFOptions {
     private String[] channels;
 
     private float socialOptionCornerRadius;
-
-    private String welcomeScreenTopBarText;
-    private String welcomeScreenTitle;
-    private String welcomeScreenMessage;
-    private String welcomeScreenButtonText;
-    private String welcomeScreenLink1Text;
-    private String welcomeScreenLink2Text;
-    private int welcomeScreenColorTheme;
 
     private RAFOptions() {}
 
@@ -283,34 +274,6 @@ public final class RAFOptions {
         return socialOptionCornerRadius;
     }
 
-    public String getWelcomeScreenTopBarText() {
-        return welcomeScreenTopBarText;
-    }
-
-    public String getWelcomeScreenTitle() {
-        return welcomeScreenTitle;
-    }
-
-    public String getWelcomeScreenMessage() {
-        return welcomeScreenMessage;
-    }
-
-    public String getWelcomeScreenButtonText() {
-        return welcomeScreenButtonText;
-    }
-
-    public String getWelcomeScreenLink1Text() {
-        return welcomeScreenLink1Text;
-    }
-
-    public String getWelcomeScreenLink2Text() {
-        return welcomeScreenLink2Text;
-    }
-
-    public int getWelcomeScreenColorTheme() {
-        return welcomeScreenColorTheme;
-    }
-
     public void setDefaultShareMessage(String defaultShareMessage) {
         this.defaultShareMessage = defaultShareMessage;
     }
@@ -383,14 +346,6 @@ public final class RAFOptions {
         private String[] channels = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
 
         private float socialOptionCornerRadius;
-
-        private String welcomeScreenTopBarText = "Welcome";
-        private String welcomeScreenTitle = "John Doe has referred you to Ambassador!";
-        private String welcomeScreenMessage = "You understand the value of referrals. Maybe you've even explored referral marketing software.";
-        private String welcomeScreenButtonText = "CREATE AN ACCOUNT";
-        private String welcomeScreenLink1Text = "Testimonials";
-        private String welcomeScreenLink2Text = "Request Demo";
-        private int welcomeScreenColorTheme = Color.parseColor("#4198d1");
 
         public Builder() {}
 
@@ -584,41 +539,6 @@ public final class RAFOptions {
             this.socialOptionCornerRadius = socialOptionCornerRadius;
         }
 
-        public Builder setWelcomeScreenTopBarText(String welcomeScreenTopBarText) {
-            this.welcomeScreenTopBarText = welcomeScreenTopBarText;
-            return this;
-        }
-
-        public Builder setWelcomeScreenTitle(String welcomeScreenTitle) {
-            this.welcomeScreenTitle = welcomeScreenTitle;
-            return this;
-        }
-
-        public Builder setWelcomeScreenMessage(String welcomeScreenMessage) {
-            this.welcomeScreenMessage = welcomeScreenMessage;
-            return this;
-        }
-
-        public Builder setWelcomeScreenButtonText(String welcomeScreenButtonText) {
-            this.welcomeScreenButtonText = welcomeScreenButtonText;
-            return this;
-        }
-
-        public Builder setWelcomeScreenLink1Text(String welcomeScreenLink1Text) {
-            this.welcomeScreenLink1Text = welcomeScreenLink1Text;
-            return this;
-        }
-
-        public Builder setWelcomeScreenLink2Text(String welcomeScreenLink2Text) {
-            this.welcomeScreenLink2Text = welcomeScreenLink2Text;
-            return this;
-        }
-
-        public Builder setWelcomeScreenColorTheme(int welcomeScreenColorTheme) {
-            this.welcomeScreenColorTheme = welcomeScreenColorTheme;
-            return this;
-        }
-
         @NonNull
         public RAFOptions build() {
             RAFOptions tmp = new RAFOptions();
@@ -670,13 +590,6 @@ public final class RAFOptions {
             tmp.twitterToolbarArrowColor = this.twitterToolbarArrowColor;
             tmp.channels = this.channels;
             tmp.socialOptionCornerRadius = this.socialOptionCornerRadius;
-            tmp.welcomeScreenTopBarText = this.welcomeScreenTopBarText;
-            tmp.welcomeScreenTitle = this.welcomeScreenTitle;
-            tmp.welcomeScreenMessage = this.welcomeScreenMessage;
-            tmp.welcomeScreenButtonText = this.welcomeScreenButtonText;
-            tmp.welcomeScreenLink1Text = this.welcomeScreenLink1Text;
-            tmp.welcomeScreenLink2Text = this.welcomeScreenLink2Text;
-            tmp.welcomeScreenColorTheme = this.welcomeScreenColorTheme;
 
             return tmp;
         }

@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 
 /**
@@ -17,6 +16,9 @@ public class WelcomeScreenData {
 
     /** URL to the image to display as the avatar. */
     protected String imageUrl;
+
+    /** Name to place wherever a {{ name }} id is placed. */
+    protected String name;
 
     /** Large text to display below picture. */
     protected String title;
@@ -55,6 +57,10 @@ public class WelcomeScreenData {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getTitle() {
@@ -108,6 +114,11 @@ public class WelcomeScreenData {
 
         public Builder setImageUrl(String imageUrl) {
             welcomeScreenData.imageUrl = imageUrl;
+            return this;
+        }
+
+        public Builder setName(String name) {
+            welcomeScreenData.name = name;
             return this;
         }
 
@@ -175,36 +186,31 @@ public class WelcomeScreenData {
         buttonOnClickListener = parameters.getButtonOnClickListener();
         link1OnClickListener = parameters.getLink1OnClickListener();
         link2OnClickListener = parameters.getLink2OnClickListener();
-
-        return this;
-    }
-
-
-    @NonNull
-    public WelcomeScreenData withBackendData(@Nullable WelcomeScreenDialog.BackendData backendData) {
-        if (backendData == null) return this;
-
-        imageUrl = backendData.getImageUrl();
+        topBarText = parameters.getTopBarText();
+        title = parameters.getTitleText();
+        message = parameters.getMessageText();
+        buttonText = parameters.getButtonText();
+        link1Text = parameters.getLink1Text();
+        link2Text = parameters.getLink2Text();
 
         return this;
     }
 
     /**
-     * Creates a WelcomeScreenData object based on information in RAFOptions, and returns it.
-     * @return WelcomeScreenData with information pre-filled from RAFOptions.
+     * Appends information from WelcomeScreenDialog.BackendData to WelcomeScreenData, and returns the
+     * WelcomeScreenData object.
+     * @param backendData the BackendData object with info to append.
+     * @return WelcomeScreenData with info from backendData appended.
      */
     @NonNull
-    public static WelcomeScreenData getFromOptions() {
-        RAFOptions rafOptions = RAFOptions.get();
-        return new WelcomeScreenData.Builder()
-                .setTopBarText(rafOptions.getWelcomeScreenTopBarText())
-                .setTitle(rafOptions.getWelcomeScreenTitle())
-                .setMessage(rafOptions.getWelcomeScreenMessage())
-                .setButtonText(rafOptions.getWelcomeScreenButtonText())
-                .setLink1Text(rafOptions.getWelcomeScreenLink1Text())
-                .setLink2Text(rafOptions.getWelcomeScreenLink2Text())
-                .setColorTheme(rafOptions.getWelcomeScreenColorTheme())
-                .build();
+    public WelcomeScreenData withBackendData(@Nullable WelcomeScreenDialog.BackendData backendData) {
+        if (backendData == null) return this;
+
+        imageUrl = backendData.getImageUrl();
+        String space = " ";
+        name = backendData.getFirstName() + space + backendData.getLastName();
+
+        return this;
     }
 
 }

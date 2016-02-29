@@ -247,6 +247,13 @@ public class WelcomeScreenDialog extends Dialog {
         protected View.OnClickListener buttonOnClickListener;
         protected View.OnClickListener link1OnClickListener;
         protected View.OnClickListener link2OnClickListener;
+        protected String topBarText;
+        protected String titleText;
+        protected String messageText;
+        protected String buttonText;
+        protected String link1Text;
+        protected String link2Text;
+        protected int colorTheme;
 
         public View.OnClickListener getButtonOnClickListener() {
             return buttonOnClickListener;
@@ -275,6 +282,69 @@ public class WelcomeScreenDialog extends Dialog {
             return this;
         }
 
+        public String getTopBarText() {
+            return topBarText;
+        }
+
+        public Parameters setTopBarText(String topBarText) {
+            this.topBarText = topBarText;
+            return this;
+        }
+
+        public String getTitleText() {
+            return titleText;
+        }
+
+        public Parameters setTitleText(String titleText) {
+            this.titleText = titleText;
+            return this;
+        }
+
+        public String getMessageText() {
+            return messageText;
+        }
+
+        public Parameters setMessageText(String messageText) {
+            this.messageText = messageText;
+            return this;
+        }
+
+        public String getButtonText() {
+            return buttonText;
+        }
+
+        public Parameters setButtonText(String buttonText) {
+            this.buttonText = buttonText;
+            return this;
+        }
+
+        public String getLink1Text() {
+            return link1Text;
+        }
+
+        public Parameters setLink1Text(String link1Text) {
+            this.link1Text = link1Text;
+            return this;
+        }
+
+        public String getLink2Text() {
+            return link2Text;
+        }
+
+        public Parameters setLink2Text(String link2Text) {
+            this.link2Text = link2Text;
+            return this;
+        }
+
+        public int getColorTheme() {
+            return colorTheme;
+        }
+
+        public Parameters setColorTheme(int colorTheme) {
+            this.colorTheme = colorTheme;
+            return this;
+        }
+
     }
 
     /**
@@ -283,6 +353,8 @@ public class WelcomeScreenDialog extends Dialog {
     public static class BackendData {
 
         protected String imageUrl;
+        protected String firstName;
+        protected String lastName;
 
         public String getImageUrl() {
             return imageUrl;
@@ -290,6 +362,24 @@ public class WelcomeScreenDialog extends Dialog {
 
         public BackendData setImageUrl(String imageUrl) {
             this.imageUrl = imageUrl;
+            return this;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public BackendData setFirstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public BackendData setLastName(String lastName) {
+            this.lastName = lastName;
             return this;
         }
 
