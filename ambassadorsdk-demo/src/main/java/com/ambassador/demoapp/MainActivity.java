@@ -1,5 +1,6 @@
 package com.ambassador.demoapp;
 
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -63,7 +64,15 @@ public final class MainActivity extends AppCompatActivity {
             actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
         }
 
-        WelcomeScreenDialog.Parameters parameters = new WelcomeScreenDialog.Parameters();
+        WelcomeScreenDialog.Parameters parameters =
+                new WelcomeScreenDialog.Parameters()
+                        .setTopBarText("Welcome")
+                        .setTitleText("{{ name }} has referred you to Ambassador!")
+                        .setMessageText("You understand the value of referrals. Maybe you've even explored referral marketing software.")
+                        .setButtonText("CREATE AN ACCOUNT")
+                        .setLink1Text("Testimonials")
+                        .setLink2Text("Request Demo")
+                        .setColorTheme(Color.parseColor("#4198d1"));
 
         AmbassadorSDK.presentWelcomeScreen(this, new WelcomeScreenDialog.AvailabilityCallback() {
             @Override

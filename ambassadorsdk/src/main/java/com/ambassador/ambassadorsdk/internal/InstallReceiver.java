@@ -91,11 +91,22 @@ public final class InstallReceiver extends BroadcastReceiver {
                 try {
                     Activity activity = WelcomeScreenDialog.getActivity();
                     WelcomeScreenDialog welcomeScreenDialog = new WelcomeScreenDialog(activity);
-                    WelcomeScreenDialog.BackendData backendData = new WelcomeScreenDialog.BackendData().setImageUrl("https://upload.wikimedia.org/wikipedia/commons/7/77/Avatar_cat.png");
-                    WelcomeScreenData welcomeScreenData = new WelcomeScreenData();
-                    welcomeScreenDialog.load(welcomeScreenData.withParameters(WelcomeScreenDialog.getParameters()).withBackendData(backendData));
+                    WelcomeScreenDialog.BackendData backendData =
+                            new WelcomeScreenDialog.BackendData()
+                                    .setImageUrl("https://upload.wikimedia.org/wikipedia/commons/7/77/Avatar_cat.png")
+                                    .setFirstName("John")
+                                    .setLastName("Doe");
+
+                    welcomeScreenDialog.load(
+                            new WelcomeScreenData()
+                                    .withParameters(WelcomeScreenDialog.getParameters())
+                                    .withBackendData(backendData)
+                                    .parseName()
+                    );
                     WelcomeScreenDialog.AvailabilityCallback callback = WelcomeScreenDialog.getAvailabilityCallback();
-                    callback.available(welcomeScreenDialog);
+
+                    if (callback != null) callback.available(welcomeScreenDialog);
+
                 } catch (NullPointerException npe) {
                     Log.e("AmbassadorSDK", npe.toString());
                     // That dev screwed up
