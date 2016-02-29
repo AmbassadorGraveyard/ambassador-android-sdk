@@ -385,7 +385,7 @@ The __Activity__ passed must be the activity that you want the dialog to be pres
 
 The __AvailabilityCallback__ is an interface implementation passed in. Through this callback we will pass you a _WelcomeScreenDialog_ object for you to present and handle configuration changes with.
 
-The __Parameters__ is an object that defines the OnClickListeners for the buttons and links on the dialog.
+The __Parameters__ is an object that defines the OnClickListeners for the buttons and links on the dialog, and also defines the text and colors used. To use the name of the referrer anywhere in the text, use "**{{ name }}**".
 
 The following is an example implementation of using a welcome screen.
 
@@ -410,7 +410,13 @@ public class MainActivity extends Activity {
             new WelcomeScreenDialog.Parameters()
                     .setButtonOnClickListener(buttonOnClickListener)
                     .setLink1OnClickListener(link1OnClickListener)
-                    .setLink2OnClickListener(link2OnClickListener);
+                    .setLink2OnClickListener(link2OnClickListener)
+                    .setTitleText("{{ name }} has referred you to Ambassador!")
+                    .setMessageText("You understand the value of referrals. Maybe you've even explored referral marketing software.")
+                    .setButtonText("CREATE AN ACCOUNT")
+                    .setLink1Text("Testimonials")
+                    .setLink2Text("Request Demo")
+                    .setColorTheme(Color.parse("#4198d1"));
 
         // Tell the SDK to pass the welcome screen through the callback when a new user is referred to the app.
         AmbassadorSDK.presentWelcomeScreen(this, availabilityCallback, parameters);
@@ -418,6 +424,8 @@ public class MainActivity extends Activity {
 
 }
 ```
+
+To customize your welcome screen
 
 ---
 
