@@ -1,3 +1,12 @@
+machine:
+
+  timezone:
+    America/New_York # Set the timezone
+  
+  environment:    
+    RAINFOREST_TOKEN: $RAINFOREST_TOKEN
+    RAINFOREST_SITE: 5193
+
 dependencies:
  pre:
 #    - wget "https://services.gradle.org/distributions/gradle-2.9-bin.zip"; unzip gradle-2.9-bin.zip
