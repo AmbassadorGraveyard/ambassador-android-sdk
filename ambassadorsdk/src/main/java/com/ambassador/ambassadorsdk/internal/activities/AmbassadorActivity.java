@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,7 +34,6 @@ import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
@@ -51,13 +49,6 @@ import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.LockableScrollView;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.internal.views.StaticGridView;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -594,47 +585,19 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     protected class FacebookManager implements ShareManager {
 
-        protected CallbackManager callbackManager;
 
         protected FacebookManager() {
-            FacebookSdk.sdkInitialize(AmbSingleton.getContext());
-            callbackManager = CallbackManager.Factory.create();
+
         }
 
         @Override
         public void onShareRequested() {
-            ShareLinkContent content = new ShareLinkContent.Builder()
-                    .setContentTitle(raf.getDefaultShareMessage())
-                    .setContentUrl(Uri.parse(campaign.getUrl()))
-                    .build();
-            callbackManager = CallbackManager.Factory.create();
 
-            ShareDialog shareDialog = new ShareDialog(AmbassadorActivity.this);
-            shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-                @Override
-                public void onSuccess(Sharer.Result result) {
-                    if (result.getPostId() != null) {
-                        Toast.makeText(getApplicationContext(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-                        requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
-                    }
-                }
-
-                @Override
-                public void onCancel() {
-
-                }
-
-                @Override
-                public void onError(FacebookException e) {
-                    Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
-                }
-            });
-            shareDialog.show(content);
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+
         }
 
     }
