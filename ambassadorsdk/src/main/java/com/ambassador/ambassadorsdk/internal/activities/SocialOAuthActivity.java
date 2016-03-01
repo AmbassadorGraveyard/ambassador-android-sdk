@@ -1,13 +1,21 @@
 package com.ambassador.ambassadorsdk.internal.activities;
 
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
@@ -16,6 +24,9 @@ import butterfork.ButterFork;
  * Overall activity to handle a social networks oauth authentication using a web view.
  */
 public class SocialOAuthActivity extends AppCompatActivity {
+
+    /** The automatically added Toolbar for the Activity */
+    @Bind(B.id.action_bar) protected Toolbar toolbar;
 
     /** WebView used for loading all urls handled by the AuthInterface. */
     @Bind(B.id.wvLogin) protected WebView wvLogin;
@@ -45,6 +56,11 @@ public class SocialOAuthActivity extends AppCompatActivity {
             finish();
             return;
         }
+
+        setUpToolbar();
+
+        wvLogin.setWebViewClient(new OAuthWebClient());
+        wvLogin.loadUrl(authInterface.getLoginUrl());
     }
 
     /**
@@ -67,6 +83,29 @@ public class SocialOAuthActivity extends AppCompatActivity {
     }
 
     /**
+     * Sets the toolbar color and title, and sets a back arrow in the top left.
+     */
+    protected void setUpToolbar() {
+        RAFOptions raf = RAFOptions.get();
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(authInterface.getToolbarText());
+        }
+
+        Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        arrow.setColorFilter(raf.getTwitterToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
+
+        if (toolbar == null) return;
+
+        toolbar.setNavigationIcon(arrow);
+        toolbar.setBackgroundColor(raf.getTwitterToolbarColor());
+        toolbar.setTitleTextColor(raf.getTwitterToolbarTextColor());
+
+        Utilities.setStatusBar(getWindow(), raf.getTwitterToolbarColor());
+    }
+
+    /**
      * WebViewClient extension to allow AuthInterface implementations to handle URL changes.
      */
     protected class OAuthWebClient extends WebViewClient {
@@ -79,7 +118,12 @@ public class SocialOAuthActivity extends AppCompatActivity {
          */
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            return super.shouldOverrideUrlLoading(view, url);
+            if (authInterface.canHandleUrl(url)) {
+                authInterface.handleUrl(url);
+                return true;
+            }
+
+            return false;
         }
 
         /**
@@ -103,25 +147,27 @@ public class SocialOAuthActivity extends AppCompatActivity {
          * Will return the AuthInterface implementation's set toolbar text String.
          * @return a String to set as the toolbar title.
          */
+        @NonNull
         String getToolbarText();
 
         /**
          * Will get a url to a login page to initially load into the web view.
          * @return a url loadable by the web view.
          */
+        @NonNull
         String getLoginUrl();
 
         /**
          * Will handle the url, assuming it knows how to.
          * @param url the url loaded by the web view.
          */
-        void handleUrl(String url);
+        void handleUrl(@Nullable String url);
 
         /**
          * Determines if the url passed is one that the oauth implementation can handle.
          * @param url the url loaded by the web view.
          */
-        boolean canHandleUrl(String url);
+        boolean canHandleUrl(@Nullable String url);
 
     }
 
@@ -130,23 +176,25 @@ public class SocialOAuthActivity extends AppCompatActivity {
      */
     protected static class FacebookAuth implements AuthInterface {
 
+        @NonNull
         @Override
         public String getToolbarText() {
             return "Login to Facebook";
         }
 
+        @NonNull
         @Override
         public String getLoginUrl() {
             return null;
         }
 
         @Override
-        public void handleUrl(String url) {
+        public void handleUrl(@Nullable String url) {
 
         }
 
         @Override
-        public boolean canHandleUrl(String url) {
+        public boolean canHandleUrl(@Nullable String url) {
             return false;
         }
 
@@ -157,23 +205,25 @@ public class SocialOAuthActivity extends AppCompatActivity {
      */
     protected static class TwitterAuth implements AuthInterface {
 
+        @NonNull
         @Override
         public String getToolbarText() {
             return "Login to Twitter";
         }
 
+        @NonNull
         @Override
         public String getLoginUrl() {
             return null;
         }
 
         @Override
-        public void handleUrl(String url) {
+        public void handleUrl(@Nullable String url) {
 
         }
 
         @Override
-        public boolean canHandleUrl(String url) {
+        public boolean canHandleUrl(@Nullable String url) {
             return false;
         }
 
@@ -184,23 +234,25 @@ public class SocialOAuthActivity extends AppCompatActivity {
      */
     protected static class LinkedInAuth implements AuthInterface {
 
+        @NonNull
         @Override
         public String getToolbarText() {
             return "Login to LinkedIn";
         }
 
+        @NonNull
         @Override
         public String getLoginUrl() {
             return null;
         }
 
         @Override
-        public void handleUrl(String url) {
+        public void handleUrl(@Nullable String url) {
 
         }
 
         @Override
-        public boolean canHandleUrl(String url) {
+        public boolean canHandleUrl(@Nullable String url) {
             return false;
         }
 
