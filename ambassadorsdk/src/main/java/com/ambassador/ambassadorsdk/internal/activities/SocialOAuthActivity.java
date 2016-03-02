@@ -170,10 +170,11 @@ public class SocialOAuthActivity extends AppCompatActivity {
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if (authInterface.canHandleUrl(url)) {
                 authInterface.handleUrl(url);
-                return true;
+            } else {
+                // launch popup dialog
             }
 
-            return false;
+            return true;
         }
 
         /**
