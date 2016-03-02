@@ -1,5 +1,8 @@
 package com.ambassador.ambassadorsdk.internal.activities;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -15,6 +18,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -25,6 +29,7 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
+import com.ambassador.ambassadorsdk.internal.views.LoadingView;
 
 import javax.inject.Inject;
 
@@ -41,6 +46,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
     /** WebView used for loading all urls handled by the AuthInterface. */
     @Bind(B.id.wvLogin) protected WebView wvLogin;
+
+    /** LoadingView to display between pages loading */
+    @Bind(B.id.lvLoading) protected LoadingView lvLoading;
 
     /** Object used to perform all requests. */
     @Inject protected RequestManager requestManager;
@@ -178,6 +186,17 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+
+            ObjectAnimator animator = ObjectAnimator.ofFloat(lvLoading, "alpha", 1, 0);
+            animator.setDuration(300);
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    lvLoading.setVisibility(View.GONE);
+                }
+            });
+            animator.start();
         }
 
     }
