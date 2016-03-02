@@ -1,5 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.activities;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -169,9 +170,12 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if (authInterface.canHandleUrl(url)) {
-                authInterface.handleUrl(url);
+                return authInterface.handleUrl(url);
             } else {
-                // launch popup dialog
+                view.stopLoading();
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
             }
 
             return true;
@@ -211,7 +215,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
          * Will handle the url, assuming it knows how to.
          * @param url the url loaded by the web view.
          */
-        void handleUrl(@Nullable String url);
+        boolean handleUrl(@Nullable String url);
 
         /**
          * Determines if the url passed is one that the oauth implementation can handle.
@@ -252,12 +256,12 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void getLoginUrl(@NonNull LoginUrlListener loginUrlListener) {
-
+            loginUrlListener.onLoginUrlReceived("https://www.facebook.com/dialog/oauth?client_id=***REMOVED***&redirect_uri=https://api.getenvoy.co/auth/facebook/auth");
         }
 
         @Override
-        public void handleUrl(@Nullable String url) {
-
+        public boolean handleUrl(@Nullable String url) {
+            return false;
         }
 
         @Override
@@ -305,8 +309,8 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         @Override
-        public void handleUrl(@Nullable String url) {
-
+        public boolean handleUrl(@Nullable String url) {
+            return false;
         }
 
         @Override
@@ -351,8 +355,8 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         @Override
-        public void handleUrl(@Nullable String url) {
-
+        public boolean handleUrl(@Nullable String url) {
+            return false;
         }
 
         @Override
