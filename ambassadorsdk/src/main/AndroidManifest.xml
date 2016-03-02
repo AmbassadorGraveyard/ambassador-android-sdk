@@ -39,6 +39,11 @@
             android:value="@string/facebook_app_id" />
 
         <activity
+            android:name=".internal.activities.SocialOAuthActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@style/ActivityTheme" />
+
+        <activity
             android:name=".internal.activities.LinkedInLoginActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@style/ActivityTheme" />
