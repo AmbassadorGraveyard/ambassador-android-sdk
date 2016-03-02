@@ -390,4 +390,12 @@ public class RequestManager {
         linkedInApi.getProfile(auth.getLinkedInToken(), completion);
     }
 
+    /**
+     * Uses the TwitterApi object to retrieve a login url for Twitter OAuth authentication.
+     * @param completion callback for request completion.
+     */
+    public void getTwitterLoginUrl(final RequestCompletion completion) {
+        twitterApi.getLoginUrl(completion);
+    }
+
 }
