@@ -44,16 +44,6 @@
             android:theme="@style/ActivityTheme" />
 
         <activity
-            android:name=".internal.activities.LinkedInLoginActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@style/ActivityTheme" />
-
-        <activity
-            android:name=".internal.activities.TwitterLoginActivity"
-            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@style/ActivityTheme"/>
-
-        <activity
             android:name=".internal.activities.ContactSelectorActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@style/ActivityTheme"
