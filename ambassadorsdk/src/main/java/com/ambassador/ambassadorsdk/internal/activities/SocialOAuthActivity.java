@@ -432,6 +432,12 @@ public class SocialOAuthActivity extends AppCompatActivity {
             return uri.getHost().equals("getambassador.com") && uri.getQueryParameter("code") != null;
         }
 
+        /**
+         * Takes the redirected URL with a code query param attached, extracts the code, and uses it
+         * to request an access token from the LinkedIn API, then stores it. When completion is called
+         * the Activity finishes.
+         * @param uri the URL overridden from the WebView client, this will be a url with ?code= attached.
+         */
         protected void requestAccessToken(Uri uri) {
             String requestToken = uri.getQueryParameter("code");
             if (requestToken == null) {
