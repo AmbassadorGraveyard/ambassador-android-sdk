@@ -646,8 +646,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 });
                 tweetDialog.show();
             } else {
-                Intent twitterLogin = new Intent(AmbassadorActivity.this, TwitterLoginActivity.class);
-                startActivityForResult(twitterLogin, 5555);
+                Intent intent = new Intent(AmbassadorActivity.this, SocialOAuthActivity.class);
+                intent.putExtra("socialNetwork", "twitter");
+                startActivityForResult(intent, 5555);
             }
         }
 
@@ -723,7 +724,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 });
                 linkedInDialog.show();
             } else {
-                Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);
+                Intent intent = new Intent(AmbassadorActivity.this, SocialOAuthActivity.class);
+                intent.putExtra("socialNetwork", "linkedin");
                 startActivityForResult(intent, 123);
             }
         }
