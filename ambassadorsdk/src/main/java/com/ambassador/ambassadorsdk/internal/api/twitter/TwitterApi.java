@@ -6,6 +6,8 @@ import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
+import twitter4j.TwitterAdapter;
+import twitter4j.auth.RequestToken;
 
 /**
  * Handles Twitter API using Twitter4j.
@@ -29,8 +31,20 @@ public final class TwitterApi {
      * Requests a url from Twitter to use for OAuth authentication on a WebView.
      * @param requestCompletion the request completion callback.
      */
-    public void getLoginUrl(RequestManager.RequestCompletion requestCompletion) {
+    public void getLoginUrl(final RequestManager.RequestCompletion requestCompletion) {
+        twitter.addListener(new TwitterAdapter() {
 
+            protected boolean complete = false;
+
+            @Override
+            public void gotOAuthRequestToken(RequestToken token) {
+                super.gotOAuthRequestToken(token);
+                if (complete) return;
+                requestCompletion.onSuccess(token.getAuthenticationURL());
+                complete = true;
+            }
+
+        });
     }
 
 }

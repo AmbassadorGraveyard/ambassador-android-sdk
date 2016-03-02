@@ -68,7 +68,18 @@ public class SocialOAuthActivity extends AppCompatActivity {
         setUpToolbar();
 
         wvLogin.setWebViewClient(new OAuthWebClient());
-        wvLogin.loadUrl(authInterface.getLoginUrl());
+
+        authInterface.getLoginUrl(new AuthInterface.LoginUrlListener() {
+            @Override
+            public void onLoginUrlReceived(@NonNull String url) {
+                wvLogin.loadUrl(url);
+            }
+
+            @Override
+            public void onLoginUrlFailed() {
+                finish();
+            }
+        });
     }
 
     /**
@@ -160,10 +171,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         /**
          * Will get a url to a login page to initially load into the web view.
-         * @return a url loadable by the web view.
+         * @param loginUrlListener the callback interface to pass the url back through (can be async).
          */
-        @NonNull
-        String getLoginUrl();
+        void getLoginUrl(@NonNull LoginUrlListener loginUrlListener);
 
         /**
          * Will handle the url, assuming it knows how to.
@@ -176,6 +186,24 @@ public class SocialOAuthActivity extends AppCompatActivity {
          * @param url the url loaded by the web view.
          */
         boolean canHandleUrl(@Nullable String url);
+
+        /**
+         * Asynchronous callback interface for passing a login URL back.
+         */
+        interface LoginUrlListener {
+
+            /**
+             * Called only when a login url is successfully received and can be passed back.
+             * @param url the url to load into the WebView, never null.
+             */
+            void onLoginUrlReceived(@NonNull String url);
+
+            /**
+             * Called if a login url cannot be fetched. This tells the whole login Activity to fail.
+             */
+            void onLoginUrlFailed();
+
+        }
 
     }
 
@@ -190,10 +218,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
             return "Login to Facebook";
         }
 
-        @NonNull
         @Override
-        public String getLoginUrl() {
-            return null;
+        public void getLoginUrl(@NonNull LoginUrlListener loginUrlListener) {
+
         }
 
         @Override
@@ -219,10 +246,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
             return "Login to Twitter";
         }
 
-        @NonNull
         @Override
-        public String getLoginUrl() {
-            return null;
+        public void getLoginUrl(@NonNull LoginUrlListener loginUrlListener) {
+
         }
 
         @Override
@@ -248,10 +274,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
             return "Login to LinkedIn";
         }
 
-        @NonNull
         @Override
-        public String getLoginUrl() {
-            return null;
+        public void getLoginUrl(@NonNull LoginUrlListener loginUrlListener) {
+
         }
 
         @Override
