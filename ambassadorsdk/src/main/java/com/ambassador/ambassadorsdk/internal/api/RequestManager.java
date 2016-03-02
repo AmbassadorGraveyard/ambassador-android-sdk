@@ -12,6 +12,7 @@ import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
+import com.ambassador.ambassadorsdk.internal.api.twitter.TwitterApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
@@ -49,6 +50,7 @@ public class RequestManager {
     protected ConversionsApi conversionsApi;
     protected IdentifyApi identifyApi;
     protected LinkedInApi linkedInApi;
+    protected TwitterApi twitterApi;
 
     /**
      * Standard callback used throughout the codebase.
@@ -76,6 +78,7 @@ public class RequestManager {
         conversionsApi = new ConversionsApi(false);
         identifyApi = new IdentifyApi(false);
         linkedInApi = new LinkedInApi(false);
+        twitterApi = new TwitterApi();
         if (doInit) {
             bulkShareApi.init();
             conversionsApi.init();
