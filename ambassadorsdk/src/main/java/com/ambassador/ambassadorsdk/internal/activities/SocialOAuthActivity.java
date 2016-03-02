@@ -228,7 +228,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
     /**
      * Handles login with Facebook.
      */
-    protected static class FacebookAuth implements AuthInterface {
+    protected class FacebookAuth implements AuthInterface {
 
         @NonNull
         @Override
@@ -269,13 +269,23 @@ public class SocialOAuthActivity extends AppCompatActivity {
             requestManager.getTwitterLoginUrl(new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    String url = (String) successResponse;
-                    loginUrlListener.onLoginUrlReceived(url);
+                    final String url = (String) successResponse;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loginUrlListener.onLoginUrlReceived(url);
+                        }
+                    });
                 }
 
                 @Override
                 public void onFailure(Object failureResponse) {
-                    loginUrlListener.onLoginUrlFailed();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loginUrlListener.onLoginUrlFailed();
+                        }
+                    });
                 }
             });
         }
@@ -295,7 +305,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
     /**
      * Handles login with LinkedIn.
      */
-    protected static class LinkedInAuth implements AuthInterface {
+    protected class LinkedInAuth implements AuthInterface {
 
         @NonNull
         @Override
