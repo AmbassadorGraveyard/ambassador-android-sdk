@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -83,6 +84,18 @@ public class SocialOAuthActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    /**
+     * Finish the Activity when options item is selected (this is the back arrow). No other MenuItems
+     * exist or need to be considered.
+     * @param item the MenuItem selected, this doesn't matter.
+     * @return true to disallow further processing by super.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
     }
 
     /**
