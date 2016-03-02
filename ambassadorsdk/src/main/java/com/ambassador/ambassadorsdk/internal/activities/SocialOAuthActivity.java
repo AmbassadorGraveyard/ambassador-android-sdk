@@ -19,12 +19,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
-import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -81,8 +82,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         setUpToolbar();
-
-        wvLogin.setWebViewClient(new OAuthWebClient());
+        configureWebView();
 
         authInterface.getLoginUrl(new AuthInterface.LoginUrlListener() {
             @Override
@@ -133,7 +133,6 @@ public class SocialOAuthActivity extends AppCompatActivity {
      * on the AuthInterface set.
      */
     protected void setUpToolbar() {
-        RAFOptions raf = RAFOptions.get();
         @ColorInt int themeColor = authInterface.getThemeColor();
 
         ActionBar actionBar = getSupportActionBar();
@@ -152,6 +151,21 @@ public class SocialOAuthActivity extends AppCompatActivity {
         toolbar.setTitleTextColor(Color.WHITE);
         Utilities.setStatusBar(getWindow(), themeColor);
     }
+
+    /**
+     * Sets the WebViewClient on the WebView and performs other performance optimizations.
+     */
+    protected void configureWebView() {
+        WebSettings settings = wvLogin.getSettings();
+        settings.setAllowFileAccess(false);
+        settings.setJavaScriptEnabled(false);
+        settings.setSaveFormData(false);
+
+        wvLogin.setVerticalScrollBarEnabled(false);
+        wvLogin.setHorizontalScrollBarEnabled(true);
+        wvLogin.setWebViewClient(new OAuthWebClient());
+    }
+
 
     /**
      * WebViewClient extension to allow AuthInterface implementations to handle URL changes.
@@ -293,7 +307,6 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public boolean canHandleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
-
             return isLoginRedirect(uri);
         }
 
@@ -399,12 +412,46 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public boolean handleUrl(@Nullable String url) {
+            Uri uri = Uri.parse(url);
+
+            if (isSuccessUrl(uri)) {
+                wvLogin.stopLoading();
+                requestAccessToken(uri);
+            }
+
             return false;
         }
 
         @Override
         public boolean canHandleUrl(@Nullable String url) {
-            return false;
+            Uri uri = Uri.parse(url);
+            return isSuccessUrl(uri);
+        }
+
+        protected boolean isSuccessUrl(Uri uri) {
+            return uri.getHost().equals("getambassador.com") && uri.getQueryParameter("code") != null;
+        }
+
+        protected void requestAccessToken(Uri uri) {
+            String requestToken = uri.getQueryParameter("code");
+            if (requestToken == null) {
+                finish();
+                return;
+            }
+
+            requestManager.linkedInLoginRequest(requestToken, new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(Object successResponse) {
+                    Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+
+                @Override
+                public void onFailure(Object failureResponse) {
+                    Toast.makeText(getApplicationContext(), new StringResource(R.string.login_failure).getValue(), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            });
         }
 
     }
