@@ -7,6 +7,8 @@ import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import twitter4j.AsyncTwitter;
 import twitter4j.AsyncTwitterFactory;
 import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterMethod;
 import twitter4j.auth.RequestToken;
 
 /**
@@ -14,24 +16,32 @@ import twitter4j.auth.RequestToken;
  */
 public final class TwitterApi {
 
-    /** The AsyncTwitter Twitter4j object used to make requests. */
-    protected AsyncTwitter twitter;
-
     /**
      * Default constructor.
-     * Sets up the AsyncTwitter object to use on all requests.
      */
     public TwitterApi() {
-        twitter = new AsyncTwitterFactory().getInstance();
+
+    }
+
+    /**
+     * Sets up a new AsyncTwitter object and sets API credentials.
+     * @return the new AsyncTwitter object with credentials set.
+     */
+    protected AsyncTwitter getTwitter() {
+        AsyncTwitter twitter = new AsyncTwitterFactory().getInstance();
         String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
         String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
-        twitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);    }
+        twitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
+
+        return twitter;
+    }
 
     /**
      * Requests a url from Twitter to use for OAuth authentication on a WebView.
      * @param requestCompletion the request completion callback.
      */
     public void getLoginUrl(final RequestManager.RequestCompletion requestCompletion) {
+        AsyncTwitter twitter = getTwitter();
         twitter.addListener(new TwitterAdapter() {
 
             protected boolean complete = false;
@@ -42,6 +52,12 @@ public final class TwitterApi {
                 if (complete) return;
                 requestCompletion.onSuccess(token.getAuthenticationURL());
                 complete = true;
+            }
+
+            @Override
+            public void onException(TwitterException te, TwitterMethod method) {
+                super.onException(te, method);
+                requestCompletion.onFailure(null);
             }
 
         });
