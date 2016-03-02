@@ -11,9 +11,7 @@ import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
-import com.ambassador.ambassadorsdk.internal.activities.LinkedInLoginActivity;
 import com.ambassador.ambassadorsdk.internal.activities.SocialOAuthActivity;
-import com.ambassador.ambassadorsdk.internal.activities.TwitterLoginActivity;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -33,8 +31,6 @@ import dagger.Provides;
 @Module(injects = {
         AmbassadorActivity.class,
         SocialShareDialog.class,
-        LinkedInLoginActivity.class,
-        TwitterLoginActivity.class,
         SocialOAuthActivity.class,
         ContactSelectorActivity.class,
         ContactListAdapter.class,
