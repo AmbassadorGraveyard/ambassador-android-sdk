@@ -1,11 +1,13 @@
 package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -124,20 +126,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
      */
     protected void setUpToolbar() {
         RAFOptions raf = RAFOptions.get();
-        @ColorInt int toolbarArrowColor =
-                (authInterface instanceof FacebookAuth) ? raf.getTwitterToolbarArrowColor() :
-                        (authInterface instanceof TwitterAuth) ? raf.getTwitterToolbarArrowColor() :
-                                (authInterface instanceof LinkedInAuth) ? raf.getLinkedInToolbarArrowColor() : -1;
-
-        @ColorInt int toolbarColor =
-                (authInterface instanceof FacebookAuth) ? raf.getTwitterToolbarColor() :
-                        (authInterface instanceof TwitterAuth) ? raf.getTwitterToolbarColor() :
-                                (authInterface instanceof LinkedInAuth) ? raf.getLinkedInToolbarColor() : -1;
-
-        @ColorInt int toolbarTextColor =
-                (authInterface instanceof FacebookAuth) ? raf.getTwitterToolbarTextColor() :
-                        (authInterface instanceof TwitterAuth) ? raf.getTwitterToolbarTextColor() :
-                                (authInterface instanceof LinkedInAuth) ? raf.getLinkedInToolbarTextColor() : -1;
+        @ColorInt int themeColor = authInterface.getThemeColor();
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -145,15 +134,15 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(toolbarArrowColor, PorterDuff.Mode.SRC_ATOP);
+        arrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
 
         if (toolbar == null) return;
 
         toolbar.setNavigationIcon(arrow);
 
-        toolbar.setBackgroundColor(toolbarColor);
-        toolbar.setTitleTextColor(toolbarTextColor);
-        Utilities.setStatusBar(getWindow(), toolbarColor);
+        toolbar.setBackgroundColor(themeColor);
+        toolbar.setTitleTextColor(Color.WHITE);
+        Utilities.setStatusBar(getWindow(), themeColor);
     }
 
     /**
@@ -206,6 +195,13 @@ public class SocialOAuthActivity extends AppCompatActivity {
         String getToolbarText();
 
         /**
+         * Will return the AuthInterface implementation's theme color to set on the toolbar.
+         * @return an int representing a color to set on the toolbar.
+         */
+        @ColorRes
+        int getThemeColor();
+
+        /**
          * Will get a url to a login page to initially load into the web view.
          * @param loginUrlListener the callback interface to pass the url back through (can be async).
          */
@@ -255,19 +251,37 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         @Override
+        public int getThemeColor() {
+            return ContextCompat.getColor(SocialOAuthActivity.this, R.color.facebook_blue);
+        }
+
+        @Override
         public void getLoginUrl(@NonNull LoginUrlListener loginUrlListener) {
             loginUrlListener.onLoginUrlReceived("https://www.facebook.com/dialog/oauth?client_id=1527118794178815&redirect_uri=https://api.getenvoy.co/auth/facebook/auth");
         }
 
         @Override
         public boolean handleUrl(@Nullable String url) {
+            Uri uri = Uri.parse(url);
+
+            if (isLoginRedirect(uri)) {
+                return false;
+            }
+
             return false;
         }
 
         @Override
         public boolean canHandleUrl(@Nullable String url) {
-            return false;
+            Uri uri = Uri.parse(url);
+
+            return isLoginRedirect(uri);
         }
+
+        protected boolean isLoginRedirect(Uri uri) {
+            return (uri.getHost().equals("m.facebook.com")) && (uri.getPath().equals("/v2.0/dialog/oauth") || uri.getPath().equals("/login.php"));
+        }
+
 
     }
 
@@ -280,6 +294,11 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public String getToolbarText() {
             return "Login to Twitter";
+        }
+
+        @Override
+        public int getThemeColor() {
+            return ContextCompat.getColor(SocialOAuthActivity.this, R.color.twitter_blue);
         }
 
         @Override
@@ -329,6 +348,11 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public String getToolbarText() {
             return "Login to LinkedIn";
+        }
+
+        @Override
+        public int getThemeColor() {
+            return ContextCompat.getColor(SocialOAuthActivity.this, R.color.linkedin_blue);
         }
 
         @Override
