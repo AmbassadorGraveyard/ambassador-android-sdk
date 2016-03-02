@@ -2,7 +2,9 @@ package com.ambassador.ambassadorsdk.internal.activities;
 
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +20,7 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 import javax.inject.Inject;
 
@@ -102,10 +105,25 @@ public class SocialOAuthActivity extends AppCompatActivity {
     }
 
     /**
-     * Sets the toolbar color and title, and sets a back arrow in the top left.
+     * Sets the toolbar color and title, and sets a back arrow in the top left. Sets colors based
+     * on the AuthInterface set.
      */
     protected void setUpToolbar() {
         RAFOptions raf = RAFOptions.get();
+        @ColorInt int toolbarArrowColor =
+                (authInterface instanceof FacebookAuth) ? raf.getTwitterToolbarArrowColor() :
+                        (authInterface instanceof TwitterAuth) ? raf.getTwitterToolbarArrowColor() :
+                                (authInterface instanceof LinkedInAuth) ? raf.getLinkedInToolbarArrowColor() : -1;
+
+        @ColorInt int toolbarColor =
+                (authInterface instanceof FacebookAuth) ? raf.getTwitterToolbarColor() :
+                        (authInterface instanceof TwitterAuth) ? raf.getTwitterToolbarColor() :
+                                (authInterface instanceof LinkedInAuth) ? raf.getLinkedInToolbarColor() : -1;
+
+        @ColorInt int toolbarTextColor =
+                (authInterface instanceof FacebookAuth) ? raf.getTwitterToolbarTextColor() :
+                        (authInterface instanceof TwitterAuth) ? raf.getTwitterToolbarTextColor() :
+                                (authInterface instanceof LinkedInAuth) ? raf.getLinkedInToolbarTextColor() : -1;
 
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -113,15 +131,15 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-        arrow.setColorFilter(raf.getTwitterToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
+        arrow.setColorFilter(toolbarArrowColor, PorterDuff.Mode.SRC_ATOP);
 
         if (toolbar == null) return;
 
         toolbar.setNavigationIcon(arrow);
-        toolbar.setBackgroundColor(raf.getTwitterToolbarColor());
-        toolbar.setTitleTextColor(raf.getTwitterToolbarTextColor());
 
-        Utilities.setStatusBar(getWindow(), raf.getTwitterToolbarColor());
+        toolbar.setBackgroundColor(toolbarColor);
+        toolbar.setTitleTextColor(toolbarTextColor);
+        Utilities.setStatusBar(getWindow(), toolbarColor);
     }
 
     /**
@@ -238,7 +256,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
     /**
      * Handles login with Twitter.
      */
-    protected static class TwitterAuth implements AuthInterface {
+    protected class TwitterAuth implements AuthInterface {
 
         @NonNull
         @Override
@@ -247,8 +265,19 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         @Override
-        public void getLoginUrl(@NonNull LoginUrlListener loginUrlListener) {
+        public void getLoginUrl(@NonNull final LoginUrlListener loginUrlListener) {
+            requestManager.getTwitterLoginUrl(new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(Object successResponse) {
+                    String url = (String) successResponse;
+                    loginUrlListener.onLoginUrlReceived(url);
+                }
 
+                @Override
+                public void onFailure(Object failureResponse) {
+                    loginUrlListener.onLoginUrlFailed();
+                }
+            });
         }
 
         @Override
@@ -276,7 +305,25 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void getLoginUrl(@NonNull LoginUrlListener loginUrlListener) {
+            String authorizeUrl = "https://www.linkedin.com/uas/oauth2/authorization";
+            String responseType = new StringResource(R.string.linked_in_login_response_type).getValue();
+            String clientId = new StringResource(R.string.linked_in_client_id).getValue();
+            String callbackUrl = new StringResource(R.string.linked_in_callback_url).getValue();
+            String rProfilePermission = new StringResource(R.string.linked_in_r_profile_permission).getValue();
+            String wSharePermission = new StringResource(R.string.linked_in_w_share_permission).getValue();
+            String scopes = rProfilePermission + " " + wSharePermission;
 
+            Uri authUri = Uri.parse(authorizeUrl)
+                    .buildUpon()
+                    .appendQueryParameter("response_type", responseType)
+                    .appendQueryParameter("client_id", clientId)
+                    .appendQueryParameter("redirect_uri", "REDIRECT")
+                    .appendQueryParameter("state", "987654321")
+                    .appendQueryParameter("scope", scopes)
+                    .build();
+
+            String authUrl = authUri.toString().replace("REDIRECT", callbackUrl);
+            loginUrlListener.onLoginUrlReceived(authUrl);
         }
 
         @Override
