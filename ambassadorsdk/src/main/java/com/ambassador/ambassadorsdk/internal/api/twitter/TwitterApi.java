@@ -45,6 +45,8 @@ public final class TwitterApi {
             }
 
         });
+
+        twitter.getOAuthRequestTokenAsync();
     }
 
 }
