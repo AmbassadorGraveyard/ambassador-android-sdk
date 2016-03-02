@@ -592,7 +592,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onShareRequested() {
-
+            Intent intent = new Intent(AmbassadorActivity.this, SocialOAuthActivity.class);
+            intent.putExtra("socialNetwork", "facebook");
+            startActivityForResult(intent, 5555);
         }
 
         @Override
