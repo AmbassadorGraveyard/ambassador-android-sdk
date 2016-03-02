@@ -15,7 +15,11 @@ import android.webkit.WebViewClient;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+
+import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
@@ -31,6 +35,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
     /** WebView used for loading all urls handled by the AuthInterface. */
     @Bind(B.id.wvLogin) protected WebView wvLogin;
 
+    /** Object used to perform all requests. */
+    @Inject protected RequestManager requestManager;
+
     /** The AuthInterface implementation to use when evaluating URLs */
     protected AuthInterface authInterface;
 
@@ -43,6 +50,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
         ButterFork.bind(this);
+        AmbSingleton.inject(this);
 
         String socialNetwork = getIntent().getStringExtra("socialNetwork");
         if (socialNetwork == null) {
