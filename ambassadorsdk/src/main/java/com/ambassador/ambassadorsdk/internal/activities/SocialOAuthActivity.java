@@ -296,7 +296,6 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void getLoginUrl(@NonNull final LoginUrlListener loginUrlListener) {
-            //loginUrlListener.onLoginUrlReceived("https://www.facebook.com/dialog/oauth?client_id=***REMOVED***&scope=publish_actions&redirect_uri=https://api.getenvoy.co/auth/facebook/auth");
             requestManager.getFacebookLoginUrl(new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(final Object successResponse) {
@@ -378,8 +377,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
                                     onFailure(null);
                                 } else {
                                     auth.setFacebookToken(accessToken);
-                                    Toast.makeText(SocialOAuthActivity.this, new StringResource(R.string.login_success).toString(), Toast.LENGTH_SHORT).show();
-                                    finish();
+                                    verifyAccessToken();
                                 }
                             }
                         });
@@ -398,6 +396,47 @@ public class SocialOAuthActivity extends AppCompatActivity {
                 });
             }
 
+        }
+
+        protected void verifyAccessToken() {
+            requestManager.verifyFacebookAccessToken(new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(final Object successResponse) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String response = (String) successResponse;
+                            if (response == null) {
+                                onFailure(null);
+                                return;
+                            }
+
+                            switch (response) {
+                                case "success":
+                                    Toast.makeText(SocialOAuthActivity.this, new StringResource(R.string.login_success).toString(), Toast.LENGTH_SHORT).show();
+                                    finish();
+                                    break;
+                                case "failure":
+                                    Toast.makeText(SocialOAuthActivity.this, "failed", Toast.LENGTH_SHORT).show();
+                                    break;
+                                default:
+                                    onFailure(null);
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(Object failureResponse) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(SocialOAuthActivity.this, new StringResource(R.string.login_success).toString(), Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
+                }
+            });
         }
 
     }

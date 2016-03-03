@@ -301,6 +301,14 @@ public class RequestManager {
     }
 
     /**
+     * Checks that the access token has the needed permissions.
+     * @param requestCompletion callback for request completion.
+     */
+    public void verifyFacebookAccessToken(final RequestCompletion requestCompletion) {
+        facebookApi.verifyAccessToken(requestCompletion);
+    }
+
+    /**
      * Attempts to post to Twitter on behalf of the user.
      * @param tweetString the message to Tweet.
      * @param completion callback for request completion.
