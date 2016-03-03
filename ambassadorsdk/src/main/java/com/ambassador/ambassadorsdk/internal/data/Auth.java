@@ -30,6 +30,7 @@ public class Auth implements Data {
     // region Fields
     protected String universalId;
     protected String universalToken;
+    protected String facebookToken;
     protected String linkedInToken;
     protected String twitterToken;
     protected String twitterSecret;
@@ -53,6 +54,16 @@ public class Auth implements Data {
 
     public void setUniversalToken(String universalToken) {
         this.universalToken = universalToken;
+        save();
+    }
+
+    @Nullable
+    public String getFacebookToken() {
+        return facebookToken;
+    }
+
+    public void setFacebookToken(String facebookToken) {
+        this.facebookToken = facebookToken;
         save();
     }
 
@@ -107,6 +118,7 @@ public class Auth implements Data {
     public void clear() {
         universalId = null;
         universalToken = null;
+        facebookToken = null;
         linkedInToken = null;
         twitterToken = null;
         twitterSecret = null;
@@ -126,6 +138,7 @@ public class Auth implements Data {
         Auth auth = new Gson().fromJson(json, Auth.class);
         setUniversalId(auth.getUniversalId());
         setUniversalToken(auth.getUniversalToken());
+        setFacebookToken(auth.getFacebookToken());
         setLinkedInToken(auth.getLinkedInToken());
         setTwitterToken(auth.getTwitterToken());
         setTwitterSecret(auth.getTwitterSecret());
