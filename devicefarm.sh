@@ -6,5 +6,6 @@ msg=`git log -1 --pretty=%B`;
 
 if [[ $msg == *"@RunUiTests"* ]]
 then
-	aws create-upload --project-arn $AWS_PROJECT_ARN $CIRCLE_TEST_REPORTS/ambassadorsdk-demo-debug.apk --type ANDROID_APP
+	ret=`aws create-upload --project-arn $AWS_PROJECT_ARN $CIRCLE_TEST_REPORTS/ambassadorsdk-demo-debug.apk --type ANDROID_APP`;
+	echo $ret;
 fi
