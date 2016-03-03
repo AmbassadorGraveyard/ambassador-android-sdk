@@ -25,6 +25,7 @@
     <string name="url_missing">Your Referral Link is not included in the message:</string>
     <string name="contacts_permission_denied">We need to view your contacts to use this feature. Since you denied permission, we\'re sending you back.</string>
     <string name="share_message_empty">Sorry, you must enter a message to share.</string>
+    <string name="blank_facebook">Cannot share a blank post.</string>
     <string name="blank_twitter">Cannot share a blank Tweet.</string>
     <string name="blank_linkedin">Cannot share a blank post.</string>
     <!-- // -->
@@ -49,6 +50,9 @@
 
     <!-- FACEBOOK -->
     <string name="facebook_app_id">1527118794178815</string>
+    <string name="facebook_app_secret">52ffd023589b20767fcc77bc48439679</string>
+    <string name="facebook_reauthenticate_message">We need you to re-authenticate Facebook. Continue?</string>
+    <string name="facebook_share_dialog_title">Facebook Post</string>
     <!-- // -->
 
     <!-- TWITTER -->

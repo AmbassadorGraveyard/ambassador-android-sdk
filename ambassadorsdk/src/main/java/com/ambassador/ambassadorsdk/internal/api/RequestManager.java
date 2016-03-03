@@ -10,6 +10,7 @@ import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
+import com.ambassador.ambassadorsdk.internal.api.facebook.FacebookApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.api.twitter.TwitterApi;
@@ -51,6 +52,7 @@ public class RequestManager {
     protected IdentifyApi identifyApi;
     protected LinkedInApi linkedInApi;
     protected TwitterApi twitterApi;
+    protected FacebookApi facebookApi;
 
     /**
      * Standard callback used throughout the codebase.
@@ -79,6 +81,7 @@ public class RequestManager {
         identifyApi = new IdentifyApi(false);
         linkedInApi = new LinkedInApi(false);
         twitterApi = new TwitterApi();
+        facebookApi = new FacebookApi();
         if (doInit) {
             bulkShareApi.init();
             conversionsApi.init();
@@ -272,9 +275,35 @@ public class RequestManager {
     }
 
     /**
+     * Retrieves an OAuth login URL for Facebook.
+     * @param completion callback for request completion.
+     */
+    public void getFacebookLoginUrl(RequestCompletion completion) {
+        facebookApi.getAuthUrl(completion);
+    }
+
+    /**
+     * Attempts to post to Facebook on behalf of the user.
+     * @param postString the message to post to Facebook.
+     * @param completion callback for request completion.
+     */
+    public void postToFacebook(final String postString, final RequestCompletion completion) {
+        facebookApi.postToFacebook(postString, completion);
+    }
+
+    /**
+     * Trades a verifier code for an AccessToken.
+     * @param code verifier code returned from OAuth.
+     * @param completion callback for request completion.
+     */
+    public void getFacebookAccessToken(final String code, final RequestCompletion completion) {
+        facebookApi.getAccessToken(code, completion);
+    }
+
+    /**
      * Attempts to post to Twitter on behalf of the user.
-     * @param tweetString the mesage to Tweet
-     * @param completion callback for request completion
+     * @param tweetString the message to Tweet.
+     * @param completion callback for request completion.
      */
     public void postToTwitter(final String tweetString, final RequestCompletion completion) {
         AsyncTwitter twitter = getTwitter();

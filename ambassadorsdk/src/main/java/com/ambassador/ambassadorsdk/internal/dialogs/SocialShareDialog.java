@@ -61,7 +61,7 @@ public final class SocialShareDialog extends Dialog {
     // endregion
 
     public enum SocialNetwork {
-        TWITTER, LINKEDIN
+        FACEBOOK, TWITTER, LINKEDIN
     }
 
     public SocialShareDialog(@ForActivity Context context) {
@@ -84,6 +84,9 @@ public final class SocialShareDialog extends Dialog {
         configureViews();
 
         switch (socialNetwork) {
+            case FACEBOOK:
+                styleFacebook();
+                break;
             case TWITTER:
                 styleTwitter();
                 break;
@@ -122,6 +125,14 @@ public final class SocialShareDialog extends Dialog {
         });
     }
 
+    private void styleFacebook() {
+        tvHeaderText.setText(new StringResource(R.string.facebook_share_dialog_title).getValue());
+        tvHeaderText.setBackgroundColor(getContext().getResources().getColor(R.color.facebook_blue));
+        ivHeaderImg.setImageDrawable(getContext().getResources().getDrawable(R.drawable.facebook_icon));
+        tvSend.setText("Share");
+        btnSend.setText("Share");
+    }
+
     private void styleTwitter() {
         tvHeaderText.setText(new StringResource(R.string.twitter_share_dialog_title).getValue());
         tvHeaderText.setBackgroundColor(getContext().getResources().getColor(R.color.twitter_blue));
@@ -150,6 +161,9 @@ public final class SocialShareDialog extends Dialog {
         if (etMessage.getText().toString().isEmpty()) {
             String blankErrorText;
             switch (socialNetwork) {
+                case FACEBOOK:
+                    blankErrorText = new StringResource(R.string.blank_facebook).getValue();
+                    break;
                 case TWITTER:
                     blankErrorText = new StringResource(R.string.blank_twitter).getValue();
                     break;
@@ -165,12 +179,18 @@ public final class SocialShareDialog extends Dialog {
         } else {
             pbLoading.setVisibility(View.VISIBLE);
             switch (socialNetwork) {
+                case FACEBOOK:
+                    requestManager.postToFacebook(etMessage.getText().toString(), facebookCompletion);
+                    break;
                 case TWITTER:
                     requestManager.postToTwitter(etMessage.getText().toString(), twitterCompletion);
                     break;
                 case LINKEDIN:
                     LinkedInApi.LinkedInPostRequest request = new LinkedInApi.LinkedInPostRequest(etMessage.getText().toString());
                     requestManager.postToLinkedIn(request, linkedInCompletion);
+                    break;
+                default:
+                    dismiss();
                     break;
             }
         }
@@ -212,6 +232,39 @@ public final class SocialShareDialog extends Dialog {
             editText.setText(editText.getText().append(appendingLink));
         }
     }
+
+    private RequestManager.RequestCompletion facebookCompletion = new RequestManager.RequestCompletion() {
+        @Override
+        public void onSuccess(Object successResponse) {
+            getOwnerActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pbLoading.setVisibility(View.GONE);
+                    Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
+                    requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+                    dismiss();
+                    attemptNotifySuccess();
+                }
+            });
+        }
+
+        @Override
+        public void onFailure(final Object failureResponse) {
+            getOwnerActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    pbLoading.setVisibility(View.GONE);
+                    if (failureResponse != null && ((String) failureResponse).equals("auth")) {
+                        dismiss();
+                        attemptNotifyReauth();
+                    } else {
+                        Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
+                        attemptNotifyFailed();
+                    }
+                }
+            });
+        }
+    };
 
     private RequestManager.RequestCompletion twitterCompletion = new RequestManager.RequestCompletion() {
         @Override

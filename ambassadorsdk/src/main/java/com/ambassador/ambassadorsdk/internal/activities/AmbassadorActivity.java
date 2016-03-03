@@ -387,6 +387,27 @@ public final class AmbassadorActivity extends AppCompatActivity {
         Toast.makeText(context, new StringResource(R.string.copied_to_clipboard).getValue(), Toast.LENGTH_SHORT).show();
     }
 
+    private void requestReauthFacebook() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage(new StringResource(R.string.facebook_reauthenticate_message).getValue())
+                .setPositiveButton(new StringResource(R.string.ok).getValue(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        facebookManager.onShareRequested();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(new StringResource(R.string.cancel).getValue(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+    }
+
     private void requestReauthTwitter() {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setMessage(new StringResource(R.string.twitter_reauthenticate_message).getValue())
@@ -592,14 +613,45 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onShareRequested() {
-            Intent intent = new Intent(AmbassadorActivity.this, SocialOAuthActivity.class);
-            intent.putExtra("socialNetwork", "facebook");
-            startActivityForResult(intent, 5555);
+            if (auth.getFacebookToken() != null) {
+                SocialShareDialog facebookDialog = new SocialShareDialog(AmbassadorActivity.this);
+                facebookDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.FACEBOOK);
+                facebookDialog.setOwnerActivity(AmbassadorActivity.this);
+                facebookDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
+                    @Override
+                    public void postSuccess() {
+
+                    }
+
+                    @Override
+                    public void postFailed() {
+
+                    }
+
+                    @Override
+                    public void postCancelled() {
+
+                    }
+
+                    @Override
+                    public void needAuth() {
+                        auth.setFacebookToken(null);
+                        requestReauthFacebook();
+                    }
+                });
+                facebookDialog.show();
+            } else {
+                Intent intent = new Intent(AmbassadorActivity.this, SocialOAuthActivity.class);
+                intent.putExtra("socialNetwork", "facebook");
+                startActivityForResult(intent, 5555);
+            }
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-
+            if (auth.getFacebookToken() != null) {
+                onShareRequested();
+            }
         }
 
     }
