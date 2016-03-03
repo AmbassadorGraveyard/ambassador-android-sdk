@@ -295,8 +295,29 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         @Override
-        public void getLoginUrl(@NonNull LoginUrlListener loginUrlListener) {
-            loginUrlListener.onLoginUrlReceived("https://www.facebook.com/dialog/oauth?client_id=***REMOVED***&redirect_uri=https://api.getenvoy.co/auth/facebook/auth");
+        public void getLoginUrl(@NonNull final LoginUrlListener loginUrlListener) {
+            //loginUrlListener.onLoginUrlReceived("https://www.facebook.com/dialog/oauth?client_id=***REMOVED***&scope=publish_actions&redirect_uri=https://api.getenvoy.co/auth/facebook/auth");
+            requestManager.getFacebookLoginUrl(new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(final Object successResponse) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loginUrlListener.onLoginUrlReceived((String) successResponse);
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(final Object failureResponse) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            loginUrlListener.onLoginUrlFailed();
+                        }
+                    });
+                }
+            });
         }
 
         @Override
@@ -309,7 +330,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
                 wvLogin.stopLoading();
             } else if (isSuccessRedirectUrl(uri)) {
                 wvLogin.stopLoading();
-                storeAccessToken(uri);
+                requestAccessToken(uri);
             } else if (isFailureUrl(uri)) {
                 wvLogin.stopLoading();
                 Toast.makeText(SocialOAuthActivity.this, "Incorrect Username/Password!", Toast.LENGTH_SHORT).show();
@@ -340,15 +361,41 @@ public class SocialOAuthActivity extends AppCompatActivity {
             return uri.getHost().equals("m.facebook.com") && uri.getPath().equals("/login/") && uri.getQueryParameter("api_key") != null && uri.getQueryParameter("auth_token") != null;
         }
 
-        protected void storeAccessToken(Uri uri) {
-            String accessToken = uri.getQueryParameter("code");
-            if (accessToken == null) {
+        protected void requestAccessToken(Uri uri) {
+            String code = uri.getQueryParameter("code");
+            if (code == null) {
                 Toast.makeText(SocialOAuthActivity.this, new StringResource(R.string.login_failure).toString(), Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                auth.setFacebookToken(accessToken);
-                Toast.makeText(SocialOAuthActivity.this, new StringResource(R.string.login_success).toString(), Toast.LENGTH_SHORT).show();
-                finish();
+                requestManager.getFacebookAccessToken(code, new RequestManager.RequestCompletion() {
+                    @Override
+                    public void onSuccess(final Object successResponse) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String accessToken = (String) successResponse;
+                                if (accessToken == null) {
+                                    onFailure(null);
+                                } else {
+                                    auth.setFacebookToken(accessToken);
+                                    Toast.makeText(SocialOAuthActivity.this, new StringResource(R.string.login_success).toString(), Toast.LENGTH_SHORT).show();
+                                    finish();
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(final Object failureResponse) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getApplicationContext(), new StringResource(R.string.login_failure).getValue(), Toast.LENGTH_SHORT).show();
+                                finish();
+                            }
+                        });
+                    }
+                });
             }
 
         }
