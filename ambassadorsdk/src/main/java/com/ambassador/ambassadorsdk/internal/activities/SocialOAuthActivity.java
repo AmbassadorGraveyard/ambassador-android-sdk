@@ -29,6 +29,7 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.LoadingView;
 
@@ -36,6 +37,7 @@ import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
+import twitter4j.auth.AccessToken;
 
 /**
  * Overall activity to handle a social networks oauth authentication using a web view.
@@ -53,6 +55,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
     /** Object used to perform all requests. */
     @Inject protected RequestManager requestManager;
+
+    /** The global Auth object that stores social access tokens. */
+    @Inject protected Auth auth;
 
     /** The AuthInterface implementation to use when evaluating URLs */
     protected AuthInterface authInterface;
@@ -361,12 +366,79 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public boolean handleUrl(@Nullable String url) {
+            Uri uri = Uri.parse(url);
+
+            if (isSuccessUrl(uri)) {
+                wvLogin.stopLoading();
+                requestAccessToken(uri);
+            } else if (isCancelUrl(uri)) {
+                wvLogin.stopLoading();
+                finish();
+            } else if (isFailureUrl(uri)) {
+                wvLogin.stopLoading();
+                Toast.makeText(SocialOAuthActivity.this, "Incorrect Username/Password!", Toast.LENGTH_SHORT).show();
+            }
+
             return false;
         }
 
         @Override
         public boolean canHandleUrl(@Nullable String url) {
-            return false;
+            Uri uri = Uri.parse(url);
+            return isSuccessUrl(uri) || isCancelUrl(uri) || isFailureUrl(uri);
+        }
+
+        protected boolean isSuccessUrl(Uri uri) {
+            return uri.getHost().equals("google.com") && uri.getQueryParameter("oauth_token") != null && uri.getQueryParameter("oauth_verifier") != null;
+        }
+
+        protected boolean isCancelUrl(Uri uri) {
+            return uri.getQueryParameter("denied") != null;
+        }
+
+        protected boolean isFailureUrl(Uri uri) {
+            return uri.getPath().equals("/login/error");
+        }
+
+        /**
+         * Takes the redirected URL with an oauth_token and oauth_verifier query param attached, extracts
+         * the values, and uses them to request an access token from the Twitter API, then stores it.
+         * When completion is called the Activity finishes.
+         * @param uri the URL overridden from the WebView client, this will be a url with ?oauth_token=x&oauth_verifier=x attached.
+         */
+        protected void requestAccessToken(Uri uri) {
+            String oauthVerifier = uri.getQueryParameter("oauth_verifier");
+
+            requestManager.getTwitterAccessToken(oauthVerifier, new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(final Object successResponse) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (successResponse instanceof AccessToken) {
+                                AccessToken accessToken = (AccessToken) successResponse;
+                                auth.setTwitterToken(accessToken.getToken());
+                                auth.setTwitterSecret(accessToken.getTokenSecret());
+                                Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                onFailure(null);
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(Object failureResponse) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), new StringResource(R.string.login_failure).getValue(), Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
+                }
+            });
         }
 
     }
@@ -455,14 +527,24 @@ public class SocialOAuthActivity extends AppCompatActivity {
             requestManager.linkedInLoginRequest(requestToken, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
-                    finish();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
                 }
 
                 @Override
                 public void onFailure(Object failureResponse) {
-                    Toast.makeText(getApplicationContext(), new StringResource(R.string.login_failure).getValue(), Toast.LENGTH_SHORT).show();
-                    finish();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), new StringResource(R.string.login_failure).getValue(), Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
                 }
             });
         }

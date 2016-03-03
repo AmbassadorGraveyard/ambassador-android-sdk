@@ -398,4 +398,8 @@ public class RequestManager {
         twitterApi.getLoginUrl(completion);
     }
 
+    public void getTwitterAccessToken(String oauthVerifier, final RequestCompletion requestCompletion) {
+        twitterApi.getAccessToken(oauthVerifier, requestCompletion);
+    }
+
 }

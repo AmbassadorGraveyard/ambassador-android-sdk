@@ -14,7 +14,7 @@
 
     <!-- STATUS -->
     <string name="login_success">Logged in successfully!</string>
-    <string name="login_failure">Logged in successfully!</string>
+    <string name="login_failure">Logged in failed!</string>
     <string name="post_success">Shared successfully!</string>
     <string name="post_failure">Unable to share. Please try again.</string>
     <string name="connection_failure">There is a problem with your connection.</string>
