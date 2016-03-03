@@ -304,7 +304,14 @@ public class SocialOAuthActivity extends AppCompatActivity {
             Uri uri = Uri.parse(url);
 
             if (isLoginRedirect(uri)) {
+                
                 return false;
+            } else if (isSuccessUr(uri)) {
+                wvLogin.stopLoading();
+
+            } else if (isFailureUrl(uri)) {
+                wvLogin.stopLoading();
+                Toast.makeText(SocialOAuthActivity.this, "Incorrect Username/Password!", Toast.LENGTH_SHORT).show();
             }
 
             return false;
@@ -313,11 +320,19 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public boolean canHandleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
-            return isLoginRedirect(uri);
+            return isLoginRedirect(uri) || isSuccessUr(uri) || isFailureUrl(uri);
         }
 
         protected boolean isLoginRedirect(Uri uri) {
             return (uri.getHost().equals("m.facebook.com")) && (uri.getPath().equals("/v2.0/dialog/oauth") || uri.getPath().equals("/login.php"));
+        }
+
+        protected boolean isSuccessUr(Uri uri) {
+            return uri.getHost().equals("m.facebook.com") && uri.getPath().equals("/v2.0/dialog/oauth") && uri.getQueryParameter("redirect_uri") != null;
+        }
+
+        protected boolean isFailureUrl(Uri uri) {
+            return uri.getHost().equals("m.facebook.com") && uri.getPath().equals("/login/") && uri.getQueryParameter("api_key") != null && uri.getQueryParameter("auth_token") != null;
         }
 
 
