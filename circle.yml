@@ -1,3 +1,7 @@
+machine:
+  environment:
+    AWS_PROJECT_ARN: ***REMOVED***
+
 dependencies:
  pre:
     - curl -sL http://bit.ly/jpm4j >jpm4j.jar
