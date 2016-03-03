@@ -54,6 +54,7 @@ public class AuthTest {
         Auth auth = new Auth();
         auth.universalId = "universalId";
         auth.universalToken = "universalToken";
+        auth.facebookToken = "facebookToken";
         auth.linkedInToken = "linkedInToken";
         auth.twitterToken = "twitterToken";
         auth.twitterSecret = "twitterSecret";
@@ -63,7 +64,7 @@ public class AuthTest {
 
         // ASSERT
         Mockito.verify(context).getSharedPreferences(Mockito.eq("auth"), Mockito.eq(Context.MODE_PRIVATE));
-        Mockito.verify(editor).putString(Mockito.eq("auth"), Mockito.eq("{\"universalId\":\"universalId\",\"universalToken\":\"universalToken\",\"linkedInToken\":\"linkedInToken\",\"twitterToken\":\"twitterToken\",\"twitterSecret\":\"twitterSecret\"}"));
+        Mockito.verify(editor).putString(Mockito.eq("auth"), Mockito.eq("{\"universalId\":\"universalId\",\"universalToken\":\"universalToken\",\"facebookToken\":\"facebookToken\",\"linkedInToken\":\"linkedInToken\",\"twitterToken\":\"twitterToken\",\"twitterSecret\":\"twitterSecret\"}"));
         Mockito.verify(editor).apply();
     }
 
@@ -75,6 +76,7 @@ public class AuthTest {
         Auth auth = new Auth();
         auth.universalId = "universalId";
         auth.universalToken = "universalToken";
+        auth.facebookToken = "facebookToken";
         auth.linkedInToken = "linkedInToken";
         auth.twitterToken = "twitterToken";
         auth.twitterSecret = "twitterSecret";
@@ -95,6 +97,7 @@ public class AuthTest {
         Auth auth = new Auth();
         auth.universalId = "universalId";
         auth.universalToken = "universalToken";
+        auth.facebookToken = "facebookToken";
         auth.linkedInToken = "linkedInToken";
         auth.twitterToken = "twitterToken";
         auth.twitterSecret = "twitterSecret";
@@ -105,6 +108,7 @@ public class AuthTest {
         // ASSERT
         Assert.assertNull(auth.getUniversalId());
         Assert.assertNull(auth.getUniversalToken());
+        Assert.assertNull(auth.getFacebookToken());
         Assert.assertNull(auth.getLinkedInToken());
         Assert.assertNull(auth.getTwitterToken());
         Assert.assertNull(auth.getTwitterSecret());
@@ -119,12 +123,13 @@ public class AuthTest {
         // ACT
         auth.setUniversalId("universalId");
         auth.setUniversalToken("universalToken");
+        auth.setFacebookToken("facebookToken");
         auth.setLinkedInToken("linkedInToken");
         auth.setTwitterToken("twitterToken");
         auth.setTwitterSecret("twitterSecret");
 
         // ASSERT
-        Mockito.verify(auth, Mockito.times(5)).save();
+        Mockito.verify(auth, Mockito.times(6)).save();
     }
 
     @Test
