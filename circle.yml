@@ -16,5 +16,6 @@ test:
     - cp -r ambassadorsdk/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
     - ./gradlew -p ambassadorsdk-demo assembleDebug
     - cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug.apk $CIRCLE_TEST_REPORTS
+    - ./devicefarm.sh
   post:
     - codacy-coverage-reporter -l Java -r $CIRCLE_TEST_REPORTS/jacocoReport.xml
