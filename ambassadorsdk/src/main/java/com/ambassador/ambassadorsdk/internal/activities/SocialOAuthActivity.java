@@ -417,6 +417,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
             if (isSuccessUrl(uri)) {
                 wvLogin.stopLoading();
                 requestAccessToken(uri);
+            } else if (isCancelUrl(uri)) {
+                wvLogin.stopLoading();
+                finish();
             }
 
             return false;
@@ -425,11 +428,15 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public boolean canHandleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
-            return isSuccessUrl(uri);
+            return isSuccessUrl(uri) || isCancelUrl(uri);
         }
 
         protected boolean isSuccessUrl(Uri uri) {
             return uri.getHost().equals("getambassador.com") && uri.getQueryParameter("code") != null;
+        }
+
+        protected boolean isCancelUrl(Uri uri) {
+            return uri.getHost().equals("getambassador.com") && uri.getQueryParameter("error") != null;
         }
 
         /**
