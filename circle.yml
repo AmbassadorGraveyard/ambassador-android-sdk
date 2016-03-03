@@ -1,3 +1,7 @@
+machine:
+  environment:
+    AWS_PROJECT_ARN: arn:aws:devicefarm:us-west-2:574715127331:project:0152898b-cd13-44b8-b59e-428ef967b4cd
+
 dependencies:
  pre:
     - curl -sL http://bit.ly/jpm4j >jpm4j.jar
