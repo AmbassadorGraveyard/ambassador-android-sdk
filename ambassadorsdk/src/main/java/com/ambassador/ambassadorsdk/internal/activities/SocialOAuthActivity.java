@@ -165,6 +165,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
         settings.setAllowFileAccess(false);
         settings.setJavaScriptEnabled(false);
         settings.setSaveFormData(false);
+        settings.setSavePassword(false);
 
         wvLogin.setVerticalScrollBarEnabled(false);
         wvLogin.setHorizontalScrollBarEnabled(true);
