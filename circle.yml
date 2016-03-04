@@ -1,6 +1,9 @@
 machine:
   environment:
     AWS_PROJECT_ARN: arn:aws:devicefarm:us-west-2:574715127331:project:0152898b-cd13-44b8-b59e-428ef967b4cd
+    AWS_ACCESS_KEY_ID: AKIAJR3R67W55NEFBPKQ
+    AWS_SECRET_ACCESS_KEY: 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
+    AWS_DEFAULT_REGION: us-west-2
 
 dependencies:
  pre:
