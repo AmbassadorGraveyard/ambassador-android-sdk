@@ -28,7 +28,7 @@ then
 	apkArn=`echo $apkUpload | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
 
 	# Create a new name for JAR as current epoch time + '.jar'
-	JAR_NAME = `date +%s`; JAR_NAME+='.jar';
+	JAR_NAME=`date +%s`; JAR_NAME+='.jar';
 
 	# Copy JAR to artifacts directory with new name
 	cp ./ambassadorsdk-demo/build/intermediates/transforms/jarMerging/debug/jars/1/1f/combined.jar $CIRCLE_ARTIFACTS/$JAR_NAME;
