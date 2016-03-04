@@ -47,5 +47,4 @@ then
 
 	# Start AWS test run
 	#aws devicefarm schedule-run --project-arn $AWS_PROJECT_ARN --app-arn $APK_ARN ---type UIAUTOMATOR
-
 fi
