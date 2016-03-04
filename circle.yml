@@ -4,6 +4,7 @@ machine:
     AWS_ACCESS_KEY_ID: AKIAJR3R67W55NEFBPKQ
     AWS_SECRET_ACCESS_KEY: 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
     AWS_DEFAULT_REGION: us-west-2
+    AWS_DEVICE_POOL_ARN: arn:aws:devicefarm:us-west-2::devicepool:082d10e5-d7d7-48a5-ba5c-b33d66efa1f5
 
 dependencies:
  pre:

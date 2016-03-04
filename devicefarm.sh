@@ -45,8 +45,13 @@ then
 	# Create a name for the test run
 	RUN_NAME=$TIME;
 
+	# Setup AWS test info
+	TEST_INFO="type=UIAUTOMATOR_TEST_PACKAGE,testPackageArn=$JAR_ARN";
+
 	# Start AWS test run
-	#aws devicefarm schedule-run --project-arn $AWS_PROJECT_ARN --app-arn $APK_ARN ---type UIAUTOMATOR
+	TEST_RESULT=`aws devicefarm schedule-run --project-arn $AWS_PROJECT_ARN --app-arn $APK_ARN --device-pool-arn $AWS_DEVICE_POOL_ARN --test $TEST_INFO`
+
+	echo $TEST_RESULT
 else
-	echo 'Tests not running. To run tests outside of master add @RunUiTests to the commit message.';
+	echo "Tests not running. To run tests outside of master add @RunUiTests to the commit message.";
 fi
