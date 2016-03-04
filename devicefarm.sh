@@ -46,7 +46,7 @@ then
 	RUN_NAME=$TIME;
 
 	# Setup AWS test info
-	TEST_INFO="type=UIAUTOMATOR_TEST_PACKAGE,testPackageArn=$JAR_ARN";
+	TEST_INFO="type=UIAUTOMATOR,testPackageArn=$JAR_ARN";
 
 	# Start AWS test run
 	TEST_RESULT=`aws devicefarm schedule-run --project-arn $AWS_PROJECT_ARN --app-arn $APK_ARN --device-pool-arn $AWS_DEVICE_POOL_ARN --test $TEST_INFO`
