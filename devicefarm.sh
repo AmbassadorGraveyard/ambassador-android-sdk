@@ -6,8 +6,11 @@ set -o errexit;
 # Get the commit msg
 msg=`git log -1 --pretty=%B`;
 
+# Get the branch name
+branch=`git rev-parse --abbrev-ref HEAD`;
+
 # If "RunUiTests" in commit msg
-if [[ $msg == *"@RunUiTests"* ]]
+if [[ $msg == *"@RunUiTests"* ]] || [ $branch == "master" ]
 then
 	# Build the APK
 	./gradlew -p ambassadorsdk-demo assembleDebug;
