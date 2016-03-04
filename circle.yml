@@ -4,6 +4,7 @@ machine:
     AWS_ACCESS_KEY_ID: ***REMOVED***
     AWS_SECRET_ACCESS_KEY: ***REMOVED***
     AWS_DEFAULT_REGION: us-west-2
+    AWS_DEVICE_POOL_ARN: ***REMOVED***
 
 dependencies:
  pre:
