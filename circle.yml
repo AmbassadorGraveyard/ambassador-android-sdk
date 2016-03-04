@@ -1,6 +1,9 @@
 machine:
   environment:
     AWS_PROJECT_ARN: ***REMOVED***
+    AWS_ACCESS_KEY_ID: ***REMOVED***
+    AWS_SECRET_ACCESS_KEY: ***REMOVED***
+    AWS_DEFAULT_REGION: us-west-2
 
 dependencies:
  pre:
