@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Fail on any command failure
+# Fail on any command error
 set -o errexit;
 
 # Get the commit msg
@@ -47,4 +47,6 @@ then
 
 	# Start AWS test run
 	#aws devicefarm schedule-run --project-arn $AWS_PROJECT_ARN --app-arn $APK_ARN ---type UIAUTOMATOR
+else
+	echo 'Tests not running. To run tests outside of master add @RunUiTests to the commit message.';
 fi
