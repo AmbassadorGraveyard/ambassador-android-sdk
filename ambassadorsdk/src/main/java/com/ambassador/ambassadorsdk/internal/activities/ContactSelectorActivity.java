@@ -114,7 +114,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     // endregion
 
     // region Local members
-    protected RAFOptions               raf = RAFOptions.get();
+    protected RAFOptions                raf = RAFOptions.get();
     protected List<Contact>             contactList;
     protected ContactListAdapter        contactListAdapter;
     protected JsonObject                pusherData;
