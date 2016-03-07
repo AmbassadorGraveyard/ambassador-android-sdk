@@ -37,17 +37,12 @@ public class BulkShareHelperTest {
                 AmbSingleton.class
         );
 
-        PowerMockito.spy(BulkShareHelper.class);
-
-//        AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
-//        Mockito.when(AmbSingleton.getInstanceComponent()).thenReturn(component);
-//        Mockito.doNothing().when(component).inject(Mockito.any(BulkShareHelper.class));
-
         bulkShareHelper = Mockito.spy(new BulkShareHelper());
 
         requestManager = PowerMockito.mock(RequestManager.class);
         bulkShareHelper.requestManager = requestManager;
     }
+
 
     @Test
     public void bulkShareSMSTest() {
@@ -133,7 +128,7 @@ public class BulkShareHelperTest {
         contacts.add(new Contact.Builder().setPhoneNumber("1-3-1-3-3-2-9-1-1-0-4").build());
 
         // ACT
-        List<String> verified = BulkShareHelper.verifiedSMSList(contacts);
+        List<String> verified = bulkShareHelper.verifiedSMSList(contacts);
 
         // ASSERT
         Assert.assertEquals(4, verified.size());
@@ -155,7 +150,7 @@ public class BulkShareHelperTest {
         contacts.add(new Contact.Builder().setEmailAddress("test@").build());
 
         // ACT
-        List<String> verified = BulkShareHelper.verifiedEmailList(contacts);
+        List<String> verified = bulkShareHelper.verifiedEmailList(contacts);
 
         // ASSERT
         Assert.assertEquals(2, verified.size());
@@ -173,11 +168,11 @@ public class BulkShareHelperTest {
         String check5 = "test@getambassador";
 
         // ACT
-        boolean result1 = BulkShareHelper.isValidEmail(check1);
-        boolean result2 = BulkShareHelper.isValidEmail(check2);
-        boolean result3 = BulkShareHelper.isValidEmail(check3);
-        boolean result4 = BulkShareHelper.isValidEmail(check4);
-        boolean result5 = BulkShareHelper.isValidEmail(check5);
+        boolean result1 = bulkShareHelper.isValidEmail(check1);
+        boolean result2 = bulkShareHelper.isValidEmail(check2);
+        boolean result3 = bulkShareHelper.isValidEmail(check3);
+        boolean result4 = bulkShareHelper.isValidEmail(check4);
+        boolean result5 = bulkShareHelper.isValidEmail(check5);
 
         // ASSERT
         Assert.assertTrue(result1);
@@ -198,7 +193,7 @@ public class BulkShareHelperTest {
         String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(values, trackType, shortCode, fromEmail);
+        BulkShareApi.BulkShareTrackBody[] bodies = bulkShareHelper.contactArray(values, trackType, shortCode, fromEmail);
 
         // ASSERT
         Assert.assertEquals(2, bodies.length);
@@ -224,7 +219,7 @@ public class BulkShareHelperTest {
         String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(values, trackType, shortCode, fromEmail);
+        BulkShareApi.BulkShareTrackBody[] bodies = bulkShareHelper.contactArray(values, trackType, shortCode, fromEmail);
 
         // ASSERT
         Assert.assertEquals(2, bodies.length);
@@ -247,7 +242,7 @@ public class BulkShareHelperTest {
         String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(trackType, shortCode, fromEmail);
+        BulkShareApi.BulkShareTrackBody[] bodies = bulkShareHelper.contactArray(trackType, shortCode, fromEmail);
 
         // ASSERT
         Assert.assertEquals(1, bodies.length);
@@ -270,7 +265,7 @@ public class BulkShareHelperTest {
         String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emails, shortCode, subject, message, fromEmail);
+        BulkShareApi.BulkShareEmailBody body = bulkShareHelper.payloadObjectForEmail(emails, shortCode, subject, message, fromEmail);
 
         // ASSERT
         Assert.assertEquals(shortCode, body.short_code);
@@ -293,7 +288,7 @@ public class BulkShareHelperTest {
         String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numbers, fullName, message, fromEmail);
+        BulkShareApi.BulkShareSmsBody body = bulkShareHelper.payloadObjectForSMS(numbers, fullName, message, fromEmail);
 
         // ASSERT
         Assert.assertEquals(fullName, body.name);
