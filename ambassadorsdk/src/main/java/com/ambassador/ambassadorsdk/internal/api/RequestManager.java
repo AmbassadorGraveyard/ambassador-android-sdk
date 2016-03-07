@@ -141,13 +141,13 @@ public class RequestManager {
         BulkShareApi.BulkShareTrackBody[] body;
         switch (shareType) {
             case SMS:
-                body = bulkShareHelper.contactArray(bulkShareHelper.verifiedSMSList(contacts), shareType, campaign.getReferredByShortCode(), fromEmail);
+                body = bulkShareHelper.contactArray(bulkShareHelper.verifiedSMSList(contacts), shareType, campaign.getShortCode(), fromEmail);
                 break;
             case EMAIL:
-                body = bulkShareHelper.contactArray(bulkShareHelper.verifiedEmailList(contacts), shareType, campaign.getReferredByShortCode(), fromEmail);
+                body = bulkShareHelper.contactArray(bulkShareHelper.verifiedEmailList(contacts), shareType, campaign.getShortCode(), fromEmail);
                 break;
             default:
-                body = bulkShareHelper.contactArray(shareType, campaign.getReferredByShortCode(), fromEmail);
+                body = bulkShareHelper.contactArray(shareType, campaign.getShortCode(), fromEmail);
                 break;
         }
 

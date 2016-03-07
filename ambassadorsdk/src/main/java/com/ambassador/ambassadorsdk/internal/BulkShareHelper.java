@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
@@ -62,7 +63,7 @@ public class BulkShareHelper {
      * @param completion callback for BulkShare completion.
      */
     public void bulkShare(final String messageToShare, final List<Contact> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
-        if (phoneNumbers && contacts.size() > 1) {
+        if (phoneNumbers && (contacts.size() > 1 || Build.VERSION.SDK_INT < 23)) {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
@@ -81,7 +82,7 @@ public class BulkShareHelper {
             intent.setData(Uri.parse("smsto:" + contact.getPhoneNumber()));
             intent.putExtra("sms_body", messageToShare);
             // intent.putExtra("exit_on_sent", true);
-            completion.launchSmsIntent(intent);
+            completion.launchSmsIntent(contact.getPhoneNumber(), intent);
 
         } else {
             requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
@@ -225,7 +226,7 @@ public class BulkShareHelper {
     public interface BulkShareCompletion {
         void bulkShareSuccess();
         void bulkShareFailure();
-        void launchSmsIntent(Intent intent);
+        void launchSmsIntent(String phoneNumber, Intent intent);
     }
 
 }
