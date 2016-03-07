@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.WindowManager;
@@ -82,6 +83,10 @@ public class Device { // TODO: Make final after UI tests figured out
     public void copyToClipboard(@NonNull String text) {
         ClipData clipData = ClipData.newPlainText("simpleText", text);
         clipboardManager.setPrimaryClip(clipData);
+    }
+
+    public int getSdkVersion() {
+        return Build.VERSION.SDK_INT;
     }
 
 }

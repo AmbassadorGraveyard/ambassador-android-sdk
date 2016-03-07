@@ -2,11 +2,11 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,9 @@ public class BulkShareHelper {
 
     /** Used to execute any actual HTTP requests. */
     @Inject protected RequestManager requestManager;
+
+    /** Used to read useful information from the device and OS. */
+    @Inject protected Device device;
 
     /**
      * Enum to help with bulk share tracking. Defines the possible share sources and returns a String
@@ -63,7 +66,7 @@ public class BulkShareHelper {
      * @param completion callback for BulkShare completion.
      */
     public void bulkShare(final String messageToShare, final List<Contact> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
-        if (phoneNumbers && (contacts.size() > 1 || Build.VERSION.SDK_INT < 23)) {
+        if (phoneNumbers && (contacts.size() > 1 || device.getSdkVersion() >= 23)) {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
@@ -107,6 +110,7 @@ public class BulkShareHelper {
      */
     public ArrayList<String> verifiedSMSList(List<Contact> contacts) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
+        if (contacts == null) return verifiedNumbers;
         for (Contact contact : contacts) {
             String strippedNum = contact.getPhoneNumber().replaceAll("[^0-9]", "");
             if ((strippedNum.length() == 11 || strippedNum.length() == 10 || strippedNum.length() == 7) && !verifiedNumbers.contains(strippedNum)) {
@@ -124,6 +128,7 @@ public class BulkShareHelper {
      */
     public ArrayList<String> verifiedEmailList(List<Contact> contacts) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
+        if (contacts == null) return verifiedEmails;
         for (Contact contact : contacts) {
             if (isValidEmail(contact.getEmailAddress()) && !verifiedEmails.contains(contact.getEmailAddress())) {
                 verifiedEmails.add(contact.getEmailAddress());

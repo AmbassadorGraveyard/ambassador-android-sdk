@@ -1,8 +1,12 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import android.content.Intent;
+import android.net.Uri;
+
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -24,32 +28,98 @@ import java.util.List;
         AmbSingleton.class,
         JSONObject.class,
         BulkShareHelper.class,
-        RequestManager.class
+        RequestManager.class,
+        Uri.class,
+        Intent.class
 })
 public class BulkShareHelperTest {
 
     private BulkShareHelper bulkShareHelper;
     private RequestManager requestManager;
+    private Device device;
 
     @Before
     public void setUpMock() {
         PowerMockito.mockStatic(
-                AmbSingleton.class
+                AmbSingleton.class,
+                Uri.class
         );
 
         bulkShareHelper = Mockito.spy(new BulkShareHelper());
 
         requestManager = PowerMockito.mock(RequestManager.class);
         bulkShareHelper.requestManager = requestManager;
+
+        device = PowerMockito.mock(Device.class);
+        bulkShareHelper.device = device;
     }
 
 
     @Test
-    public void bulkShareSMSTest() {
+    public void bulkShareSMSAPI23Test() {
         // ARRANGE
         String message = "message";
         List<Contact> contacts = new ArrayList<>();
         BulkShareHelper.BulkShareCompletion bulkShareCompletion = Mockito.mock(BulkShareHelper.BulkShareCompletion.class);
+        Mockito.doReturn(23).when(device).getSdkVersion();
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocation.getArguments()[2];
+                completion.onSuccess("success");
+                return null;
+            }
+        }).doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocation.getArguments()[2];
+                completion.onFailure("failure");
+                return null;
+            }
+        }).when(requestManager).bulkShareSms(Mockito.eq(contacts), Mockito.eq(message), Mockito.any(RequestManager.RequestCompletion.class));
+
+        // ACT & ASSERT
+        bulkShareHelper.bulkShare(message, contacts, true, bulkShareCompletion);
+        Mockito.verify(requestManager).bulkShareTrack(Mockito.eq(contacts), Mockito.eq(BulkShareHelper.SocialServiceTrackType.SMS));
+        Mockito.verify(bulkShareCompletion).bulkShareSuccess();
+
+        // ACT & ASSERT
+        bulkShareHelper.bulkShare(message, contacts, true, bulkShareCompletion);
+        Mockito.verify(bulkShareCompletion).bulkShareFailure();
+    }
+
+    @Test
+    public void bulkShareSMSApi21SingleContactTest() throws Exception {
+        // ARRANGE
+        String message = "message";
+        List<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact.Builder().setPhoneNumber("3133291104").build());
+        BulkShareHelper.BulkShareCompletion bulkShareCompletion = Mockito.mock(BulkShareHelper.BulkShareCompletion.class);
+        Mockito.doReturn(21).when(device).getSdkVersion();
+
+        PowerMockito.doReturn(Mockito.mock(Uri.class)).when(Uri.class, "parse", Mockito.anyString());
+        Intent intent = Mockito.mock(Intent.class);
+        PowerMockito.whenNew(Intent.class).withAnyArguments().thenReturn(intent);
+
+        // ACT
+        bulkShareHelper.bulkShare(message, contacts, true, bulkShareCompletion);
+
+        // ASSERT
+        Mockito.verify(bulkShareCompletion).launchSmsIntent(Mockito.eq("3133291104"), Mockito.eq(intent));
+        Mockito.verify(intent).putExtra(Mockito.eq("sms_body"), Mockito.eq(message));
+    }
+
+    @Test
+    public void bulkShareSMSApi21ManyContactsTest() throws Exception {
+        // ARRANGE
+        String message = "message";
+        List<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact.Builder().setPhoneNumber("3133291104").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("3133291104").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("3133291104").build());
+        BulkShareHelper.BulkShareCompletion bulkShareCompletion = Mockito.mock(BulkShareHelper.BulkShareCompletion.class);
+        Mockito.doReturn(21).when(device).getSdkVersion();
 
         Mockito.doAnswer(new Answer() {
             @Override
