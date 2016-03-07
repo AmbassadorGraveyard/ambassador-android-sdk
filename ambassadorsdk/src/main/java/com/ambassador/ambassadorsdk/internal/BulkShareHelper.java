@@ -1,5 +1,8 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import android.content.Intent;
+import android.net.Uri;
+
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
@@ -59,7 +62,7 @@ public class BulkShareHelper {
      * @param completion callback for BulkShare completion.
      */
     public void bulkShare(final String messageToShare, final List<Contact> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
-        if (phoneNumbers) {
+        if (phoneNumbers && contacts.size() > 1) {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
@@ -72,6 +75,14 @@ public class BulkShareHelper {
                     completion.bulkShareFailure();
                 }
             });
+        } else if (phoneNumbers && contacts.size() == 1) {
+            Contact contact = contacts.get(0);
+            Intent intent = new Intent(Intent.ACTION_SENDTO);
+            intent.setData(Uri.parse("smsto:" + contact.getPhoneNumber()));
+            intent.putExtra("sms_body", messageToShare);
+            // intent.putExtra("exit_on_sent", true);
+            completion.launchSmsIntent(intent);
+
         } else {
             requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
@@ -208,11 +219,13 @@ public class BulkShareHelper {
 
 
     /**
-     * Callback interface for the success/failure status of a bulkShare request.
+     * Callback interface for the success/failure status of a bulkShare request. Also has callback
+     * for launching SMS intent.
      */
     public interface BulkShareCompletion {
         void bulkShareSuccess();
         void bulkShareFailure();
+        void launchSmsIntent(Intent intent);
     }
 
 }

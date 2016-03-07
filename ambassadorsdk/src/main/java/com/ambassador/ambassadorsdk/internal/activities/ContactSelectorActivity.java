@@ -648,6 +648,11 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void launchSmsIntent(Intent intent) {
+                startActivity(intent);
+            }
         });
     }
     // endregion
