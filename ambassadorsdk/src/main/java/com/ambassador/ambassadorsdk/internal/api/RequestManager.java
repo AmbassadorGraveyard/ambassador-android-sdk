@@ -44,6 +44,7 @@ public class RequestManager {
     @Inject protected User user;
     @Inject protected Campaign campaign;
     @Inject protected PusherManager pusherManager;
+    @Inject protected BulkShareHelper bulkShareHelper;
 
     protected BulkShareApi bulkShareApi;
     protected ConversionsApi conversionsApi;
@@ -94,10 +95,10 @@ public class RequestManager {
     public void bulkShareSms(final List<Contact> contacts, final String messageToShare, final RequestCompletion completion) {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
-        List<String> numberList = BulkShareHelper.verifiedSMSList(contacts);
+        List<String> numberList = bulkShareHelper.verifiedSMSList(contacts);
         String name = user.getFirstName() + " " + user.getLastName();
         String fromEmail = user.getEmail();
-        BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numberList, name, messageToShare, fromEmail);
+        BulkShareApi.BulkShareSmsBody body = bulkShareHelper.payloadObjectForSMS(numberList, name, messageToShare, fromEmail);
 
         bulkShareApi.bulkShareSms(uid, authKey, body, completion);
     }
@@ -112,9 +113,9 @@ public class RequestManager {
     public void bulkShareEmail(final List<Contact> contacts, final String messageToShare, final RequestCompletion completion) {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
-        List<String> emailList = BulkShareHelper.verifiedEmailList(contacts);
+        List<String> emailList = bulkShareHelper.verifiedEmailList(contacts);
         String fromEmail = user.getEmail();
-        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emailList, campaign.getShortCode(), campaign.getEmailSubject(), messageToShare, fromEmail);
+        BulkShareApi.BulkShareEmailBody body = bulkShareHelper.payloadObjectForEmail(emailList, campaign.getShortCode(), campaign.getEmailSubject(), messageToShare, fromEmail);
 
         bulkShareApi.bulkShareEmail(uid, authKey, body, completion);
     }
@@ -140,13 +141,13 @@ public class RequestManager {
         BulkShareApi.BulkShareTrackBody[] body;
         switch (shareType) {
             case SMS:
-                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedSMSList(contacts), shareType, campaign.getReferredByShortCode(), fromEmail);
+                body = bulkShareHelper.contactArray(bulkShareHelper.verifiedSMSList(contacts), shareType, campaign.getReferredByShortCode(), fromEmail);
                 break;
             case EMAIL:
-                body = BulkShareHelper.contactArray(BulkShareHelper.verifiedEmailList(contacts), shareType, campaign.getReferredByShortCode(), fromEmail);
+                body = bulkShareHelper.contactArray(bulkShareHelper.verifiedEmailList(contacts), shareType, campaign.getReferredByShortCode(), fromEmail);
                 break;
             default:
-                body = BulkShareHelper.contactArray(shareType, campaign.getReferredByShortCode(), fromEmail);
+                body = bulkShareHelper.contactArray(shareType, campaign.getReferredByShortCode(), fromEmail);
                 break;
         }
 

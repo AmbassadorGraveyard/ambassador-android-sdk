@@ -93,7 +93,7 @@ public class BulkShareHelper {
      * @param contacts the list of contacts to process.
      * @return a List of Contact objects that all have suitable details for SMS sharing.
      */
-    public static ArrayList<String> verifiedSMSList(List<Contact> contacts) {
+    public ArrayList<String> verifiedSMSList(List<Contact> contacts) {
         ArrayList<String> verifiedNumbers = new ArrayList<>();
         for (Contact contact : contacts) {
             String strippedNum = contact.getPhoneNumber().replaceAll("[^0-9]", "");
@@ -110,10 +110,10 @@ public class BulkShareHelper {
      * @param contacts the list of contacts to process.
      * @return a List of Contact objects that all have suitable details for email sharing.
      */
-    public static ArrayList<String> verifiedEmailList(List<Contact> contacts) {
+    public ArrayList<String> verifiedEmailList(List<Contact> contacts) {
         ArrayList<String> verifiedEmails = new ArrayList<>();
         for (Contact contact : contacts) {
-            if (BulkShareHelper.isValidEmail(contact.getEmailAddress()) && !verifiedEmails.contains(contact.getEmailAddress())) {
+            if (isValidEmail(contact.getEmailAddress()) && !verifiedEmails.contains(contact.getEmailAddress())) {
                 verifiedEmails.add(contact.getEmailAddress());
             }
         }
@@ -125,7 +125,7 @@ public class BulkShareHelper {
      * @param emailAddress the String email address to check.
      * @return boolean determining if the email address is valid.
      */
-    public static boolean isValidEmail(String emailAddress) {
+    public boolean isValidEmail(String emailAddress) {
         Pattern emailRegex = Pattern.compile("^(.+)@(.+)\\.(.+)$");
         Matcher matcher = emailRegex.matcher(emailAddress);
         return matcher.matches();
@@ -139,7 +139,7 @@ public class BulkShareHelper {
      * @param shortCode short code of the sharing user.
      * @return an array of BulkShareTrackBodys fully prepared for a BulkShareTrack request.
      */
-    public static BulkShareApi.BulkShareTrackBody[] contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode, String fromEmail) {
+    public BulkShareApi.BulkShareTrackBody[] contactArray(List<String> values, SocialServiceTrackType trackType, String shortCode, String fromEmail) {
         String short_code = shortCode;
         String social_name = trackType.toString();
 
@@ -176,7 +176,7 @@ public class BulkShareHelper {
      * @param shortCode short code of the sharing user.
      * @return array of BulkShareTrackBody from method overload.
      */
-    public static BulkShareApi.BulkShareTrackBody[] contactArray(SocialServiceTrackType trackType, String shortCode, String fromEmail) {
+    public BulkShareApi.BulkShareTrackBody[] contactArray(SocialServiceTrackType trackType, String shortCode, String fromEmail) {
         return contactArray(null, trackType, shortCode, fromEmail);
     }
 
@@ -189,7 +189,7 @@ public class BulkShareHelper {
      * @param message the message to put in the email.
      * @return a BulkShareEmailBody object required to make a bulkShare request for emails.
      */
-    public static BulkShareApi.BulkShareEmailBody payloadObjectForEmail(List<String> emailsList, String shortCode, String emailSubject, String message, String fromEmail) {
+    public BulkShareApi.BulkShareEmailBody payloadObjectForEmail(List<String> emailsList, String shortCode, String emailSubject, String message, String fromEmail) {
         String[] emails = emailsList.toArray(new String[emailsList.size()]);
         return new BulkShareApi.BulkShareEmailBody(emailSubject, message, shortCode, fromEmail, emails);
     }
@@ -201,7 +201,7 @@ public class BulkShareHelper {
      * @param smsMessage the message to put in the SMS.
      * @return a BulkShareSmsBody object required to make a bulkShare request for SMS.
      */
-    public static BulkShareApi.BulkShareSmsBody payloadObjectForSMS(List<String> numbersList, String fullName, String smsMessage, String fromEmail) {
+    public BulkShareApi.BulkShareSmsBody payloadObjectForSMS(List<String> numbersList, String fullName, String smsMessage, String fromEmail) {
         String[] numbers = numbersList.toArray(new String[numbersList.size()]);
         return new BulkShareApi.BulkShareSmsBody(fullName, smsMessage, fromEmail, numbers);
     }
