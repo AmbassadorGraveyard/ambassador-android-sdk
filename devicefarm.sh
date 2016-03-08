@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Gets hit on any error before the program aborts.
+abort()
+{
+	# Set a commit fail status for device farm if any error causes the script to abort.
+	echo '{"state":"failure","target_url":"http://google.com","description":"An error occurred with device farm execution.","context":"aws/devicefarm"}' | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
+}
+
 # Fail on any command error
 set -o errexit;
 
