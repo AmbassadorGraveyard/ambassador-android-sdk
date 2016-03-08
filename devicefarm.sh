@@ -38,7 +38,7 @@ get_value_from_json()
 	KEYS_ACCESSOR="";
 	for x in `seq 1 $#`; do
 		VALUE=`echo "${!x}"`;
-		KEYS_ACCESSOR+="[$VALUE]";
+		KEYS_ACCESSOR+="[\"$VALUE\"]";
 	done
 	VALUE=`echo $1 | python -c "import json,sys;obj=json.load(sys.stdin);print obj$KEYS_ACCESSOR"`;
 	return VALUE;
@@ -99,10 +99,10 @@ then
 	APK_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $CIRCLE_ARTIFACTS/$APK_NAME --type ANDROID_APP`;
 
 	# Extract ARN from the response JSON
-	APK_ARN=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
+	APK_ARN=`get_value_from_json $APK_UPLOAD "upload" "arn"`;
 
 	# Get the remote url to upload the app APK to
-	APK_UPLOAD_URL=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["url"]'`;
+	APK_UPLOAD_URL=`get_value_from_json $APK_UPLOAD "upload" "url"``;
 
 	echo $APK_UPLOAD;
 
@@ -126,7 +126,7 @@ then
 	TESTS_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $CIRCLE_ARTIFACTS/$TESTS_NAME --type INSTRUMENTATION_TEST_PACKAGE`;
 
 	# Extract ARN from the response JSON
-	TESTS_ARN=`echo $TESTS_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
+	TESTS_ARN=`get_value_from_json $TESTS_UPLOAD "upload" "arn"`
 
 	#Get the remote url to upload the tests APK to
 	TESTS_UPLOAD_URL=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["url"]'`;
