@@ -70,7 +70,8 @@ then
 	TIME=`date +%s`;
 
 	# Build the app APK
-	./gradlew -p ambassadorsdk-demo assembleDebug;
+	echo "Assembling debug APK...";
+	./gradlew -p ambassadorsdk-demo assembleDebug --quiet;
 
 	# Create new name for app APK as current epoch time + '.apk'
 	APK_NAME="$TIME.apk";
@@ -87,6 +88,8 @@ then
 	# Get the remote url to upload the app APK to
 	APK_UPLOAD_URL=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["url"]'`;
 
+	echo $APK_UPLOAD;
+
 	# Upload APK to AWS Device Farm
 	upload_file $CIRCLE_ARTIFACTS/$APK_NAME $APK_UPLOAD_URL;
 
@@ -94,7 +97,8 @@ then
 	wait_for_upload_success $APK_ARN;
 
 	# Build the tests APK
-	./gradlew -p ambassadorsdk-demo assembleAndroidTest;
+	echo "Assembling tests APK...";
+	./gradlew -p ambassadorsdk-demo assembleAndroidTest --quiet;
 
 	# Create a new name for tests APK as current epoch time + '.apk'
 	TESTS_NAME="$TIME-tests.apk";
