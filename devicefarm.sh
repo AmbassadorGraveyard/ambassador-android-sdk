@@ -1,4 +1,6 @@
 #!/bin/sh
+# Builds a debug APK and tests APK for the demo app and uploads them
+# to AWS Device Farm. Runs tests and reports status to GitHub.
 
 # Gets hit on any error before the program aborts.
 abort()
@@ -55,7 +57,7 @@ wait_for_upload_success() {
 		elif [ $UPLOAD_STATUS == "FAILED" ]
 		then
 			echo $GET_UPLOAD;
-			abort;
+			exit 0;
 			break;
 		fi
 
