@@ -58,10 +58,13 @@ then
 	TEST_RESULT=`aws devicefarm schedule-run --project-arn "$AWS_PROJECT_ARN" --app-arn "$APK_ARN" --device-pool-arn "$AWS_DEVICE_POOL_ARN" --name "$RUN_NAME" --test "$TEST_INFO"`
 
 	# Send GitHub status
-	echo '{"state":"success","target_url":"http://google.com","description":"This test build succeeded","context":"aws-devicefarm"}' | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=***REMOVED***
+	echo '{"state":"success","target_url":"http://google.com","description":"This test build succeeded","context":"aws/devicefarm"}' | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
 
 	echo $TEST_RESULT
 else
+	# Clarifiy in CircleCI why devicefarm.sh did nothing on this commit.
 	echo "Tests not running. To run tests outside of master add @RunUiTests to the commit message.";
-	echo '{"state":"failure","target_url":"http://google.com","description":"Instrumentations not run.","context":"aws-devicefarm"}' | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=***REMOVED***
+
+	# Set failure commit status whenever tests not run. This way a merge can only ever happen if UI tests are run and pass.
+	echo '{"state":"failure","target_url":"http://google.com","description":"Instrumentation tests not run.","context":"aws/devicefarm"}' | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
 fi
