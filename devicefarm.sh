@@ -54,6 +54,7 @@ wait_for_upload_success() {
 			break;
 		elif [ $UPLOAD_STATUS == "FAILED" ]
 		then
+			echo $GET_UPLOAD;
 			abort;
 			break;
 		fi
