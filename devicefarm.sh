@@ -36,7 +36,7 @@ report_github_status()
 get_value_from_json()
 {
     KEYS_ACCESSOR="";
-    for x in `seq 1 $#`; do
+    for x in $@; do
         VALUE=`echo "${!x}"`;
         KEYS_ACCESSOR+="[\"$VALUE\"]";
     done
