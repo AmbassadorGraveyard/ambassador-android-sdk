@@ -58,7 +58,10 @@ then
 	TEST_RESULT=`aws devicefarm schedule-run --project-arn "$AWS_PROJECT_ARN" --app-arn "$APK_ARN" --device-pool-arn "$AWS_DEVICE_POOL_ARN" --name "$RUN_NAME" --test "$TEST_INFO"`
 
 	# Send GitHub status
-	echo '{"state":"success","target_url":"http://google.com","description":"This test build succeeded","context":"aws/devicefarm"}' | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
+	STATUS="success";
+	TARGET_URL="http://google.com";
+	DESCRIPTION="This test build succeeded";
+	echo "{\"state\":\"$STATUS\",\"target_url\":\"$TARGET_URL\",\"description\":\"$DESCRIPTION\",\"context\":\"aws/devicefarm\"}" | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
 
 	echo $TEST_RESULT
 else
