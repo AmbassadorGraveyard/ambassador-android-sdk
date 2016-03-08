@@ -9,6 +9,9 @@ msg=`git log -1 --pretty=%B`;
 # Get the branch name
 branch=`git rev-parse --abbrev-ref HEAD`;
 
+# Get commit sha for GitHub reporting
+sha=`git rev-parse HEAD`;
+
 # If "RunUiTests" in commit msg
 if [[ $msg == *"@RunUiTests"* ]] || [ $branch == "master" ]
 then
