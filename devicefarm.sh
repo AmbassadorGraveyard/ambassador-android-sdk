@@ -29,6 +29,40 @@ report_github_status()
 	echo "{\"state\":\"$1\",\"target_url\":\"$CIRCLE_BUILD_URL\",\"description\":\"$2\",\"context\":\"aws/devicefarm\"}" | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
 }
 
+# Uploads a file to a url using curl
+upload_file()
+{
+	curl -T $1 $2;
+}
+
+# Function hangs pending upload success or failure
+wait_for_upload_success() {
+	# Wait for upload success
+	while true; do
+		# Get upload info from AWS using ARN
+		GET_UPLOAD=`aws devicefarm get-upload --arn $1`;
+
+		# Get status from respone JSON
+		UPLOAD_STATUS=`echo $GET_UPLOAD| python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["status"]'`;
+
+		# DEBUGGING
+		echo $UPLOAD_STATUS;
+
+		# Break loop if success
+		if [ $UPLOAD_STATUS == "SUCCEEDED" ]
+		then
+			break;
+		elif [ $UPLOAD_STATUS == "FAILED" ]
+		then
+			abort;
+			break;
+		fi
+
+		# Wait 3 seconds before checking again
+		sleep 3;
+	done
+}
+
 # If "RunUiTests" in commit msg
 if [[ $msg == *"@RunUiTests"* ]] || [ $branch == "master" ]
 then
@@ -54,29 +88,10 @@ then
 	APK_UPLOAD_URL=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["url"]'`;
 
 	# Upload APK to AWS Device Farm
-	curl -T $CIRCLE_ARTIFACTS/$APK_NAME $APK_UPLOAD_URL;
+	upload_file $CIRCLE_ARTIFACTS/$APK_NAME $APK_UPLOAD_URL;
 
-	# Wait for upload success
-	while true; do
-		# Get upload info from AWS using ARN
-		GET_UPLOAD=`aws devicefarm get-upload --arn $APK_ARN`;
-
-		# Get status from respone JSON
-		UPLOAD_STATUS=`echo $GET_UPLOAD| python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["status"]'`;
-
-		# Break loop if success
-		if [ $UPLOAD_STATUS == "SUCCEEDED" ]
-		then
-			abort;
-			break;
-		elif [ $UPLOAD_STATUS == "FAILED" ]
-		then
-			break;
-		fi
-
-		# Wait 3 seconds before checking again
-		sleep 3;
-	done
+	# Hang program pending upload success
+	wait_for_upload_success $APK_ARN;
 
 	# Build the tests APK
 	./gradlew -p ambassadorsdk-demo assembleAndroidTest;
@@ -97,29 +112,10 @@ then
 	TESTS_UPLOAD_URL=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["url"]'`;
 
 	# Upload APK to AWS Device Farm
-	curl -T $CIRCLE_ARTIFACTS/$TESTS_NAME $TESTS_UPLOAD_URL;
+	upload_file $CIRCLE_ARTIFACTS/$TESTS_NAME $TESTS_UPLOAD_URL;
 
-	# Wait for upload success
-	while true; do
-		# Get upload info from AWS using ARN
-		GET_UPLOAD=`aws devicefarm get-upload --arn $TESTS_ARN`;
- 
-		# Get status from respone JSON
-		UPLOAD_STATUS=`echo $GET_UPLOAD| python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["status"]'`;
-
-		# Break loop if success
-		if [ $UPLOAD_STATUS == "SUCCEEDED" ]
-		then
-			abort;
-			break;
-		elif [ $UPLOAD_STATUS == "FAILED" ]
-		then
-			break;
-		fi
-
-		# Wait 3 seconds before checking again
-		sleep 3;
-	done
+	# Hang program pending upload success
+	wait_for_upload_success $TESTS_ARN;
 
 	# Create a name for the test run
 	RUN_NAME="test$TIME";
