@@ -31,6 +31,19 @@ report_github_status()
 	echo "{\"state\":\"$1\",\"target_url\":\"$CIRCLE_BUILD_URL\",\"description\":\"$2\",\"context\":\"aws/devicefarm\"}" | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
 }
 
+# Takes any number of key arguments and will find the value at that point
+# First parameter is json, all subsequent parameters are keys
+get_value_from_json()
+{
+	KEYS_ACCESSOR="";
+	for x in `seq 1 $#`; do
+		VALUE=`echo "${!x}"`;
+		KEYS_ACCESSOR+="[$VALUE]";
+	done
+	VALUE=`echo $1 | python -c "import json,sys;obj=json.load(sys.stdin);print obj$KEYS_ACCESSOR"`;
+	return VALUE;
+}
+
 # Uploads a file to a url using curl
 upload_file()
 {
