@@ -2,16 +2,6 @@
 # Builds a debug APK and tests APK for the demo app and uploads them
 # to AWS Device Farm. Runs tests and reports status to GitHub.
 
-## LOCAL ENV VARS
-CIRCLE_BUILD_URL="http://google.com";
-CIRCLE_ARTIFACTS=".";
-AWS_PROJECT_ARN="***REMOVED***"
-AWS_ACCESS_KEY_ID="***REMOVED***"
-AWS_SECRET_ACCESS_KEY="***REMOVED***"
-AWS_DEFAULT_REGION="us-west-2"
-AWS_DEVICE_POOL_ARN="***REMOVED***"
-GITHUB_ACCESS_TOKEN="***REMOVED***"
-##
 
 # Gets hit on any error before the program aborts.
 abort()
