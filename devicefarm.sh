@@ -2,6 +2,17 @@
 # Builds a debug APK and tests APK for the demo app and uploads them
 # to AWS Device Farm. Runs tests and reports status to GitHub.
 
+## LOCAL ENV VARS
+CIRCLE_BUILD_URL="http://google.com";
+CIRCLE_ARTIFACTS=".";
+AWS_PROJECT_ARN="arn:aws:devicefarm:us-west-2:574715127331:project:0152898b-cd13-44b8-b59e-428ef967b4cd"
+AWS_ACCESS_KEY_ID="AKIAJR3R67W55NEFBPKQ"
+AWS_SECRET_ACCESS_KEY="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"
+AWS_DEFAULT_REGION="us-west-2"
+AWS_DEVICE_POOL_ARN="arn:aws:devicefarm:us-west-2::devicepool:082d10e5-d7d7-48a5-ba5c-b33d66efa1f5"
+GITHUB_ACCESS_TOKEN="9b3c418ad9253f7bf737d6232450a8ea6b7b06a1"
+##
+
 # Gets hit on any error before the program aborts.
 abort()
 {
@@ -31,19 +42,6 @@ report_github_status()
     echo "{\"state\":\"$1\",\"target_url\":\"$CIRCLE_BUILD_URL\",\"description\":\"$2\",\"context\":\"aws/devicefarm\"}" | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
 }
 
-# Takes any number of key arguments and will find the value at that point
-# First parameter is json, all subsequent parameters are keys
-get_value_from_json()
-{
-    KEYS_ACCESSOR="";
-    for x in $@; do
-        VALUE=`echo "${!x}"`;
-        KEYS_ACCESSOR+="[\"$VALUE\"]";
-    done
-    VALUE=`echo $1 | python -c "import json,sys;obj=json.load(sys.stdin);print obj$KEYS_ACCESSOR"`;
-    return VALUE;
-}
-
 # Uploads a file to a url using curl
 upload_file()
 {
@@ -58,7 +56,7 @@ wait_for_upload_success() {
         GET_UPLOAD=`aws devicefarm get-upload --arn $1`;
 
         # Get status from respone JSON
-        UPLOAD_STATUS=`echo $GET_UPLOAD| python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["status"]'`;
+        UPLOAD_STATUS=`echo $GET_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["status"]'`;
 
         # DEBUGGING
         echo $UPLOAD_STATUS;
@@ -66,6 +64,7 @@ wait_for_upload_success() {
         # Break loop if success
         if [ $UPLOAD_STATUS == "SUCCEEDED" ]
         then
+            echo "Upload success";
             break;
         elif [ $UPLOAD_STATUS == "FAILED" ]
         then
@@ -88,25 +87,28 @@ then
     # Build the app APK
     echo "Assembling debug APK...";
     ./gradlew -p ambassadorsdk-demo assembleDebug --quiet;
+    echo "Assemble complete";
 
     # Create new name for app APK as current epoch time + '.apk'
     APK_NAME="app$TIME.apk";
 
     # Copy APK to artifacts directory with new name
+    echo "Copying debug apk to $CIRCLE_ARTIFACTS/$APK_NAME";
     cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug.apk $CIRCLE_ARTIFACTS/$APK_NAME;
 
     # Request APK upload to AWS Device Farm and store returned JSON
+    echo "Requesting upload to device farm";
     APK_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $CIRCLE_ARTIFACTS/$APK_NAME --type ANDROID_APP`;
 
     # Extract ARN from the response JSON
-    APK_ARN=`get_value_from_json $APK_UPLOAD "upload" "arn"`;
+    APK_ARN=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
+    echo "Upload request successful for arn $APK_ARN";
 
     # Get the remote url to upload the app APK to
-    APK_UPLOAD_URL=`get_value_from_json $APK_UPLOAD "upload" "url"`;
-
-    echo $APK_UPLOAD;
+    APK_UPLOAD_URL=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["url"]'`;
 
     # Upload APK to AWS Device Farm
+    echo "Uploading $CIRCLE_ARTIFACTS/$APK_NAME to $APK_UPLOAD_URL";
     upload_file $CIRCLE_ARTIFACTS/$APK_NAME $APK_UPLOAD_URL;
 
     # Hang program pending upload success
@@ -123,16 +125,16 @@ then
     cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug-androidTest-unaligned.apk $CIRCLE_ARTIFACTS/$TESTS_NAME;
 
     # Request APK upload to AWS Device Farm and store response JSON
-    TESTS_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $CIRCLE_ARTIFACTS/$TESTS_NAME --type INSTRUMENTATION_TEST_PACKAGE`;
+    TESTS_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $CIRCLE_ARTIFACTS/$TESTS_NAME --type INSTRUMENTATION_TEST_PACKAGE | sed 's/ //g'`;
 
     # Extract ARN from the response JSON
-    TESTS_ARN=`get_value_from_json $TESTS_UPLOAD "upload" "arn"`
+    TESTS_ARN=`echo $TESTS_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
 
     #Get the remote url to upload the tests APK to
-    TESTS_UPLOAD_URL=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["url"]'`;
+    TESTS_UPLOAD_URL=`echo $TESTS_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["url"]'`;
 
     # Upload APK to AWS Device Farm
-    upload_file $CIRCLE_ARTIFACTS/$TESTS_NAME $TESTS_UPLOAD_URL;
+    upload_file "$CIRCLE_ARTIFACTS/$TESTS_NAME" "$TESTS_UPLOAD_URL";
 
     # Hang program pending upload success
     wait_for_upload_success $TESTS_ARN;
