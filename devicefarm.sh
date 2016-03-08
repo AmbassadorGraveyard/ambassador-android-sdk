@@ -52,7 +52,7 @@ then
 	RUN_NAME="test$TIME";
 
 	# Setup AWS test info
-	TEST_INFO='{"type":"INSTRUMENTATION","testPackageArn":"'; TEST_INFO+=$TESTS_ARN; TEST_INFO+='"}';
+	TEST_INFO="{\"type\":\"INSTRUMENTATION\",\"testPackageArn\":\"$TESTS_ARN\"}";
 
 	# Start AWS test run
 	TEST_RESULT=`aws devicefarm schedule-run --project-arn "$AWS_PROJECT_ARN" --app-arn "$APK_ARN" --device-pool-arn "$AWS_DEVICE_POOL_ARN" --name "$RUN_NAME" --test "$TEST_INFO"`
