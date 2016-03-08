@@ -75,7 +75,7 @@ then
 	./gradlew -p ambassadorsdk-demo assembleDebug --quiet;
 
 	# Create new name for app APK as current epoch time + '.apk'
-	APK_NAME="$TIME.apk";
+	APK_NAME="app$TIME.apk";
 
 	# Copy APK to artifacts directory with new name
 	cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug.apk $CIRCLE_ARTIFACTS/$APK_NAME;
@@ -102,7 +102,7 @@ then
 	./gradlew -p ambassadorsdk-demo assembleAndroidTest --quiet;
 
 	# Create a new name for tests APK as current epoch time + '.apk'
-	TESTS_NAME="$TIME-tests.apk";
+	TESTS_NAME="tests$TIME.apk";
 
 	# Copy APK to artifacts directory with new name
 	cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug-androidTest-unaligned.apk $CIRCLE_ARTIFACTS/$TESTS_NAME;
