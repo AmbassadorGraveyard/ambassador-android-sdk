@@ -22,7 +22,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -190,8 +189,6 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.v("amb", requestCode + " " + resultCode);
-
         if (requestCode == SEND_SMS && didSendSms) {
             // The activity closes so fast it almost looks like something went wrong, so I wait a second
             // to make it appear as if the SDK is doing work.
@@ -207,6 +204,8 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                     });
                 }
             }, 1000);
+        } else if (requestCode == SEND_SMS) {
+            progressDialog.dismiss();
         }
     }
 
@@ -686,7 +685,6 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                     @Override
                     public void onSmsSent() {
                         didSendSms = true;
-                        Toast.makeText(ContactSelectorActivity.this, "Sent!", Toast.LENGTH_LONG).show();
                         observer.stop();
                         List<Contact> contact = new ArrayList<>();
                         contact.add(new Contact.Builder().setPhoneNumber(phoneNumber).build());
