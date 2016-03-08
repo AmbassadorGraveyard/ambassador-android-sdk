@@ -46,13 +46,13 @@ then
 	TESTS_ARN=`echo $TESTS_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
 
 	# Create a name for the test run
-	RUN_NAME=$TIME;
+	RUN_NAME="test$TIME";
 
 	# Setup AWS test info
-	TEST_INFO='{"type":"INSTRUMENTATION","filter":"test",parameters={"Test Package":"com.ambassador.demoapp.test", "Instrumentation Runner": "android.support.test.runner.AndroidJUnitRunner"},"testPackageArn":"'; TEST_INFO+=$TESTS_ARN; TEST_INFO+='"}';
+	TEST_INFO='{"type":"INSTRUMENTATION","testPackageArn":"'; TEST_INFO+=$TESTS_ARN; TEST_INFO+='"}';
 
 	# Start AWS test run
-	TEST_RESULT=`aws devicefarm schedule-run --project-arn $AWS_PROJECT_ARN --app-arn $APK_ARN --device-pool-arn $AWS_DEVICE_POOL_ARN --test $TEST_INFO`
+	TEST_RESULT=`aws devicefarm schedule-run --project-arn "$AWS_PROJECT_ARN" --device-pool-arn "$AWS_DEVICE_POOL_ARN" --name "$RUN_NAME" --test "$TEST_INFO"`
 
 	echo $TEST_RESULT
 else
