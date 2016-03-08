@@ -18,7 +18,7 @@ then
 	# Build the app APK
 	./gradlew -p ambassadorsdk-demo assembleDebug;
 
-	# Create new name for APK as current epoch time + '.apk'
+	# Create new name for app APK as current epoch time + '.apk'
 	APP_NAME=$TIME; APP_NAME+='.apk';
 
 	# Copy APK to artifacts directory with new name
@@ -33,13 +33,13 @@ then
 	# Build the tests APK
 	./gradlew -p ambassadorsdk-demo assembleAndroidTest;
 
-	# Create a new name for JAR as current epoch time + '.jar'
+	# Create a new name for tests APK as current epoch time + '.apk'
 	TESTS_NAME=$TIME; TESTS_NAME+='_tests.apk';
 
-	# Copy JAR to artifacts directory with new name
+	# Copy APK to artifacts directory with new name
 	cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug-androidTest-unaligned.apk $CIRCLE_ARTIFACTS/$TESTS_NAME;
 
-	# Upload JAR to AWS Device Farm and store returned JSON
+	# Upload APK to AWS Device Farm and store returned JSON
 	TESTS_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $CIRCLE_ARTIFACTS/$TESTS_NAME --type INSTRUMENTATION_TEST_PACKAGE`;
 
 	# Extract ARN from the upload JSON
@@ -49,7 +49,7 @@ then
 	RUN_NAME=$TIME;
 
 	# Setup AWS test info
-	TEST_INFO="type=INSTRUMENTATION,testPackageArn=$TESTS_ARN,filter=,parameters={}";
+	TEST_INFO='{"type":"INSTRUMENTATION","filter":"test",parameters={"Test Package":"com.ambassador.demoapp.test", "Instrumentation Runner": "android.support.test.runner.AndroidJUnitRunner"},"testPackageArn":"'; TEST_INFO+=$TESTS_ARN; TEST_INFO+='"}';
 
 	# Start AWS test run
 	TEST_RESULT=`aws devicefarm schedule-run --project-arn $AWS_PROJECT_ARN --app-arn $APK_ARN --device-pool-arn $AWS_DEVICE_POOL_ARN --test $TEST_INFO`
