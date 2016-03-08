@@ -103,7 +103,7 @@ then
 	while true; do
 		# Get upload info from AWS using ARN
 		GET_UPLOAD=`aws devicefarm get-upload --arn $TESTS_ARN`;
-
+ 
 		# Get status from respone JSON
 		UPLOAD_STATUS=`echo $GET_UPLOAD| python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["status"]'`;
 
