@@ -102,7 +102,7 @@ then
 	APK_ARN=`get_value_from_json $APK_UPLOAD "upload" "arn"`;
 
 	# Get the remote url to upload the app APK to
-	APK_UPLOAD_URL=`get_value_from_json $APK_UPLOAD "upload" "url"``;
+	APK_UPLOAD_URL=`get_value_from_json $APK_UPLOAD "upload" "url"`;
 
 	echo $APK_UPLOAD;
 
