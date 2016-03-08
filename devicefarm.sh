@@ -5,10 +5,13 @@ abort()
 {
 	# Set a commit fail status for device farm if any error causes the script to abort.
 	echo '{"state":"failure","target_url":"http://google.com","description":"An error occurred with device farm execution.","context":"aws/devicefarm"}' | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
+	exit 0;
 }
 
+trap 'abort' 0;
+
 # Fail on any command error
-set -o errexit;
+set -e;
 
 # Get the commit msg
 msg=`git log -1 --pretty=%B`;
@@ -78,3 +81,5 @@ else
 	# Set failure commit status whenever tests not run. This way a merge can only ever happen if UI tests are run and pass.
 	echo '{"state":"failure","target_url":"http://google.com","description":"Instrumentation tests not run.","context":"aws/devicefarm"}' | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
 fi
+
+trap : 0
