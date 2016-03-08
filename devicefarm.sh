@@ -15,7 +15,7 @@ then
 	# Get current time for naming
 	TIME=`date +%s`;
 
-	# Build the APK
+	# Build the app APK
 	./gradlew -p ambassadorsdk-demo assembleDebug;
 
 	# Create new name for APK as current epoch time + '.apk'
@@ -30,23 +30,26 @@ then
 	# Extract ARN from the upload JSON
 	APK_ARN=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
 
+	# Build the tests APK
+	./gradlew -p ambassadorsdk-demo assembleAndroidTest;
+
 	# Create a new name for JAR as current epoch time + '.jar'
-	JAR_NAME=$TIME; JAR_NAME+='.jar';
+	TESTS_NAME=$TIME; TESTS_NAME+='_tests.apk';
 
 	# Copy JAR to artifacts directory with new name
-	cp ./ambassadorsdk-demo/build/intermediates/transforms/jarMerging/debug/jars/1/1f/combined.jar $CIRCLE_ARTIFACTS/$JAR_NAME;
+	cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug-androidTest-unaligned.apk $CIRCLE_ARTIFACTS/$TESTS_NAME;
 
 	# Upload JAR to AWS Device Farm and store returned JSON
-	JAR_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $CIRCLE_ARTIFACTS/$JAR_NAME --type UIAUTOMATOR_TEST_PACKAGE`;
+	TESTS_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $CIRCLE_ARTIFACTS/$TESTS_NAME --type INSTRUMENTATION_TEST_PACKAGE`;
 
 	# Extract ARN from the upload JSON
-	JAR_ARN=`echo $JAR_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
+	TESTS_ARN=`echo $TESTS_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
 
 	# Create a name for the test run
 	RUN_NAME=$TIME;
 
 	# Setup AWS test info
-	TEST_INFO="type=UIAUTOMATOR,testPackageArn=$JAR_ARN,filter=test,parameters={}";
+	TEST_INFO="type=INSTRUMENTATION,testPackageArn=$TESTS_ARN,filter=,parameters={}";
 
 	# Start AWS test run
 	TEST_RESULT=`aws devicefarm schedule-run --project-arn $AWS_PROJECT_ARN --app-arn $APK_ARN --device-pool-arn $AWS_DEVICE_POOL_ARN --test $TEST_INFO`
