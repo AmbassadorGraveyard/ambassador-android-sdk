@@ -28,9 +28,17 @@ branch=`git rev-parse --abbrev-ref HEAD`;
 
 # Function to report a github commit status
 report_github_status() 
-{
+{   
+    # If $RUN_ARN not empty (meaning a run was started that can be linked)
+    if [ ! -z $RUN_ARN ]; then
+        PROJECT_CODE=`echo $RUN_ARN | python -c 'obj=sys.stdin;print x[x.find("run:"")+4:].split("/")[0]'`;
+        RUN_CODE=`echo $RUN_ARN | python -c 'obj=sys.stdin;print x[x.find("run:"")+4:].split("/")[1]'`;
+        AWS_LINK="https://us-west-2.console.aws.amazon.com/devicefarm/home?region=us-west-2#/projects/$PROJECT_CODE/runs/$RUN_CODE";
+    else 
+        AWS_LINK="$CIRCLE_BUILD_URL";
+    fi
     echo "Reporting GitHub status as \"$1\"";
-    echo "{\"state\":\"$1\",\"target_url\":\"$CIRCLE_BUILD_URL\",\"description\":\"$2\",\"context\":\"aws/devicefarm\"}" | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
+    echo "{\"state\":\"$1\",\"target_url\":\"$AWS_LINK\",\"description\":\"$2\",\"context\":\"aws/devicefarm\"}" | curl -d @- https://api.github.com/repos/GetAmbassador/ambassador-android-sdk/statuses/$sha?access_token=$GITHUB_ACCESS_TOKEN;
 }
 
 # Uploads a file to a url using curl
