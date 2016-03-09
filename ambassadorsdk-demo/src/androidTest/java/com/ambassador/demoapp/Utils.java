@@ -42,4 +42,16 @@ public class Utils {
         return outputBuilder.toString();
     }
 
+    /**
+     * Sleeps the thread. Does nothing on exception and does not throw.
+     * @param milliseconds number of milliseconds to delay for.
+     */
+    public static void delay(long milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        } catch (Exception e) {
+            // Do nothing
+        }
+    }
+
 }
