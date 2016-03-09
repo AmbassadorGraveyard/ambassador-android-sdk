@@ -180,7 +180,7 @@ then
         sleep 5
     done
 else
-    # Clarifiy in CircleCI why devicefarm.sh did nothing on this commit.
+    # Clarify in CircleCI why devicefarm.sh did nothing on this commit.
     echo "Tests not running. To run tests outside of master add @RunUiTests to the commit message.";
 
     # Set failure commit status whenever tests not run. This way a merge can only ever happen if UI tests are run and pass.
