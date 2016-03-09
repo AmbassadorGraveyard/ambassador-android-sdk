@@ -20,11 +20,11 @@ set -e;
 # Get the commit msg
 msg=`git log -1 --pretty=%B`;
 
-# Get the branch name
-branch=`git rev-parse --abbrev-ref HEAD`;
-
 # Get commit sha for GitHub reporting
 sha=`git rev-parse HEAD`;
+
+# Get the branch name
+branch=`git rev-parse --abbrev-ref HEAD`;
 
 # Function to report a github commit status
 report_github_status() 
@@ -88,7 +88,7 @@ then
 
     # Request APK upload to AWS Device Farm and store returned JSON
     echo "Requesting upload to device farm";
-    APK_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $CIRCLE_ARTIFACTS/$APK_NAME --type ANDROID_APP`;
+    APK_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $APK_NAME --type ANDROID_APP`;
 
     # Extract ARN from the response JSON
     APK_ARN=`echo $APK_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
@@ -115,7 +115,7 @@ then
     cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug-androidTest-unaligned.apk $CIRCLE_ARTIFACTS/$TESTS_NAME;
 
     # Request APK upload to AWS Device Farm and store response JSON
-    TESTS_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $CIRCLE_ARTIFACTS/$TESTS_NAME --type INSTRUMENTATION_TEST_PACKAGE | sed 's/ //g'`;
+    TESTS_UPLOAD=`aws devicefarm create-upload --project-arn $AWS_PROJECT_ARN --name $TESTS_NAME --type INSTRUMENTATION_TEST_PACKAGE | sed 's/ //g'`;
 
     # Extract ARN from the response JSON
     TESTS_ARN=`echo $TESTS_UPLOAD | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["upload"]["arn"]'`;
