@@ -138,16 +138,36 @@ then
     # Start AWS test run
     TEST_RESULT=`aws devicefarm schedule-run --project-arn "$AWS_PROJECT_ARN" --app-arn "$APK_ARN" --device-pool-arn "$AWS_DEVICE_POOL_ARN" --name "$RUN_NAME" --test "$TEST_INFO"`
 
-    # Send GitHub status
-    report_github_status "success" "This test build succeeded";
+    # Get run ARN
+    RUN_ARN=`echo $TEST_RESULT | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["run"]["arn"]'`;
 
-    echo $TEST_RESULT
+    while true; do
+        GET_RUN=`aws devicefarm get-run --arn $RUN_ARN`;
+        STATUS=`echo $GET_RUN | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["run"]["status"]'`;
+        if [ $STATUS == "COMPLETED" ]
+        then
+            RESULT=`echo $GET_RUN | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["run"]["result"]'`;
+            TESTS_TOTAL=`echo $GET_RUN | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["run"]["counters"]["total"]'`;
+            if [ $RESULT == "PASSED" ]
+            then
+                PASSED_TOTAL=`echo $GET_RUN | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["run"]["counters"]["passed"]'`;
+                report_github_status "success" "$PASSED_TOTAL/$TESTS_TOTAL tests passed.";
+            elif [ $RESULT == "FAILED" ]
+            then
+                FAILED_TOTAL=`echo $GET_RUN | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["run"]["counters"]["failed"]'`;
+                report_github_status "failure" "$FAILED_TOTAL/$TESTS_TOTAL tests failed.";
+            else
+                exit 0;
+            fi
+        fi
+        sleep 5
+    done
 else
     # Clarifiy in CircleCI why devicefarm.sh did nothing on this commit.
     echo "Tests not running. To run tests outside of master add @RunUiTests to the commit message.";
 
     # Set failure commit status whenever tests not run. This way a merge can only ever happen if UI tests are run and pass.
-    report_github_status "failure" "Instrumentation tests not run.";
+    report_github_status "error" "Instrumentation tests not run.";
 fi
 
 # End abort on exit block
