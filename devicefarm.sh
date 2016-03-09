@@ -163,15 +163,14 @@ then
             TESTS_TOTAL=`echo $GET_RUN | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["run"]["counters"]["total"]'`;
             echo "Run result: $RESULT";
             echo "Total tests run: $TESTS_TOTAL";
+            PASSED_TOTAL=`echo $GET_RUN | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["run"]["counters"]["passed"]'`;
             if [ $RESULT == "PASSED" ]
             then
-                PASSED_TOTAL=`echo $GET_RUN | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["run"]["counters"]["passed"]'`;
                 report_github_status "success" "$PASSED_TOTAL/$TESTS_TOTAL tests passed.";
                 break;
             elif [ $RESULT == "FAILED" ]
             then
-                FAILED_TOTAL=`echo $GET_RUN | python -c 'import json,sys;obj=json.load(sys.stdin);print obj["run"]["counters"]["failed"]'`;
-                report_github_status "failure" "$FAILED_TOTAL/$TESTS_TOTAL tests failed.";
+                report_github_status "failure" "$PASSED_TOTAL/$TESTS_TOTAL tests passed.";
                 break;
             else
                 exit 0;
