@@ -31,8 +31,8 @@ report_github_status()
 {   
     # If $RUN_ARN not empty (meaning a run was started that can be linked)
     if [ ! -z $RUN_ARN ]; then
-        PROJECT_CODE=`echo $RUN_ARN | python -c 'obj=sys.stdin;print x[x.find("run:"")+4:].split("/")[0]'`;
-        RUN_CODE=`echo $RUN_ARN | python -c 'obj=sys.stdin;print x[x.find("run:"")+4:].split("/")[1]'`;
+        PROJECT_CODE=`echo $RUN_ARN | python -c 'import sys;x=sys.stdin.read();print x[x.find("run:")+4:].split("/")[0]'`;
+        RUN_CODE=`echo $RUN_ARN | python -c 'import sys;x=sys.stdin.read();print x[x.find("run:")+4:].split("/")[1]'`;
         AWS_LINK="https://us-west-2.console.aws.amazon.com/devicefarm/home?region=us-west-2#/projects/$PROJECT_CODE/runs/$RUN_CODE";
     else 
         AWS_LINK="$CIRCLE_BUILD_URL";
@@ -184,8 +184,8 @@ then
                 exit 0;
             fi
         fi
-        # Sleep 5 seconds before looping again if not complete
-        sleep 5
+        # Sleep 10 seconds before looping again if not complete
+        sleep 10
     done
 else
     # Clarify in CircleCI why devicefarm.sh did nothing on this commit.
