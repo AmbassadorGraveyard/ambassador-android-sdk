@@ -93,7 +93,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void loginFilledInputsDoesIdentifyTest() throws Exception {
+    public void testsLoginFilledInputsDoesIdentify() throws Exception {
         // ARRANGE
         UiObject usernameField = getUi("loginUsernameField");
         UiObject passwordField = getUi("loginPasswordField");
@@ -113,7 +113,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void loginEmptyInputsFailsTest() throws Exception {
+    public void testsLoginEmptyInputsFails() throws Exception {
         // ARRANGE
         UiObject loginButton = getUi("loginButton");
 
@@ -126,7 +126,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void signupFilledInputsDoesConversionTest() throws Exception {
+    public void testsSignupFilledInputsDoesConversion() throws Exception {
         // ARRANGE
         UiObject emailField = getUi("signupEmailField");
         UiObject usernameField = getUi("signupUsernameField");
@@ -152,7 +152,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void signupEmptyInputsFailsTest() throws Exception {
+    public void testsSignupEmptyInputsFails() throws Exception {
         // ARRANGE
         UiObject signupButton = getUi("signupButton");
 
@@ -166,7 +166,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void buyNowAuthenticatedDoesConversionTest() throws Exception {
+    public void testsBuyNowAuthenticatedDoesConversion() throws Exception {
         // ARRANGE
         UiObject storeFragment = getUi("storeFragment");
         UiObject buyButton = getUi("buyButton");
@@ -190,7 +190,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void buyNowUnauthenticatedFailsCancelledTest() throws Exception {
+    public void testsBuyNowUnauthenticatedFailsCancelled() throws Exception {
         // ARRANGE
         UiObject storeFragment = getUi("storeFragment");
         UiObject buyButton = getUi("buyButton");
@@ -217,7 +217,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void buyNowUnauthenticatedFailsLoginTest() throws Exception {
+    public void testsBuyNowUnauthenticatedFailsLogin() throws Exception {
         // ARRANGE
         UiObject storeFragment = getUi("storeFragment");
         UiObject loginFragment = getUi("loginFragment");
@@ -245,7 +245,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void rafIdentifiedSucceedsTest() throws Exception {
+    public void testsRafIdentifiedSucceeds() throws Exception {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
         UiObject progressDialog = device.findObject(new UiSelector().resourceId("android:id/parentPanel").className("android.widget.LinearLayout"));
@@ -261,9 +261,8 @@ public class MainActivityTest {
         Assert.assertTrue(!progressDialog.exists());
     }
 
-    // TODO: fix
     @Test
-    public void rafUnidentifiedFailsTest() throws Exception {
+    public void testsRafUnidentifiedFails() throws Exception {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
         UiObject referFragment = getUi("referFragment");
@@ -288,7 +287,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void rafNoMatchingCampaignIdsFailsTest() throws Exception {
+    public void testsRafNoMatchingCampaignIdsFails() throws Exception {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
         UiObject referFragment = getUi("referFragment");
@@ -306,7 +305,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void rafCampaignIdChangeTest() throws Exception {
+    public void testsRafCampaignIdChange() throws Exception {
         // ARRANGE
         UiObject campaignIdField = getUi("campaignIdField");
         UiObject shoeRaf = getUi("shoeRaf");
@@ -336,7 +335,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void rafsAreStyledDifferentlyTest() throws Exception {
+    public void testsRafsAreStyledDifferently() throws Exception {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
         UiObject shirtRaf = getUi("shirtRaf");
@@ -366,7 +365,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void pagesDoSwipeTest() throws Exception {
+    public void testsPagesDoSwipe() throws Exception {
         // ARRANGE
         UiObject loginFragment = getUi("loginFragment");
         UiObject singupFragment = getUi("signupFragment");
@@ -396,7 +395,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void keyboardClosesAndFocusResetsOnPageChangeTest() throws Exception {
+    public void testsKeyboardClosesAndFocusResetsOnPageChange() throws Exception {
         // ARRANGE
         UiObject loginUsernameField = getUi("loginUsernameField");
         UiObject loginPasswordField = getUi("loginPasswordField");
