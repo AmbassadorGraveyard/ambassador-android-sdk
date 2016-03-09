@@ -1,6 +1,5 @@
 package com.ambassador.demoapp;
 
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.test.uiautomator.UiDevice;
 
@@ -18,7 +17,7 @@ public class Utils {
      * @param description a description of what the screenshot is/should be.
      */
     public static void screenshot(@NonNull UiDevice device, @NonNull String key, @NonNull String description) {
-        String path = Environment.getExternalStorageDirectory().getPath() + "/test-screenshots";
+        String path = "/sdcard/test-screenshots";
         String name =
                 processStringForFilename(key)
                 + "-"
