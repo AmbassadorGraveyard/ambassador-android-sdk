@@ -115,6 +115,7 @@ public class MainActivityTest {
     @Test
     public void testsLoginEmptyInputsFails() throws Exception {
         // ARRANGE
+        Mockito.doNothing().when(requestManager).identifyRequest();
         UiObject loginButton = getUi("loginButton");
 
         // ACT
