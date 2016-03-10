@@ -206,6 +206,20 @@ public class SocialOAuthActivity extends AppCompatActivity {
     }
 
     /**
+     * Returns a new unique popup code to append to oauth url.
+     * @return the unique String popup code.
+     */
+    protected String getPopupCode() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(auth.getEnvoyId());
+        stringBuilder.append(System.currentTimeMillis());
+        for (int i = 0; i < 32; i++) {
+            stringBuilder.append((int)(Math.random() * 10));
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
      * Sets the toolbar color and title, and sets a back arrow in the top left. Sets colors based
      * on the AuthInterface set.
      */
@@ -368,27 +382,15 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void getLoginUrl(@NonNull final LoginUrlListener loginUrlListener) {
-            requestManager.getFacebookLoginUrl(new RequestManager.RequestCompletion() {
-                @Override
-                public void onSuccess(final Object successResponse) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            loginUrlListener.onLoginUrlReceived((String) successResponse);
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(final Object failureResponse) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            loginUrlListener.onLoginUrlFailed();
-                        }
-                    });
-                }
-            });
+            String frameworkUrl = "https://api.getenvoy.co/oauth/authenticate/?client_id={id}&client_secret={secret}&provider={provider}&popup={popup}";
+            String popup = getPopupCode();
+            String actualUrl =
+                    frameworkUrl
+                        .replace("{id}", auth.getEnvoyId())
+                        .replace("{secret}", auth.getEnvoySecret())
+                        .replace("{provider}", "facebook")
+                        .replace("{popup}", popup);
+            loginUrlListener.onLoginUrlReceived(actualUrl);
         }
 
         @Override
@@ -531,28 +533,15 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void getLoginUrl(@NonNull final LoginUrlListener loginUrlListener) {
-            requestManager.getTwitterLoginUrl(new RequestManager.RequestCompletion() {
-                @Override
-                public void onSuccess(Object successResponse) {
-                    final String url = (String) successResponse;
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            loginUrlListener.onLoginUrlReceived(url);
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(Object failureResponse) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            loginUrlListener.onLoginUrlFailed();
-                        }
-                    });
-                }
-            });
+            String frameworkUrl = "https://api.getenvoy.co/oauth/authenticate/?client_id={id}&client_secret={secret}&provider={provider}&popup={popup}";
+            String popup = getPopupCode();
+            String actualUrl =
+                    frameworkUrl
+                            .replace("{id}", auth.getEnvoyId())
+                            .replace("{secret}", auth.getEnvoySecret())
+                            .replace("{provider}", "twitter")
+                            .replace("{popup}", popup);
+            loginUrlListener.onLoginUrlReceived(actualUrl);
         }
 
         @Override
@@ -652,32 +641,24 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void getLoginUrl(@NonNull LoginUrlListener loginUrlListener) {
-            String authorizeUrl = "https://www.linkedin.com/uas/oauth2/authorization";
-            String responseType = new StringResource(R.string.linked_in_login_response_type).getValue();
-            String clientId = new StringResource(R.string.linked_in_client_id).getValue();
-            String callbackUrl = new StringResource(R.string.linked_in_callback_url).getValue();
-            String rProfilePermission = new StringResource(R.string.linked_in_r_profile_permission).getValue();
-            String wSharePermission = new StringResource(R.string.linked_in_w_share_permission).getValue();
-            String scopes = rProfilePermission + " " + wSharePermission;
-
-            Uri authUri = Uri.parse(authorizeUrl)
-                    .buildUpon()
-                    .appendQueryParameter("response_type", responseType)
-                    .appendQueryParameter("client_id", clientId)
-                    .appendQueryParameter("redirect_uri", "REDIRECT")
-                    .appendQueryParameter("state", "987654321")
-                    .appendQueryParameter("scope", scopes)
-                    .build();
-
-            String authUrl = authUri.toString().replace("REDIRECT", callbackUrl);
-            loginUrlListener.onLoginUrlReceived(authUrl);
+            String frameworkUrl = "https://api.getenvoy.co/oauth/authenticate/?client_id={id}&client_secret={secret}&provider={provider}&popup={popup}";
+            String popup = getPopupCode();
+            String actualUrl =
+                    frameworkUrl
+                            .replace("{id}", auth.getEnvoyId())
+                            .replace("{secret}", auth.getEnvoySecret())
+                            .replace("{provider}", "linkedin")
+                            .replace("{popup}", popup);
+            loginUrlListener.onLoginUrlReceived(actualUrl);
         }
 
         @Override
         public boolean handleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
 
-            if (isSuccessUrl(uri)) {
+            if (isAllowedRedirectUrl(uri)) {
+                return false;
+            } else if (isSuccessUrl(uri)) {
                 wvLogin.stopLoading();
                 requestAccessToken(uri);
             } else if (isCancelUrl(uri)) {
@@ -691,7 +672,13 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public boolean canHandleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
-            return isSuccessUrl(uri) || isCancelUrl(uri);
+            return isAllowedRedirectUrl(uri) || isSuccessUrl(uri) || isCancelUrl(uri);
+        }
+
+        protected boolean isAllowedRedirectUrl(Uri uri) {
+            boolean hostCheck = uri.getHost().equals("linkedin.com") || uri.getHost().equals("www.linkedin.com");
+            boolean pathCheck = uri.getPath().equals("/uas/oauth2/authorization") || uri.getPath().equals("/uas/oauth2/authorization/");
+            return hostCheck || pathCheck;
         }
 
         protected boolean isSuccessUrl(Uri uri) {
