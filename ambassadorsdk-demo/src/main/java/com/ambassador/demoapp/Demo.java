@@ -113,7 +113,7 @@ public final class Demo extends Application {
 
     @NonNull
     public String getCampaignId() {
-        return prefs.getString("campaignId", "30391");
+        return prefs.getString("campaignId", "260");
     }
 
     @Nullable

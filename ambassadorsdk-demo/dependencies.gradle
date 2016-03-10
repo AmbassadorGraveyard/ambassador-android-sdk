@@ -19,6 +19,7 @@ rootProject.ext.demoAndroidTestCompile = [
         rootProject.ext.deps.mockito,
         rootProject.ext.deps.dexmaker,
         rootProject.ext.deps.dexmaker_mockito,
+        rootProject.ext.deps.spoon,
 ]
 
 rootProject.ext.demoAndroidTestApt = [
