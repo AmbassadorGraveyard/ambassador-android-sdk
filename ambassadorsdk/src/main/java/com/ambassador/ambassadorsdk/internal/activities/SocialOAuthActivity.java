@@ -29,6 +29,7 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.LoadingView;
@@ -89,17 +90,12 @@ public class SocialOAuthActivity extends AppCompatActivity {
         setUpToolbar();
         configureWebView();
 
-        authInterface.getLoginUrl(new AuthInterface.LoginUrlListener() {
-            @Override
-            public void onLoginUrlReceived(@NonNull String url) {
-                wvLogin.loadUrl(url);
-            }
+        if (auth.getEnvoyId() == null || auth.getEnvoySecret() == null) {
+            getEnvoyKeys();
+            return;
+        }
 
-            @Override
-            public void onLoginUrlFailed() {
-                finish();
-            }
-        });
+        executionReady();
     }
 
     /**
@@ -112,6 +108,24 @@ public class SocialOAuthActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         finish();
         return true;
+    }
+
+    /**
+     * Call this method when all details are retrieved (envoy keys). Starts off the process by grabbing
+     * an OAuth url via the AuthInterface.
+     */
+    protected void executionReady() {
+        authInterface.getLoginUrl(new AuthInterface.LoginUrlListener() {
+            @Override
+            public void onLoginUrlReceived(@NonNull String url) {
+                wvLogin.loadUrl(url);
+            }
+
+            @Override
+            public void onLoginUrlFailed() {
+                finish();
+            }
+        });
     }
 
     /**
@@ -131,6 +145,64 @@ public class SocialOAuthActivity extends AppCompatActivity {
             default:
                 return null;
         }
+    }
+
+    /**
+     * Attempts to request envoy keys from the Ambassador backend and set them in auth.
+     */
+    protected void getEnvoyKeys() {
+        requestManager.getCompanyInfo(new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess(Object successResponse) {
+                if (!(successResponse instanceof IdentifyApi.GetCompanyInfoResponse)) {
+                    onFailure(null);
+                    return;
+                }
+
+                IdentifyApi.GetCompanyInfoResponse response = (IdentifyApi.GetCompanyInfoResponse) successResponse;
+
+                if (response.results == null || response.results.length == 0 || response.results[0] == null) {
+                    onFailure(null);
+                    return;
+                }
+
+                IdentifyApi.GetCompanyInfoResponse.Result result = response.results[0];
+                String uid = result.uid;
+
+                requestManager.getEnvoyKeys(uid, new RequestManager.RequestCompletion() {
+                    @Override
+                    public void onSuccess(Object successResponse) {
+                        if (!(successResponse instanceof IdentifyApi.GetEnvoyKeysResponse)) {
+                            onFailure(null);
+                            return;
+                        }
+
+                        IdentifyApi.GetEnvoyKeysResponse envoyKeysResponse = (IdentifyApi.GetEnvoyKeysResponse) successResponse;
+                        if (envoyKeysResponse.envoy_client_id == null || envoyKeysResponse.envoy_client_secret == null) {
+                            onFailure(null);
+                            return;
+                        }
+
+                        auth.setEnvoyId(envoyKeysResponse.envoy_client_id);
+                        auth.setEnvoySecret(envoyKeysResponse.envoy_client_secret);
+
+                        executionReady();
+                    }
+
+                    @Override
+                    public void onFailure(Object failureResponse) {
+                        finish();
+                        return;
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Object failureResponse) {
+                finish();
+                return;
+            }
+        });
     }
 
     /**

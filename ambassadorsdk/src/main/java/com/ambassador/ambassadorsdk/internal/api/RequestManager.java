@@ -252,6 +252,27 @@ public class RequestManager {
     }
 
     /**
+     * Requests data about a company. Returned data is based on authenticated headers.
+     * @param requestCompletion callback for request completion.
+     */
+    public void getCompanyInfo(final RequestCompletion requestCompletion) {
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
+        identifyApi.getCompanyInfo(uid, authKey, requestCompletion);
+    }
+
+    /**
+     * Requests an Envoy id and secret to use for social OAuth stuff.
+     * @param companyUid the ambassador id for the company obtained by getCompanyInfo(...).
+     * @param requestCompletion callback for request completion.
+     */
+    public void getEnvoyKeys(String companyUid, final RequestCompletion requestCompletion) {
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
+        identifyApi.getEnvoyKeys(uid, authKey, companyUid, requestCompletion);
+    }
+
+    /**
      * Asks the Ambassador backend to open a Pusher channel.
      * Stores the channel information when it receives back.
      * @param completion callback for request completion
