@@ -86,10 +86,8 @@ public class SmsSendObserver extends ContentObserver {
                 String address = cursor.getString(cursor.getColumnIndex(COLUMN_ADDRESS));
                 int type = cursor.getInt(cursor.getColumnIndex(COLUMN_TYPE));
 
-                if (phoneNumber.equals(address) && MESSAGE_TYPE_SENT == type) {
-                    if (smsSendListener != null) {
-                        smsSendListener.onSmsSent();
-                    }
+                if (phoneNumber.equals(address) && MESSAGE_TYPE_SENT == type && smsSendListener != null) {
+                    smsSendListener.onSmsSent();
                 }
             }
         } finally {
