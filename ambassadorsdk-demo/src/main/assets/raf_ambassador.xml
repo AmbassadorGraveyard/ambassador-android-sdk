@@ -38,9 +38,6 @@
     <color name="contactsSearchBar">@android:color/transparent</color>
     <color name="contactsSearchIcon">@android:color/white</color>
     <color name="contactNoPhotoAvailableBackground">@color/ambassador_blue</color>
-    <color name="linkedinToolBar">@color/linkedin_blue</color>
-    <color name="linkedinToolBarText">@android:color/white</color>
-    <color name="linkedinToolBarArrow">@android:color/white</color>
     <array name="channels">
         <item>Facebook</item>
         <item>Twitter</item>
