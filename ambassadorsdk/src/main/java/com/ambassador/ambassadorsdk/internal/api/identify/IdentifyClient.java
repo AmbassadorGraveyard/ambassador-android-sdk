@@ -6,9 +6,11 @@ import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.GET;
 import retrofit.http.Header;
 import retrofit.http.Headers;
 import retrofit.http.POST;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -99,6 +101,36 @@ public interface IdentifyClient {
             @Header("Authorization") String auth,
             @Body Object body,
             Callback<IdentifyApi.CreatePusherChannelResponse> callback
+    );
+
+    /**
+     * https://api.getambassador.com/companies/
+     * https://dev-ambassador-api.herokuapp.com/companies/
+     * @param universalId the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param callback the Retrofit callback
+     */
+    @GET("/companies/")
+    void getCompanyInfo(
+            @Header("MBSY_UNIVERSAL_ID") String universalId,
+            @Header("Authorization") String auth,
+            Callback<IdentifyApi.GetCompanyInfoResponse> callback
+    );
+
+    /**
+     * https://api.getambassador.com/companies/{companyUid}/
+     * https://dev-ambassador-api.herokuapp.com/companies/{companyUid}/
+     * @param universalId the Ambassador universal id
+     * @param auth the Ambassador universal token
+     * @param companyUid the id of the company
+     * @param callback the Retrofit callback
+     */
+    @GET("/companies/{uid}")
+    void getEnvoyKeys(
+            @Header("MBSY_UNIVERSAL_ID") String universalId,
+            @Header("Authorization") String auth,
+            @Path("uid") String companyUid,
+            Callback<IdentifyApi.GetEnvoyKeysResponse> callback
     );
 
 }

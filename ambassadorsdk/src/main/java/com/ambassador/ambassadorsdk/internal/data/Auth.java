@@ -34,6 +34,8 @@ public class Auth implements Data {
     protected String linkedInToken;
     protected String twitterToken;
     protected String twitterSecret;
+    protected String envoyId;
+    protected String envoySecret;
     // endregion
 
     // region Getters / Setters
@@ -96,6 +98,25 @@ public class Auth implements Data {
         this.twitterSecret = twitterSecret;
         save();
     }
+
+    public String getEnvoyId() {
+        return envoyId;
+    }
+
+    public void setEnvoyId(String envoyId) {
+        this.envoyId = envoyId;
+        save();
+    }
+
+    public String getEnvoySecret() {
+        return envoySecret;
+    }
+
+    public void setEnvoySecret(String envoySecret) {
+        this.envoySecret = envoySecret;
+        save();
+    }
+
     // endregion
 
     // region Persistence methods
@@ -122,6 +143,8 @@ public class Auth implements Data {
         linkedInToken = null;
         twitterToken = null;
         twitterSecret = null;
+        envoyId = null;
+        envoySecret = null;
     }
 
     /**
@@ -142,6 +165,8 @@ public class Auth implements Data {
         setLinkedInToken(auth.getLinkedInToken());
         setTwitterToken(auth.getTwitterToken());
         setTwitterSecret(auth.getTwitterSecret());
+        setEnvoyId(auth.getEnvoyId());
+        setEnvoySecret(auth.getEnvoySecret());
     }
     // endregion
 
