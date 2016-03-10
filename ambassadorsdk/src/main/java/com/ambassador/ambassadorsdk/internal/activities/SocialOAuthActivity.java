@@ -548,7 +548,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
         public boolean handleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
 
-            if (isSuccessUrl(uri)) {
+            if (isAllowedRedirectUrl(uri)) {
+                return false;
+            } else if (isSuccessUrl(uri)) {
                 wvLogin.stopLoading();
                 requestAccessToken(uri);
             } else if (isCancelUrl(uri)) {
@@ -565,7 +567,13 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public boolean canHandleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
-            return isSuccessUrl(uri) || isCancelUrl(uri) || isFailureUrl(uri);
+            return isAllowedRedirectUrl(uri) || isSuccessUrl(uri) || isCancelUrl(uri) || isFailureUrl(uri);
+        }
+
+        protected boolean isAllowedRedirectUrl(Uri uri) {
+            boolean hostCheck = uri.getHost().equals("api.twitter.com");
+            boolean pathCheck = uri.getPath().equals("/oauth/authorize") || uri.getPath().equals("/oauth/authorize/");
+            return hostCheck || pathCheck;
         }
 
         protected boolean isSuccessUrl(Uri uri) {
