@@ -397,7 +397,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
         public boolean handleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
 
-            if (isLoginRedirect(uri)) {
+            if (isAllowedRedirectUrl(uri)) {
+                return false;
+            } else if (isLoginRedirect(uri)) {
                 return false;
             } else if (isSuccessUrl(uri)) {
                 wvLogin.stopLoading();
@@ -415,7 +417,13 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public boolean canHandleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
-            return isLoginRedirect(uri) || isSuccessUrl(uri) || isSuccessRedirectUrl(uri) || isFailureUrl(uri);
+            return isAllowedRedirectUrl(uri) || isLoginRedirect(uri) || isSuccessUrl(uri) || isSuccessRedirectUrl(uri) || isFailureUrl(uri);
+        }
+
+        protected boolean isAllowedRedirectUrl(Uri uri) {
+            boolean hostCheck = uri.getHost().equals("www.facebook.com") || uri.getHost().equals("facebook.com");
+            boolean pathCheck = uri.getPath().equals("/dialog/oauth") || uri.getPath().equals("/dialog/oauth/");
+            return hostCheck || pathCheck;
         }
 
         protected boolean isLoginRedirect(Uri uri) {
