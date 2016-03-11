@@ -17,6 +17,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -25,10 +26,12 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
+import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.envoy.EnvoyApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
@@ -119,6 +122,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
             @Override
             public void onLoginUrlReceived(@NonNull String url) {
                 wvLogin.loadUrl(url);
+                Log.v("amb-url1", auth.getEnvoyId());
+                Log.v("amb-url1", auth.getEnvoySecret());
+                Log.v("amb-url1", url);
             }
 
             @Override
@@ -369,6 +375,8 @@ public class SocialOAuthActivity extends AppCompatActivity {
      */
     protected class FacebookAuth implements AuthInterface {
 
+        protected String popup;
+
         @NonNull
         @Override
         public String getToolbarText() {
@@ -382,8 +390,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void getLoginUrl(@NonNull final LoginUrlListener loginUrlListener) {
-            String frameworkUrl = "https://api.getenvoy.co/oauth/authenticate/?client_id={id}&client_secret={secret}&provider={provider}&popup={popup}";
-            String popup = getPopupCode();
+            String host = (BuildConfig.IS_RELEASE_BUILD) ? new StringResource(R.string.envoy_api_url).getValue() : new StringResource(R.string.envoy_api_url_dev).getValue();
+            String frameworkUrl = host + "/oauth/authenticate/?client_id={id}&client_secret={secret}&provider={provider}&popup={popup}";
+            this.popup = getPopupCode();
             String actualUrl =
                     frameworkUrl
                         .replace("{id}", auth.getEnvoyId())
@@ -435,7 +444,8 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         protected boolean isSuccessRedirectUrl(Uri uri) {
-            return uri.getHost().equals("api.getenvoy.co") && uri.getPath().equals("/auth/facebook/auth") && uri.getQueryParameter("code") != null;
+            boolean hostCheck = uri.getHost().equals("api.getenvoy.co") || uri.getHost().equals("dev-envoy-api.herokuapp.com");
+            return hostCheck && uri.getPath().equals("/auth/facebook/auth") && uri.getQueryParameter("code") != null;
         }
 
         protected boolean isFailureUrl(Uri uri) {
@@ -528,6 +538,8 @@ public class SocialOAuthActivity extends AppCompatActivity {
      */
     protected class TwitterAuth implements AuthInterface {
 
+        protected String popup;
+
         @NonNull
         @Override
         public String getToolbarText() {
@@ -541,8 +553,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void getLoginUrl(@NonNull final LoginUrlListener loginUrlListener) {
-            String frameworkUrl = "https://api.getenvoy.co/oauth/authenticate/?client_id={id}&client_secret={secret}&provider={provider}&popup={popup}";
-            String popup = getPopupCode();
+            String host = (BuildConfig.IS_RELEASE_BUILD) ? new StringResource(R.string.envoy_api_url).getValue() : new StringResource(R.string.envoy_api_url_dev).getValue();
+            String frameworkUrl = host + "/oauth/authenticate/?client_id={id}&client_secret={secret}&provider={provider}&popup={popup}";
+            this.popup = getPopupCode();
             String actualUrl =
                     frameworkUrl
                             .replace("{id}", auth.getEnvoyId())
@@ -644,6 +657,8 @@ public class SocialOAuthActivity extends AppCompatActivity {
      */
     protected class LinkedInAuth implements AuthInterface {
 
+        protected String popup;
+
         @NonNull
         @Override
         public String getToolbarText() {
@@ -657,8 +672,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void getLoginUrl(@NonNull LoginUrlListener loginUrlListener) {
-            String frameworkUrl = "https://api.getenvoy.co/oauth/authenticate/?client_id={id}&client_secret={secret}&provider={provider}&popup={popup}";
-            String popup = getPopupCode();
+            String host = (BuildConfig.IS_RELEASE_BUILD) ? new StringResource(R.string.envoy_api_url).getValue() : new StringResource(R.string.envoy_api_url_dev).getValue();
+            String frameworkUrl = host + "/oauth/authenticate/?client_id={id}&client_secret={secret}&provider={provider}&popup={popup}";
+            this.popup = getPopupCode();
             String actualUrl =
                     frameworkUrl
                             .replace("{id}", auth.getEnvoyId())
@@ -698,11 +714,13 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         protected boolean isSuccessUrl(Uri uri) {
-            return uri.getHost().equals("getambassador.com") && uri.getQueryParameter("code") != null;
+            boolean hostCheck = uri.getHost().equals("api.getenvoy.co") || uri.getHost().equals("dev-envoy-api.herokuapp.com");
+            return hostCheck && uri.getQueryParameter("code") != null;
         }
 
         protected boolean isCancelUrl(Uri uri) {
-            return uri.getHost().equals("getambassador.com") && uri.getQueryParameter("error") != null;
+            boolean hostCheck = uri.getHost().equals("api.getenvoy.co") || uri.getHost().equals("dev-envoy-api.herokuapp.com");
+            return hostCheck && uri.getQueryParameter("error") != null;
         }
 
         /**
@@ -718,27 +736,20 @@ public class SocialOAuthActivity extends AppCompatActivity {
                 return;
             }
 
-            requestManager.linkedInLoginRequest(requestToken, new RequestManager.RequestCompletion() {
+            requestManager.getEnvoyAccessToken(popup, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    });
+                    if (!(successResponse instanceof EnvoyApi.GetAccessTokenResponse)) {
+                        finish();
+                        return;
+                    }
+
+                    EnvoyApi.GetAccessTokenResponse response = (EnvoyApi.GetAccessTokenResponse) successResponse;
                 }
 
                 @Override
                 public void onFailure(Object failureResponse) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), new StringResource(R.string.login_failure).getValue(), Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    });
+
                 }
             });
         }
