@@ -54,13 +54,16 @@ public final class AmbModule {
 
     protected RequestManager requestManager;
     protected PusherManager pusherManager;
+    protected BulkShareHelper bulkShareHelper;
 
     public void init() {
         requestManager = new RequestManager();
         pusherManager = new PusherManager();
+        bulkShareHelper = new BulkShareHelper();
 
         AmbSingleton.inject(requestManager);
         AmbSingleton.inject(pusherManager);
+        AmbSingleton.inject(bulkShareHelper);
     }
 
     @NonNull
@@ -71,9 +74,8 @@ public final class AmbModule {
 
     @NonNull
     @Provides
-    @Singleton
     public BulkShareHelper provideBulkShareHelper() {
-        return new BulkShareHelper();
+        return bulkShareHelper;
     }
 
     @NonNull
