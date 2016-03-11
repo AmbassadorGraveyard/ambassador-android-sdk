@@ -29,7 +29,7 @@ public interface EnvoyClient {
     void getAccessToken(
             @Query("client_id") String clientId,
             @Query("client_secret") String clientSecret,
-            @Query("popop") String popup,
+            @Query("popup") String popup,
             Callback<EnvoyApi.GetAccessTokenResponse> callback
     );
 
