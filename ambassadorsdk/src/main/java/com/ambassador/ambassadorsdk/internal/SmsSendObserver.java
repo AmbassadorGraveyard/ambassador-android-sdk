@@ -13,11 +13,11 @@ import android.os.Handler;
  */
 public class SmsSendObserver extends ContentObserver {
 
-    /** The Handler thread to run content observation on.  Required by superclass constructor. */
-    protected static final Handler handler = new Handler();
-
     /** The uri being listened for changes in. This is SMS. */
-    protected static final Uri uri = Uri.parse("content://sms/");
+    protected static final Uri uri;
+    static {
+        uri = Uri.parse("content://sms/");
+    }
 
     /** Cursor column name for the phone number. */
     protected static final String COLUMN_ADDRESS = "address";
@@ -46,7 +46,7 @@ public class SmsSendObserver extends ContentObserver {
      * @param phoneNumber the phone number to listener for SMS being sent to.
      */
     public SmsSendObserver(Context context, String phoneNumber) {
-        super(handler);
+        super(new Handler());
         this.context = context;
         this.resolver = context.getContentResolver();
         this.phoneNumber = phoneNumber;
