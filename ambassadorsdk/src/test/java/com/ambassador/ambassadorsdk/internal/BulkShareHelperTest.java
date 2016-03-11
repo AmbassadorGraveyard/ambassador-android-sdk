@@ -1,8 +1,14 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -24,37 +30,103 @@ import java.util.List;
         AmbSingleton.class,
         JSONObject.class,
         BulkShareHelper.class,
-        RequestManager.class
+        RequestManager.class,
+        Uri.class,
+        Intent.class
 })
 public class BulkShareHelperTest {
 
     private BulkShareHelper bulkShareHelper;
     private RequestManager requestManager;
+    private Device device;
 
     @Before
     public void setUpMock() {
         PowerMockito.mockStatic(
-                AmbSingleton.class
+                AmbSingleton.class,
+                Uri.class
         );
-
-        PowerMockito.spy(BulkShareHelper.class);
-
-//        AmbassadorApplicationComponent component = Mockito.mock(AmbassadorApplicationComponent.class);
-//        Mockito.when(AmbSingleton.getInstanceComponent()).thenReturn(component);
-//        Mockito.doNothing().when(component).inject(Mockito.any(BulkShareHelper.class));
 
         bulkShareHelper = Mockito.spy(new BulkShareHelper());
 
         requestManager = PowerMockito.mock(RequestManager.class);
         bulkShareHelper.requestManager = requestManager;
+
+        device = PowerMockito.mock(Device.class);
+        bulkShareHelper.device = device;
     }
 
+
     @Test
-    public void bulkShareSMSTest() {
+    public void bulkShareSMSAPI23Test() {
         // ARRANGE
         String message = "message";
         List<Contact> contacts = new ArrayList<>();
         BulkShareHelper.BulkShareCompletion bulkShareCompletion = Mockito.mock(BulkShareHelper.BulkShareCompletion.class);
+        Mockito.doReturn(23).when(device).getSdkVersion();
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocation.getArguments()[2];
+                completion.onSuccess("success");
+                return null;
+            }
+        }).doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocation.getArguments()[2];
+                completion.onFailure("failure");
+                return null;
+            }
+        }).when(requestManager).bulkShareSms(Mockito.eq(contacts), Mockito.eq(message), Mockito.any(RequestManager.RequestCompletion.class));
+
+        // ACT & ASSERT
+        bulkShareHelper.bulkShare(message, contacts, true, bulkShareCompletion);
+        Mockito.verify(requestManager).bulkShareTrack(Mockito.eq(contacts), Mockito.eq(BulkShareHelper.SocialServiceTrackType.SMS));
+        Mockito.verify(bulkShareCompletion).bulkShareSuccess();
+
+        // ACT & ASSERT
+        bulkShareHelper.bulkShare(message, contacts, true, bulkShareCompletion);
+        Mockito.verify(bulkShareCompletion).bulkShareFailure();
+    }
+
+    @Test
+    public void bulkShareSMSApi21SingleContactTest() throws Exception {
+        // ARRANGE
+        String message = "message";
+        List<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact.Builder().setPhoneNumber("3133291104").build());
+        BulkShareHelper.BulkShareCompletion bulkShareCompletion = Mockito.mock(BulkShareHelper.BulkShareCompletion.class);
+        Mockito.doReturn(21).when(device).getSdkVersion();
+        Context context = Mockito.mock(Context.class);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
+        PackageManager packageManager = Mockito.mock(PackageManager.class);
+        Mockito.when(context.getPackageManager()).thenReturn(packageManager);
+        Mockito.doReturn(true).when(packageManager).hasSystemFeature(Mockito.anyString());
+
+        PowerMockito.doReturn(Mockito.mock(Uri.class)).when(Uri.class, "parse", Mockito.anyString());
+        Intent intent = Mockito.mock(Intent.class);
+        PowerMockito.whenNew(Intent.class).withAnyArguments().thenReturn(intent);
+
+        // ACT
+        bulkShareHelper.bulkShare(message, contacts, true, bulkShareCompletion);
+
+        // ASSERT
+        Mockito.verify(bulkShareCompletion).launchSmsIntent(Mockito.eq("3133291104"), Mockito.eq(intent));
+        Mockito.verify(intent).putExtra(Mockito.eq("sms_body"), Mockito.eq(message));
+    }
+
+    @Test
+    public void bulkShareSMSApi21ManyContactsTest() throws Exception {
+        // ARRANGE
+        String message = "message";
+        List<Contact> contacts = new ArrayList<>();
+        contacts.add(new Contact.Builder().setPhoneNumber("3133291104").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("3133291104").build());
+        contacts.add(new Contact.Builder().setPhoneNumber("3133291104").build());
+        BulkShareHelper.BulkShareCompletion bulkShareCompletion = Mockito.mock(BulkShareHelper.BulkShareCompletion.class);
+        Mockito.doReturn(21).when(device).getSdkVersion();
 
         Mockito.doAnswer(new Answer() {
             @Override
@@ -133,7 +205,7 @@ public class BulkShareHelperTest {
         contacts.add(new Contact.Builder().setPhoneNumber("1-3-1-3-3-2-9-1-1-0-4").build());
 
         // ACT
-        List<String> verified = BulkShareHelper.verifiedSMSList(contacts);
+        List<String> verified = bulkShareHelper.verifiedSMSList(contacts);
 
         // ASSERT
         Assert.assertEquals(4, verified.size());
@@ -155,7 +227,7 @@ public class BulkShareHelperTest {
         contacts.add(new Contact.Builder().setEmailAddress("test@").build());
 
         // ACT
-        List<String> verified = BulkShareHelper.verifiedEmailList(contacts);
+        List<String> verified = bulkShareHelper.verifiedEmailList(contacts);
 
         // ASSERT
         Assert.assertEquals(2, verified.size());
@@ -173,11 +245,11 @@ public class BulkShareHelperTest {
         String check5 = "test@getambassador";
 
         // ACT
-        boolean result1 = BulkShareHelper.isValidEmail(check1);
-        boolean result2 = BulkShareHelper.isValidEmail(check2);
-        boolean result3 = BulkShareHelper.isValidEmail(check3);
-        boolean result4 = BulkShareHelper.isValidEmail(check4);
-        boolean result5 = BulkShareHelper.isValidEmail(check5);
+        boolean result1 = bulkShareHelper.isValidEmail(check1);
+        boolean result2 = bulkShareHelper.isValidEmail(check2);
+        boolean result3 = bulkShareHelper.isValidEmail(check3);
+        boolean result4 = bulkShareHelper.isValidEmail(check4);
+        boolean result5 = bulkShareHelper.isValidEmail(check5);
 
         // ASSERT
         Assert.assertTrue(result1);
@@ -198,7 +270,7 @@ public class BulkShareHelperTest {
         String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(values, trackType, shortCode, fromEmail);
+        BulkShareApi.BulkShareTrackBody[] bodies = bulkShareHelper.contactArray(values, trackType, shortCode, fromEmail);
 
         // ASSERT
         Assert.assertEquals(2, bodies.length);
@@ -224,7 +296,7 @@ public class BulkShareHelperTest {
         String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(values, trackType, shortCode, fromEmail);
+        BulkShareApi.BulkShareTrackBody[] bodies = bulkShareHelper.contactArray(values, trackType, shortCode, fromEmail);
 
         // ASSERT
         Assert.assertEquals(2, bodies.length);
@@ -247,7 +319,7 @@ public class BulkShareHelperTest {
         String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareTrackBody[] bodies = BulkShareHelper.contactArray(trackType, shortCode, fromEmail);
+        BulkShareApi.BulkShareTrackBody[] bodies = bulkShareHelper.contactArray(trackType, shortCode, fromEmail);
 
         // ASSERT
         Assert.assertEquals(1, bodies.length);
@@ -270,7 +342,7 @@ public class BulkShareHelperTest {
         String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareEmailBody body = BulkShareHelper.payloadObjectForEmail(emails, shortCode, subject, message, fromEmail);
+        BulkShareApi.BulkShareEmailBody body = bulkShareHelper.payloadObjectForEmail(emails, shortCode, subject, message, fromEmail);
 
         // ASSERT
         Assert.assertEquals(shortCode, body.short_code);
@@ -293,7 +365,7 @@ public class BulkShareHelperTest {
         String fromEmail = "fromEmail";
 
         // ACT
-        BulkShareApi.BulkShareSmsBody body = BulkShareHelper.payloadObjectForSMS(numbers, fullName, message, fromEmail);
+        BulkShareApi.BulkShareSmsBody body = bulkShareHelper.payloadObjectForSMS(numbers, fullName, message, fromEmail);
 
         // ASSERT
         Assert.assertEquals(fullName, body.name);

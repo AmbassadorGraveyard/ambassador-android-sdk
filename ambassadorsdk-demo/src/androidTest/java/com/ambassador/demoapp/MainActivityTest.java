@@ -155,7 +155,7 @@ public class MainActivityTest {
     @Test
     public void testsSignupEmptyInputsFails() throws Exception {
         // ARRANGE
-        UiObject signupButton = getUi("signupButton");
+        UiObject signupButton = getUi("signupButton"); 
 
         // ACT
         signupTab.click();
