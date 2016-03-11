@@ -71,7 +71,7 @@ public final class ConversionParameters {
     }
 
     public float getRevenue() {
-        return (float) (((int) (revenue * 100)) / 100);
+        return ((int) (revenue * 100)) / 100f;
     }
 
     public int getDeactivateNewAmbassador() {
