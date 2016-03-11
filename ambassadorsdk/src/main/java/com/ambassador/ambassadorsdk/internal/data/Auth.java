@@ -102,6 +102,7 @@ public class Auth implements Data {
         save();
     }
 
+    @Nullable
     public String getEnvoyId() {
         return envoyId;
     }
