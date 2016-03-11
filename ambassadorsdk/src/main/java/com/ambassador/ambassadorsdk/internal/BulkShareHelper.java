@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -66,7 +67,7 @@ public class BulkShareHelper {
      * @param completion callback for BulkShare completion.
      */
     public void bulkShare(final String messageToShare, final List<Contact> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
-        if (phoneNumbers && (contacts.size() > 1 || device.getSdkVersion() >= 23)) {
+        if (phoneNumbers && (contacts.size() > 1 || device.getSdkVersion() >= 23 || !AmbSingleton.getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY))) {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
