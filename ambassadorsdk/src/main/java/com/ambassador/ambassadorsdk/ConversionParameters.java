@@ -20,7 +20,7 @@ public final class ConversionParameters {
     public String custom2;
     public String custom3;
     public int autoCreate;
-    public int revenue;
+    public float revenue;
     public int deactivateNewAmbassador;
     public String transactionUid;
     public String addToGroupId;
@@ -70,7 +70,7 @@ public final class ConversionParameters {
         return autoCreate;
     }
 
-    public int getRevenue() {
+    public float getRevenue() {
         return revenue;
     }
 
