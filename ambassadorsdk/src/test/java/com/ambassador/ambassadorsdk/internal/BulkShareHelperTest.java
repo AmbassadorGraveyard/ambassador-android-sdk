@@ -1,6 +1,8 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -97,6 +99,11 @@ public class BulkShareHelperTest {
         contacts.add(new Contact.Builder().setPhoneNumber("3133291104").build());
         BulkShareHelper.BulkShareCompletion bulkShareCompletion = Mockito.mock(BulkShareHelper.BulkShareCompletion.class);
         Mockito.doReturn(21).when(device).getSdkVersion();
+        Context context = Mockito.mock(Context.class);
+        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
+        PackageManager packageManager = Mockito.mock(PackageManager.class);
+        Mockito.when(context.getPackageManager()).thenReturn(packageManager);
+        Mockito.doReturn(true).when(packageManager).hasSystemFeature(Mockito.anyString());
 
         PowerMockito.doReturn(Mockito.mock(Uri.class)).when(Uri.class, "parse", Mockito.anyString());
         Intent intent = Mockito.mock(Intent.class);
