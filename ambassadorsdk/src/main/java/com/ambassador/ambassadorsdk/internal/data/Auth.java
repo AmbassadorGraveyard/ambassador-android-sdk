@@ -36,6 +36,9 @@ public class Auth implements Data {
     protected String twitterSecret;
     protected String envoyId;
     protected String envoySecret;
+    protected String envoyFacebookToken;
+    protected String envoyTwitterToken;
+    protected String envoyLinkedInToken;
     // endregion
 
     // region Getters / Setters
@@ -44,7 +47,7 @@ public class Auth implements Data {
         return universalId;
     }
 
-    public void setUniversalId(String universalId) {
+    public void setUniversalId(@Nullable String universalId) {
         this.universalId = universalId;
         save();
     }
@@ -54,7 +57,7 @@ public class Auth implements Data {
         return universalToken;
     }
 
-    public void setUniversalToken(String universalToken) {
+    public void setUniversalToken(@Nullable String universalToken) {
         this.universalToken = universalToken;
         save();
     }
@@ -64,7 +67,7 @@ public class Auth implements Data {
         return facebookToken;
     }
 
-    public void setFacebookToken(String facebookToken) {
+    public void setFacebookToken(@Nullable String facebookToken) {
         this.facebookToken = facebookToken;
         save();
     }
@@ -74,7 +77,7 @@ public class Auth implements Data {
         return linkedInToken;
     }
 
-    public void setLinkedInToken(String linkedInToken) {
+    public void setLinkedInToken(@Nullable String linkedInToken) {
         this.linkedInToken = linkedInToken;
         save();
     }
@@ -84,7 +87,7 @@ public class Auth implements Data {
         return twitterToken;
     }
 
-    public void setTwitterToken(String twitterToken) {
+    public void setTwitterToken(@Nullable String twitterToken) {
         this.twitterToken = twitterToken;
         save();
     }
@@ -94,7 +97,7 @@ public class Auth implements Data {
         return twitterSecret;
     }
 
-    public void setTwitterSecret(String twitterSecret) {
+    public void setTwitterSecret(@Nullable String twitterSecret) {
         this.twitterSecret = twitterSecret;
         save();
     }
@@ -103,17 +106,48 @@ public class Auth implements Data {
         return envoyId;
     }
 
-    public void setEnvoyId(String envoyId) {
+    public void setEnvoyId(@Nullable String envoyId) {
         this.envoyId = envoyId;
         save();
     }
 
+    @Nullable
     public String getEnvoySecret() {
         return envoySecret;
     }
 
-    public void setEnvoySecret(String envoySecret) {
+    public void setEnvoySecret(@Nullable String envoySecret) {
         this.envoySecret = envoySecret;
+        save();
+    }
+
+    @Nullable
+    public String getEnvoyFacebookToken() {
+        return envoyFacebookToken;
+    }
+
+    public void setEnvoyFacebookToken(@Nullable String envoyFacebookToken) {
+        this.envoyFacebookToken = envoyFacebookToken;
+        save();
+    }
+
+    @Nullable
+    public String getEnvoyTwitterToken() {
+        return envoyTwitterToken;
+    }
+
+    public void setEnvoyTwitterToken(@Nullable String envoyTwitterToken) {
+        this.envoyTwitterToken = envoyTwitterToken;
+        save();
+    }
+
+    @Nullable
+    public String getEnvoyLinkedInToken() {
+        return envoyLinkedInToken;
+    }
+
+    public void setEnvoyLinkedInToken(@Nullable String envoyLinkedInToken) {
+        this.envoyLinkedInToken = envoyLinkedInToken;
         save();
     }
 
@@ -145,6 +179,9 @@ public class Auth implements Data {
         twitterSecret = null;
         envoyId = null;
         envoySecret = null;
+        envoyFacebookToken = null;
+        envoyTwitterToken = null;
+        envoyLinkedInToken = null;
     }
 
     /**
@@ -167,6 +204,9 @@ public class Auth implements Data {
         setTwitterSecret(auth.getTwitterSecret());
         setEnvoyId(auth.getEnvoyId());
         setEnvoySecret(auth.getEnvoySecret());
+        setEnvoyFacebookToken(auth.getEnvoyFacebookToken());
+        setEnvoyTwitterToken(auth.getEnvoyTwitterToken());
+        setEnvoyLinkedInToken(auth.getEnvoyLinkedInToken());
     }
     // endregion
 
