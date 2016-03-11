@@ -44,6 +44,11 @@
     <string name="ambassador_api_url_dev">https://dev-ambassador-api.herokuapp.com</string>
     <!-- // -->
 
+    <!-- ENVOY -->
+    <string name="envoy_api_url">https://api.getenvoy.co</string>
+    <string name="envoy_api_url_dev">https://dev-envoy-api.herokuapp.com</string>
+    <!-- // -->
+
     <!-- AUGUR -->
     <string name="augur_api_key">7g1a8dumog40o61y5irl1sscm4nu6g60</string>
     <!-- // -->

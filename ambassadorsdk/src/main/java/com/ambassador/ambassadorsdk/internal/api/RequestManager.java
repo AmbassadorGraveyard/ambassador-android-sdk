@@ -10,6 +10,7 @@ import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
+import com.ambassador.ambassadorsdk.internal.api.envoy.EnvoyApi;
 import com.ambassador.ambassadorsdk.internal.api.facebook.FacebookApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
@@ -50,6 +51,7 @@ public class RequestManager {
     protected BulkShareApi bulkShareApi;
     protected ConversionsApi conversionsApi;
     protected IdentifyApi identifyApi;
+    protected EnvoyApi envoyApi;
     protected LinkedInApi linkedInApi;
     protected TwitterApi twitterApi;
     protected FacebookApi facebookApi;
@@ -80,12 +82,14 @@ public class RequestManager {
         conversionsApi = new ConversionsApi(false);
         identifyApi = new IdentifyApi(false);
         linkedInApi = new LinkedInApi(false);
+        envoyApi = new EnvoyApi(false);
         twitterApi = new TwitterApi();
         facebookApi = new FacebookApi();
         if (doInit) {
             bulkShareApi.init();
             conversionsApi.init();
             identifyApi.init();
+            envoyApi.init();
             linkedInApi.init();
         }
     }
@@ -270,6 +274,30 @@ public class RequestManager {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
         identifyApi.getEnvoyKeys(uid, authKey, companyUid, requestCompletion);
+    }
+
+    /**
+     * Requests an access token usable to share to a social network authenticated as a user.
+     * @param popup the String unique popup code generated during OAuth.
+     * @param requestCompletion callback for request completion.
+     */
+    public void getEnvoyAccessToken(String popup, final RequestCompletion requestCompletion) {
+        String clientId = auth.getEnvoyId();
+        String clientSecret = auth.getEnvoySecret();
+        envoyApi.getAccessToken(clientId, clientSecret, popup, requestCompletion);
+    }
+
+    /**
+     * Shares a message to a users authenticated social account using Envoy.
+     * @param provider the String name of the provider to share to [facebook, twitter, linkedin].
+     * @param accessToken the String accessToken to envoy obtained by getAccessToken(...).
+     * @param message the String message to share to the social network.
+     * @param requestCompletion callback for request compeltion.
+     */
+    public void shareWithEnvoy(String provider, String accessToken, String message, final RequestCompletion requestCompletion) {
+        String clientId = auth.getEnvoyId();
+        String clientSecret = auth.getEnvoySecret();
+        envoyApi.share(provider, clientId, clientSecret, accessToken, message, requestCompletion);
     }
 
     /**
