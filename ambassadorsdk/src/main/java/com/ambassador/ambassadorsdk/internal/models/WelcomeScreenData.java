@@ -208,8 +208,7 @@ public class WelcomeScreenData {
         if (backendData == null) return this;
 
         imageUrl = backendData.getImageUrl();
-        String space = " ";
-        name = backendData.getFirstName() + space + backendData.getLastName();
+        name = backendData.getName();
 
         return this;
     }
