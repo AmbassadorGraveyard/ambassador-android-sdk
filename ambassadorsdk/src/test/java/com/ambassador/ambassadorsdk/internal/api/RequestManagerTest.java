@@ -68,6 +68,7 @@ public class RequestManagerTest {
     private IdentifyApi identifyApi;
     private LinkedInApi linkedInApi;
 
+    private BulkShareHelper bulkShareHelper;
     private PusherManager pusherManager;
 
     private String universalId = "abfd1c89-4379-44e2-8361-ee7b87332e32";
@@ -106,6 +107,9 @@ public class RequestManagerTest {
 
         RequestManager rm = new RequestManager(false);
         requestManager = PowerMockito.spy(rm);
+
+        bulkShareHelper = Mockito.spy(BulkShareHelper.class);
+        requestManager.bulkShareHelper = bulkShareHelper;
 
         auth = Mockito.mock(Auth.class);
         User user = Mockito.mock(User.class);
