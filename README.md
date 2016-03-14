@@ -89,7 +89,7 @@ Conversions can be triggered from anywhere.  Common places are an Activity's **o
 ConversionParameters.Builder builder = new ConversionParameters.Builder();
 
 // STEP TWO: Set the REQUIRED properties
-builder.setRevenue(10);
+builder.setRevenue(9.99f);
 builder.setCampaign(101);
 builder.setEmail("user@example.com");
 
@@ -115,7 +115,7 @@ ConversionParameters conversionParameters = builder.build();
 
 // Note: Chaining the methods offer a much more convenient way of building a conversion
 conversionParameters = new ConversionParameters.Builder()
-        .setRevenue(10)
+        .setRevenue(9.99f)
         .setCampaign(101)
         .setEmail("user@example.com")
         .build();
