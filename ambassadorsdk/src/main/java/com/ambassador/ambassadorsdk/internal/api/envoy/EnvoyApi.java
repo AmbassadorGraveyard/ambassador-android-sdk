@@ -62,12 +62,12 @@ public class EnvoyApi {
         envoyClient.getAccessToken(clientId, clientSecret, popup, new Callback<GetAccessTokenResponse>() {
             @Override
             public void success(GetAccessTokenResponse getAccessTokenResponse, Response response) {
-
+                completion.onSuccess(getAccessTokenResponse);
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                completion.onFailure(null);
             }
         });
     }
