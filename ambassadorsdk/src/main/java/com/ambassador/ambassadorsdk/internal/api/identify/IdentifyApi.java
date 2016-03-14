@@ -158,6 +158,28 @@ public final class IdentifyApi {
     /**
      * Passes through to the identifyClient and handles the Retrofit callback and
      * calling back to the RequestCompletion.
+     * @param shortCode short code of the user to retrieve name + picture for.
+     * @param uid ambassador universal id.
+     * @param authKey ambassador universal token.
+     * @param completion the callback for request completion
+     */
+    public void getUserFromShortCode(String shortCode, String uid, String authKey, final RequestManager.RequestCompletion completion) {
+        identifyClient.getUserFromShortCode(uid, authKey, new GetUserFromShortCodeRequest(shortCode), new Callback<GetUserFromShortCodeResponse>() {
+            @Override
+            public void success(GetUserFromShortCodeResponse getUserFromShortCodeResponse, Response response) {
+                completion.onSuccess(getUserFromShortCodeResponse);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                completion.onFailure(null);
+            }
+        });
+    }
+
+    /**
+     * Passes through to the identifyClient and handles the Retrofit callback and
+     * calling back to the RequestCompletion.
      * @param uid the Ambassador universal id
      * @param auth the ambassador universal token
      * @param completion the callback for request completion
@@ -365,6 +387,25 @@ public final class IdentifyApi {
 
     /** */
     public static class UpdateGcmTokenResponse {
+
+    }
+
+    /** Pojo for get user from short code request body */
+    public static class GetUserFromShortCodeRequest {
+
+        private String short_code;
+
+        public GetUserFromShortCodeRequest(String short_code) {
+            this.short_code = short_code;
+        }
+
+    }
+
+    /** Pojo for get user from short code request response */
+    public static class GetUserFromShortCodeResponse {
+
+        public String name;
+        public String avatar_url;
 
     }
 
