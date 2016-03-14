@@ -243,7 +243,10 @@ public class RequestManager {
      * @param requestCompletion callback for request completion.
      */
     public void getUserFromShortCode(final String shortCode, final RequestCompletion requestCompletion) {
-        requestCompletion.onSuccess(null);
+        String uid = auth.getUniversalId();
+        String authKey = auth.getUniversalToken();
+
+        identifyApi.getUserFromShortCode(shortCode, uid, authKey, requestCompletion);
     }
 
     /**
