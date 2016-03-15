@@ -244,7 +244,7 @@ public class WelcomeScreenData {
         String ret = text;
         while (ret.contains("{{ name }}")) {
             int index = ret.indexOf("{{ name }}");
-            String addition = isMidSentence(index, text) ? midSentenceName(name) : name;
+            String addition = isMidSentence(index, ret) ? midSentenceName(name) : name;
             ret = ret.substring(0, index) + addition + ret.substring(index + "{{ name }}".length());
         }
         return ret;
@@ -257,7 +257,7 @@ public class WelcomeScreenData {
      */
     @NonNull
     protected String midSentenceName(@NonNull String text) {
-        return String.valueOf(text.charAt(0)).toLowerCase() + text.substring(1);
+        return text.contains(" of ") ? String.valueOf(text.charAt(0)).toLowerCase() + text.substring(1) : text;
     }
 
     /**
