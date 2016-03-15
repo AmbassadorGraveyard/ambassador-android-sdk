@@ -11,10 +11,12 @@ import com.ambassador.ambassadorsdk.internal.factories.ResourceFactory;
 import com.google.gson.Gson;
 
 /**
- *
+ * Stores design options set by the 3rd party developer. Used throughout codebase. Can be instantiated
+ * directly using RAFOptions.Builder or indirectly with an XML file (see RAFOptionsFactory).
  */
 public final class RAFOptions {
 
+    /** The RAFOptions instantiation inflated with options from 3rd party and used throughout code. */
     private static RAFOptions instance;
     
     private String defaultShareMessage;
@@ -601,15 +603,39 @@ public final class RAFOptions {
 
     }
 
+    /**
+     * Generates a String XML representation of the RAFOptions. Same as defaultOptions.xml and what
+     * is in the README.
+     * @return the String XML representation.
+     */
+    @NonNull
+    public String getXmlRepresentation() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Sets the instance RAFOptions. Will also be serialized into JSON and stored in SharedPreferences
+     * keyed on the current campaign ID.
+     * @param rafOptions the RAFOptions instantiation to store. Don't pass null.
+     */
     public static void set(@NonNull RAFOptions rafOptions) {
         instance = rafOptions;
         String campaignId = new Campaign().getId();
         String data = new Gson().toJson(rafOptions);
-        if (AmbSingleton.getContext() != null) {
-            AmbSingleton.getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE).edit().putString(campaignId, data).apply();
-        }
+        AmbSingleton.getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE).edit().putString(campaignId, data).apply();
     }
 
+    /**
+     * Returns an instance of RAFOptions. This will never be null and will always be populated. If the
+     * stored instance is not null it will be returned directly. If the stored instance is null the
+     * RAFOptions are either not set or the instance has been lost. First method will attempt to
+     * un-serialize RAFOptions that may be stored in SharedPreferences and set as the instance. If not
+     * successful the method will set instance as the default RAFOptions.
+     * @return a NonNull RAFOptions object.
+     */
     @NonNull
     public static RAFOptions get() {
         if (instance == null) {
