@@ -140,7 +140,7 @@ public final class MainActivity extends AppCompatActivity {
             tabs[3] = new TabModel(rafTitle, R.drawable.ic_raf, new ReferFragment())
                     .setContentDescription("referTab");
         }
-
+        
         @Override
         public int getCount() {
             return tabs.length;
