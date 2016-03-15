@@ -29,6 +29,11 @@
     <string name="blank_linkedin">Cannot share a blank post.</string>
     <!-- // -->
 
+    <!-- GET EMAIL DIALOG -->
+    <string name="get_email_header">Refer your friends!</string>
+    <string name="get_email_explanation">Enter your email below to get started.</string>
+    <!-- // -->
+
     <!-- GET NAME DIALOG -->
     <string name="get_name_header">One more thing!</string>
     <string name="get_name_explanation">We want to make sure your friends know who they are receiving this referral from. Please enter your first and last name.</string>
