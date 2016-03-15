@@ -6,6 +6,8 @@ import android.view.View;
 
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 
+import java.util.Arrays;
+
 /**
  * Represents data needed to properly show a WelcomeScreenDialog.
  */
@@ -221,14 +223,62 @@ public class WelcomeScreenData {
     public WelcomeScreenData parseName() {
         if (name == null) return this;
 
-        topBarText = topBarText.replace("{{ name }}", name);
-        title = title.replace("{{ name }}", name);
-        message = message.replace("{{ name }}", name);
-        buttonText = buttonText.replace("{{ name }}", name);
-        link1Text = link1Text.replace("{{ name }}", name);
-        link2Text = link2Text.replace("{{ name }}", name);
+        topBarText = replaceNameVars(topBarText);
+        title = replaceNameVars(title);
+        message = replaceNameVars(message);
+        buttonText = replaceNameVars(buttonText);
+        link1Text = replaceNameVars(link1Text);
+        link2Text = replaceNameVars(link2Text);
 
         return this;
+    }
+
+    /**
+     * Replaces all occurrences of "{{ name }}" in the passed in text with the stored name, and
+     * returns it.
+     * @param text the text to replace name vars in.
+     * @return new String with all occurrences replaced.
+     */
+    @NonNull
+    protected String replaceNameVars(@NonNull String text) {
+        String ret = text;
+        while (ret.contains("{{ name }}")) {
+            int index = ret.indexOf("{{ name }}");
+            String addition = isMidSentence(index, text) ? midSentenceName(name) : name;
+            ret = ret.substring(0, index) + addition + ret.substring(index + "{{ name }}".length());
+        }
+        return ret;
+    }
+
+    /**
+     * Converts a String to be usable in the middle of a sentence. Sets beginning to lowercase.
+     * @param text the text to convert.
+     * @return the new String.
+     */
+    @NonNull
+    protected String midSentenceName(@NonNull String text) {
+        return String.valueOf(text.charAt(0)).toLowerCase() + text.substring(1);
+    }
+
+    /**
+     * Using a current index and a String it will determine if the current point is mid sentence.
+     * @param currentIndex the index to backtrack from.
+     * @param text the text to check indices on.
+     * @return true if mid sentence.
+     */
+    protected boolean isMidSentence(int currentIndex, @NonNull String text) {
+        Character[] continueBacktrack = new Character[]{ ' ' };
+        Character[] sentenceEnder = new Character[]{ '.', '?', '!' };
+        for (int i = currentIndex - 1; i >= 0; i--) {
+            char spot = text.charAt(i);
+            if (Arrays.asList(sentenceEnder).contains(spot)) {
+                return false;
+            } else if (!Arrays.asList(continueBacktrack).contains(spot)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }
