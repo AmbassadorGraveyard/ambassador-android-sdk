@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
@@ -44,6 +45,7 @@ import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
@@ -142,7 +144,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         finishIfSingletonInvalid();
         if (isFinishing()) return;
 
-        // Other setup
+
         setUpData();
         setUpShareManagers();
         setUpAuth();
@@ -151,9 +153,30 @@ public final class AmbassadorActivity extends AppCompatActivity {
         setUpToolbar();
         setUpSocialGridView();
         setUpCustomImages();
-        setUpLoader();
-        setUpPusher();
         setUpCopy();
+
+        if (user.getEmail() != null) {
+            setUpLoader();
+            setUpPusher();
+        } else {
+            final AskEmailDialog askEmailDialog = new AskEmailDialog(this);
+            askEmailDialog.setOnEmailReceivedListener(new AskEmailDialog.OnEmailReceivedListener() {
+                @Override
+                public void onEmailReceived(String email) {
+                    askEmailDialog.dismiss();
+                    AmbassadorSDK.identify(email);
+                    setUpLoader();
+                    setUpPusher();
+                }
+
+                @Override
+                public void onCanceled() {
+                    askEmailDialog.dismiss();
+                    finish();
+                }
+            });
+            askEmailDialog.show();
+        }
     }
 
     @Override

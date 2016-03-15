@@ -3,7 +3,6 @@ package com.ambassador.ambassadorsdk.internal.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,11 +11,9 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
@@ -40,30 +37,25 @@ public final class AskEmailDialog extends Dialog {
     // endregion
 
     // region Dependencies
-    @Inject
-    protected RequestManager requestManager;
     @Inject protected User user;
     @Inject protected Device device;
     // endregion
 
-    // region Local members
-    protected ProgressDialog pd;
-    // endregion
+    protected OnEmailReceivedListener onEmailReceivedListener;
 
-    public AskEmailDialog(Context context, ProgressDialog pd) {
+    public AskEmailDialog(Context context) {
         super(context);
 
         if (context instanceof Activity) {
             setOwnerActivity((Activity) context);
         }
-
-        this.pd = pd;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setDimAmount(0.75f);
         setContentView(R.layout.dialog_email);
         ButterFork.bind(this);
         AmbSingleton.inject(this);
@@ -93,7 +85,9 @@ public final class AskEmailDialog extends Dialog {
     }
 
     private void cancelClicked() {
-        hide();
+        if (onEmailReceivedListener != null) {
+            onEmailReceivedListener.onCanceled();
+        }
     }
 
     private void continueClicked() {
@@ -106,11 +100,22 @@ public final class AskEmailDialog extends Dialog {
     }
 
     private void updateEmail(@NonNull final String email) {
-        AmbassadorSDK.identify(email);
+        if (onEmailReceivedListener != null) {
+            onEmailReceivedListener.onEmailReceived(email);
+        }
     }
 
     public void showKeyboard() {
         device.openSoftKeyboard(etEmail);
+    }
+
+    public void setOnEmailReceivedListener(OnEmailReceivedListener onEmailReceivedListener) {
+        this.onEmailReceivedListener = onEmailReceivedListener;
+    }
+
+    public interface OnEmailReceivedListener {
+        void onEmailReceived(String email);
+        void onCanceled();
     }
 
 }
