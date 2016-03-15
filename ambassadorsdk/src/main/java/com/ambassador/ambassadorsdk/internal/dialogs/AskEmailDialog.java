@@ -112,7 +112,7 @@ public final class AskEmailDialog extends Dialog {
     public void setOnEmailReceivedListener(OnEmailReceivedListener onEmailReceivedListener) {
         this.onEmailReceivedListener = onEmailReceivedListener;
     }
-
+    
     public interface OnEmailReceivedListener {
         void onEmailReceived(String email);
         void onCanceled();
