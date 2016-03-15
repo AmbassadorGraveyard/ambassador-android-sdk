@@ -98,7 +98,7 @@ public final class AskEmailDialog extends Dialog {
 
     private void continueClicked() {
         if (etEmail.getText().toString().isEmpty()) {
-            Toast.makeText(getOwnerActivity(), new StringResource(R.string.first_name_empty).getValue(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getOwnerActivity(), new StringResource(R.string.email_empty).getValue(), Toast.LENGTH_SHORT).show();
             etEmail.shake();
         } else {
             updateEmail(etEmail.getText().toString());

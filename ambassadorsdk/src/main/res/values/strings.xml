@@ -20,6 +20,7 @@
     <string name="connection_failure">There is a problem with your connection.</string>
     <string name="loading_failure">There seems to be an issue while attempting to load. Please try again.</string>
     <string name="update_failure">Unable to update information. Please try again.</string>
+    <string name="email_empty">Please enter your email!</string>
     <string name="first_name_empty">Please enter your first name!</string>
     <string name="last_name_empty">Please enter your last name!</string>
     <string name="url_missing">Your Referral Link is not included in the message:</string>
