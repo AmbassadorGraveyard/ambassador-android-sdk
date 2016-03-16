@@ -108,7 +108,7 @@ public class ConversionDBHelper extends SQLiteOpenHelper {
                         )
                 )
                 .setRevenue(
-                        cursor.getInt(
+                        cursor.getFloat(
                                 cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry.MBSY_REVENUE)
                         )
                 )
