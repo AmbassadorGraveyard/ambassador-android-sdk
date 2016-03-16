@@ -20,7 +20,7 @@ public final class ConversionParameters {
     public String custom2;
     public String custom3;
     public int autoCreate;
-    public int revenue;
+    public float revenue;
     public int deactivateNewAmbassador;
     public String transactionUid;
     public String addToGroupId;
@@ -70,8 +70,8 @@ public final class ConversionParameters {
         return autoCreate;
     }
 
-    public int getRevenue() {
-        return revenue;
+    public float getRevenue() {
+        return ((int) (revenue * 100)) / 100f;
     }
 
     public int getDeactivateNewAmbassador() {
@@ -154,7 +154,7 @@ public final class ConversionParameters {
         private String mbsy_custom2;
         private String mbsy_custom3;
         private int mbsy_auto_create;
-        private int mbsy_revenue = -1;
+        private float mbsy_revenue = -1;
         private int mbsy_deactivate_new_ambassador;
         private String mbsy_transaction_uid;
         private String mbsy_add_to_group_id;
@@ -232,7 +232,7 @@ public final class ConversionParameters {
         }
 
         @NonNull
-        public Builder setRevenue(int mbsy_revenue) {
+        public Builder setRevenue(float mbsy_revenue) {
             this.mbsy_revenue = mbsy_revenue;
             this.revenueCheck = true;
             return this;
