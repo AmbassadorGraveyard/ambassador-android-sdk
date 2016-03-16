@@ -72,7 +72,7 @@ public final class AmbassadorSDK {
         RAFOptions.set(rafOptions);
         intentAmbassadorActivity(context, campaignID);
     }
-
+ 
     public static void presentRAF(Context context, String campaignID, String pathInAssets) {
         try {
             presentRAF(context, campaignID, context.getAssets().open(pathInAssets));
