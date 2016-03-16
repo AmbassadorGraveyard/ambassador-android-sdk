@@ -635,6 +635,15 @@ public final class RAFOptions {
         stringBuilder.append(getAttributeString("string", "homeShareText", getHomeShareTextFont()));
         stringBuilder.append(getAttributeString("string", "socialGridText", getSocialGridTextFont()));
         stringBuilder.append(getAttributeString("dimen", "socialOptionCornerRadius", getSocialOptionCornerRadius()));
+
+        stringBuilder.append("<array name=\"channels\">\n");
+            for (String channel : getChannels()) {
+                stringBuilder.append("<item>");
+                stringBuilder.append(channel);
+                stringBuilder.append("</item>\n");
+            }
+        stringBuilder.append("</array>\n");
+
         stringBuilder.append(getAttributeString("color", "contactsListViewBackground", getContactsListViewBackgroundColor()));
         stringBuilder.append(getAttributeString("dimen", "contactsListName", getContactsListNameSize()));
         stringBuilder.append(getAttributeString("string", "contactsListName", getContactsListNameFont()));
