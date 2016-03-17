@@ -77,7 +77,7 @@ public final class Demo extends Application {
         ConversionParameters parameters = new ConversionParameters.Builder()
                 .setEmail(email)
                 .setCampaign(Integer.parseInt(getCampaignId()))
-                .setRevenue(24)
+                .setRevenue(24.55f)
                 .setCustom1("This is a buyConversion from the Ambassador SDK Android test application.")
                 .setCustom2("Buy buyConversion registered for $24.00")
                 .build();

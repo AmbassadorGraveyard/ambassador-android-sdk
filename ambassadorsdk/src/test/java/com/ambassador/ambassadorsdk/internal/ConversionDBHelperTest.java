@@ -121,7 +121,7 @@ public class ConversionDBHelperTest {
         Assert.assertEquals(conversionParameters.custom2, "-1");
         Assert.assertEquals(conversionParameters.custom3, "-1");
         Assert.assertEquals(conversionParameters.autoCreate, -1);
-        Assert.assertEquals(conversionParameters.revenue, -1);
+        Assert.assertEquals(conversionParameters.revenue, 0.0f);
         Assert.assertEquals(conversionParameters.deactivateNewAmbassador, -1);
         Assert.assertEquals(conversionParameters.transactionUid, "-1");
         Assert.assertEquals(conversionParameters.addToGroupId, "-1");
