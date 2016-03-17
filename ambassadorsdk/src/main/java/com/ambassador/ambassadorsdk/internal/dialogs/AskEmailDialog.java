@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
@@ -56,6 +57,8 @@ public final class AskEmailDialog extends Dialog {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setDimAmount(0.75f);
+        setCanceledOnTouchOutside(false);
+        setCancelable(false);
         setContentView(R.layout.dialog_email);
         ButterFork.bind(this);
         AmbSingleton.inject(this);
@@ -63,6 +66,14 @@ public final class AskEmailDialog extends Dialog {
         setupTheme();
         setupButtons();
         showKeyboard();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (onEmailReceivedListener != null) {
+            onEmailReceivedListener.onCanceled();
+        }
     }
 
     private void setupTheme() {
