@@ -1,11 +1,19 @@
 package com.ambassador.demoapp;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
 
-import java.io.File;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Handles custom RAF option packaging in the demo app for sharing. Class can be used to add files
@@ -13,10 +21,20 @@ import java.io.File;
  */
 public class CustomizationPackage {
 
+    /** A context reference passed into the class constructor used for saving and reading files properly. */
+    protected Context context;
+
+    /** List of String path+file that need to be packaged into the zip. */
+    protected List<String> files;
+
     /**
      * Default constructor.
+     * @param context a reference to a valid Context.
      */
-    public CustomizationPackage() {}
+    public CustomizationPackage(@NonNull Context context) {
+        this.context = context;
+        this.files = new ArrayList<>();
+    }
 
     /**
      * Adds a plaintext file to the package with a passed in path + name and the String content. Saves
@@ -27,17 +45,61 @@ public class CustomizationPackage {
      */
     @NonNull
     public CustomizationPackage add(@NonNull String pathWithName, @NonNull String content) {
+        FileOutputStream outputStream;
+        try {
+            outputStream = context.openFileOutput(pathWithName, Context.MODE_PRIVATE);
+            outputStream.write(content.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
+        files.add(pathWithName);
         return this;
     }
 
     /**
-     * Zips all the added files and returns the File.
-     * @return the File object pointing to the zip file.
+     * Converts RAFOptions to a String XML representation and calls through to add(String pathWithName, String content).
+     * @param pathWithName the String relative path inside assets with the filename on the end.
+     * @param rafOptions the RAFOptions object to convert to XML and write to the file.
+     * @return this CustomizationPackage, useful for chaining methods.
      */
     @NonNull
-    public File zip() {
-        return new File(".");
+    public CustomizationPackage add(@NonNull String pathWithName, @NonNull RAFOptions rafOptions) {
+        return add(pathWithName, new OptionXmlTranscriber(rafOptions).transcribe());
+    }
+
+    /**
+     * Zips all the added files and returns the path.
+     * @return the String path + filename of the zip file.
+     */
+    @NonNull
+    public String zip() {
+        try {
+            BufferedInputStream origin;
+            FileOutputStream dest = context.openFileOutput("test.zip", Context.MODE_PRIVATE);
+            ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
+            byte data[] = new byte[1024];
+
+            for (int i = 0; i < files.size(); i++) {
+                FileInputStream fi = context.openFileInput(files.get(i));
+                origin = new BufferedInputStream(fi, 1024);
+
+                ZipEntry entry = new ZipEntry(files.get(i).substring(files.get(i).lastIndexOf("/") + 1));
+                out.putNextEntry(entry);
+                int count;
+
+                while ((count = origin.read(data, 0, 1024)) != -1) {
+                    out.write(data, 0, count);
+                }
+                origin.close();
+            }
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "test.zip";
     }
 
     /**
@@ -60,9 +122,8 @@ public class CustomizationPackage {
          * @param rafOptions the RAFOptions object to use for all transcribing.
          */
         public OptionXmlTranscriber(@NonNull RAFOptions rafOptions) {
-
+            this.rafOptions = rafOptions;
         }
-
 
         /**
          * Generates a String XML representation of the RAFOptions. Same as defaultOptions.xml and what
@@ -70,7 +131,7 @@ public class CustomizationPackage {
          * @return the String XML representation.
          */
         @NonNull
-        public String getXmlRepresentation() {
+        private String getXmlRepresentation() {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
             stringBuilder.append("<resources>\n");
@@ -140,7 +201,7 @@ public class CustomizationPackage {
          * @param value the value inside of the tag
          * @return the String representation of the tag with a new line at the end.
          */
-        protected String getAttributeString(String tag, String name, String value) {
+        private String getAttributeString(String tag, String name, String value) {
             StringBuilder string = new StringBuilder();
             string.append("    <");
             string.append(tag);
@@ -161,7 +222,7 @@ public class CustomizationPackage {
          * @param value a ColorInt value.
          * @return the XML representation of the attribute.
          */
-        protected String getAttributeString(String tag, String name, int value) {
+        private String getAttributeString(String tag, String name, int value) {
             switch (tag) {
                 case "color":
                     return getAttributeString(tag, name, String.format("#%06X", (0xFFFFFF & value)));
@@ -175,7 +236,7 @@ public class CustomizationPackage {
          * @param value a float dimension value.
          * @return the XML representation of the attribute.
          */
-        protected String getAttributeString(String tag, String name, float value) {
+        private String getAttributeString(String tag, String name, float value) {
             switch (tag) {
                 case "dimen":
                     return getAttributeString(tag, name, String.valueOf(value));
@@ -189,7 +250,7 @@ public class CustomizationPackage {
          * @param value a Typeface font value.
          * @return the XML representation of the attribute.
          */
-        protected String getAttributeString(String tag, String name, Typeface value) {
+        private String getAttributeString(String tag, String name, Typeface value) {
             switch (tag) {
                 case "string":
                     return getAttributeString(tag, name, "sans-serif-light");
