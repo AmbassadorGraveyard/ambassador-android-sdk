@@ -21,6 +21,7 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
+import com.ambassador.ambassadorsdk.internal.utils.Identify;
 
 import net.kencochrane.raven.DefaultRavenFactory;
 
@@ -33,14 +34,15 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 
 /**
- * Static methods called by the end-developer to utilize the SDK.
+ * This is the main class of the Ambassador SDK. Contains public static methods for the 3rd party
+ * developer to directly access and use. All public methods rely on runWithKeys to first be called
+ * with a valid Context.
  */
 public final class AmbassadorSDK {
 
     @Inject protected static Auth auth;
     @Inject protected static User user;
     @Inject protected static Campaign campaign;
-
     @Inject protected static PusherManager pusherManager;
     @Inject protected static RequestManager requestManager;
 
@@ -94,19 +96,23 @@ public final class AmbassadorSDK {
         return new Intent(context, target);
     }
 
+    /**
+     * Sets an email address to associate with this user. Needed to properly handle referrals and
+     * conversions.
+     * @param emailAddress the unique identifier to associate a user in the Ambassador backend.
+     */
     public static void identify(String emailAddress) {
+        if (!new Identify(emailAddress).isValidEmail()) {
+
+        }
         String gcmToken = user.getGcmToken();
         user.clear();
         user.setEmail(emailAddress);
-
         if (gcmToken != null) {
             user.setGcmToken(gcmToken);
             updateGcm();
         }
-
-        IIdentify identify = buildIdentify();
-        identify.getIdentity();
-
+        new IdentifyAugurSDK().getIdentity();
         pusherManager.startNewChannel();
     }
 
