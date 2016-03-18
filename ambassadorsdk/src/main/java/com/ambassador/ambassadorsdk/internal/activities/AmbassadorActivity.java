@@ -140,6 +140,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
         ButterFork.bind(this);
         raf = RAFOptions.get();
 
+        user.setEmail("bademail");
+
         // Requirement checks
         finishIfSingletonInvalid();
         if (isFinishing()) return;
@@ -396,6 +398,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Object failureResponse) {
+                        AmbassadorSDK.identify(null);
                         showNetworkError();
                     }
                 });

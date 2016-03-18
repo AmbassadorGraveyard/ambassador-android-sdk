@@ -102,19 +102,24 @@ public final class AmbassadorSDK {
      * @return true if successful identify, false otherwise; only considers client side validation.
      */
     public static boolean identify(String emailAddress) {
-        if (!new Identify(emailAddress).isValidEmail()) {
+        if (emailAddress == null) {
+            user.clear();
+            user.setEmail(null);
+            return true;
+        } else if (!new Identify(emailAddress).isValidEmail()) {
             return false;
+        } else {
+            String gcmToken = user.getGcmToken();
+            user.clear();
+            user.setEmail(emailAddress);
+            if (gcmToken != null) {
+                user.setGcmToken(gcmToken);
+                updateGcm();
+            }
+            buildIdentify().getIdentity();
+            pusherManager.startNewChannel();
+            return true;
         }
-        String gcmToken = user.getGcmToken();
-        user.clear();
-        user.setEmail(emailAddress);
-        if (gcmToken != null) {
-            user.setGcmToken(gcmToken);
-            updateGcm();
-        }
-        buildIdentify().getIdentity();
-        pusherManager.startNewChannel();
-        return true;
     }
 
     protected static IdentifyAugurSDK buildIdentify() {

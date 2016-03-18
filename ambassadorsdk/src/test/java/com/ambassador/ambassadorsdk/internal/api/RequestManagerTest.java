@@ -228,7 +228,7 @@ public class RequestManagerTest {
 
         // ASSERT
         Mockito.verify(pusherManager).newRequest();
-        Mockito.verify(identifyApi).identifyRequest(Mockito.eq(sessionId), Mockito.eq(reqId), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.IdentifyRequestBody.class));
+        Mockito.verify(identifyApi).identifyRequest(Mockito.eq(sessionId), Mockito.eq(reqId), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.IdentifyRequestBody.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
