@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.models.WelcomeScreenData;
@@ -88,14 +89,19 @@ public final class InstallReceiver extends BroadcastReceiver {
         requestManager.getUserFromShortCode(referralShortCode, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
+                if (!(successResponse instanceof IdentifyApi.GetUserFromShortCodeResponse)) {
+                    onFailure(null);
+                    return;
+                }
+
                 try {
+                    IdentifyApi.GetUserFromShortCodeResponse response = (IdentifyApi.GetUserFromShortCodeResponse) successResponse;
                     Activity activity = WelcomeScreenDialog.getActivity();
                     WelcomeScreenDialog welcomeScreenDialog = new WelcomeScreenDialog(activity);
                     WelcomeScreenDialog.BackendData backendData =
                             new WelcomeScreenDialog.BackendData()
-                                    .setImageUrl("https://upload.wikimedia.org/wikipedia/commons/7/77/Avatar_cat.png")
-                                    .setFirstName("John")
-                                    .setLastName("Doe");
+                                    .setImageUrl(response.avatar_url)
+                                    .setName(response.name);
 
                     welcomeScreenDialog.load(
                             new WelcomeScreenData()
