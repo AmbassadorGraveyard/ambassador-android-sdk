@@ -31,7 +31,7 @@ public class Identify {
      * @return true if valid address, false if not.
      */
     public boolean isValidEmail() {
-        return emailAddress == null && EMAIL_REGEX.matcher(emailAddress).matches();
+        return emailAddress != null && EMAIL_REGEX.matcher(emailAddress).matches();
     }
 
 }

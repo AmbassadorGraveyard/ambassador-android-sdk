@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
@@ -118,6 +117,10 @@ public final class AskEmailDialog extends Dialog {
 
     public void showKeyboard() {
         device.openSoftKeyboard(etEmail);
+    }
+
+    public void shake() {
+        etEmail.shake();
     }
 
     public void setOnEmailReceivedListener(OnEmailReceivedListener onEmailReceivedListener) {
