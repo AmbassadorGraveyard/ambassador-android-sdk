@@ -218,7 +218,12 @@ public class RequestManagerTest {
     @Test
     public void identifyRequestTest() throws Exception {
         // ACT
-        requestManager.identifyRequest();
+        requestManager.identifyRequest(new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess(Object successResponse) {}
+            @Override
+            public void onFailure(Object failureResponse) {}}
+        );
         String reqId = "" + pusherManager.channel.requestId;
 
         // ASSERT
