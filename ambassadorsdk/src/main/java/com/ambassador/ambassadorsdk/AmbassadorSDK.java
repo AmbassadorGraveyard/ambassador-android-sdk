@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Utilities;
@@ -100,10 +99,11 @@ public final class AmbassadorSDK {
      * Sets an email address to associate with this user. Needed to properly handle referrals and
      * conversions.
      * @param emailAddress the unique identifier to associate a user in the Ambassador backend.
+     * @return true if successful identify, false otherwise; only considers client side validation.
      */
-    public static void identify(String emailAddress) {
+    public static boolean identify(String emailAddress) {
         if (!new Identify(emailAddress).isValidEmail()) {
-
+            return false;
         }
         String gcmToken = user.getGcmToken();
         user.clear();
@@ -114,10 +114,7 @@ public final class AmbassadorSDK {
         }
         new IdentifyAugurSDK().getIdentity();
         pusherManager.startNewChannel();
-    }
-
-    private static IIdentify buildIdentify() {
-        return new IdentifyAugurSDK();
+        return true;
     }
 
     public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {

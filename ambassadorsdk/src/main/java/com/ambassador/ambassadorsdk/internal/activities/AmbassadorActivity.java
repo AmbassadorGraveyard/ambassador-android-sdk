@@ -163,10 +163,14 @@ public final class AmbassadorActivity extends AppCompatActivity {
             askEmailDialog.setOnEmailReceivedListener(new AskEmailDialog.OnEmailReceivedListener() {
                 @Override
                 public void onEmailReceived(String email) {
-                    askEmailDialog.dismiss();
-                    AmbassadorSDK.identify(email);
-                    setUpLoader();
-                    setUpPusher();
+                    if (AmbassadorSDK.identify(email)) {
+                        askEmailDialog.dismiss();
+                        setUpLoader();
+                        setUpPusher();
+                    } else {
+                        Toast.makeText(AmbassadorActivity.this, new StringResource(R.string.invalid_email).getValue(), Toast.LENGTH_SHORT).show();
+                        askEmailDialog.shake();
+                    }
                 }
 
                 @Override
