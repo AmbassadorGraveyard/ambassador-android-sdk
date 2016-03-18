@@ -139,9 +139,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         AmbSingleton.inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
-
-        user.setEmail("bademail");
-
+        
         // Requirement checks
         finishIfSingletonInvalid();
         if (isFinishing()) return;
