@@ -327,8 +327,10 @@ public final class IdentifyApi {
 
     }
 
-    /** */
+    /** Pojo for identify post request response */
     public static class IdentifyRequestResponse {
+
+
 
     }
 
