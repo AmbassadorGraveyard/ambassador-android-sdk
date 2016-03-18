@@ -20,7 +20,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -253,12 +252,6 @@ public class SocialOAuthActivity extends AppCompatActivity {
      * Sets the WebViewClient on the WebView and performs other performance optimizations.
      */
     protected void configureWebView() {
-        WebSettings settings = wvLogin.getSettings();
-        settings.setAllowFileAccess(false);
-        settings.setJavaScriptEnabled(false);
-        settings.setSaveFormData(false);
-        settings.setSavePassword(false);
-
         wvLogin.setVerticalScrollBarEnabled(false);
         wvLogin.setHorizontalScrollBarEnabled(true);
         wvLogin.setWebViewClient(new OAuthWebClient());
@@ -278,6 +271,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
          */
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            Log.v("amb-url", url);
             if (authInterface.canHandleUrl(url)) {
                 return authInterface.handleUrl(url);
             } else {
@@ -691,7 +685,6 @@ public class SocialOAuthActivity extends AppCompatActivity {
             if (isAllowedRedirectUrl(uri)) {
                 return false;
             } else if (isSuccessUrl(uri)) {
-                wvLogin.stopLoading();
                 requestAccessToken(uri);
             } else if (isCancelUrl(uri)) {
                 wvLogin.stopLoading();
@@ -745,6 +738,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
                     }
 
                     EnvoyApi.GetAccessTokenResponse response = (EnvoyApi.GetAccessTokenResponse) successResponse;
+
                 }
 
                 @Override
