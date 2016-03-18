@@ -100,6 +100,8 @@ public class EnvoyApi {
     /** Pojo for get access token response */
     public static class GetAccessTokenResponse {
 
+        public String access_token;
+
     }
 
     /** Pojo for share response */

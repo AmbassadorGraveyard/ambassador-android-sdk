@@ -292,6 +292,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
+            authInterface.onPageFinished(url);
 
             ObjectAnimator animator = ObjectAnimator.ofFloat(lvLoading, "alpha", 1, 0);
             animator.setDuration(300);
@@ -343,6 +344,12 @@ public class SocialOAuthActivity extends AppCompatActivity {
          * @param url the url loaded by the web view.
          */
         boolean canHandleUrl(@Nullable String url);
+
+        /**
+         * Should be called by a WebView's onPageFinished(...) method without any checks.
+         * @param url the url finished loading by the web view.
+         */
+        void onPageFinished(@Nullable String url);
 
         /**
          * Asynchronous callback interface for passing a login URL back.
@@ -421,6 +428,11 @@ public class SocialOAuthActivity extends AppCompatActivity {
         public boolean canHandleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
             return isAllowedRedirectUrl(uri) || isLoginRedirect(uri) || isSuccessUrl(uri) || isSuccessRedirectUrl(uri) || isFailureUrl(uri);
+        }
+
+        @Override
+        public void onPageFinished(@Nullable String url) {
+
         }
 
         protected boolean isAllowedRedirectUrl(Uri uri) {
@@ -585,6 +597,11 @@ public class SocialOAuthActivity extends AppCompatActivity {
             return isAllowedRedirectUrl(uri) || isSuccessUrl(uri) || isCancelUrl(uri) || isFailureUrl(uri);
         }
 
+        @Override
+        public void onPageFinished(@Nullable String url) {
+
+        }
+
         protected boolean isAllowedRedirectUrl(Uri uri) {
             boolean hostCheck = uri.getHost().equals("api.twitter.com");
             boolean pathCheck = uri.getPath().equals("/oauth/authorize") || uri.getPath().equals("/oauth/authorize/");
@@ -652,6 +669,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
     protected class LinkedInAuth implements AuthInterface {
 
         protected String popup;
+        protected boolean handleFinish;
 
         @NonNull
         @Override
@@ -685,7 +703,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
             if (isAllowedRedirectUrl(uri)) {
                 return false;
             } else if (isSuccessUrl(uri)) {
-                requestAccessToken(uri);
+                handleFinish = true;
             } else if (isCancelUrl(uri)) {
                 wvLogin.stopLoading();
                 finish();
@@ -698,6 +716,15 @@ public class SocialOAuthActivity extends AppCompatActivity {
         public boolean canHandleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
             return isAllowedRedirectUrl(uri) || isSuccessUrl(uri) || isCancelUrl(uri);
+        }
+
+        @Override
+        public void onPageFinished(@Nullable String url) {
+            if (handleFinish) {
+                requestAccessToken(Uri.parse(url));
+            }
+
+            handleFinish = false;
         }
 
         protected boolean isAllowedRedirectUrl(Uri uri) {
