@@ -196,8 +196,7 @@ public class RequestManager {
         String augur = user.getAugurData() != null ? user.getAugurData().toString() : null;
         IdentifyApi.IdentifyRequestBody body = new IdentifyApi.IdentifyRequestBody(campaignId, userEmail, augur);
 
-        identifyApi.identifyRequest(sessionId, requestId, uid, authKey, body);
-        completion.onSuccess(null);
+        identifyApi.identifyRequest(sessionId, requestId, uid, authKey, body, completion);
     }
 
     /**

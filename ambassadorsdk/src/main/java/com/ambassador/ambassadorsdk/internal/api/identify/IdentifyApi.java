@@ -70,12 +70,13 @@ public final class IdentifyApi {
      * @param auth the Ambassador universal token
      * @param request the request body as an IdentifyRequestBody object
      */
-    public void identifyRequest(String sessionId, String requestId, String uid, String auth, IdentifyRequestBody request) {
+    public void identifyRequest(String sessionId, String requestId, String uid, String auth, final IdentifyRequestBody request, final RequestManager.RequestCompletion requestCompletion) {
         identifyClient.identifyRequest(sessionId, requestId, uid, auth, uid, request, new Callback<IdentifyRequestResponse>() {
             @Override
             public void success(IdentifyRequestResponse identifyRequestResponse, Response response) {
                 // This should never happen, this request is not returning JSON so it hits the failure
                 Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.identifyRequest(...)");
+                requestCompletion.onSuccess(null);
             }
 
             @Override
@@ -83,9 +84,11 @@ public final class IdentifyApi {
                 if (new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     // successful
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.identifyRequest(...)");
+                    requestCompletion.onSuccess(null);
                 } else {
                     // unsuccessful
                     Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.identifyRequest(...)");
+                    requestCompletion.onFailure(null);
                 }
             }
         });
