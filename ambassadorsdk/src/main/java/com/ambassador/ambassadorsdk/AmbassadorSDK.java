@@ -112,9 +112,13 @@ public final class AmbassadorSDK {
             user.setGcmToken(gcmToken);
             updateGcm();
         }
-        new IdentifyAugurSDK().getIdentity();
+        buildIdentify().getIdentity();
         pusherManager.startNewChannel();
         return true;
+    }
+
+    protected static IdentifyAugurSDK buildIdentify() {
+        return new IdentifyAugurSDK();
     }
 
     public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
