@@ -119,6 +119,7 @@ public class RequestManagerTest {
         requestManager.bulkShareApi = bulkShareApi;
         requestManager.conversionsApi = conversionsApi;
         requestManager.identifyApi = identifyApi;
+        requestManager.envoyApi = envoyApi;
 
         PowerMockito.doAnswer(new Answer() {
             @Override
@@ -258,23 +259,46 @@ public class RequestManagerTest {
     @Test
     public void postToFacebookTest() throws Exception {
         // ARRANGE
+        String provider = "facebook";
         String facebookString = "facebookString";
         RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
+        Mockito.doNothing().when(envoyApi).share(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(RequestManager.RequestCompletion.class));
+
+        // ACT
+        requestManager.shareWithEnvoy(provider, facebookString, requestCompletion);
+
+        // ASSERT
+        Mockito.verify(requestManager).shareWithEnvoy(Mockito.eq(provider), Mockito.eq(facebookString), Mockito.eq(requestCompletion));
     }
 
     @Test
     public void postToTwitterTest() throws Exception {
         // ARRANGE
+        String provider = "twitter";
         String tweetString = "tweetString";
         RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
+        Mockito.doNothing().when(envoyApi).share(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(RequestManager.RequestCompletion.class));
 
+        // ACT
+        requestManager.shareWithEnvoy(provider, tweetString, requestCompletion);
+
+        // ASSERT
+        Mockito.verify(requestManager).shareWithEnvoy(Mockito.eq(provider), Mockito.eq(tweetString), Mockito.eq(requestCompletion));
     }
 
     @Test
     public void postToLinkedInTest() {
         // ARRANGE
+        String provider = "linkedin";
         String linkedInString = "linkedInString";
         RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
+        Mockito.doNothing().when(envoyApi).share(Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString(), Mockito.any(RequestManager.RequestCompletion.class));
+
+        // ACT
+        requestManager.shareWithEnvoy(provider, linkedInString, requestCompletion);
+
+        // ASSERT
+        Mockito.verify(requestManager).shareWithEnvoy(Mockito.eq(provider), Mockito.eq(linkedInString), Mockito.eq(requestCompletion));
     }
 
 }
