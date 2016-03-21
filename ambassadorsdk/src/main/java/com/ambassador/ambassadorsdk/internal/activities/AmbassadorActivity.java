@@ -750,7 +750,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onShareRequested() {
-            if (auth.getLinkedInToken() != null) {
+            if (user.getLinkedInAccessToken() != null) {
                 SocialShareDialog linkedInDialog = new SocialShareDialog(AmbassadorActivity.this);
                 linkedInDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.LINKEDIN);
                 linkedInDialog.setOwnerActivity(AmbassadorActivity.this);
@@ -772,7 +772,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void needAuth() {
-                        auth.setLinkedInToken(null);
+                        user.setLinkedInAccessToken(null);
                         requestReauthLinkedIn();
                     }
                 });

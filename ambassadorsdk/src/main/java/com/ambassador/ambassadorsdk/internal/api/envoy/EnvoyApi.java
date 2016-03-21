@@ -87,12 +87,12 @@ public class EnvoyApi {
         envoyClient.share(provider, clientId, clientSecret, accessToken, message, new Callback<ShareResponse>() {
             @Override
             public void success(ShareResponse shareResponse, Response response) {
-
+                completion.onSuccess(null);
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                completion.onFailure(null);
             }
         });
     }

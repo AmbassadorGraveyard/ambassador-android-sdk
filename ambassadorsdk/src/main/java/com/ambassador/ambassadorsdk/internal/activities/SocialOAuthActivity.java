@@ -33,6 +33,7 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.envoy.EnvoyApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.LoadingView;
 
@@ -59,8 +60,11 @@ public class SocialOAuthActivity extends AppCompatActivity {
     /** Object used to perform all requests. */
     @Inject protected RequestManager requestManager;
 
-    /** The global Auth object that stores social access tokens. */
+    /** The global Auth object that stores envoy tokens. */
     @Inject protected Auth auth;
+
+    /** The global User object that stores social access tokens. */
+    @Inject protected User user;
 
     /** The AuthInterface implementation to use when evaluating URLs */
     protected AuthInterface authInterface;
@@ -765,12 +769,13 @@ public class SocialOAuthActivity extends AppCompatActivity {
                     }
 
                     EnvoyApi.GetAccessTokenResponse response = (EnvoyApi.GetAccessTokenResponse) successResponse;
-
+                    user.setLinkedInAccessToken(response.access_token);
+                    finish();
                 }
 
                 @Override
                 public void onFailure(Object failureResponse) {
-
+                    finish();
                 }
             });
         }
