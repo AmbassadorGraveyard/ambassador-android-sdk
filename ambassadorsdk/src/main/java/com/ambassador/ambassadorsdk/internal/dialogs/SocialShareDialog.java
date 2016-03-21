@@ -23,7 +23,6 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.injection.ForActivity;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
@@ -61,7 +60,19 @@ public final class SocialShareDialog extends Dialog {
     // endregion
 
     public enum SocialNetwork {
-        FACEBOOK, TWITTER, LINKEDIN
+        FACEBOOK("facebook"),
+        TWITTER("twitter"),
+        LINKEDIN("linkedin");
+
+        private String stringValue;
+        SocialNetwork(String toString) {
+            stringValue = toString;
+        }
+
+        @Override
+        public String toString() {
+            return stringValue;
+        }
     }
 
     public SocialShareDialog(@ForActivity Context context) {
@@ -178,21 +189,7 @@ public final class SocialShareDialog extends Dialog {
             etMessage.shake();
         } else {
             pbLoading.setVisibility(View.VISIBLE);
-            switch (socialNetwork) {
-                case FACEBOOK:
-                    requestManager.postToFacebook(etMessage.getText().toString(), facebookCompletion);
-                    break;
-                case TWITTER:
-                    requestManager.postToTwitter(etMessage.getText().toString(), twitterCompletion);
-                    break;
-                case LINKEDIN:
-                    LinkedInApi.LinkedInPostRequest request = new LinkedInApi.LinkedInPostRequest(etMessage.getText().toString());
-                    requestManager.postToLinkedIn(request, linkedInCompletion);
-                    break;
-                default:
-                    dismiss();
-                    break;
-            }
+            requestManager.shareWithEnvoy(socialNetwork.stringValue, etMessage.getText().toString(), requestCompletion);
         }
     }
 
@@ -233,7 +230,7 @@ public final class SocialShareDialog extends Dialog {
         }
     }
 
-    private RequestManager.RequestCompletion facebookCompletion = new RequestManager.RequestCompletion() {
+    private RequestManager.RequestCompletion requestCompletion = new RequestManager.RequestCompletion() {
         @Override
         public void onSuccess(Object successResponse) {
             getOwnerActivity().runOnUiThread(new Runnable() {
@@ -241,7 +238,25 @@ public final class SocialShareDialog extends Dialog {
                 public void run() {
                     pbLoading.setVisibility(View.GONE);
                     Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-                    requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
+
+                    BulkShareHelper.SocialServiceTrackType trackType;
+                    switch(socialNetwork) {
+                        case FACEBOOK:
+                            trackType = BulkShareHelper.SocialServiceTrackType.FACEBOOK;
+                            break;
+                        case TWITTER:
+                            trackType = BulkShareHelper.SocialServiceTrackType.TWITTER;
+                            break;
+                        case LINKEDIN:
+                            trackType = BulkShareHelper.SocialServiceTrackType.LINKEDIN;
+                            break;
+                        default:
+                            onFailure(null);
+                            return;
+                    }
+
+                    requestManager.bulkShareTrack(trackType);
+
                     dismiss();
                     attemptNotifySuccess();
                 }
@@ -254,71 +269,10 @@ public final class SocialShareDialog extends Dialog {
                 @Override
                 public void run() {
                     pbLoading.setVisibility(View.GONE);
-                    if (failureResponse != null && ((String) failureResponse).equals("auth")) {
-                        dismiss();
-                        attemptNotifyReauth();
-                    } else {
-                        Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
-                        attemptNotifyFailed();
-                    }
+                    Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
+                    attemptNotifyFailed();
                 }
             });
-        }
-    };
-
-    private RequestManager.RequestCompletion twitterCompletion = new RequestManager.RequestCompletion() {
-        @Override
-        public void onSuccess(Object successResponse) {
-            getOwnerActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    pbLoading.setVisibility(View.GONE);
-                    Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-                    requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.TWITTER);
-                    dismiss();
-                    attemptNotifySuccess();
-                }
-            });
-        }
-
-        @Override
-        public void onFailure(final Object failureResponse) {
-            getOwnerActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    pbLoading.setVisibility(View.GONE);
-                    if (((String) failureResponse).equals("auth")) {
-                        dismiss();
-                        attemptNotifyReauth();
-                    } else {
-                        Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
-                        attemptNotifyFailed();
-                    }
-                }
-            });
-        }
-    };
-
-    private RequestManager.RequestCompletion linkedInCompletion = new RequestManager.RequestCompletion() {
-        @Override
-        public void onSuccess(Object successResponse) {
-            pbLoading.setVisibility(View.GONE);
-            Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-            requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.LINKEDIN);
-            dismiss();
-            attemptNotifySuccess();
-        }
-
-        @Override
-        public void onFailure(Object failureResponse) {
-            pbLoading.setVisibility(View.GONE);
-            if (((String) failureResponse).contains("No authentication")) {
-                dismiss();
-                attemptNotifyReauth();
-            } else {
-                Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
-                attemptNotifyFailed();
-            }
         }
     };
 

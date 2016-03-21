@@ -290,13 +290,29 @@ public class RequestManager {
     /**
      * Shares a message to a users authenticated social account using Envoy.
      * @param provider the String name of the provider to share to [facebook, twitter, linkedin].
-     * @param accessToken the String accessToken to envoy obtained by getAccessToken(...).
      * @param message the String message to share to the social network.
      * @param requestCompletion callback for request compeltion.
      */
-    public void shareWithEnvoy(String provider, String accessToken, String message, final RequestCompletion requestCompletion) {
+    public void shareWithEnvoy(String provider,  String message, final RequestCompletion requestCompletion) {
         String clientId = auth.getEnvoyId();
         String clientSecret = auth.getEnvoySecret();
+
+        String accessToken;
+        switch(provider) {
+            case "facebook":
+                accessToken = user.getFacebookAccessToken();
+                break;
+            case "twitter":
+                accessToken = user.getTwitterAccessToken();
+                break;
+            case "linkedin":
+                accessToken = user.getLinkedInAccessToken();
+                break;
+            default:
+                requestCompletion.onFailure(null);
+                return;
+        }
+
         envoyApi.share(provider, clientId, clientSecret, accessToken, message, requestCompletion);
     }
 

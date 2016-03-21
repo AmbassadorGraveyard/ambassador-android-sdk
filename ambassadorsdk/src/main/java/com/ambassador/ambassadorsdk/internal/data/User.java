@@ -23,6 +23,10 @@ public class User implements Data {
     protected JsonObject pusherInfo;
     protected JsonObject augurData;
     protected String webDeviceId;
+
+    protected String facebookAccessToken;
+    protected String twitterAccessToken;
+    protected String linkedInAccessToken;
     // endregion
 
     // region Getters / Setters
@@ -100,6 +104,37 @@ public class User implements Data {
         this.webDeviceId = webDeviceId;
         save();
     }
+
+    @Nullable
+    public String getFacebookAccessToken() {
+        return facebookAccessToken;
+    }
+
+    public void setFacebookAccessToken(String facebookAccessToken) {
+        this.facebookAccessToken = facebookAccessToken;
+        save();
+    }
+
+    @Nullable
+    public String getTwitterAccessToken() {
+        return twitterAccessToken;
+    }
+
+    public void setTwitterAccessToken(String twitterAccessToken) {
+        this.twitterAccessToken = twitterAccessToken;
+        save();
+    }
+
+    @Nullable
+    public String getLinkedInAccessToken() {
+        return linkedInAccessToken;
+    }
+
+    public void setLinkedInAccessToken(String linkedInAccessToken) {
+        this.linkedInAccessToken = linkedInAccessToken;
+        save();
+    }
+
     // endregion
 
     // region Persistence methods
