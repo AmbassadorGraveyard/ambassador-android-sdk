@@ -1,40 +1,22 @@
 package com.ambassador.ambassadorsdk.internal.api;
 
-import android.support.annotation.Nullable;
-
 import com.ambassador.ambassadorsdk.ConversionParameters;
-import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.envoy.EnvoyApi;
-import com.ambassador.ambassadorsdk.internal.api.facebook.FacebookApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
-import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
-import com.ambassador.ambassadorsdk.internal.api.twitter.TwitterApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
-import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
-import twitter4j.Status;
-import twitter4j.TwitterAdapter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterMethod;
-import twitter4j.auth.AccessToken;
 
 /**
  * Handles all requests at the highest level. This is what all other internal classes use.
@@ -52,9 +34,6 @@ public class RequestManager {
     protected ConversionsApi conversionsApi;
     protected IdentifyApi identifyApi;
     protected EnvoyApi envoyApi;
-    protected LinkedInApi linkedInApi;
-    protected TwitterApi twitterApi;
-    protected FacebookApi facebookApi;
 
     /**
      * Standard callback used throughout the codebase.
@@ -81,16 +60,12 @@ public class RequestManager {
         bulkShareApi = new BulkShareApi(false);
         conversionsApi = new ConversionsApi(false);
         identifyApi = new IdentifyApi(false);
-        linkedInApi = new LinkedInApi(false);
         envoyApi = new EnvoyApi(false);
-        twitterApi = new TwitterApi();
-        facebookApi = new FacebookApi();
         if (doInit) {
             bulkShareApi.init();
             conversionsApi.init();
             identifyApi.init();
             envoyApi.init();
-            linkedInApi.init();
         }
     }
 
@@ -337,171 +312,6 @@ public class RequestManager {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
         identifyApi.externalPusherRequest(url, uid, authKey, completion);
-    }
-
-    /**
-     * Retrieves an OAuth login URL for Facebook.
-     * @param completion callback for request completion.
-     */
-    public void getFacebookLoginUrl(RequestCompletion completion) {
-        facebookApi.getAuthUrl(completion);
-    }
-
-    /**
-     * Attempts to post to Facebook on behalf of the user.
-     * @param postString the message to post to Facebook.
-     * @param completion callback for request completion.
-     */
-    public void postToFacebook(final String postString, final RequestCompletion completion) {
-        facebookApi.postToFacebook(postString, completion);
-    }
-
-    /**
-     * Trades a verifier code for an AccessToken.
-     * @param code verifier code returned from OAuth.
-     * @param completion callback for request completion.
-     */
-    public void getFacebookAccessToken(final String code, final RequestCompletion completion) {
-        facebookApi.getAccessToken(code, completion);
-    }
-
-    /**
-     * Checks that the access token has the needed permissions.
-     * @param requestCompletion callback for request completion.
-     */
-    public void verifyFacebookAccessToken(final RequestCompletion requestCompletion) {
-        facebookApi.verifyAccessToken(requestCompletion);
-    }
-
-    /**
-     * Attempts to post to Twitter on behalf of the user.
-     * @param tweetString the message to Tweet.
-     * @param completion callback for request completion.
-     */
-    public void postToTwitter(final String tweetString, final RequestCompletion completion) {
-        AsyncTwitter twitter = getTwitter();
-        String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
-        String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
-        twitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
-        twitter.setOAuthAccessToken(new AccessToken(auth.getTwitterToken(), auth.getTwitterSecret()));
-
-        twitterAdapter.setCompletion(completion);
-        twitter.addListener(twitterAdapter);
-
-        twitter.updateStatus(tweetString);
-    }
-
-    protected AmbTwitterAdapter twitterAdapter = new AmbTwitterAdapter() {
-
-        @Override
-        public void updatedStatus(Status status) {
-            super.updatedStatus(status);
-            Utilities.debugLog("amb-request", "SUCCESS: RequestManager.postToTwitter(...)");
-            if (completion != null) completion.onSuccess("success");
-        }
-
-        @Override
-        public void onException(TwitterException te, TwitterMethod method) {
-            super.onException(te, method);
-            Utilities.debugLog("amb-request", "FAILURE: RequestManager.postToTwitter(...)");
-            if (completion != null) completion.onFailure("failure");
-        }
-
-    };
-
-    protected class AmbTwitterAdapter extends TwitterAdapter {
-
-        protected RequestCompletion completion;
-
-        public void setCompletion(RequestCompletion completion) {
-            this.completion = completion;
-        }
-
-    }
-
-    /**
-     * Creates a factory and returns a new AsyncTwitter client.
-     * @return a brand new AsyncTwitter client object.
-     */
-    protected AsyncTwitter getTwitter() {
-        return new AsyncTwitterFactory().getInstance();
-    }
-
-
-    /**
-     * Trades a request code for an access token with the LinkedIn API.
-     * @param code the request code that the OAuth gave us
-     * @param completion callback for request completion
-     */
-    public void linkedInLoginRequest(final String code, final RequestCompletion completion) {
-        String urlParams = createLinkedInLoginBody(code);
-        linkedInApi.login(urlParams, completion, new LinkedInAuthorizedListener() {
-            @Override
-            public void linkedInAuthorized(String accessToken) {
-                auth.setLinkedInToken(accessToken);
-            }
-        });
-    }
-
-    /**
-     * Creates String form urlencoded parameters to pass to LinkedIn login.
-     * @param code the request code that the OAuth gave us
-     * @return a String form of LinkedIn's required form urlencoded params
-     */
-    @Nullable
-    protected String createLinkedInLoginBody(String code) {
-        String urlParams = "";
-        String charset = "UTF-8";
-        String callbackUrl = new StringResource(R.string.linked_in_callback_url).getValue();
-        String clientId = new StringResource(R.string.linked_in_client_id).getValue();
-        String clientSecret = new StringResource(R.string.linked_in_client_secret).getValue();
-        try {
-            urlParams = "grant_type=authorization_code&code=" + URLEncoder.encode(code, charset) +
-                    "&redirect_uri=" + URLEncoder.encode(callbackUrl, charset) +
-                    "&client_id=" + URLEncoder.encode(clientId, charset) +
-                    "&client_secret=" + URLEncoder.encode(clientSecret, charset);
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
-
-        return urlParams;
-    }
-
-    /**
-     * Listens for LinkedIn to be authorized and takes an access token back
-     */
-    public interface LinkedInAuthorizedListener {
-        void linkedInAuthorized(String accessToken);
-    }
-
-    /**
-     * Sends a request to LinkedIn for us to post on behalf of the user.
-     * @param requestBody the LinkedInPostRequest describing the post content
-     * @param completion callback for request completion
-     */
-    public void postToLinkedIn(LinkedInApi.LinkedInPostRequest requestBody, final RequestCompletion completion) {
-        linkedInApi.post(auth.getLinkedInToken(), requestBody, completion);
-    }
-
-    /**
-     * Performs a GET request to grab the user's LinkedIn profile info.
-     * Doesn't return any information, only calls back with request status.
-     * @param completion callback for request completion
-     */
-    public void getProfileLinkedIn(final RequestCompletion completion) {
-        linkedInApi.getProfile(auth.getLinkedInToken(), completion);
-    }
-
-    /**
-     * Uses the TwitterApi object to retrieve a login url for Twitter OAuth authentication.
-     * @param completion callback for request completion.
-     */
-    public void getTwitterLoginUrl(final RequestCompletion completion) {
-        twitterApi.getLoginUrl(completion);
-    }
-
-    public void getTwitterAccessToken(String oauthVerifier, final RequestCompletion requestCompletion) {
-        twitterApi.getAccessToken(oauthVerifier, requestCompletion);
     }
 
 }

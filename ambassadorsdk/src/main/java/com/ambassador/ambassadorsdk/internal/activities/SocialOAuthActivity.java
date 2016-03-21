@@ -41,7 +41,6 @@ import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
-import twitter4j.auth.AccessToken;
 
 /**
  * Overall activity to handle a social networks oauth authentication using a web view.
@@ -468,77 +467,13 @@ public class SocialOAuthActivity extends AppCompatActivity {
                 Toast.makeText(SocialOAuthActivity.this, new StringResource(R.string.login_failure).toString(), Toast.LENGTH_SHORT).show();
                 finish();
             } else {
-                requestManager.getFacebookAccessToken(code, new RequestManager.RequestCompletion() {
-                    @Override
-                    public void onSuccess(final Object successResponse) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                String accessToken = (String) successResponse;
-                                if (accessToken == null) {
-                                    onFailure(null);
-                                } else {
-                                    auth.setFacebookToken(accessToken);
-                                    verifyAccessToken();
-                                }
-                            }
-                        });
-                    }
 
-                    @Override
-                    public void onFailure(final Object failureResponse) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(getApplicationContext(), new StringResource(R.string.login_failure).getValue(), Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-                        });
-                    }
-                });
             }
 
         }
 
         protected void verifyAccessToken() {
-            requestManager.verifyFacebookAccessToken(new RequestManager.RequestCompletion() {
-                @Override
-                public void onSuccess(final Object successResponse) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String response = (String) successResponse;
-                            if (response == null) {
-                                onFailure(null);
-                                return;
-                            }
 
-                            switch (response) {
-                                case "success":
-                                    Toast.makeText(SocialOAuthActivity.this, new StringResource(R.string.login_success).toString(), Toast.LENGTH_SHORT).show();
-                                    finish();
-                                    break;
-                                case "failure":
-                                    Toast.makeText(SocialOAuthActivity.this, "failed", Toast.LENGTH_SHORT).show();
-                                    break;
-                                default:
-                                    onFailure(null);
-                            }
-                        }
-                    });
-                }
-
-                @Override
-                public void onFailure(Object failureResponse) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(SocialOAuthActivity.this, new StringResource(R.string.login_success).toString(), Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    });
-                }
-            });
         }
 
     }
@@ -633,36 +568,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
         protected void requestAccessToken(Uri uri) {
             String oauthVerifier = uri.getQueryParameter("oauth_verifier");
 
-            requestManager.getTwitterAccessToken(oauthVerifier, new RequestManager.RequestCompletion() {
-                @Override
-                public void onSuccess(final Object successResponse) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (successResponse instanceof AccessToken) {
-                                AccessToken accessToken = (AccessToken) successResponse;
-                                auth.setTwitterToken(accessToken.getToken());
-                                auth.setTwitterSecret(accessToken.getTokenSecret());
-                                Toast.makeText(getApplicationContext(), new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
-                                finish();
-                            } else {
-                                onFailure(null);
-                            }
-                        }
-                    });
-                }
 
-                @Override
-                public void onFailure(Object failureResponse) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), new StringResource(R.string.login_failure).getValue(), Toast.LENGTH_SHORT).show();
-                            finish();
-                        }
-                    });
-                }
-            });
         }
 
     }

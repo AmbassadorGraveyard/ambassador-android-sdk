@@ -63,13 +63,6 @@ import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
-import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
-import twitter4j.TwitterAdapter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterMethod;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 
 /**
  * Activity that handles sharing options and copying the share URL.
@@ -136,7 +129,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         // Other setup
         setUpData();
         setUpShareManagers();
-        setUpAuth();
         setUpLockingScrollView();
         setUpOptions();
         setUpToolbar();
@@ -193,11 +185,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         linkedInManager = new LinkedInManager();
         emailManager = new EmailManager();
         smsManager = new SmsManager();
-    }
-
-    protected void setUpAuth() {
-        auth.nullifyTwitterIfInvalid(null);
-        auth.nullifyLinkedInIfInvalid(null);
     }
 
     protected void setUpLockingScrollView() {
@@ -613,7 +600,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onShareRequested() {
-            if (auth.getFacebookToken() != null) {
+            if (user.getFacebookAccessToken() != null) {
                 SocialShareDialog facebookDialog = new SocialShareDialog(AmbassadorActivity.this);
                 facebookDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.FACEBOOK);
                 facebookDialog.setOwnerActivity(AmbassadorActivity.this);
@@ -635,7 +622,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void needAuth() {
-                        auth.setFacebookToken(null);
+                        user.setFacebookAccessToken(null);
                         requestReauthFacebook();
                     }
                 });
@@ -649,7 +636,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            if (auth.getFacebookToken() != null) {
+            if (user.getFacebookAccessToken() != null) {
                 onShareRequested();
             }
         }
@@ -658,20 +645,14 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     protected class TwitterManager implements ShareManager {
 
-        protected AsyncTwitter twitter;
 
         protected TwitterManager() {
-            AsyncTwitter asyncTwitter = new AsyncTwitterFactory().getInstance();
-            String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
-            String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
-            asyncTwitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
 
-            this.twitter = asyncTwitter;
         }
 
         @Override
         public void onShareRequested() {
-            if (auth.getTwitterToken() != null) {
+            if (user.getTwitterAccessToken() != null) {
                 SocialShareDialog tweetDialog = new SocialShareDialog(AmbassadorActivity.this);
                 tweetDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.TWITTER);
                 tweetDialog.setOwnerActivity(AmbassadorActivity.this);
@@ -693,8 +674,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void needAuth() {
-                        auth.setTwitterSecret(null);
-                        auth.setTwitterToken(null);
+                        user.setTwitterAccessToken(null);
                         requestReauthTwitter();
                     }
                 });
@@ -708,40 +688,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            if (data != null) {
-                String verifier = data.getStringExtra("verifier");
-                RequestToken requestToken = (RequestToken) data.getExtras().get("request");
-
-                twitter.addListener(new TwitterAdapter() {
-
-                    @Override
-                    public void gotOAuthAccessToken(AccessToken token) {
-                        super.gotOAuthAccessToken(token);
-                        String accessToken = token.getToken();
-                        String accessSecret = token.getTokenSecret();
-
-                        auth.setTwitterToken(accessToken);
-                        auth.setTwitterSecret(accessSecret);
-
-                        if (accessToken != null && accessSecret != null) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(AmbassadorActivity.this, new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
-                                    onShareRequested();
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onException(TwitterException te, TwitterMethod method) {
-                        super.onException(te, method);
-                    }
-
-                });
-
-                twitter.getOAuthAccessTokenAsync(requestToken, verifier);
+            if (user.getTwitterAccessToken() != null) {
+                onShareRequested();
             }
         }
 
@@ -786,7 +734,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            if (auth.getLinkedInToken() != null) {
+            if (user.getLinkedInAccessToken() != null) {
                 onShareRequested();
             }
         }

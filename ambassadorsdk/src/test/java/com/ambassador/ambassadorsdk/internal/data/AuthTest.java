@@ -11,14 +11,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import twitter4j.AsyncTwitter;
-import twitter4j.auth.AccessToken;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
@@ -54,10 +49,8 @@ public class AuthTest {
         Auth auth = new Auth();
         auth.universalId = "universalId";
         auth.universalToken = "universalToken";
-        auth.facebookToken = "facebookToken";
-        auth.linkedInToken = "linkedInToken";
-        auth.twitterToken = "twitterToken";
-        auth.twitterSecret = "twitterSecret";
+        auth.envoyId = "envoyId";
+        auth.envoySecret = "envoySecret";
 
         // ACT
         auth.save();
@@ -76,10 +69,8 @@ public class AuthTest {
         Auth auth = new Auth();
         auth.universalId = "universalId";
         auth.universalToken = "universalToken";
-        auth.facebookToken = "facebookToken";
-        auth.linkedInToken = "linkedInToken";
-        auth.twitterToken = "twitterToken";
-        auth.twitterSecret = "twitterSecret";
+        auth.envoyId = "envoyId";
+        auth.envoySecret = "envoySecret";
 
         // ACT
         auth.save();
@@ -97,10 +88,9 @@ public class AuthTest {
         Auth auth = new Auth();
         auth.universalId = "universalId";
         auth.universalToken = "universalToken";
-        auth.facebookToken = "facebookToken";
-        auth.linkedInToken = "linkedInToken";
-        auth.twitterToken = "twitterToken";
-        auth.twitterSecret = "twitterSecret";
+        auth.envoyId = "envoyId";
+        auth.envoySecret = "envoySecret";
+
 
         // ACT
         auth.clear();
@@ -108,14 +98,12 @@ public class AuthTest {
         // ASSERT
         Assert.assertNull(auth.getUniversalId());
         Assert.assertNull(auth.getUniversalToken());
-        Assert.assertNull(auth.getFacebookToken());
-        Assert.assertNull(auth.getLinkedInToken());
-        Assert.assertNull(auth.getTwitterToken());
-        Assert.assertNull(auth.getTwitterSecret());
+        Assert.assertNull(auth.getEnvoyId());
+        Assert.assertNull(auth.getEnvoySecret());
     }
 
     @Test
-    public void settersDoSaveOnInvocatio() {
+    public void settersDoSaveOnInvocation() {
         // ARRANGE
         Auth auth = Mockito.spy(new Auth());
         Mockito.doNothing().when(auth).save();
@@ -123,159 +111,11 @@ public class AuthTest {
         // ACT
         auth.setUniversalId("universalId");
         auth.setUniversalToken("universalToken");
-        auth.setFacebookToken("facebookToken");
-        auth.setLinkedInToken("linkedInToken");
-        auth.setTwitterToken("twitterToken");
-        auth.setTwitterSecret("twitterSecret");
+        auth.setEnvoyId("envoyId");
+        auth.setEnvoySecret("envoySecret");
 
         // ASSERT
-        Mockito.verify(auth, Mockito.times(6)).save();
-    }
-
-    @Test
-    public void nullifyTwitterIfInvalidNullTokensTest() {
-        // ARRANGE
-        Auth auth = Mockito.spy(new Auth());
-        Mockito.doReturn(null).when(auth).getTwitterToken();
-        Mockito.doReturn(null).when(auth).getTwitterSecret();
-        Mockito.doNothing().when(auth).save();
-
-        Auth.NullifyCompleteListener listener = Mockito.mock(Auth.NullifyCompleteListener.class);
-
-        // ACT
-        auth.nullifyTwitterIfInvalid(listener);
-
-        // ASSERT
-        Mockito.verify(auth).setTwitterToken(null);
-        Mockito.verify(auth).setTwitterSecret(null);
-        Mockito.verify(auth).callNullifyComplete(Mockito.eq(listener));
-    }
-
-    @Test
-    public void nullifyTwitterIfInvalidNonNullTokensTest() {
-        // ARRANGE
-        Auth auth = Mockito.spy(new Auth());
-        AsyncTwitter twitter = Mockito.mock(AsyncTwitter.class);
-        Mockito.doReturn(twitter).when(auth).getTwitter();
-
-        Mockito.doReturn("token").when(auth).getTwitterToken();
-        Mockito.doReturn("secret").when(auth).getTwitterSecret();
-
-        Mockito.doNothing().when(twitter).setOAuthConsumer(Mockito.anyString(), Mockito.anyString());
-        Mockito.doNothing().when(twitter).setOAuthAccessToken(Mockito.any(AccessToken.class));
-
-        Auth.NullifyCompleteListener listener = Mockito.mock(Auth.NullifyCompleteListener.class);
-
-        final Auth.AmbTwitterAdapter adapter = Mockito.spy(auth.ambTwitterAdapter);
-        auth.ambTwitterAdapter = adapter;
-
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                adapter.gotUserTimeline(null);
-                return null;
-            }
-        }).doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                adapter.onException(null, null);
-                return null;
-            }
-        }).when(twitter).getUserTimeline();
-
-        // ACT
-        auth.nullifyTwitterIfInvalid(listener);
-
-        // ASSERT
-//        Mockito.verify(ambassadorConfig).setTwitterAccessToken(null);
-//        Mockito.verify(ambassadorConfig).setTwitterAccessTokenSecret(null);
-//        Mockito.verify(ambassadorConfig).callNullifyComplete(Mockito.eq(listener));
-
-        // ACT
-        auth.nullifyTwitterIfInvalid(listener);
-
-        // ASSERT
-//        Mockito.verify(ambassadorConfig, Mockito.times(1)).setTwitterAccessToken(null);
-//        Mockito.verify(ambassadorConfig, Mockito.times(1)).setTwitterAccessTokenSecret(null);
-//        Mockito.verify(ambassadorConfig, Mockito.times(2)).callNullifyComplete(Mockito.eq(listener));
-    }
-
-    @Test
-    public void nullifyLinkedInIfInvalidNullTest() {
-        // ARRANGE
-        Auth.NullifyCompleteListener listener = Mockito.mock(Auth.NullifyCompleteListener.class);
-        Auth auth = Mockito.spy(new Auth());
-        Mockito.when(auth.getLinkedInToken()).thenReturn(null);
-
-        // ACT
-        auth.nullifyLinkedInIfInvalid(listener);
-
-        // ASSERT
-        Mockito.verify(auth).callNullifyComplete(Mockito.eq(listener));
-    }
-
-    @Test
-    public void nullifyLinkedInIfInvalidTest() {
-        // ARRANGE
-        Auth.NullifyCompleteListener listener = Mockito.mock(Auth.NullifyCompleteListener.class);
-        Auth auth = Mockito.spy(new Auth());
-        String token = "token";
-        Mockito.when(auth.getLinkedInToken()).thenReturn(token);
-        RequestManager requestManager = Mockito.mock(RequestManager.class);
-        Mockito.doReturn(requestManager).when(auth).buildRequestManager();
-
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocation.getArguments()[0];
-                completion.onSuccess(null);
-                return null;
-            }
-        }).doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion) invocation.getArguments()[0];
-                completion.onFailure(null);
-                return null;
-            }
-        }).when(requestManager).getProfileLinkedIn(Mockito.any(RequestManager.RequestCompletion.class));
-
-        Mockito.doNothing().when(auth).save();
-
-        // ACT
-        auth.nullifyLinkedInIfInvalid(listener);
-        auth.nullifyLinkedInIfInvalid(listener);
-
-        // ASSERT
-        Mockito.verify(auth).setLinkedInToken(null);
-        Mockito.verify(auth, Mockito.times(2)).callNullifyComplete(Mockito.eq(listener));
-    }
-
-    @Test
-    public void callNullifyCompleteNotNullTest() {
-        // ARRANGE
-        Auth auth = Mockito.spy(new Auth());
-        Auth.NullifyCompleteListener listener = Mockito.mock(Auth.NullifyCompleteListener.class);
-        Mockito.doNothing().when(listener).nullifyComplete();
-
-        // ACT
-        auth.callNullifyComplete(listener);
-
-        // ASSERT
-        Mockito.verify(listener).nullifyComplete();
-    }
-
-    @Test
-    public void callNullifyCompleteNullTest() {
-        // ARRANGE
-        Auth auth = Mockito.spy(new Auth());
-        Auth.NullifyCompleteListener listener = null;
-
-        // ACT
-        auth.callNullifyComplete(listener);
-
-        // ASSERT
-        // If nothing happens (no thrown exception), all is good
+        Mockito.verify(auth, Mockito.times(4)).save();
     }
 
 }
