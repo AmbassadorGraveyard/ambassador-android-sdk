@@ -23,7 +23,6 @@ public class User implements Data {
     protected JsonObject pusherInfo;
     protected JsonObject augurData;
     protected String webDeviceId;
-
     protected String facebookAccessToken;
     protected String twitterAccessToken;
     protected String linkedInAccessToken;
@@ -162,6 +161,9 @@ public class User implements Data {
         gcmToken = null;
         augurData = null;
         webDeviceId = null;
+        facebookAccessToken = null;
+        twitterAccessToken = null;
+        linkedInAccessToken = null;
     }
 
     /**
@@ -186,6 +188,9 @@ public class User implements Data {
         setGcmToken(user.getGcmToken());
         setAugurData(user.getAugurData());
         setWebDeviceId(user.getWebDeviceId());
+        setFacebookAccessToken(user.getFacebookAccessToken());
+        setTwitterAccessToken(user.getTwitterAccessToken());
+        setLinkedInAccessToken(user.getLinkedInAccessToken());
     }
     // endregion
 
