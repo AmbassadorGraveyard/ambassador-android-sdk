@@ -15,7 +15,6 @@ import com.ambassador.ambassadorsdk.internal.activities.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.api.facebook.FacebookApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
@@ -45,7 +44,6 @@ import dagger.Provides;
         PusherManager.Channel.class,
         InstallReceiver.class,
         InstanceIdListener.class,
-        FacebookApi.class
 }, staticInjections = {
         AmbassadorSDK.class
 }, library = true)
