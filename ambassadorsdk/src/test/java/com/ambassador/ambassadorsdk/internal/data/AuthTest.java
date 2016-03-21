@@ -57,7 +57,7 @@ public class AuthTest {
 
         // ASSERT
         Mockito.verify(context).getSharedPreferences(Mockito.eq("auth"), Mockito.eq(Context.MODE_PRIVATE));
-        Mockito.verify(editor).putString(Mockito.eq("auth"), Mockito.eq("{\"universalId\":\"universalId\",\"universalToken\":\"universalToken\",\"facebookToken\":\"facebookToken\",\"linkedInToken\":\"linkedInToken\",\"twitterToken\":\"twitterToken\",\"twitterSecret\":\"twitterSecret\"}"));
+        Mockito.verify(editor).putString(Mockito.eq("auth"), Mockito.eq("{\"universalId\":\"universalId\",\"universalToken\":\"universalToken\",\"envoyId\":\"envoyId\",\"envoySecret\":\"envoySecret\"}"));
         Mockito.verify(editor).apply();
     }
 
