@@ -136,10 +136,11 @@ public final class MainActivity extends AppCompatActivity {
                     .setContentDescription("signupTab");
             tabs[2] = new TabModel("Buy Now", R.drawable.ic_buy, new StoreFragment())
                     .setContentDescription("storeTab");
-            tabs[3] = new TabModel("Refer a Friend", R.drawable.ic_raf, new ReferFragment())
+            String rafTitle = getResources().getDisplayMetrics().densityDpi < 300 ? "Referrals" : "Refer a Friend";
+            tabs[3] = new TabModel(rafTitle, R.drawable.ic_raf, new ReferFragment())
                     .setContentDescription("referTab");
         }
-
+        
         @Override
         public int getCount() {
             return tabs.length;
