@@ -17,7 +17,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
@@ -124,9 +123,6 @@ public class SocialOAuthActivity extends AppCompatActivity {
             @Override
             public void onLoginUrlReceived(@NonNull String url) {
                 wvLogin.loadUrl(url);
-                Log.v("amb-url1", auth.getEnvoyId());
-                Log.v("amb-url1", auth.getEnvoySecret());
-                Log.v("amb-url1", url);
             }
 
             @Override
@@ -274,7 +270,6 @@ public class SocialOAuthActivity extends AppCompatActivity {
          */
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            Log.v("amb-url", url);
             if (authInterface.canHandleUrl(url)) {
                 return authInterface.handleUrl(url);
             } else {
@@ -380,6 +375,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
     protected class FacebookAuth implements AuthInterface {
 
         protected String popup;
+        protected boolean handleFinish;
 
         @NonNull
         @Override
@@ -417,8 +413,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
             } else if (isSuccessUrl(uri)) {
                 wvLogin.stopLoading();
             } else if (isSuccessRedirectUrl(uri)) {
-                wvLogin.stopLoading();
-                requestAccessToken(uri);
+                handleFinish = true;
             } else if (isFailureUrl(uri)) {
                 wvLogin.stopLoading();
                 Toast.makeText(SocialOAuthActivity.this, "Incorrect Username/Password!", Toast.LENGTH_SHORT).show();
@@ -435,7 +430,10 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void onPageFinished(@Nullable String url) {
-
+            if (handleFinish) {
+                requestAccessToken(Uri.parse(url));
+            }
+            handleFinish = false;
         }
 
         protected boolean isAllowedRedirectUrl(Uri uri) {
@@ -462,18 +460,24 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         protected void requestAccessToken(Uri uri) {
-            String code = uri.getQueryParameter("code");
-            if (code == null) {
-                Toast.makeText(SocialOAuthActivity.this, new StringResource(R.string.login_failure).toString(), Toast.LENGTH_SHORT).show();
-                finish();
-            } else {
+            requestManager.getEnvoyAccessToken(popup, new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(Object successResponse) {
+                    if (!(successResponse instanceof EnvoyApi.GetAccessTokenResponse)) {
+                        finish();
+                        return;
+                    }
 
-            }
+                    EnvoyApi.GetAccessTokenResponse response = (EnvoyApi.GetAccessTokenResponse) successResponse;
+                    user.setFacebookAccessToken(response.access_token);
+                    finish();
+                }
 
-        }
-
-        protected void verifyAccessToken() {
-
+                @Override
+                public void onFailure(Object failureResponse) {
+                    finish();
+                }
+            });
         }
 
     }
@@ -484,6 +488,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
     protected class TwitterAuth implements AuthInterface {
 
         protected String popup;
+        protected boolean handleFinish;
 
         @NonNull
         @Override
@@ -517,8 +522,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
             if (isAllowedRedirectUrl(uri)) {
                 return false;
             } else if (isSuccessUrl(uri)) {
-                wvLogin.stopLoading();
-                requestAccessToken(uri);
+                handleFinish = true;
             } else if (isCancelUrl(uri)) {
                 wvLogin.stopLoading();
                 finish();
@@ -538,7 +542,10 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
         @Override
         public void onPageFinished(@Nullable String url) {
-
+            if (handleFinish) {
+                requestAccessToken(Uri.parse(url));
+            }
+            handleFinish = false;
         }
 
         protected boolean isAllowedRedirectUrl(Uri uri) {
@@ -566,9 +573,24 @@ public class SocialOAuthActivity extends AppCompatActivity {
          * @param uri the URL overridden from the WebView client, this will be a url with ?oauth_token=x&oauth_verifier=x attached.
          */
         protected void requestAccessToken(Uri uri) {
-            String oauthVerifier = uri.getQueryParameter("oauth_verifier");
+            requestManager.getEnvoyAccessToken(popup, new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(Object successResponse) {
+                    if (!(successResponse instanceof EnvoyApi.GetAccessTokenResponse)) {
+                        finish();
+                        return;
+                    }
 
+                    EnvoyApi.GetAccessTokenResponse response = (EnvoyApi.GetAccessTokenResponse) successResponse;
+                    user.setTwitterAccessToken(response.access_token);
+                    finish();
+                }
 
+                @Override
+                public void onFailure(Object failureResponse) {
+                    finish();
+                }
+            });
         }
 
     }
