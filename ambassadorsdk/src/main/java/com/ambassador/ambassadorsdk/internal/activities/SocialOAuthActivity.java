@@ -555,7 +555,8 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         protected boolean isSuccessUrl(Uri uri) {
-            return uri.getHost().equals("google.com") && uri.getQueryParameter("oauth_token") != null && uri.getQueryParameter("oauth_verifier") != null;
+            boolean hostCheck = uri.getHost().equals("api.getenvoy.co") || uri.getHost().equals("dev-envoy-api.herokuapp.com");
+            return hostCheck && uri.getQueryParameter("oauth_token") != null && uri.getQueryParameter("oauth_verifier") != null;
         }
 
         protected boolean isCancelUrl(Uri uri) {
