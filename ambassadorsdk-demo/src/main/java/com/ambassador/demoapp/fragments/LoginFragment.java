@@ -81,7 +81,7 @@ public final class LoginFragment extends Fragment {
             }
         }
     };
-
+    
     private void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);

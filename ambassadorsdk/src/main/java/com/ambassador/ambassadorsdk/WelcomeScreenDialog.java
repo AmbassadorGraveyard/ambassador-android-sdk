@@ -355,8 +355,7 @@ public class WelcomeScreenDialog extends Dialog {
     public static class BackendData {
 
         protected String imageUrl;
-        protected String firstName;
-        protected String lastName;
+        protected String name;
 
         public String getImageUrl() {
             return imageUrl;
@@ -367,21 +366,12 @@ public class WelcomeScreenDialog extends Dialog {
             return this;
         }
 
-        public String getFirstName() {
-            return firstName;
+        public String getName() {
+            return name;
         }
 
-        public BackendData setFirstName(String firstName) {
-            this.firstName = firstName;
-            return this;
-        }
-
-        public String getLastName() {
-            return lastName;
-        }
-
-        public BackendData setLastName(String lastName) {
-            this.lastName = lastName;
+        public BackendData setName(String name) {
+            this.name = name;
             return this;
         }
 
