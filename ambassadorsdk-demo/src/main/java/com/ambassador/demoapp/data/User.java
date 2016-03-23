@@ -14,15 +14,28 @@ public class User {
 
     protected String universalId;
     protected String universalToken;
+    protected String sdkToken;
 
     public User() {
 
     }
 
+    public String getUniversalId() {
+        return universalId;
+    }
+
+    public String getUniversalToken() {
+        return universalToken;
+    }
+
+    public String getSdkToken() {
+        return sdkToken;
+    }
+
     public void load(LoginResponse loginResponse) {
         universalId = loginResponse.company.universal_id;
         universalToken = loginResponse.company.universal_token;
-
+        sdkToken = loginResponse.company.sdk_token;
         save();
     }
 
@@ -43,7 +56,7 @@ public class User {
     }
 
     public static boolean isStored() {
-        return instance != null && (instance.universalId != null && instance.universalToken != null);
+        return instance != null && (instance.universalId != null && instance.sdkToken != null);
     }
 
     @NonNull

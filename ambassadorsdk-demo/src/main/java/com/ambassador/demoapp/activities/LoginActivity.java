@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.api.Requests;
 import com.ambassador.demoapp.api.pojo.LoginResponse;
@@ -78,6 +79,7 @@ public class LoginActivity extends Activity {
     }
 
     protected void finishLogin() {
+        Demo.get().runWithKeys("SDKToken " + User.get().getSdkToken(), User.get().getUniversalId());
         Intent next = new Intent(LoginActivity.this, MainActivity.class);
         next.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(next);
