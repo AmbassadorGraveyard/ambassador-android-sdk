@@ -305,12 +305,6 @@ public final class SocialShareDialog extends Dialog {
         }
     }
 
-    private void attemptNotifyReauth() {
-        if (eventListener != null) {
-            eventListener.needAuth();
-        }
-    }
-
     public void setSocialDialogEventListener(@Nullable ShareDialogEventListener listener) {
         this.eventListener = listener;
     }
