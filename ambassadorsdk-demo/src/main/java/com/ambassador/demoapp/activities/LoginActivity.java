@@ -2,11 +2,13 @@ package com.ambassador.demoapp.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.demoapp.R;
@@ -26,6 +28,7 @@ public class LoginActivity extends Activity {
     @Bind(R.id.etEmail) protected LoginEditText etEmail;
     @Bind(R.id.etPassword) protected LoginEditText etPassword;
     @Bind(R.id.btnLogin) protected Button btnLogin;
+    @Bind(R.id.tvNoAccount) protected TextView tvNoAccount;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -61,6 +64,15 @@ public class LoginActivity extends Activity {
                         Toast.makeText(LoginActivity.this, "Incorrect email/password!", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        });
+
+        tvNoAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://getambassador.com"));
+                startActivity(intent);
             }
         });
     }
