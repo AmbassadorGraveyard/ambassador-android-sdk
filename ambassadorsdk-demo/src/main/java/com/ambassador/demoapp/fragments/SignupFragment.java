@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.content.FileProvider;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,12 +49,13 @@ public final class SignupFragment extends Fragment {
         btnSignup.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                Log.v("amb-zip", new CustomizationPackage(getActivity()).add("raf.xml", RAFOptions.get()).zip());
-                File file = new File(getContext().getFilesDir(), "test.zip");
+                String filename = new CustomizationPackage(getActivity()).add("raf.xml", RAFOptions.get()).zip();
+                File file = new File(getContext().getFilesDir(), filename);
                 Uri uri = FileProvider.getUriForFile(getContext(), "com.ambassador.fileprovider", file);
                 final Intent intent = ShareCompat.IntentBuilder.from(getActivity())
                         .setType("*/*")
                         .setStream(uri)
+                        .setChooserTitle("Share Integration Assets")
                         .createChooserIntent()
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
                         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
