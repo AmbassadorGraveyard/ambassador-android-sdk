@@ -77,7 +77,7 @@ public class CustomizationPackage {
     public String zip() {
         try {
             BufferedInputStream origin;
-            FileOutputStream dest = context.openFileOutput("test.zip", Context.MODE_PRIVATE);
+            FileOutputStream dest = context.openFileOutput("android-raf.zip", Context.MODE_PRIVATE);
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
             byte data[] = new byte[1024];
 
@@ -99,7 +99,7 @@ public class CustomizationPackage {
             e.printStackTrace();
         }
 
-        return "test.zip";
+        return "android-raf.zip";
     }
 
     /**
