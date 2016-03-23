@@ -41,4 +41,17 @@
         android:textSize="12.5sp"
         android:textStyle="bold" />
 
+    <TextView
+        android:id="@+id/tvNoAccount"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btnLogin"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="@string/no_account"
+        android:textAlignment="center"
+        android:textColor="#959ba3" />
+
 </RelativeLayout>
