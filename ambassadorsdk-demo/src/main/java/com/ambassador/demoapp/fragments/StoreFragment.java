@@ -13,7 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.ambassador.demoapp.Demo;
-import com.ambassador.demoapp.MainActivity;
+import com.ambassador.demoapp.activities.MainActivity;
 import com.ambassador.demoapp.R;
 
 import butterknife.Bind;

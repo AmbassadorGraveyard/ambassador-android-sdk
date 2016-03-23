@@ -1,4 +1,4 @@
-package com.ambassador.demoapp;
+package com.ambassador.demoapp.activities;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
+import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.fragments.LoginFragment;
 import com.ambassador.demoapp.fragments.ReferFragment;
 import com.ambassador.demoapp.fragments.SignupFragment;
