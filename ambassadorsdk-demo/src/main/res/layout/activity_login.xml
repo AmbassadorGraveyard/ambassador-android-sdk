@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#25313f">
+
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:layout_marginTop="75dp"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ambassador_word_logo" />
+
+    <com.ambassador.demoapp.views.LoginEditText
+        android:id="@+id/etEmail"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ivLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="1px"
+        android:layout_marginTop="40dp" />
+
+    <com.ambassador.demoapp.views.LoginEditText
+        android:id="@+id/etPassword"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etEmail"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="275dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etPassword"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="#4198d1"
+        android:text="Sign in"
+        android:textColor="@android:color/white"
+        android:textSize="12.5sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>
