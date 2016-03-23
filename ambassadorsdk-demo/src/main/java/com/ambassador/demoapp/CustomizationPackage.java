@@ -158,13 +158,13 @@ public class CustomizationPackage {
             stringBuilder.append(getAttributeString("string", "socialGridText", rafOptions.getSocialGridTextFont()));
             stringBuilder.append(getAttributeString("dimen", "socialOptionCornerRadius", rafOptions.getSocialOptionCornerRadius()));
 
-            stringBuilder.append("<array name=\"channels\">\n");
+            stringBuilder.append("    <array name=\"channels\">\n");
             for (String channel : rafOptions.getChannels()) {
-                stringBuilder.append("<item>");
+                stringBuilder.append("        <item>");
                 stringBuilder.append(channel);
                 stringBuilder.append("</item>\n");
             }
-            stringBuilder.append("</array>\n");
+            stringBuilder.append("    </array>\n");
 
             stringBuilder.append(getAttributeString("color", "contactsListViewBackground", rafOptions.getContactsListViewBackgroundColor()));
             stringBuilder.append(getAttributeString("dimen", "contactsListName", rafOptions.getContactsListNameSize()));

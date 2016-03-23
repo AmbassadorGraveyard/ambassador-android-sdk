@@ -1,9 +1,14 @@
 package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +17,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
+
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -38,6 +47,24 @@ public final class SignupFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         btnSignup.setOnClickListener(btnLoginOnClickListener);
+        btnSignup.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Log.v("amb-zip", new CustomizationPackage(getActivity()).add("raf.xml", RAFOptions.get()).zip());
+                File file = new File(getContext().getFilesDir(), "test.zip");
+                Uri uri = FileProvider.getUriForFile(getContext(), "com.ambassador.fileprovider", file);
+                final Intent intent = ShareCompat.IntentBuilder.from(getActivity())
+                        .setType("*/*")
+                        .setStream(uri)
+                        .createChooserIntent()
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                getActivity().startActivity(intent);
+
+                return false;
+            }
+        });
 
         return view;
     }
