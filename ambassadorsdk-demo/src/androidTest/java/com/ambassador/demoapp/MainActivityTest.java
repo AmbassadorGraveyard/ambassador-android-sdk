@@ -129,6 +129,7 @@ public class MainActivityTest {
     @Test
     public void testsSignupFilledInputsDoesConversion() throws Exception {
         // ARRANGE
+        Mockito.doNothing().when(requestManager).identifyRequest();
         UiObject emailField = getUi("signupEmailField");
         UiObject usernameField = getUi("signupUsernameField");
         UiObject passwordField = getUi("signupPasswordField");
@@ -155,7 +156,7 @@ public class MainActivityTest {
     @Test
     public void testsSignupEmptyInputsFails() throws Exception {
         // ARRANGE
-        UiObject signupButton = getUi("signupButton");
+        UiObject signupButton = getUi("signupButton"); 
 
         // ACT
         signupTab.click();
