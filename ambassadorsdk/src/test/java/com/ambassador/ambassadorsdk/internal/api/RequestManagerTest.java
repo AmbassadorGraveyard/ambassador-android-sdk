@@ -62,6 +62,7 @@ public class RequestManagerTest {
     private IdentifyApi identifyApi;
     private EnvoyApi envoyApi;
 
+    private BulkShareHelper bulkShareHelper;
     private PusherManager pusherManager;
 
     private String universalId = "***REMOVED***";
@@ -98,6 +99,9 @@ public class RequestManagerTest {
 
         RequestManager rm = new RequestManager(false);
         requestManager = PowerMockito.spy(rm);
+
+        bulkShareHelper = Mockito.spy(BulkShareHelper.class);
+        requestManager.bulkShareHelper = bulkShareHelper;
 
         auth = Mockito.mock(Auth.class);
         user = Mockito.mock(User.class);

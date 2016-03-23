@@ -87,6 +87,14 @@ public interface IdentifyClient {
             Callback<IdentifyApi.UpdateGcmTokenResponse> callback
     );
 
+    @POST("/ambassadors/profile/")
+    void getUserFromShortCode(
+            @Header("MBSY_UNIVERSAL_ID") String universalId,
+            @Header("Authorization") String auth,
+            @Body IdentifyApi.GetUserFromShortCodeRequest body,
+            Callback<IdentifyApi.GetUserFromShortCodeResponse> callback
+    );
+
     /**
      * https://api.getambassador.com/auth/session/
      * https://dev-ambassador-api.herokuapp.com/auth/session/
