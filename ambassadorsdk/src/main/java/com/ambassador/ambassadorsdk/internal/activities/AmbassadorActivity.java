@@ -176,6 +176,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // region Setup
     protected void setUpData() {
         user.refresh();
+        user.setFacebookAccessToken(null);
+        user.setTwitterAccessToken(null);
+        user.setLinkedInAccessToken(null);
         campaign.refresh();
     }
 

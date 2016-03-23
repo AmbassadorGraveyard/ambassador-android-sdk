@@ -262,6 +262,8 @@ public class SocialOAuthActivity extends AppCompatActivity {
      */
     protected class OAuthWebClient extends WebViewClient {
 
+        protected boolean disappearedLoadingScreen;
+
         /**
          * Allows handling of a url request before it is loaded.
          * @param view the WebView that is loading the url.
@@ -292,16 +294,20 @@ public class SocialOAuthActivity extends AppCompatActivity {
             super.onPageFinished(view, url);
             authInterface.onPageFinished(url);
 
-            ObjectAnimator animator = ObjectAnimator.ofFloat(lvLoading, "alpha", 1, 0);
-            animator.setDuration(300);
-            animator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    super.onAnimationEnd(animation);
-                    lvLoading.setVisibility(View.GONE);
-                }
-            });
-            animator.start();
+            if (!disappearedLoadingScreen) {
+                ObjectAnimator animator = ObjectAnimator.ofFloat(lvLoading, "alpha", 1, 0);
+                animator.setDuration(300);
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        lvLoading.setVisibility(View.GONE);
+                    }
+                });
+                animator.start();
+            }
+
+            disappearedLoadingScreen = true;
         }
 
     }
@@ -413,10 +419,16 @@ public class SocialOAuthActivity extends AppCompatActivity {
             } else if (isSuccessUrl(uri)) {
                 wvLogin.stopLoading();
             } else if (isSuccessRedirectUrl(uri)) {
+                lvLoading.setVisibility(View.VISIBLE);
+                ObjectAnimator animator = ObjectAnimator.ofFloat(lvLoading, "alpha", 0, 1);
+                animator.setDuration(150);
+                animator.start();
                 handleFinish = true;
             } else if (isFailureUrl(uri)) {
                 wvLogin.stopLoading();
                 Toast.makeText(SocialOAuthActivity.this, "Incorrect Username/Password!", Toast.LENGTH_SHORT).show();
+            } else if (isCancelUrl(uri)) {
+                finish();
             }
 
             return false;
@@ -425,7 +437,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
         @Override
         public boolean canHandleUrl(@Nullable String url) {
             Uri uri = Uri.parse(url);
-            return isAllowedRedirectUrl(uri) || isLoginRedirect(uri) || isSuccessUrl(uri) || isSuccessRedirectUrl(uri) || isFailureUrl(uri);
+            return isAllowedRedirectUrl(uri) || isLoginRedirect(uri) || isSuccessUrl(uri) || isSuccessRedirectUrl(uri) || isFailureUrl(uri) || isCancelUrl(uri);
         }
 
         @Override
@@ -453,6 +465,11 @@ public class SocialOAuthActivity extends AppCompatActivity {
         protected boolean isSuccessRedirectUrl(Uri uri) {
             boolean hostCheck = uri.getHost().equals("api.getenvoy.co") || uri.getHost().equals("dev-envoy-api.herokuapp.com");
             return hostCheck && uri.getPath().equals("/auth/facebook/auth") && uri.getQueryParameter("code") != null;
+        }
+
+        protected boolean isCancelUrl(Uri uri) {
+            boolean hostCheck = uri.getHost().equals("api.getenvoy.co") || uri.getHost().equals("dev-envoy-api.herokuapp.com");
+            return hostCheck && uri.getQueryParameter("error") != null;
         }
 
         protected boolean isFailureUrl(Uri uri) {
@@ -522,6 +539,10 @@ public class SocialOAuthActivity extends AppCompatActivity {
             if (isAllowedRedirectUrl(uri)) {
                 return false;
             } else if (isSuccessUrl(uri)) {
+                lvLoading.setVisibility(View.VISIBLE);
+                ObjectAnimator animator = ObjectAnimator.ofFloat(lvLoading, "alpha", 0, 1);
+                animator.setDuration(150);
+                animator.start();
                 handleFinish = true;
             } else if (isCancelUrl(uri)) {
                 wvLogin.stopLoading();
@@ -551,7 +572,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
         protected boolean isAllowedRedirectUrl(Uri uri) {
             boolean hostCheck = uri.getHost().equals("api.twitter.com");
             boolean pathCheck = uri.getPath().equals("/oauth/authorize") || uri.getPath().equals("/oauth/authorize/");
-            return hostCheck || pathCheck;
+            return hostCheck && pathCheck;
         }
 
         protected boolean isSuccessUrl(Uri uri) {
@@ -636,6 +657,10 @@ public class SocialOAuthActivity extends AppCompatActivity {
             if (isAllowedRedirectUrl(uri)) {
                 return false;
             } else if (isSuccessUrl(uri)) {
+                lvLoading.setVisibility(View.VISIBLE);
+                ObjectAnimator animator = ObjectAnimator.ofFloat(lvLoading, "alpha", 0, 1);
+                animator.setDuration(150);
+                animator.start();
                 handleFinish = true;
             } else if (isCancelUrl(uri)) {
                 wvLogin.stopLoading();
