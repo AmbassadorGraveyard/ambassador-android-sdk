@@ -19,6 +19,7 @@ import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.demoapp.api.pojo.LoginResponse;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -74,6 +75,12 @@ public class MainActivityTest {
 
         mockAmbassadorSDK();
 
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.company = new LoginResponse.Company();
+        loginResponse.company.universal_id = "uid";
+        loginResponse.company.sdk_token = "sdk";
+        com.ambassador.demoapp.data.User.get().load(loginResponse);
+
         Intent intent  = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -88,8 +95,6 @@ public class MainActivityTest {
 
         Demo.get().identify(null);
         Demo.get().setCampaignId(null);
-
-        Demo.get().runWithKeys();
     }
 
     @Test
