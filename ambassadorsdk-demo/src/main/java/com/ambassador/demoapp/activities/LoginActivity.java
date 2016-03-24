@@ -41,12 +41,16 @@ public class LoginActivity extends Activity {
 
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+
         etEmail.setHint("Email address");
         etEmail.setImage(R.drawable.username_icon);
         etEmail.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        etEmail.setPosition(LoginEditText.Position.TOP);
+
         etPassword.setHint("Password");
         etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         etPassword.setImage(R.drawable.password_icon);
+        etPassword.setPosition(LoginEditText.Position.BOTTOM);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
