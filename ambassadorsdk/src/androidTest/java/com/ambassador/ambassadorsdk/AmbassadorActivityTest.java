@@ -138,7 +138,7 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-        .when(requestManager).identifyRequest();
+        .when(requestManager).identifyRequest(Mockito.any(RequestManager.RequestCompletion.class));
 
         //if the app has a channel and it's not expired but it's not currently connected, it will connectAndSubscribe to the existing channel
         //mock the connectAndSubscribe call, bypass identify in the callback, instead send the intent which will call tryAndSetURL
