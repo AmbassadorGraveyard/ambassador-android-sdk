@@ -71,15 +71,16 @@ public class LoginActivity extends Activity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                enterLoading();
-                closeSoftKeyboard();
                 String emailAddress = etEmail.getText();
                 String password = etPassword.getText();
 
-                if (emailAddress == null || password == null) {
+                if (emailAddress == null || "".equals(emailAddress) || password == null || "".equals(password)) {
                     Toast.makeText(LoginActivity.this, "Please enter an email and password!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                enterLoading();
+                closeSoftKeyboard();
 
                 Requests.get().login(emailAddress, password, new Callback<LoginResponse>() {
                     @Override
