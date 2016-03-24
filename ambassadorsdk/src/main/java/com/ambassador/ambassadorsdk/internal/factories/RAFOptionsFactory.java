@@ -146,24 +146,6 @@ public final class RAFOptionsFactory {
         id = resources.getIdentifier("contactNoPhotoAvailableBackground", "color", packageName);
         builder.setContactNoPhotoAvailableBackgroundColor(resources.getColor(id));
 
-        id = resources.getIdentifier("linkedinToolBar", "color", packageName);
-        builder.setLinkedInToolbarColor(resources.getColor(id));
-
-        id = resources.getIdentifier("linkedinToolBarText", "color", packageName);
-        builder.setLinkedInToolbarTextColor(resources.getColor(id));
-
-        id = resources.getIdentifier("linkedinToolBarArrow", "color", packageName);
-        builder.setLinkedInToolbarArrowColor(resources.getColor(id));
-
-        id = resources.getIdentifier("twitterToolBar", "color", packageName);
-        builder.setTwitterToolbarColor(resources.getColor(id));
-
-        id = resources.getIdentifier("twitterToolBarText", "color", packageName);
-        builder.setTwitterToolbarTextColor(resources.getColor(id));
-
-        id = resources.getIdentifier("twitterToolBarArrow", "color", packageName);
-        builder.setTwitterToolbarArrowColor(resources.getColor(id));
-
         id = resources.getIdentifier("socialOptionCornerRadius", "dimen", packageName);
         builder.setSocialOptionCornerRadius(removeDensity(context, resources.getDimension(id)));
 
@@ -568,30 +550,6 @@ public final class RAFOptionsFactory {
 
                     case "contactnophotoavailablebackground":
                         builder.setContactNoPhotoAvailableBackgroundColor(paramInt);
-                        break;
-
-                    case "linkedintoolbar":
-                        builder.setLinkedInToolbarColor(paramInt);
-                        break;
-
-                    case "linkedintoolbartext":
-                        builder.setLinkedInToolbarTextColor(paramInt);
-                        break;
-
-                    case "linkedintoolbararrow":
-                        builder.setLinkedInToolbarArrowColor(paramInt);
-                        break;
-
-                    case "twittertoolbar":
-                        builder.setTwitterToolbarColor(paramInt);
-                        break;
-
-                    case "twittertoolbartext":
-                        builder.setTwitterToolbarTextColor(paramInt);
-                        break;
-
-                    case "twittertoolbararrow":
-                        builder.setTwitterToolbarArrowColor(paramInt);
                         break;
 
                     case "channels":
