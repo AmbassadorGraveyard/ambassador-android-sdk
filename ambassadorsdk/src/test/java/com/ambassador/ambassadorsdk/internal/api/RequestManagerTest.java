@@ -218,12 +218,17 @@ public class RequestManagerTest {
     @Test
     public void identifyRequestTest() throws Exception {
         // ACT
-        requestManager.identifyRequest();
+        requestManager.identifyRequest(new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess(Object successResponse) {}
+            @Override
+            public void onFailure(Object failureResponse) {}}
+        );
         String reqId = "" + pusherManager.channel.requestId;
 
         // ASSERT
         Mockito.verify(pusherManager).newRequest();
-        Mockito.verify(identifyApi).identifyRequest(Mockito.eq(sessionId), Mockito.eq(reqId), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.IdentifyRequestBody.class));
+        Mockito.verify(identifyApi).identifyRequest(Mockito.eq(sessionId), Mockito.eq(reqId), Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(IdentifyApi.IdentifyRequestBody.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
