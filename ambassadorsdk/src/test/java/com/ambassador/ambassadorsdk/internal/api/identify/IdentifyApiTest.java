@@ -73,9 +73,10 @@ public class IdentifyApiTest {
         String uid = "uid";
         String auth = "auth";
         IdentifyApi.IdentifyRequestBody requestBody = Mockito.mock(IdentifyApi.IdentifyRequestBody.class);
+        RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
 
         // ACT
-        identifyApi.identifyRequest(sessionId, requestId, uid, auth, requestBody);
+        identifyApi.identifyRequest(sessionId, requestId, uid, auth, requestBody, requestCompletion);
 
         // ASSERT
         Mockito.verify(identifyClient).identifyRequest(Mockito.eq(sessionId), Mockito.eq(requestId), Mockito.eq(uid), Mockito.eq(auth), Mockito.eq(uid), Mockito.eq(requestBody), Mockito.any(Callback.class));

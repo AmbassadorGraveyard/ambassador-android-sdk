@@ -20,6 +20,7 @@
     <string name="connection_failure">There is a problem with your connection.</string>
     <string name="loading_failure">There seems to be an issue while attempting to load. Please try again.</string>
     <string name="update_failure">Unable to update information. Please try again.</string>
+    <string name="email_empty">Please enter your email!</string>
     <string name="first_name_empty">Please enter your first name!</string>
     <string name="last_name_empty">Please enter your last name!</string>
     <string name="url_missing">Your Referral Link is not included in the message:</string>
@@ -27,6 +28,12 @@
     <string name="share_message_empty">Sorry, you must enter a message to share.</string>
     <string name="blank_twitter">Cannot share a blank Tweet.</string>
     <string name="blank_linkedin">Cannot share a blank post.</string>
+    <string name="invalid_email">That email address is invalid!</string>
+    <!-- // -->
+
+    <!-- GET EMAIL DIALOG -->
+    <string name="get_email_header">Refer your friends!</string>
+    <string name="get_email_explanation">Enter your email below to get started.</string>
     <!-- // -->
 
     <!-- GET NAME DIALOG -->
