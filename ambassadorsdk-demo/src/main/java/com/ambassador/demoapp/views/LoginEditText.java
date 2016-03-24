@@ -21,6 +21,9 @@ import butterknife.ButterKnife;
  */
 public class LoginEditText extends RelativeLayout {
 
+    /**
+     * Enum representing a position of an EditText that will help determine how to round corners.
+     */
     public enum Position {
         TOP, MIDDLE, BOTTOM
     }
@@ -112,6 +115,14 @@ public class LoginEditText extends RelativeLayout {
                 setPosition(Position.MIDDLE);
                 break;
         }
+    }
+
+    /**
+     * Set editor info options on the underlying EditText.
+     * @param imeOptions the integer constant from EditorInfo.
+     */
+    public void setImeOptions(int imeOptions) {
+        editText.setImeOptions(imeOptions);
     }
 
 }

@@ -1,13 +1,20 @@
 package com.ambassador.demoapp.activities;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +38,9 @@ public class LoginActivity extends Activity {
     @Bind(R.id.btnLogin) protected Button btnLogin;
     @Bind(R.id.tvNoAccount) protected TextView tvNoAccount;
 
+    @Bind(R.id.rlLoading) protected RelativeLayout rlLoading;
+    @Bind(R.id.pbLoading) protected ProgressBar pbLoading;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,15 +61,19 @@ public class LoginActivity extends Activity {
         etPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         etPassword.setImage(R.drawable.password_icon);
         etPassword.setPosition(LoginEditText.Position.BOTTOM);
+        etPassword.setImeOptions(EditorInfo.IME_ACTION_DONE);
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                enterLoading();
+                closeSoftKeyboard();
                 String emailAddress = etEmail.getText();
                 String password = etPassword.getText();
                 Requests.get().login(emailAddress, password, new Callback<LoginResponse>() {
                     @Override
                     public void success(LoginResponse loginResponse, Response response) {
+                        exitLoading();
                         User.get().load(loginResponse);
                         finishLogin();
                     }
@@ -67,6 +81,7 @@ public class LoginActivity extends Activity {
                     @Override
                     public void failure(RetrofitError error) {
                         Toast.makeText(LoginActivity.this, "Incorrect email/password!", Toast.LENGTH_SHORT).show();
+                        exitLoading();
                     }
                 });
             }
@@ -80,6 +95,25 @@ public class LoginActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        pbLoading.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+    }
+
+    protected void enterLoading() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(rlLoading, "alpha", 0, 0.75f);
+        animator.setDuration(300);
+        animator.start();
+    }
+
+    protected void exitLoading() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(rlLoading, "alpha", 0.75f, 0);
+        animator.setDuration(300);
+        animator.start();
+    }
+
+    protected void closeSoftKeyboard() {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(btnLogin.getWindowToken(), 0);
     }
 
     protected void finishLogin() {
