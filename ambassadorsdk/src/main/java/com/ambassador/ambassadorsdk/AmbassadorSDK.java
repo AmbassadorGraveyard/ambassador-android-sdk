@@ -9,7 +9,6 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.IIdentify;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Utilities;
@@ -21,6 +20,7 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
+import com.ambassador.ambassadorsdk.internal.utils.Identify;
 
 import net.kencochrane.raven.DefaultRavenFactory;
 
@@ -33,14 +33,15 @@ import javax.inject.Inject;
 import dagger.ObjectGraph;
 
 /**
- * Static methods called by the end-developer to utilize the SDK.
+ * This is the main class of the Ambassador SDK. Contains public static methods for the 3rd party
+ * developer to directly access and use. All public methods rely on runWithKeys to first be called
+ * with a valid Context.
  */
 public final class AmbassadorSDK {
 
     @Inject protected static Auth auth;
     @Inject protected static User user;
     @Inject protected static Campaign campaign;
-
     @Inject protected static PusherManager pusherManager;
     @Inject protected static RequestManager requestManager;
 
@@ -72,7 +73,7 @@ public final class AmbassadorSDK {
         RAFOptions.set(rafOptions);
         intentAmbassadorActivity(context, campaignID);
     }
-
+ 
     public static void presentRAF(Context context, String campaignID, String pathInAssets) {
         try {
             presentRAF(context, campaignID, context.getAssets().open(pathInAssets));
@@ -94,23 +95,34 @@ public final class AmbassadorSDK {
         return new Intent(context, target);
     }
 
-    public static void identify(String emailAddress) {
-        String gcmToken = user.getGcmToken();
-        user.clear();
-        user.setEmail(emailAddress);
-
-        if (gcmToken != null) {
-            user.setGcmToken(gcmToken);
-            updateGcm();
+    /**
+     * Sets an email address to associate with this user. Needed to properly handle referrals and
+     * conversions.
+     * @param emailAddress the unique identifier to associate a user in the Ambassador backend.
+     * @return true if successful identify, false otherwise; only considers client side validation.
+     */
+    public static boolean identify(String emailAddress) {
+        if (emailAddress == null) {
+            user.clear();
+            user.setEmail(null);
+            return true;
+        } else if (!new Identify(emailAddress).isValidEmail()) {
+            return false;
+        } else {
+            String gcmToken = user.getGcmToken();
+            user.clear();
+            user.setEmail(emailAddress);
+            if (gcmToken != null) {
+                user.setGcmToken(gcmToken);
+                updateGcm();
+            }
+            buildIdentify().getIdentity();
+            pusherManager.startNewChannel();
+            return true;
         }
-
-        IIdentify identify = buildIdentify();
-        identify.getIdentity();
-
-        pusherManager.startNewChannel();
     }
 
-    private static IIdentify buildIdentify() {
+    protected static IdentifyAugurSDK buildIdentify() {
         return new IdentifyAugurSDK();
     }
 

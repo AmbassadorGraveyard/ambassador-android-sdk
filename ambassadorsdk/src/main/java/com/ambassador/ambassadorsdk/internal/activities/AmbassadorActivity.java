@@ -30,6 +30,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
@@ -42,6 +43,7 @@ import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
@@ -121,12 +123,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
         AmbSingleton.inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
-
+        
         // Requirement checks
         finishIfSingletonInvalid();
         if (isFinishing()) return;
 
-        // Other setup
+
         setUpData();
         setUpShareManagers();
         setUpLockingScrollView();
@@ -134,9 +136,34 @@ public final class AmbassadorActivity extends AppCompatActivity {
         setUpToolbar();
         setUpSocialGridView();
         setUpCustomImages();
-        setUpLoader();
-        setUpPusher();
         setUpCopy();
+
+        if (user.getEmail() != null) {
+            setUpLoader();
+            setUpPusher();
+        } else {
+            final AskEmailDialog askEmailDialog = new AskEmailDialog(this);
+            askEmailDialog.setOnEmailReceivedListener(new AskEmailDialog.OnEmailReceivedListener() {
+                @Override
+                public void onEmailReceived(String email) {
+                    if (AmbassadorSDK.identify(email)) {
+                        askEmailDialog.dismiss();
+                        setUpLoader();
+                        setUpPusher();
+                    } else {
+                        Toast.makeText(AmbassadorActivity.this, new StringResource(R.string.invalid_email).getValue(), Toast.LENGTH_SHORT).show();
+                        askEmailDialog.shake();
+                    }
+                }
+
+                @Override
+                public void onCanceled() {
+                    askEmailDialog.dismiss();
+                    finish();
+                }
+            });
+            askEmailDialog.show();
+        }
     }
 
     @Override
@@ -342,7 +369,18 @@ public final class AmbassadorActivity extends AppCompatActivity {
             @Override
             public void subscribed() {
                 super.subscribed();
-                requestManager.identifyRequest();
+                requestManager.identifyRequest(new RequestManager.RequestCompletion() {
+                    @Override
+                    public void onSuccess(Object successResponse) {
+                        // All is swell, do nothing.
+                    }
+
+                    @Override
+                    public void onFailure(Object failureResponse) {
+                        AmbassadorSDK.identify(null);
+                        showNetworkError();
+                    }
+                });
             }
 
             @Override

@@ -16,7 +16,7 @@ import javax.inject.Inject;
 
 import io.augur.wintermute.Augur;
 
-public class IdentifyAugurSDK implements IIdentify {
+public class IdentifyAugurSDK {
 
     @Inject protected Device deviceObj;
     @Inject protected User user;
@@ -25,7 +25,6 @@ public class IdentifyAugurSDK implements IIdentify {
         AmbSingleton.inject(this);
     }
 
-    @Override
     public void getIdentity() {
         String augurKey = new StringResource(R.string.augur_api_key).getValue();
         JSONObject augurConfig = new JSONObject();

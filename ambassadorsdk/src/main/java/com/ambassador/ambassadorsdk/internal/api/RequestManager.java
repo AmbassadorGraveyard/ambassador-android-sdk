@@ -163,8 +163,9 @@ public class RequestManager {
      * Identifies the user on the Ambassador backend using the session info
      * and the identify info returned from augur.
      */
-    public void identifyRequest() {
+    public void identifyRequest(RequestCompletion completion) {
         if (pusherManager.getChannel() == null) {
+            completion.onFailure(null);
             return;
         }
 
@@ -180,7 +181,7 @@ public class RequestManager {
         String augur = user.getAugurData() != null ? user.getAugurData().toString() : null;
         IdentifyApi.IdentifyRequestBody body = new IdentifyApi.IdentifyRequestBody(campaignId, userEmail, augur);
 
-        identifyApi.identifyRequest(sessionId, requestId, uid, authKey, body);
+        identifyApi.identifyRequest(sessionId, requestId, uid, authKey, body, completion);
     }
 
     /**

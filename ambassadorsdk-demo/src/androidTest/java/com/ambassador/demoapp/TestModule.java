@@ -17,6 +17,7 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.notifications.InstanceIdListener;
@@ -41,6 +42,7 @@ import dagger.Provides;
         RequestManager.class,
         AmbassadorSDK.class,
         AskNameDialog.class,
+        AskEmailDialog.class,
         IdentifyAugurSDK.class,
         PusherManager.class,
         PusherManager.Channel.class,
