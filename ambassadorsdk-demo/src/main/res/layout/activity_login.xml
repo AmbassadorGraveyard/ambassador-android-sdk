@@ -18,14 +18,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/ivLogo"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="1px"
-        android:layout_marginTop="40dp" />
+        android:layout_marginTop="55dp" />
 
     <com.ambassador.demoapp.views.LoginEditText
         android:id="@+id/etPassword"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/etEmail"
+        android:layout_marginTop="-1dp"
         android:layout_centerHorizontal="true" />
 
     <Button
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/etPassword"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="12dp"
         android:background="@drawable/btn_login"
         android:text="Sign in"
         android:textColor="@android:color/white"
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnLogin"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="140dp"
         android:gravity="center"
         android:padding="10dp"
         android:text="@string/no_account"
