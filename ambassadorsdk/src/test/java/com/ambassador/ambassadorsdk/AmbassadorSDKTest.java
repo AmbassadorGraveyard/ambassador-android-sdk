@@ -6,13 +6,13 @@ import android.content.IntentFilter;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.IIdentify;
+import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -84,8 +84,8 @@ public class AmbassadorSDKTest {
     @Test
     public void identifyTest() throws Exception {
         // ARRANGE
-        String email = "email";
-        IIdentify identify = Mockito.mock(IIdentify.class);
+        String email = "email@gmail.com";
+        IdentifyAugurSDK identify = Mockito.mock(IdentifyAugurSDK.class);
         PowerMockito.doReturn(identify).when(AmbassadorSDK.class, "buildIdentify");
 
         // ACT

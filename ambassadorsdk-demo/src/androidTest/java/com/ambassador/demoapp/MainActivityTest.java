@@ -120,7 +120,7 @@ public class MainActivityTest {
     @Test
     public void testsLoginEmptyInputsFails() throws Exception {
         // ARRANGE
-        Mockito.doNothing().when(requestManager).identifyRequest();
+        Mockito.doNothing().when(requestManager).identifyRequest(Mockito.any(RequestManager.RequestCompletion.class));
         UiObject loginButton = getUi("loginButton");
 
         // ACT
@@ -128,13 +128,13 @@ public class MainActivityTest {
 
         // ASSERT
         Assert.assertNull(Demo.get().getEmail());
-        Mockito.verify(requestManager, Mockito.times(0)).identifyRequest();
+        Mockito.verify(requestManager, Mockito.times(0)).identifyRequest(Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
     public void testsSignupFilledInputsDoesConversion() throws Exception {
         // ARRANGE
-        Mockito.doNothing().when(requestManager).identifyRequest();
+        Mockito.doNothing().when(requestManager).identifyRequest(Mockito.any(RequestManager.RequestCompletion.class));
         UiObject emailField = getUi("signupEmailField");
         UiObject usernameField = getUi("signupUsernameField");
         UiObject passwordField = getUi("signupPasswordField");
@@ -453,7 +453,7 @@ public class MainActivityTest {
                 sendPusherIntent();
                 return null;
             }
-        }).when(requestManager).identifyRequest();
+        }).when(requestManager).identifyRequest(Mockito.any(RequestManager.RequestCompletion.class));
 
         Mockito.doAnswer(new Answer() {
             @Override
@@ -467,6 +467,6 @@ public class MainActivityTest {
     private void sendPusherIntent() {
         Intent intent = new Intent("pusherData");
         LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
-    }
+    } 
 
 }
