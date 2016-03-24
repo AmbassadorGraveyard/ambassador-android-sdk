@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.InputType;
@@ -45,6 +46,10 @@ public class LoginActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (Build.VERSION.SDK_INT >= 21) {
+            getWindow().setStatusBarColor(Color.parseColor("#1a232d"));
+        }
+
         if (User.isStored()) {
             finishLogin();
         }
@@ -70,6 +75,12 @@ public class LoginActivity extends Activity {
                 closeSoftKeyboard();
                 String emailAddress = etEmail.getText();
                 String password = etPassword.getText();
+
+                if (emailAddress == null || password == null) {
+                    Toast.makeText(LoginActivity.this, "Please enter an email and password!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 Requests.get().login(emailAddress, password, new Callback<LoginResponse>() {
                     @Override
                     public void success(LoginResponse loginResponse, Response response) {
