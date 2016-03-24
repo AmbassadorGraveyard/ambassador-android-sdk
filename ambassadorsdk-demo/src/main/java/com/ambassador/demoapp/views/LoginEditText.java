@@ -3,6 +3,7 @@ package com.ambassador.demoapp.views;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.DrawableRes;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.EditText;
@@ -19,6 +20,10 @@ import butterknife.ButterKnife;
  * Under the hood is a RelativeLayout with a matching-parent EditText.
  */
 public class LoginEditText extends RelativeLayout {
+
+    public enum Position {
+        TOP, MIDDLE, BOTTOM
+    }
 
     /** The underlying EditText. */
     @Bind(R.id.editText) protected EditText editText;
@@ -85,6 +90,28 @@ public class LoginEditText extends RelativeLayout {
      */
     public String getText() {
         return editText.getText().toString();
+    }
+
+    /**
+     * Sets the rounded corners on the EditText appropriately for the passed in position. Top will have
+     * its top corners rounded, middle no corners, bottom only the bottom corners.
+     * @param position the Position enum describing the position (TOP, MIDDLE, BOTTOM).
+     */
+    public void setPosition(Position position) {
+        switch (position) {
+            case TOP:
+                editText.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.et_top));
+                break;
+            case MIDDLE:
+                editText.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.et_mid));
+                break;
+            case BOTTOM:
+                editText.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.et_bottom));
+                break;
+            default:
+                setPosition(Position.MIDDLE);
+                break;
+        }
     }
 
 }

@@ -35,7 +35,7 @@
         android:layout_below="@+id/etPassword"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:background="#4198d1"
+        android:background="@drawable/btn_login"
         android:text="Sign in"
         android:textColor="@android:color/white"
         android:textSize="12.5sp"
