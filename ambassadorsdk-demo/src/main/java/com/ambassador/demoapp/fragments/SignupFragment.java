@@ -49,7 +49,10 @@ public final class SignupFragment extends Fragment {
         btnSignup.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                String filename = new CustomizationPackage(getActivity()).add("raf.xml", RAFOptions.get()).zip();
+                String filename = new CustomizationPackage(getActivity())
+                        .add("raf.xml", RAFOptions.get())
+                        .add("README.txt", "AmbassadorSDK 1.1.4\nTest")
+                        .zip();
                 File file = new File(getContext().getFilesDir(), filename);
                 Uri uri = FileProvider.getUriForFile(getContext(), "com.ambassador.fileprovider", file);
                 final Intent intent = ShareCompat.IntentBuilder.from(getActivity())
