@@ -51,13 +51,16 @@ public class UserTest {
         user.lastName = "dunahee";
         user.gcmToken = "gcmToken";
         user.augurData = null;
+        user.facebookAccessToken = "facebookAccessToken";
+        user.twitterAccessToken = "twitterAccessToken";
+        user.linkedInAccessToken = "linkedInAccessToken";
 
         // ACT
         user.save();
 
         // ASSERT
         Mockito.verify(context).getSharedPreferences(Mockito.eq("user"), Mockito.eq(Context.MODE_PRIVATE));
-        Mockito.verify(editor).putString(Mockito.eq("jake@getambassador.com"), Mockito.eq("{\"firstName\":\"jake\",\"lastName\":\"dunahee\",\"email\":\"jake@getambassador.com\",\"gcmToken\":\"gcmToken\"}"));
+        Mockito.verify(editor).putString(Mockito.eq("jake@getambassador.com"), Mockito.eq("{\"firstName\":\"jake\",\"lastName\":\"dunahee\",\"email\":\"jake@getambassador.com\",\"gcmToken\":\"gcmToken\",\"facebookAccessToken\":\"facebookAccessToken\",\"twitterAccessToken\":\"twitterAccessToken\",\"linkedInAccessToken\":\"linkedInAccessToken\"}"));
         Mockito.verify(editor).apply();
     }
 

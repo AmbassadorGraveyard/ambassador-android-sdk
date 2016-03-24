@@ -14,7 +14,7 @@
 
     <!-- STATUS -->
     <string name="login_success">Logged in successfully!</string>
-    <string name="login_failure">Logged in successfully!</string>
+    <string name="login_failure">Logged in failed!</string>
     <string name="post_success">Shared successfully!</string>
     <string name="post_failure">Unable to share. Please try again.</string>
     <string name="connection_failure">There is a problem with your connection.</string>
@@ -26,6 +26,7 @@
     <string name="url_missing">Your Referral Link is not included in the message:</string>
     <string name="contacts_permission_denied">We need to view your contacts to use this feature. Since you denied permission, we\'re sending you back.</string>
     <string name="share_message_empty">Sorry, you must enter a message to share.</string>
+    <string name="blank_facebook">Cannot share a blank post.</string>
     <string name="blank_twitter">Cannot share a blank Tweet.</string>
     <string name="blank_linkedin">Cannot share a blank post.</string>
     <string name="invalid_email">That email address is invalid!</string>
@@ -50,12 +51,20 @@
     <string name="ambassador_api_url_dev">https://dev-ambassador-api.herokuapp.com</string>
     <!-- // -->
 
+    <!-- ENVOY -->
+    <string name="envoy_api_url">https://api.getenvoy.co</string>
+    <string name="envoy_api_url_dev">https://dev-envoy-api.herokuapp.com</string>
+    <!-- // -->
+
     <!-- AUGUR -->
     <string name="augur_api_key">***REMOVED***</string>
     <!-- // -->
 
     <!-- FACEBOOK -->
     <string name="facebook_app_id">***REMOVED***</string>
+    <string name="facebook_app_secret">52ffd023589b20767fcc77bc48439679</string>
+    <string name="facebook_reauthenticate_message">We need you to re-authenticate Facebook. Continue?</string>
+    <string name="facebook_share_dialog_title">Facebook Post</string>
     <!-- // -->
 
     <!-- TWITTER -->

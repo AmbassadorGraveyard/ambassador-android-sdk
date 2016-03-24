@@ -301,6 +301,48 @@ public final class IdentifyApi {
         return new BufferedReader(new InputStreamReader(is));
     }
 
+    /**
+     * Passes through to the identifyClient and handles the Retrofit callback and
+     * calling back to the RequestCompletion.
+     * @param uid the universalId identifier.
+     * @param auth the universalToken identifier.
+     * @param completion callback for request completion.
+     */
+    public void getCompanyInfo(String uid, String auth, final RequestManager.RequestCompletion completion) {
+        identifyClient.getCompanyInfo(uid, auth, new Callback<GetCompanyInfoResponse>() {
+            @Override
+            public void success(GetCompanyInfoResponse getCompanyInfoResponse, Response response) {
+                completion.onSuccess(getCompanyInfoResponse);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                completion.onFailure(null);
+            }
+        });
+    }
+
+    /**
+     * Gets the Envoy id and secret to do social OAuth stuff.
+     * @param uid the universalId identifier.
+     * @param auth the universalToken identifier.
+     * @param companyUid the id for the company on the backend.
+     * @param completion callback for request completion.
+     */
+    public void getEnvoyKeys(String uid, String auth, String companyUid, final RequestManager.RequestCompletion completion) {
+        identifyClient.getEnvoyKeys(uid, auth, companyUid, new Callback<GetEnvoyKeysResponse>() {
+            @Override
+            public void success(GetEnvoyKeysResponse getEnvoyKeysResponse, Response response) {
+                completion.onSuccess(getEnvoyKeysResponse);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                completion.onFailure(null);
+            }
+        });
+    }
+
     /** Pojo for identify post request body */
     public static class IdentifyRequestBody {
 
@@ -420,6 +462,28 @@ public final class IdentifyApi {
         public String client_session_uid;
         public String expires_at;
         public String channel_name;
+
+    }
+
+    /** Pojo for get company info response */
+    public static class GetCompanyInfoResponse {
+
+        public Result[] results;
+
+        public static class Result {
+
+            public String uid;
+            public String url;
+
+        }
+
+    }
+
+    /** Pojo for get envoy keys response */
+    public static class GetEnvoyKeysResponse {
+
+        public String envoy_client_id;
+        public String envoy_client_secret;
 
     }
 
