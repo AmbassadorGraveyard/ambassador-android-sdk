@@ -205,7 +205,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         user.refresh();
         user.setFacebookAccessToken(null);
         user.setTwitterAccessToken(null);
-        user.setLinkedInAccessToken(null);
         campaign.refresh();
     }
 
