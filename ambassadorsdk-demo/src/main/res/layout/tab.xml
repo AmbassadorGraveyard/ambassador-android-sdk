@@ -16,7 +16,8 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/tvTitle"
             android:adjustViewBounds="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:padding="2dp"/>
 
         <TextView
             android:id="@+id/tvTitle"
