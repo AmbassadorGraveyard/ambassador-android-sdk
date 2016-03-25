@@ -116,7 +116,7 @@ public final class MainActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(int position) {
             adapter.getItem(position).onResume();
-            setToolbarTitle(Html.fromHtml("<small><b>" + adapter.getTitle(position) + "</b></small>"));
+            setToolbarTitle(Html.fromHtml("<small>" + adapter.getTitle(position) + "</small>"));
         }
 
         @Override

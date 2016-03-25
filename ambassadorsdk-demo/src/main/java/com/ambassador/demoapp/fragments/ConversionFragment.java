@@ -10,18 +10,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.MainActivity;
 import com.ambassador.demoapp.R;
 
-import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public final class ConversionFragment extends Fragment {
-
-    @Bind(R.id.btnBuy) protected Button btnBuy;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,8 +30,6 @@ public final class ConversionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_conversion, container, false);
         ButterKnife.bind(this, view);
-
-        btnBuy.setOnClickListener(btnBuyOnClickListener);
 
         return view;
     }
