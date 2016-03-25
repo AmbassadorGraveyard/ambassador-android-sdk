@@ -24,10 +24,10 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
-import com.ambassador.demoapp.fragments.LoginFragment;
+import com.ambassador.demoapp.fragments.ConversionFragment;
+import com.ambassador.demoapp.fragments.IdentifyFragment;
 import com.ambassador.demoapp.fragments.ReferFragment;
-import com.ambassador.demoapp.fragments.SignupFragment;
-import com.ambassador.demoapp.fragments.StoreFragment;
+import com.ambassador.demoapp.fragments.SettingsFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -142,11 +142,11 @@ public final class MainActivity extends AppCompatActivity {
             String rafTitle = getResources().getDisplayMetrics().densityDpi < 300 ? "Referrals" : "Refer a Friend";
             tabs[0] = new TabModel(rafTitle, R.drawable.ic_raf, new ReferFragment())
                     .setContentDescription("referTab");
-            tabs[1] = new TabModel("Identify", R.drawable.ic_identify, new LoginFragment())
+            tabs[1] = new TabModel("Identify", R.drawable.ic_identify, new IdentifyFragment())
                     .setContentDescription("loginTab");
-            tabs[2] = new TabModel("Conversion", R.drawable.ic_conversions, new StoreFragment())
+            tabs[2] = new TabModel("Conversion", R.drawable.ic_conversions, new ConversionFragment())
                     .setContentDescription("storeTab");
-            tabs[3] = new TabModel("Settings", R.drawable.ic_settings, new SignupFragment())
+            tabs[3] = new TabModel("Settings", R.drawable.ic_settings, new SettingsFragment())
                     .setContentDescription("signupTab");
         }
         

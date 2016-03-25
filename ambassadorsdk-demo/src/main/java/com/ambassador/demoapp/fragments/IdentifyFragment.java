@@ -21,7 +21,7 @@ import com.ambassador.demoapp.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class LoginFragment extends Fragment {
+public final class IdentifyFragment extends Fragment {
 
     @Bind(R.id.etEmail)     protected EditText  etEmail;
     @Bind(R.id.btnIdentify) protected Button    btnIdentify;
@@ -35,7 +35,7 @@ public final class LoginFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_identify, container, false);
         ButterKnife.bind(this, view);
 
         btnIdentify.setOnClickListener(btnIdentifyOnClickListener);
