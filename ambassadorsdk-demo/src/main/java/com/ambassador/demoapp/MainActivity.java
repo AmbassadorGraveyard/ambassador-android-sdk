@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -59,7 +60,7 @@ public final class MainActivity extends AppCompatActivity {
             }
         }
 
-        setTitle(Html.fromHtml("<small>Ambassador Demo</small>"));
+        setTitle(Html.fromHtml("<small><b>" + adapter.getTitle(0) + "</b></small>"));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
@@ -115,6 +116,7 @@ public final class MainActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(int position) {
             adapter.getItem(position).onResume();
+            setToolbarTitle(Html.fromHtml("<small><b>" + adapter.getTitle(position) + "</b></small>"));
         }
 
         @Override
@@ -123,6 +125,13 @@ public final class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void setToolbarTitle(Spanned title) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
+    }
+
     private final class TabFragmentPagerAdapter extends FragmentPagerAdapter {
 
         private TabModel[] tabs;
@@ -130,7 +139,7 @@ public final class MainActivity extends AppCompatActivity {
         public TabFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             tabs = new TabModel[4];
-            tabs[0] = new TabModel("Login", R.drawable.ic_login, new LoginFragment())
+            tabs[0] = new TabModel("Identify", R.drawable.ic_identify, new LoginFragment())
                     .setContentDescription("loginTab");
             tabs[1] = new TabModel("Sign Up", R.drawable.ic_signup, new SignupFragment())
                     .setContentDescription("signupTab");
@@ -169,6 +178,10 @@ public final class MainActivity extends AppCompatActivity {
         @Nullable
         public String getContentDescription(int position) {
             return tabs[position].getContentDescription();
+        }
+
+        public String getTitle(int position) {
+            return tabs[position].getTitle();
         }
 
         private final class TabModel {

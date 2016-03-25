@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="tabBackgroundColor">#454f5b</color>
-    <color name="actionBarColor">#2865a7</color>
+    <color name="tabBackgroundColor">#25313f</color>
+    <color name="actionBarColor">@color/primary</color>
+    <color name="primary">#4198d1</color>
     <color name="etHint">#e6e6e6</color>
 </resources>
