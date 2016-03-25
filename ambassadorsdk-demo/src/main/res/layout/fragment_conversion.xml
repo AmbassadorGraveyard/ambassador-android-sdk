@@ -44,6 +44,21 @@
         android:textColor="#9097a1"
         android:textSize="13sp" />
 
+    <TextView
+        android:id="@+id/tvSubMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="9dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/conversion_message_text_2"
+        android:textAlignment="center"
+        android:textColor="#9097a1"
+        android:textSize="9sp" />
+
     <EditText
         android:id="@+id/etEmail"
         android:layout_width="match_parent"
@@ -75,7 +90,7 @@
         android:background="@drawable/et_only"
         android:fontFamily="sans-serif"
         android:hint="Revenue Amount"
-        android:inputType="textEmailAddress"
+        android:inputType="numberDecimal"
         android:paddingBottom="12dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -95,7 +110,7 @@
         android:background="@drawable/et_only"
         android:fontFamily="sans-serif"
         android:hint="Campaign ID"
-        android:inputType="textEmailAddress"
+        android:inputType="number"
         android:paddingBottom="12dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
