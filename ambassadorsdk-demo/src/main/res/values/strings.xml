@@ -4,4 +4,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="identify_title_text">Identify</string>
+    <string name="identify_message_text">Use this method below to identify your users. Enter an email below to see how this works.</string>
+
 </resources>

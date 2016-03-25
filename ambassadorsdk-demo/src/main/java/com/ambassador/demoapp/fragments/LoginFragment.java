@@ -24,8 +24,7 @@ import butterknife.ButterKnife;
 public final class LoginFragment extends Fragment {
 
     @Bind(R.id.etEmail)     protected EditText  etEmail;
-    @Bind(R.id.etPassword)  protected EditText  etPassword;
-    @Bind(R.id.btnLogin)    protected Button    btnLogin;
+    @Bind(R.id.btnIdentify) protected Button    btnIdentify;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,7 +38,7 @@ public final class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this, view);
 
-        btnLogin.setOnClickListener(btnLoginOnClickListener);
+        btnIdentify.setOnClickListener(btnIdentifyOnClickListener);
         view.findViewById(R.id.ivFlags).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -48,7 +47,7 @@ public final class LoginFragment extends Fragment {
             }
         });
 
-        btnLogin.setOnLongClickListener(new View.OnLongClickListener() {
+        btnIdentify.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 Intent data = new Intent();
@@ -68,10 +67,10 @@ public final class LoginFragment extends Fragment {
         closeSoftKeyboard();
     }
 
-    protected View.OnClickListener btnLoginOnClickListener = new View.OnClickListener() {
+    protected View.OnClickListener btnIdentifyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (etEmail.getText().length() != 0 && etPassword.getText().length() != 0) {
+            if (etEmail.getText().length() != 0) {
                 String email = etEmail.getText().toString();
                 Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
                 Demo.get().identify(email);
