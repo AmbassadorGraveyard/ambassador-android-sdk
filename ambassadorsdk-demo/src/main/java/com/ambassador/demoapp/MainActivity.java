@@ -144,9 +144,9 @@ public final class MainActivity extends AppCompatActivity {
                     .setContentDescription("referTab");
             tabs[1] = new TabModel("Identify", R.drawable.ic_identify, new LoginFragment())
                     .setContentDescription("loginTab");
-            tabs[2] = new TabModel("Buy Now", R.drawable.ic_buy, new StoreFragment())
+            tabs[2] = new TabModel("Conversion", R.drawable.ic_conversions, new StoreFragment())
                     .setContentDescription("storeTab");
-            tabs[3] = new TabModel("Sign Up", R.drawable.ic_signup, new SignupFragment())
+            tabs[3] = new TabModel("Settings", R.drawable.ic_settings, new SignupFragment())
                     .setContentDescription("signupTab");
         }
         
