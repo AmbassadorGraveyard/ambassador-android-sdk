@@ -139,15 +139,15 @@ public final class MainActivity extends AppCompatActivity {
         public TabFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             tabs = new TabModel[4];
-            tabs[0] = new TabModel("Identify", R.drawable.ic_identify, new LoginFragment())
+            String rafTitle = getResources().getDisplayMetrics().densityDpi < 300 ? "Referrals" : "Refer a Friend";
+            tabs[0] = new TabModel(rafTitle, R.drawable.ic_raf, new ReferFragment())
+                    .setContentDescription("referTab");
+            tabs[1] = new TabModel("Identify", R.drawable.ic_identify, new LoginFragment())
                     .setContentDescription("loginTab");
-            tabs[1] = new TabModel("Sign Up", R.drawable.ic_signup, new SignupFragment())
-                    .setContentDescription("signupTab");
             tabs[2] = new TabModel("Buy Now", R.drawable.ic_buy, new StoreFragment())
                     .setContentDescription("storeTab");
-            String rafTitle = getResources().getDisplayMetrics().densityDpi < 300 ? "Referrals" : "Refer a Friend";
-            tabs[3] = new TabModel(rafTitle, R.drawable.ic_raf, new ReferFragment())
-                    .setContentDescription("referTab");
+            tabs[3] = new TabModel("Sign Up", R.drawable.ic_signup, new SignupFragment())
+                    .setContentDescription("signupTab");
         }
         
         @Override
