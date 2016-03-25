@@ -60,7 +60,7 @@ public final class MainActivity extends AppCompatActivity {
             }
         }
 
-        setTitle(Html.fromHtml("<small><b>" + adapter.getTitle(0) + "</b></small>"));
+        setTitle(Html.fromHtml("<small>" + adapter.getTitle(0) + "</small>"));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
@@ -144,7 +144,7 @@ public final class MainActivity extends AppCompatActivity {
                     .setContentDescription("referTab");
             tabs[1] = new TabModel("Identify", R.drawable.ic_identify, new IdentifyFragment())
                     .setContentDescription("loginTab");
-            tabs[2] = new TabModel("Conversion", R.drawable.ic_conversions, new ConversionFragment())
+            tabs[2] = new TabModel("Conversion", R.drawable.ic_conversion, new ConversionFragment())
                     .setContentDescription("storeTab");
             tabs[3] = new TabModel("Settings", R.drawable.ic_settings, new SettingsFragment())
                     .setContentDescription("signupTab");
