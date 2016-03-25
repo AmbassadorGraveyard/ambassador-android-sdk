@@ -10,5 +10,6 @@
 
     <string name="conversion_title_text">Conversion</string>
     <string name="conversion_message_text">Use this method to track conversion events and create commissions. Test out different options using the form below to see how this works.</string>
+    <string name="conversion_message_text_2">NOTE: You\'ll need to identify before a commission can be created.</string>
 
 </resources>
