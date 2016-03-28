@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.R;
@@ -68,6 +69,9 @@ public final class ConversionFragment extends Fragment {
                         .setCampaign(Integer.parseInt(campaignId))
                         .setIsApproved(isApproved ? 1 : 0)
                         .build();
+
+                AmbassadorSDK.registerConversion(conversionParameters, false);
+                Toast.makeText(getActivity(), "Conversion registered!", Toast.LENGTH_SHORT).show();
             }
         });
 
