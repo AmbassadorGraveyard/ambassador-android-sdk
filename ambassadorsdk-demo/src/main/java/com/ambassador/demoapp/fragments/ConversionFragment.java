@@ -8,12 +8,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.demoapp.R;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public final class ConversionFragment extends Fragment {
+
+    @Bind(R.id.etEmail) protected EditText etEmail;
+    @Bind(R.id.etRevenue) protected EditText etRevenue;
+    @Bind(R.id.etCampaign) protected EditText etCampaign;
+    @Bind(R.id.swApproved) protected Switch swApproved;
+    @Bind(R.id.btnConversion) protected Button btnConversion;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,7 +39,51 @@ public final class ConversionFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_conversion, container, false);
         ButterKnife.bind(this, view);
 
+        btnConversion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!validateEditTextContainsInput(etEmail, "email") ||
+                        !validateEditTextContainsInput(etRevenue, "revenue amount") ||
+                            !validateEditTextContainsInput(etCampaign, "campaign ID")) {
+
+                    return;
+
+                }
+
+                String email = etEmail.getText().toString();
+                String revenue = etRevenue.getText().toString();
+                String campaignId = etCampaign.getText().toString();
+                boolean isApproved = swApproved.isActivated();
+
+                ConversionParameters conversionParameters = new ConversionParameters.Builder()
+                        .setEmail(email)
+                        .setRevenue(Float.parseFloat(revenue))
+                        .setCampaign(Integer.parseInt(campaignId))
+                        .setIsApproved(isApproved ? 1 : 0)
+                        .build();
+            }
+        });
+
         return view;
+    }
+
+    protected boolean validateEditTextContainsInput(EditText editText, String name) {
+        boolean startsWithVowel = false;
+        for (String vowel : new String[]{"a", "e", "i", "o", "u"}) {
+            if (name.startsWith(vowel)) {
+                startsWithVowel = true;
+                break;
+            }
+        }
+
+        String ending = startsWithVowel ? "an" : "a";
+
+        if (editText.getText().length() == 0) {
+            Toast.makeText(getActivity(), String.format("Please enter %s %s!", ending, name), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     @Override
