@@ -77,6 +77,13 @@ public final class TestModule {
     @NonNull
     @Provides
     @Singleton
+    public ConversionUtility provideConversionUtility() {
+        return Mockito.mock(ConversionUtility.class);
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
     public Device provideDevice() {
         return Mockito.mock(Device.class);
     }
