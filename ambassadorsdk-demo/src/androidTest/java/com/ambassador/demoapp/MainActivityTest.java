@@ -355,7 +355,7 @@ public class MainActivityTest {
 
             @Override
             public void describeTo(Description description) {
-                // Not needed.
+                // Not needed. 
             }
 
         };
