@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
+import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.BuildConfig;
 import com.ambassador.demoapp.R;
 
@@ -23,7 +24,7 @@ import butterknife.ButterKnife;
 
 public final class IdentifyFragment extends Fragment {
 
-    @Bind(R.id.etEmail)     protected EditText  etEmail;
+    @Bind(R.id.etIdentify)  protected EditText  etEmail;
     @Bind(R.id.btnIdentify) protected Button    btnIdentify;
 
     @Override
@@ -43,6 +44,10 @@ public final class IdentifyFragment extends Fragment {
             public void onClick(View v) {
                 if (etEmail.getText().length() != 0) {
                     String email = etEmail.getText().toString();
+                    if (!(new Identify(email).isValidEmail())) {
+                        Toast.makeText(getActivity(), "Please enter a valid email!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     Toast.makeText(getActivity(), "Identifying!", Toast.LENGTH_LONG).show();
                     AmbassadorSDK.identify(email);
                     closeSoftKeyboard();

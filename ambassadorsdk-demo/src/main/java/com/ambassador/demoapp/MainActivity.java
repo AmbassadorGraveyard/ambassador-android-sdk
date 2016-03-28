@@ -167,7 +167,7 @@ public final class MainActivity extends AppCompatActivity {
             ImageView ivIcon = (ImageView) view.findViewById(R.id.ivIcon);
             ivIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, tabs[position].getDrawableId()));
 
-            TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+            TextView tvTitle = (TextView) view.findViewById(R.id.tvTabTitle);
             tvTitle.setText(tabs[position].getTitle());
 
             view.setContentDescription(getContentDescription(position));

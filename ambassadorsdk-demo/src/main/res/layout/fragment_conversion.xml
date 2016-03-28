@@ -66,7 +66,7 @@
             android:textSize="9sp" />
 
         <EditText
-            android:id="@+id/etEmail"
+            android:id="@+id/etConversionEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -86,7 +86,7 @@
             android:textSize="14sp" />
 
         <EditText
-            android:id="@+id/etRevenue"
+            android:id="@+id/etConversionRevenue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -106,7 +106,7 @@
             android:textSize="14sp" />
 
         <EditText
-            android:id="@+id/etCampaign"
+            android:id="@+id/etConversionCampaign"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -125,7 +125,6 @@
             android:textCursorDrawable="@drawable/et_cursor"
             android:textSize="14sp" />
 
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
@@ -140,7 +139,7 @@
                 android:text="Is approved" />
 
             <Switch
-                android:id="@+id/swApproved"
+                android:id="@+id/swConversionApproved"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true" />

@@ -23,10 +23,10 @@ import butterknife.ButterKnife;
 
 public final class ConversionFragment extends Fragment {
 
-    @Bind(R.id.etEmail) protected EditText etEmail;
-    @Bind(R.id.etRevenue) protected EditText etRevenue;
-    @Bind(R.id.etCampaign) protected EditText etCampaign;
-    @Bind(R.id.swApproved) protected Switch swApproved;
+    @Bind(R.id.etConversionEmail) protected EditText etEmail;
+    @Bind(R.id.etConversionRevenue) protected EditText etRevenue;
+    @Bind(R.id.etConversionCampaign) protected EditText etCampaign;
+    @Bind(R.id.swConversionApproved) protected Switch swApproved;
     @Bind(R.id.btnConversion) protected Button btnConversion;
 
     @Override
