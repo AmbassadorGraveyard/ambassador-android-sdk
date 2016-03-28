@@ -13,9 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.demoapp.BuildConfig;
-import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 
 import butterknife.Bind;
@@ -38,7 +38,20 @@ public final class IdentifyFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_identify, container, false);
         ButterKnife.bind(this, view);
 
-        btnIdentify.setOnClickListener(btnIdentifyOnClickListener);
+        btnIdentify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (etEmail.getText().length() != 0) {
+                    String email = etEmail.getText().toString();
+                    Toast.makeText(getActivity(), "Identifying!", Toast.LENGTH_LONG).show();
+                    AmbassadorSDK.identify(email);
+                    closeSoftKeyboard();
+                } else {
+                    Toast.makeText(getActivity(), "Please enter an email!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
         view.findViewById(R.id.ivFlags).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -67,20 +80,6 @@ public final class IdentifyFragment extends Fragment {
         closeSoftKeyboard();
     }
 
-    protected View.OnClickListener btnIdentifyOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (etEmail.getText().length() != 0) {
-                String email = etEmail.getText().toString();
-                Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
-                Demo.get().identify(email);
-                closeSoftKeyboard();
-            } else {
-                Toast.makeText(getActivity(), "Please enter an email and password!", Toast.LENGTH_LONG).show();
-            }
-        }
-    };
-    
     private void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
