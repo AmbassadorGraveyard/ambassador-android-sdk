@@ -11,14 +11,14 @@ import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
-import com.ambassador.ambassadorsdk.internal.activities.LinkedInLoginActivity;
-import com.ambassador.ambassadorsdk.internal.activities.TwitterLoginActivity;
+import com.ambassador.ambassadorsdk.internal.activities.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.notifications.InstanceIdListener;
@@ -32,8 +32,7 @@ import dagger.Provides;
 @Module(injects = {
         AmbassadorActivity.class,
         SocialShareDialog.class,
-        LinkedInLoginActivity.class,
-        TwitterLoginActivity.class,
+        SocialOAuthActivity.class,
         ContactSelectorActivity.class,
         ContactListAdapter.class,
         BulkShareHelper.class,
@@ -41,12 +40,12 @@ import dagger.Provides;
         RequestManager.class,
         AmbassadorSDK.class,
         AskNameDialog.class,
+        AskEmailDialog.class,
         IdentifyAugurSDK.class,
         PusherManager.class,
         PusherManager.Channel.class,
         InstallReceiver.class,
-        InstanceIdListener.class
-
+        InstanceIdListener.class,
 }, staticInjections = {
         AmbassadorSDK.class
 }, library = true)
