@@ -23,7 +23,6 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.injection.ForActivity;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
@@ -61,7 +60,19 @@ public final class SocialShareDialog extends Dialog {
     // endregion
 
     public enum SocialNetwork {
-        TWITTER, LINKEDIN
+        FACEBOOK("facebook"),
+        TWITTER("twitter"),
+        LINKEDIN("linkedin");
+
+        private String stringValue;
+        SocialNetwork(String toString) {
+            stringValue = toString;
+        }
+
+        @Override
+        public String toString() {
+            return stringValue;
+        }
     }
 
     public SocialShareDialog(@ForActivity Context context) {
@@ -84,6 +95,9 @@ public final class SocialShareDialog extends Dialog {
         configureViews();
 
         switch (socialNetwork) {
+            case FACEBOOK:
+                styleFacebook();
+                break;
             case TWITTER:
                 styleTwitter();
                 break;
@@ -122,6 +136,14 @@ public final class SocialShareDialog extends Dialog {
         });
     }
 
+    private void styleFacebook() {
+        tvHeaderText.setText(new StringResource(R.string.facebook_share_dialog_title).getValue());
+        tvHeaderText.setBackgroundColor(getContext().getResources().getColor(R.color.facebook_blue));
+        ivHeaderImg.setImageDrawable(getContext().getResources().getDrawable(R.drawable.facebook_icon));
+        tvSend.setText("Share");
+        btnSend.setText("Share");
+    }
+
     private void styleTwitter() {
         tvHeaderText.setText(new StringResource(R.string.twitter_share_dialog_title).getValue());
         tvHeaderText.setBackgroundColor(getContext().getResources().getColor(R.color.twitter_blue));
@@ -150,6 +172,9 @@ public final class SocialShareDialog extends Dialog {
         if (etMessage.getText().toString().isEmpty()) {
             String blankErrorText;
             switch (socialNetwork) {
+                case FACEBOOK:
+                    blankErrorText = new StringResource(R.string.blank_facebook).getValue();
+                    break;
                 case TWITTER:
                     blankErrorText = new StringResource(R.string.blank_twitter).getValue();
                     break;
@@ -164,15 +189,7 @@ public final class SocialShareDialog extends Dialog {
             etMessage.shake();
         } else {
             pbLoading.setVisibility(View.VISIBLE);
-            switch (socialNetwork) {
-                case TWITTER:
-                    requestManager.postToTwitter(etMessage.getText().toString(), twitterCompletion);
-                    break;
-                case LINKEDIN:
-                    LinkedInApi.LinkedInPostRequest request = new LinkedInApi.LinkedInPostRequest(etMessage.getText().toString());
-                    requestManager.postToLinkedIn(request, linkedInCompletion);
-                    break;
-            }
+            requestManager.shareWithEnvoy(socialNetwork.stringValue, etMessage.getText().toString(), requestCompletion);
         }
     }
 
@@ -213,7 +230,7 @@ public final class SocialShareDialog extends Dialog {
         }
     }
 
-    private RequestManager.RequestCompletion twitterCompletion = new RequestManager.RequestCompletion() {
+    private RequestManager.RequestCompletion requestCompletion = new RequestManager.RequestCompletion() {
         @Override
         public void onSuccess(Object successResponse) {
             getOwnerActivity().runOnUiThread(new Runnable() {
@@ -221,7 +238,25 @@ public final class SocialShareDialog extends Dialog {
                 public void run() {
                     pbLoading.setVisibility(View.GONE);
                     Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-                    requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.TWITTER);
+
+                    BulkShareHelper.SocialServiceTrackType trackType;
+                    switch(socialNetwork) {
+                        case FACEBOOK:
+                            trackType = BulkShareHelper.SocialServiceTrackType.FACEBOOK;
+                            break;
+                        case TWITTER:
+                            trackType = BulkShareHelper.SocialServiceTrackType.TWITTER;
+                            break;
+                        case LINKEDIN:
+                            trackType = BulkShareHelper.SocialServiceTrackType.LINKEDIN;
+                            break;
+                        default:
+                            onFailure(null);
+                            return;
+                    }
+
+                    requestManager.bulkShareTrack(trackType);
+
                     dismiss();
                     attemptNotifySuccess();
                 }
@@ -234,38 +269,10 @@ public final class SocialShareDialog extends Dialog {
                 @Override
                 public void run() {
                     pbLoading.setVisibility(View.GONE);
-                    if (((String) failureResponse).equals("auth")) {
-                        dismiss();
-                        attemptNotifyReauth();
-                    } else {
-                        Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
-                        attemptNotifyFailed();
-                    }
+                    Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
+                    attemptNotifyFailed();
                 }
             });
-        }
-    };
-
-    private RequestManager.RequestCompletion linkedInCompletion = new RequestManager.RequestCompletion() {
-        @Override
-        public void onSuccess(Object successResponse) {
-            pbLoading.setVisibility(View.GONE);
-            Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-            requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.LINKEDIN);
-            dismiss();
-            attemptNotifySuccess();
-        }
-
-        @Override
-        public void onFailure(Object failureResponse) {
-            pbLoading.setVisibility(View.GONE);
-            if (((String) failureResponse).contains("No authentication")) {
-                dismiss();
-                attemptNotifyReauth();
-            } else {
-                Toast.makeText(getOwnerActivity(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
-                attemptNotifyFailed();
-            }
         }
     };
 
@@ -295,12 +302,6 @@ public final class SocialShareDialog extends Dialog {
     private void attemptNotifyCancelled() {
         if (eventListener != null) {
             eventListener.postCancelled();
-        }
-    }
-
-    private void attemptNotifyReauth() {
-        if (eventListener != null) {
-            eventListener.needAuth();
         }
     }
 

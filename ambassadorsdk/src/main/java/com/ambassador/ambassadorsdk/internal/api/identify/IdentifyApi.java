@@ -70,12 +70,13 @@ public final class IdentifyApi {
      * @param auth the Ambassador universal token
      * @param request the request body as an IdentifyRequestBody object
      */
-    public void identifyRequest(String sessionId, String requestId, String uid, String auth, IdentifyRequestBody request) {
+    public void identifyRequest(String sessionId, String requestId, String uid, String auth, final IdentifyRequestBody request, final RequestManager.RequestCompletion requestCompletion) {
         identifyClient.identifyRequest(sessionId, requestId, uid, auth, uid, request, new Callback<IdentifyRequestResponse>() {
             @Override
             public void success(IdentifyRequestResponse identifyRequestResponse, Response response) {
                 // This should never happen, this request is not returning JSON so it hits the failure
                 Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.identifyRequest(...)");
+                requestCompletion.onSuccess(null);
             }
 
             @Override
@@ -83,9 +84,11 @@ public final class IdentifyApi {
                 if (new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     // successful
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.identifyRequest(...)");
+                    requestCompletion.onSuccess(null);
                 } else {
                     // unsuccessful
                     Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.identifyRequest(...)");
+                    requestCompletion.onFailure(null);
                 }
             }
         });
@@ -298,6 +301,48 @@ public final class IdentifyApi {
         return new BufferedReader(new InputStreamReader(is));
     }
 
+    /**
+     * Passes through to the identifyClient and handles the Retrofit callback and
+     * calling back to the RequestCompletion.
+     * @param uid the universalId identifier.
+     * @param auth the universalToken identifier.
+     * @param completion callback for request completion.
+     */
+    public void getCompanyInfo(String uid, String auth, final RequestManager.RequestCompletion completion) {
+        identifyClient.getCompanyInfo(uid, auth, new Callback<GetCompanyInfoResponse>() {
+            @Override
+            public void success(GetCompanyInfoResponse getCompanyInfoResponse, Response response) {
+                completion.onSuccess(getCompanyInfoResponse);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                completion.onFailure(null);
+            }
+        });
+    }
+
+    /**
+     * Gets the Envoy id and secret to do social OAuth stuff.
+     * @param uid the universalId identifier.
+     * @param auth the universalToken identifier.
+     * @param companyUid the id for the company on the backend.
+     * @param completion callback for request completion.
+     */
+    public void getEnvoyKeys(String uid, String auth, String companyUid, final RequestManager.RequestCompletion completion) {
+        identifyClient.getEnvoyKeys(uid, auth, companyUid, new Callback<GetEnvoyKeysResponse>() {
+            @Override
+            public void success(GetEnvoyKeysResponse getEnvoyKeysResponse, Response response) {
+                completion.onSuccess(getEnvoyKeysResponse);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                completion.onFailure(null);
+            }
+        });
+    }
+
     /** Pojo for identify post request body */
     public static class IdentifyRequestBody {
 
@@ -327,8 +372,10 @@ public final class IdentifyApi {
 
     }
 
-    /** */
+    /** Pojo for identify post request response */
     public static class IdentifyRequestResponse {
+
+
 
     }
 
@@ -415,6 +462,28 @@ public final class IdentifyApi {
         public String client_session_uid;
         public String expires_at;
         public String channel_name;
+
+    }
+
+    /** Pojo for get company info response */
+    public static class GetCompanyInfoResponse {
+
+        public Result[] results;
+
+        public static class Result {
+
+            public String uid;
+            public String url;
+
+        }
+
+    }
+
+    /** Pojo for get envoy keys response */
+    public static class GetEnvoyKeysResponse {
+
+        public String envoy_client_id;
+        public String envoy_client_secret;
 
     }
 

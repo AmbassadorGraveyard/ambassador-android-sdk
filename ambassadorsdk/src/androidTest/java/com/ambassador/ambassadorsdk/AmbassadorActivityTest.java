@@ -19,9 +19,9 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.api.linkedin.LinkedInApi;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
@@ -36,6 +36,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -64,6 +65,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
@@ -136,7 +138,7 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-        .when(requestManager).identifyRequest();
+        .when(requestManager).identifyRequest(Mockito.any(RequestManager.RequestCompletion.class));
 
         //if the app has a channel and it's not expired but it's not currently connected, it will connectAndSubscribe to the existing channel
         //mock the connectAndSubscribe call, bypass identify in the callback, instead send the intent which will call tryAndSetURL
@@ -446,17 +448,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
-        when(auth.getLinkedInToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
-
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] object = invocation.getArguments();
-                Auth.NullifyCompleteListener completion = (Auth.NullifyCompleteListener) object[0];
-                completion.nullifyComplete();
-                return null;
-            }
-        }).when(auth).nullifyLinkedInIfInvalid(any(Auth.NullifyCompleteListener.class));
+        when(user.getLinkedInAccessToken()).thenReturn("AQV6mLXj7R7mEh88l_wPxg8x7V4ExwgQVFW0tcYHBoxaEP6KpzENTFQl-K1h0_V05pBNyTZlo0KDNQm3ZLPf62DjZxwfkLNhjeGLobVQUaMAseP8jdIQW_kKpMy7uIxr4T8PjrK8QP7XBsy3ibeuV2yhLrOJrOFA6LarWBcm0YGArhY1Wx8");
 
         onView(withText("LINKEDIN")).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
@@ -469,7 +461,7 @@ public class AmbassadorActivityTest {
         onView(withText("LinkedIn Post")).check(matches(isDisplayed()));
         Espresso.closeSoftKeyboard();
         pressBack();
-        verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).shareWithEnvoy(eq("linkedin"), anyString(), any(RequestManager.RequestCompletion.class));
 
         //ensure dialog fields not visible now that we've backed out
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -479,14 +471,14 @@ public class AmbassadorActivityTest {
         //enter blank text and make sure dialog is still visible
         onView(withId(R.id.etMessage)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.btnSend)).perform(click());
-        verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).shareWithEnvoy(eq("linkedin"), anyString(), any(RequestManager.RequestCompletion.class));
 
         //since text was cleared, ensure dialog is present, then click "send anyway"
         onView(withText("Hold on!")).check(matches(isDisplayed()));
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         pressBack();
-        verify(requestManager, never()).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).shareWithEnvoy(eq("linkedin"), anyString(), any(RequestManager.RequestCompletion.class));
 
         //test sending a successful (mocked) post
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(2).perform(click());
@@ -515,7 +507,8 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-        .when(requestManager).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
+        .when(requestManager).shareWithEnvoy(eq("linkedin"), anyString(), any(RequestManager.RequestCompletion.class));
+
 
         onView(withId(R.id.btnSend)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -533,7 +526,8 @@ public class AmbassadorActivityTest {
         //failure shouldn't dismiss the dialog
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.pbLoading)).check(matches(not(isDisplayed())));
-        verify(requestManager, times(2)).postToLinkedIn(any(LinkedInApi.LinkedInPostRequest.class), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, times(2)).shareWithEnvoy(eq("linkedin"), anyString(), any(RequestManager.RequestCompletion.class));
+
 
         onView(withId(R.id.btnCancel)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -541,37 +535,21 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
-        //TODO: testing toast (didn't work)
-        //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
+//        //TODO: testing toast (didn't work)
+//        //onView(withText("Unable to post, please try again!")).inRoot(withDecorView(not(is(mActivityTestIntentRule.getActivity().getWindow().getDecorView())))).check(matches(isDisplayed()));
     }
 
     @Test
     public void testTwitter() throws Exception {
         //TODO: finish the test for twitterloginactivity once we can type into webviews, strategy outlined below
-        //mock token as null so login screen gets presented
-        //when(ambassadorConfig.getTwitterAccessToken()).thenReturn(null);
-
-        //when twitterLoginRequest gets called, return a mock of the request object
-/*        doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                Object[] object = invocation.getArguments();
-                RequestManager.RequestCompletion completion = (RequestManager.RequestCompletion)object[0];
-                //return a mock of the request object
-                //completion.onSuccess("success");
-                return null;
-            }
-        })
-        .when(requestManager).twitterLoginRequest(any(RequestManager.RequestCompletion.class));*/
-
-        //then, mock the response of requestToken.getAuthenticationUrl() so webview comes up
 
         //start recording fired Intents
-        //Intents.init();
+        Intents.init();
         //click twitter icon
-        //onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
-        //intended(hasComponent(TwitterLoginActivity.class.getName()));
+        onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
+        intended(hasComponent(SocialOAuthActivity.class.getName()));
         //stop recording Intents
-        //Intents.release();
+        Intents.release();
 
         //TODO: Espresso Web API to test WebViews not ready for prime time - too much trouble getting this to work - will come back
         //TODO: to this later to attempt to enter text into WebView fields to authenticate
@@ -583,17 +561,7 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.llParent)).check(matches(isDisplayed()));
         onView(withId(R.id.gvSocialGrid)).check(matches(isDisplayed()));
 
-        when(auth.getTwitterToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
-
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object[] object = invocation.getArguments();
-                Auth.NullifyCompleteListener completion = (Auth.NullifyCompleteListener) object[0];
-                completion.nullifyComplete();
-                return null;
-            }
-        }).when(auth).nullifyTwitterIfInvalid(any(Auth.NullifyCompleteListener.class));
+        when(user.getTwitterAccessToken()).thenReturn("2925003771-TBomtq36uThf6EqTKggITNHqOpl6DDyGMb5hLvz");
 
         onView(withText("TWITTER")).perform(click());
 
@@ -603,11 +571,12 @@ public class AmbassadorActivityTest {
         onView(withId(R.id.ivHeaderImg)).check(matches(isDisplayed()));
         onView(withId(R.id.btnCancel)).check(matches(isDisplayed()));
         onView(withId(R.id.btnSend)).check(matches(isDisplayed()));
-        onView(withId(R.id.pbLoading)).check(matches(not(isDisplayed())));onView(withText("Twitter Post")).check(matches(isDisplayed()));
+        onView(withId(R.id.pbLoading)).check(matches(not(isDisplayed())));
+        onView(withText("Twitter Post")).check(matches(isDisplayed()));
 
         Espresso.closeSoftKeyboard();
         pressBack();
-        verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).shareWithEnvoy(Mockito.eq("twitter"), Mockito.anyString(), Mockito.any(RequestManager.RequestCompletion.class));
 
         //ensure dialog fields not visible now that we've backed out
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -617,7 +586,7 @@ public class AmbassadorActivityTest {
         //enter blank text and make sure dialog is still visible
         onView(withId(R.id.etMessage)).perform(clearText(), closeSoftKeyboard());
         onView(withId(R.id.btnSend)).perform(click());
-        verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).shareWithEnvoy(eq("Twitter"), anyString(), any(RequestManager.RequestCompletion.class));
 
         //since text was cleared, ensure dialog is present, then click "send anyway"
         onView(withText("Hold on!")).check(matches(isDisplayed()));
@@ -627,7 +596,7 @@ public class AmbassadorActivityTest {
         onView(withId(android.R.id.button1)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         pressBack();
-        verify(requestManager, never()).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, never()).shareWithEnvoy(eq("Twitter"), anyString(), any(RequestManager.RequestCompletion.class));
 
         //test sending a successful (mocked) tweet
         onData(anything()).inAdapterView(withId(R.id.gvSocialGrid)).atPosition(1).perform(click());
@@ -656,7 +625,7 @@ public class AmbassadorActivityTest {
                 return null;
             }
         })
-        .when(requestManager).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
+        .when(requestManager).shareWithEnvoy(Mockito.eq("Twitter"), anyString(), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnSend)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
@@ -676,7 +645,7 @@ public class AmbassadorActivityTest {
         //failure shouldn't dismiss the dialog
         onView(withId(R.id.dialog_social_share_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.pbLoading)).check(matches(not(isDisplayed())));
-        verify(requestManager, times(2)).postToTwitter(anyString(), any(RequestManager.RequestCompletion.class));
+        verify(requestManager, times(2)).shareWithEnvoy(eq("Twitter"), anyString(), any(RequestManager.RequestCompletion.class));
 
         onView(withId(R.id.btnCancel)).perform(click());
         onView(withId(R.id.dialog_social_share_layout)).check(ViewAssertions.doesNotExist());
