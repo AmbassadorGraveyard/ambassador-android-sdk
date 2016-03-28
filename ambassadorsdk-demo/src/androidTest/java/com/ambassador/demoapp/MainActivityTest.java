@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -110,6 +111,9 @@ public class MainActivityTest {
         onView(withId(R.id.etIdentify)).perform(ViewActions.click());
         onView(withId(R.id.etIdentify)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
 
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
         // Click the identify button.
         onView(withId(R.id.btnIdentify)).perform(ViewActions.click());
 
@@ -125,6 +129,9 @@ public class MainActivityTest {
         // Focus identify input and type a valid email address.
         onView(withId(R.id.etIdentify)).perform(ViewActions.click());
         onView(withId(R.id.etIdentify)).perform(ViewActions.typeTextIntoFocusedView("jake$$"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
 
         // Click the submit button.
         onView(withId(R.id.btnIdentify)).perform(ViewActions.click());
@@ -156,13 +163,22 @@ public class MainActivityTest {
         onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
         onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
 
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
         // Focus revenue input and type a valid currency amount.
         onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
         onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
         // Focus campaign ID input and type a valid campaign ID.
         onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
         onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
 
         // Click the submit button.
         onView(withId(R.id.btnConversion)).perform(ViewActions.click());
@@ -191,13 +207,22 @@ public class MainActivityTest {
         onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
         onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
 
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
         // Focus revenue input and type a valid currency amount.
         onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
         onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
         // Focus campaign ID input and type a valid campaign ID.
         onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
         onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
 
         // Activate is approved switch.
         onView(withId(R.id.swConversionApproved)).perform(ViewActions.click());
@@ -229,9 +254,15 @@ public class MainActivityTest {
         onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
         onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
         // Focus campaign ID input and type a valid campaign ID.
         onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
         onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
 
         // Click the submit button.
         onView(withId(R.id.btnConversion)).perform(ViewActions.click());
@@ -246,9 +277,15 @@ public class MainActivityTest {
         onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
         onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
 
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
         // Focus campaign ID input and type a valid campaign ID.
         onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
         onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
 
         // Click the submit button.
         onView(withId(R.id.btnConversion)).perform(ViewActions.click());
@@ -266,9 +303,15 @@ public class MainActivityTest {
         onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
         onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
 
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
         // Focus revenue input and type a valid currency amount.
         onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
         onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
 
         // Click the submit button.
         onView(withId(R.id.btnConversion)).perform(ViewActions.click());
