@@ -269,31 +269,6 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testsRafUnidentifiedFails() throws Exception {
-        // ARRANGE
-        UiObject shoeRaf = getUi("shoeRaf");
-        UiObject referFragment = getUi("referFragment");
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                for (PusherManager.PusherListener callback : pusherManager.getPusherListeners()) {
-                    if (callback != null) callback.connectionFailed();
-                }
-                return null;
-            }
-        }).when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
-
-        // ACT
-        referTab.click();
-        shoeRaf.clickAndWaitForNewWindow();
-        Thread.sleep(1000); // Give it time to close with error
-
-        // ASSERT
-        Assert.assertTrue(referFragment.exists());
-        Assert.assertFalse(shortCodeEditText.exists());
-    }
-
-    @Test
     public void testsRafNoMatchingCampaignIdsFails() throws Exception {
         // ARRANGE
         UiObject shoeRaf = getUi("shoeRaf");
