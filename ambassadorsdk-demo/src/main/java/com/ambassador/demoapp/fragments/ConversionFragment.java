@@ -14,6 +14,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.R;
 
 import butterknife.Bind;
@@ -51,7 +52,13 @@ public final class ConversionFragment extends Fragment {
                 }
 
                 String email = etEmail.getText().toString();
+                if (!(new Identify(email).isValidEmail())) {
+                    Toast.makeText(getActivity(), "Please enter a valid email address!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 String revenue = etRevenue.getText().toString();
+
                 String campaignId = etCampaign.getText().toString();
                 boolean isApproved = swApproved.isActivated();
 
