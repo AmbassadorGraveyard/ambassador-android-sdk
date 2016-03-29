@@ -15,6 +15,7 @@ public class User {
     protected String universalId;
     protected String universalToken;
     protected String sdkToken;
+    protected String avatarUrl;
 
     public User() {
 
@@ -32,10 +33,15 @@ public class User {
         return sdkToken;
     }
 
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
     public void load(LoginResponse loginResponse) {
         universalId = loginResponse.company.universal_id;
         universalToken = loginResponse.company.universal_token;
         sdkToken = loginResponse.company.sdk_token;
+        avatarUrl = loginResponse.company.avatar_url;
         save();
     }
 
