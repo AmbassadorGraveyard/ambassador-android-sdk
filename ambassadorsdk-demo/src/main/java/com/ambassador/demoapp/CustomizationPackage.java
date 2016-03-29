@@ -174,7 +174,7 @@ public class CustomizationPackage {
      * Class containing logic to convert a RAFOptions object into XML usable for creating RAFOptions
      * in the 3rd party app.
      */
-    protected class OptionXmlTranscriber {
+    protected static class OptionXmlTranscriber {
 
         /** The RAFOptions object to transcribe from. */
         protected RAFOptions rafOptions;
