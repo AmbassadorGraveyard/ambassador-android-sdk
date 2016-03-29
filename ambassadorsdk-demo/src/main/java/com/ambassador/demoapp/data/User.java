@@ -16,6 +16,7 @@ public class User {
     protected String universalToken;
     protected String sdkToken;
     protected String avatarUrl;
+    protected String name;
 
     public User() {
 
@@ -37,11 +38,16 @@ public class User {
         return avatarUrl;
     }
 
+    public String getName() {
+        return name;
+    }
+
     public void load(LoginResponse loginResponse) {
         universalId = loginResponse.company.universal_id;
         universalToken = loginResponse.company.universal_token;
         sdkToken = loginResponse.company.sdk_token;
         avatarUrl = loginResponse.company.avatar_url;
+        name = loginResponse.company.first_name + " " + loginResponse.company.last_name;
         save();
     }
 
