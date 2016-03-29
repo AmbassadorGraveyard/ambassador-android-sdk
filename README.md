@@ -232,12 +232,6 @@ The **assets** folder should be next to the **java** folder and the **res** insi
     <color name="contactNoPhotoAvailableBackground">@color/ambassador_blue</color>
     <!-- /CONTACTS ACTIVITY -->
 
-    <!-- LINKEDIN LOGIN -->
-    <color name="linkedinToolBar">@color/linkedin_blue</color>
-    <color name="linkedinToolBarText">@android:color/white</color>
-    <color name="linkedinToolBarArrow">@android:color/white</color>
-    <!-- /LINKEDIN LOGIN -->
-
 </resources>
 ```
 
