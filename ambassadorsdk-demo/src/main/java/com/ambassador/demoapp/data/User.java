@@ -56,7 +56,8 @@ public class User {
     }
 
     public static boolean isStored() {
-        return instance != null && (instance.universalId != null && instance.sdkToken != null);
+        instance = get();
+        return (instance.universalId != null && instance.sdkToken != null);
     }
 
     @NonNull
