@@ -280,7 +280,7 @@ public class CustomizationPackage {
         private String getAttributeString(String tag, String name, Typeface value) {
             switch (tag) {
                 case "string":
-                    return getAttributeString(tag, name, "sans-serif-light");
+                    return getAttributeString(tag, name, "sans-serif");
                 default:
                     return "";
             }
