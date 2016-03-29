@@ -14,7 +14,7 @@ import com.google.gson.Gson;
  * Stores design options set by the 3rd party developer. Used throughout codebase. Can be instantiated
  * directly using RAFOptions.Builder or indirectly with an XML file (see RAFOptionsFactory).
  */
-public final class RAFOptions {
+public class RAFOptions {
 
     /** The RAFOptions instantiation inflated with options from 3rd party and used throughout code. */
     private static RAFOptions instance;
