@@ -14,8 +14,8 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,7 +39,7 @@ public class LoginActivity extends Activity {
     @Bind(R.id.btnLogin) protected Button btnLogin;
     @Bind(R.id.tvNoAccount) protected TextView tvNoAccount;
 
-    @Bind(R.id.rlLoading) protected RelativeLayout rlLoading;
+    @Bind(R.id.rlLoading) protected FrameLayout rlLoading;
     @Bind(R.id.pbLoading) protected ProgressBar pbLoading;
 
     @Override
