@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView;
 import com.ambassador.demoapp.R;
@@ -17,6 +18,7 @@ import butterknife.ButterKnife;
 public final class SettingsFragment extends Fragment {
 
     @Bind(R.id.ivDisplayPicture) protected NetworkCircleImageView ivDisplayPicture;
+    @Bind(R.id.tvSettingsName) protected TextView tvSettingsName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public final class SettingsFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         ivDisplayPicture.load(User.get().getAvatarUrl());
+        tvSettingsName.setText(User.get().getName());
 
         return view;
     }
