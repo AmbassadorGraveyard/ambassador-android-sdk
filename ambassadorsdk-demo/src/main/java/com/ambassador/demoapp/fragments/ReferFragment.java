@@ -64,7 +64,7 @@ public final class ReferFragment extends Fragment {
                 Demo.get().presentRAF(getActivity(), path);
             }
         });
-        
+
         lvRafs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -92,7 +92,7 @@ public final class ReferFragment extends Fragment {
 
                     getActivity().startActivity(intent);
                 }
-                return false;
+                return true;
             }
         });
 
