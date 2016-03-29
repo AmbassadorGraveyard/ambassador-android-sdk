@@ -78,7 +78,7 @@ public final class ReferFragment extends Fragment {
                 if (rafOptions != null) {
                     String filename = new CustomizationPackage(getActivity())
                             .add("raf.xml", rafOptions)
-                            .add("README.txt", "AmbassadorSDK 1.1.4\nTest")
+                            .add("README.txt", "AmbassadorSDK 1.1.4\nTest", CustomizationPackage.Directory.FILES)
                             .zip();
                     File file = new File(getContext().getFilesDir(), filename);
                     Uri uri = FileProvider.getUriForFile(getContext(), "com.ambassador.fileprovider", file);

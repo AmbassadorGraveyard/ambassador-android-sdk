@@ -23,11 +23,21 @@ import java.util.zip.ZipOutputStream;
  */
 public class CustomizationPackage {
 
+    /**
+     * Enum describing the directory in the zip to place a file.
+     */
+    public enum Directory {
+        FILES, ASSETS
+    }
+
     /** A context reference passed into the class constructor used for saving and reading files properly. */
     protected Context context;
 
-    /** List of String path+file that need to be packaged into the zip. */
+    /** List of String path+file that need to be packaged into the zip as the base directory. */
     protected List<String> files;
+
+    /** List of String path+file that need to be packaged into the zip in assets/ */
+    protected List<String> assets;
 
     /**
      * Default constructor.
@@ -36,6 +46,7 @@ public class CustomizationPackage {
     public CustomizationPackage(@NonNull Context context) {
         this.context = context;
         this.files = new ArrayList<>();
+        this.assets = new ArrayList<>();
     }
 
      /**
@@ -46,7 +57,7 @@ public class CustomizationPackage {
      * @return this CustomizationPackage, useful for chaining methods.
      */
     @NonNull
-    public CustomizationPackage add(@NonNull String pathWithName, @NonNull String content) {
+    public CustomizationPackage add(@NonNull String pathWithName, @NonNull String content, @NonNull Directory directory) {
         FileOutputStream outputStream;
         try {
             outputStream = context.openFileOutput(pathWithName, Context.MODE_PRIVATE);
@@ -56,7 +67,16 @@ public class CustomizationPackage {
             e.printStackTrace();
         }
 
-        files.add(pathWithName);
+        switch (directory) {
+            case FILES:
+                files.add(pathWithName);
+                break;
+            case ASSETS:
+                assets.add(pathWithName);
+                break;
+            default:
+                break;
+        }
         return this;
     }
 
@@ -71,11 +91,11 @@ public class CustomizationPackage {
         String logo = rafOptions.getLogo();
         if (logo != null) {
             if (copyFromAssetsToInternal(logo)) {
-                files.add(logo);
+                assets.add(logo);
             }
         }
 
-        return add(pathWithName, new OptionXmlTranscriber(rafOptions).transcribe());
+        return add(pathWithName, new OptionXmlTranscriber(rafOptions).transcribe(), Directory.ASSETS);
     }
 
     /**
@@ -103,6 +123,21 @@ public class CustomizationPackage {
                 }
                 origin.close();
             }
+
+            for (int i = 0; i < assets.size(); i++) {
+                FileInputStream fi = context.openFileInput(assets.get(i));
+                origin = new BufferedInputStream(fi, 1024);
+
+                ZipEntry entry = new ZipEntry("assets/" + assets.get(i).substring(assets.get(i).lastIndexOf("/") + 1));
+                out.putNextEntry(entry);
+                int count;
+
+                while ((count = origin.read(data, 0, 1024)) != -1) {
+                    out.write(data, 0, count);
+                }
+                origin.close();
+            }
+
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
