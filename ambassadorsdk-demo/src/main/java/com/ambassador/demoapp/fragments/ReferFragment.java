@@ -76,9 +76,15 @@ public final class ReferFragment extends Fragment {
                     Toast.makeText(getActivity(), "Didn't work!", Toast.LENGTH_SHORT).show();
                 }
                 if (rafOptions != null) {
+                    StringBuilder readmeBuilder = new StringBuilder();
+                    readmeBuilder.append("AmbassadorSDK 1.1.4\n");
+                    readmeBuilder.append("Add the items from the assets folder to your applications local assets folder.\n");
+                    readmeBuilder.append("Use the following code snippet to present this refer a friend integration:\n");
+                    readmeBuilder.append("AmbassadorSDK.presentRAF(context, campaignId, \"raf.xml\");\n");
+
                     String filename = new CustomizationPackage(getActivity())
                             .add("raf.xml", rafOptions)
-                            .add("README.txt", "AmbassadorSDK 1.1.4\nTest", CustomizationPackage.Directory.FILES)
+                            .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
                             .zip();
                     File file = new File(getContext().getFilesDir(), filename);
                     Uri uri = FileProvider.getUriForFile(getContext(), "com.ambassador.fileprovider", file);
