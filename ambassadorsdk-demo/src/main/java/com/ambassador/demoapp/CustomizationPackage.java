@@ -16,8 +16,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * Handles custom RAF option packaging in the demo app for sharing. Class can be used to add files
- * at a given path + filename and then zip it.
+ * Handles custom packaging in the demo app for sharing integrations. Class can be used to add files
+ * at a given path + filename and then zip it. Has special logic for stuff like RAFOptions and ConversionParameters.
  */
 public class CustomizationPackage {
 
@@ -36,7 +36,7 @@ public class CustomizationPackage {
         this.files = new ArrayList<>();
     }
 
-    /**
+     /**
      * Adds a plaintext file to the package with a passed in path + name and the String content. Saves
      * it and will later be packaged into the zip.
      * @param pathWithName the String relative path inside assets with the filename on the end.
@@ -182,12 +182,6 @@ public class CustomizationPackage {
             stringBuilder.append(getAttributeString("color", "contactsSearchBar", rafOptions.getContactsSearchBarColor()));
             stringBuilder.append(getAttributeString("color", "contactsSearchIcon", rafOptions.getContactsSearchIconColor()));
             stringBuilder.append(getAttributeString("color", "contactNoPhotoAvailableBackground", rafOptions.getContactNoPhotoAvailableBackgroundColor()));
-            stringBuilder.append(getAttributeString("color", "linkedinToolBar", rafOptions.getLinkedInToolbarColor()));
-            stringBuilder.append(getAttributeString("color", "linkedinToolBarText", rafOptions.getLinkedInToolbarTextColor()));
-            stringBuilder.append(getAttributeString("color", "linkedinToolBarArrow", rafOptions.getLinkedInToolbarArrowColor()));
-            stringBuilder.append(getAttributeString("color", "twitterToolBar", rafOptions.getTwitterToolbarColor()));
-            stringBuilder.append(getAttributeString("color", "twitterToolBarText", rafOptions.getTwitterToolbarTextColor()));
-            stringBuilder.append(getAttributeString("color", "twitterToolBarArrow", rafOptions.getTwitterToolbarArrowColor()));
 
             stringBuilder.append("</resources>\n");
             return stringBuilder.toString();
