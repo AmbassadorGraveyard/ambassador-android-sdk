@@ -10,6 +10,8 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -66,6 +68,13 @@ public class CustomizationPackage {
      */
     @NonNull
     public CustomizationPackage add(@NonNull String pathWithName, @NonNull RAFOptions rafOptions) {
+        String logo = rafOptions.getLogo();
+        if (logo != null) {
+            if (copyFromAssetsToInternal(logo)) {
+                files.add(logo);
+            }
+        }
+
         return add(pathWithName, new OptionXmlTranscriber(rafOptions).transcribe());
     }
 
@@ -100,6 +109,30 @@ public class CustomizationPackage {
         }
 
         return "android-raf.zip";
+    }
+
+    /**
+     * Takes a file stored in assets and puts it in internal storage. This makes it usable for zipping.
+     * @param assetsPath the String path in assets of the file to copy.
+     */
+    protected boolean copyFromAssetsToInternal(String assetsPath) {
+        InputStream inputStream = null;
+        try {
+            inputStream = context.getAssets().open(assetsPath);
+            FileOutputStream outputStream = context.openFileOutput(assetsPath, Context.MODE_PRIVATE);
+            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream, 1024);
+            byte[] data = new byte[1024];
+            int count;
+            while ((count = bufferedInputStream.read(data, 0, 1024)) != -1) {
+                outputStream.write(data, 0, count);
+            }
+            bufferedInputStream.close();
+            outputStream.close();
+        } catch (IOException e) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
