@@ -1,10 +1,14 @@
 package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ShareCompat;
+import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -17,9 +21,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
+import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
+
+import java.io.File;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -52,6 +62,37 @@ public final class ReferFragment extends Fragment {
                 RafAdapter.RafItem item = adapter.getItem(position);
                 String path = item.getOptionsPath();
                 Demo.get().presentRAF(getActivity(), path);
+            }
+        });
+        
+        lvRafs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                RafAdapter.RafItem rafItem = adapter.getItem(position);
+                RAFOptions rafOptions = null;
+                try {
+                    rafOptions = RAFOptionsFactory.decodeResources(getActivity().getAssets().open(rafItem.getOptionsPath()), getActivity());
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), "Didn't work!", Toast.LENGTH_SHORT).show();
+                }
+                if (rafOptions != null) {
+                    String filename = new CustomizationPackage(getActivity())
+                            .add("raf.xml", rafOptions)
+                            .add("README.txt", "AmbassadorSDK 1.1.4\nTest")
+                            .zip();
+                    File file = new File(getContext().getFilesDir(), filename);
+                    Uri uri = FileProvider.getUriForFile(getContext(), "com.ambassador.fileprovider", file);
+                    final Intent intent = ShareCompat.IntentBuilder.from(getActivity())
+                            .setType("*/*")
+                            .setStream(uri)
+                            .setChooserTitle("Share Integration Assets")
+                            .createChooserIntent()
+                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    getActivity().startActivity(intent);
+                }
+                return false;
             }
         });
 
