@@ -301,7 +301,7 @@ public class CustomizationPackage {
         private String getAttributeString(String tag, String name, float value) {
             switch (tag) {
                 case "dimen":
-                    return getAttributeString(tag, name, String.valueOf(value));
+                    return getAttributeString(tag, name, String.valueOf((int) (value)) + "sp");
                 default:
                     return "";
             }
