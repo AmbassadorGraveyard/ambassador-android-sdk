@@ -10,7 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +29,8 @@ public final class SettingsFragment extends Fragment {
     @Bind(R.id.tvSettingsName) protected TextView tvSettingsName;
     @Bind(R.id.tvUniversalId) protected TextView tvUniversalId;
     @Bind(R.id.tvSdkToken) protected TextView tvSdkToken;
-    @Bind(R.id.ivCopyUniversalId) protected ImageView ivCopyUniversalId;
-    @Bind(R.id.ivCopySdkToken) protected ImageView ivCopySdkToken;
+    @Bind(R.id.ivCopyUniversalId) protected ImageButton ivCopyUniversalId;
+    @Bind(R.id.ivCopySdkToken) protected ImageButton ivCopySdkToken;
     @Bind(R.id.rlLogout) protected RelativeLayout rlLogout;
 
     @Override
