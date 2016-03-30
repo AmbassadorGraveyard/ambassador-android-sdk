@@ -29,23 +29,10 @@ public final class Demo extends Application {
 
         prefs = getSharedPreferences("amb_demo", Context.MODE_PRIVATE);
         conversions = new ArrayList<>();
-
-        runWithKeys();
-        ConversionParameters parameters = new ConversionParameters.Builder()
-                .setCampaign(Integer.parseInt(getCampaignId()))
-                .setCustom1("This is a buyConversion from the Ambassador SDK Android test application.")
-                .setCustom2("Username registered: " + "dogs")
-                .build();
-
-        AmbassadorSDK.registerConversion(parameters, true);
     }
 
-    public void runWithKeys() {
-        if (IS_RELEASE) {
-            AmbassadorSDK.runWithKeys(getApplicationContext(), "SDKToken ***REMOVED***", "***REMOVED***");
-        } else {
-            AmbassadorSDK.runWithKeys(this, "SDKToken ***REMOVED***", "***REMOVED***");
-        }
+    public void runWithKeys(String id, String token) {
+        AmbassadorSDK.runWithKeys(getApplicationContext(), id, token);
     }
 
     public void identify(String email) {
