@@ -129,9 +129,6 @@
             android:layout_marginTop="20dp"
             demo:text="Social Channels" />
         
-        <ListView
-            android:layout_width=""
-            android:layout_height=""></ListView>
 
         <com.ambassador.demoapp.views.ListHeadingView
             android:layout_width="match_parent"
