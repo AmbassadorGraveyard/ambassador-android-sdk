@@ -23,7 +23,7 @@ public final class ServiceGenerator {
     public static <S> S createService(Class<S> serviceClass) throws NoEndpointFoundException {
         String endpoint = extractEndpoint(serviceClass);
 
-        if (!endpoint.equals("")) {
+        if (!"".equals(endpoint)) {
             OkHttpClient client = new OkHttpClient();
             RestAdapter.Builder builder = getBuilder()
                     .setEndpoint(endpoint)

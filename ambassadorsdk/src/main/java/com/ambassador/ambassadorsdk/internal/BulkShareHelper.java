@@ -178,6 +178,8 @@ public class BulkShareHelper {
                 case EMAIL:
                     recipient_email = values.get(i);
                     break;
+                default:
+                    break;
             }
 
             BulkShareApi.BulkShareTrackBody newObject = new BulkShareApi.BulkShareTrackBody(short_code, social_name, recipient_email, recipient_username, fromEmail);
