@@ -92,9 +92,6 @@ public class MainActivityTest {
         this.referTab = getUi("referTab");
 
         shortCodeEditText = device.findObject(new UiSelector().resourceId("com.ambassador.demoapp:id/etShortURL"));
-
-        Demo.get().identify(null);
-        Demo.get().setCampaignId(null);
     }
 
     @Test
