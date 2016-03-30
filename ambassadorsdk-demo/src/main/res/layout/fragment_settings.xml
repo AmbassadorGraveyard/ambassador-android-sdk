@@ -39,7 +39,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:textColor="#8c939b"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:text="Universal ID"/>
 
         </RelativeLayout>
@@ -50,16 +50,17 @@
             android:background="#f1f1f1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
 
             <TextView
+                android:id="@+id/tvUniversalId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:textColor="#8d9298"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textStyle="bold"
                 android:text="12312412"/>
 
@@ -77,7 +78,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:textColor="#8c939b"
-                android:textSize="10sp"
+                android:textSize="12sp"
                 android:text="SDK Token"/>
 
         </RelativeLayout>
@@ -88,16 +89,17 @@
             android:background="#f1f1f1"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp">
 
             <TextView
+                android:id="@+id/tvSdkToken"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:textColor="#8d9298"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 android:textStyle="bold"
                 android:text="12312412"/>
 

@@ -19,6 +19,8 @@ public final class SettingsFragment extends Fragment {
 
     @Bind(R.id.ivDisplayPicture) protected NetworkCircleImageView ivDisplayPicture;
     @Bind(R.id.tvSettingsName) protected TextView tvSettingsName;
+    @Bind(R.id.tvUniversalId) protected TextView tvUniversalId;
+    @Bind(R.id.tvSdkToken) protected TextView tvSdkToken;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,6 +36,8 @@ public final class SettingsFragment extends Fragment {
 
         ivDisplayPicture.load(User.get().getAvatarUrl());
         tvSettingsName.setText(User.get().getName());
+        tvUniversalId.setText(User.get().getUniversalId());
+        tvSdkToken.setText(User.get().getSdkToken());
 
         return view;
     }
