@@ -72,6 +72,11 @@ public class User {
         return (instance.universalId != null && instance.sdkToken != null);
     }
 
+    public static void logout() {
+        Demo.get().getSharedPreferences("user", Context.MODE_PRIVATE).edit().putString("user", null).apply();
+        instance = new User();
+    }
+
     @NonNull
     public static User get() {
         if (instance == null) {

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
     <LinearLayout
         android:id="@+id/fragmentSignup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
         android:orientation="vertical">
 
         <com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView
@@ -30,28 +30,28 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="#f7f7f9"
-            android:layout_marginTop="22dp">
+            android:layout_marginTop="22dp"
+            android:background="#f7f7f9">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
+                android:text="Universal ID"
                 android:textColor="#8c939b"
-                android:textSize="12sp"
-                android:text="Universal ID"/>
+                android:textSize="12sp" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="#f1f1f1"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp">
+            android:background="#f1f1f1">
 
             <TextView
                 android:id="@+id/tvUniversalId"
@@ -59,38 +59,49 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
+                android:text="12312412"
                 android:textColor="#8d9298"
                 android:textSize="11sp"
-                android:textStyle="bold"
-                android:text="12312412"/>
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="12dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="12dp"
+                android:src="@drawable/copy_paste_icon_demo" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="#f7f7f9"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:background="#f7f7f9">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
+                android:text="SDK Token"
                 android:textColor="#8c939b"
-                android:textSize="12sp"
-                android:text="SDK Token"/>
+                android:textSize="12sp" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:background="#f1f1f1"
+            android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp">
+            android:background="#f1f1f1">
 
             <TextView
                 android:id="@+id/tvSdkToken"
@@ -98,10 +109,39 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
+                android:text="12312412"
                 android:textColor="#8d9298"
                 android:textSize="11sp"
-                android:textStyle="bold"
-                android:text="12312412"/>
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="12dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="12dp"
+                android:src="@drawable/copy_paste_icon_demo" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlLogout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Logout"
+                android:textColor="#4197d0"
+                android:textSize="14sp" />
 
         </RelativeLayout>
 
