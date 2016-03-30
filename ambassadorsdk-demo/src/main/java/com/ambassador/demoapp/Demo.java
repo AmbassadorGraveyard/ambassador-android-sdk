@@ -38,10 +38,6 @@ public final class Demo extends Application {
     public void identify(String email) {
         setEmail(email);
         conversions = new ArrayList<>();
-        ambIdentify(email);
-    }
-
-    protected void ambIdentify(String email) {
         AmbassadorSDK.identify(email);
     }
 

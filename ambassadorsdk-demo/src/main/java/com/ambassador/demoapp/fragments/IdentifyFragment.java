@@ -13,19 +13,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
+import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.BuildConfig;
-import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class LoginFragment extends Fragment {
+public final class IdentifyFragment extends Fragment {
 
-    @Bind(R.id.etEmail)     protected EditText  etEmail;
-    @Bind(R.id.etPassword)  protected EditText  etPassword;
-    @Bind(R.id.btnLogin)    protected Button    btnLogin;
+    @Bind(R.id.etIdentify)  protected EditText  etEmail;
+    @Bind(R.id.btnIdentify) protected Button    btnIdentify;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,10 +36,27 @@ public final class LoginFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_identify, container, false);
         ButterKnife.bind(this, view);
 
-        btnLogin.setOnClickListener(btnLoginOnClickListener);
+        btnIdentify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (etEmail.getText().length() != 0) {
+                    String email = etEmail.getText().toString();
+                    if (!(new Identify(email).isValidEmail())) {
+                        Toast.makeText(getActivity(), "Please enter a valid email!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Toast.makeText(getActivity(), "Identifying!", Toast.LENGTH_LONG).show();
+                    AmbassadorSDK.identify(email);
+                    closeSoftKeyboard();
+                } else {
+                    Toast.makeText(getActivity(), "Please enter an email!", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
         view.findViewById(R.id.ivFlags).setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -48,7 +65,7 @@ public final class LoginFragment extends Fragment {
             }
         });
 
-        btnLogin.setOnLongClickListener(new View.OnLongClickListener() {
+        btnIdentify.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 Intent data = new Intent();
@@ -68,20 +85,6 @@ public final class LoginFragment extends Fragment {
         closeSoftKeyboard();
     }
 
-    protected View.OnClickListener btnLoginOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (etEmail.getText().length() != 0 && etPassword.getText().length() != 0) {
-                String email = etEmail.getText().toString();
-                Toast.makeText(getActivity(), "Logging in!", Toast.LENGTH_LONG).show();
-                Demo.get().identify(email);
-                closeSoftKeyboard();
-            } else {
-                Toast.makeText(getActivity(), "Please enter an email and password!", Toast.LENGTH_LONG).show();
-            }
-        }
-    };
-    
     private void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
