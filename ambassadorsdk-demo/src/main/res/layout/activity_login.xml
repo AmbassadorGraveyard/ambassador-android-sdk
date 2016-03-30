@@ -39,7 +39,8 @@
         android:text="Sign in"
         android:textColor="@android:color/white"
         android:textSize="12.5sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:elevation="0dp"/>
 
     <TextView
         android:id="@+id/tvNoAccount"
@@ -54,19 +55,20 @@
         android:textAlignment="center"
         android:textColor="#959ba3" />
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/rlLoading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"
-        android:alpha="0">
+        android:alpha="0"
+        android:translationZ="5dp">
 
         <ProgressBar
             android:id="@+id/pbLoading"
             android:layout_width="130dp"
             android:layout_height="130dp"
-            android:layout_centerInParent="true"/>
+            android:layout_gravity="center" />
 
-    </RelativeLayout>
+    </FrameLayout>
 
 </RelativeLayout>
