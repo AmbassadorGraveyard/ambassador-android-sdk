@@ -83,20 +83,20 @@ public class AmbassadorActivityTest {
 
     //tell Dagger this code will participate in dependency injection
     @Inject
-    RequestManager requestManager;
+    public RequestManager requestManager;
 
     @Inject
-    BulkShareHelper bulkShareHelper;
+    public BulkShareHelper bulkShareHelper;
 
-    @Inject User user;
-    @Inject Campaign campaign;
-    @Inject Auth auth;
-
-    @Inject
-    PusherManager pusher;
+    @Inject public User user;
+    @Inject public Campaign campaign;
+    @Inject public Auth auth;
 
     @Inject
-    RAFOptions raf;
+    public PusherManager pusher;
+
+    @Inject
+    public RAFOptions raf;
 
     @Rule
     public ActivityTestRule<AmbassadorActivity> mActivityTestIntentRule = new ActivityTestRule<>(AmbassadorActivity.class, true, false);
