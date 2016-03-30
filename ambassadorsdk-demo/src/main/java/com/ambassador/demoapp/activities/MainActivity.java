@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,13 +24,13 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
+import com.ambassador.demoapp.fragments.ConversionFragment;
+import com.ambassador.demoapp.fragments.IdentifyFragment;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.data.User;
-import com.ambassador.demoapp.fragments.LoginFragment;
 import com.ambassador.demoapp.fragments.ReferFragment;
-import com.ambassador.demoapp.fragments.SignupFragment;
-import com.ambassador.demoapp.fragments.StoreFragment;
+import com.ambassador.demoapp.fragments.SettingsFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -63,7 +64,7 @@ public final class MainActivity extends AppCompatActivity {
             }
         }
 
-        setTitle(Html.fromHtml("<small>Ambassador Demo</small>"));
+        setTitle(Html.fromHtml("<small>" + adapter.getTitle(0) + "</small>"));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
@@ -119,6 +120,7 @@ public final class MainActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(int position) {
             adapter.getItem(position).onResume();
+            setToolbarTitle(Html.fromHtml("<small>" + adapter.getTitle(position) + "</small>"));
         }
 
         @Override
@@ -127,6 +129,13 @@ public final class MainActivity extends AppCompatActivity {
         }
     };
 
+    private void setToolbarTitle(Spanned title) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(title);
+        }
+    }
+
     private final class TabFragmentPagerAdapter extends FragmentPagerAdapter {
 
         private TabModel[] tabs;
@@ -134,15 +143,15 @@ public final class MainActivity extends AppCompatActivity {
         public TabFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             tabs = new TabModel[4];
-            tabs[0] = new TabModel("Login", R.drawable.ic_login, new LoginFragment())
-                    .setContentDescription("loginTab");
-            tabs[1] = new TabModel("Sign Up", R.drawable.ic_signup, new SignupFragment())
-                    .setContentDescription("signupTab");
-            tabs[2] = new TabModel("Buy Now", R.drawable.ic_buy, new StoreFragment())
-                    .setContentDescription("storeTab");
             String rafTitle = getResources().getDisplayMetrics().densityDpi < 300 ? "Referrals" : "Refer a Friend";
-            tabs[3] = new TabModel(rafTitle, R.drawable.ic_raf, new ReferFragment())
+            tabs[0] = new TabModel(rafTitle, R.drawable.ic_raf, new ReferFragment())
                     .setContentDescription("referTab");
+            tabs[1] = new TabModel("Identify", R.drawable.ic_identify, new IdentifyFragment())
+                    .setContentDescription("loginTab");
+            tabs[2] = new TabModel("Conversion", R.drawable.ic_conversion, new ConversionFragment())
+                    .setContentDescription("storeTab");
+            tabs[3] = new TabModel("Settings", R.drawable.ic_settings, new SettingsFragment())
+                    .setContentDescription("signupTab");
         }
         
         @Override
@@ -162,7 +171,7 @@ public final class MainActivity extends AppCompatActivity {
             ImageView ivIcon = (ImageView) view.findViewById(R.id.ivIcon);
             ivIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, tabs[position].getDrawableId()));
 
-            TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
+            TextView tvTitle = (TextView) view.findViewById(R.id.tvTabTitle);
             tvTitle.setText(tabs[position].getTitle());
 
             view.setContentDescription(getContentDescription(position));
@@ -173,6 +182,10 @@ public final class MainActivity extends AppCompatActivity {
         @Nullable
         public String getContentDescription(int position) {
             return tabs[position].getContentDescription();
+        }
+
+        public String getTitle(int position) {
+            return tabs[position].getTitle();
         }
 
         private final class TabModel {

@@ -47,7 +47,7 @@ public class AmbassadorSDKTest {
     private Auth auth;
     private User user;
     private Campaign campaign;
-
+    private ConversionUtility conversionUtility;
     private PusherManager pusherManager;
 
     @Before
@@ -74,6 +74,9 @@ public class AmbassadorSDKTest {
 
         pusherManager = Mockito.mock(PusherManager.class);
         AmbassadorSDK.pusherManager = pusherManager;
+
+        conversionUtility = Mockito.mock(ConversionUtility.class);
+        AmbassadorSDK.conversionUtility = conversionUtility;
     }
 
     @Test
@@ -115,11 +118,14 @@ public class AmbassadorSDKTest {
     @Test
     public void registerConversionNonInstallTest() throws Exception {
         // ARRANGE
-        ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
+        //ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
+        ConversionParameters conversionParameters = new ConversionParameters.Builder()
+                .setEmail("jake@getambassador.com")
+                .setRevenue(15.55f)
+                .setCampaign(260)
+                .build();
         boolean restrictToInstall = false;
         Mockito.when(campaign.isConvertedOnInstall()).thenReturn(false);
-        ConversionUtility conversionUtility = Mockito.mock(ConversionUtility.class);
-        PowerMockito.doReturn(conversionUtility).when(AmbassadorSDK.class, "buildConversionUtility", conversionParameters);
         Mockito.doNothing().when(conversionUtility).registerConversion();
 
         // ACT
