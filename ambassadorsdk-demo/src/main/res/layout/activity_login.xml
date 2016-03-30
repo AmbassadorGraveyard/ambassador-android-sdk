@@ -10,6 +10,7 @@
         android:layout_height="35dp"
         android:layout_marginTop="75dp"
         android:adjustViewBounds="true"
+        android:layout_centerHorizontal="true"
         android:src="@drawable/ambassador_word_logo" />
 
     <com.ambassador.demoapp.views.LoginEditText

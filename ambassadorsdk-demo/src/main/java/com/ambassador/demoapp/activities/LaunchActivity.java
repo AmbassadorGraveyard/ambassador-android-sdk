@@ -17,6 +17,7 @@ public class LaunchActivity extends Activity {
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+        finishActivity(0);
     }
 
 }
