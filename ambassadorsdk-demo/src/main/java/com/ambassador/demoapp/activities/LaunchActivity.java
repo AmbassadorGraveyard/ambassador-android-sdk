@@ -12,6 +12,7 @@ public class LaunchActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Class<?> activity = User.isStored() ? MainActivity.class : LoginActivity.class;
+        activity = CustomizationActivity.class;
         Intent intent = new Intent(this, activity)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
