@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -102,6 +103,8 @@ public final class ReferFragment extends Fragment {
             }
         });
 
+        setListViewHeightBasedOnChildren(lvRafs);
+
         return view;
     }
 
@@ -114,6 +117,27 @@ public final class ReferFragment extends Fragment {
     private void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
+        int totalHeight = 0;
+        View view = null;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            view = listAdapter.getView(i, view, listView);
+            if (i == 0)
+                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
+            totalHeight += view.getMeasuredHeight();
+        }
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+        listView.setLayoutParams(params);
     }
 
     protected TextWatcher etCampaignIdTextWatcher = new TextWatcher() {
@@ -141,13 +165,21 @@ public final class ReferFragment extends Fragment {
         private RafItem[] items;
 
         public RafAdapter() {
-            items = new RafItem[3];
+            items = new RafItem[6];
             items[0] = new RafItem("Shoes RAF", "description", "raf_shoes.xml")
                     .setContentDescription("shoeRaf");
             items[1] = new RafItem("Shirt RAF", "description", "raf_shirt.xml")
                     .setContentDescription("shirtRaf");
             items[2] = new RafItem("Ambassador RAF", "description", "raf_ambassador.xml")
                     .setContentDescription("ambassadorRaf");
+
+            items[3] = new RafItem("Shoes RAF", "description", "raf_shoes.xml")
+                    .setContentDescription("shoeRaf");
+            items[4] = new RafItem("Shirt RAF", "description", "raf_shirt.xml")
+                    .setContentDescription("shirtRaf");
+            items[5] = new RafItem("Ambassador RAF", "description", "raf_ambassador.xml")
+                    .setContentDescription("ambassadorRaf");
+
         }
 
         @Override

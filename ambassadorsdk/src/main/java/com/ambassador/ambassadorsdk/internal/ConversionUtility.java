@@ -27,6 +27,10 @@ public class ConversionUtility {
     @Inject protected User user;
     @Inject protected Campaign campaign;
 
+    public ConversionUtility() {
+        this(AmbSingleton.context);
+    }
+
     // Constructors for ConversionUtility
     public ConversionUtility(Context context) {
         helper = new ConversionDBHelper(context);
@@ -35,10 +39,12 @@ public class ConversionUtility {
     }
 
     public ConversionUtility(Context context, ConversionParameters parameters) {
+        this(context);
+        setParameters(parameters);
+    }
+
+    public void setParameters(ConversionParameters parameters) {
         this.parameters = parameters;
-        helper = new ConversionDBHelper(context);
-        db = helper.getWritableDatabase();
-        AmbSingleton.inject(this);
     }
 
     public void registerConversion() {
