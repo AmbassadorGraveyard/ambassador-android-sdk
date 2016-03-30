@@ -44,8 +44,8 @@ public class AmbSingleton {
      * @param module the module to use to provide injection dependencies.
      */
     public static void init(@NonNull Context context, @NonNull Object module) {
-        init(context);
         AmbSingleton.graph = ObjectGraph.create(module);
+        init(context);
     }
 
     /**

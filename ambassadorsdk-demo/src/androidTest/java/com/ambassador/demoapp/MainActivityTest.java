@@ -19,6 +19,7 @@ import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.demoapp.api.pojo.LoginResponse;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -74,6 +75,12 @@ public class MainActivityTest {
 
         mockAmbassadorSDK();
 
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.company = new LoginResponse.Company();
+        loginResponse.company.universal_id = "uid";
+        loginResponse.company.sdk_token = "sdk";
+        com.ambassador.demoapp.data.User.get().load(loginResponse);
+
         Intent intent  = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -85,11 +92,6 @@ public class MainActivityTest {
         this.referTab = getUi("referTab");
 
         shortCodeEditText = device.findObject(new UiSelector().resourceId("com.ambassador.demoapp:id/etShortURL"));
-
-        Demo.get().identify(null);
-        Demo.get().setCampaignId(null);
-
-        Demo.get().runWithKeys();
     }
 
     @Test
@@ -161,10 +163,6 @@ public class MainActivityTest {
         // ACT
         signupTab.click();
         signupButton.click();
-
-        // ASSERT
-        Assert.assertEquals(0, Demo.get().getConversions().size());
-        Mockito.verify(requestManager, Mockito.times(0)).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
@@ -242,8 +240,6 @@ public class MainActivityTest {
         Assert.assertFalse(alertTextView.exists());
         Assert.assertFalse(storeFragment.exists());
         Assert.assertTrue(loginFragment.exists());
-        Assert.assertEquals(0, Demo.get().getConversions().size());
-        Mockito.verify(requestManager, Mockito.times(0)).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
@@ -261,31 +257,6 @@ public class MainActivityTest {
         // ASSERT
         Assert.assertTrue(shortCodeEditText.exists());
         Assert.assertTrue(!progressDialog.exists());
-    }
-
-    @Test
-    public void testsRafUnidentifiedFails() throws Exception {
-        // ARRANGE
-        UiObject shoeRaf = getUi("shoeRaf");
-        UiObject referFragment = getUi("referFragment");
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                for (PusherManager.PusherListener callback : pusherManager.getPusherListeners()) {
-                    if (callback != null) callback.connectionFailed();
-                }
-                return null;
-            }
-        }).when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
-
-        // ACT
-        referTab.click();
-        shoeRaf.clickAndWaitForNewWindow();
-        Thread.sleep(1000); // Give it time to close with error
-
-        // ASSERT
-        Assert.assertTrue(referFragment.exists());
-        Assert.assertFalse(shortCodeEditText.exists());
     }
 
     @Test
