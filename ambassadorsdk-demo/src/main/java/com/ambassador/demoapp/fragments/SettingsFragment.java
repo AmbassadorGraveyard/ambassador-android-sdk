@@ -1,5 +1,8 @@
 package com.ambassador.demoapp.fragments;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,8 +10,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView;
 import com.ambassador.demoapp.R;
@@ -24,6 +29,8 @@ public final class SettingsFragment extends Fragment {
     @Bind(R.id.tvSettingsName) protected TextView tvSettingsName;
     @Bind(R.id.tvUniversalId) protected TextView tvUniversalId;
     @Bind(R.id.tvSdkToken) protected TextView tvSdkToken;
+    @Bind(R.id.ivCopyUniversalId) protected ImageView ivCopyUniversalId;
+    @Bind(R.id.ivCopySdkToken) protected ImageView ivCopySdkToken;
     @Bind(R.id.rlLogout) protected RelativeLayout rlLogout;
 
     @Override
@@ -42,6 +49,21 @@ public final class SettingsFragment extends Fragment {
         tvSettingsName.setText(User.get().getName());
         tvUniversalId.setText(User.get().getUniversalId());
         tvSdkToken.setText(User.get().getSdkToken());
+
+        ivCopyUniversalId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyToClipboard(User.get().getUniversalId());
+            }
+        });
+
+        ivCopySdkToken.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyToClipboard(User.get().getSdkToken());
+            }
+        });
+
         rlLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,6 +76,12 @@ public final class SettingsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    protected void copyToClipboard(String text) {
+        ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboardManager.setPrimaryClip(ClipData.newPlainText("simpleText", text));
+        Toast.makeText(getActivity(), "Copied to clipboard!", Toast.LENGTH_SHORT).show();
     }
 
 }
