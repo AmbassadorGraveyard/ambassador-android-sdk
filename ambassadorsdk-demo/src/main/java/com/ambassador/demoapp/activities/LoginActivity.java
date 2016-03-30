@@ -50,10 +50,6 @@ public class LoginActivity extends Activity {
             getWindow().setStatusBarColor(Color.parseColor("#1a232d"));
         }
 
-        if (User.isStored()) {
-            finishLogin();
-        }
-
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
