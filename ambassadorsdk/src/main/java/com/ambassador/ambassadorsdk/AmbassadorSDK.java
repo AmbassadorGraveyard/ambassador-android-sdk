@@ -44,6 +44,7 @@ public final class AmbassadorSDK {
     @Inject protected static Campaign campaign;
     @Inject protected static PusherManager pusherManager;
     @Inject protected static RequestManager requestManager;
+    @Inject protected static ConversionUtility conversionUtility;
 
     public static void presentRAF(Context context, String campaignID) {
         if (context.getResources().getIdentifier("homeWelcomeTitle", "color", context.getPackageName()) != 0) {
@@ -129,19 +130,17 @@ public final class AmbassadorSDK {
     public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
         //do conversion if it's not an install conversion, or if it is, make sure that we haven't already converted on install by checking sharedprefs
         if (!restrictToInstall || !campaign.isConvertedOnInstall()) {
-            Utilities.debugLog("Conversion", "restrictToInstall: " + restrictToInstall);
 
-            ConversionUtility conversionUtility = buildConversionUtility(conversionParameters);
-            conversionUtility.registerConversion();
+            if (conversionParameters.isValid()) {
+                Utilities.debugLog("Conversion", "restrictToInstall: " + restrictToInstall);
+                conversionUtility.setParameters(conversionParameters);
+                conversionUtility.registerConversion();
+            }
         }
 
         if (restrictToInstall) {
             campaign.setConvertedOnInstall(true);
         }
-    }
-
-    private static ConversionUtility buildConversionUtility(ConversionParameters conversionParameters) {
-        return new ConversionUtility(AmbSingleton.getContext(), conversionParameters);
     }
 
     public static void runWithKeys(Context context, String universalToken, String universalId) {

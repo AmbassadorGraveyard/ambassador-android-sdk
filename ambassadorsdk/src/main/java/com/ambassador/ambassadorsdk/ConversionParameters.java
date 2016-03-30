@@ -121,7 +121,7 @@ public final class ConversionParameters {
         this.custom2 = "";
         this.custom3 = "";
         this.autoCreate = 1;
-        this.revenue = -1;
+        this.revenue = 0;
         this.deactivateNewAmbassador = 0;
         this.transactionUid = "";
         this.addToGroupId = "";
@@ -133,7 +133,7 @@ public final class ConversionParameters {
     }
 
     public boolean isValid() {
-        return campaign > -1 && !"".equals(email) && revenue > -1;
+        return campaign > -1 && revenue > -1;
     }
 
     public ConversionsApi.RegisterConversionRequestBody.FieldsObject getFieldsObject() {
@@ -154,7 +154,7 @@ public final class ConversionParameters {
         private String mbsy_custom2;
         private String mbsy_custom3;
         private int mbsy_auto_create;
-        private float mbsy_revenue = -1;
+        private float mbsy_revenue = 0;
         private int mbsy_deactivate_new_ambassador;
         private String mbsy_transaction_uid;
         private String mbsy_add_to_group_id;

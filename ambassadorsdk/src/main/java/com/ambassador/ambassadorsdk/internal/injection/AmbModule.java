@@ -86,6 +86,13 @@ public final class AmbModule {
     @NonNull
     @Provides
     @Singleton
+    public ConversionUtility provideConversionUtility() {
+        return new ConversionUtility();
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
     public Device provideDevice() {
         return new Device();
     }
