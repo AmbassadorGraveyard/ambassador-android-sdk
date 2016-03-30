@@ -14,7 +14,7 @@
         <activity
             android:name=".activities.LaunchActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:theme="@android:style/Theme.NoDisplay"
+            android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
