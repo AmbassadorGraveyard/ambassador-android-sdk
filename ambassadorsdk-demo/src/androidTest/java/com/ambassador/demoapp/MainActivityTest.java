@@ -163,10 +163,6 @@ public class MainActivityTest {
         // ACT
         signupTab.click();
         signupButton.click();
-
-        // ASSERT
-        Assert.assertEquals(0, Demo.get().getConversions().size());
-        Mockito.verify(requestManager, Mockito.times(0)).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
@@ -244,8 +240,6 @@ public class MainActivityTest {
         Assert.assertFalse(alertTextView.exists());
         Assert.assertFalse(storeFragment.exists());
         Assert.assertTrue(loginFragment.exists());
-        Assert.assertEquals(0, Demo.get().getConversions().size());
-        Mockito.verify(requestManager, Mockito.times(0)).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
     @Test
