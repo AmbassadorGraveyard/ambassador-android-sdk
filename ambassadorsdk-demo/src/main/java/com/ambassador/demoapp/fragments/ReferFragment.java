@@ -1,34 +1,33 @@
 package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.ambassador.demoapp.Demo;
+import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demoapp.R;
+import com.ambassador.demoapp.activities.CustomizationActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public final class ReferFragment extends Fragment {
 
-    @Bind(R.id.etCampaignId)    protected EditText etCampaignId;
-    @Bind(R.id.lvRafs)          protected ListView lvRafs;
+    @Bind(R.id.ivAddRaf) protected CircleImageView ivAddRaf;
+    //@Bind(R.id.lvRafs) protected ListView lvRafs;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,21 +41,27 @@ public final class ReferFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_refer, container, false);
         ButterKnife.bind(this, view);
 
-        etCampaignId.setText(Demo.get().getCampaignId());
-        etCampaignId.addTextChangedListener(etCampaignIdTextWatcher);
-
-        final RafAdapter adapter = new RafAdapter();
-        lvRafs.setAdapter(adapter);
-        lvRafs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ivAddRaf.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.add_raf));
+        ivAddRaf.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                RafAdapter.RafItem item = adapter.getItem(position);
-                String path = item.getOptionsPath();
-                Demo.get().presentRAF(getActivity(), path);
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CustomizationActivity.class);
+                startActivity(intent);
             }
         });
 
-        setListViewHeightBasedOnChildren(lvRafs);
+//        final RafAdapter adapter = new RafAdapter();
+//        lvRafs.setAdapter(adapter);
+//        lvRafs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                RafAdapter.RafItem item = adapter.getItem(position);
+//                String path = item.getOptionsPath();
+//                Demo.get().presentRAF(getActivity(), path);
+//            }
+//        });
+
+//        setListViewHeightBasedOnChildren(lvRafs);
 
         return view;
     }
@@ -92,26 +97,6 @@ public final class ReferFragment extends Fragment {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
     }
-
-    protected TextWatcher etCampaignIdTextWatcher = new TextWatcher() {
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String text = etCampaignId.getText().toString();
-            Demo.get().setCampaignId(text);
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-
-    };
 
     private final class RafAdapter extends BaseAdapter {
 
