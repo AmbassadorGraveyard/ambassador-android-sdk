@@ -24,10 +24,11 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
-<<<<<<< HEAD
 import com.ambassador.demoapp.fragments.ConversionFragment;
 import com.ambassador.demoapp.fragments.IdentifyFragment;
 import com.ambassador.demoapp.R;
+import com.ambassador.demoapp.fragments.ConversionFragment;
+import com.ambassador.demoapp.fragments.IdentifyFragment;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.data.User;
