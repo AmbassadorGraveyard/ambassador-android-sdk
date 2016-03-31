@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@+id/ivDrag"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="18dp"
+        android:padding="16dp"
         android:src="@drawable/ic_list" />
 
     <TextView
@@ -17,12 +17,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="12dp"
         android:layout_toRightOf="@+id/ivDrag"
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
     <android.support.v7.widget.SwitchCompat
+        android:id="@+id/swChannel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

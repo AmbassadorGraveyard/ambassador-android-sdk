@@ -13,9 +13,17 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:text="Choose a Campaign"
+            android:layout_centerVertical="true"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:text="X"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Campaigns"
             android:textSize="16sp"
             android:textColor="@android:color/white" />
 
