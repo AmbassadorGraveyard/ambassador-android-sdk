@@ -59,6 +59,8 @@ dependencies {
     rootProject.ext.demoAndroidTestApt.each {
         androidTestApt "${it}"
     }
+
+    compile 'asia.ivity.android:drag-sort-listview:1.0'
 }
 
 

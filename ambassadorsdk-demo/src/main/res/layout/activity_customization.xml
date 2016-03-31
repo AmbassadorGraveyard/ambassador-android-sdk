@@ -195,10 +195,17 @@
             android:layout_marginTop="20dp"
             demo:text="Social Channels" />
 
-        <ListView
+        <!--<ListView-->
+        <!--android:id="@+id/lvChannels"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="375dp" />-->
+
+        <com.mobeta.android.dslv.DragSortListView xmlns:dslv="http://schemas.android.com/apk/res-auto"
             android:id="@+id/lvChannels"
             android:layout_width="match_parent"
-            android:layout_height="375dp" />
+            android:layout_height="375dp"
+            dslv:drag_handle_id="@+id/ivDrag"
+            dslv:float_background_color="@android:color/background_light" />
 
         <com.ambassador.demoapp.views.ListHeadingView
             android:layout_width="match_parent"
