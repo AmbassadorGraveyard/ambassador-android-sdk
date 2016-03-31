@@ -49,7 +49,8 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
-            android:hint="Integration Name" />
+            android:hint="Integration Name"
+            android:singleLine="true" />
 
         <com.ambassador.demoapp.views.InputNameView
             android:layout_width="wrap_content"
@@ -61,6 +62,7 @@
             android:text="Campaign" />
 
         <RelativeLayout
+            android:id="@+id/rvCampaignChooser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"

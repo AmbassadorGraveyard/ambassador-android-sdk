@@ -14,10 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demoapp.R;
+import com.ambassador.demoapp.dialogs.CampaignChooserDialog;
 import com.ambassador.demoapp.views.ColorInputView;
 
 import butterknife.Bind;
@@ -28,6 +30,8 @@ public class CustomizationActivity extends AppCompatActivity {
     protected static final int PHOTO_CHOOSER_INTENT = 313;
 
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
+
+    @Bind(R.id.rvCampaignChooser) protected RelativeLayout rvCampaignChooser;
 
     @Bind(R.id.lvChannels) protected ListView lvChannels;
 
@@ -53,7 +57,15 @@ public class CustomizationActivity extends AppCompatActivity {
             }
         });
 
-        lvChannels.setAdapter(new ChannelAdapter(this));
+        rvCampaignChooser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(CustomizationActivity.this);
+                campaignChooserDialog.show();
+            }
+        });
+
+        setUpChannelList();
 
         civHeader.setActivity(this);
         civTextField1.setActivity(this);
@@ -61,11 +73,28 @@ public class CustomizationActivity extends AppCompatActivity {
         civButtons.setActivity(this);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PHOTO_CHOOSER_INTENT:
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
     protected void setUpActionBar() {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar == null) return;
         actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
         setTitle(Html.fromHtml("<small>Edit Refer a Friend View</small>"));
+    }
+
+    protected void setUpChannelList() {
+        lvChannels.setAdapter(new ChannelAdapter(this));
     }
 
     protected static class ChannelAdapter extends BaseAdapter {
