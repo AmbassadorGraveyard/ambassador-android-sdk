@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demoapp.R;
+import com.ambassador.demoapp.views.ColorInputView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -29,6 +30,11 @@ public class CustomizationActivity extends AppCompatActivity {
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
 
     @Bind(R.id.lvChannels) protected ListView lvChannels;
+
+    @Bind(R.id.civHeader) protected ColorInputView civHeader;
+    @Bind(R.id.civTextField1) protected ColorInputView civTextField1;
+    @Bind(R.id.civTextField2) protected ColorInputView civTextField2;
+    @Bind(R.id.civButtons) protected ColorInputView civButtons;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +54,11 @@ public class CustomizationActivity extends AppCompatActivity {
         });
 
         lvChannels.setAdapter(new ChannelAdapter(this));
+
+        civHeader.setActivity(this);
+        civTextField1.setActivity(this);
+        civTextField2.setActivity(this);
+        civButtons.setActivity(this);
     }
 
     protected void setUpActionBar() {

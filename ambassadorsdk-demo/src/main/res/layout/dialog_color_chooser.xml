@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <FrameLayout
+            android:id="@+id/flColorA"
+            android:layout_width="match_parent"
+            android:layout_height="270dp" />
+
+        <FrameLayout
+            android:id="@+id/flColorB"
+            android:layout_width="match_parent"
+            android:layout_height="270dp" />
+
+        <LinearLayout
+            android:id="@+id/llRainbow"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_below="@+id/flColorB"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="3" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp">
+
+            <TextView
+                android:id="@+id/tvRedValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Red"
+                android:textColor="@android:color/black"
+                android:textSize="11sp" />
+
+            <EditText
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvRedValue"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/et_only"
+                android:gravity="center"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp"
+                android:text="123"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp">
+
+            <TextView
+                android:id="@+id/tvGreenValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Green"
+                android:textColor="@android:color/black"
+                android:textSize="11sp" />
+
+            <EditText
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvGreenValue"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/et_only"
+                android:gravity="center"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp"
+                android:text="123"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp">
+
+            <TextView
+                android:id="@+id/tvBlueValue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Blue"
+                android:textColor="@android:color/black"
+                android:textSize="11sp" />
+
+            <EditText
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvBlueValue"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/et_only"
+                android:gravity="center"
+                android:paddingBottom="3dp"
+                android:paddingTop="3dp"
+                android:text="123"
+                android:textAlignment="center"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <TextView
+            android:id="@+id/tvColorCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="CANCEL"
+            android:textColor="#00a49d"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvColorDone"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="DONE"
+            android:textColor="#00a49d"
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+</LinearLayout>
