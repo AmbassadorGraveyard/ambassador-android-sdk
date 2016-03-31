@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -77,6 +79,14 @@ public class CustomizationActivity extends AppCompatActivity {
         civTextField1.setActivity(this);
         civTextField2.setActivity(this);
         civButtons.setActivity(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_customizer, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_save);
+        menuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.save_icon));
+        return true;
     }
 
     @Override
