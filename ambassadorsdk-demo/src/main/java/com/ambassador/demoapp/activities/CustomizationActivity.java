@@ -1,6 +1,7 @@
 package com.ambassador.demoapp.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,6 +24,8 @@ import butterknife.ButterKnife;
 
 public class CustomizationActivity extends AppCompatActivity {
 
+    protected static final int PHOTO_CHOOSER_INTENT = 313;
+
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
 
     @Bind(R.id.lvChannels) protected ListView lvChannels;
@@ -34,10 +36,18 @@ public class CustomizationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_customization);
         ButterKnife.bind(this);
         setUpActionBar();
+
         ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.add_photo));
+        ivProductPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent, PHOTO_CHOOSER_INTENT);
+            }
+        });
 
         lvChannels.setAdapter(new ChannelAdapter(this));
-        //setListViewHeightBasedOnChildren(lvChannels);
     }
 
     protected void setUpActionBar() {
@@ -45,27 +55,6 @@ public class CustomizationActivity extends AppCompatActivity {
         if (actionBar == null) return;
         actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
         setTitle(Html.fromHtml("<small>Edit Refer a Friend View</small>"));
-    }
-
-    public void setListViewHeightBasedOnChildren(ListView listView) {
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter == null)
-            return;
-
-        int desiredWidth = View.MeasureSpec.makeMeasureSpec(listView.getWidth(), View.MeasureSpec.UNSPECIFIED);
-        int totalHeight = 0;
-        View view = null;
-        for (int i = 0; i < listAdapter.getCount(); i++) {
-            view = listAdapter.getView(i, view, listView);
-            if (i == 0)
-                view.setLayoutParams(new ViewGroup.LayoutParams(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            view.measure(desiredWidth, View.MeasureSpec.UNSPECIFIED);
-            totalHeight += view.getMeasuredHeight();
-        }
-        ViewGroup.LayoutParams params = listView.getLayoutParams();
-        params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
-        listView.setLayoutParams(params);
     }
 
     protected static class ChannelAdapter extends BaseAdapter {
