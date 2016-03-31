@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,8 +26,11 @@ import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.dialogs.CampaignChooserDialog;
 import com.ambassador.demoapp.views.ColorInputView;
+import com.mobeta.android.dslv.DragSortListView;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -41,7 +43,7 @@ public class CustomizationActivity extends AppCompatActivity {
 
     @Bind(R.id.rvCampaignChooser) protected RelativeLayout rvCampaignChooser;
 
-    @Bind(R.id.lvChannels) protected ListView lvChannels;
+    @Bind(R.id.lvChannels) protected DragSortListView lvChannels;
 
     @Bind(R.id.civHeader) protected ColorInputView civHeader;
     @Bind(R.id.civTextField1) protected ColorInputView civTextField1;
@@ -90,6 +92,12 @@ public class CustomizationActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        finish();
+        return true;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
@@ -117,33 +125,40 @@ public class CustomizationActivity extends AppCompatActivity {
     }
 
     protected void setUpChannelList() {
-        lvChannels.setAdapter(new ChannelAdapter(this));
+        final ChannelAdapter adapter = new ChannelAdapter(this);
+        lvChannels.setAdapter(adapter);
+        lvChannels.setDropListener(new DragSortListView.DropListener() {
+            @Override
+            public void drop(int from, int to) {
+                adapter.drop(from, to);
+            }
+        });
     }
 
     protected static class ChannelAdapter extends BaseAdapter {
 
         protected Activity activity;
-        protected ChannelItem[] channelItems;
+        protected List<ChannelItem> channelItems;
 
         public ChannelAdapter(Activity activity) {
             this.activity = activity;
 
-            this.channelItems = new ChannelItem[5];
-            channelItems[0] = new ChannelItem("Facebook");
-            channelItems[1] = new ChannelItem("Twitter");
-            channelItems[2] = new ChannelItem("LinkedIn");
-            channelItems[3] = new ChannelItem("Email");
-            channelItems[4] = new ChannelItem("SMS");
+            this.channelItems = new ArrayList<>();
+            channelItems.add(new ChannelItem("Facebook"));
+            channelItems.add(new ChannelItem("Twitter"));
+            channelItems.add(new ChannelItem("LinkedIn"));
+            channelItems.add(new ChannelItem("Email"));
+            channelItems.add(new ChannelItem("SMS"));
         }
 
         @Override
         public int getCount() {
-            return channelItems.length;
+            return channelItems.size();
         }
 
         @Override
         public ChannelItem getItem(int position) {
-            return channelItems[position];
+            return channelItems.get(position);
         }
 
         @Override
@@ -163,6 +178,14 @@ public class CustomizationActivity extends AppCompatActivity {
             tvChannelName.setText(channel.getName());
 
             return convertView;
+        }
+
+        public void drop(int from, int to) {
+            ChannelItem movedItem = getItem(from);
+            channelItems.remove(from);
+            if (from > to) from--;
+            channelItems.add(to, movedItem);
+            notifyDataSetChanged();
         }
 
         protected static class ChannelItem {
