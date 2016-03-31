@@ -3,16 +3,20 @@ package com.ambassador.demoapp.dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -23,9 +27,14 @@ import butterknife.ButterKnife;
 
 public class ColorChooserDialog extends Dialog {
 
+    @Bind(R.id.rlColors) protected RelativeLayout rlColors;
     @Bind(R.id.flColorA) protected FrameLayout flColorA;
     @Bind(R.id.flColorB) protected FrameLayout flColorB;
     @Bind(R.id.llRainbow) protected LinearLayout llRainbow;
+
+    @Bind(R.id.etRedValue) protected EditText etRedValue;
+    @Bind(R.id.etGreenValue) protected EditText etGreenValue;
+    @Bind(R.id.etBlueValue) protected EditText etBlueValue;
 
     @Bind(R.id.tvColorCancel) protected TextView tvColorCancel;
     @Bind(R.id.tvColorDone) protected TextView tvColorDone;
@@ -45,6 +54,30 @@ public class ColorChooserDialog extends Dialog {
         ButterKnife.bind(this);
         updateGradients(Color.RED);
         setUpRainbow();
+
+        rlColors.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View v, DragEvent event) {
+                rlColors.setDrawingCacheEnabled(true);
+                rlColors.buildDrawingCache();
+                final Bitmap colors = rlColors.getDrawingCache();
+
+                int pixel = colors.getPixel((int) event.getX(), (int) event.getY());
+
+                int red = Color.red(pixel);
+                int green = Color.green(pixel);
+                int blue = Color.blue(pixel);
+
+                rlColors.setDrawingCacheEnabled(false);
+
+
+                etRedValue.setText(String.valueOf(red));
+                etGreenValue.setText(String.valueOf(green));
+                etBlueValue.setText(String.valueOf(blue));
+
+                return true;
+            }
+        });
 
         tvColorCancel.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -172,11 +174,19 @@ public class CustomizationActivity extends AppCompatActivity {
                 convertView = LayoutInflater.from(activity).inflate(R.layout.view_channel_item, parent, false);
             }
 
-            ChannelItem channel = getItem(position);
+            final ChannelItem channel = getItem(position);
 
             TextView tvChannelName = (TextView) convertView.findViewById(R.id.tvChannelName);
             tvChannelName.setText(channel.getName());
 
+            SwitchCompat swChannel = (SwitchCompat) convertView.findViewById(R.id.swChannel);
+            swChannel.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    channel.enabled = isChecked;
+                }
+            });
+            swChannel.setChecked(channel.isEnabled());
             return convertView;
         }
 
@@ -191,6 +201,7 @@ public class CustomizationActivity extends AppCompatActivity {
         protected static class ChannelItem {
 
             protected String name;
+            protected boolean enabled = true;
 
             public ChannelItem(String name) {
                 this.name = name;
@@ -198,6 +209,10 @@ public class CustomizationActivity extends AppCompatActivity {
 
             public String getName() {
                 return name;
+            }
+
+            public boolean isEnabled() {
+                return enabled;
             }
 
         }
