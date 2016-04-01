@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
@@ -89,7 +88,7 @@ public class ColorChooserDialog extends Dialog {
         tvColorDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tvColorDone.setTypeface(null, Typeface.BOLD);
+                tvColorDone.setBackgroundColor(Color.parseColor("#eeeeee"));
                 dismiss();
             }
         });
