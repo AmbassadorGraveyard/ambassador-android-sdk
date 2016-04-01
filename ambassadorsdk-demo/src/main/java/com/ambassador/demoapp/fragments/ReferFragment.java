@@ -24,6 +24,7 @@ import com.ambassador.demoapp.activities.CustomizationActivity;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
+
 public final class ReferFragment extends Fragment {
 
     @Bind(R.id.ivAddRaf) protected CircleImageView ivAddRaf;
@@ -60,7 +61,43 @@ public final class ReferFragment extends Fragment {
 //                Demo.get().presentRAF(getActivity(), path);
 //            }
 //        });
-
+//        lvRafs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+//            @Override
+//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+//                RafAdapter.RafItem rafItem = adapter.getItem(position);
+//                RAFOptions rafOptions = null;
+//                try {
+//                    rafOptions = RAFOptionsFactory.decodeResources(getActivity().getAssets().open(rafItem.getOptionsPath()), getActivity());
+//                } catch (Exception e) {
+//                    Toast.makeText(getActivity(), "Didn't work!", Toast.LENGTH_SHORT).show();
+//                }
+//                if (rafOptions != null) {
+//                    StringBuilder readmeBuilder = new StringBuilder();
+//                    readmeBuilder.append("AmbassadorSDK 1.1.4\n");
+//                    readmeBuilder.append("Add the items from the assets folder to your applications local assets folder.\n");
+//                    readmeBuilder.append("Use the following code snippet to present this refer a friend integration:\n");
+//                    readmeBuilder.append("AmbassadorSDK.presentRAF(context, campaignId, \"raf.xml\");\n");
+//
+//                    String filename = new CustomizationPackage(getActivity())
+//                            .add("raf.xml", rafOptions)
+//                            .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
+//                            .zip();
+//                    File file = new File(getContext().getFilesDir(), filename);
+//                    Uri uri = FileProvider.getUriForFile(getContext(), "com.ambassador.fileprovider", file);
+//                    final Intent intent = ShareCompat.IntentBuilder.from(getActivity())
+//                            .setType("*/*")
+//                            .setStream(uri)
+//                            .setChooserTitle("Share Integration Assets")
+//                            .createChooserIntent()
+//                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+//                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//                    getActivity().startActivity(intent);
+//                }
+//                return true;
+//            }
+//        });
+//
 //        setListViewHeightBasedOnChildren(lvRafs);
 
         return view;
