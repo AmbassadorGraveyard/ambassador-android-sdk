@@ -216,7 +216,7 @@ public class LoginActivityTest {
         };
     }
 
-    public static Matcher<Root> isToast() {
+    private static Matcher<Root> isToast() {
         return new TypeSafeMatcher<Root>() {
 
             @Override
