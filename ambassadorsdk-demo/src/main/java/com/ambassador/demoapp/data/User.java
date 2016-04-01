@@ -15,6 +15,8 @@ public class User {
     protected String universalId;
     protected String universalToken;
     protected String sdkToken;
+    protected String avatarUrl;
+    protected String name;
 
     public User() {
 
@@ -32,10 +34,20 @@ public class User {
         return sdkToken;
     }
 
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public void load(LoginResponse loginResponse) {
         universalId = loginResponse.company.universal_id;
         universalToken = loginResponse.company.universal_token;
         sdkToken = loginResponse.company.sdk_token;
+        avatarUrl = loginResponse.company.avatar_url;
+        name = loginResponse.company.first_name + " " + loginResponse.company.last_name;
         save();
     }
 
@@ -58,6 +70,11 @@ public class User {
     public static boolean isStored() {
         instance = get();
         return (instance.universalId != null && instance.sdkToken != null);
+    }
+
+    public static void logout() {
+        Demo.get().getSharedPreferences("user", Context.MODE_PRIVATE).edit().putString("user", null).apply();
+        instance = new User();
     }
 
     @NonNull

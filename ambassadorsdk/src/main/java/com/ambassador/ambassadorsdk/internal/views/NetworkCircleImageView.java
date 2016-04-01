@@ -40,7 +40,9 @@ public class NetworkCircleImageView extends CircleImageView {
      * @param url
      */
     public void load(String url) {
-        new LoadImageTask(this).execute(url);
+        if (url != null) {
+            new LoadImageTask(this).execute(url);
+        }
     }
 
     /**
