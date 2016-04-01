@@ -52,6 +52,15 @@ dependencies {
         provided "${it}"
     }
 
+    rootProject.ext.demoTestCompile.each {
+        testCompile "${it}"
+    }
+
+    rootProject.ext.demoTestApt.each {
+        testApt "${it}"
+    }
+
+
     rootProject.ext.demoAndroidTestCompile.each {
         androidTestCompile "${it}"
     }

@@ -27,7 +27,6 @@ import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.demoapp.activities.LoginActivity;
 import com.ambassador.demoapp.activities.MainActivity;
 import com.ambassador.demoapp.api.pojo.LoginResponse;
-import com.ambassador.demoapp.activities.MainActivity;
 
 import junit.framework.Assert;
 
