@@ -9,7 +9,7 @@ import retrofit.Callback;
 
 public class Requests {
 
-    protected static Requests instance = null;
+    public static Requests instance = null;
 
     protected Client client;
 
