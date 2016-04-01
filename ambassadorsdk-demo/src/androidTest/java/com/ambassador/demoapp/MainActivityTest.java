@@ -1,14 +1,19 @@
 package com.ambassador.demoapp;
 
+import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
+import android.support.test.espresso.core.deps.guava.collect.Iterables;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
+import android.support.test.runner.lifecycle.Stage;
 import android.view.View;
 import android.widget.TextView;
 
@@ -19,6 +24,9 @@ import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.demoapp.activities.LoginActivity;
+import com.ambassador.demoapp.activities.MainActivity;
+import com.ambassador.demoapp.api.pojo.LoginResponse;
 import com.ambassador.demoapp.activities.MainActivity;
 
 import junit.framework.Assert;
@@ -56,6 +64,15 @@ public class MainActivityTest {
     public void beforeEachTest() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         context = instrumentation.getTargetContext().getApplicationContext();
+
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.company = new LoginResponse.Company();
+        loginResponse.company.first_name = "kitty";
+        loginResponse.company.last_name = "cat";
+        loginResponse.company.universal_id = "universal_id";
+        loginResponse.company.sdk_token = "sdk_token";
+        loginResponse.company.avatar_url = "http://catfacts.jazzychad.net/img/cat.jpg";
+        com.ambassador.demoapp.data.User.get().load(loginResponse);
 
         AmbSingleton.init(context, new TestModule());
         AmbassadorSDK.runWithKeys(context, "ut", "uid");
@@ -270,7 +287,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testsConversionWithNoRevenue() {
+    public void testsConversionWithNoRevenue() throws Exception {
         // Select Conversion tab.
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
@@ -296,7 +313,7 @@ public class MainActivityTest {
     }
 
     @Test
-    public void testsConversionWithNoCampaignID() {
+    public void testsConversionWithNoCampaignID() throws Exception {
         // Select Conversion tab.
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
@@ -319,6 +336,64 @@ public class MainActivityTest {
 
         // Verify no conversion fires.
         Mockito.verify(conversionUtility, Mockito.never()).registerConversion();
+    }
+
+    @Test
+    public void testsSettingsCopyUniversalId() throws Exception {
+        // Select Settings tab.
+        onView(withTabName("Settings")).perform(ViewActions.click());
+
+        // Click copy button for universal ID.
+        onView(withId(R.id.ivCopyUniversalId)).perform(ViewActions.click());
+
+        // Verify clip data.
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                String clipboardData = clipboardManager.getPrimaryClip().getItemAt(0).getText().toString();
+                Assert.assertEquals("universal_id", clipboardData);
+            }
+        });
+    }
+
+    @Test
+    public void testsSettingsCopySdkToken() throws Exception {
+        // Select Settings tab.
+        onView(withTabName("Settings")).perform(ViewActions.click());
+
+        // Click copy button for sdk token.
+        onView(withId(R.id.ivCopySdkToken)).perform(ViewActions.click());
+
+        // Verify clip data.
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                String clipboardData = clipboardManager.getPrimaryClip().getItemAt(0).getText().toString();
+                Assert.assertEquals("sdk_token", clipboardData);
+            }
+        });
+    }
+
+    @Test
+    public void testsSettingsLogout() throws Exception {
+        // Select Settings tab.
+        onView(withTabName("Settings")).perform(ViewActions.click());
+
+        // Click the logout button.
+        onView(withId(R.id.rlLogout)).perform(ViewActions.click());
+
+        // Sleep 500ms to compensate for LaunchActivity, and verify LoginActivity..
+        Thread.sleep(500);
+        final Activity[] activity = new Activity[1];
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                activity[0] = Iterables.getOnlyElement(ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED));
+            }
+        });
+        Assert.assertTrue(activity[0] instanceof LoginActivity);
     }
 
     private static Matcher<View> withTabActivated(final int index) {
