@@ -58,14 +58,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="270dp" />
 
-            <LinearLayout
-                android:id="@+id/llRainbow"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
                 android:layout_below="@+id/flColorB"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal"
-                android:weightSum="3" />
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:id="@+id/llRainbow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="3" />
+
+                <View
+                    android:id="@+id/hueTracker"
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent"/>
+
+            </FrameLayout>
 
             <View
                 android:id="@+id/viewColorSpot"
@@ -214,7 +225,7 @@
         <View
             android:id="@+id/viewPreview"
             android:layout_width="match_parent"
-            android:layout_height="3dp"
+            android:layout_height="4dp"
             android:layout_margin="10dp" />
 
         <RelativeLayout
