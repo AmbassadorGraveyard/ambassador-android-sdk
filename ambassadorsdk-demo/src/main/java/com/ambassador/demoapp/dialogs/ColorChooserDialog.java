@@ -27,6 +27,10 @@ import android.widget.Toast;
 
 import com.ambassador.demoapp.R;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -43,11 +47,15 @@ public class ColorChooserDialog extends Dialog {
     protected float s;
     protected float v;
 
+    protected int colorX = 50;
+    protected int colorY = 50;
+
     @Bind(R.id.viewColorSpot) protected View colorSpot;
     @Bind(R.id.rlColors) protected RelativeLayout rlColors;
     @Bind(R.id.flColorA) protected FrameLayout flColorA;
     @Bind(R.id.flColorB) protected FrameLayout flColorB;
     @Bind(R.id.llRainbow) protected LinearLayout llRainbow;
+    @Bind(R.id.hueTracker) protected View hueTracker;
     @Bind(R.id.etRedValue) protected EditText etRedValue;
     @Bind(R.id.etGreenValue) protected EditText etGreenValue;
     @Bind(R.id.etBlueValue) protected EditText etBlueValue;
@@ -73,6 +81,10 @@ public class ColorChooserDialog extends Dialog {
         updateGradients(hueExtreme);
         setUpRainbow();
 
+        GradientDrawable colorSpotBackground = new GradientDrawable();
+        colorSpotBackground.setStroke(2, Color.BLACK);
+        hueTracker.setBackground(colorSpotBackground);
+
         flColorA.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -93,6 +105,10 @@ public class ColorChooserDialog extends Dialog {
                     colorSpot.setBackground(colorSpotBackground);
                 }
 
+                colorX = colorSpotX;
+                colorY = colorSpotY;
+                updateColor();
+
                 flColorA.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
@@ -103,6 +119,9 @@ public class ColorChooserDialog extends Dialog {
                 if (event.getX() < 0 || event.getX() > flColorA.getWidth() || event.getY() < 0 || event.getY() > flColorA.getHeight()) {
                     return false;
                 }
+
+                colorX = (int) event.getX();
+                colorY = (int) event.getY();
 
                 if (event.getY() < flColorA.getHeight() / 2) {
                     GradientDrawable colorSpotBackground = new GradientDrawable();
@@ -119,32 +138,7 @@ public class ColorChooserDialog extends Dialog {
                 colorSpot.setTranslationX(event.getX() - colorSpot.getWidth() / 2);
                 colorSpot.setTranslationY(event.getY() - colorSpot.getHeight() / 2);
 
-                rlColors.setDrawingCacheEnabled(true);
-                rlColors.buildDrawingCache();
-                final Bitmap colors = rlColors.getDrawingCache();
-
-                int pixel = colors.getPixel((int) event.getX(), (int) event.getY());
-
-                int red = Color.red(pixel);
-                int green = Color.green(pixel);
-                int blue = Color.blue(pixel);
-
-                float[] hsv = new float[3];
-                Color.RGBToHSV(red, green, blue, hsv);
-
-                Log.v("amb-hsv", hsv[0] + " " + hsv[1] + " " + hsv[2]);
-
-                rlColors.setDrawingCacheEnabled(false);
-
-                etRedValue.setText(String.valueOf(red));
-                etGreenValue.setText(String.valueOf(green));
-                etBlueValue.setText(String.valueOf(blue));
-                etHexValue.setText(String.format("%06X", (0xFFFFFF & pixel)));
-
-                color = pixel;
-
-                viewPreview.setBackgroundColor(color);
-
+                updateColor();
                 return true;
             }
         });
@@ -163,6 +157,9 @@ public class ColorChooserDialog extends Dialog {
                 updateGradients(pixel);
 
                 llRainbow.setDrawingCacheEnabled(false);
+                hueTracker.setTranslationX(event.getX());
+
+                updateColor();
 
                 return true;
             }
@@ -211,6 +208,25 @@ public class ColorChooserDialog extends Dialog {
         b.setColors(new int[]{ Color.BLACK, Color.TRANSPARENT });
         b.setOrientation(GradientDrawable.Orientation.BOTTOM_TOP);
         flColorB.setBackground(b);
+    }
+
+    protected void updateColor() {
+        rlColors.setDrawingCacheEnabled(true);
+        rlColors.buildDrawingCache();
+        final Bitmap colors = rlColors.getDrawingCache();
+        color = colors.getPixel(colorX, colorY);
+        rlColors.setDrawingCacheEnabled(false);
+
+        int red = Color.red(color);
+        int green = Color.green(color);
+        int blue = Color.blue(color);
+
+        etRedValue.setText(String.valueOf(red));
+        etGreenValue.setText(String.valueOf(green));
+        etBlueValue.setText(String.valueOf(blue));
+        etHexValue.setText(String.format("%06X", (0xFFFFFF & color)));
+
+        viewPreview.setBackgroundColor(color);
     }
 
     @ColorInt
@@ -263,7 +279,23 @@ public class ColorChooserDialog extends Dialog {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
+            List<String> allowedCharacters = Arrays.asList("A", "B", "C", "D", "E", "F", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+            String hex = etHexValue.getText().toString();
+            if (hex.length() == 6) {
+                boolean validHex = true;
+                for (int i = 0; i < hex.length(); i++) {
+                    String character = String.valueOf(hex.charAt(i));
+                    if (!allowedCharacters.contains(character)) {
+                        validHex = false;
+                        break;
+                    }
+                }
 
+                if (validHex) {
+                    int color = Color.parseColor("#" + hex);
+                    setColor(color);
+                }
+            }
         }
 
         @Override
