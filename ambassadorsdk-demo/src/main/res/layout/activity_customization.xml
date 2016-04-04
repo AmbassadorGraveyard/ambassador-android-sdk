@@ -76,9 +76,10 @@
             android:paddingTop="12dp">
 
             <TextView
+                android:id="@+id/tvSelectedCampaign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Select a campaign"
+                android:text="Select a Campaign"
                 android:textColor="#e6e6e6"
                 android:textSize="14sp" />
 
