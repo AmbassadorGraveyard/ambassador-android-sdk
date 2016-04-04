@@ -8,7 +8,9 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.util.Log;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -18,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ambassador.demoapp.R;
 
@@ -26,15 +29,15 @@ import butterknife.ButterKnife;
 
 public class ColorChooserDialog extends Dialog {
 
+    @ColorInt protected int color;
+
     @Bind(R.id.rlColors) protected RelativeLayout rlColors;
     @Bind(R.id.flColorA) protected FrameLayout flColorA;
     @Bind(R.id.flColorB) protected FrameLayout flColorB;
     @Bind(R.id.llRainbow) protected LinearLayout llRainbow;
-
     @Bind(R.id.etRedValue) protected EditText etRedValue;
     @Bind(R.id.etGreenValue) protected EditText etGreenValue;
     @Bind(R.id.etBlueValue) protected EditText etBlueValue;
-
     @Bind(R.id.tvColorCancel) protected TextView tvColorCancel;
     @Bind(R.id.tvColorDone) protected TextView tvColorDone;
 
@@ -54,9 +57,13 @@ public class ColorChooserDialog extends Dialog {
         updateGradients(Color.RED);
         setUpRainbow();
 
-        rlColors.setOnDragListener(new View.OnDragListener() {
+        rlColors.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onDrag(View v, DragEvent event) {
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getX() < 0 || event.getX() > flColorA.getWidth() || event.getY() < 0 || event.getY() > flColorA.getHeight()) {
+                    return false;
+                }
+
                 rlColors.setDrawingCacheEnabled(true);
                 rlColors.buildDrawingCache();
                 final Bitmap colors = rlColors.getDrawingCache();
@@ -69,10 +76,11 @@ public class ColorChooserDialog extends Dialog {
 
                 rlColors.setDrawingCacheEnabled(false);
 
-
                 etRedValue.setText(String.valueOf(red));
                 etGreenValue.setText(String.valueOf(green));
                 etBlueValue.setText(String.valueOf(blue));
+
+                color = pixel;
 
                 return true;
             }
@@ -117,6 +125,15 @@ public class ColorChooserDialog extends Dialog {
         b.setColors(new int[]{ Color.BLACK, Color.TRANSPARENT });
         b.setOrientation(GradientDrawable.Orientation.BOTTOM_TOP);
         flColorB.setBackground(b);
+    }
+
+    @ColorInt
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(@ColorInt int color) {
+        this.color = color;
     }
 
 }

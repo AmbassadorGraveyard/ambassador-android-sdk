@@ -2,6 +2,7 @@ package com.ambassador.demoapp.views;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.ColorInt;
@@ -33,19 +34,22 @@ public class ColorInputView extends RelativeLayout implements View.OnClickListen
     }
 
     protected void init() {
-        GradientDrawable gradientDrawable = new GradientDrawable();
-        gradientDrawable.setCornerRadius(500);
-        gradientDrawable.setColor(Color.parseColor("#4198d1"));
-        setBackground(gradientDrawable);
-
+        setColor(Color.parseColor("#4198d1"));
         setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         if (activity != null) {
-            ColorChooserDialog dialog = new ColorChooserDialog(activity);
-            dialog.show();
+            final ColorChooserDialog colorChooserDialog = new ColorChooserDialog(activity);
+            colorChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    int color = colorChooserDialog.getColor();
+                    setColor(color);
+                }
+            });
+            colorChooserDialog.show();
         }
     }
 
@@ -60,6 +64,10 @@ public class ColorInputView extends RelativeLayout implements View.OnClickListen
 
     public void setColor(@ColorInt int color) {
         this.color = color;
+        GradientDrawable gradientDrawable = new GradientDrawable();
+        gradientDrawable.setCornerRadius(500);
+        gradientDrawable.setColor(color);
+        setBackground(gradientDrawable);
     }
 
 }
