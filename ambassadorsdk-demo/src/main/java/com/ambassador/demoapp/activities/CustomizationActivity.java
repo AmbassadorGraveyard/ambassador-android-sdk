@@ -28,6 +28,7 @@ import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
@@ -130,7 +131,9 @@ public class CustomizationActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Integration integration = new DataHandler().getIntegration();
-        finish();
+        AmbassadorSDK.identify("jake@getambassador.com");
+        AmbassadorSDK.presentRAF(this, integration.getCampaignId() + "", integration.getRafOptions());
+        //finish();
         return true;
     }
 

@@ -183,6 +183,8 @@ public class ColorChooserDialog extends Dialog {
         etRedValue.addTextChangedListener(rgbTextWatcher);
         etGreenValue.addTextChangedListener(rgbTextWatcher);
         etBlueValue.addTextChangedListener(rgbTextWatcher);
+
+        //etHexValue.addTextChangedListener(hexTextWatcher);
     }
 
     protected void setUpRainbow() {
@@ -294,6 +296,7 @@ public class ColorChooserDialog extends Dialog {
                 if (validHex) {
                     int color = Color.parseColor("#" + hex);
                     setColor(color);
+                    updateColor();
                 }
             }
         }
