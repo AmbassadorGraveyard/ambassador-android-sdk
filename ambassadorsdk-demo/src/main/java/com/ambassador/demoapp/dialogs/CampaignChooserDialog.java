@@ -48,7 +48,6 @@ public class CampaignChooserDialog extends Dialog {
         }
 
         campaigns = new ArrayList<>();
-        populateCampaigns();
     }
 
     @Override
@@ -57,6 +56,7 @@ public class CampaignChooserDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_campaign_chooser);
         ButterKnife.bind(this);
+        populateCampaigns();
         adapter = new CampaignAdapter(getContext(), campaigns);
         lvCampaignChooser.setAdapter(adapter);
         lvCampaignChooser.setOnItemClickListener(new AdapterView.OnItemClickListener() {

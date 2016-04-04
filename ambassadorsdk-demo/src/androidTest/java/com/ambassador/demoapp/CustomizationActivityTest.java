@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.demoapp.activities.CustomizationActivity;
+import com.ambassador.demoapp.api.Requests;
+import com.ambassador.demoapp.api.pojo.GetCampaignsResponse;
 import com.mobeta.android.dslv.DragSortItemView;
 
 import org.hamcrest.Description;
@@ -28,12 +30,18 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
+
+import retrofit.Callback;
 
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.not;
 
@@ -44,10 +52,15 @@ public class CustomizationActivityTest {
 
     protected Context context;
 
+    protected Requests requests;
+
     @Before
     public void beforeEachTest() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
         context = instrumentation.getTargetContext().getApplicationContext();
+
+        requests = Mockito.mock(Requests.class);
+        Requests.instance = requests;
 
         AmbSingleton.init(context, new TestModule());
         AmbassadorSDK.runWithKeys(context, "ut", "uid");
@@ -94,6 +107,130 @@ public class CustomizationActivityTest {
 
         // Close dialog.
         Espresso.pressBack();
+    }
+
+    @Test
+    public void testsCampaignChooserWithOptionsDoesSetInput() {
+        // Mock campaigns success response
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<GetCampaignsResponse> responseCallback = (Callback) invocation.getArguments()[1];
+                GetCampaignsResponse getCampaignsResponse = new GetCampaignsResponse();
+                getCampaignsResponse.results = new GetCampaignsResponse.CampaignResponse[3];
+                getCampaignsResponse.results[0] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[1] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[2] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[0].name = "Test campaign 1";
+                getCampaignsResponse.results[0].uid = 123;
+                getCampaignsResponse.results[1].name = "Test campaign 2";
+                getCampaignsResponse.results[1].uid = 124;
+                getCampaignsResponse.results[2].name = "Test campaign 3";
+                getCampaignsResponse.results[2].uid = 125;
+                responseCallback.success(getCampaignsResponse, null);
+                return null;
+            }
+        }).when(requests).getCampaigns(Mockito.anyString(), Mockito.any(Callback.class));
+
+        // Scroll to campaign chooser.
+        onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.scrollTo());
+
+        // Verify default text.
+        onView(withId(R.id.tvSelectedCampaign)).check(matches(withText("Select a Campaign")));
+
+        // Click the campaign chooser.
+        onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.click());
+
+        // Confirm dialog launches.
+        onView(withId(R.id.rvCampaignChooserTitle)).check(matches(isDisplayed()));
+
+        // Click the 2nd campaign.
+        onData(anything()).inAdapterView(withId(R.id.lvCampaignChooser)).atPosition(1).perform(ViewActions.click());
+
+        // Confirm text set on textview.
+        onView(withId(R.id.tvSelectedCampaign)).check(matches(withText("Test campaign 2")));
+    }
+
+    @Test
+    public void testsCampaignChooserCanceledDoesNotSetInput() {
+        // Mock campaigns success response
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<GetCampaignsResponse> responseCallback = (Callback) invocation.getArguments()[1];
+                GetCampaignsResponse getCampaignsResponse = new GetCampaignsResponse();
+                getCampaignsResponse.results = new GetCampaignsResponse.CampaignResponse[3];
+                getCampaignsResponse.results[0] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[1] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[2] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[0].name = "Test campaign 1";
+                getCampaignsResponse.results[0].uid = 123;
+                getCampaignsResponse.results[1].name = "Test campaign 2";
+                getCampaignsResponse.results[1].uid = 124;
+                getCampaignsResponse.results[2].name = "Test campaign 3";
+                getCampaignsResponse.results[2].uid = 125;
+                responseCallback.success(getCampaignsResponse, null);
+                return null;
+            }
+        }).when(requests).getCampaigns(Mockito.anyString(), Mockito.any(Callback.class));
+
+        // Scroll to campaign chooser.
+        onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.scrollTo());
+
+        // Verify default text.
+        onView(withId(R.id.tvSelectedCampaign)).check(matches(withText("Select a Campaign")));
+
+        // Click the campaign chooser.
+        onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.click());
+
+        // Confirm dialog launches.
+        onView(withId(R.id.rvCampaignChooserTitle)).check(matches(isDisplayed()));
+
+        // Press back.
+        Espresso.pressBack();
+
+        // Confirm text set on textview.
+        onView(withId(R.id.tvSelectedCampaign)).check(matches(withText("Select a Campaign")));
+    }
+
+    @Test
+    public void testsCampaignChooserProgressBarBehavior() throws Exception {
+        // Mock campaigns success response
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<GetCampaignsResponse> responseCallback = (Callback) invocation.getArguments()[1];
+                GetCampaignsResponse getCampaignsResponse = new GetCampaignsResponse();
+                getCampaignsResponse.results = new GetCampaignsResponse.CampaignResponse[3];
+                getCampaignsResponse.results[0] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[1] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[2] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[0].name = "Test campaign 1";
+                getCampaignsResponse.results[0].uid = 123;
+                getCampaignsResponse.results[1].name = "Test campaign 2";
+                getCampaignsResponse.results[1].uid = 124;
+                getCampaignsResponse.results[2].name = "Test campaign 3";
+                getCampaignsResponse.results[2].uid = 125;
+                responseCallback.success(getCampaignsResponse, null);
+
+                return null;
+            }
+        }).when(requests).getCampaigns(Mockito.anyString(), Mockito.any(Callback.class));
+
+        // Scroll to campaign chooser.
+        onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.scrollTo());
+
+        // Verify default text.
+        onView(withId(R.id.tvSelectedCampaign)).check(matches(withText("Select a Campaign")));
+
+        // Click the campaign chooser.
+        onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.click());
+
+        // Check progress bar gone after request answered.
+        onView(withId(R.id.pbCampaignsLoading)).check(matches(not(isDisplayed())));
+
+        // Confirm dialog launches.
+        onView(withId(R.id.rvCampaignChooserTitle)).check(matches(isDisplayed()));
     }
 
     @Test
