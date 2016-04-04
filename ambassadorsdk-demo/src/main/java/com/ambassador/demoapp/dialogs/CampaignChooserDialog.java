@@ -131,6 +131,9 @@ public class CampaignChooserDialog extends Dialog {
             TextView tvChannelName = (TextView) convertView.findViewById(R.id.tvCampaignName);
             tvChannelName.setText(campaign.getName());
 
+            TextView tvCampaignId = (TextView) convertView.findViewById(R.id.tvCampaignId);
+            tvCampaignId.setText("Campaign ID: " + campaign.getId());
+
             return convertView;
         }
 

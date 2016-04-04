@@ -189,10 +189,10 @@ public class CustomizationActivity extends AppCompatActivity {
             this.activity = activity;
 
             this.channelItems = new ArrayList<>();
-            channelItems.add(new ChannelItem("Facebook"));
-            channelItems.add(new ChannelItem("Twitter"));
-            channelItems.add(new ChannelItem("LinkedIn"));
-            channelItems.add(new ChannelItem("Email"));
+            channelItems.add(new ChannelItem("FACEBOOK"));
+            channelItems.add(new ChannelItem("TWITTER"));
+            channelItems.add(new ChannelItem("LINKEDIN"));
+            channelItems.add(new ChannelItem("EMAIL"));
             channelItems.add(new ChannelItem("SMS"));
         }
 
@@ -265,7 +265,7 @@ public class CustomizationActivity extends AppCompatActivity {
     protected class DataHandler {
 
         public void setIntegration(@NonNull Integration integration) {
-            
+
         }
 
         @NonNull
