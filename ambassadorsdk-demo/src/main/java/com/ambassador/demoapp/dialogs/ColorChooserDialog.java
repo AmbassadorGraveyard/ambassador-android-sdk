@@ -8,11 +8,14 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -29,7 +32,16 @@ import butterknife.ButterKnife;
 
 public class ColorChooserDialog extends Dialog {
 
+    protected boolean inflated = false;
+
     @ColorInt protected int color;
+    @ColorInt protected int hueExtreme;
+    protected int r;
+    protected int g;
+    protected int b;
+    protected float h;
+    protected float s;
+    protected float v;
 
     @Bind(R.id.viewColorSpot) protected View colorSpot;
     @Bind(R.id.rlColors) protected RelativeLayout rlColors;
@@ -55,8 +67,33 @@ public class ColorChooserDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_color_chooser);
         ButterKnife.bind(this);
-        updateGradients(Color.RED);
+        inflated = true;
+        updateGradients(hueExtreme);
         setUpRainbow();
+
+        flColorA.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int colorSpotX = (int) (flColorA.getWidth() * s);
+                int colorSpotY = flColorA.getHeight() - (int) (flColorA.getHeight() * v);
+                colorSpot.setTranslationX(colorSpotX - colorSpot.getWidth() / 2);
+                colorSpot.setTranslationY(colorSpotY - colorSpot.getHeight() / 2);
+
+                if (colorSpotY < flColorA.getHeight() / 2) {
+                    GradientDrawable colorSpotBackground = new GradientDrawable();
+                    colorSpotBackground.setStroke(2, Color.BLACK);
+                    colorSpotBackground.setCornerRadius(100);
+                    colorSpot.setBackground(colorSpotBackground);
+                } else {
+                    GradientDrawable colorSpotBackground = new GradientDrawable();
+                    colorSpotBackground.setStroke(2, Color.WHITE);
+                    colorSpotBackground.setCornerRadius(100);
+                    colorSpot.setBackground(colorSpotBackground);
+                }
+
+                flColorA.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
 
         rlColors.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -89,6 +126,11 @@ public class ColorChooserDialog extends Dialog {
                 int red = Color.red(pixel);
                 int green = Color.green(pixel);
                 int blue = Color.blue(pixel);
+
+                float[] hsv = new float[3];
+                Color.RGBToHSV(red, green, blue, hsv);
+
+                Log.v("amb-hsv", hsv[0] + " " + hsv[1] + " " + hsv[2]);
 
                 rlColors.setDrawingCacheEnabled(false);
 
@@ -135,6 +177,10 @@ public class ColorChooserDialog extends Dialog {
                 dismiss();
             }
         });
+
+        etRedValue.addTextChangedListener(rgbTextWatcher);
+        etGreenValue.addTextChangedListener(rgbTextWatcher);
+        etBlueValue.addTextChangedListener(rgbTextWatcher);
     }
 
     protected void setUpRainbow() {
@@ -153,7 +199,7 @@ public class ColorChooserDialog extends Dialog {
     protected void updateGradients(@ColorInt int color) {
         GradientDrawable a = new GradientDrawable();
         a.setColors(new int[]{ color, Color.WHITE });
-        a.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
+        a.setOrientation(GradientDrawable.Orientation.RIGHT_LEFT);
         flColorA.setBackground(a);
 
         GradientDrawable b = new GradientDrawable();
@@ -169,6 +215,57 @@ public class ColorChooserDialog extends Dialog {
 
     public void setColor(@ColorInt int color) {
         this.color = color;
+
+        r = Color.red(color);
+        g = Color.green(color);
+        b = Color.blue(color);
+
+        float[] hsv = new float[3];
+        Color.RGBToHSV(r, g, b, hsv);
+
+        h = hsv[0];
+        s = hsv[1];
+        v = hsv[2];
+
+        hueExtreme = Color.HSVToColor(new float[]{ h, 1, 1 });
     }
+
+    protected TextWatcher rgbTextWatcher = new TextWatcher() {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+
+    };
+
+    protected TextWatcher hexTextWatcher = new TextWatcher() {
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+
+    };
 
 }
