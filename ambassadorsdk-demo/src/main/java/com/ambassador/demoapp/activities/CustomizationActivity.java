@@ -1,8 +1,10 @@
 package com.ambassador.demoapp.activities;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -33,6 +35,9 @@ import com.ambassador.demoapp.data.Integration;
 import com.ambassador.demoapp.dialogs.CampaignChooserDialog;
 import com.ambassador.demoapp.views.ColorInputView;
 import com.ambassador.demoapp.views.InputView;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mobeta.android.dslv.DragSortListView;
 
 import java.io.FileOutputStream;
@@ -57,6 +62,7 @@ public class CustomizationActivity extends AppCompatActivity {
     @Bind(R.id.inputTextField1) protected InputView inputTextField1;
     @Bind(R.id.inputTextField2) protected InputView inputTextField2;
     @Bind(R.id.rvCampaignChooser) protected RelativeLayout rvCampaignChooser;
+    @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
     @Bind(R.id.lvChannels) protected DragSortListView lvChannels;
     @Bind(R.id.civHeader) protected ColorInputView civHeader;
     @Bind(R.id.civTextField1) protected ColorInputView civTextField1;
@@ -83,7 +89,20 @@ public class CustomizationActivity extends AppCompatActivity {
         rvCampaignChooser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(CustomizationActivity.this);
+                final CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(CustomizationActivity.this);
+                campaignChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (campaignChooserDialog.getSelectedCampaign() == null) return;
+                        JsonObject json = new JsonParser().parse(campaignChooserDialog.getSelectedCampaign()).getAsJsonObject();
+                        String name = json.get("name").getAsString();
+                        int id = json.get("id").getAsInt();
+                        Campaign campaign = new Campaign();
+                        campaign.setId(id);
+                        campaign.setName(name);
+                        new DataHandler().setCampaign(campaign);
+                    }
+                });
                 campaignChooserDialog.show();
             }
         });
@@ -288,7 +307,13 @@ public class CustomizationActivity extends AppCompatActivity {
         }
 
         public void setCampaign(@NonNull Campaign campaign) {
-
+            if (campaign.equals(Campaign.NONE)) {
+                tvSelectedCampaign.setText("Select a Campaign");
+                tvSelectedCampaign.setTextColor(Color.parseColor("#e6e6e6"));
+            } else {
+                tvSelectedCampaign.setText(campaign.getName());
+                tvSelectedCampaign.setTextColor(Color.parseColor("#253244"));
+            }
         }
 
         @ColorInt
@@ -391,6 +416,22 @@ public class CustomizationActivity extends AppCompatActivity {
 
         protected int id;
         protected String name;
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
 
     }
 

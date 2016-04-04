@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -17,6 +19,7 @@ import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.api.Requests;
 import com.ambassador.demoapp.api.pojo.GetCampaignsResponse;
 import com.ambassador.demoapp.data.User;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ public class CampaignChooserDialog extends Dialog {
     @Bind(R.id.lvCampaignChooser) protected ListView lvCampaignChooser;
 
     protected List<Campaign> campaigns;
+    protected Campaign selectedCampaign;
 
     protected CampaignAdapter adapter;
 
@@ -53,6 +57,14 @@ public class CampaignChooserDialog extends Dialog {
         ButterKnife.bind(this);
         adapter = new CampaignAdapter(getContext(), campaigns);
         lvCampaignChooser.setAdapter(adapter);
+        lvCampaignChooser.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Campaign campaign = adapter.getItem(position);
+                selectedCampaign = campaign;
+                dismiss();
+            }
+        });
     }
 
     protected void populateCampaigns() {
@@ -137,6 +149,10 @@ public class CampaignChooserDialog extends Dialog {
             return convertView;
         }
 
+    }
+
+    public String getSelectedCampaign() {
+        return selectedCampaign == null ? null : new Gson().toJson(selectedCampaign);
     }
 
 }
