@@ -51,6 +51,8 @@ public class ColorChooserDialog extends Dialog {
     @Bind(R.id.etRedValue) protected EditText etRedValue;
     @Bind(R.id.etGreenValue) protected EditText etGreenValue;
     @Bind(R.id.etBlueValue) protected EditText etBlueValue;
+    @Bind(R.id.etHexValue) protected EditText etHexValue;
+    @Bind(R.id.viewPreview) protected View viewPreview;
     @Bind(R.id.tvColorCancel) protected TextView tvColorCancel;
     @Bind(R.id.tvColorDone) protected TextView tvColorDone;
 
@@ -137,8 +139,11 @@ public class ColorChooserDialog extends Dialog {
                 etRedValue.setText(String.valueOf(red));
                 etGreenValue.setText(String.valueOf(green));
                 etBlueValue.setText(String.valueOf(blue));
+                etHexValue.setText(String.format("%06X", (0xFFFFFF & pixel)));
 
                 color = pixel;
+
+                viewPreview.setBackgroundColor(color);
 
                 return true;
             }
