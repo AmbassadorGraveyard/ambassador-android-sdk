@@ -18,12 +18,13 @@
             android:layout_marginTop="25dp" />
 
         <TextView
+            android:id="@+id/tvProductPhotoInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="8dp"
-            android:text="Upload product photo"
+            android:text="Upload Product Photo"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
 
