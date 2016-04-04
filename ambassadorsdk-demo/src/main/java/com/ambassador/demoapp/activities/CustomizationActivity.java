@@ -58,6 +58,8 @@ public class CustomizationActivity extends AppCompatActivity {
 
     protected ChannelAdapter channelAdapter;
 
+    protected Campaign selectedCampaign;
+
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
     @Bind(R.id.tvProductPhotoInfo) protected TextView tvProductPhotoInfo;
     @Bind(R.id.inputIntegrationName) protected InputView inputIntegrationName;
@@ -127,6 +129,7 @@ public class CustomizationActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Integration integration = new DataHandler().getIntegration();
         finish();
         return true;
     }
@@ -254,7 +257,9 @@ public class CustomizationActivity extends AppCompatActivity {
                     channel.enabled = isChecked;
                 }
             });
+
             swChannel.setChecked(channel.isEnabled());
+
             return convertView;
         }
 
@@ -276,7 +281,22 @@ public class CustomizationActivity extends AppCompatActivity {
 
         @NonNull
         public Integration getIntegration() {
-            return new Integration();
+            Integration integration = new Integration();
+            integration.setName(getIntegrationName());
+            integration.setCampaignId(selectedCampaign.getId());
+            integration.setCreatedAtDate(System.currentTimeMillis());
+            RAFOptions rafOptions = new RAFOptions.Builder()
+                    .setHomeToolbarColor(getHeaderColor())
+                    .setContactsToolbarColor(getHeaderColor())
+                    .setTitleText(getTextField1())
+                    .setHomeWelcomeTitleColor(getTextField1Color())
+                    .setDescriptionText(getTextField2())
+                    .setHomeWelcomeDescriptionColor(getTextField2Color())
+                    .setChannels(getChannels())
+                    .setContactsSendButtonColor(getButtonColor())
+                    .build();
+            integration.setRafOptions(rafOptions);
+            return integration;
         }
 
         @NonNull
@@ -294,6 +314,7 @@ public class CustomizationActivity extends AppCompatActivity {
         }
 
         public void setCampaign(@NonNull Campaign campaign) {
+            selectedCampaign = campaign;
             if (campaign.equals(Campaign.NONE)) {
                 tvSelectedCampaign.setText("Select a Campaign");
                 tvSelectedCampaign.setTextColor(Color.parseColor("#e6e6e6"));
