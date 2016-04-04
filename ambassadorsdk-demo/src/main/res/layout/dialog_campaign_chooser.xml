@@ -8,15 +8,31 @@
         android:id="@+id/rvCampaignChooserTitle"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:background="@color/primary">
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/ivBadge"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="12dp"
+            android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Campaigns"
-            android:textColor="@android:color/white"
-            android:textSize="16sp" />
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="7dp"
+            android:layout_toRightOf="@+id/ivBadge"
+            android:text="Choose a Campaign"
+            android:textColor="@android:color/black"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#eee" />
 
     </RelativeLayout>
 
