@@ -6,6 +6,38 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/rvColorChooserTitle"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/ivBadge"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="7dp"
+            android:layout_toRightOf="@+id/ivBadge"
+            android:text="Choose a Color"
+            android:textColor="@android:color/black"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#eee" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/rlColors"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
@@ -144,6 +176,7 @@
             android:layout_height="50dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
+            android:background="?android:attr/selectableItemBackground"
             android:gravity="center"
             android:padding="5dp"
             android:text="CANCEL"
@@ -156,6 +189,7 @@
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:background="?android:attr/selectableItemBackground"
             android:gravity="center"
             android:padding="5dp"
             android:text="DONE"
