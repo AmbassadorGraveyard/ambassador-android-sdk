@@ -42,6 +42,8 @@ public class CustomizationActivity extends AppCompatActivity {
 
     protected static final int PHOTO_CHOOSER_INTENT = 313;
 
+    protected static final String IMAGE_SAVE_FILENAME = "image.png";
+
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
 
     @Bind(R.id.rvCampaignChooser) protected RelativeLayout rvCampaignChooser;
@@ -110,7 +112,7 @@ public class CustomizationActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         ivProductPhoto.setImageBitmap(bitmap);
-                        saveImage(bitmap, "image.png");
+                        saveImage(bitmap, IMAGE_SAVE_FILENAME);
                     } catch (IOException e) {
                         Log.e(CustomizationActivity.class.getSimpleName(), e.toString());
                     }
