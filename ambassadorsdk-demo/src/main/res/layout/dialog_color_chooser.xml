@@ -75,30 +75,33 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp">
+                android:layout_marginRight="3dp">
 
                 <TextView
                     android:id="@+id/tvRedValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="1dp"
                     android:text="R:"
                     android:textColor="@android:color/black"
                     android:textSize="11sp" />
 
                 <EditText
                     android:id="@+id/etRedValue"
-                    android:layout_width="40dp"
+                    android:layout_width="32dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
                     android:layout_marginTop="2dp"
                     android:layout_toRightOf="@+id/tvRedValue"
                     android:background="@drawable/et_only"
@@ -114,22 +117,24 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp">
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp">
 
                 <TextView
                     android:id="@+id/tvGreenValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="1dp"
                     android:text="G:"
                     android:textColor="@android:color/black"
                     android:textSize="11sp" />
 
                 <EditText
                     android:id="@+id/etGreenValue"
-                    android:layout_width="40dp"
+                    android:layout_width="32dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
                     android:layout_marginTop="2dp"
                     android:layout_toRightOf="@+id/tvGreenValue"
                     android:background="@drawable/et_only"
@@ -145,7 +150,7 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp">
+                android:layout_marginLeft="3dp">
 
                 <TextView
                     android:id="@+id/tvBlueValue"
@@ -158,8 +163,9 @@
 
                 <EditText
                     android:id="@+id/etBlueValue"
-                    android:layout_width="40dp"
+                    android:layout_width="32dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
                     android:layout_marginTop="2dp"
                     android:layout_toRightOf="@+id/tvBlueValue"
                     android:background="@drawable/et_only"
@@ -172,7 +178,44 @@
 
             </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right">
+
+                <TextView
+                    android:id="@+id/tvHexValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="HEX:"
+                    android:textColor="@android:color/black"
+                    android:textSize="11sp" />
+
+                <EditText
+                    android:id="@+id/etHexValue"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_toRightOf="@+id/tvHexValue"
+                    android:background="@drawable/et_only"
+                    android:gravity="center"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:text="#ffaabb"
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+
         </LinearLayout>
+
+        <View
+            android:id="@+id/viewPreview"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_margin="10dp" />
 
         <RelativeLayout
             android:layout_width="match_parent"
