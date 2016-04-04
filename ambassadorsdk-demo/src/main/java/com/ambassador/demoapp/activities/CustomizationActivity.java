@@ -7,6 +7,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.annotation.ColorInt;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demoapp.R;
+import com.ambassador.demoapp.data.Integration;
 import com.ambassador.demoapp.dialogs.CampaignChooserDialog;
 import com.ambassador.demoapp.views.ColorInputView;
 import com.ambassador.demoapp.views.InputView;
@@ -35,6 +38,7 @@ import com.mobeta.android.dslv.DragSortListView;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -164,28 +168,16 @@ public class CustomizationActivity extends AppCompatActivity {
         }
     }
 
-    protected void export() {
-        String integrationName = inputIntegrationName.getText().toString();
-        int campaignId;
-        int headerColor = civHeader.getColor();
-        String textField1 = inputTextField1.getText().toString();
-        int textField1Color = civTextField1.getColor();
-        String textField2 = inputTextField2.getText().toString();
-        int textField2Color = civTextField2.getColor();
-        String[] channels = getChannelsStringArray(channelAdapter);
-        int buttonColor = civButtons.getColor();
+    protected void importIntegration(Integration integration) {
+        DataHandler dataHandler = new DataHandler();
+        dataHandler.setIntegration(integration);
     }
 
-    protected String[] getChannelsStringArray(ChannelAdapter channelAdapter) {
-        List<ChannelAdapter.ChannelItem> items = channelAdapter.channelItems;
-        List<String> processedItems = new ArrayList<>();
-        for (ChannelAdapter.ChannelItem channelItem : items) {
-            if (channelItem.isEnabled()) {
-                processedItems.add(channelItem.getName().toUpperCase());
-            }
-        }
+    protected Integration exportIntegration() {
+        DataHandler dataHandler = new DataHandler();
 
-        return processedItems.toArray(new String[processedItems.size()]);
+
+        return dataHandler.getIntegration();
     }
 
     protected static class ChannelAdapter extends BaseAdapter {
@@ -267,6 +259,138 @@ public class CustomizationActivity extends AppCompatActivity {
             }
 
         }
+
+    }
+
+    protected class DataHandler {
+
+        public void setIntegration(@NonNull Integration integration) {
+            
+        }
+
+        @NonNull
+        public Integration getIntegration() {
+            return new Integration();
+        }
+
+        @NonNull
+        public String getIntegrationName() {
+            return inputIntegrationName.getText().toString();
+        }
+
+        public void setIntegrationName(@NonNull String integrationName) {
+            inputIntegrationName.setText(integrationName);
+        }
+
+        @NonNull
+        public Campaign getCampaign() {
+            return null;
+        }
+
+        public void setCampaign(@NonNull Campaign campaign) {
+
+        }
+
+        @ColorInt
+        public int getHeaderColor() {
+            return civHeader.getColor();
+        }
+
+        public void setHeaderColor(@ColorInt int color) {
+            civHeader.setColor(color);
+        }
+
+        @NonNull
+        public String getTextField1() {
+            return inputTextField1.getText().toString();
+        }
+
+        public void setTextField1(@NonNull String text) {
+            inputTextField1.setText(text);
+        }
+
+        @ColorInt
+        public int getTextField1Color() {
+            return civTextField1.getColor();
+        }
+
+        public void setTextField1Color(@ColorInt int color) {
+            civTextField1.setColor(color);
+        }
+
+        @NonNull
+        public String getTextField2() {
+            return inputTextField2.getText().toString();
+        }
+
+        public void setTextField2(@NonNull String text) {
+            inputTextField2.setText(text);
+        }
+
+        @ColorInt
+        public int getTextField2Color() {
+            return civTextField2.getColor();
+        }
+
+        public void setTextField2Color(@ColorInt int color) {
+            civTextField2.setColor(color);
+        }
+
+        public void setChannels(@NonNull String[] channels) {
+            String[] uppercaseChannels = new String[channels.length];
+            for (int i = 0; i < channels.length; i++) {
+                uppercaseChannels[i] = channels[i].toUpperCase();
+            }
+            List<String> paramChannels = Arrays.asList(uppercaseChannels);
+            List<String> neededChannels = Arrays.asList("FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS");
+            List<ChannelAdapter.ChannelItem> items = new ArrayList<>();
+            for (String paramChannel : paramChannels) {
+                ChannelAdapter.ChannelItem channelItem = new ChannelAdapter.ChannelItem(paramChannel);
+                channelItem.enabled = true;
+                items.add(channelItem);
+                neededChannels.remove(paramChannel);
+            }
+
+            for (String neededChannel : neededChannels) {
+                ChannelAdapter.ChannelItem channelItem = new ChannelAdapter.ChannelItem(neededChannel);
+                channelItem.enabled = false;
+                items.add(channelItem);
+            }
+
+            channelAdapter.channelItems = items;
+            channelAdapter.notifyDataSetChanged();
+        }
+
+        @NonNull
+        public String[] getChannels() {
+            List<ChannelAdapter.ChannelItem> items = channelAdapter.channelItems;
+            List<String> processedItems = new ArrayList<>();
+            for (ChannelAdapter.ChannelItem channelItem : items) {
+                if (channelItem.isEnabled()) {
+                    processedItems.add(channelItem.getName().toUpperCase());
+                }
+            }
+
+            return processedItems.toArray(new String[processedItems.size()]);
+        }
+
+        @ColorInt
+        public int getButtonColor() {
+            return civButtons.getColor();
+        }
+
+        public void setButtonColor(@ColorInt int color) {
+            civButtons.setColor(color);
+        }
+
+    }
+
+    protected static class Campaign {
+
+        protected static final Campaign NONE = new Campaign();
+
+        protected int id;
+        protected String name;
 
     }
 
