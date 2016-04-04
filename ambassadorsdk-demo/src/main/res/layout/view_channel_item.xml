@@ -4,20 +4,12 @@
     android:layout_height="75dp"
     android:background="@android:color/white">
 
-    <ImageView
-        android:id="@+id/ivDrag"
-        android:layout_width="75dp"
-        android:layout_height="75dp"
-        android:layout_centerVertical="true"
-        android:padding="16dp"
-        android:src="@drawable/ic_list" />
-
     <TextView
         android:id="@+id/tvChannelName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/ivDrag"
+        android:layout_marginLeft="16dp"
         android:textColor="@android:color/black"
         android:textSize="16sp" />
 
@@ -25,10 +17,18 @@
         android:id="@+id/swChannel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="18dp"
+        android:layout_toLeftOf="@+id/ivDrag"
         android:checked="true"
         android:switchMinWidth="50dp" />
+
+    <ImageView
+        android:id="@+id/ivDrag"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:padding="16dp"
+        android:src="@drawable/ic_list" />
 
 </RelativeLayout>
