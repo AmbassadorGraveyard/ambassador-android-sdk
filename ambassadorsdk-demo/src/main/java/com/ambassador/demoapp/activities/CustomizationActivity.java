@@ -30,6 +30,7 @@ import com.ambassador.demoapp.dialogs.CampaignChooserDialog;
 import com.ambassador.demoapp.views.ColorInputView;
 import com.mobeta.android.dslv.DragSortListView;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +110,7 @@ public class CustomizationActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         ivProductPhoto.setImageBitmap(bitmap);
+                        saveImage(bitmap, "image.png");
                     } catch (IOException e) {
                         Log.e(CustomizationActivity.class.getSimpleName(), e.toString());
                     }
@@ -135,6 +137,25 @@ public class CustomizationActivity extends AppCompatActivity {
                 adapter.drop(from, to);
             }
         });
+    }
+
+    protected void saveImage(Bitmap bitmap, String filename) {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = openFileOutput(filename, MODE_PRIVATE);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            Log.v("Ambassador-Demo", "Image saved with filename: " + filename);
+        } catch (Exception e) {
+            Log.e("Ambassador-Demo", e.toString());
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    Log.e("Ambassador-Demo", e.toString());
+                }
+            }
+        }
     }
 
     protected static class ChannelAdapter extends BaseAdapter {
