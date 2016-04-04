@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +34,7 @@ import retrofit.client.Response;
 public class CampaignChooserDialog extends Dialog {
 
     @Bind(R.id.lvCampaignChooser) protected ListView lvCampaignChooser;
+    @Bind(R.id.pbCampaignsLoading) protected ProgressBar pbCampaignsLoading;
 
     protected List<Campaign> campaigns;
     protected Campaign selectedCampaign;
@@ -77,6 +79,8 @@ public class CampaignChooserDialog extends Dialog {
                         adapter.notifyDataSetChanged();
                     }
                 }
+
+                pbCampaignsLoading.setVisibility(View.GONE);
             }
 
             @Override
