@@ -2,7 +2,7 @@
 
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:colorPrimary">@color/primary</item>
-        <item name="android:colorPrimaryDark">#3a87ba</item>
+        <item name="android:colorPrimaryDark">#347dad</item>
     </style>
 
     <style name="TabLayout" parent="Widget.Design.TabLayout">
