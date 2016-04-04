@@ -31,6 +31,7 @@ public class ColorChooserDialog extends Dialog {
 
     @ColorInt protected int color;
 
+    @Bind(R.id.viewColorSpot) protected View colorSpot;
     @Bind(R.id.rlColors) protected RelativeLayout rlColors;
     @Bind(R.id.flColorA) protected FrameLayout flColorA;
     @Bind(R.id.flColorB) protected FrameLayout flColorB;
@@ -64,6 +65,21 @@ public class ColorChooserDialog extends Dialog {
                     return false;
                 }
 
+                if (event.getY() < flColorA.getHeight() / 2) {
+                    GradientDrawable colorSpotBackground = new GradientDrawable();
+                    colorSpotBackground.setStroke(2, Color.BLACK);
+                    colorSpotBackground.setCornerRadius(100);
+                    colorSpot.setBackground(colorSpotBackground);
+                } else {
+                    GradientDrawable colorSpotBackground = new GradientDrawable();
+                    colorSpotBackground.setStroke(2, Color.WHITE);
+                    colorSpotBackground.setCornerRadius(100);
+                    colorSpot.setBackground(colorSpotBackground);
+                }
+
+                colorSpot.setTranslationX(event.getX() - colorSpot.getWidth() / 2);
+                colorSpot.setTranslationY(event.getY() - colorSpot.getHeight() / 2);
+
                 rlColors.setDrawingCacheEnabled(true);
                 rlColors.buildDrawingCache();
                 final Bitmap colors = rlColors.getDrawingCache();
@@ -81,6 +97,25 @@ public class ColorChooserDialog extends Dialog {
                 etBlueValue.setText(String.valueOf(blue));
 
                 color = pixel;
+
+                return true;
+            }
+        });
+
+        llRainbow.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getX() < 0 || event.getX() > llRainbow.getWidth() || event.getY() < 0 || event.getY() > llRainbow.getHeight()) {
+                    return false;
+                }
+
+                llRainbow.setDrawingCacheEnabled(true);
+                llRainbow.buildDrawingCache();
+                final Bitmap colors = llRainbow.getDrawingCache();
+                int pixel = colors.getPixel((int) event.getX(), (int) event.getY());
+                updateGradients(pixel);
+
+                llRainbow.setDrawingCacheEnabled(false);
 
                 return true;
             }
