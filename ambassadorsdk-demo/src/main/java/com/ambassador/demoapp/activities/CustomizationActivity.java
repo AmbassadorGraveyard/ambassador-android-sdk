@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
+import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.data.Integration;
 import com.ambassador.demoapp.dialogs.CampaignChooserDialog;
