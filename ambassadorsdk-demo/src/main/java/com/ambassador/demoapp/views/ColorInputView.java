@@ -58,4 +58,8 @@ public class ColorInputView extends RelativeLayout implements View.OnClickListen
         return color;
     }
 
+    public void setColor(@ColorInt int color) {
+        this.color = color;
+    }
+
 }
