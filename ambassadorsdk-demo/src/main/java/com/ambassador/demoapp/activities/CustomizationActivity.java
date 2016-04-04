@@ -58,6 +58,7 @@ public class CustomizationActivity extends AppCompatActivity {
     protected ChannelAdapter channelAdapter;
 
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
+    @Bind(R.id.tvProductPhotoInfo) protected TextView tvProductPhotoInfo;
     @Bind(R.id.inputIntegrationName) protected InputView inputIntegrationName;
     @Bind(R.id.inputTextField1) protected InputView inputTextField1;
     @Bind(R.id.inputTextField2) protected InputView inputTextField2;
@@ -139,7 +140,20 @@ public class CustomizationActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         ivProductPhoto.setImageBitmap(bitmap);
-                        saveImage(bitmap, IMAGE_SAVE_FILENAME);
+                        boolean didSave = saveImage(bitmap, IMAGE_SAVE_FILENAME);
+                        if (didSave) {
+                            tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
+                            tvProductPhotoInfo.setText("Remove Product Photo");
+                            tvProductPhotoInfo.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(CustomizationActivity.this, R.drawable.add_photo));
+                                    tvProductPhotoInfo.setTextColor(Color.BLACK);
+                                    tvProductPhotoInfo.setText("Upload Product Photo");
+                                    tvProductPhotoInfo.setOnClickListener(null);
+                                }
+                            });
+                        }
                     } catch (IOException e) {
                         Log.e(CustomizationActivity.class.getSimpleName(), e.toString());
                     }
@@ -168,7 +182,7 @@ public class CustomizationActivity extends AppCompatActivity {
         });
     }
 
-    protected void saveImage(Bitmap bitmap, String filename) {
+    protected boolean saveImage(Bitmap bitmap, String filename) {
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = openFileOutput(filename, MODE_PRIVATE);
@@ -176,43 +190,34 @@ public class CustomizationActivity extends AppCompatActivity {
             Log.v("Ambassador-Demo", "Image saved with filename: " + filename);
         } catch (Exception e) {
             Log.e("Ambassador-Demo", e.toString());
+            return false;
         } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
                     Log.e("Ambassador-Demo", e.toString());
+                    return false;
                 }
             }
         }
-    }
-
-    protected void importIntegration(Integration integration) {
-        DataHandler dataHandler = new DataHandler();
-        dataHandler.setIntegration(integration);
-    }
-
-    protected Integration exportIntegration() {
-        DataHandler dataHandler = new DataHandler();
-
-
-        return dataHandler.getIntegration();
+        return true;
     }
 
     protected static class ChannelAdapter extends BaseAdapter {
 
         protected Activity activity;
-        protected List<ChannelItem> channelItems;
+        protected List<Channel> channelItems;
 
         public ChannelAdapter(Activity activity) {
             this.activity = activity;
 
             this.channelItems = new ArrayList<>();
-            channelItems.add(new ChannelItem("FACEBOOK"));
-            channelItems.add(new ChannelItem("TWITTER"));
-            channelItems.add(new ChannelItem("LINKEDIN"));
-            channelItems.add(new ChannelItem("EMAIL"));
-            channelItems.add(new ChannelItem("SMS"));
+            channelItems.add(new Channel("Facebook"));
+            channelItems.add(new Channel("Twitter"));
+            channelItems.add(new Channel("LinkedIn"));
+            channelItems.add(new Channel("Email"));
+            channelItems.add(new Channel("SMS"));
         }
 
         @Override
@@ -221,7 +226,7 @@ public class CustomizationActivity extends AppCompatActivity {
         }
 
         @Override
-        public ChannelItem getItem(int position) {
+        public Channel getItem(int position) {
             return channelItems.get(position);
         }
 
@@ -236,7 +241,7 @@ public class CustomizationActivity extends AppCompatActivity {
                 convertView = LayoutInflater.from(activity).inflate(R.layout.view_channel_item, parent, false);
             }
 
-            final ChannelItem channel = getItem(position);
+            final Channel channel = getItem(position);
 
             TextView tvChannelName = (TextView) convertView.findViewById(R.id.tvChannelName);
             tvChannelName.setText(channel.getName());
@@ -253,30 +258,11 @@ public class CustomizationActivity extends AppCompatActivity {
         }
 
         public void drop(int from, int to) {
-            ChannelItem movedItem = getItem(from);
+            Channel movedItem = getItem(from);
             channelItems.remove(from);
             if (from > to) from--;
             channelItems.add(to, movedItem);
             notifyDataSetChanged();
-        }
-
-        protected static class ChannelItem {
-
-            protected String name;
-            protected boolean enabled = true;
-
-            public ChannelItem(String name) {
-                this.name = name;
-            }
-
-            public String getName() {
-                return name;
-            }
-
-            public boolean isEnabled() {
-                return enabled;
-            }
-
         }
 
     }
@@ -367,19 +353,20 @@ public class CustomizationActivity extends AppCompatActivity {
                 uppercaseChannels[i] = channels[i].toUpperCase();
             }
             List<String> paramChannels = Arrays.asList(uppercaseChannels);
-            List<String> neededChannels = Arrays.asList("FACEBOOK", "TWITTER", "LINKEDIN", "EMAIL", "SMS");
-            List<ChannelAdapter.ChannelItem> items = new ArrayList<>();
+            List<Channel> neededChannels = Arrays.asList(Channel.DEFAULTS);
+            List<Channel> items = new ArrayList<>();
             for (String paramChannel : paramChannels) {
-                ChannelAdapter.ChannelItem channelItem = new ChannelAdapter.ChannelItem(paramChannel);
-                channelItem.enabled = true;
-                items.add(channelItem);
-                neededChannels.remove(paramChannel);
+                Channel channelItem = Channel.get(paramChannel);
+                if (channelItem != null) {
+                    channelItem.enabled = true;
+                    items.add(channelItem);
+                    neededChannels.remove(channelItem);
+                }
             }
 
-            for (String neededChannel : neededChannels) {
-                ChannelAdapter.ChannelItem channelItem = new ChannelAdapter.ChannelItem(neededChannel);
-                channelItem.enabled = false;
-                items.add(channelItem);
+            for (Channel neededChannel : neededChannels) {
+                neededChannel.enabled = false;
+                items.add(neededChannel);
             }
 
             channelAdapter.channelItems = items;
@@ -388,9 +375,9 @@ public class CustomizationActivity extends AppCompatActivity {
 
         @NonNull
         public String[] getChannels() {
-            List<ChannelAdapter.ChannelItem> items = channelAdapter.channelItems;
+            List<Channel> items = channelAdapter.channelItems;
             List<String> processedItems = new ArrayList<>();
-            for (ChannelAdapter.ChannelItem channelItem : items) {
+            for (Channel channelItem : items) {
                 if (channelItem.isEnabled()) {
                     processedItems.add(channelItem.getName().toUpperCase());
                 }
@@ -431,6 +418,58 @@ public class CustomizationActivity extends AppCompatActivity {
 
         public void setName(String name) {
             this.name = name;
+        }
+
+    }
+
+    protected static class Channel {
+
+        public static final Channel FACEBOOK = new Channel("Facebook");
+        public static final Channel TWITTER = new Channel("Twitter");
+        public static final Channel LINKEDIN = new Channel("LinkedIn");
+        public static final Channel EMAIL = new Channel("Email");
+        public static final Channel SMS = new Channel("SMS");
+
+        public static final Channel[] DEFAULTS = new Channel[]{ FACEBOOK, TWITTER, LINKEDIN, EMAIL, SMS };
+
+        protected String name;
+        protected boolean enabled = true;
+
+        public Channel(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public static Channel get(String name) {
+            switch (name.toLowerCase()) {
+                case "facebook":
+                    return FACEBOOK;
+                case "twitter":
+                    return TWITTER;
+                case "linkedin":
+                    return LINKEDIN;
+                case "email":
+                    return EMAIL;
+                case "sms":
+                    return SMS;
+                default:
+                    return null;
+            }
         }
 
     }
