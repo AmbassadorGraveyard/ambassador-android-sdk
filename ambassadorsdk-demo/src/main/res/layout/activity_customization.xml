@@ -51,7 +51,8 @@
             android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
             android:hint="Integration Name"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textColor="#253244" />
 
         <com.ambassador.demoapp.views.InputNameView
             android:layout_width="wrap_content"
@@ -81,7 +82,8 @@
                 android:layout_height="wrap_content"
                 android:text="Select a Campaign"
                 android:textColor="#e6e6e6"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:layout_marginRight="25dp"/>
 
             <ImageView
                 android:layout_width="20dp"
@@ -136,7 +138,8 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
-            android:hint="Text Field One" />
+            android:hint="Text Field One"
+            android:textColor="#253244" />
 
         <com.ambassador.demoapp.views.InputNameView
             android:layout_width="wrap_content"
@@ -176,7 +179,8 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="5dp"
-            android:hint="Text Field Two" />
+            android:hint="Text Field Two"
+            android:textColor="#253244" />
 
         <com.ambassador.demoapp.views.InputNameView
             android:layout_width="wrap_content"
