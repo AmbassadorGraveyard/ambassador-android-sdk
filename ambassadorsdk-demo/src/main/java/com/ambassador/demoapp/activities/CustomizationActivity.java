@@ -276,7 +276,12 @@ public class CustomizationActivity extends AppCompatActivity {
     protected class DataHandler {
 
         public void setIntegration(@NonNull Integration integration) {
-
+            setIntegrationName(integration.getName());
+            Campaign campaign = new Campaign();
+            campaign.setName(integration.getCampaignName());
+            campaign.setId(integration.getCampaignId());
+            setCampaign(campaign);
+            RAFOptions rafOptions = integration.getRafOptions();
         }
 
         @NonNull

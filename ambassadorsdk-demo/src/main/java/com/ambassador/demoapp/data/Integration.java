@@ -6,6 +6,7 @@ public class Integration {
 
     protected String name;
     protected int campaignId;
+    protected String campaignName;
     protected RAFOptions rafOptions;
     protected long createdAtDate;
 
@@ -27,6 +28,14 @@ public class Integration {
 
     public void setCampaignId(int campaignId) {
         this.campaignId = campaignId;
+    }
+
+    public String getCampaignName() {
+        return campaignName;
+    }
+
+    public void setCampaignName(String campaignName) {
+        this.campaignName = campaignName;
     }
 
     public RAFOptions getRafOptions() {

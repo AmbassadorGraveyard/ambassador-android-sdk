@@ -42,6 +42,7 @@ public class ColorInputView extends RelativeLayout implements View.OnClickListen
     public void onClick(View v) {
         if (activity != null) {
             final ColorChooserDialog colorChooserDialog = new ColorChooserDialog(activity);
+            colorChooserDialog.setColor(color);
             colorChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialog) {
