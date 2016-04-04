@@ -24,10 +24,12 @@ import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.dialogs.CampaignChooserDialog;
 import com.ambassador.demoapp.views.ColorInputView;
+import com.ambassador.demoapp.views.InputView;
 import com.mobeta.android.dslv.DragSortListView;
 
 import java.io.FileOutputStream;
@@ -44,12 +46,14 @@ public class CustomizationActivity extends AppCompatActivity {
 
     protected static final String IMAGE_SAVE_FILENAME = "image.png";
 
+    protected ChannelAdapter channelAdapter;
+
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
-
+    @Bind(R.id.inputIntegrationName) protected InputView inputIntegrationName;
+    @Bind(R.id.inputTextField1) protected InputView inputTextField1;
+    @Bind(R.id.inputTextField2) protected InputView inputTextField2;
     @Bind(R.id.rvCampaignChooser) protected RelativeLayout rvCampaignChooser;
-
     @Bind(R.id.lvChannels) protected DragSortListView lvChannels;
-
     @Bind(R.id.civHeader) protected ColorInputView civHeader;
     @Bind(R.id.civTextField1) protected ColorInputView civTextField1;
     @Bind(R.id.civTextField2) protected ColorInputView civTextField2;
@@ -131,12 +135,12 @@ public class CustomizationActivity extends AppCompatActivity {
     }
 
     protected void setUpChannelList() {
-        final ChannelAdapter adapter = new ChannelAdapter(this);
-        lvChannels.setAdapter(adapter);
+        channelAdapter = new ChannelAdapter(this);
+        lvChannels.setAdapter(channelAdapter);
         lvChannels.setDropListener(new DragSortListView.DropListener() {
             @Override
             public void drop(int from, int to) {
-                adapter.drop(from, to);
+                channelAdapter.drop(from, to);
             }
         });
     }
@@ -158,6 +162,30 @@ public class CustomizationActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    protected void export() {
+        String integrationName = inputIntegrationName.getText().toString();
+        int campaignId;
+        int headerColor = civHeader.getColor();
+        String textField1 = inputTextField1.getText().toString();
+        int textField1Color = civTextField1.getColor();
+        String textField2 = inputTextField2.getText().toString();
+        int textField2Color = civTextField2.getColor();
+        String[] channels = getChannelsStringArray(channelAdapter);
+        int buttonColor = civButtons.getColor();
+    }
+
+    protected String[] getChannelsStringArray(ChannelAdapter channelAdapter) {
+        List<ChannelAdapter.ChannelItem> items = channelAdapter.channelItems;
+        List<String> processedItems = new ArrayList<>();
+        for (ChannelAdapter.ChannelItem channelItem : items) {
+            if (channelItem.isEnabled()) {
+                processedItems.add(channelItem.getName().toUpperCase());
+            }
+        }
+
+        return processedItems.toArray(new String[processedItems.size()]);
     }
 
     protected static class ChannelAdapter extends BaseAdapter {

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -13,6 +14,8 @@ import com.ambassador.demoapp.dialogs.ColorChooserDialog;
 public class ColorInputView extends RelativeLayout implements View.OnClickListener {
 
     protected Activity activity;
+
+    @ColorInt protected int color;
 
     public ColorInputView(Context context) {
         super(context);
@@ -48,6 +51,11 @@ public class ColorInputView extends RelativeLayout implements View.OnClickListen
 
     public void setActivity(Activity activity) {
         this.activity = activity;
+    }
+
+    @ColorInt
+    public int getColor() {
+        return color;
     }
 
 }
