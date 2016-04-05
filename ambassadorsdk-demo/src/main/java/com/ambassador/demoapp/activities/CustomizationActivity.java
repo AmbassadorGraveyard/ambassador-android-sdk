@@ -149,10 +149,7 @@ public class CustomizationActivity extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(findViewById(android.R.id.content).getWindowToken(), 0);
         if (verifiedInputs()) {
             Integration integration = new DataHandler().getIntegration();
-            AmbassadorSDK.identify("jake@getambassador.com");
-            AmbassadorSDK.presentRAF(this, integration.getCampaignId() + "", integration.getRafOptions());
             integration.save();
-            //finish();
         }
         return true;
     }
