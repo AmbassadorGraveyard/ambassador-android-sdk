@@ -150,6 +150,7 @@ public class CustomizationActivity extends AppCompatActivity {
         if (verifiedInputs()) {
             Integration integration = new DataHandler().getIntegration();
             integration.save();
+            finish();
         }
         return true;
     }
