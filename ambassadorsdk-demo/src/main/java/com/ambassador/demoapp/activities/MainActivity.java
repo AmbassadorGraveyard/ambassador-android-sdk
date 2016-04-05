@@ -3,6 +3,7 @@ package com.ambassador.demoapp.activities;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -48,6 +49,8 @@ public final class MainActivity extends AppCompatActivity {
     protected TabFragmentPagerAdapter adapter;
 
     protected WelcomeScreenDialog welcomeScreenDialog;
+
+    protected MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +119,7 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_main);
+        menuItem = menu.findItem(R.id.action_main);
         menuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_add_white));
         return true;
     }
@@ -140,8 +143,19 @@ public final class MainActivity extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
-            adapter.getItem(position).onResume();
+            Fragment fragment = adapter.getItem(position);
+            fragment.onResume();
             setToolbarTitle(Html.fromHtml("<small>" + adapter.getTitle(position) + "</small>"));
+
+            if (menuItem == null) return;
+
+            if (fragment instanceof ReferFragment) {
+                menuItem.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_add_white));
+            } else if (fragment instanceof SettingsFragment) {
+
+            } else {
+                menuItem.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_share_white));
+            }
         }
 
         @Override
