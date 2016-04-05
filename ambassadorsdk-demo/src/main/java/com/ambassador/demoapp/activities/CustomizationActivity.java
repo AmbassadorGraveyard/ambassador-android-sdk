@@ -191,6 +191,8 @@ public class CustomizationActivity extends AppCompatActivity {
                         }
                     }).setNegativeButton("Cancel", null)
                     .show();
+        } else {
+            super.onBackPressed();
         }
     }
 
