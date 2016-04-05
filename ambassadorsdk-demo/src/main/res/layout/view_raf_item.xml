@@ -31,15 +31,15 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/ivArrow"
+        android:id="@+id/ivShare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/llText"
         android:layout_alignBottom="@+id/llText"
-        android:layout_margin="13dp"
+        android:layout_margin="10dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/arrow" />
+        android:src="@drawable/ic_share_white" />
 
     <View
         android:layout_width="match_parent"
