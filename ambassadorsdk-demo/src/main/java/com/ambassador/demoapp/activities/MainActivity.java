@@ -1,5 +1,6 @@
 package com.ambassador.demoapp.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -17,7 +18,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +30,7 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
+import com.ambassador.demoapp.data.Integration;
 import com.ambassador.demoapp.data.User;
 import com.ambassador.demoapp.fragments.ConversionFragment;
 import com.ambassador.demoapp.fragments.IdentifyFragment;
@@ -105,6 +110,22 @@ public final class MainActivity extends AppCompatActivity {
                 MainActivity.this.welcomeScreenDialog = welcomeScreenDialog;
             }
         }, parameters);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_main);
+        menuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_add_white));
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(this, CustomizationActivity.class);
+        startActivity(intent);
+        return true;
     }
 
     public void switchToTabAtIndex(int position) {

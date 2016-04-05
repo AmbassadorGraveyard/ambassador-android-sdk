@@ -7,9 +7,9 @@
         android:id="@+id/llText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="22dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="22dp"
         android:orientation="vertical">
 
         <TextView
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:textColor="#92a1bb"
-            android:textSize="13sp" />
+            android:textSize="11sp" />
 
     </LinearLayout>
 
@@ -44,7 +44,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:background="#eaeeee"/>
 
 </RelativeLayout>
