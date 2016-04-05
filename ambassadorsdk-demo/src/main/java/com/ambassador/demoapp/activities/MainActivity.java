@@ -120,7 +120,7 @@ public final class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menuItem = menu.findItem(R.id.action_main);
-        menuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.ic_add_white));
+        menuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.edit_icon));
         return true;
     }
 
@@ -151,7 +151,7 @@ public final class MainActivity extends AppCompatActivity {
 
             if (fragment instanceof ReferFragment) {
                 menuItem.setVisible(true);
-                menuItem.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_add_white));
+                menuItem.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.edit_icon));
             } else if (fragment instanceof SettingsFragment) {
                 menuItem.setVisible(false);
             } else {
