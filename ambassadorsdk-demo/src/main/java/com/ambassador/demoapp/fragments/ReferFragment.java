@@ -28,7 +28,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.Bind;
@@ -194,10 +196,13 @@ public final class ReferFragment extends Fragment {
             tvTitle.setText(item.getName());
 
             TextView tvDescription = (TextView) convertView.findViewById(R.id.tvDescription);
-            tvDescription.setText(item.getCreatedAtDate() + "");
+            Date date = new Date(item.getCreatedAtDate());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+            String time = simpleDateFormat.format(date);
+            tvDescription.setText(String.format("Created %s", time));
 
-            ImageView ivArrow = (ImageView) convertView.findViewById(R.id.ivArrow);
-            ivArrow.setColorFilter(Color.BLACK);
+            ImageView ivShare = (ImageView) convertView.findViewById(R.id.ivShare);
+            ivShare.setColorFilter(Color.parseColor("#232f3b"));
 
             return convertView;
         }
