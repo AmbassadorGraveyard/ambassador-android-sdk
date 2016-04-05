@@ -1,6 +1,13 @@
 package com.ambassador.demoapp.data;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.demoapp.Demo;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 
 public class Integration {
 
@@ -52,6 +59,15 @@ public class Integration {
 
     public void setCreatedAtDate(long createdAtDate) {
         this.createdAtDate = createdAtDate;
+    }
+
+    public void save() {
+        String jsonRepresentation = new Gson().toJson(this);
+        SharedPreferences sharedPreferences = Demo.get().getSharedPreferences("integrations", Context.MODE_PRIVATE);
+        String storedIntegrations = sharedPreferences.getString(User.get().getUniversalId(), "[]");
+        JsonArray integrationArray = new JsonParser().parse(storedIntegrations).getAsJsonArray();
+        integrationArray.add(jsonRepresentation);
+        sharedPreferences.edit().putString(User.get().getUniversalId(), integrationArray.getAsString()).apply();
     }
 
 }
