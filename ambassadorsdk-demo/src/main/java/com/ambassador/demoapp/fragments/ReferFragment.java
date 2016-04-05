@@ -2,6 +2,7 @@ package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,8 +19,17 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
+import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.activities.CustomizationActivity;
+import com.ambassador.demoapp.data.Integration;
+import com.ambassador.demoapp.data.User;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -28,7 +38,7 @@ import butterknife.ButterKnife;
 public final class ReferFragment extends Fragment {
 
     @Bind(R.id.ivAddRaf) protected CircleImageView ivAddRaf;
-    //@Bind(R.id.lvRafs) protected ListView lvRafs;
+    @Bind(R.id.lvRafs) protected ListView lvRafs;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,8 +61,8 @@ public final class ReferFragment extends Fragment {
             }
         });
 
-//        final RafAdapter adapter = new RafAdapter();
-//        lvRafs.setAdapter(adapter);
+        final RafAdapter adapter = new RafAdapter();
+        lvRafs.setAdapter(adapter);
 //        lvRafs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -98,7 +108,7 @@ public final class ReferFragment extends Fragment {
 //            }
 //        });
 //
-//        setListViewHeightBasedOnChildren(lvRafs);
+        setListViewHeightBasedOnChildren(lvRafs);
 
         return view;
     }
@@ -137,34 +147,27 @@ public final class ReferFragment extends Fragment {
 
     private final class RafAdapter extends BaseAdapter {
 
-        private RafItem[] items;
+        private List<Integration> items;
 
         public RafAdapter() {
-            items = new RafItem[6];
-            items[0] = new RafItem("Shoes RAF", "description", "raf_shoes.xml")
-                    .setContentDescription("shoeRaf");
-            items[1] = new RafItem("Shirt RAF", "description", "raf_shirt.xml")
-                    .setContentDescription("shirtRaf");
-            items[2] = new RafItem("Ambassador RAF", "description", "raf_ambassador.xml")
-                    .setContentDescription("ambassadorRaf");
-
-            items[3] = new RafItem("Shoes RAF", "description", "raf_shoes.xml")
-                    .setContentDescription("shoeRaf");
-            items[4] = new RafItem("Shirt RAF", "description", "raf_shirt.xml")
-                    .setContentDescription("shirtRaf");
-            items[5] = new RafItem("Ambassador RAF", "description", "raf_ambassador.xml")
-                    .setContentDescription("ambassadorRaf");
-
+            items = new ArrayList<>();
+            SharedPreferences preferences = Demo.get().getSharedPreferences("integrations", Context.MODE_PRIVATE);
+            String integrationsArrayString = preferences.getString(User.get().getUniversalId(), "[]");
+            JsonArray integrationsArray = new JsonParser().parse(integrationsArrayString).getAsJsonArray();
+            for (int i = 0; i < integrationsArray.size(); i++) {
+                Integration integration = new Gson().fromJson(integrationsArray.get(i).getAsString(), Integration.class);
+                items.add(integration);
+            }
         }
 
         @Override
         public int getCount() {
-            return items.length;
+            return items.size();
         }
 
         @Override
-        public RafItem getItem(int position) {
-            return items[position];
+        public Integration getItem(int position) {
+            return items.get(position);
         }
 
         @Override
@@ -178,56 +181,18 @@ public final class ReferFragment extends Fragment {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.view_raf_item, parent, false);
             }
 
-            RafItem item = getItem(position);
+            Integration item = getItem(position);
 
             TextView tvTitle = (TextView) convertView.findViewById(R.id.tvTitle);
-            tvTitle.setText(item.getTitle());
+            tvTitle.setText(item.getName());
 
             TextView tvDescription = (TextView) convertView.findViewById(R.id.tvDescription);
-            tvDescription.setText(item.getDescription());
+            tvDescription.setText(item.getCreatedAtDate() + "");
 
             ImageView ivArrow = (ImageView) convertView.findViewById(R.id.ivArrow);
             ivArrow.setColorFilter(Color.BLACK);
 
-            convertView.setContentDescription(item.getContentDescription());
-
             return convertView;
-        }
-
-        private final class RafItem {
-
-            private String title;
-            private String description;
-            private String optionsPath;
-            private String contentDescription;
-
-            public RafItem(String title, String description, String optionsPath) {
-                this.title = title;
-                this.description = description;
-                this.optionsPath = optionsPath;
-            }
-
-            public String getTitle() {
-                return title;
-            }
-
-            public String getDescription() {
-                return description;
-            }
-
-            public String getOptionsPath() {
-                return optionsPath;
-            }
-
-            public RafItem setContentDescription(String contentDescription) {
-                this.contentDescription = contentDescription;
-                return this;
-            }
-
-            public String getContentDescription() {
-                return contentDescription;
-            }
-
         }
 
     }

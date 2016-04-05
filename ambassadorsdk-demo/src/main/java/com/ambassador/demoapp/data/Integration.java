@@ -84,7 +84,7 @@ public class Integration {
                 integrationArray.remove(i);
             }
         }
-        
+
         sharedPreferences.edit().putString(User.get().getUniversalId(), integrationArray.getAsString()).apply();
     }
 
