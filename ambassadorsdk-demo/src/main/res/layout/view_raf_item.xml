@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="78dp">
 
     <LinearLayout
         android:id="@+id/llText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="22dp"
+        android:layout_centerVertical="true"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop="22dp"
         android:orientation="vertical">
 
         <TextView
@@ -17,8 +16,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:textSize="14sp"
-            android:textColor="#232f3b"/>
+            android:textColor="#232f3b"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tvDescription"
@@ -33,11 +32,11 @@
     <ImageView
         android:id="@+id/ivShare"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/llText"
-        android:layout_alignBottom="@+id/llText"
-        android:layout_margin="10dp"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dp"
+        android:padding="8dp"
         android:adjustViewBounds="true"
         android:src="@drawable/ic_share_white" />
 
@@ -45,6 +44,6 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_alignParentBottom="true"
-        android:background="#eaeeee"/>
+        android:background="#eaeeee" />
 
 </RelativeLayout>
