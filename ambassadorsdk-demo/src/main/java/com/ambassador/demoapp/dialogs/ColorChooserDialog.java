@@ -10,6 +10,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -77,6 +80,7 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
 
     protected GradientDrawable currentColorMarker;
 
+    @Bind(R.id.dummyEt) protected EditText etDummy;
     @Bind(R.id.viewColorSpot) protected View colorSpot;
     @Bind(R.id.rlColors) protected RelativeLayout rlColors;
     @Bind(R.id.flColorA) protected FrameLayout flColorA;
@@ -140,6 +144,8 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
                     return false;
                 }
 
+                etDummy.requestFocus();
+
                 colorX = (int) event.getX();
                 colorY = (int) event.getY();
 
@@ -156,6 +162,8 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
                 if (event.getX() < 0 || event.getX() > llRainbow.getWidth() || event.getY() < 0 || event.getY() > llRainbow.getHeight()) {
                     return false;
                 }
+
+                etDummy.requestFocus();
 
                 llRainbow.setDrawingCacheEnabled(true);
                 llRainbow.buildDrawingCache();
@@ -190,6 +198,13 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         });
 
         setOnKeyListener(this);
+
+        etDummy.requestFocus();
+
+        etRedValue.setFilters(new InputFilter[]{ rgbFilter, new InputFilter.LengthFilter(3) });
+        etGreenValue.setFilters(new InputFilter[]{ rgbFilter, new InputFilter.LengthFilter(3) });
+        etBlueValue.setFilters(new InputFilter[]{ rgbFilter, new InputFilter.LengthFilter(3) });
+        etHexValue.setFilters(new InputFilter[]{ hexFilter, new InputFilter.LengthFilter(6) });
     }
 
     /**
@@ -258,10 +273,21 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         setColor(colors.getPixel(colorX, colorY));
         rlColors.setDrawingCacheEnabled(false);
 
-        etRedValue.setText(String.valueOf(r));
-        etGreenValue.setText(String.valueOf(g));
-        etBlueValue.setText(String.valueOf(b));
-        etHexValue.setText(String.format("%06X", (0xFFFFFF & color)));
+        if (!etRedValue.isFocused()) {
+            etRedValue.setText(String.valueOf(r));
+        }
+
+        if (!etGreenValue.isFocused()) {
+            etGreenValue.setText(String.valueOf(g));
+        }
+
+        if (!etBlueValue.isFocused()) {
+            etBlueValue.setText(String.valueOf(b));
+        }
+
+        if (!etHexValue.isFocused()) {
+            etHexValue.setText(String.format("%06X", (0xFFFFFF & color)));
+        }
 
         viewPreview.setBackgroundColor(color);
     }
@@ -321,28 +347,20 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
             if (!input.startsWith("#")) {
                 input = "#" + input;
             }
-            try {
-                int color = Color.parseColor(input);
-                setColor(color);
-
-                updateGradients(hueExtreme);
-
-                rearrangeForExteriorInput();
-                Log.v("amb-color", "good!");
-                //setColor(color);
-                //rearrangeForExteriorInput();
-            } catch (Exception e) {
-                // no updating when not parsed.
-                if (input.length() == 7) {
-                    Log.e("amb-color", e.toString());
+            if (input.length() == 7) {
+                try {
+                    int color = Color.parseColor(input);
+                    setColor(color);
+                    updateGradients(hueExtreme);
+                    rearrangeForExteriorInput();
+                } catch (Exception e) {
+                    // ignore and do nothing
                 }
-                Log.v("amb-color", "bad!");
             }
 
             return false;
         }
 
-        Log.v("amb-color", "none!");
         return false;
     }
 
@@ -354,5 +372,35 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
 
         return allowedCodes.contains(keyCode);
     }
+
+    protected InputFilter rgbFilter = new InputFilter() {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            List<Character> allowed = Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+            String out = "";
+            for (int i = start; i < end; i++) {
+                char spot = source.charAt(i);
+                if (allowed.contains(spot)) {
+                    out += spot;
+                }
+            }
+            return out;
+        }
+    };
+
+    protected InputFilter hexFilter = new InputFilter() {
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            List<Character> allowed = Arrays.asList('A', 'a', 'B', 'b', 'C', 'c', 'D', 'd', 'E', 'e', 'F', 'f', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+            String out = "";
+            for (int i = start; i < end; i++) {
+                char spot = source.charAt(i);
+                if (allowed.contains(spot)) {
+                    out += spot;
+                }
+            }
+            return out;
+        }
+    };
 
 }

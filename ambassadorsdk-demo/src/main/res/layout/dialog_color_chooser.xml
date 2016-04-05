@@ -34,6 +34,12 @@
                 android:textColor="@android:color/black"
                 android:textSize="17sp" />
 
+            <EditText
+                android:id="@+id/dummyEt"
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_alignParentRight="true" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -119,6 +125,7 @@
                     android:layout_toRightOf="@+id/tvRedValue"
                     android:background="@drawable/et_only"
                     android:gravity="center"
+                    android:inputType="number"
                     android:paddingBottom="3dp"
                     android:paddingTop="3dp"
                     android:text="123"
@@ -152,6 +159,7 @@
                     android:layout_toRightOf="@+id/tvGreenValue"
                     android:background="@drawable/et_only"
                     android:gravity="center"
+                    android:inputType="number"
                     android:paddingBottom="3dp"
                     android:paddingTop="3dp"
                     android:text="123"
@@ -183,6 +191,7 @@
                     android:layout_toRightOf="@+id/tvBlueValue"
                     android:background="@drawable/et_only"
                     android:gravity="center"
+                    android:inputType="number"
                     android:paddingBottom="3dp"
                     android:paddingTop="3dp"
                     android:text="123"
