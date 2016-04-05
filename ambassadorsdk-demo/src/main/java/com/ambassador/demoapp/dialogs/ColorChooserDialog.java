@@ -128,6 +128,10 @@ public class ColorChooserDialog extends Dialog {
                 colorY = flColorA.getHeight() - (int) (flColorA.getHeight() * v);
                 updateCurrentColorMarker();
                 updateColor();
+
+                float hueSliderX = llRainbow.getWidth() * (h / 360f);
+                hueTracker.setTranslationX(hueSliderX);
+
                 rlColors.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
@@ -162,6 +166,7 @@ public class ColorChooserDialog extends Dialog {
                 final Bitmap colors = llRainbow.getDrawingCache();
                 int pixel = colors.getPixel((int) event.getX(), (int) event.getY());
                 llRainbow.setDrawingCacheEnabled(false);
+
                 hueTracker.setTranslationX(event.getX());
 
                 updateGradients(pixel);
