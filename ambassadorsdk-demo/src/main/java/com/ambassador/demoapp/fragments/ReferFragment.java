@@ -75,7 +75,7 @@ public final class ReferFragment extends Fragment {
             ivAddRaf.setVisibility(View.GONE);
             lvRafs.setVisibility(View.VISIBLE);
 
-            int height = 100 + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
+            int height = 210 + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
             lvRafs.getLayoutParams().height = height;
         }
 
