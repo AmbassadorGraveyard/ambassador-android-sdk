@@ -61,6 +61,8 @@ public class CustomizationActivity extends AppCompatActivity {
 
     protected Campaign selectedCampaign;
 
+    protected boolean hasPhoto = false;
+
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
     @Bind(R.id.tvProductPhotoInfo) protected TextView tvProductPhotoInfo;
     @Bind(R.id.inputIntegrationName) protected InputView inputIntegrationName;
@@ -151,6 +153,7 @@ public class CustomizationActivity extends AppCompatActivity {
                         if (didSave) {
                             tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
                             tvProductPhotoInfo.setText("Remove Product Photo");
+                            hasPhoto = true;
                             tvProductPhotoInfo.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
@@ -158,6 +161,7 @@ public class CustomizationActivity extends AppCompatActivity {
                                     tvProductPhotoInfo.setTextColor(Color.BLACK);
                                     tvProductPhotoInfo.setText("Upload Product Photo");
                                     tvProductPhotoInfo.setOnClickListener(null);
+                                    hasPhoto = false;
                                 }
                             });
                         }
@@ -294,7 +298,7 @@ public class CustomizationActivity extends AppCompatActivity {
             integration.setCampaignId(selectedCampaign.getId());
             integration.setCreatedAtDate(System.currentTimeMillis());
             RAFOptions rafOptions = new RAFOptions.Builder()
-                    .setLogo(IMAGE_SAVE_FILENAME)
+                    .setLogo(hasPhoto ? IMAGE_SAVE_FILENAME : null)
                     .setLogoPosition("1")
                     .setHomeToolbarColor(getHeaderColor())
                     .setContactsToolbarColor(getHeaderColor())
