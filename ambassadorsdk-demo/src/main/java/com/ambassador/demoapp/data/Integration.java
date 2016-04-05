@@ -7,6 +7,8 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.demoapp.Demo;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class Integration {
@@ -67,6 +69,22 @@ public class Integration {
         String storedIntegrations = sharedPreferences.getString(User.get().getUniversalId(), "[]");
         JsonArray integrationArray = new JsonParser().parse(storedIntegrations).getAsJsonArray();
         integrationArray.add(jsonRepresentation);
+        sharedPreferences.edit().putString(User.get().getUniversalId(), integrationArray.getAsString()).apply();
+    }
+
+    public void delete() {
+        SharedPreferences sharedPreferences = Demo.get().getSharedPreferences("integrations", Context.MODE_PRIVATE);
+        String storedIntegrations = sharedPreferences.getString(User.get().getUniversalId(), "[]");
+        JsonArray integrationArray = new JsonParser().parse(storedIntegrations).getAsJsonArray();
+        for (int i = 0; i < integrationArray.size(); i++) {
+            String element = integrationArray.get(i).getAsString();
+            JsonObject object = new JsonParser().parse(element).getAsJsonObject();
+            Integration integration = new Gson().fromJson(object, Integration.class);
+            if (integration.getCreatedAtDate() == createdAtDate) {
+                integrationArray.remove(i);
+            }
+        }
+        
         sharedPreferences.edit().putString(User.get().getUniversalId(), integrationArray.getAsString()).apply();
     }
 
