@@ -128,7 +128,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         finishIfSingletonInvalid();
         if (isFinishing()) return;
 
-
         setUpData();
         setUpShareManagers();
         setUpLockingScrollView();
@@ -301,7 +300,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
             try {
                 drawable = Drawable.createFromStream(getAssets().open(drawablePath), null);
             } catch (Exception e) {
-                drawable = getResources().getDrawable(drawableId);
+                try {
+                    drawable = Drawable.createFromStream(openFileInput(drawablePath), null);
+                } catch (Exception e2) {
+                    drawable = getResources().getDrawable(drawableId);
+                }
             }
 
             if (drawable == null) return;

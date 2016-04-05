@@ -294,6 +294,8 @@ public class CustomizationActivity extends AppCompatActivity {
             integration.setCampaignId(selectedCampaign.getId());
             integration.setCreatedAtDate(System.currentTimeMillis());
             RAFOptions rafOptions = new RAFOptions.Builder()
+                    .setLogo(IMAGE_SAVE_FILENAME)
+                    .setLogoPosition("1")
                     .setHomeToolbarColor(getHeaderColor())
                     .setContactsToolbarColor(getHeaderColor())
                     .setTitleText(getTextField1())
