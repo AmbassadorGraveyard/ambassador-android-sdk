@@ -130,7 +130,7 @@ public class ColorChooserDialog extends Dialog {
                 updateColor();
 
                 float hueSliderX = llRainbow.getWidth() * (h / 360f);
-                hueTracker.setTranslationX(hueSliderX);
+                hueTracker.setTranslationX(hueSliderX - hueTracker.getWidth() / 2);
 
                 rlColors.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
@@ -167,7 +167,7 @@ public class ColorChooserDialog extends Dialog {
                 int pixel = colors.getPixel((int) event.getX(), (int) event.getY());
                 llRainbow.setDrawingCacheEnabled(false);
 
-                hueTracker.setTranslationX(event.getX());
+                hueTracker.setTranslationX(event.getX() - hueTracker.getWidth() / 2);
 
                 updateGradients(pixel);
                 updateColor();
