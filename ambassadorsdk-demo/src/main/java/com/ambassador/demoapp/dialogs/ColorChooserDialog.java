@@ -9,18 +9,15 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -78,6 +75,7 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
     /** Y position of the current selected color on the chooser. */
     protected int colorY = 50;
 
+    /** Drawable operating the background of the current color marker. */
     protected GradientDrawable currentColorMarker;
 
     @Bind(R.id.dummyEt) protected EditText etDummy;
@@ -123,6 +121,7 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
             llRainbow.addView(view);
         }
 
+        // Set up hue spot marker.
         GradientDrawable colorSpotBackground = new GradientDrawable();
         colorSpotBackground.setStroke(2, Color.BLACK);
         hueTracker.setBackground(colorSpotBackground);
@@ -144,7 +143,7 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
                     return false;
                 }
 
-                etDummy.requestFocus();
+                removeFocus();
 
                 colorX = (int) event.getX();
                 colorY = (int) event.getY();
@@ -163,7 +162,7 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
                     return false;
                 }
 
-                etDummy.requestFocus();
+                removeFocus();
 
                 llRainbow.setDrawingCacheEnabled(true);
                 llRainbow.buildDrawingCache();
@@ -197,10 +196,11 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
             }
         });
 
+        // Remove any default focus from inputs.
+        removeFocus();
+
+        // Set input listener and filters.
         setOnKeyListener(this);
-
-        etDummy.requestFocus();
-
         etRedValue.setFilters(new InputFilter[]{ rgbFilter, new InputFilter.LengthFilter(3) });
         etGreenValue.setFilters(new InputFilter[]{ rgbFilter, new InputFilter.LengthFilter(3) });
         etBlueValue.setFilters(new InputFilter[]{ rgbFilter, new InputFilter.LengthFilter(3) });
@@ -292,6 +292,11 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         viewPreview.setBackgroundColor(color);
     }
 
+    /**
+     * Gets the GradientDrawable to set on the color marker with a certain color.
+     * @param color the color for the circle drawable returned to be outlined with.
+     * @return the processed reference to the member GradientDrawable.
+     */
     protected GradientDrawable getCurrentColorMarker(@ColorInt int color) {
         if (currentColorMarker == null) {
             currentColorMarker = new GradientDrawable();
@@ -302,6 +307,10 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         return currentColorMarker;
     }
 
+    /**
+     * Sets translation X and Y on colorSpot to correlate with colorX and colorY and sets the color
+     * of the marker appropriately.
+     */
     protected void updateCurrentColorMarker() {
         colorSpot.setTranslationX(colorX - colorSpot.getWidth() / 2);
         colorSpot.setTranslationY(colorY - colorSpot.getHeight() / 2);
@@ -312,6 +321,10 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         }
     }
 
+    /**
+     * Intended to be called after setColor(...) but before updateColor(). This will rearrange the
+     * color marker location and the current hue to go with the set color.
+     */
     protected void rearrangeForExteriorInput() {
         colorX = (int) (flColorA.getWidth() * s);
         colorY = flColorA.getHeight() - (int) (flColorA.getHeight() * v);
@@ -322,6 +335,9 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         hueTracker.setTranslationX(hueSliderX - hueTracker.getWidth() / 2);
     }
 
+    /**
+     * KeyListener that handles setting color based on user-modified EditText values for RGB and Hex.
+     */
     @Override
     public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
         if (hexKeyEntered(keyCode) && (etRedValue.isFocused() || etGreenValue.isFocused() || etBlueValue.isFocused())) {
@@ -341,7 +357,6 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
             } catch (Exception e) {
                 // Don't crash and ignore.
             }
-
         } else if (hexKeyEntered(keyCode) && etHexValue.isFocused()) {
             String input = etHexValue.getText().toString();
             if (!input.startsWith("#")) {
@@ -354,7 +369,7 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
                     updateGradients(hueExtreme);
                     rearrangeForExteriorInput();
                 } catch (Exception e) {
-                    // ignore and do nothing
+                    // Don't crash and ignore.
                 }
             }
 
@@ -364,6 +379,11 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         return false;
     }
 
+    /**
+     * Determines if a keycode entered is a HEX character. [A-Fa-f0-9]
+     * @param keyCode the integer keycode belonging to KeyEvent to check.
+     * @return true if an allowed hex character, else false.
+     */
     protected boolean hexKeyEntered(int keyCode) {
         List<Integer> allowedCodes = Arrays.asList(
                 KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_C, KeyEvent.KEYCODE_D, KeyEvent.KEYCODE_E, KeyEvent.KEYCODE_F,
@@ -373,6 +393,9 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         return allowedCodes.contains(keyCode);
     }
 
+    /**
+     * Filters RGB inputs by only allowing [0-9].
+     */
     protected InputFilter rgbFilter = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -388,6 +411,9 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         }
     };
 
+    /**
+     * Filters hex input by only allowing [A-Fa-f0-9].
+     */
     protected InputFilter hexFilter = new InputFilter() {
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -402,5 +428,15 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
             return out;
         }
     };
+
+    /**
+     * Removes focus from all main views by requesting focus on a dummy EditText and hiding the soft
+     * input.
+     */
+    protected void removeFocus() {
+        etDummy.requestFocus();
+        InputMethodManager inputMethodManager = (InputMethodManager) getOwnerActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromInputMethod(etDummy.getWindowToken(), 0);
+    }
 
 }
