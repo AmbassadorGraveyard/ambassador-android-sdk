@@ -273,15 +273,9 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         setColor(colors.getPixel(colorX, colorY));
         rlColors.setDrawingCacheEnabled(false);
 
-        if (!etRedValue.isFocused()) {
+        if (!etRedValue.isFocused() && !etGreenValue.isFocused() && !etBlueValue.isFocused()) {
             etRedValue.setText(String.valueOf(r));
-        }
-
-        if (!etGreenValue.isFocused()) {
             etGreenValue.setText(String.valueOf(g));
-        }
-
-        if (!etBlueValue.isFocused()) {
             etBlueValue.setText(String.valueOf(b));
         }
 
