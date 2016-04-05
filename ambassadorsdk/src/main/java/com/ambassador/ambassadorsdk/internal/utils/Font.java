@@ -53,6 +53,7 @@ public final class Font {
 
             default:
                 this.typeface = Typeface.DEFAULT;
+                break;
         }
     }
 

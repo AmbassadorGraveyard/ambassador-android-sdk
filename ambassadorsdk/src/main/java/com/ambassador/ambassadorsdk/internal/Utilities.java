@@ -112,7 +112,7 @@ public class Utilities {
         return width;
     }
 
-    static Rect buildRect() {
+    protected static Rect buildRect() {
         return new Rect();
     }
 
