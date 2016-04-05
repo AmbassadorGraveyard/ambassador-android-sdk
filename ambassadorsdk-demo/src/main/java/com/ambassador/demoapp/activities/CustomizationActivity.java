@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.text.Html;
@@ -62,6 +63,7 @@ public class CustomizationActivity extends AppCompatActivity {
     protected Campaign selectedCampaign;
 
     protected boolean hasPhoto = false;
+    protected boolean changesMade = true;
 
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
     @Bind(R.id.tvProductPhotoInfo) protected TextView tvProductPhotoInfo;
@@ -173,6 +175,22 @@ public class CustomizationActivity extends AppCompatActivity {
                 default:
                     break;
             }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (changesMade) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Are you sure?")
+                    .setMessage("Any changes you have made will be lost.")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    }).setNegativeButton("Cancel", null)
+                    .show();
         }
     }
 
