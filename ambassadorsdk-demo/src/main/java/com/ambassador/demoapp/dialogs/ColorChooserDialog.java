@@ -253,11 +253,8 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
         rlColors.setDrawingCacheEnabled(true);
         rlColors.buildDrawingCache();
         final Bitmap colors = rlColors.getDrawingCache();
-        if (colorX >= colors.getWidth()) {
-            colorX = colors.getWidth() - 1;
-        } else if (colorY >= colors.getHeight()) {
-            colorY = colors.getHeight() - 1;
-        }
+        colorX = colorX >= colors.getWidth() ? colors.getWidth() - 1 : colorX;
+        colorY = colorY >= colors.getHeight() ? colors.getHeight() - 1 : colorY;
         setColor(colors.getPixel(colorX, colorY));
         rlColors.setDrawingCacheEnabled(false);
 
