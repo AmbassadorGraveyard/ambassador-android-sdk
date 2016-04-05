@@ -43,6 +43,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -112,25 +113,7 @@ public class CustomizationActivityTest {
     @Test
     public void testsCampaignChooserWithOptionsDoesSetInput() {
         // Mock campaigns success response
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Callback<GetCampaignsResponse> responseCallback = (Callback) invocation.getArguments()[1];
-                GetCampaignsResponse getCampaignsResponse = new GetCampaignsResponse();
-                getCampaignsResponse.results = new GetCampaignsResponse.CampaignResponse[3];
-                getCampaignsResponse.results[0] = new GetCampaignsResponse.CampaignResponse();
-                getCampaignsResponse.results[1] = new GetCampaignsResponse.CampaignResponse();
-                getCampaignsResponse.results[2] = new GetCampaignsResponse.CampaignResponse();
-                getCampaignsResponse.results[0].name = "Test campaign 1";
-                getCampaignsResponse.results[0].uid = 123;
-                getCampaignsResponse.results[1].name = "Test campaign 2";
-                getCampaignsResponse.results[1].uid = 124;
-                getCampaignsResponse.results[2].name = "Test campaign 3";
-                getCampaignsResponse.results[2].uid = 125;
-                responseCallback.success(getCampaignsResponse, null);
-                return null;
-            }
-        }).when(requests).getCampaigns(Mockito.anyString(), Mockito.any(Callback.class));
+        mockCampaignsResponse();
 
         // Scroll to campaign chooser.
         onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.scrollTo());
@@ -154,25 +137,7 @@ public class CustomizationActivityTest {
     @Test
     public void testsCampaignChooserCanceledDoesNotSetInput() {
         // Mock campaigns success response
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Callback<GetCampaignsResponse> responseCallback = (Callback) invocation.getArguments()[1];
-                GetCampaignsResponse getCampaignsResponse = new GetCampaignsResponse();
-                getCampaignsResponse.results = new GetCampaignsResponse.CampaignResponse[3];
-                getCampaignsResponse.results[0] = new GetCampaignsResponse.CampaignResponse();
-                getCampaignsResponse.results[1] = new GetCampaignsResponse.CampaignResponse();
-                getCampaignsResponse.results[2] = new GetCampaignsResponse.CampaignResponse();
-                getCampaignsResponse.results[0].name = "Test campaign 1";
-                getCampaignsResponse.results[0].uid = 123;
-                getCampaignsResponse.results[1].name = "Test campaign 2";
-                getCampaignsResponse.results[1].uid = 124;
-                getCampaignsResponse.results[2].name = "Test campaign 3";
-                getCampaignsResponse.results[2].uid = 125;
-                responseCallback.success(getCampaignsResponse, null);
-                return null;
-            }
-        }).when(requests).getCampaigns(Mockito.anyString(), Mockito.any(Callback.class));
+        mockCampaignsResponse();
 
         // Scroll to campaign chooser.
         onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.scrollTo());
@@ -196,26 +161,7 @@ public class CustomizationActivityTest {
     @Test
     public void testsCampaignChooserProgressBarBehavior() throws Exception {
         // Mock campaigns success response
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Callback<GetCampaignsResponse> responseCallback = (Callback) invocation.getArguments()[1];
-                GetCampaignsResponse getCampaignsResponse = new GetCampaignsResponse();
-                getCampaignsResponse.results = new GetCampaignsResponse.CampaignResponse[3];
-                getCampaignsResponse.results[0] = new GetCampaignsResponse.CampaignResponse();
-                getCampaignsResponse.results[1] = new GetCampaignsResponse.CampaignResponse();
-                getCampaignsResponse.results[2] = new GetCampaignsResponse.CampaignResponse();
-                getCampaignsResponse.results[0].name = "Test campaign 1";
-                getCampaignsResponse.results[0].uid = 123;
-                getCampaignsResponse.results[1].name = "Test campaign 2";
-                getCampaignsResponse.results[1].uid = 124;
-                getCampaignsResponse.results[2].name = "Test campaign 3";
-                getCampaignsResponse.results[2].uid = 125;
-                responseCallback.success(getCampaignsResponse, null);
-
-                return null;
-            }
-        }).when(requests).getCampaigns(Mockito.anyString(), Mockito.any(Callback.class));
+        mockCampaignsResponse();
 
         // Scroll to campaign chooser.
         onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.scrollTo());
@@ -288,6 +234,106 @@ public class CustomizationActivityTest {
 
         // Verify LinkedIn is checked.
         onData(anything()).inAdapterView(withId(R.id.lvChannels)).atPosition(1).check(matches(isChannelChecked()));
+    }
+
+    @Test
+    public void testsInputValidationAndResponseLine() {
+        // Mock campaigns response.
+        mockCampaignsResponse();
+
+        // Scroll to bottom.
+        onView(withId(R.id.civButtons)).perform(ViewActions.scrollTo());
+
+        // Click save.
+        onView(withId(R.id.action_save)).perform(ViewActions.click());
+
+        // Verify SnackBar.
+        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText("Please enter an integration name!"))).check(matches(isDisplayed()));
+
+        // Click "OK".
+        onView(withId(android.support.design.R.id.snackbar_action)).perform(ViewActions.click());
+
+        // Verify input focused and visible.
+        onView(withId(R.id.inputIntegrationName)).check(matches(isFocused()));
+        onView(withId(R.id.inputIntegrationName)).check(matches(isDisplayed()));
+
+        // Type text into input.
+        onView(withId(R.id.inputIntegrationName)).perform(ViewActions.typeTextIntoFocusedView("Integration name"));
+
+        // Scroll to bottom.
+        onView(withId(R.id.civButtons)).perform(ViewActions.scrollTo());
+
+        // Click save.
+        onView(withId(R.id.action_save)).perform(ViewActions.click());
+
+        // Verify SnackBar.
+        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText("Please choose a campaign!"))).check(matches(isDisplayed()));
+
+        // Click "OK".
+        onView(withId(android.support.design.R.id.snackbar_action)).perform(ViewActions.click());
+
+        // Verify campaign dialog launches.
+        onView(withId(R.id.rvCampaignChooserTitle)).check(matches(isDisplayed()));
+
+        // Select 1st campaign.
+        onData(anything()).inAdapterView(withId(R.id.lvCampaignChooser)).atPosition(0).perform(ViewActions.click());
+
+        // Scroll to bottom.
+        onView(withId(R.id.civButtons)).perform(ViewActions.scrollTo());
+
+        // Click save.
+        onView(withId(R.id.action_save)).perform(ViewActions.click());
+
+        // Verify SnackBar.
+        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText("Please enter text for the header!"))).check(matches(isDisplayed()));
+
+        // Click "OK".
+        onView(withId(android.support.design.R.id.snackbar_action)).perform(ViewActions.click());
+
+        // Verify input focused and visible.
+        onView(withId(R.id.inputHeaderText)).check(matches(isFocused()));
+        onView(withId(R.id.inputHeaderText)).check(matches(isDisplayed()));
+
+        // Type text into input.
+        onView(withId(R.id.inputHeaderText)).perform(ViewActions.typeTextIntoFocusedView("Header text"));
+
+        // Scroll to bottom.
+        onView(withId(R.id.civButtons)).perform(ViewActions.scrollTo());
+
+        // Click save.
+        onView(withId(R.id.action_save)).perform(ViewActions.click());
+
+        // Verify SnackBar.
+        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText("Please enter text for field one!"))).check(matches(isDisplayed()));
+
+        // Click "OK".
+        onView(withId(android.support.design.R.id.snackbar_action)).perform(ViewActions.click());
+
+        // Verify input focused and visible.
+        onView(withId(R.id.inputTextField1)).check(matches(isFocused()));
+        onView(withId(R.id.inputTextField1)).check(matches(isDisplayed()));
+
+        // Type text into input.
+        onView(withId(R.id.inputTextField1)).perform(ViewActions.typeTextIntoFocusedView("Title text"));
+
+        // Scroll to bottom.
+        onView(withId(R.id.civButtons)).perform(ViewActions.scrollTo());
+
+        // Click save.
+        onView(withId(R.id.action_save)).perform(ViewActions.click());
+
+        // Verify SnackBar.
+        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText("Please enter text for field two!"))).check(matches(isDisplayed()));
+
+        // Click "OK".
+        onView(withId(android.support.design.R.id.snackbar_action)).perform(ViewActions.click());
+
+        // Verify input focused and visible.
+        onView(withId(R.id.inputTextField2)).check(matches(isFocused()));
+        onView(withId(R.id.inputTextField2)).check(matches(isDisplayed()));
+
+        // Type text into input.
+        onView(withId(R.id.inputTextField2)).perform(ViewActions.typeTextIntoFocusedView("Description text"));
     }
 
     private static ViewAction subViewClick(final int subId) {
@@ -396,6 +442,44 @@ public class CustomizationActivityTest {
             }
 
         };
+    }
+
+    private static Matcher<View> isFocused() {
+        return new TypeSafeMatcher<View>() {
+
+            @Override
+            protected boolean matchesSafely(View view) {
+                return view.isFocused();
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                // Not needed.
+            }
+
+        };
+    }
+
+    protected void mockCampaignsResponse() {
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<GetCampaignsResponse> responseCallback = (Callback) invocation.getArguments()[1];
+                GetCampaignsResponse getCampaignsResponse = new GetCampaignsResponse();
+                getCampaignsResponse.results = new GetCampaignsResponse.CampaignResponse[3];
+                getCampaignsResponse.results[0] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[1] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[2] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[0].name = "Test campaign 1";
+                getCampaignsResponse.results[0].uid = 123;
+                getCampaignsResponse.results[1].name = "Test campaign 2";
+                getCampaignsResponse.results[1].uid = 124;
+                getCampaignsResponse.results[2].name = "Test campaign 3";
+                getCampaignsResponse.results[2].uid = 125;
+                responseCallback.success(getCampaignsResponse, null);
+                return null;
+            }
+        }).when(requests).getCampaigns(Mockito.anyString(), Mockito.any(Callback.class));
     }
 
 }
