@@ -76,130 +76,130 @@ public class LoginActivityTest {
     }
 
     //@Test
-    public void testsEmptyEmailValidation() throws Exception {
-        // Focus password input and type "password".
-        onView(withInputHint("Password")).perform(ViewActions.click());
-        onView(withInputHint("Password")).perform(ViewActions.typeTextIntoFocusedView("password"));
-
-        // Click the login button.
-        onView(withId(R.id.btnLogin)).perform(ViewActions.click());
-
-        // Verify no login request.
-        Mockito.verify(requests, Mockito.never()).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
-
-        // Verify toast.
-        onView(withText("Please enter an email and password!")).inRoot(isToast()).check(matches(isDisplayed()));
-    }
-
-    //@Test
-    public void testsEmptyPasswordValidation() throws Exception {
-        // Focus email input and type a valid email.
-        onView(withInputHint("Email address")).perform(ViewActions.click());
-        onView(withInputHint("Email address")).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
-
-        // Click the login button.
-        onView(withId(R.id.btnLogin)).perform(ViewActions.click());
-
-        // Verify no login request.
-        Mockito.verify(requests, Mockito.never()).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
-
-        // Verify toast.
-        onView(withText("Please enter an email and password!")).inRoot(isToast()).check(matches(isDisplayed()));
-    }
-
-    //@Test
-    public void testsInvalidEmailValidation() throws Exception {
-        // Focus email input and type an invalid email.
-        onView(withInputHint("Email address")).perform(ViewActions.click());
-        onView(withInputHint("Email address")).perform(ViewActions.typeTextIntoFocusedView("jake$$"));
-
-        // Focus password input and type "password".
-        onView(withInputHint("Password")).perform(ViewActions.click());
-        onView(withInputHint("Password")).perform(ViewActions.typeTextIntoFocusedView("password"));
-
-        // Click the login button.
-        onView(withId(R.id.btnLogin)).perform(ViewActions.click());
-
-        // Verify no login request.
-        Mockito.verify(requests, Mockito.never()).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
-
-        // Verify toast.
-        onView(withText("Please enter a valid email address!")).inRoot(isToast()).check(matches(isDisplayed()));
-    }
-
-    //@Test
-    public void testsIncorrectPassword() throws Exception {
-        // Arrange login callback.
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Callback<LoginResponse> loginResponseCallback = (Callback<LoginResponse>) invocation.getArguments()[2];
-                loginResponseCallback.failure(null);
-                return null;
-            }
-        }).when(requests).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
-
-        // Focus email input and type a valid email.
-        onView(withInputHint("Email address")).perform(ViewActions.click());
-        onView(withInputHint("Email address")).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
-
-        // Focus password input and type "password".
-        onView(withInputHint("Password")).perform(ViewActions.click());
-        onView(withInputHint("Password")).perform(ViewActions.typeTextIntoFocusedView("password"));
-
-        // Click the login button.
-        onView(withId(R.id.btnLogin)).perform(ViewActions.click());
-
-        // Verify login request.
-        Mockito.verify(requests, Mockito.times(1)).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
-
-        // Verify toast.
-        onView(withText("Incorrect email/password!")).inRoot(isToast()).check(matches(isDisplayed()));
-    }
-
-    //@Test
-    public void testsCorrectLogin() throws Exception {
-        // Arrange login callback.
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Callback<LoginResponse> loginResponseCallback = (Callback<LoginResponse>) invocation.getArguments()[2];
-                LoginResponse loginResponse = new LoginResponse();
-                loginResponse.company = new LoginResponse.Company();
-                loginResponse.company.universal_id = "uid";
-                loginResponse.company.universal_token = "ut";
-                loginResponseCallback.success(loginResponse, null);
-                return null;
-            }
-        }).when(requests).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
-
-        // Focus email input and type a valid email.
-        onView(withInputHint("Email address")).perform(ViewActions.click());
-        onView(withInputHint("Email address")).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
-
-        // Focus password input and type "password".
-        onView(withInputHint("Password")).perform(ViewActions.click());
-        onView(withInputHint("Password")).perform(ViewActions.typeTextIntoFocusedView("password"));
-
-        // Click the login button.
-        onView(withId(R.id.btnLogin)).perform(ViewActions.click());
-
-        // Give 500ms to change activities.
-        Thread.sleep(500);
-
-        // Verify login request.
-        Mockito.verify(requests, Mockito.times(1)).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
-
-        // Verify change to MainActivity.
-        final Activity[] activity = new Activity[1];
-        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
-            @Override
-            public void run() {
-                activity[0] = Iterables.getOnlyElement(ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED));
-            }
-        });
-        Assert.assertTrue(activity[0] instanceof MainActivity);
-    }
+//    public void testsEmptyEmailValidation() throws Exception {
+//        // Focus password input and type "password".
+//        onView(withInputHint("Password")).perform(ViewActions.click());
+//        onView(withInputHint("Password")).perform(ViewActions.typeTextIntoFocusedView("password"));
+//
+//        // Click the login button.
+//        onView(withId(R.id.btnLogin)).perform(ViewActions.click());
+//
+//        // Verify no login request.
+//        Mockito.verify(requests, Mockito.never()).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
+//
+//        // Verify toast.
+//        onView(withText("Please enter an email and password!")).inRoot(isToast()).check(matches(isDisplayed()));
+//    }
+//
+//    //@Test
+//    public void testsEmptyPasswordValidation() throws Exception {
+//        // Focus email input and type a valid email.
+//        onView(withInputHint("Email address")).perform(ViewActions.click());
+//        onView(withInputHint("Email address")).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
+//
+//        // Click the login button.
+//        onView(withId(R.id.btnLogin)).perform(ViewActions.click());
+//
+//        // Verify no login request.
+//        Mockito.verify(requests, Mockito.never()).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
+//
+//        // Verify toast.
+//        onView(withText("Please enter an email and password!")).inRoot(isToast()).check(matches(isDisplayed()));
+//    }
+//
+//    //@Test
+//    public void testsInvalidEmailValidation() throws Exception {
+//        // Focus email input and type an invalid email.
+//        onView(withInputHint("Email address")).perform(ViewActions.click());
+//        onView(withInputHint("Email address")).perform(ViewActions.typeTextIntoFocusedView("jake$$"));
+//
+//        // Focus password input and type "password".
+//        onView(withInputHint("Password")).perform(ViewActions.click());
+//        onView(withInputHint("Password")).perform(ViewActions.typeTextIntoFocusedView("password"));
+//
+//        // Click the login button.
+//        onView(withId(R.id.btnLogin)).perform(ViewActions.click());
+//
+//        // Verify no login request.
+//        Mockito.verify(requests, Mockito.never()).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
+//
+//        // Verify toast.
+//        onView(withText("Please enter a valid email address!")).inRoot(isToast()).check(matches(isDisplayed()));
+//    }
+//
+//    //@Test
+//    public void testsIncorrectPassword() throws Exception {
+//        // Arrange login callback.
+//        Mockito.doAnswer(new Answer() {
+//            @Override
+//            public Object answer(InvocationOnMock invocation) throws Throwable {
+//                Callback<LoginResponse> loginResponseCallback = (Callback<LoginResponse>) invocation.getArguments()[2];
+//                loginResponseCallback.failure(null);
+//                return null;
+//            }
+//        }).when(requests).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
+//
+//        // Focus email input and type a valid email.
+//        onView(withInputHint("Email address")).perform(ViewActions.click());
+//        onView(withInputHint("Email address")).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
+//
+//        // Focus password input and type "password".
+//        onView(withInputHint("Password")).perform(ViewActions.click());
+//        onView(withInputHint("Password")).perform(ViewActions.typeTextIntoFocusedView("password"));
+//
+//        // Click the login button.
+//        onView(withId(R.id.btnLogin)).perform(ViewActions.click());
+//
+//        // Verify login request.
+//        Mockito.verify(requests, Mockito.times(1)).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
+//
+//        // Verify toast.
+//        onView(withText("Incorrect email/password!")).inRoot(isToast()).check(matches(isDisplayed()));
+//    }
+//
+//    //@Test
+//    public void testsCorrectLogin() throws Exception {
+//        // Arrange login callback.
+//        Mockito.doAnswer(new Answer() {
+//            @Override
+//            public Object answer(InvocationOnMock invocation) throws Throwable {
+//                Callback<LoginResponse> loginResponseCallback = (Callback<LoginResponse>) invocation.getArguments()[2];
+//                LoginResponse loginResponse = new LoginResponse();
+//                loginResponse.company = new LoginResponse.Company();
+//                loginResponse.company.universal_id = "uid";
+//                loginResponse.company.universal_token = "ut";
+//                loginResponseCallback.success(loginResponse, null);
+//                return null;
+//            }
+//        }).when(requests).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
+//
+//        // Focus email input and type a valid email.
+//        onView(withInputHint("Email address")).perform(ViewActions.click());
+//        onView(withInputHint("Email address")).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
+//
+//        // Focus password input and type "password".
+//        onView(withInputHint("Password")).perform(ViewActions.click());
+//        onView(withInputHint("Password")).perform(ViewActions.typeTextIntoFocusedView("password"));
+//
+//        // Click the login button.
+//        onView(withId(R.id.btnLogin)).perform(ViewActions.click());
+//
+//        // Give 500ms to change activities.
+//        Thread.sleep(500);
+//
+//        // Verify login request.
+//        Mockito.verify(requests, Mockito.times(1)).login(Mockito.anyString(), Mockito.anyString(), Mockito.any(Callback.class));
+//
+//        // Verify change to MainActivity.
+//        final Activity[] activity = new Activity[1];
+//        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+//            @Override
+//            public void run() {
+//                activity[0] = Iterables.getOnlyElement(ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED));
+//            }
+//        });
+//        Assert.assertTrue(activity[0] instanceof MainActivity);
+//    }
 
     private static Matcher<View> withInputHint(final String name) {
         return new TypeSafeMatcher<View>() {
