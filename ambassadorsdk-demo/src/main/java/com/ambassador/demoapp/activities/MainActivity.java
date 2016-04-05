@@ -150,10 +150,12 @@ public final class MainActivity extends AppCompatActivity {
             if (menuItem == null) return;
 
             if (fragment instanceof ReferFragment) {
+                menuItem.setVisible(true);
                 menuItem.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_add_white));
             } else if (fragment instanceof SettingsFragment) {
-
+                menuItem.setVisible(false);
             } else {
+                menuItem.setVisible(true);
                 menuItem.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_share_white));
             }
         }
