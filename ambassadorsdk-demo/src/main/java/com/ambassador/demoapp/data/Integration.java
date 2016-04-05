@@ -69,7 +69,7 @@ public class Integration {
         String storedIntegrations = sharedPreferences.getString(User.get().getUniversalId(), "[]");
         JsonArray integrationArray = new JsonParser().parse(storedIntegrations).getAsJsonArray();
         integrationArray.add(jsonRepresentation);
-        sharedPreferences.edit().putString(User.get().getUniversalId(), integrationArray.getAsString()).apply();
+        sharedPreferences.edit().putString(User.get().getUniversalId(), integrationArray.toString()).apply();
     }
 
     public void delete() {
