@@ -12,6 +12,7 @@ import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -27,7 +28,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
@@ -38,6 +41,7 @@ import com.ambassador.demoapp.data.Integration;
 import com.ambassador.demoapp.dialogs.CampaignChooserDialog;
 import com.ambassador.demoapp.views.ColorInputView;
 import com.ambassador.demoapp.views.InputView;
+import com.ambassador.demoapp.views.ListHeadingView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -65,6 +69,11 @@ public class CustomizationActivity extends AppCompatActivity {
     protected boolean hasPhoto = false;
     protected boolean changesMade = true;
 
+    @Bind(R.id.svCustomization) protected ScrollView svCustomization;
+    @Bind(R.id.lhvGeneral) protected ListHeadingView lhvGeneral;
+    @Bind(R.id.lhvHeader) protected ListHeadingView lhvHeader;
+    @Bind(R.id.lhvTextField1) protected ListHeadingView lhvTextField1;
+    @Bind(R.id.lhvTextField2) protected ListHeadingView lhvTextField2;
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
     @Bind(R.id.tvProductPhotoInfo) protected TextView tvProductPhotoInfo;
     @Bind(R.id.inputIntegrationName) protected InputView inputIntegrationName;
@@ -135,10 +144,12 @@ public class CustomizationActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Integration integration = new DataHandler().getIntegration();
-        AmbassadorSDK.identify("jake@getambassador.com");
-        AmbassadorSDK.presentRAF(this, integration.getCampaignId() + "", integration.getRafOptions());
-        //finish();
+        if (verifiedInputs()) {
+            Integration integration = new DataHandler().getIntegration();
+            AmbassadorSDK.identify("jake@getambassador.com");
+            AmbassadorSDK.presentRAF(this, integration.getCampaignId() + "", integration.getRafOptions());
+            //finish();
+        }
         return true;
     }
 
@@ -301,6 +312,69 @@ public class CustomizationActivity extends AppCompatActivity {
 
     }
 
+    protected boolean verifiedInputs() {
+        DataHandler dataHandler = new DataHandler();
+        if (!stringHasContent(dataHandler.getIntegrationName())) {
+            Snackbar.make(findViewById(android.R.id.content), "Please enter an integration name!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    svCustomization.smoothScrollTo(0, lhvGeneral.getTop());
+                    inputIntegrationName.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        if (dataHandler.getCampaign() == Campaign.NONE) {
+            Snackbar.make(findViewById(android.R.id.content), "Please choose a campaign!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    rvCampaignChooser.performClick();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        if (!stringHasContent(dataHandler.getHeaderText())) {
+            Snackbar.make(findViewById(android.R.id.content), "Please enter text for the header!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    svCustomization.smoothScrollTo(0, lhvHeader.getTop());
+                    inputHeaderText.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        if (!stringHasContent(dataHandler.getTextField1())) {
+            Snackbar.make(findViewById(android.R.id.content), "Please enter text for field one!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    svCustomization.smoothScrollTo(0, lhvTextField1.getTop());
+                    inputTextField1.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        if (!stringHasContent(dataHandler.getTextField2())) {
+            Snackbar.make(findViewById(android.R.id.content), "Please enter text for field two!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    svCustomization.smoothScrollTo(0, lhvTextField2.getTop());
+                    inputTextField2.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    protected boolean stringHasContent(String text) {
+        return text != null && !text.isEmpty() && !text.equals("");
+    }
+
     protected class DataHandler {
 
         public void setIntegration(@NonNull Integration integration) {
@@ -346,7 +420,7 @@ public class CustomizationActivity extends AppCompatActivity {
 
         @NonNull
         public Campaign getCampaign() {
-            return null;
+            return selectedCampaign != null ? selectedCampaign : Campaign.NONE;
         }
 
         public void setCampaign(@NonNull Campaign campaign) {
