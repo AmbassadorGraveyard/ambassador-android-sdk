@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:demo="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/svCustomization"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -29,6 +30,7 @@
             android:textSize="15sp" />
 
         <com.ambassador.demoapp.views.ListHeadingView
+            android:id="@+id/lhvGeneral"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
@@ -96,6 +98,7 @@
         </RelativeLayout>
 
         <com.ambassador.demoapp.views.ListHeadingView
+            android:id="@+id/lhvHeader"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
@@ -137,6 +140,7 @@
             android:layout_marginLeft="15dp" />
 
         <com.ambassador.demoapp.views.ListHeadingView
+            android:id="@+id/lhvTextField1"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
@@ -178,6 +182,7 @@
             android:layout_marginLeft="15dp" />
 
         <com.ambassador.demoapp.views.ListHeadingView
+            android:id="@+id/lhvTextField2"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
