@@ -3,6 +3,7 @@ package com.ambassador.demoapp.dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -10,6 +11,8 @@ import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +37,7 @@ import butterknife.ButterKnife;
  * Dialog that allows the user to select a color. For proper experience you need to use setColor(...)
  * once before showing the dialog. Selected color can be retrieved on dismiss with getColor().
  */
-public class ColorChooserDialog extends Dialog {
+public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyListener {
 
     /** Boolean telling if views inflated and binded. */
     protected boolean inflated = false;
@@ -124,14 +127,7 @@ public class ColorChooserDialog extends Dialog {
         rlColors.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                colorX = (int) (flColorA.getWidth() * s);
-                colorY = flColorA.getHeight() - (int) (flColorA.getHeight() * v);
-                updateCurrentColorMarker();
-                updateColor();
-
-                float hueSliderX = llRainbow.getWidth() * (h / 360f);
-                hueTracker.setTranslationX(hueSliderX - hueTracker.getWidth() / 2);
-
+                rearrangeForExteriorInput();
                 rlColors.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
@@ -193,11 +189,7 @@ public class ColorChooserDialog extends Dialog {
             }
         });
 
-        // Set TextWatchers on input to update other stuff when edited.
-        etRedValue.addTextChangedListener(rgbTextWatcher);
-        etGreenValue.addTextChangedListener(rgbTextWatcher);
-        etBlueValue.addTextChangedListener(rgbTextWatcher);
-        etHexValue.addTextChangedListener(hexTextWatcher);
+        setOnKeyListener(this);
     }
 
     /**
@@ -292,42 +284,73 @@ public class ColorChooserDialog extends Dialog {
         }
     }
 
-    protected TextWatcher rgbTextWatcher = new TextWatcher() {
+    protected void rearrangeForExteriorInput() {
+        colorX = (int) (flColorA.getWidth() * s);
+        colorY = flColorA.getHeight() - (int) (flColorA.getHeight() * v);
+        updateCurrentColorMarker();
+        updateColor();
 
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        float hueSliderX = llRainbow.getWidth() * (h / 360f);
+        hueTracker.setTranslationX(hueSliderX - hueTracker.getWidth() / 2);
+    }
 
+    @Override
+    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+        if (hexKeyEntered(keyCode) && (etRedValue.isFocused() || etGreenValue.isFocused() || etBlueValue.isFocused())) {
+            try {
+                int red = Integer.parseInt(etRedValue.getText().toString());
+                int green = Integer.parseInt(etGreenValue.getText().toString());
+                int blue = Integer.parseInt(etBlueValue.getText().toString());
+
+                if (red > 0 && red <= 255 && green > 0 && green < 255 && blue > 0 && blue < 255) {
+                    float[] hsv = new float[3];
+                    Color.RGBToHSV(red, green, blue, hsv);
+                    color = Color.HSVToColor(hsv);
+                    setColor(color);
+                    updateGradients(hueExtreme);
+                    rearrangeForExteriorInput();
+                }
+            } catch (Exception e) {
+                // Don't crash and ignore.
+            }
+
+        } else if (hexKeyEntered(keyCode) && etHexValue.isFocused()) {
+            String input = etHexValue.getText().toString();
+            if (!input.startsWith("#")) {
+                input = "#" + input;
+            }
+            try {
+                int color = Color.parseColor(input);
+                setColor(color);
+
+                updateGradients(hueExtreme);
+
+                rearrangeForExteriorInput();
+                Log.v("amb-color", "good!");
+                //setColor(color);
+                //rearrangeForExteriorInput();
+            } catch (Exception e) {
+                // no updating when not parsed.
+                if (input.length() == 7) {
+                    Log.e("amb-color", e.toString());
+                }
+                Log.v("amb-color", "bad!");
+            }
+
+            return false;
         }
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
+        Log.v("amb-color", "none!");
+        return false;
+    }
 
-        }
+    protected boolean hexKeyEntered(int keyCode) {
+        List<Integer> allowedCodes = Arrays.asList(
+                KeyEvent.KEYCODE_A, KeyEvent.KEYCODE_B, KeyEvent.KEYCODE_C, KeyEvent.KEYCODE_D, KeyEvent.KEYCODE_E, KeyEvent.KEYCODE_F,
+                KeyEvent.KEYCODE_0, KeyEvent.KEYCODE_1, KeyEvent.KEYCODE_2, KeyEvent.KEYCODE_3, KeyEvent.KEYCODE_4, KeyEvent.KEYCODE_5, KeyEvent.KEYCODE_6, KeyEvent.KEYCODE_7, KeyEvent.KEYCODE_8, KeyEvent.KEYCODE_9
+        );
 
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-
-    };
-
-    protected TextWatcher hexTextWatcher = new TextWatcher() {
-
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-
-    };
+        return allowedCodes.contains(keyCode);
+    }
 
 }

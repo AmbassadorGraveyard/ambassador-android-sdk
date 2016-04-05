@@ -66,6 +66,7 @@ public class CustomizationActivity extends AppCompatActivity {
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
     @Bind(R.id.tvProductPhotoInfo) protected TextView tvProductPhotoInfo;
     @Bind(R.id.inputIntegrationName) protected InputView inputIntegrationName;
+    @Bind(R.id.inputHeaderText) protected InputView inputHeaderText;
     @Bind(R.id.inputTextField1) protected InputView inputTextField1;
     @Bind(R.id.inputTextField2) protected InputView inputTextField2;
     @Bind(R.id.rvCampaignChooser) protected RelativeLayout rvCampaignChooser;
@@ -300,6 +301,7 @@ public class CustomizationActivity extends AppCompatActivity {
             RAFOptions rafOptions = new RAFOptions.Builder()
                     .setLogo(hasPhoto ? IMAGE_SAVE_FILENAME : null)
                     .setLogoPosition("1")
+                    .setToolbarTitle(getHeaderText())
                     .setHomeToolbarColor(getHeaderColor())
                     .setContactsToolbarColor(getHeaderColor())
                     .setTitleText(getTextField1())
@@ -336,6 +338,15 @@ public class CustomizationActivity extends AppCompatActivity {
                 tvSelectedCampaign.setText(campaign.getName());
                 tvSelectedCampaign.setTextColor(Color.parseColor("#253244"));
             }
+        }
+
+        @NonNull
+        public String getHeaderText() {
+            return inputHeaderText.getText().toString();
+        }
+
+        public void setHeaderText(@NonNull String text) {
+            inputHeaderText.setText(text);
         }
 
         @ColorInt
