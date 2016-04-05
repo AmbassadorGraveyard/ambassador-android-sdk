@@ -75,13 +75,13 @@
             android:layout_marginTop="18dp"
             android:elevation="5dp" />
 
-        <!--<ListView-->
-        <!--android:id="@+id/lvRafs"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_marginTop="34dp"-->
-        <!--android:divider="@android:color/white"-->
-        <!--android:dividerHeight="5dp" />-->
+        <ListView
+            android:id="@+id/lvRafs"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="34dp"
+            android:divider="@android:color/white"
+            android:dividerHeight="5dp" />
 
     </LinearLayout>
 
