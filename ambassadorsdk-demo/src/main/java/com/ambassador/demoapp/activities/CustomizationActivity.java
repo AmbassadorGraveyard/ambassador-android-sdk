@@ -151,6 +151,7 @@ public class CustomizationActivity extends AppCompatActivity {
             Integration integration = new DataHandler().getIntegration();
             AmbassadorSDK.identify("jake@getambassador.com");
             AmbassadorSDK.presentRAF(this, integration.getCampaignId() + "", integration.getRafOptions());
+            integration.save();
             //finish();
         }
         return true;

@@ -38,6 +38,7 @@ import butterknife.ButterKnife;
 public final class ReferFragment extends Fragment {
 
     @Bind(R.id.ivAddRaf) protected CircleImageView ivAddRaf;
+    @Bind(R.id.tvNoRafs) protected TextView tvNoRafs;
     @Bind(R.id.lvRafs) protected ListView lvRafs;
 
     @Override
@@ -63,6 +64,12 @@ public final class ReferFragment extends Fragment {
 
         final RafAdapter adapter = new RafAdapter();
         lvRafs.setAdapter(adapter);
+
+        if (adapter.getCount() > 0) {
+            tvNoRafs.setVisibility(View.GONE);
+            ivAddRaf.setVisibility(View.GONE);
+        }
+
 //        lvRafs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 //            @Override
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
