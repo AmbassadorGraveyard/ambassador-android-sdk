@@ -12,12 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
@@ -72,14 +74,13 @@ public final class ReferFragment extends Fragment {
             ivAddRaf.setVisibility(View.GONE);
         }
 
-//        lvRafs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                RafAdapter.RafItem item = adapter.getItem(position);
-//                String path = item.getOptionsPath();
-//                Demo.get().presentRAF(getActivity(), path);
-//            }
-//        });
+        lvRafs.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Integration item = adapter.getItem(position);
+                AmbassadorSDK.presentRAF(getActivity(), item.getCampaignId()+"", item.getRafOptions());
+            }
+        });
 //        lvRafs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 //            @Override
 //            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
