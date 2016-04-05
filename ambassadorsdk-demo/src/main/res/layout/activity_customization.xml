@@ -108,6 +108,26 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:text="Header Text" />
+
+        <com.ambassador.demoapp.views.InputView
+            android:id="@+id/inputHeaderText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:hint="Header Text"
+            android:textColor="#253244" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:text="Header Color" />
 
         <com.ambassador.demoapp.views.ColorInputView

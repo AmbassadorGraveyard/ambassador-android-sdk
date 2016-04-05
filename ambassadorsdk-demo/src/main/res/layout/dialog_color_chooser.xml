@@ -60,7 +60,7 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="22dp"
                 android:layout_below="@+id/flColorB"
                 android:layout_marginTop="10dp">
 
@@ -68,13 +68,15 @@
                     android:id="@+id/llRainbow"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp"
                     android:orientation="horizontal"
                     android:weightSum="3" />
 
                 <View
                     android:id="@+id/hueTracker"
                     android:layout_width="5dp"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent" />
 
             </FrameLayout>
 
