@@ -7,6 +7,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.action.MotionEvents;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
@@ -455,6 +456,31 @@ public class CustomizationActivityTest {
             @Override
             public void describeTo(Description description) {
                 // Not needed.
+            }
+
+        };
+    }
+
+    private static ViewAction touchAt(final int x, final int y) {
+        return new ViewAction() {
+
+            @Override
+            public Matcher<View> getConstraints() {
+                return ViewMatchers.isDisplayed();
+            }
+
+            @Override
+            public String getDescription() {
+                return "Touches the view at a specified x and y coordinate.";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                try {
+                    MotionEvents.sendDown(uiController, new float[]{x, y}, new float[]{0 ,0});
+                } catch (Exception e) {
+
+                }
             }
 
         };
