@@ -45,6 +45,8 @@ import butterknife.ButterKnife;
 
 public final class ReferFragment extends Fragment implements MainActivity.TabFragment {
 
+    protected boolean editing = false;
+
     @Bind(R.id.ivAddRaf) protected CircleImageView ivAddRaf;
     @Bind(R.id.tvNoRafs) protected TextView tvNoRafs;
     @Bind(R.id.lvRafs) protected ListView lvRafs;
@@ -216,17 +218,22 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
 
     @Override
     public void onActionClicked() {
-
+        editing = !editing;
+        refreshEditingState();
     }
 
     @Override
     public Drawable getActionDrawable() {
-        return ContextCompat.getDrawable(getActivity(), R.drawable.edit_icon);
+        return ContextCompat.getDrawable(getActivity(), editing ? R.drawable.done_icon : R.drawable.edit_icon);
     }
 
     @Override
     public boolean getActionVisibility() {
         return true;
+    }
+
+    protected void refreshEditingState() {
+
     }
 
 }

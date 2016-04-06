@@ -126,8 +126,14 @@ public final class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent = new Intent(this, CustomizationActivity.class);
-        startActivity(intent);
+        Fragment fragment = adapter.getItem(vpPages.getCurrentItem());
+        if (fragment instanceof TabFragment) {
+            TabFragment tabFragment = (TabFragment) fragment;
+            tabFragment.onActionClicked();
+            menuItem.setVisible(tabFragment.getActionVisibility());
+            menuItem.setIcon(tabFragment.getActionDrawable());
+        }
+
         return true;
     }
 

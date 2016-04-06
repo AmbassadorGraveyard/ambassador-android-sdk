@@ -95,7 +95,7 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
 
     @Override
     public void onActionClicked() {
-
+        Toast.makeText(getActivity(), "Identify", Toast.LENGTH_SHORT).show();
     }
 
     @Override
