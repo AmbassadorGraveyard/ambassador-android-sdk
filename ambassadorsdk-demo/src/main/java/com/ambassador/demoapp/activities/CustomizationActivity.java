@@ -161,6 +161,12 @@ public class CustomizationActivity extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(findViewById(android.R.id.content).getWindowToken(), 0);
         if (verifiedInputs()) {
             Integration integration = new DataHandler().getIntegration();
+
+            if (editing && this.integration != null) {
+                integration.setCreatedAtDate(this.integration.getCreatedAtDate());
+                this.integration.delete();
+            }
+
             integration.save();
             finish();
         }
