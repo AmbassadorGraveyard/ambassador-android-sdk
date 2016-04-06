@@ -166,6 +166,8 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             lvRafs.setVisibility(View.GONE);
             fabAdd.setVisibility(View.GONE);
         }
+
+        ((MainActivity) getActivity()).notifyIntegrationSetInvalidated();
     }
 
     private void closeSoftKeyboard() {
