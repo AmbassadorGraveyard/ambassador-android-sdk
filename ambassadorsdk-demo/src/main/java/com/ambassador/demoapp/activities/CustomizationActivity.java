@@ -61,6 +61,9 @@ public class CustomizationActivity extends AppCompatActivity {
 
     protected static final int PHOTO_CHOOSER_INTENT = 313;
 
+    protected boolean editing = false;
+    protected Integration integration;
+
     protected static String imageSaveFilename;
 
     protected ChannelAdapter channelAdapter;
@@ -95,6 +98,7 @@ public class CustomizationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_customization);
         ButterKnife.bind(this);
         setUpActionBar();
+        handleEditing();
 
         ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.add_photo));
         ivProductPhoto.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +137,10 @@ public class CustomizationActivity extends AppCompatActivity {
         civTextField1.setActivity(this);
         civTextField2.setActivity(this);
         civButtons.setActivity(this);
+
+        if (integration != null) {
+            new DataHandler().setIntegration(integration);
+        }
     }
 
     @Override
@@ -215,6 +223,20 @@ public class CustomizationActivity extends AppCompatActivity {
         if (actionBar == null) return;
         actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
         setTitle(Html.fromHtml("<small>Edit Refer a Friend View</small>"));
+    }
+
+    protected void handleEditing() {
+        boolean editing = getIntent().getBooleanExtra("editing", false);
+        if (editing) {
+            this.editing = true;
+            long createdAtDate = getIntent().getLongExtra("integration", -1);
+            if (createdAtDate == -1) {
+                finish();
+                Toast.makeText(CustomizationActivity.this, "An error occurred while attempting to edit the integration.", Toast.LENGTH_SHORT).show();
+            }
+
+            integration = Integration.get(createdAtDate);
+        }
     }
 
     protected void setUpChannelList() {

@@ -288,7 +288,11 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
     }
 
     protected void edit(int item) {
-        Toast.makeText(getActivity(), "Editing", Toast.LENGTH_SHORT).show();
+        Integration integration = adapter.getItem(item);
+        Intent intent = new Intent(getActivity(), CustomizationActivity.class);
+        intent.putExtra("editing", true);
+        intent.putExtra("integration", integration.getCreatedAtDate());
+        startActivity(intent);
     }
 
     protected void delete(final int item) {
