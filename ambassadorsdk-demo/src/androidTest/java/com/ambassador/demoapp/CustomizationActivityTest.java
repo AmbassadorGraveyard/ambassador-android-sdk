@@ -303,38 +303,6 @@ public class CustomizationActivityTest {
 
         // Click save.
         onView(withId(R.id.action_save)).perform(ViewActions.click());
-
-        // Verify SnackBar.
-        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText("Please enter text for field one!"))).check(matches(isDisplayed()));
-
-        // Click "OK".
-        onView(withId(android.support.design.R.id.snackbar_action)).perform(ViewActions.click());
-
-        // Verify input focused and visible.
-        onView(withId(R.id.inputTextField1)).check(matches(isFocused()));
-        onView(withId(R.id.inputTextField1)).check(matches(isDisplayed()));
-
-        // Type text into input.
-        onView(withId(R.id.inputTextField1)).perform(ViewActions.typeTextIntoFocusedView("Title text"));
-
-        // Scroll to bottom.
-        onView(withId(R.id.civButtons)).perform(ViewActions.scrollTo());
-
-        // Click save.
-        onView(withId(R.id.action_save)).perform(ViewActions.click());
-
-        // Verify SnackBar.
-        onView(allOf(withId(android.support.design.R.id.snackbar_text), withText("Please enter text for field two!"))).check(matches(isDisplayed()));
-
-        // Click "OK".
-        onView(withId(android.support.design.R.id.snackbar_action)).perform(ViewActions.click());
-
-        // Verify input focused and visible.
-        onView(withId(R.id.inputTextField2)).check(matches(isFocused()));
-        onView(withId(R.id.inputTextField2)).check(matches(isDisplayed()));
-
-        // Type text into input.
-        onView(withId(R.id.inputTextField2)).perform(ViewActions.typeTextIntoFocusedView("Description text"));
     }
 
     private static ViewAction subViewClick(final int subId) {
