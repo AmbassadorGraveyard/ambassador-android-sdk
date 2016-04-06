@@ -1,6 +1,7 @@
 package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -154,9 +156,15 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             tvNoRafs.setVisibility(View.GONE);
             ivAddRaf.setVisibility(View.GONE);
             lvRafs.setVisibility(View.VISIBLE);
+            fabAdd.setVisibility(View.VISIBLE);
 
             int height = 110 + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
             lvRafs.getLayoutParams().height = height;
+        } else {
+            tvNoRafs.setVisibility(View.VISIBLE);
+            ivAddRaf.setVisibility(View.VISIBLE);
+            lvRafs.setVisibility(View.GONE);
+            fabAdd.setVisibility(View.GONE);
         }
     }
 
@@ -274,15 +282,29 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
     }
 
     protected void share(int item) {
-
+        Toast.makeText(getActivity(), "Sharing", Toast.LENGTH_SHORT).show();
     }
 
     protected void edit(int item) {
-
+        Toast.makeText(getActivity(), "Editing", Toast.LENGTH_SHORT).show();
     }
 
-    protected void delete(int item) {
-
+    protected void delete(final int item) {
+        new AlertDialog.Builder(getActivity())
+                .setMessage("Are you sure you want to delete this integration?")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Integration integration = adapter.getItem(item);
+                        integration.delete();
+                        adapter.items.remove(item);
+                        adapter.notifyDataSetChanged();
+                        if (adapter.items.size() == 0) {
+                            onResume();
+                        }
+                    }
+                }).setNegativeButton("Cancel", null)
+                .show();
     }
 
 }
