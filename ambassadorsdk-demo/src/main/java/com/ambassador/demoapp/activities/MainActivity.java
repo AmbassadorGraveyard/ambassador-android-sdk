@@ -149,6 +149,12 @@ public final class MainActivity extends AppCompatActivity {
 
             if (menuItem == null) return;
 
+            if (fragment instanceof TabFragment) {
+                TabFragment tabFragment = (TabFragment) fragment;
+                menuItem.setVisible(tabFragment.getActionVisibility());
+                menuItem.setIcon(tabFragment.getActionDrawable());
+            }
+
             if (fragment instanceof ReferFragment) {
                 menuItem.setVisible(true);
                 menuItem.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.edit_icon));
@@ -267,6 +273,7 @@ public final class MainActivity extends AppCompatActivity {
 
         void onActionClicked();
         Drawable getActionDrawable();
+        boolean getActionVisibility();
 
     }
 

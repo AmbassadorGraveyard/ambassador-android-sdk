@@ -221,7 +221,12 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
 
     @Override
     public Drawable getActionDrawable() {
-        return null;
+        return ContextCompat.getDrawable(getActivity(), R.drawable.edit_icon);
+    }
+
+    @Override
+    public boolean getActionVisibility() {
+        return true;
     }
 
 }
