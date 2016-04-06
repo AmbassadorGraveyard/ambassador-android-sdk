@@ -39,6 +39,8 @@ import com.google.gson.JsonParser;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -188,6 +190,8 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                 Integration integration = new Gson().fromJson(integrationsArray.get(i).getAsString(), Integration.class);
                 items.add(integration);
             }
+
+            Collections.sort(items);
         }
 
         @Override
