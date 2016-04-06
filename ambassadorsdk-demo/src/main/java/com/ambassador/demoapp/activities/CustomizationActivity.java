@@ -349,28 +349,6 @@ public class CustomizationActivity extends AppCompatActivity {
             return false;
         }
 
-        if (!stringHasContent(dataHandler.getTextField1())) {
-            Snackbar.make(findViewById(android.R.id.content), "Please enter text for field one!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    svCustomization.smoothScrollTo(0, lhvTextField1.getTop());
-                    inputTextField1.requestFocus();
-                }
-            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
-            return false;
-        }
-
-        if (!stringHasContent(dataHandler.getTextField2())) {
-            Snackbar.make(findViewById(android.R.id.content), "Please enter text for field two!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    svCustomization.smoothScrollTo(0, lhvTextField2.getTop());
-                    inputTextField2.requestFocus();
-                }
-            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
-            return false;
-        }
-
         return true;
     }
 

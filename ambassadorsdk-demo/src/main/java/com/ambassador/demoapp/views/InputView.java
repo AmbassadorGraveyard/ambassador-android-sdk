@@ -44,5 +44,5 @@ public class InputView extends EditText {
         int dp12 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, r.getDisplayMetrics());
         setPadding(dp10, dp12, dp10, dp12);
     }
-    
+
 }
