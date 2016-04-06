@@ -52,6 +52,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -386,7 +387,16 @@ public class CustomizationActivity extends AppCompatActivity {
             campaign.setName(integration.getCampaignName());
             campaign.setId(integration.getCampaignId());
             setCampaign(campaign);
+
             RAFOptions rafOptions = integration.getRafOptions();
+            setHeaderText(rafOptions.getToolbarTitle());
+            setHeaderColor(rafOptions.getHomeToolbarColor());
+            setTextField1(rafOptions.getTitleText());
+            setTextField1Color(rafOptions.getHomeWelcomeTitleColor());
+            setTextField2(rafOptions.getDescriptionText());
+            setTextField2Color(rafOptions.getHomeWelcomeDescriptionColor());
+            setChannels(rafOptions.getChannels());
+            setButtonColor(rafOptions.getContactsSendButtonColor());
         }
 
         @NonNull
@@ -394,6 +404,7 @@ public class CustomizationActivity extends AppCompatActivity {
             Integration integration = new Integration();
             integration.setName(getIntegrationName());
             integration.setCampaignId(selectedCampaign.getId());
+            integration.setCampaignName(selectedCampaign.getName());
             integration.setCreatedAtDate(System.currentTimeMillis());
             RAFOptions rafOptions = new RAFOptions.Builder()
                     .setLogo(hasPhoto ? imageSaveFilename : null)
@@ -496,8 +507,8 @@ public class CustomizationActivity extends AppCompatActivity {
             for (int i = 0; i < channels.length; i++) {
                 uppercaseChannels[i] = channels[i].toUpperCase();
             }
-            List<String> paramChannels = Arrays.asList(uppercaseChannels);
-            List<Channel> neededChannels = Arrays.asList(Channel.DEFAULTS);
+            List<String> paramChannels = new LinkedList<>(Arrays.asList(uppercaseChannels));
+            List<Channel> neededChannels = new LinkedList<>(Arrays.asList(Channel.DEFAULTS));
             List<Channel> items = new ArrayList<>();
             for (String paramChannel : paramChannels) {
                 Channel channelItem = Channel.get(paramChannel);
