@@ -102,6 +102,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
         android:src="@drawable/ic_add_white"
+        android:visibility="gone"
         app:backgroundTint="@color/ambassador_blue" />
 
 </RelativeLayout>
