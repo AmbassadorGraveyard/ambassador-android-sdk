@@ -274,7 +274,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
 
     @Override
     public boolean getActionVisibility() {
-        return true;
+        return adapter.getCount() > 0;
     }
 
     protected void refreshEditingState() {
@@ -300,6 +300,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                         adapter.items.remove(item);
                         adapter.notifyDataSetChanged();
                         if (adapter.items.size() == 0) {
+                            editing = false;
                             onResume();
                         }
                     }

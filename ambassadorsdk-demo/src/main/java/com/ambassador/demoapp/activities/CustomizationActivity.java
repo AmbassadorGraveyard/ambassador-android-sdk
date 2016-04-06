@@ -61,7 +61,7 @@ public class CustomizationActivity extends AppCompatActivity {
 
     protected static final int PHOTO_CHOOSER_INTENT = 313;
 
-    protected static final String IMAGE_SAVE_FILENAME = "image.png";
+    protected static String imageSaveFilename;
 
     protected ChannelAdapter channelAdapter;
 
@@ -165,7 +165,8 @@ public class CustomizationActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         ivProductPhoto.setImageBitmap(bitmap);
-                        boolean didSave = saveImage(bitmap, IMAGE_SAVE_FILENAME);
+                        imageSaveFilename = System.currentTimeMillis() + ".png";
+                        boolean didSave = saveImage(bitmap, imageSaveFilename);
                         if (didSave) {
                             tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
                             tvProductPhotoInfo.setText("Remove Product Photo");
@@ -373,7 +374,7 @@ public class CustomizationActivity extends AppCompatActivity {
             integration.setCampaignId(selectedCampaign.getId());
             integration.setCreatedAtDate(System.currentTimeMillis());
             RAFOptions rafOptions = new RAFOptions.Builder()
-                    .setLogo(hasPhoto ? IMAGE_SAVE_FILENAME : null)
+                    .setLogo(hasPhoto ? imageSaveFilename : null)
                     .setLogoPosition("1")
                     .setToolbarTitle(getHeaderText())
                     .setHomeToolbarColor(getHeaderColor())
