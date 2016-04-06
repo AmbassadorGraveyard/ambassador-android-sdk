@@ -1,6 +1,7 @@
 package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,11 +18,12 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.R;
+import com.ambassador.demoapp.activities.MainActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class ConversionFragment extends Fragment {
+public final class ConversionFragment extends Fragment implements MainActivity.TabFragment {
 
     @Bind(R.id.etConversionEmail) protected EditText etEmail;
     @Bind(R.id.etConversionRevenue) protected EditText etRevenue;
@@ -106,6 +108,16 @@ public final class ConversionFragment extends Fragment {
     private void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
+    }
+
+    @Override
+    public void onActionClicked() {
+
+    }
+
+    @Override
+    public Drawable getActionDrawable() {
+        return null;
     }
 
 }

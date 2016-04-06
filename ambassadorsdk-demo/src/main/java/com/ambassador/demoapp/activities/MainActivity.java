@@ -263,4 +263,11 @@ public final class MainActivity extends AppCompatActivity {
 
     }
 
+    public interface TabFragment {
+
+        void onActionClicked();
+        Drawable getActionDrawable();
+
+    }
+
 }

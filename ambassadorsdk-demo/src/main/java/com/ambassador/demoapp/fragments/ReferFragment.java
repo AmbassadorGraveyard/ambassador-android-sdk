@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +27,7 @@ import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.activities.CustomizationActivity;
+import com.ambassador.demoapp.activities.MainActivity;
 import com.ambassador.demoapp.data.Integration;
 import com.ambassador.demoapp.data.User;
 import com.google.gson.Gson;
@@ -41,7 +43,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public final class ReferFragment extends Fragment {
+public final class ReferFragment extends Fragment implements MainActivity.TabFragment {
 
     @Bind(R.id.ivAddRaf) protected CircleImageView ivAddRaf;
     @Bind(R.id.tvNoRafs) protected TextView tvNoRafs;
@@ -210,6 +212,16 @@ public final class ReferFragment extends Fragment {
             return convertView;
         }
 
+    }
+
+    @Override
+    public void onActionClicked() {
+
+    }
+
+    @Override
+    public Drawable getActionDrawable() {
+        return null;
     }
 
 }
