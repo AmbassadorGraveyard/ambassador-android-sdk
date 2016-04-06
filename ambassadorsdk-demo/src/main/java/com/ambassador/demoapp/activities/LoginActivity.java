@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.api.Requests;
 import com.ambassador.demoapp.api.pojo.LoginResponse;
@@ -71,6 +72,11 @@ public class LoginActivity extends Activity {
 
                 if (emailAddress == null || "".equals(emailAddress) || password == null || "".equals(password)) {
                     Toast.makeText(LoginActivity.this, "Please enter an email and password!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!(new Identify(emailAddress).isValidEmail())) {
+                    Toast.makeText(LoginActivity.this, "Please enter a valid email address!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 

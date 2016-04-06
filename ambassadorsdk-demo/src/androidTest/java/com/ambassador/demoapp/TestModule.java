@@ -22,6 +22,7 @@ import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.notifications.InstanceIdListener;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.ambassador.demoapp.ambassadorsdk.AmbassadorActivityTest;
 
 import org.mockito.Mockito;
 
@@ -32,6 +33,10 @@ import dagger.Provides;
 
 @Module(injects = {
         MainActivityTest.class,
+        LaunchActivityTest.class,
+        LoginActivityTest.class,
+        CustomizationActivityTest.class,
+        AmbassadorActivityTest.class,
         AmbassadorActivity.class,
         SocialShareDialog.class,
         SocialOAuthActivity.class,

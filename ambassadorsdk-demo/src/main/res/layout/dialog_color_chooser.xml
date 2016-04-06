@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/rvColorChooserTitle"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@android:color/white">
+
+            <ImageView
+                android:id="@+id/ivBadge"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:src="@mipmap/ic_launcher" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="7dp"
+                android:layout_toRightOf="@+id/ivBadge"
+                android:text="Choose a Color"
+                android:textColor="@android:color/black"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/dummyEt"
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_alignParentRight="true" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:background="#eee" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlColors"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <FrameLayout
+                android:id="@+id/flColorA"
+                android:layout_width="match_parent"
+                android:layout_height="270dp" />
+
+            <FrameLayout
+                android:id="@+id/flColorB"
+                android:layout_width="match_parent"
+                android:layout_height="270dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="22dp"
+                android:layout_below="@+id/flColorB"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:id="@+id/llRainbow"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="1dp"
+                    android:layout_marginTop="1dp"
+                    android:orientation="horizontal"
+                    android:weightSum="3" />
+
+                <View
+                    android:id="@+id/hueTracker"
+                    android:layout_width="5dp"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
+
+            <View
+                android:id="@+id/viewColorSpot"
+                android:layout_width="13dp"
+                android:layout_height="13dp" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="3dp">
+
+                <TextView
+                    android:id="@+id/tvRedValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="1dp"
+                    android:text="R:"
+                    android:textColor="@android:color/black"
+                    android:textSize="11sp" />
+
+                <EditText
+                    android:id="@+id/etRedValue"
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_toRightOf="@+id/tvRedValue"
+                    android:background="@drawable/et_only"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:text="123"
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginRight="3dp">
+
+                <TextView
+                    android:id="@+id/tvGreenValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="1dp"
+                    android:text="G:"
+                    android:textColor="@android:color/black"
+                    android:textSize="11sp" />
+
+                <EditText
+                    android:id="@+id/etGreenValue"
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_toRightOf="@+id/tvGreenValue"
+                    android:background="@drawable/et_only"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:text="123"
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp">
+
+                <TextView
+                    android:id="@+id/tvBlueValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="B:"
+                    android:textColor="@android:color/black"
+                    android:textSize="11sp" />
+
+                <EditText
+                    android:id="@+id/etBlueValue"
+                    android:layout_width="32dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_toRightOf="@+id/tvBlueValue"
+                    android:background="@drawable/et_only"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:text="123"
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right">
+
+                <TextView
+                    android:id="@+id/tvHexValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="HEX:"
+                    android:textColor="@android:color/black"
+                    android:textSize="11sp" />
+
+                <EditText
+                    android:id="@+id/etHexValue"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="2dp"
+                    android:layout_toRightOf="@+id/tvHexValue"
+                    android:background="@drawable/et_only"
+                    android:gravity="center"
+                    android:paddingBottom="3dp"
+                    android:paddingTop="3dp"
+                    android:text="#ffaabb"
+                    android:textAlignment="center"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/viewPreview"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_margin="10dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+            <TextView
+                android:id="@+id/tvColorCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:paddingBottom="6dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="6dp"
+                android:text="CANCEL"
+                android:textColor="#00a49d"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvColorDone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:paddingBottom="6dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="6dp"
+                android:text="DONE"
+                android:textColor="#00a49d"
+                android:textSize="14sp" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

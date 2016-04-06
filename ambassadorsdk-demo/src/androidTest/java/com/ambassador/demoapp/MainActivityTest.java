@@ -27,7 +27,6 @@ import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.demoapp.activities.LoginActivity;
 import com.ambassador.demoapp.activities.MainActivity;
 import com.ambassador.demoapp.api.pojo.LoginResponse;
-import com.ambassador.demoapp.activities.MainActivity;
 
 import junit.framework.Assert;
 
@@ -384,7 +383,7 @@ public class MainActivityTest {
         // Click the logout button.
         onView(withId(R.id.rlLogout)).perform(ViewActions.click());
 
-        // Sleep 500ms to compensate for LaunchActivity, and verify LoginActivity..
+        // Sleep 500ms to compensate for LaunchActivity, and verify LoginActivity.
         Thread.sleep(500);
         final Activity[] activity = new Activity[1];
         InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
@@ -436,4 +435,5 @@ public class MainActivityTest {
 
         };
     }
+
 }
