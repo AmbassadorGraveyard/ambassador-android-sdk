@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
@@ -45,6 +46,7 @@ public final class ReferFragment extends Fragment {
     @Bind(R.id.ivAddRaf) protected CircleImageView ivAddRaf;
     @Bind(R.id.tvNoRafs) protected TextView tvNoRafs;
     @Bind(R.id.lvRafs) protected ListView lvRafs;
+    @Bind(R.id.fabAdd) protected FloatingActionButton fabAdd;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,6 +86,14 @@ public final class ReferFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Integration item = adapter.getItem(position);
                 AmbassadorSDK.presentRAF(getActivity(), item.getCampaignId()+"", item.getRafOptions());
+            }
+        });
+
+        fabAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CustomizationActivity.class);
+                startActivity(intent);
             }
         });
 //        lvRafs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -130,6 +140,16 @@ public final class ReferFragment extends Fragment {
     public void onResume() {
         super.onResume();
         closeSoftKeyboard();
+        RafAdapter adapter = new RafAdapter();
+        lvRafs.setAdapter(adapter);
+        if (adapter.getCount() > 0) {
+            tvNoRafs.setVisibility(View.GONE);
+            ivAddRaf.setVisibility(View.GONE);
+            lvRafs.setVisibility(View.VISIBLE);
+
+            int height = 110 + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
+            lvRafs.getLayoutParams().height = height;
+        }
     }
 
     private void closeSoftKeyboard() {
