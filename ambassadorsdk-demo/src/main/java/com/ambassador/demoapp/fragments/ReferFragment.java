@@ -80,6 +80,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             tvNoRafs.setVisibility(View.GONE);
             ivAddRaf.setVisibility(View.GONE);
             lvRafs.setVisibility(View.VISIBLE);
+            fabAdd.setVisibility(View.VISIBLE);
 
             int height = 110 + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
             lvRafs.getLayoutParams().height = height;
