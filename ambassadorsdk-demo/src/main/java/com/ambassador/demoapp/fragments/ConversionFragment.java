@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,7 +118,12 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     @Override
     public Drawable getActionDrawable() {
-        return null;
+        return ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_white);
+    }
+
+    @Override
+    public boolean getActionVisibility() {
+        return true;
     }
 
 }
