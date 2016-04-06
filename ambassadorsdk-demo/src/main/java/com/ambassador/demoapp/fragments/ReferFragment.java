@@ -308,6 +308,9 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                         if (adapter.items.size() == 0) {
                             editing = false;
                             onResume();
+                        } else {
+                            int height = 110 + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
+                            lvRafs.getLayoutParams().height = height;
                         }
                     }
                 }).setNegativeButton("Cancel", null)
