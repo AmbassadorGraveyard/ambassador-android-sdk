@@ -50,40 +50,38 @@
             android:textColor="#9097a1"
             android:textSize="13sp" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:background="#eeeeee" />
+
         <TextView
-            android:id="@+id/tvCampaignId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
-            android:fontFamily="sans-serif-thin"
-            android:text="Campaign ID:"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
-
-        <EditText
-            android:id="@+id/etCampaignId"
-            android:layout_width="72dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/et_only"
-            android:contentDescription="campaignIdField"
-            android:ems="10"
+            android:layout_marginTop="26dp"
+            android:width="250dp"
             android:gravity="center"
-            android:inputType="number"
-            android:lines="1"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:textSize="12sp" />
+            android:text="You don\'t have any refer a friend views. Create your first one!"
+            android:textAlignment="center"
+            android:textColor="@android:color/black" />
 
-        <ListView
-            android:id="@+id/lvRafs"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="34dp"
-            android:divider="@android:color/white"
-            android:dividerHeight="5dp" />
+        <com.ambassador.ambassadorsdk.internal.views.CircleImageView
+            android:id="@+id/ivAddRaf"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="18dp"
+            android:elevation="5dp" />
+
+        <!--<ListView-->
+        <!--android:id="@+id/lvRafs"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_marginTop="34dp"-->
+        <!--android:divider="@android:color/white"-->
+        <!--android:dividerHeight="5dp" />-->
 
     </LinearLayout>
 

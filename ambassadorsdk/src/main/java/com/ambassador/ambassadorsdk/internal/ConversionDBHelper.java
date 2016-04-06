@@ -53,7 +53,7 @@ public class ConversionDBHelper extends SQLiteOpenHelper {
         return values;
     }
 
-    static ContentValues buildContentValues() {
+    protected static ContentValues buildContentValues() {
         return new ContentValues();
     }
 

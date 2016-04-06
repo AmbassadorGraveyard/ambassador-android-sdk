@@ -311,24 +311,29 @@ public class RAFOptions {
 
         public Builder() {}
 
-        public void setDefaultShareMessage(String defaultShareMessage) {
+        public Builder setDefaultShareMessage(String defaultShareMessage) {
             this.defaultShareMessage = defaultShareMessage;
+            return this;
         }
 
-        public void setTitleText(String titleText) {
+        public Builder setTitleText(String titleText) {
             this.titleText = titleText;
+            return this;
         }
 
-        public void setDescriptionText(String descriptionText) {
+        public Builder setDescriptionText(String descriptionText) {
             this.descriptionText = descriptionText;
+            return this;
         }
 
-        public void setToolbarTitle(String toolbarTitle) {
+        public Builder setToolbarTitle(String toolbarTitle) {
             this.toolbarTitle = toolbarTitle;
+            return this;
         }
 
-        public void setLogoPosition(String logoPosition) {
+        public Builder setLogoPosition(String logoPosition) {
             this.logoPosition = logoPosition;
+            return this;
         }
 
         public Builder setLogo(String logo) {
@@ -341,140 +346,174 @@ public class RAFOptions {
             return this;
         }
 
-        public void setHomeBackgroundColor(int homeBackgroundColor) {
+        public Builder setHomeBackgroundColor(int homeBackgroundColor) {
             this.homeBackgroundColor = homeBackgroundColor;
+            return this;
         }
 
-        public void setHomeWelcomeTitleColor(int homeWelcomeTitleColor) {
+        public Builder setHomeWelcomeTitleColor(int homeWelcomeTitleColor) {
             this.homeWelcomeTitleColor = homeWelcomeTitleColor;
+            return this;
         }
 
-        public void setHomeWelcomeTitleSize(float homeWelcomeTitleSize) {
+        public Builder setHomeWelcomeTitleSize(float homeWelcomeTitleSize) {
             this.homeWelcomeTitleSize = homeWelcomeTitleSize;
+            return this;
         }
 
-        public void setHomeWelcomeTitleFont(Typeface homeWelcomeTitleFont) {
+        public Builder setHomeWelcomeTitleFont(Typeface homeWelcomeTitleFont) {
             this.homeWelcomeTitleFont = homeWelcomeTitleFont;
+            return this;
         }
 
-        public void setHomeWelcomeDescriptionColor(int homeWelcomeDescriptionColor) {
+        public Builder setHomeWelcomeDescriptionColor(int homeWelcomeDescriptionColor) {
             this.homeWelcomeDescriptionColor = homeWelcomeDescriptionColor;
+            return this;
         }
 
-        public void setHomeWelcomeDescriptionSize(float homeWelcomeDescriptionSize) {
+        public Builder setHomeWelcomeDescriptionSize(float homeWelcomeDescriptionSize) {
             this.homeWelcomeDescriptionSize = homeWelcomeDescriptionSize;
+            return this;
         }
 
-        public void setHomeWelcomeDescriptionFont(Typeface homeWelcomeDescriptionFont) {
+        public Builder setHomeWelcomeDescriptionFont(Typeface homeWelcomeDescriptionFont) {
             this.homeWelcomeDescriptionFont = homeWelcomeDescriptionFont;
+            return this;
         }
 
-        public void setHomeToolbarColor(int homeToolbarColor) {
+        public Builder setHomeToolbarColor(int homeToolbarColor) {
             this.homeToolbarColor = homeToolbarColor;
+            return this;
         }
 
-        public void setHomeToolbarTextColor(int homeToolbarTextColor) {
+        public Builder setHomeToolbarTextColor(int homeToolbarTextColor) {
             this.homeToolbarTextColor = homeToolbarTextColor;
+            return this;
         }
 
-        public void setHomeToolbarTextFont(Typeface homeToolbarTextFont) {
+        public Builder setHomeToolbarTextFont(Typeface homeToolbarTextFont) {
             this.homeToolbarTextFont = homeToolbarTextFont;
+            return this;
         }
 
-        public void setHomeToolbarArrowColor(int homeToolbarArrowColor) {
+        public Builder setHomeToolbarArrowColor(int homeToolbarArrowColor) {
             this.homeToolbarArrowColor = homeToolbarArrowColor;
+            return this;
         }
 
-        public void setHomeShareTextBar(int homeShareTextBar) {
+        public Builder setHomeShareTextBar(int homeShareTextBar) {
             this.homeShareTextBar = homeShareTextBar;
+            return this;
         }
 
-        public void setHomeShareTextColor(int homeShareTextColor) {
+        public Builder setHomeShareTextColor(int homeShareTextColor) {
             this.homeShareTextColor = homeShareTextColor;
+            return this;
         }
 
-        public void setHomeShareTextSize(float homeShareTextSize) {
+        public Builder setHomeShareTextSize(float homeShareTextSize) {
             this.homeShareTextSize = homeShareTextSize;
+            return this;
         }
 
-        public void setHomeShareTextFont(Typeface homeShareTextFont) {
+        public Builder setHomeShareTextFont(Typeface homeShareTextFont) {
             this.homeShareTextFont = homeShareTextFont;
+            return this;
         }
 
-        public void setSocialGridTextFont(Typeface socialGridTextFont) {
+        public Builder setSocialGridTextFont(Typeface socialGridTextFont) {
             this.socialGridTextFont = socialGridTextFont;
+            return this;
         }
 
-        public void setContactsListViewBackgroundColor(int contactsListViewBackgroundColor) {
+        public Builder setContactsListViewBackgroundColor(int contactsListViewBackgroundColor) {
             this.contactsListViewBackgroundColor = contactsListViewBackgroundColor;
+            return this;
         }
 
-        public void setContactsListNameSize(float contactsListNameSize) {
+        public Builder setContactsListNameSize(float contactsListNameSize) {
             this.contactsListNameSize = contactsListNameSize;
+            return this;
         }
 
-        public void setContactsListNameFont(Typeface contactsListNameFont) {
+        public Builder setContactsListNameFont(Typeface contactsListNameFont) {
             this.contactsListNameFont = contactsListNameFont;
+            return this;
         }
 
-        public void setContactsListValueSize(float contactsListValueSize) {
+        public Builder setContactsListValueSize(float contactsListValueSize) {
             this.contactsListValueSize = contactsListValueSize;
+            return this;
         }
 
-        public void setContactsListValueFont(Typeface contactsListValueFont) {
+        public Builder setContactsListValueFont(Typeface contactsListValueFont) {
             this.contactsListValueFont = contactsListValueFont;
+            return this;
         }
 
-        public void setContactsSendBackground(int contactsSendBackground) {
+        public Builder setContactsSendBackground(int contactsSendBackground) {
             this.contactsSendBackground = contactsSendBackground;
+            return this;
         }
 
-        public void setContactSendMessageTextFont(Typeface contactSendMessageTextFont) {
+        public Builder setContactSendMessageTextFont(Typeface contactSendMessageTextFont) {
             this.contactSendMessageTextFont = contactSendMessageTextFont;
+            return this;
         }
 
-        public void setContactsToolbarColor(int contactsToolbarColor) {
+        public Builder setContactsToolbarColor(int contactsToolbarColor) {
             this.contactsToolbarColor = contactsToolbarColor;
+            return this;
         }
 
-        public void setContactsToolbarTextColor(int contactsToolbarTextColor) {
+        public Builder setContactsToolbarTextColor(int contactsToolbarTextColor) {
             this.contactsToolbarTextColor = contactsToolbarTextColor;
+            return this;
         }
 
-        public void setContactsToolbarArrowColor(int contactsToolbarArrowColor) {
+        public Builder setContactsToolbarArrowColor(int contactsToolbarArrowColor) {
             this.contactsToolbarArrowColor = contactsToolbarArrowColor;
+            return this;
         }
 
-        public void setContactsSendButtonColor(int contactsSendButtonColor) {
+        public Builder setContactsSendButtonColor(int contactsSendButtonColor) {
             this.contactsSendButtonColor = contactsSendButtonColor;
+            return this;
         }
 
-        public void setContactsSendButtonTextColor(int contactsSendButtonTextColor) {
+        public Builder setContactsSendButtonTextColor(int contactsSendButtonTextColor) {
             this.contactsSendButtonTextColor = contactsSendButtonTextColor;
+            return this;
         }
 
-        public void setContactsDoneButtonTextColor(int contactsDoneButtonTextColor) {
+        public Builder setContactsDoneButtonTextColor(int contactsDoneButtonTextColor) {
             this.contactsDoneButtonTextColor = contactsDoneButtonTextColor;
+            return this;
         }
 
-        public void setContactsSearchBarColor(int contactsSearchBarColor) {
+        public Builder setContactsSearchBarColor(int contactsSearchBarColor) {
             this.contactsSearchBarColor = contactsSearchBarColor;
+            return this;
         }
 
-        public void setContactsSearchIconColor(int contactsSearchIconColor) {
+        public Builder setContactsSearchIconColor(int contactsSearchIconColor) {
             this.contactsSearchIconColor = contactsSearchIconColor;
+            return this;
         }
 
-        public void setContactNoPhotoAvailableBackgroundColor(int contactNoPhotoAvailableBackgroundColor) {
+        public Builder setContactNoPhotoAvailableBackgroundColor(int contactNoPhotoAvailableBackgroundColor) {
             this.contactNoPhotoAvailableBackgroundColor = contactNoPhotoAvailableBackgroundColor;
+            return this;
         }
 
-        public void setChannels(String[] channels) {
+        public Builder setChannels(String[] channels) {
             this.channels = channels;
+            return this;
         }
 
-        public void setSocialOptionCornerRadius(float socialOptionCornerRadius) {
+        public Builder setSocialOptionCornerRadius(float socialOptionCornerRadius) {
             this.socialOptionCornerRadius = socialOptionCornerRadius;
+            return this;
         }
 
         @NonNull
