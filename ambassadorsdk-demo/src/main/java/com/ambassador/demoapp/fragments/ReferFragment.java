@@ -47,6 +47,8 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
 
     protected boolean editing = false;
 
+    protected RafAdapter adapter;
+
     @Bind(R.id.ivAddRaf) protected CircleImageView ivAddRaf;
     @Bind(R.id.tvNoRafs) protected TextView tvNoRafs;
     @Bind(R.id.lvRafs) protected ListView lvRafs;
@@ -73,7 +75,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             }
         });
 
-        final RafAdapter adapter = new RafAdapter();
+        adapter = new RafAdapter();
         lvRafs.setAdapter(adapter);
 
         if (adapter.getCount() > 0) {
@@ -145,7 +147,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
     public void onResume() {
         super.onResume();
         closeSoftKeyboard();
-        RafAdapter adapter = new RafAdapter();
+        adapter = new RafAdapter();
         lvRafs.setAdapter(adapter);
         if (adapter.getCount() > 0) {
             tvNoRafs.setVisibility(View.GONE);
@@ -210,6 +212,13 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             tvDescription.setText(String.format("Created %s", time));
 
             ImageView ivShare = (ImageView) convertView.findViewById(R.id.ivShare);
+
+            if (editing) {
+                ivShare.setImageResource(R.drawable.ic_mode_edit);
+            } else {
+                ivShare.setImageResource(R.drawable.ic_share_white);
+            }
+
             ivShare.setColorFilter(Color.parseColor("#232f3b"));
 
             return convertView;
@@ -234,7 +243,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
     }
 
     protected void refreshEditingState() {
-
+        adapter.notifyDataSetChanged();
     }
 
 }
