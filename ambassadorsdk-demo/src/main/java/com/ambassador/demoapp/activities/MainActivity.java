@@ -137,6 +137,19 @@ public final class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adapter != null && menuItem != null) {
+            Fragment fragment = adapter.getItem(vpPages.getCurrentItem());
+            if (fragment instanceof TabFragment) {
+                TabFragment tabFragment = (TabFragment) fragment;
+                menuItem.setVisible(tabFragment.getActionVisibility());
+                menuItem.setIcon(tabFragment.getActionDrawable());
+            }
+        }
+    }
+
     public void switchToTabAtIndex(int position) {
         vpPages.setCurrentItem(position);
     }
@@ -159,16 +172,6 @@ public final class MainActivity extends AppCompatActivity {
                 TabFragment tabFragment = (TabFragment) fragment;
                 menuItem.setVisible(tabFragment.getActionVisibility());
                 menuItem.setIcon(tabFragment.getActionDrawable());
-            }
-
-            if (fragment instanceof ReferFragment) {
-                menuItem.setVisible(true);
-                menuItem.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.edit_icon));
-            } else if (fragment instanceof SettingsFragment) {
-                menuItem.setVisible(false);
-            } else {
-                menuItem.setVisible(true);
-                menuItem.setIcon(ContextCompat.getDrawable(MainActivity.this, R.drawable.ic_share_white));
             }
         }
 
@@ -281,6 +284,17 @@ public final class MainActivity extends AppCompatActivity {
         Drawable getActionDrawable();
         boolean getActionVisibility();
 
+    }
+
+    public void notifyIntegrationSetInvalidated() {
+        if (adapter != null && menuItem != null) {
+            Fragment fragment = adapter.getItem(vpPages.getCurrentItem());
+            if (fragment instanceof TabFragment) {
+                TabFragment tabFragment = (TabFragment) fragment;
+                menuItem.setVisible(tabFragment.getActionVisibility());
+                menuItem.setIcon(tabFragment.getActionDrawable());
+            }
+        }
     }
 
 }
