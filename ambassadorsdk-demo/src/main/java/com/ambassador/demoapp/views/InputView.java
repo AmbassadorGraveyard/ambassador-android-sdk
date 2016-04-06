@@ -44,18 +44,5 @@ public class InputView extends EditText {
         int dp12 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, r.getDisplayMetrics());
         setPadding(dp10, dp12, dp10, dp12);
     }
-
-    public void setType(Type type) {
-        switch (type) {
-            case TEXT:
-                break;
-
-            case TEXT_AREA:
-                break;
-
-            default:
-                break;
-        }
-    }
-
+    
 }
