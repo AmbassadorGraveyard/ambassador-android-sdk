@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
@@ -195,7 +196,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.view_raf_item, parent, false);
             }
@@ -219,14 +220,33 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             }
             ivShare.setColorFilter(Color.parseColor("#232f3b"));
 
+            ivShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (editing) {
+                        edit(position);
+                    } else {
+                        share(position);
+                    }
+                }
+            });
+
             ImageView ivDelete = (ImageView) convertView.findViewById(R.id.ivDeleteRaf);
             if (editing) {
                 ivDelete.setVisibility(View.VISIBLE);
             } else {
                 ivDelete.setVisibility(View.GONE);
             }
-
             ivDelete.setColorFilter(Color.parseColor("#e34d41"));
+
+            ivDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (editing) {
+                        delete(position);
+                    }
+                }
+            });
 
             return convertView;
         }
@@ -251,6 +271,18 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
 
     protected void refreshEditingState() {
         adapter.notifyDataSetChanged();
+    }
+
+    protected void share(int item) {
+
+    }
+
+    protected void edit(int item) {
+
+    }
+
+    protected void delete(int item) {
+
     }
 
 }
