@@ -212,14 +212,21 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             tvDescription.setText(String.format("Created %s", time));
 
             ImageView ivShare = (ImageView) convertView.findViewById(R.id.ivShare);
-
             if (editing) {
                 ivShare.setImageResource(R.drawable.ic_mode_edit);
             } else {
                 ivShare.setImageResource(R.drawable.ic_share_white);
             }
-
             ivShare.setColorFilter(Color.parseColor("#232f3b"));
+
+            ImageView ivDelete = (ImageView) convertView.findViewById(R.id.ivDeleteRaf);
+            if (editing) {
+                ivDelete.setVisibility(View.VISIBLE);
+            } else {
+                ivDelete.setVisibility(View.GONE);
+            }
+
+            ivDelete.setColorFilter(Color.parseColor("#e34d41"));
 
             return convertView;
         }
