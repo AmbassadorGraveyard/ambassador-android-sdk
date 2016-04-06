@@ -45,17 +45,4 @@ public class InputView extends EditText {
         setPadding(dp10, dp12, dp10, dp12);
     }
 
-    public void setType(Type type) {
-        switch (type) {
-            case TEXT:
-                break;
-
-            case TEXT_AREA:
-                break;
-
-            default:
-                break;
-        }
-    }
-
 }
