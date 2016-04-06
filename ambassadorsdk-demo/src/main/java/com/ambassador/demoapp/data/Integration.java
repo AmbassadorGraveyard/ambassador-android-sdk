@@ -87,4 +87,19 @@ public class Integration {
         sharedPreferences.edit().putString(User.get().getUniversalId(), integrationArray.toString()).apply();
     }
 
+    public static Integration get(long createdAtDate) {
+        SharedPreferences sharedPreferences = Demo.get().getSharedPreferences("integrations", Context.MODE_PRIVATE);
+        String storedIntegrations = sharedPreferences.getString(User.get().getUniversalId(), "[]");
+        JsonArray integrationArray = new JsonParser().parse(storedIntegrations).getAsJsonArray();
+        for (int i = 0; i < integrationArray.size(); i++) {
+            String element = integrationArray.get(i).getAsString();
+            JsonObject object = new JsonParser().parse(element).getAsJsonObject();
+            Integration integration = new Gson().fromJson(object, Integration.class);
+            if (integration.getCreatedAtDate() == createdAtDate) {
+                return integration;
+            }
+        }
+        return null;
+    }
+
 }
