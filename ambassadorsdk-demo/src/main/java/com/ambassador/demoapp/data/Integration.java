@@ -10,7 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-public class Integration {
+public class Integration implements Comparable<Integration> {
 
     protected String name;
     protected int campaignId;
@@ -100,6 +100,11 @@ public class Integration {
             }
         }
         return null;
+    }
+
+    @Override
+    public int compareTo(Integration another) {
+        return another.createdAtDate > createdAtDate ? -1 : another.createdAtDate < createdAtDate ? 1 : 0;
     }
 
 }
