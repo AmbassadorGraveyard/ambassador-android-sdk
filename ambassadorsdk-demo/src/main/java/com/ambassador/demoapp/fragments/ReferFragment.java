@@ -42,6 +42,7 @@ import com.ambassador.demoapp.data.Integration;
 import com.ambassador.demoapp.data.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.ambassador.demoapp.utils.Share;
 import com.google.gson.JsonParser;
 
 import java.io.File;
@@ -274,17 +275,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                     .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
                     .zip();
 
-            File file = new File(getContext().getFilesDir(), filename);
-            Uri uri = FileProvider.getUriForFile(getContext(), "com.ambassador.fileprovider", file);
-            final Intent intent = ShareCompat.IntentBuilder.from(getActivity())
-                    .setType("*/*")
-                    .setStream(uri)
-                    .setChooserTitle("Share Integration Assets")
-                    .createChooserIntent()
-                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            getActivity().startActivity(intent);
+            new Share(filename).execute(getActivity());
         }
     }
 
