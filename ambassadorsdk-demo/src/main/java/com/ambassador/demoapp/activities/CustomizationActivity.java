@@ -451,6 +451,7 @@ public class CustomizationActivity extends AppCompatActivity {
                     .setHomeWelcomeDescriptionColor(getTextField2Color())
                     .setChannels(getChannels())
                     .setContactsSendButtonColor(getButtonColor())
+                    .setContactNoPhotoAvailableBackgroundColor(getButtonColor())
                     .build();
             integration.setRafOptions(rafOptions);
             return integration;
