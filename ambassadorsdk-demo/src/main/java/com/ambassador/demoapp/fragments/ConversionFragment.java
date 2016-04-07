@@ -23,10 +23,29 @@ import butterknife.ButterKnife;
 
 public final class ConversionFragment extends Fragment {
 
-    @Bind(R.id.etConversionEmail) protected EditText etEmail;
+    @Bind(R.id.etReferrerEmail) protected EditText etReferrerEmail;
+
+    @Bind(R.id.etConversionEmail) protected EditText etReferredEmail;
     @Bind(R.id.etConversionRevenue) protected EditText etRevenue;
     @Bind(R.id.etConversionCampaign) protected EditText etCampaign;
+
+    @Bind(R.id.etGroupId) protected EditText etGroupId;
+    @Bind(R.id.etFirstName) protected EditText etFirstName;
+    @Bind(R.id.etLastName) protected EditText etLastName;
+    @Bind(R.id.etUID) protected EditText etUID;
+    @Bind(R.id.etCustom1) protected EditText etCustom1;
+    @Bind(R.id.etCustom2) protected EditText etCustom2;
+    @Bind(R.id.etCustom3) protected EditText etCustom3;
+    @Bind(R.id.etTransactionUID) protected EditText etTransactionUID;
+    @Bind(R.id.etEventData1) protected EditText etEventData1;
+    @Bind(R.id.etEventData2) protected EditText etEventData2;
+    @Bind(R.id.etEventData3) protected EditText etEventData3;
+
     @Bind(R.id.swConversionApproved) protected Switch swApproved;
+    @Bind(R.id.swAutoCreate) protected Switch swAutoCreate;
+    @Bind(R.id.swDeactivateNewAmbassador) protected Switch swDeactivateNewAmbassador;
+    @Bind(R.id.swEmailNewAmbassador) protected Switch swEmailNewAmbassador;
+
     @Bind(R.id.btnConversion) protected Button btnConversion;
 
     @Override
@@ -44,7 +63,7 @@ public final class ConversionFragment extends Fragment {
         btnConversion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!validateEditTextContainsInput(etEmail, "email") ||
+                if (!validateEditTextContainsInput(etReferredEmail, "email") ||
                         !validateEditTextContainsInput(etRevenue, "revenue amount") ||
                             !validateEditTextContainsInput(etCampaign, "campaign ID")) {
 
@@ -52,7 +71,7 @@ public final class ConversionFragment extends Fragment {
 
                 }
 
-                String email = etEmail.getText().toString();
+                String email = etReferredEmail.getText().toString();
                 if (!(new Identify(email).isValidEmail())) {
                     Toast.makeText(getActivity(), "Please enter a valid email address!", Toast.LENGTH_SHORT).show();
                     return;
