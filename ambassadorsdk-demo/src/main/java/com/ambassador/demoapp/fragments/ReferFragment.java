@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -27,7 +30,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
+import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.activities.CustomizationActivity;
@@ -38,6 +44,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,42 +116,6 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                 startActivity(intent);
             }
         });
-//        lvRafs.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-//                RafAdapter.RafItem rafItem = adapter.getItem(position);
-//                RAFOptions rafOptions = null;
-//                try {
-//                    rafOptions = RAFOptionsFactory.decodeResources(getActivity().getAssets().open(rafItem.getOptionsPath()), getActivity());
-//                } catch (Exception e) {
-//                    Toast.makeText(getActivity(), "Didn't work!", Toast.LENGTH_SHORT).show();
-//                }
-//                if (rafOptions != null) {
-//                    StringBuilder readmeBuilder = new StringBuilder();
-//                    readmeBuilder.append("AmbassadorSDK 1.1.4\n");
-//                    readmeBuilder.append("Add the items from the assets folder to your applications local assets folder.\n");
-//                    readmeBuilder.append("Use the following code snippet to present this refer a friend integration:\n");
-//                    readmeBuilder.append("AmbassadorSDK.presentRAF(context, campaignId, \"raf.xml\");\n");
-//
-//                    String filename = new CustomizationPackage(getActivity())
-//                            .add("raf.xml", rafOptions)
-//                            .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
-//                            .zip();
-//                    File file = new File(getContext().getFilesDir(), filename);
-//                    Uri uri = FileProvider.getUriForFile(getContext(), "com.ambassador.fileprovider", file);
-//                    final Intent intent = ShareCompat.IntentBuilder.from(getActivity())
-//                            .setType("*/*")
-//                            .setStream(uri)
-//                            .setChooserTitle("Share Integration Assets")
-//                            .createChooserIntent()
-//                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
-//                            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-//
-//                    getActivity().startActivity(intent);
-//                }
-//                return true;
-//            }
-//        });
 
         return view;
     }
@@ -289,7 +260,32 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
     }
 
     protected void share(int item) {
-        Toast.makeText(getActivity(), "Sharing", Toast.LENGTH_SHORT).show();
+        Integration integration = adapter.getItem(item);
+        RAFOptions rafOptions = integration.getRafOptions();
+        if (rafOptions != null) {
+            StringBuilder readmeBuilder = new StringBuilder();
+            readmeBuilder.append("AmbassadorSDK 1.1.4\n");
+            readmeBuilder.append("Add the items from the assets folder to your applications local assets folder.\n");
+            readmeBuilder.append("Use the following code snippet to present this refer a friend integration:\n");
+            readmeBuilder.append("AmbassadorSDK.presentRAF(context, campaignId, \"raf.xml\");\n");
+
+            String filename = new CustomizationPackage(getActivity())
+                    .add("raf.xml", rafOptions)
+                    .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
+                    .zip();
+
+            File file = new File(getContext().getFilesDir(), filename);
+            Uri uri = FileProvider.getUriForFile(getContext(), "com.ambassador.fileprovider", file);
+            final Intent intent = ShareCompat.IntentBuilder.from(getActivity())
+                    .setType("*/*")
+                    .setStream(uri)
+                    .setChooserTitle("Share Integration Assets")
+                    .createChooserIntent()
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            getActivity().startActivity(intent);
+        }
     }
 
     protected void edit(int item) {
