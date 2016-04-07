@@ -242,6 +242,11 @@ public class CustomizationActivityTest {
         // Mock campaigns response.
         mockCampaignsResponse();
 
+        // Remove pre-set input.
+        onView(withId(R.id.inputHeaderText)).perform(ViewActions.scrollTo(), ViewActions.click(), ViewActions.replaceText(""));
+        onView(withId(R.id.inputTextField1)).perform(ViewActions.scrollTo(), ViewActions.click(), ViewActions.replaceText(""));
+        onView(withId(R.id.inputTextField2)).perform(ViewActions.scrollTo(), ViewActions.click(), ViewActions.replaceText(""));
+
         // Scroll to bottom.
         onView(withId(R.id.civButtons)).perform(ViewActions.scrollTo());
 
