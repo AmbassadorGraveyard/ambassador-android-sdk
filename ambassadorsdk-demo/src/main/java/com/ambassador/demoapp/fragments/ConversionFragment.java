@@ -24,6 +24,8 @@ import com.ambassador.demoapp.activities.MainActivity;
 import com.ambassador.demoapp.data.User;
 import com.ambassador.demoapp.utils.Share;
 
+import java.lang.reflect.Field;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -118,9 +120,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     public void onActionClicked() {
         StringBuilder readmeBuilder = new StringBuilder();
         readmeBuilder.append("AmbassadorSDK 1.1.4\n");
-        readmeBuilder.append("Add the items from the assets folder to your applications local assets folder.\n");
-        readmeBuilder.append("Use the following code snippet to present this refer a friend integration:\n");
-        readmeBuilder.append("AmbassadorSDK.presentRAF(context, campaignId, \"raf.xml\");\n");
+        readmeBuilder.append("Checkout the Application.java as an example implementation of this conversion request.\n");
 
         StringBuilder identifyBuilder = new StringBuilder();
         identifyBuilder.append("package com.example.example;\n\n");
@@ -132,8 +132,9 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         identifyBuilder.append("    public void onCreate() {\n");
         identifyBuilder.append("        super.onCreate();\n");
         identifyBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, %s, %s);\n", User.get().getSdkToken(), User.get().getUniversalId()));
-        identifyBuilder.append(String.format("        AmbassadorSDK.identify(%s); // Make sure you identify before registering conversions!\n", etEmail.getText().toString()));
-        identifyBuilder.append("        AmbassadorSDK.registerConversion(%s);\n");
+
+        identifyBuilder.append("        ConversionParameters conversionParameters = new ConversionParameters.Builder()\n");
+        identifyBuilder.append("        AmbassadorSDK.registerConversion(conversionParameters);\n");
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
 
@@ -143,6 +144,23 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                 .zip();
 
         new Share(filename).execute(getActivity());
+
+        new ConversionParameters.Builder()
+                .setEmailNewAmbassador()
+    }
+
+    protected String getConversionParametersAdditionLines(ConversionParameters conversionParameters) {
+        ConversionParameters defaults = new ConversionParameters();
+        String tab = "            ";
+        String out = "";
+
+        out += etCampaign.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
+        out += etEmail.getText().toString().isEmpty() ? "" : tab + ".setEmail(" + conversionParameters.email + ")\n";
+        out += et.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
+        out += etCampaign.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
+        out += etCampaign.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
+
+        return "";
     }
 
     @Override
