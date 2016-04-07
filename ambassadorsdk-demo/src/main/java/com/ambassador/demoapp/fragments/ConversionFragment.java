@@ -81,6 +81,9 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         View view = inflater.inflate(R.layout.fragment_conversion, container, false);
         ButterKnife.bind(this, view);
 
+        swApproved.setChecked(true);
+        swAutoCreate.setChecked(true);
+
         btnConversion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,10 +196,10 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         String eventData2 = new ValueOrDefault<>(etEventData2, defaults.eventData2).get();
         String eventData3 = new ValueOrDefault<>(etEventData3, defaults.eventData3).get();
 
-        int isApproved = swApproved.isEnabled() ? 1 : 0;
-        int autoCreate = swAutoCreate.isEnabled() ? 1 : 0;
-        int deactivateNewAmbassador = swDeactivateNewAmbassador.isEnabled() ? 1 : 0;
-        int emailNewAmbassador = swEmailNewAmbassador.isEnabled() ? 1 : 0;
+        int isApproved = swApproved.isChecked() ? 1 : 0;
+        int autoCreate = swAutoCreate.isChecked() ? 1 : 0;
+        int deactivateNewAmbassador = swDeactivateNewAmbassador.isChecked() ? 1 : 0;
+        int emailNewAmbassador = swEmailNewAmbassador.isChecked() ? 1 : 0;
 
         return new ConversionParameters.Builder()
                 .setEmail(referredEmail)
