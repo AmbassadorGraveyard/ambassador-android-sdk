@@ -146,7 +146,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         }
 
         if (!(new Identify(etReferredEmail.getText().toString()).isValidEmail())) {
-            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please a valid referred email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referred email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
