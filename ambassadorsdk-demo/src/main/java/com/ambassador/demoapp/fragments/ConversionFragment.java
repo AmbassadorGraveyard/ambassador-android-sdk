@@ -178,8 +178,8 @@ public final class ConversionFragment extends Fragment {
         ConversionParameters defaults = new ConversionParameters();
 
         String referredEmail = new ValueOrDefault<>(etReferredEmail, defaults.email).get();
-        float revenueAmount = new ValueOrDefault<>(etRevenue, defaults.revenue).get();
-        int campaignId = new ValueOrDefault<>(etCampaign, defaults.campaign).get();
+        float revenueAmount = new ValueOrDefault<>(etRevenue, defaults.revenue).getFloat();
+        int campaignId = new ValueOrDefault<>(etCampaign, defaults.campaign).getInteger();
 
         String addToGroupId = new ValueOrDefault<>(etGroupId, defaults.addToGroupId).get();
         String firstName = new ValueOrDefault<>(etFirstName, defaults.firstName).get();
@@ -244,6 +244,14 @@ public final class ConversionFragment extends Fragment {
                     return getDefault();
                 }
             }
+        }
+
+        public Float getFloat() {
+            return Float.parseFloat(String.valueOf(get()));
+        }
+
+        public Integer getInteger() {
+            return Integer.parseInt(String.valueOf(get()));
         }
 
     }
