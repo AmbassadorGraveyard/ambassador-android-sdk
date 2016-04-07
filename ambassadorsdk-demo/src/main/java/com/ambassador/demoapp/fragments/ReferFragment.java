@@ -50,6 +50,8 @@ import butterknife.ButterKnife;
 
 public final class ReferFragment extends Fragment implements MainActivity.TabFragment {
 
+    protected static final int LISTVIEW_EXTRA_PADDING = 110;
+
     protected boolean editing = false;
 
     protected RafAdapter adapter;
@@ -90,7 +92,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             lvRafs.setVisibility(View.VISIBLE);
             fabAdd.setVisibility(View.VISIBLE);
 
-            int height = 110 + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
+            int height = LISTVIEW_EXTRA_PADDING + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
             lvRafs.getLayoutParams().height = height;
         }
 
@@ -161,7 +163,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             lvRafs.setVisibility(View.VISIBLE);
             fabAdd.setVisibility(View.VISIBLE);
 
-            int height = 110 + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
+            int height = LISTVIEW_EXTRA_PADDING + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
             lvRafs.getLayoutParams().height = height;
         } else {
             tvNoRafs.setVisibility(View.VISIBLE);
@@ -314,7 +316,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                             editing = false;
                             onResume();
                         } else {
-                            int height = 110 + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
+                            int height = LISTVIEW_EXTRA_PADDING + adapter.getCount() * (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 78, getActivity().getResources().getDisplayMetrics());
                             lvRafs.getLayoutParams().height = height;
                         }
                     }
