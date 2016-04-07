@@ -95,6 +95,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                 registerShortCode(parameters.getCampaign(), referrerEmail, new ShortCodeRegistrationListener() {
                     @Override
                     public void success() {
+                        AmbassadorSDK.identify(parameters.getEmail());
                         AmbassadorSDK.registerConversion(parameters, false);
                         Toast.makeText(getActivity(), "Conversion registered!", Toast.LENGTH_SHORT).show();
                     }
