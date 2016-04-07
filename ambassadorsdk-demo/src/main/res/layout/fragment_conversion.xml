@@ -8,7 +8,8 @@
         android:id="@+id/fragmentStore"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="storeFragment"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
         android:orientation="vertical"
         android:paddingBottom="30dp">
 
@@ -51,31 +52,48 @@
             android:textSize="13sp" />
 
         <TextView
-            android:id="@+id/tvSubMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Referrer Email"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etReferrerEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="25dp"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
             android:fontFamily="sans-serif"
-            android:gravity="center"
-            android:text="@string/conversion_message_text_2"
-            android:textAlignment="center"
-            android:textColor="#9097a1"
-            android:textSize="9sp" />
+            android:hint="Referrer Email (Required)"
+            android:inputType="textEmailAddress"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Required Parameters"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/etConversionEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/et_only"
             android:fontFamily="sans-serif"
-            android:hint="Referred Email"
+            android:hint="Referred Email (Required)"
             android:inputType="textEmailAddress"
             android:paddingBottom="12dp"
             android:paddingLeft="10dp"
@@ -90,12 +108,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/et_only"
             android:fontFamily="sans-serif"
-            android:hint="Revenue Amount"
+            android:hint="Revenue Amount (Required)"
             android:inputType="numberDecimal"
             android:paddingBottom="12dp"
             android:paddingLeft="10dp"
@@ -105,18 +121,201 @@
             android:textCursorDrawable="@drawable/et_cursor"
             android:textSize="14sp" />
 
+
         <EditText
             android:id="@+id/etConversionCampaign"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/et_only"
             android:fontFamily="sans-serif"
-            android:hint="Campaign ID"
+            android:hint="Campaign ID (Required)"
             android:inputType="number"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Optional Parameters"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Add to group ID"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="First Name"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Last Name"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="UID"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Custom 1"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Custom 2"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Custom 3"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Transaction UID"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Event Data 1"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Event Data 2"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Event Data 3"
             android:paddingBottom="12dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -128,8 +327,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
             android:layout_marginTop="10dp">
 
             <TextView
@@ -146,13 +343,68 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Auto create" />
+
+            <Switch
+                android:id="@+id/swAutoCreate"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Deactivate new ambassador" />
+
+            <Switch
+                android:id="@+id/swDeactivateNewAmbassador"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Email new ambassador" />
+
+            <Switch
+                android:id="@+id/swEmailNewAmbassador"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
         <Button
             android:id="@+id/btnConversion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
             android:layout_marginTop="12dp"
             android:background="@drawable/auth_button"
             android:text="Submit"
