@@ -68,16 +68,6 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
             }
         });
 
-        btnIdentify.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Intent data = new Intent();
-                data.putExtra("referrer", "mbsy_cookie_code=jwnZ&device_id=test1234");
-                InstallReceiver.getInstance().onReceive(getActivity(), data);
-                return false;
-            }
-        });
-
         return view;
     }
 
