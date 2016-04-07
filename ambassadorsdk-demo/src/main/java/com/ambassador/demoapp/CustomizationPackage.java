@@ -99,14 +99,22 @@ public class CustomizationPackage {
     }
 
     /**
+     * zip(...) no-parameter overload. Zips with filename "android-raf.zip".
+     */
+    @NonNull
+    public String zip() {
+        return zip("android-raf.zip");
+    }
+
+    /**
      * Zips all the added files and returns the path.
      * @return the String path + filename of the zip file.
      */
     @NonNull
-    public String zip() {
+    public String zip(String filename) {
         try {
             BufferedInputStream origin;
-            FileOutputStream dest = context.openFileOutput("android-raf.zip", Context.MODE_PRIVATE);
+            FileOutputStream dest = context.openFileOutput(filename, Context.MODE_PRIVATE);
             ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(dest));
             byte data[] = new byte[1024];
 
@@ -143,7 +151,7 @@ public class CustomizationPackage {
             e.printStackTrace();
         }
 
-        return "android-raf.zip";
+        return filename;
     }
 
     /**
