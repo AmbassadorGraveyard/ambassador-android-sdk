@@ -110,7 +110,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
                     @Override
                     public void failure() {
-                        Toast.makeText(getActivity(), "An error occurred registering the conversion.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "An ambassador could not be found for the email and campaign provided.", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
