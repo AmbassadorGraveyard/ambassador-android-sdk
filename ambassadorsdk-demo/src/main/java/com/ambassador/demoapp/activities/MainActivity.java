@@ -85,6 +85,7 @@ public final class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menuItem = menu.findItem(R.id.action_main);
         menuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.edit_icon));
+        notifyIntegrationSetInvalidated();
         return true;
     }
 
