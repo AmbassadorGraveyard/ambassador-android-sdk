@@ -102,6 +102,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                             @Override
                             public void run() {
                                 AmbassadorSDK.registerConversion(parameters, false);
+                                parameters.prettyPrint();
                                 Toast.makeText(getActivity(), "Conversion registered!", Toast.LENGTH_SHORT).show();
                             }
                         });
