@@ -1,6 +1,8 @@
 package com.ambassador.demoapp;
 
 import android.app.Application;
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
