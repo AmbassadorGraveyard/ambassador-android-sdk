@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.demoapp.R;
@@ -425,7 +426,8 @@ public class CustomizationActivity extends AppCompatActivity {
                         }
                     });
                 } catch (IOException e) {
-                    // Doesn't need to be handled.
+                    // It's okay if this exception is thrown.
+                    Utilities.debugLog(e.toString());
                 }
             }
         }
@@ -449,6 +451,7 @@ public class CustomizationActivity extends AppCompatActivity {
                     .setHomeWelcomeDescriptionColor(getTextField2Color())
                     .setChannels(getChannels())
                     .setContactsSendButtonColor(getButtonColor())
+                    .setContactNoPhotoAvailableBackgroundColor(getButtonColor())
                     .build();
             integration.setRafOptions(rafOptions);
             return integration;
