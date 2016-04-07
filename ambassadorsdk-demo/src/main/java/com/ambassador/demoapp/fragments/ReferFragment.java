@@ -6,32 +6,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ShareCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.demoapp.Demo;
@@ -45,7 +38,6 @@ import com.google.gson.JsonArray;
 import com.ambassador.demoapp.utils.Share;
 import com.google.gson.JsonParser;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -268,9 +260,9 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
         if (rafOptions != null) {
             StringBuilder readmeBuilder = new StringBuilder();
             readmeBuilder.append("AmbassadorSDK 1.1.4\n");
-            readmeBuilder.append("Add the items from the assets folder to your applications local assets folder.\n");
-            readmeBuilder.append("Use the following code snippet to present this refer a friend integration:\n");
-            readmeBuilder.append("AmbassadorSDK.presentRAF(context, campaignId, \"raf.xml\");\n");
+            readmeBuilder.append("Add the items from the assets folder to your application's local assets folder.\n");
+            readmeBuilder.append("Use the following code snippet to present this refer a friend integration, after using AmbassadorSDK.runWithKeys(...).\n");
+            readmeBuilder.append("AmbassadorSDK.presentRAF(context, \"" + integration.getCampaignId() + "\", \"raf.xml\");\n");
 
             String filename = new CustomizationPackage(getActivity())
                     .add("raf.xml", rafOptions)
