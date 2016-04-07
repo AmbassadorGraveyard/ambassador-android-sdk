@@ -77,42 +77,6 @@ public final class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
         }
-
-        WelcomeScreenDialog.Parameters parameters =
-                new WelcomeScreenDialog.Parameters()
-                        .setButtonOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(MainActivity.this, "Button click", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setLink1OnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(MainActivity.this, "Link1", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setLink2OnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Toast.makeText(MainActivity.this, "Link2", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setTopBarText("Welcome")
-                        .setTitleText("{{ name }} has referred you to Ambassador!")
-                        .setMessageText("You understand the value of referrals. Maybe you've even explored referral marketing software.")
-                        .setButtonText("CREATE AN ACCOUNT")
-                        .setLink1Text("Testimonials")
-                        .setLink2Text("Request Demo")
-                        .setColorTheme(Color.parseColor("#4198d1"));
-
-        AmbassadorSDK.presentWelcomeScreen(this, new WelcomeScreenDialog.AvailabilityCallback() {
-            @Override
-            public void available(WelcomeScreenDialog welcomeScreenDialog) {
-                welcomeScreenDialog.show();
-                MainActivity.this.welcomeScreenDialog = welcomeScreenDialog;
-            }
-        }, parameters);
     }
 
 
