@@ -67,15 +67,11 @@ public class CustomizationActivity extends AppCompatActivity {
 
     protected boolean editing = false;
     protected Integration integration;
-
     protected static String imageSaveFilename;
-
     protected ChannelAdapter channelAdapter;
-
-    protected Campaign selectedCampaign;
-
+    protected Campaign selectedCampaign = Campaign.NONE;
     protected boolean hasPhoto = false;
-    protected boolean changesMade = true;
+    protected Integration startupIntegration;
 
     @Bind(R.id.svCustomization) protected ScrollView svCustomization;
     @Bind(R.id.lhvGeneral) protected ListHeadingView lhvGeneral;
@@ -145,6 +141,8 @@ public class CustomizationActivity extends AppCompatActivity {
         if (integration != null) {
             new DataHandler().setIntegration(integration);
         }
+
+        startupIntegration = new DataHandler().getIntegration();
     }
 
     @Override
@@ -212,7 +210,7 @@ public class CustomizationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (changesMade) {
+        if (!startupIntegration.isEquivalentTo(new DataHandler().getIntegration())) {
             new AlertDialog.Builder(this)
                     .setTitle("Are you sure?")
                     .setMessage("Any changes you have made will be lost.")

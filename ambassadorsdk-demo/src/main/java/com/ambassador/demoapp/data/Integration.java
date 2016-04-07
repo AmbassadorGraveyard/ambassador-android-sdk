@@ -107,4 +107,35 @@ public class Integration implements Comparable<Integration> {
         return another.createdAtDate > createdAtDate ? -1 : another.createdAtDate < createdAtDate ? 1 : 0;
     }
 
+    public boolean isEquivalentTo(Integration integration) {
+        Object[] thisChecks = new Object[]{ getName(), getCampaignId(), getRafOptions().getLogo(), getRafOptions().getToolbarTitle(), getRafOptions().getHomeToolbarColor(), getRafOptions().getTitleText(), getRafOptions().getHomeWelcomeTitleColor(), getRafOptions().getDescriptionText(), getRafOptions().getHomeWelcomeDescriptionColor(), getRafOptions().getContactsSendButtonColor(), getRafOptions().getChannels() };
+        Object[] anotherChecks = new Object[]{ integration.getName(), integration.getCampaignId(), integration.getRafOptions().getLogo(), integration.getRafOptions().getToolbarTitle(), integration.getRafOptions().getHomeToolbarColor(), integration.getRafOptions().getTitleText(), integration.getRafOptions().getHomeWelcomeTitleColor(), integration.getRafOptions().getDescriptionText(), integration.getRafOptions().getHomeWelcomeDescriptionColor(), integration.getRafOptions().getContactsSendButtonColor(), integration.getRafOptions().getChannels() };
+
+        boolean changesMade = false;
+        for (int i = 0; i < thisChecks.length; i++) {
+            if (!integrationFieldEquals(thisChecks[i], anotherChecks[i])) {
+                changesMade = true;
+            }
+        }
+
+        return !changesMade;
+    }
+
+    protected boolean integrationFieldEquals(Object a, Object b) {
+        if (a instanceof Object[]) {
+            Object[] aArray = (Object[]) a;
+            Object[] bArray = (Object[]) b;
+            boolean change = false;
+            for (int i = 0; i < aArray.length; i++) {
+                if (!integrationFieldEquals(aArray[i], bArray[i])) {
+                    change = true;
+                }
+            }
+
+            return !change;
+        }
+
+        return (a != null && b != null && a.equals(b)) || a == b;
+    }
+
 }
