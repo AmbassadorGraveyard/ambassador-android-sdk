@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -35,6 +37,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.demoapp.R;
@@ -48,10 +51,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mobeta.android.dslv.DragSortListView;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -61,14 +66,13 @@ public class CustomizationActivity extends AppCompatActivity {
 
     protected static final int PHOTO_CHOOSER_INTENT = 313;
 
-    protected static final String IMAGE_SAVE_FILENAME = "image.png";
-
+    protected boolean editing = false;
+    protected Integration integration;
+    protected static String imageSaveFilename;
     protected ChannelAdapter channelAdapter;
-
-    protected Campaign selectedCampaign;
-
+    protected Campaign selectedCampaign = Campaign.NONE;
     protected boolean hasPhoto = false;
-    protected boolean changesMade = true;
+    protected Integration startupIntegration;
 
     @Bind(R.id.svCustomization) protected ScrollView svCustomization;
     @Bind(R.id.lhvGeneral) protected ListHeadingView lhvGeneral;
@@ -95,6 +99,7 @@ public class CustomizationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_customization);
         ButterKnife.bind(this);
         setUpActionBar();
+        handleEditing();
 
         ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.add_photo));
         ivProductPhoto.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +138,12 @@ public class CustomizationActivity extends AppCompatActivity {
         civTextField1.setActivity(this);
         civTextField2.setActivity(this);
         civButtons.setActivity(this);
+
+        if (integration != null) {
+            new DataHandler().setIntegration(integration);
+        }
+
+        startupIntegration = new DataHandler().getIntegration();
     }
 
     @Override
@@ -149,9 +160,14 @@ public class CustomizationActivity extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(findViewById(android.R.id.content).getWindowToken(), 0);
         if (verifiedInputs()) {
             Integration integration = new DataHandler().getIntegration();
-            AmbassadorSDK.identify("jake@getambassador.com");
-            AmbassadorSDK.presentRAF(this, integration.getCampaignId() + "", integration.getRafOptions());
-            //finish();
+
+            if (editing && this.integration != null) {
+                integration.setCreatedAtDate(this.integration.getCreatedAtDate());
+                this.integration.delete();
+            }
+
+            integration.save();
+            finish();
         }
         return true;
     }
@@ -166,7 +182,8 @@ public class CustomizationActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         ivProductPhoto.setImageBitmap(bitmap);
-                        boolean didSave = saveImage(bitmap, IMAGE_SAVE_FILENAME);
+                        imageSaveFilename = System.currentTimeMillis() + ".png";
+                        boolean didSave = saveImage(bitmap, imageSaveFilename);
                         if (didSave) {
                             tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
                             tvProductPhotoInfo.setText("Remove Product Photo");
@@ -194,7 +211,7 @@ public class CustomizationActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (changesMade) {
+        if (!startupIntegration.isEquivalentTo(new DataHandler().getIntegration())) {
             new AlertDialog.Builder(this)
                     .setTitle("Are you sure?")
                     .setMessage("Any changes you have made will be lost.")
@@ -215,6 +232,20 @@ public class CustomizationActivity extends AppCompatActivity {
         if (actionBar == null) return;
         actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
         setTitle(Html.fromHtml("<small>Edit Refer a Friend View</small>"));
+    }
+
+    protected void handleEditing() {
+        boolean editing = getIntent().getBooleanExtra("editing", false);
+        if (editing) {
+            this.editing = true;
+            long createdAtDate = getIntent().getLongExtra("integration", -1);
+            if (createdAtDate == -1) {
+                finish();
+                Toast.makeText(CustomizationActivity.this, "An error occurred while attempting to edit the integration.", Toast.LENGTH_SHORT).show();
+            }
+
+            integration = Integration.get(createdAtDate);
+        }
     }
 
     protected void setUpChannelList() {
@@ -364,7 +395,41 @@ public class CustomizationActivity extends AppCompatActivity {
             campaign.setName(integration.getCampaignName());
             campaign.setId(integration.getCampaignId());
             setCampaign(campaign);
+
             RAFOptions rafOptions = integration.getRafOptions();
+            setHeaderText(rafOptions.getToolbarTitle());
+            setHeaderColor(rafOptions.getHomeToolbarColor());
+            setTextField1(rafOptions.getTitleText());
+            setTextField1Color(rafOptions.getHomeWelcomeTitleColor());
+            setTextField2(rafOptions.getDescriptionText());
+            setTextField2Color(rafOptions.getHomeWelcomeDescriptionColor());
+            setChannels(rafOptions.getChannels());
+            setButtonColor(rafOptions.getContactsSendButtonColor());
+
+            String photo = rafOptions.getLogo();
+            if (photo != null) {
+                try {
+                    ivProductPhoto.setImageDrawable(Drawable.createFromStream(openFileInput(photo), null));
+                    hasPhoto = true;
+                    imageSaveFilename = rafOptions.getLogo();
+                    tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
+                    tvProductPhotoInfo.setText("Remove Product Photo");
+                    hasPhoto = true;
+                    tvProductPhotoInfo.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(CustomizationActivity.this, R.drawable.add_photo));
+                            tvProductPhotoInfo.setTextColor(Color.BLACK);
+                            tvProductPhotoInfo.setText("Upload Product Photo");
+                            tvProductPhotoInfo.setOnClickListener(null);
+                            hasPhoto = false;
+                        }
+                    });
+                } catch (IOException e) {
+                    // It's okay if this exception is thrown.
+                    Utilities.debugLog(e.toString());
+                }
+            }
         }
 
         @NonNull
@@ -372,9 +437,10 @@ public class CustomizationActivity extends AppCompatActivity {
             Integration integration = new Integration();
             integration.setName(getIntegrationName());
             integration.setCampaignId(selectedCampaign.getId());
+            integration.setCampaignName(selectedCampaign.getName());
             integration.setCreatedAtDate(System.currentTimeMillis());
             RAFOptions rafOptions = new RAFOptions.Builder()
-                    .setLogo(hasPhoto ? IMAGE_SAVE_FILENAME : null)
+                    .setLogo(hasPhoto ? imageSaveFilename : null)
                     .setLogoPosition("1")
                     .setToolbarTitle(getHeaderText())
                     .setHomeToolbarColor(getHeaderColor())
@@ -475,8 +541,8 @@ public class CustomizationActivity extends AppCompatActivity {
             for (int i = 0; i < channels.length; i++) {
                 uppercaseChannels[i] = channels[i].toUpperCase();
             }
-            List<String> paramChannels = Arrays.asList(uppercaseChannels);
-            List<Channel> neededChannels = Arrays.asList(Channel.DEFAULTS);
+            List<String> paramChannels = new LinkedList<>(Arrays.asList(uppercaseChannels));
+            List<Channel> neededChannels = new LinkedList<>(Arrays.asList(Channel.DEFAULTS));
             List<Channel> items = new ArrayList<>();
             for (String paramChannel : paramChannels) {
                 Channel channelItem = Channel.get(paramChannel);
