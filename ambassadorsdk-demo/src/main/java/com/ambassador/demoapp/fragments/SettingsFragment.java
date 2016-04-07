@@ -4,9 +4,11 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +20,13 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.activities.LaunchActivity;
+import com.ambassador.demoapp.activities.MainActivity;
 import com.ambassador.demoapp.data.User;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class SettingsFragment extends Fragment {
+public final class SettingsFragment extends Fragment implements MainActivity.TabFragment {
 
     @Bind(R.id.ivDisplayPicture) protected NetworkCircleImageView ivDisplayPicture;
     @Bind(R.id.tvSettingsName) protected TextView tvSettingsName;
@@ -82,6 +85,21 @@ public final class SettingsFragment extends Fragment {
         ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         clipboardManager.setPrimaryClip(ClipData.newPlainText("simpleText", text));
         Toast.makeText(getActivity(), "Copied to clipboard!", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onActionClicked() {
+
+    }
+
+    @Override
+    public Drawable getActionDrawable() {
+        return ContextCompat.getDrawable(getActivity(), R.drawable.ic_add_white);
+    }
+
+    @Override
+    public boolean getActionVisibility() {
+        return false;
     }
 
 }
