@@ -2,6 +2,7 @@ package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -125,6 +126,82 @@ public final class ConversionFragment extends Fragment {
     private void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
+    }
+
+    protected ConversionParameters getConversionParametersBasedOnInputs() {
+        ConversionParameters defaults = new ConversionParameters();
+
+        String referrerEmail = etReferrerEmail.getText().toString();
+
+        String referredEmail = new ValueOrDefault<String>(etReferredEmail, defaults.email).get();
+        float revenueAmount = new ValueOrDefault<Float>(etRevenue, defaults.revenue).get();
+        int campaignId = new ValueOrDefault<Integer>(etCampaign, defaults.campaign).get();
+
+        String addToGroupId = new ValueOrDefault<String>(etGroupId, defaults.addToGroupId).get();
+        String firstName = new ValueOrDefault<String>(etFirstName, defaults.firstName).get();
+        String lastName = new ValueOrDefault<String>(etLastName, defaults.lastName).get();
+        String uid = new ValueOrDefault<String>(etUID, defaults.uid).get();
+        String custom1 = new ValueOrDefault<String>(etCustom1, defaults.custom1).get();
+        String custom2 = new ValueOrDefault<String>(etCustom2, defaults.custom2).get();
+        String custom3 = new ValueOrDefault<String>(etCustom3, defaults.custom3).get();
+        String transactionUID = new ValueOrDefault<String>(etTransactionUID, defaults.transactionUid).get();
+        String eventData1 = new ValueOrDefault<String>(etEventData1, defaults.eventData1).get();
+        String eventData2 = new ValueOrDefault<String>(etEventData2, defaults.eventData2).get();
+        String eventData3 = new ValueOrDefault<String>(etEventData3, defaults.eventData3).get();
+
+        int isApproved = swApproved.isEnabled() ? 1 : 0;
+        int autoCreate = swAutoCreate.isEnabled() ? 1 : 0;
+        int deactivateNewAmbassador = swDeactivateNewAmbassador.isEnabled() ? 1 : 0;
+        int emailNewAmbassador = swEmailNewAmbassador.isEnabled() ? 1 : 0;
+
+        return new ConversionParameters.Builder()
+                .setEmail(referredEmail)
+                .setRevenue(revenueAmount)
+                .setCampaign(campaignId)
+                .setAddToGroupId(addToGroupId)
+                .setFirstName(firstName)
+                .setLastName(lastName)
+                .setUid(uid)
+                .setCustom1(custom1)
+                .setCustom2(custom2)
+                .setCustom3(custom3)
+                .setTransactionUid(transactionUID)
+                .setEventData1(eventData1)
+                .setEventData2(eventData2)
+                .setEventData3(eventData3)
+                .setIsApproved(isApproved)
+                .setAutoCreate(autoCreate)
+                .setDeactivateNewAmbassador(deactivateNewAmbassador)
+                .setEmailNewAmbassador(emailNewAmbassador)
+                .build();
+    }
+
+    protected static class ValueOrDefault<T> {
+
+        protected String value;
+        protected T defaultValue;
+
+        public ValueOrDefault(@NonNull EditText editText, T defaultValue) {
+            this.value = editText.getText().toString();
+            this.defaultValue = defaultValue;
+        }
+
+        protected T getDefault() {
+            return defaultValue;
+        }
+
+        public T get() {
+            if (value == null || value.isEmpty()) {
+                return getDefault();
+            } else {
+                try {
+                    return (T) value;
+                } catch (Exception e) {
+                    return getDefault();
+                }
+            }
+        }
+
     }
 
 }
