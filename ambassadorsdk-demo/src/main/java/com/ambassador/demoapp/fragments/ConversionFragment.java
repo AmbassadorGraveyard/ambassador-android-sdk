@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.api.Requests;
@@ -89,15 +90,21 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             public void onClick(View v) {
                 if (!verifiedInputs()) return;
 
+                new IdentifyAugurSDK().getIdentity();
+
                 final ConversionParameters parameters = getConversionParametersBasedOnInputs();
                 String referrerEmail = etReferrerEmail.getText().toString();
 
                 registerShortCode(parameters.getCampaign(), referrerEmail, new ShortCodeRegistrationListener() {
                     @Override
                     public void success() {
-                        AmbassadorSDK.identify(parameters.getEmail());
-                        AmbassadorSDK.registerConversion(parameters, false);
-                        Toast.makeText(getActivity(), "Conversion registered!", Toast.LENGTH_SHORT).show();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                AmbassadorSDK.registerConversion(parameters, false);
+                                Toast.makeText(getActivity(), "Conversion registered!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
 
                     @Override
