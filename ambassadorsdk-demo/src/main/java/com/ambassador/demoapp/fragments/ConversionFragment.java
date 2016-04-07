@@ -1,14 +1,15 @@
 package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,8 +29,7 @@ import com.ambassador.demoapp.api.Requests;
 import com.ambassador.demoapp.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demoapp.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
-import com.ambassador.demoapp.dialogs.CampaignChooserDialog;
-import com.google.gson.Gson;
+import com.ambassador.demoapp.activities.MainActivity;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,7 +37,7 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public final class ConversionFragment extends Fragment {
+public final class ConversionFragment extends Fragment implements MainActivity.TabFragment {
 
     @Bind(R.id.svConversion) protected ScrollView svConversion;
 
@@ -288,6 +288,21 @@ public final class ConversionFragment extends Fragment {
     protected interface ShortCodeRegistrationListener {
         void success();
         void failure();
+    }
+
+    @Override
+    public void onActionClicked() {
+
+    }
+
+    @Override
+    public Drawable getActionDrawable() {
+        return ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_white);
+    }
+
+    @Override
+    public boolean getActionVisibility() {
+        return true;
     }
 
 }

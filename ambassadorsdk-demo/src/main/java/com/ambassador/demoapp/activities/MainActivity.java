@@ -1,7 +1,9 @@
 package com.ambassador.demoapp.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -17,7 +19,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +31,7 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
+import com.ambassador.demoapp.data.Integration;
 import com.ambassador.demoapp.data.User;
 import com.ambassador.demoapp.fragments.ConversionFragment;
 import com.ambassador.demoapp.fragments.IdentifyFragment;
@@ -43,6 +49,8 @@ public final class MainActivity extends AppCompatActivity {
     protected TabFragmentPagerAdapter adapter;
 
     protected WelcomeScreenDialog welcomeScreenDialog;
+
+    protected MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +79,42 @@ public final class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        menuItem = menu.findItem(R.id.action_main);
+        menuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.edit_icon));
+        notifyIntegrationSetInvalidated();
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Fragment fragment = adapter.getItem(vpPages.getCurrentItem());
+        if (fragment instanceof TabFragment) {
+            TabFragment tabFragment = (TabFragment) fragment;
+            tabFragment.onActionClicked();
+            menuItem.setVisible(tabFragment.getActionVisibility());
+            menuItem.setIcon(tabFragment.getActionDrawable());
+        }
+
+        return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adapter != null && menuItem != null) {
+            Fragment fragment = adapter.getItem(vpPages.getCurrentItem());
+            if (fragment instanceof TabFragment) {
+                TabFragment tabFragment = (TabFragment) fragment;
+                menuItem.setVisible(tabFragment.getActionVisibility());
+                menuItem.setIcon(tabFragment.getActionDrawable());
+            }
+        }
+    }
+
     public void switchToTabAtIndex(int position) {
         vpPages.setCurrentItem(position);
     }
@@ -83,8 +127,17 @@ public final class MainActivity extends AppCompatActivity {
 
         @Override
         public void onPageSelected(int position) {
-            adapter.getItem(position).onResume();
+            Fragment fragment = adapter.getItem(position);
+            fragment.onResume();
             setToolbarTitle(Html.fromHtml("<small>" + adapter.getTitle(position) + "</small>"));
+
+            if (menuItem == null) return;
+
+            if (fragment instanceof TabFragment) {
+                TabFragment tabFragment = (TabFragment) fragment;
+                menuItem.setVisible(tabFragment.getActionVisibility());
+                menuItem.setIcon(tabFragment.getActionDrawable());
+            }
         }
 
         @Override
@@ -188,6 +241,25 @@ public final class MainActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    public interface TabFragment {
+
+        void onActionClicked();
+        Drawable getActionDrawable();
+        boolean getActionVisibility();
+
+    }
+
+    public void notifyIntegrationSetInvalidated() {
+        if (adapter != null && menuItem != null) {
+            Fragment fragment = adapter.getItem(vpPages.getCurrentItem());
+            if (fragment instanceof TabFragment) {
+                TabFragment tabFragment = (TabFragment) fragment;
+                menuItem.setVisible(tabFragment.getActionVisibility());
+                menuItem.setIcon(tabFragment.getActionDrawable());
+            }
+        }
     }
 
 }
