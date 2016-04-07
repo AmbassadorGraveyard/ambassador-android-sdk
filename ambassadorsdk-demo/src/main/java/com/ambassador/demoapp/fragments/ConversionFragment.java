@@ -18,8 +18,11 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
+import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.activities.MainActivity;
+import com.ambassador.demoapp.data.User;
+import com.ambassador.demoapp.utils.Share;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -113,7 +116,33 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     @Override
     public void onActionClicked() {
+        StringBuilder readmeBuilder = new StringBuilder();
+        readmeBuilder.append("AmbassadorSDK 1.1.4\n");
+        readmeBuilder.append("Add the items from the assets folder to your applications local assets folder.\n");
+        readmeBuilder.append("Use the following code snippet to present this refer a friend integration:\n");
+        readmeBuilder.append("AmbassadorSDK.presentRAF(context, campaignId, \"raf.xml\");\n");
 
+        StringBuilder identifyBuilder = new StringBuilder();
+        identifyBuilder.append("package com.example.example;\n\n");
+        identifyBuilder.append("import android.app.Application;\n");
+        identifyBuilder.append("import com.ambassador.ambassadorsdk.ConversionParameters;\n");
+        identifyBuilder.append("import com.ambassador.ambassadorsdk.AmbassadorSDK;\n\n");
+        identifyBuilder.append("public class MyApplication extends Application {\n\n");
+        identifyBuilder.append("    @Override\n");
+        identifyBuilder.append("    public void onCreate() {\n");
+        identifyBuilder.append("        super.onCreate();\n");
+        identifyBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, %s, %s);\n", User.get().getSdkToken(), User.get().getUniversalId()));
+        identifyBuilder.append(String.format("        AmbassadorSDK.identify(%s); // Make sure you identify before registering conversions!\n", etEmail.getText().toString()));
+        identifyBuilder.append("        AmbassadorSDK.registerConversion(%s);\n");
+        identifyBuilder.append("    }\n\n");
+        identifyBuilder.append("}");
+
+        String filename = new CustomizationPackage(getActivity())
+                .add("Application.java", identifyBuilder.toString(), CustomizationPackage.Directory.FILES)
+                .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
+                .zip();
+
+        new Share(filename).execute(getActivity());
     }
 
     @Override
