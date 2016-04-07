@@ -1,9 +1,13 @@
 package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,18 +15,34 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
-import com.ambassador.ambassadorsdk.internal.utils.Identify;
+import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.demoapp.R;
+import com.ambassador.demoapp.api.Requests;
+import com.ambassador.demoapp.api.pojo.GetShortCodeFromEmailResponse;
+import com.ambassador.demoapp.data.User;
+import com.ambassador.ambassadorsdk.internal.utils.Identify;
+import com.ambassador.demoapp.dialogs.CampaignChooserDialog;
+import com.google.gson.Gson;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public final class ConversionFragment extends Fragment {
+
+    @Bind(R.id.svConversion) protected ScrollView svConversion;
+
+    @Bind(R.id.tvReferrerEmail) protected TextView tvReferrerEmail;
+    @Bind(R.id.tvRequiredParameters) protected TextView tvRequiredParameters;
 
     @Bind(R.id.etReferrerEmail) protected EditText etReferrerEmail;
 
@@ -64,57 +84,27 @@ public final class ConversionFragment extends Fragment {
         btnConversion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!validateEditTextContainsInput(etReferredEmail, "email") ||
-                        !validateEditTextContainsInput(etRevenue, "revenue amount") ||
-                            !validateEditTextContainsInput(etCampaign, "campaign ID")) {
+                if (!verifiedInputs()) return;
 
-                    return;
+                final ConversionParameters parameters = getConversionParametersBasedOnInputs();
+                String referrerEmail = etReferrerEmail.getText().toString();
 
-                }
+                registerShortCode(parameters.getCampaign(), referrerEmail, new ShortCodeRegistrationListener() {
+                    @Override
+                    public void success() {
+                        AmbassadorSDK.registerConversion(parameters, false);
+                        Toast.makeText(getActivity(), "Conversion registered!", Toast.LENGTH_SHORT).show();
+                    }
 
-                String email = etReferredEmail.getText().toString();
-                if (!(new Identify(email).isValidEmail())) {
-                    Toast.makeText(getActivity(), "Please enter a valid email address!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                String revenue = etRevenue.getText().toString();
-
-                String campaignId = etCampaign.getText().toString();
-                boolean isApproved = swApproved.isActivated();
-
-                ConversionParameters conversionParameters = new ConversionParameters.Builder()
-                        .setEmail(email)
-                        .setRevenue(Float.parseFloat(revenue))
-                        .setCampaign(Integer.parseInt(campaignId))
-                        .setIsApproved(isApproved ? 1 : 0)
-                        .build();
-
-                AmbassadorSDK.registerConversion(conversionParameters, false);
-                Toast.makeText(getActivity(), "Conversion registered!", Toast.LENGTH_SHORT).show();
+                    @Override
+                    public void failure() {
+                        Toast.makeText(getActivity(), "An error occurred registering the conversion.", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
 
         return view;
-    }
-
-    protected boolean validateEditTextContainsInput(EditText editText, String name) {
-        boolean startsWithVowel = false;
-        for (String vowel : new String[]{"a", "e", "i", "o", "u"}) {
-            if (name.startsWith(vowel)) {
-                startsWithVowel = true;
-                break;
-            }
-        }
-
-        String ending = startsWithVowel ? "an" : "a";
-
-        if (editText.getText().length() == 0) {
-            Toast.makeText(getActivity(), String.format("Please enter %s %s!", ending, name), Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        return true;
     }
 
     @Override
@@ -128,26 +118,80 @@ public final class ConversionFragment extends Fragment {
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
     }
 
+
+    protected boolean verifiedInputs() {
+        if (getView() == null) return false;
+
+        if (!(new Identify(etReferrerEmail.getText().toString()).isValidEmail())) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referrer email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    svConversion.smoothScrollTo(0, tvReferrerEmail.getTop());
+                    etReferrerEmail.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        if (!(new Identify(etReferredEmail.getText().toString()).isValidEmail())) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please a valid referred email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
+                    etReferredEmail.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        if (!stringHasContent(etRevenue.getText().toString())) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a revenue amount!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
+                    etRevenue.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        if (!stringHasContent(etCampaign.getText().toString())) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a campaign ID!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
+                    etCampaign.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        return true;
+    }
+
+    protected boolean stringHasContent(String text) {
+        return text != null && !text.isEmpty() && !text.equals("");
+    }
+
+
     protected ConversionParameters getConversionParametersBasedOnInputs() {
         ConversionParameters defaults = new ConversionParameters();
 
-        String referrerEmail = etReferrerEmail.getText().toString();
+        String referredEmail = new ValueOrDefault<>(etReferredEmail, defaults.email).get();
+        float revenueAmount = new ValueOrDefault<>(etRevenue, defaults.revenue).get();
+        int campaignId = new ValueOrDefault<>(etCampaign, defaults.campaign).get();
 
-        String referredEmail = new ValueOrDefault<String>(etReferredEmail, defaults.email).get();
-        float revenueAmount = new ValueOrDefault<Float>(etRevenue, defaults.revenue).get();
-        int campaignId = new ValueOrDefault<Integer>(etCampaign, defaults.campaign).get();
-
-        String addToGroupId = new ValueOrDefault<String>(etGroupId, defaults.addToGroupId).get();
-        String firstName = new ValueOrDefault<String>(etFirstName, defaults.firstName).get();
-        String lastName = new ValueOrDefault<String>(etLastName, defaults.lastName).get();
-        String uid = new ValueOrDefault<String>(etUID, defaults.uid).get();
-        String custom1 = new ValueOrDefault<String>(etCustom1, defaults.custom1).get();
-        String custom2 = new ValueOrDefault<String>(etCustom2, defaults.custom2).get();
-        String custom3 = new ValueOrDefault<String>(etCustom3, defaults.custom3).get();
-        String transactionUID = new ValueOrDefault<String>(etTransactionUID, defaults.transactionUid).get();
-        String eventData1 = new ValueOrDefault<String>(etEventData1, defaults.eventData1).get();
-        String eventData2 = new ValueOrDefault<String>(etEventData2, defaults.eventData2).get();
-        String eventData3 = new ValueOrDefault<String>(etEventData3, defaults.eventData3).get();
+        String addToGroupId = new ValueOrDefault<>(etGroupId, defaults.addToGroupId).get();
+        String firstName = new ValueOrDefault<>(etFirstName, defaults.firstName).get();
+        String lastName = new ValueOrDefault<>(etLastName, defaults.lastName).get();
+        String uid = new ValueOrDefault<>(etUID, defaults.uid).get();
+        String custom1 = new ValueOrDefault<>(etCustom1, defaults.custom1).get();
+        String custom2 = new ValueOrDefault<>(etCustom2, defaults.custom2).get();
+        String custom3 = new ValueOrDefault<>(etCustom3, defaults.custom3).get();
+        String transactionUID = new ValueOrDefault<>(etTransactionUID, defaults.transactionUid).get();
+        String eventData1 = new ValueOrDefault<>(etEventData1, defaults.eventData1).get();
+        String eventData2 = new ValueOrDefault<>(etEventData2, defaults.eventData2).get();
+        String eventData3 = new ValueOrDefault<>(etEventData3, defaults.eventData3).get();
 
         int isApproved = swApproved.isEnabled() ? 1 : 0;
         int autoCreate = swAutoCreate.isEnabled() ? 1 : 0;
@@ -202,6 +246,40 @@ public final class ConversionFragment extends Fragment {
             }
         }
 
+    }
+
+    public void registerShortCode(final int campaignId, final String referrerEmail, final ShortCodeRegistrationListener listener) {
+        Requests.get().getShortCodeFromEmail(User.get().getSdkToken(), campaignId, referrerEmail, new Callback<GetShortCodeFromEmailResponse>() {
+            @Override
+            public void success(GetShortCodeFromEmailResponse getShortCodeFromEmailResponse, Response response) {
+                if (getShortCodeFromEmailResponse.count > 0) {
+                    GetShortCodeFromEmailResponse.Result result = getShortCodeFromEmailResponse.results[0];
+                    String shortCode = result.short_code;
+
+                    if (shortCode == null) {
+                        failure(null);
+                        return;
+                    }
+
+                    // Inject install receiver event to register short code
+                    Intent data = new Intent();
+                    data.putExtra("referrer", "mbsy_cookie_code=" + shortCode + "&device_id=test1234");
+                    InstallReceiver.getInstance().onReceive(getActivity(), data);
+
+                    listener.success();
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                listener.failure();
+            }
+        });
+    }
+
+    protected interface ShortCodeRegistrationListener {
+        void success();
+        void failure();
     }
 
 }

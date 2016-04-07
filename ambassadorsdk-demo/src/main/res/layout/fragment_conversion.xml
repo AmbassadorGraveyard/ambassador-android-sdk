@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/svConversion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
@@ -57,6 +58,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvReferrerEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -83,6 +85,7 @@
                 android:textSize="14sp" />
 
             <TextView
+                android:id="@+id/tvRequiredParameters"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
@@ -125,7 +128,6 @@
                 android:textColorHint="@color/etHint"
                 android:textCursorDrawable="@drawable/et_cursor"
                 android:textSize="14sp" />
-
 
             <EditText
                 android:id="@+id/etConversionCampaign"
