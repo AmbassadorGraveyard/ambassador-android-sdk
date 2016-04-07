@@ -97,9 +97,7 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
     public void onActionClicked() {
         StringBuilder readmeBuilder = new StringBuilder();
         readmeBuilder.append("AmbassadorSDK 1.1.4\n");
-        readmeBuilder.append("Add the items from the assets folder to your applications local assets folder.\n");
-        readmeBuilder.append("Use the following code snippet to present this refer a friend integration:\n");
-        readmeBuilder.append("AmbassadorSDK.presentRAF(context, campaignId, \"raf.xml\");\n");
+        readmeBuilder.append("Checkout the Application.java as an example implementation of this identify request.\n");
 
         StringBuilder identifyBuilder = new StringBuilder();
         identifyBuilder.append("package com.example.example;\n\n");
