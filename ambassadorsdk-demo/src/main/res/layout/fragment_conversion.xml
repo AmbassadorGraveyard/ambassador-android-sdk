@@ -154,6 +154,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etGroupId"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -170,6 +171,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -186,6 +188,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -202,6 +205,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etUID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -218,6 +222,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etCustom1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -234,6 +239,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etCustom2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -250,6 +256,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etCustom3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -266,6 +273,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etTransactionUID"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -282,6 +290,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etEventData1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -298,6 +307,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etEventData2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -314,6 +324,7 @@
                 android:textSize="14sp" />
 
             <EditText
+                android:id="@+id/etEventData3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
