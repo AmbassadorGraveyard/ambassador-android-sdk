@@ -316,7 +316,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
         StringBuilder readmeBuilder = new StringBuilder();
         readmeBuilder.append("AmbassadorSDK 1.1.4\n");
-        readmeBuilder.append("Checkout the Application.java as an example implementation of this conversion request.\n");
+        readmeBuilder.append("Take a look at the android docs for an in-depth explanation on installing and integrating the SDK:\nhttps://docs.getambassador.com/v2.0.0/page/android-sdk\n\n");
+        readmeBuilder.append("Checkout the MyApplication.java file as an example implementation of this conversion request.\n");
 
         StringBuilder identifyBuilder = new StringBuilder();
         identifyBuilder.append("package com.example.example;\n\n");
@@ -336,7 +337,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         identifyBuilder.append("}");
 
         String filename = new CustomizationPackage(getActivity())
-                .add("Application.java", identifyBuilder.toString(), CustomizationPackage.Directory.FILES)
+                .add("MyApplication.java", identifyBuilder.toString(), CustomizationPackage.Directory.FILES)
                 .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
                 .zip("android-conversion.zip");
 
