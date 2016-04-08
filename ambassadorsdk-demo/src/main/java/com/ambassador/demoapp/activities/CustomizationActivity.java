@@ -144,6 +144,10 @@ public class CustomizationActivity extends AppCompatActivity {
         }
 
         startupIntegration = new DataHandler().getIntegration();
+
+        if (!editing) {
+            setDefaults();
+        }
     }
 
     @Override
@@ -246,6 +250,18 @@ public class CustomizationActivity extends AppCompatActivity {
 
             integration = Integration.get(createdAtDate);
         }
+    }
+
+    protected void setDefaults() {
+        DataHandler dataHandler = new DataHandler();
+        RAFOptions defaults = new RAFOptions.Builder().build();
+        dataHandler.setTextField1(defaults.getTitleText());
+        dataHandler.setTextField2(defaults.getDescriptionText());
+        dataHandler.setHeaderText(defaults.getToolbarTitle());
+        dataHandler.setHeaderColor(defaults.getHomeToolbarColor());
+        dataHandler.setTextField1Color(defaults.getHomeWelcomeTitleColor());
+        dataHandler.setTextField2Color(defaults.getHomeWelcomeDescriptionColor());
+        dataHandler.setButtonColor(defaults.getContactsSendButtonColor());
     }
 
     protected void setUpChannelList() {
