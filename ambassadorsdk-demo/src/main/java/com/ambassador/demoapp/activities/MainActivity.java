@@ -23,8 +23,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
-import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.data.User;
 import com.ambassador.demoapp.fragments.ConversionFragment;
@@ -49,7 +49,7 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Demo.get().runWithKeys("SDKToken " + User.get().getSdkToken(), User.get().getUniversalId());
+        AmbassadorSDK.runWithKeys(this, "SDKToken " + User.get().getSdkToken(), User.get().getUniversalId());
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
