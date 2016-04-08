@@ -272,7 +272,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             integrationBuilder.append("    @Override\n");
             integrationBuilder.append("    public void onCreate() {\n");
             integrationBuilder.append("        super.onCreate();\n");
-            integrationBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, \"%s\", \"%s\");\n", User.get().getSdkToken(), User.get().getUniversalId()));
+            integrationBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, \"SDKToken %s\", \"%s\");\n", User.get().getSdkToken(), User.get().getUniversalId()));
             integrationBuilder.append(String.format("        AmbassadorSDK.presentRAF(this, \"%s\", \"%s\");\n", integration.getCampaignId(), "raf.xml"));
             integrationBuilder.append("    }\n\n");
             integrationBuilder.append("}");
