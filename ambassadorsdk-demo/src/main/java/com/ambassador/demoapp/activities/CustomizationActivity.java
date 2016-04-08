@@ -412,6 +412,7 @@ public class CustomizationActivity extends AppCompatActivity {
 
             RAFOptions rafOptions = integration.getRafOptions();
             setHeaderText(rafOptions.getToolbarTitle());
+            setHeaderTextColor(rafOptions.getHomeToolbarTextColor());
             setHeaderColor(rafOptions.getHomeToolbarColor());
             setTextField1(rafOptions.getTitleText());
             setTextField1Color(rafOptions.getHomeWelcomeTitleColor());
