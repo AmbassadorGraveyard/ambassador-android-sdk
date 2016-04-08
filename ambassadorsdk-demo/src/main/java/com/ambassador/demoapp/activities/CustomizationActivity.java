@@ -136,6 +136,7 @@ public class CustomizationActivity extends AppCompatActivity {
         setUpChannelList();
 
         civHeader.setActivity(this);
+        civHeaderText.setActivity(this);
         civTextField1.setActivity(this);
         civTextField2.setActivity(this);
         civButtons.setActivity(this);
@@ -462,6 +463,8 @@ public class CustomizationActivity extends AppCompatActivity {
                     .setToolbarTitle(getHeaderText())
                     .setHomeToolbarColor(getHeaderColor())
                     .setContactsToolbarColor(getHeaderColor())
+                    .setHomeToolbarTextColor(getHeaderTextColor())
+                    .setContactsToolbarTextColor(getHeaderTextColor())
                     .setTitleText(getTextField1())
                     .setHomeWelcomeTitleColor(getTextField1Color())
                     .setDescriptionText(getTextField2())
@@ -470,6 +473,7 @@ public class CustomizationActivity extends AppCompatActivity {
                     .setContactsSendButtonColor(getButtonColor())
                     .setContactNoPhotoAvailableBackgroundColor(getButtonColor())
                     .build();
+            
             integration.setRafOptions(rafOptions);
             return integration;
         }
@@ -506,6 +510,15 @@ public class CustomizationActivity extends AppCompatActivity {
 
         public void setHeaderText(@NonNull String text) {
             inputHeaderText.setText(text);
+        }
+
+        @ColorInt
+        public int getHeaderTextColor() {
+            return civHeaderText.getColor();
+        }
+
+        public void setHeaderTextColor(@ColorInt int color) {
+            civHeaderText.setColor(color);
         }
 
         @ColorInt
