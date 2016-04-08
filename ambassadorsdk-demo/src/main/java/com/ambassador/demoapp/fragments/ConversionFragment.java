@@ -23,14 +23,16 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.utils.Identify;
+import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.api.Requests;
 import com.ambassador.demoapp.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demoapp.data.User;
-import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.activities.MainActivity;
+import com.ambassador.demoapp.utils.Share;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -132,9 +134,13 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
 
     protected boolean verifiedInputs() {
+        return verifiedInputs(true);
+    }
+
+    protected boolean verifiedInputs(boolean includeReferrer) {
         if (getView() == null) return false;
 
-        if (!(new Identify(etReferrerEmail.getText().toString()).isValidEmail())) {
+        if (!(new Identify(etReferrerEmail.getText().toString()).isValidEmail()) && includeReferrer) {
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referrer email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -304,7 +310,80 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     @Override
     public void onActionClicked() {
+        if (!verifiedInputs(false)) {
+            return;
+        }
 
+        StringBuilder readmeBuilder = new StringBuilder();
+        readmeBuilder.append("AmbassadorSDK 1.1.4\n");
+        readmeBuilder.append("Take a look at the android docs for an in-depth explanation on installing and integrating the SDK:\nhttps://docs.getambassador.com/v2.0.0/page/android-sdk\n\n");
+        readmeBuilder.append("Checkout the MyApplication.java file as an example implementation of this conversion request.\n");
+
+        StringBuilder identifyBuilder = new StringBuilder();
+        identifyBuilder.append("package com.example.example;\n\n");
+        identifyBuilder.append("import android.app.Application;\n");
+        identifyBuilder.append("import com.ambassador.ambassadorsdk.ConversionParameters;\n");
+        identifyBuilder.append("import com.ambassador.ambassadorsdk.AmbassadorSDK;\n\n");
+        identifyBuilder.append("public class MyApplication extends Application {\n\n");
+        identifyBuilder.append("    @Override\n");
+        identifyBuilder.append("    public void onCreate() {\n");
+        identifyBuilder.append("        super.onCreate();\n");
+        identifyBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, \"SDKToken %s\", \"%s\");\n", User.get().getSdkToken(), User.get().getUniversalId()));
+        identifyBuilder.append("        ConversionParameters conversionParameters = new ConversionParameters.Builder()\n");
+        identifyBuilder.append(getConversionParametersAdditionLines());
+        identifyBuilder.append("            .build();\n");
+        identifyBuilder.append("        AmbassadorSDK.registerConversion(conversionParameters, false);\n");
+        identifyBuilder.append("    }\n\n");
+        identifyBuilder.append("}");
+
+        String filename = new CustomizationPackage(getActivity())
+                .add("MyApplication.java", identifyBuilder.toString(), CustomizationPackage.Directory.FILES)
+                .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
+                .zip("android-conversion.zip");
+
+        new Share(filename).execute(getActivity());
+    }
+
+    protected String getConversionParametersAdditionLines() {
+        String tab = "            ";
+        String out = "";
+
+        ConversionParameters parameters = getConversionParametersBasedOnInputs();
+
+        out += tab + ".setEmail(" + etValue(parameters.email, true) + ")\n";
+        out += tab + ".setRevenue(" + etValue(parameters.revenue, false) + "f)\n";
+        out += tab + ".setCampaign(" + etValue(parameters.campaign, false) + ")\n";
+
+        out += tab + ".setAddToGroupId(" + etValue(parameters.addToGroupId, true) + ")\n";
+        out += tab + ".setFirstName(" + etValue(parameters.firstName, true) + ")\n";
+        out += tab + ".setLastName(" + etValue(parameters.lastName, true) + ")\n";
+        out += tab + ".setUID(" + etValue(parameters.uid, true) + ")\n";
+        out += tab + ".setCustom1(" + etValue(parameters.custom1, true) + ")\n";
+        out += tab + ".setCustom2(" + etValue(parameters.custom2, true) + ")\n";
+        out += tab + ".setCustom3(" + etValue(parameters.custom3, true) + ")\n";
+        out += tab + ".setTransactionUID(" + etValue(parameters.transactionUid, true) + ")\n";
+        out += tab + ".setEventData1(" + etValue(parameters.eventData1, true) + ")\n";
+        out += tab + ".setEventData2(" + etValue(parameters.eventData2, true) + ")\n";
+        out += tab + ".setEventData3(" + etValue(parameters.eventData3, true) + ")\n";
+
+        out += tab + String.format(".setIsApproved(%s)\n", parameters.isApproved);
+        out += tab + String.format(".setAutoCreate(%s)\n", parameters.autoCreate);
+        out += tab + String.format(".setDeactivateNewAmbassador(%s)\n", parameters.deactivateNewAmbassador);
+        out += tab + String.format(".setEmailNewAmbassador(%s)\n", parameters.emailNewAmbassador);
+
+        return out;
+    }
+
+    protected String etValue(String value, boolean quotes) {
+        return (quotes ? "\"" : "") + value + (quotes ? "\"" : "");
+    }
+
+    protected String etValue(int value, boolean quotes) {
+        return etValue(String.valueOf(value), quotes);
+    }
+
+    protected String etValue(float value, boolean quotes) {
+        return etValue(String.valueOf(value), quotes);
     }
 
     @Override
