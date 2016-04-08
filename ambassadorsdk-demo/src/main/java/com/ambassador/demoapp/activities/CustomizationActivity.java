@@ -466,6 +466,8 @@ public class CustomizationActivity extends AppCompatActivity {
                     .setContactsToolbarColor(getHeaderColor())
                     .setHomeToolbarTextColor(getHeaderTextColor())
                     .setContactsToolbarTextColor(getHeaderTextColor())
+                    .setHomeToolbarArrowColor(getHeaderTextColor())
+                    .setContactsToolbarTextColor(getHeaderTextColor())
                     .setTitleText(getTextField1())
                     .setHomeWelcomeTitleColor(getTextField1Color())
                     .setDescriptionText(getTextField2())
