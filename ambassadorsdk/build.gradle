@@ -24,7 +24,7 @@ android {
 
     buildTypes {
         all {
-            buildConfigField "boolean", "IS_RELEASE_BUILD", "false"
+            buildConfigField "boolean", "IS_RELEASE_BUILD", "true"
         }
         release {
             minifyEnabled false
