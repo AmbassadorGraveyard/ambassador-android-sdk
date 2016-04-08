@@ -134,9 +134,13 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
 
     protected boolean verifiedInputs() {
+        return verifiedInputs(true);
+    }
+
+    protected boolean verifiedInputs(boolean includeReferrer) {
         if (getView() == null) return false;
 
-        if (!(new Identify(etReferrerEmail.getText().toString()).isValidEmail())) {
+        if (!(new Identify(etReferrerEmail.getText().toString()).isValidEmail()) && includeReferrer) {
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referrer email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -306,6 +310,10 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     @Override
     public void onActionClicked() {
+        if (!verifiedInputs(false)) {
+            return;
+        }
+
         StringBuilder readmeBuilder = new StringBuilder();
         readmeBuilder.append("AmbassadorSDK 1.1.4\n");
         readmeBuilder.append("Checkout the Application.java as an example implementation of this conversion request.\n");
