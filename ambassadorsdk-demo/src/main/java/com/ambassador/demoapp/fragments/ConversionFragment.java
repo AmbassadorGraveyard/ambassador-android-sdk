@@ -131,10 +131,10 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         identifyBuilder.append("    @Override\n");
         identifyBuilder.append("    public void onCreate() {\n");
         identifyBuilder.append("        super.onCreate();\n");
-        identifyBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, %s, %s);\n", User.get().getSdkToken(), User.get().getUniversalId()));
+        identifyBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, \"%s\", \"%s\");\n", User.get().getSdkToken(), User.get().getUniversalId()));
         identifyBuilder.append("        ConversionParameters conversionParameters = new ConversionParameters.Builder()\n");
         identifyBuilder.append(getConversionParametersAdditionLines());
-        identifyBuilder.append("            .build();");
+        identifyBuilder.append("            .build();\n");
         identifyBuilder.append("        AmbassadorSDK.registerConversion(conversionParameters);\n");
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
