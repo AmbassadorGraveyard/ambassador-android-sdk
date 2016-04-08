@@ -89,6 +89,7 @@ public class CustomizationActivity extends AppCompatActivity {
     @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
     @Bind(R.id.lvChannels) protected DragSortListView lvChannels;
     @Bind(R.id.civHeader) protected ColorInputView civHeader;
+    @Bind(R.id.civHeaderText) protected ColorInputView civHeaderText;
     @Bind(R.id.civTextField1) protected ColorInputView civTextField1;
     @Bind(R.id.civTextField2) protected ColorInputView civTextField2;
     @Bind(R.id.civButtons) protected ColorInputView civButtons;
