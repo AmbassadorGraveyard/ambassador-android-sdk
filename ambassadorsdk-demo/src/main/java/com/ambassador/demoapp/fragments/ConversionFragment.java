@@ -348,36 +348,42 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         String tab = "            ";
         String out = "";
 
-        out += etEmpty(etReferredEmail) ? "" : tab + ".setEmail(" + etValue(etReferredEmail, true) + ")\n";
-        out += etEmpty(etRevenue) ? "" : tab + ".setRevenue(" + etValue(etRevenue, false) + "f)\n";
-        out += etEmpty(etCampaign) ? "" : tab + ".setCampaign(" + etValue(etCampaign, false) + ")\n";
+        ConversionParameters parameters = getConversionParametersBasedOnInputs();
 
-        out += etEmpty(etGroupId) ? "" : tab + ".setAddToGroupId(" + etValue(etGroupId, true) + ")\n";
-        out += etEmpty(etFirstName) ? "" : tab + ".setFirstName(" + etValue(etFirstName, true) + ")\n";
-        out += etEmpty(etLastName) ? "" : tab + ".setLastName(" + etValue(etLastName, true) + ")\n";
-        out += etEmpty(etUID) ? "" : tab + ".setUID(" + etValue(etUID, true) + ")\n";
-        out += etEmpty(etCustom1) ? "" : tab + ".setCustom1(" + etValue(etCustom1, true) + ")\n";
-        out += etEmpty(etCustom2) ? "" : tab + ".setCustom2(" + etValue(etCustom2, true) + ")\n";
-        out += etEmpty(etCustom3) ? "" : tab + ".setCustom3(" + etValue(etCustom3, true) + ")\n";
-        out += etEmpty(etTransactionUID) ? "" : tab + ".setTransactionUID(" + etValue(etTransactionUID, true) + ")\n";
-        out += etEmpty(etEventData1) ? "" : tab + ".setEventData1(" + etValue(etEventData1, true) + ")\n";
-        out += etEmpty(etEventData2) ? "" : tab + ".setEventData2(" + etValue(etEventData2, true) + ")\n";
-        out += etEmpty(etEventData3) ? "" : tab + ".setEventData3(" + etValue(etEventData3, true) + ")\n";
+        out += tab + ".setEmail(" + etValue(parameters.email, true) + ")\n";
+        out += tab + ".setRevenue(" + etValue(parameters.revenue, false) + "f)\n";
+        out += tab + ".setCampaign(" + etValue(parameters.campaign, false) + ")\n";
 
-        out += swApproved.isChecked() ? "" : tab + ".setIsApproved(0)\n";
-        out += swAutoCreate.isChecked() ? "" : tab + ".setAutoCreate(0)\n";
-        out += swDeactivateNewAmbassador.isChecked() ? tab + ".setDeactivateNewAmbassador(1)\n" : "";
-        out += swEmailNewAmbassador.isChecked() ? tab + ".setEmailNewAmbassador(1)\n" : "";
+        out += tab + ".setAddToGroupId(" + etValue(parameters.addToGroupId, true) + ")\n";
+        out += tab + ".setFirstName(" + etValue(parameters.firstName, true) + ")\n";
+        out += tab + ".setLastName(" + etValue(parameters.lastName, true) + ")\n";
+        out += tab + ".setUID(" + etValue(parameters.uid, true) + ")\n";
+        out += tab + ".setCustom1(" + etValue(parameters.custom1, true) + ")\n";
+        out += tab + ".setCustom2(" + etValue(parameters.custom2, true) + ")\n";
+        out += tab + ".setCustom3(" + etValue(parameters.custom3, true) + ")\n";
+        out += tab + ".setTransactionUID(" + etValue(parameters.transactionUid, true) + ")\n";
+        out += tab + ".setEventData1(" + etValue(parameters.eventData1, true) + ")\n";
+        out += tab + ".setEventData2(" + etValue(parameters.eventData2, true) + ")\n";
+        out += tab + ".setEventData3(" + etValue(parameters.eventData3, true) + ")\n";
+
+        out += tab + String.format(".setIsApproved(%s)\n", parameters.isApproved);
+        out += tab + String.format(".setAutoCreate(%s)\n", parameters.autoCreate);
+        out += tab + String.format(".setDeactivateNewAmbassador(%s)\n", parameters.deactivateNewAmbassador);
+        out += tab + String.format(".setEmailNewAmbassador(%s)\n", parameters.emailNewAmbassador);
 
         return out;
     }
 
-    protected boolean etEmpty(EditText editText) {
-        return editText.getText().toString().isEmpty();
+    protected String etValue(String value, boolean quotes) {
+        return (quotes ? "\"" : "") + value + (quotes ? "\"" : "");
     }
 
-    protected String etValue(EditText editText, boolean quotes) {
-        return (quotes ? "\"" : "") + editText.getText().toString() + (quotes ? "\"" : "");
+    protected String etValue(int value, boolean quotes) {
+        return etValue(String.valueOf(value), quotes);
+    }
+
+    protected String etValue(float value, boolean quotes) {
+        return etValue(String.valueOf(value), quotes);
     }
 
     @Override
