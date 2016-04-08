@@ -1,7 +1,6 @@
 package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -18,21 +17,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
-import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.BuildConfig;
 import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.activities.MainActivity;
-import com.ambassador.demoapp.data.Integration;
 import com.ambassador.demoapp.data.User;
 import com.ambassador.demoapp.utils.Share;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
-
-import java.lang.reflect.Modifier;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
