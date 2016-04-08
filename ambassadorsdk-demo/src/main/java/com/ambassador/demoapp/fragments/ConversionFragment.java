@@ -132,8 +132,9 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         identifyBuilder.append("    public void onCreate() {\n");
         identifyBuilder.append("        super.onCreate();\n");
         identifyBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, %s, %s);\n", User.get().getSdkToken(), User.get().getUniversalId()));
-
         identifyBuilder.append("        ConversionParameters conversionParameters = new ConversionParameters.Builder()\n");
+        identifyBuilder.append(getConversionParametersAdditionLines());
+        identifyBuilder.append("            .build();");
         identifyBuilder.append("        AmbassadorSDK.registerConversion(conversionParameters);\n");
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
@@ -144,23 +145,27 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                 .zip();
 
         new Share(filename).execute(getActivity());
-
-        new ConversionParameters.Builder()
-                .setEmailNewAmbassador()
     }
 
-    protected String getConversionParametersAdditionLines(ConversionParameters conversionParameters) {
-        ConversionParameters defaults = new ConversionParameters();
+    protected String getConversionParametersAdditionLines() {
         String tab = "            ";
         String out = "";
 
-        out += etCampaign.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
-        out += etEmail.getText().toString().isEmpty() ? "" : tab + ".setEmail(" + conversionParameters.email + ")\n";
-        out += et.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
-        out += etCampaign.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
-        out += etCampaign.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
+        out += etEmpty(etCampaign) ? "" : tab + ".setCampaign(" + etValue(etCampaign, false) + ")\n";
+        out += etEmpty(etEmail) ? "" : tab + ".setEmail(" + etValue(etEmail, true) + ")\n";
+//        out += et.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
+//        out += etCampaign.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
+//        out += etCampaign.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
 
-        return "";
+        return out;
+    }
+
+    protected boolean etEmpty(EditText editText) {
+        return editText.getText().toString().isEmpty();
+    }
+
+    protected String etValue(EditText editText, boolean quotes) {
+        return (quotes ? "\"" : "") + editText.getText().toString() + (quotes ? "\"" : "");
     }
 
     @Override
