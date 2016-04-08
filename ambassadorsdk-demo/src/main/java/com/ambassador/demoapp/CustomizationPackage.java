@@ -90,9 +90,7 @@ public class CustomizationPackage {
     public CustomizationPackage add(@NonNull String pathWithName, @NonNull RAFOptions rafOptions) {
         String logo = rafOptions.getLogo();
         if (logo != null) {
-            if (copyFromAssetsToInternal(logo)) {
-                assets.add(logo);
-            }
+            assets.add(logo);
         }
 
         return add(pathWithName, new OptionXmlTranscriber(rafOptions).transcribe(), Directory.ASSETS);
