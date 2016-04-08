@@ -330,7 +330,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         String filename = new CustomizationPackage(getActivity())
                 .add("Application.java", identifyBuilder.toString(), CustomizationPackage.Directory.FILES)
                 .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
-                .zip();
+                .zip("android-conversion.zip");
 
         new Share(filename).execute(getActivity());
     }
