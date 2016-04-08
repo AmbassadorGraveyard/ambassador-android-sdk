@@ -2,9 +2,11 @@ package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -16,11 +18,21 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.BuildConfig;
+import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.demoapp.R;
 import com.ambassador.demoapp.activities.MainActivity;
+import com.ambassador.demoapp.data.Integration;
+import com.ambassador.demoapp.data.User;
+import com.ambassador.demoapp.utils.Share;
+import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeSpec;
+
+import java.lang.reflect.Modifier;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -85,7 +97,40 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
 
     @Override
     public void onActionClicked() {
-        Toast.makeText(getActivity(), "Identify", Toast.LENGTH_SHORT).show();
+        if (etEmail == null || !new Identify(etEmail.getText().toString()).isValidEmail()) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid email address!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    etEmail.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return;
+        }
+
+        StringBuilder readmeBuilder = new StringBuilder();
+        readmeBuilder.append("AmbassadorSDK 1.1.4\n");
+        readmeBuilder.append("Take a look at the android docs for an in-depth explanation on installing and integrating the SDK:\nhttps://docs.getambassador.com/v2.0.0/page/android-sdk\n\n");
+        readmeBuilder.append("Checkout the MyApplication.java file as an example implementation of this identify request.\n");
+
+        StringBuilder identifyBuilder = new StringBuilder();
+        identifyBuilder.append("package com.example.example;\n\n");
+        identifyBuilder.append("import android.app.Application;\n");
+        identifyBuilder.append("import com.ambassador.ambassadorsdk.AmbassadorSDK;\n\n");
+        identifyBuilder.append("public class MyApplication extends Application {\n\n");
+        identifyBuilder.append("    @Override\n");
+        identifyBuilder.append("    public void onCreate() {\n");
+        identifyBuilder.append("        super.onCreate();\n");
+        identifyBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, \"SDKToken %s\", \"%s\");\n", User.get().getSdkToken(), User.get().getUniversalId()));
+        identifyBuilder.append(String.format("        AmbassadorSDK.identify(\"%s\");\n", etEmail.getText().toString()));
+        identifyBuilder.append("    }\n\n");
+        identifyBuilder.append("}");
+
+        String filename = new CustomizationPackage(getActivity())
+                .add("MyApplication.java", identifyBuilder.toString(), CustomizationPackage.Directory.FILES)
+                .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
+                .zip("android-identify.zip");
+
+        new Share(filename).execute(getActivity());
     }
 
     @Override
