@@ -2,9 +2,11 @@ package com.ambassador.demoapp.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
@@ -95,6 +97,16 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
 
     @Override
     public void onActionClicked() {
+        if (etEmail == null || !new Identify(etEmail.getText().toString()).isValidEmail()) {
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid email address!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    etEmail.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return;
+        }
+
         StringBuilder readmeBuilder = new StringBuilder();
         readmeBuilder.append("AmbassadorSDK 1.1.4\n");
         readmeBuilder.append("Checkout the Application.java as an example implementation of this identify request.\n");
