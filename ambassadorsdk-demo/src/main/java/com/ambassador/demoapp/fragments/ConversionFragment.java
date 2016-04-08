@@ -323,7 +323,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         identifyBuilder.append("        ConversionParameters conversionParameters = new ConversionParameters.Builder()\n");
         identifyBuilder.append(getConversionParametersAdditionLines());
         identifyBuilder.append("            .build();\n");
-        identifyBuilder.append("        AmbassadorSDK.registerConversion(conversionParameters);\n");
+        identifyBuilder.append("        AmbassadorSDK.registerConversion(conversionParameters, false);\n");
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
 
@@ -339,11 +339,26 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         String tab = "            ";
         String out = "";
 
-        out += etEmpty(etCampaign) ? "" : tab + ".setCampaign(" + etValue(etCampaign, false) + ")\n";
         out += etEmpty(etReferredEmail) ? "" : tab + ".setEmail(" + etValue(etReferredEmail, true) + ")\n";
-//        out += et.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
-//        out += etCampaign.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
-//        out += etCampaign.getText().toString().isEmpty() ? "" : tab + ".setCampaign(" + conversionParameters.campaign + ")\n";
+        out += etEmpty(etRevenue) ? "" : tab + ".setRevenue(" + etValue(etRevenue, false) + "f)\n";
+        out += etEmpty(etCampaign) ? "" : tab + ".setCampaign(" + etValue(etCampaign, false) + ")\n";
+
+        out += etEmpty(etGroupId) ? "" : tab + ".setAddToGroupId(" + etValue(etGroupId, true) + ")\n";
+        out += etEmpty(etFirstName) ? "" : tab + ".setFirstName(" + etValue(etFirstName, true) + ")\n";
+        out += etEmpty(etLastName) ? "" : tab + ".setLastName(" + etValue(etLastName, true) + ")\n";
+        out += etEmpty(etUID) ? "" : tab + ".setUID(" + etValue(etUID, true) + ")\n";
+        out += etEmpty(etCustom1) ? "" : tab + ".setCustom1(" + etValue(etCustom1, true) + ")\n";
+        out += etEmpty(etCustom2) ? "" : tab + ".setCustom2(" + etValue(etCustom2, true) + ")\n";
+        out += etEmpty(etCustom3) ? "" : tab + ".setCustom3(" + etValue(etCustom3, true) + ")\n";
+        out += etEmpty(etTransactionUID) ? "" : tab + ".setTransactionUID(" + etValue(etTransactionUID, true) + ")\n";
+        out += etEmpty(etEventData1) ? "" : tab + ".setEventData1(" + etValue(etEventData1, true) + ")\n";
+        out += etEmpty(etEventData2) ? "" : tab + ".setEventData2(" + etValue(etEventData2, true) + ")\n";
+        out += etEmpty(etEventData3) ? "" : tab + ".setEventData3(" + etValue(etEventData3, true) + ")\n";
+
+        out += swApproved.isChecked() ? "" : tab + ".setIsApproved(0)\n";
+        out += swAutoCreate.isChecked() ? "" : tab + ".setAutoCreate(0)\n";
+        out += swDeactivateNewAmbassador.isChecked() ? tab + ".setDeactivateNewAmbassador(1)\n" : "";
+        out += swEmailNewAmbassador.isChecked() ? tab + ".setEmailNewAmbassador(1)\n" : "";
 
         return out;
     }
