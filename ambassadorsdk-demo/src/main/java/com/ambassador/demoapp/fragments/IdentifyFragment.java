@@ -115,7 +115,7 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
         String filename = new CustomizationPackage(getActivity())
                 .add("Application.java", identifyBuilder.toString(), CustomizationPackage.Directory.FILES)
                 .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
-                .zip();
+                .zip("android-identify.zip");
 
         new Share(filename).execute(getActivity());
     }
