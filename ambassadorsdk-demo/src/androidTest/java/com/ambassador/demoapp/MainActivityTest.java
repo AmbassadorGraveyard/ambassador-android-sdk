@@ -26,6 +26,8 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.demoapp.activities.LoginActivity;
 import com.ambassador.demoapp.activities.MainActivity;
+import com.ambassador.demoapp.api.Requests;
+import com.ambassador.demoapp.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demoapp.api.pojo.LoginResponse;
 
 import junit.framework.Assert;
@@ -43,6 +45,8 @@ import org.mockito.stubbing.Answer;
 
 import javax.inject.Inject;
 
+import retrofit.Callback;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -59,6 +63,8 @@ public class MainActivityTest {
 
     protected Context context;
 
+    protected Requests requests;
+
     @Before
     public void beforeEachTest() {
         Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
@@ -72,6 +78,9 @@ public class MainActivityTest {
         loginResponse.company.sdk_token = "sdk_token";
         loginResponse.company.avatar_url = "http://catfacts.jazzychad.net/img/cat.jpg";
         com.ambassador.demoapp.data.User.get().load(loginResponse);
+
+        requests = Mockito.mock(Requests.class);
+        Requests.instance = requests;
 
         AmbSingleton.init(context, new TestModule());
         AmbassadorSDK.runWithKeys(context, "ut", "uid");
@@ -173,12 +182,22 @@ public class MainActivityTest {
 
     @Test
     public void testsConversionWithValidInputAndNotApproved() throws Exception {
+        // Mock get short code.
+        mockShortCodeResponse();
+
         // Select Conversion tab.
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
+        // Focus referrer email input and type a valid email address.
+        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake1@getambassador.com"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
         // Focus email input and type a valid email address.
         onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
+        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake2@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
@@ -198,14 +217,14 @@ public class MainActivityTest {
         Espresso.closeSoftKeyboard();
 
         // Click the submit button.
-        onView(withId(R.id.btnConversion)).perform(ViewActions.click());
+        onView(withId(R.id.btnConversion)).perform(ViewActions.scrollTo(), ViewActions.click());
 
         // Verify conversion details and confirm fires.
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 ConversionParameters conversionParameters = (ConversionParameters) invocation.getArguments()[0];
-                Assert.assertEquals("jake@getambassador.com", conversionParameters.getEmail());
+                Assert.assertEquals("jake2@getambassador.com", conversionParameters.getEmail());
                 Assert.assertEquals(25.55, conversionParameters.getRevenue());
                 Assert.assertEquals(260, conversionParameters.getCampaign());
                 Assert.assertEquals(0, conversionParameters.getIsApproved());
@@ -217,12 +236,22 @@ public class MainActivityTest {
 
     @Test
     public void testsConversionWithValidInputAndApproved() throws Exception {
+        // Mock get short code.
+        mockShortCodeResponse();
+
         // Select Conversion tab.
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
+        // Focus referrer email input and type a valid email address.
+        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake1@getambassador.com"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
         // Focus email input and type a valid email address.
         onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
+        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake2@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
@@ -242,10 +271,10 @@ public class MainActivityTest {
         Espresso.closeSoftKeyboard();
 
         // Activate is approved switch.
-        onView(withId(R.id.swConversionApproved)).perform(ViewActions.click());
+        onView(withId(R.id.swConversionApproved)).perform(ViewActions.scrollTo(), ViewActions.click());
 
         // Click the submit button.
-        onView(withId(R.id.btnConversion)).perform(ViewActions.click());
+        onView(withId(R.id.btnConversion)).perform(ViewActions.scrollTo(), ViewActions.click());
 
         // Verify conversion details and confirm fires.
         Mockito.doAnswer(new Answer() {
@@ -282,7 +311,7 @@ public class MainActivityTest {
         Espresso.closeSoftKeyboard();
 
         // Click the submit button.
-        onView(withId(R.id.btnConversion)).perform(ViewActions.click());
+        onView(withId(R.id.btnConversion)).perform(ViewActions.scrollTo(), ViewActions.click());
     }
 
     @Test
@@ -305,7 +334,7 @@ public class MainActivityTest {
         Espresso.closeSoftKeyboard();
 
         // Click the submit button.
-        onView(withId(R.id.btnConversion)).perform(ViewActions.click());
+        onView(withId(R.id.btnConversion)).perform(ViewActions.scrollTo(), ViewActions.click());
 
         // Verify no conversion fires.
         Mockito.verify(conversionUtility, Mockito.never()).registerConversion();
@@ -331,7 +360,7 @@ public class MainActivityTest {
         Espresso.closeSoftKeyboard();
 
         // Click the submit button.
-        onView(withId(R.id.btnConversion)).perform(ViewActions.click());
+        onView(withId(R.id.btnConversion)).perform(ViewActions.scrollTo(), ViewActions.click());
 
         // Verify no conversion fires.
         Mockito.verify(conversionUtility, Mockito.never()).registerConversion();
@@ -434,6 +463,22 @@ public class MainActivityTest {
             }
 
         };
+    }
+
+    protected void mockShortCodeResponse() {
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<GetShortCodeFromEmailResponse> callback = (Callback) invocation.getArguments()[3];
+                GetShortCodeFromEmailResponse response = new GetShortCodeFromEmailResponse();
+                response.count = 1;
+                response.results = new GetShortCodeFromEmailResponse.Result[1];
+                response.results[0] = new GetShortCodeFromEmailResponse.Result();
+                response.results[0].short_code = "abcd";
+                callback.success(response, null);
+                return null;
+            }
+        }).when(requests).getShortCodeFromEmail(Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(), Mockito.any(Callback.class));
     }
 
 }
