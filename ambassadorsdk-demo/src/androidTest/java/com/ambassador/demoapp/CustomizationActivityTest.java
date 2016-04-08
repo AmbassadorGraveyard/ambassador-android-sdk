@@ -238,9 +238,17 @@ public class CustomizationActivityTest {
     }
 
     @Test
-    public void testsInputValidationAndResponseLine() {
+    public void inputValidationAndResponseLineTest() {
         // Mock campaigns response.
         mockCampaignsResponse();
+
+        // Remove pre-set input.
+        onView(withId(R.id.inputHeaderText)).perform(ViewActions.scrollTo(), ViewActions.click(), ViewActions.replaceText(""));
+        Espresso.closeSoftKeyboard();
+        onView(withId(R.id.inputTextField1)).perform(ViewActions.scrollTo(), ViewActions.click(), ViewActions.replaceText(""));
+        Espresso.closeSoftKeyboard();
+        onView(withId(R.id.inputTextField2)).perform(ViewActions.scrollTo(), ViewActions.click(), ViewActions.replaceText(""));
+        Espresso.closeSoftKeyboard();
 
         // Scroll to bottom.
         onView(withId(R.id.civButtons)).perform(ViewActions.scrollTo());
