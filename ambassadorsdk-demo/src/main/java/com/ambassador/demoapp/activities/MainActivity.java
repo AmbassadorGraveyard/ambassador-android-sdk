@@ -1,7 +1,5 @@
 package com.ambassador.demoapp.activities;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -22,16 +20,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 import com.ambassador.demoapp.Demo;
 import com.ambassador.demoapp.R;
-import com.ambassador.demoapp.data.Integration;
 import com.ambassador.demoapp.data.User;
 import com.ambassador.demoapp.fragments.ConversionFragment;
 import com.ambassador.demoapp.fragments.IdentifyFragment;
