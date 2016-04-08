@@ -91,7 +91,7 @@ public class CampaignChooserDialog extends Dialog {
         });
     }
 
-    protected static class Campaign {
+    public static class Campaign {
 
         protected int id;
         protected String name;

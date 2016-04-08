@@ -18,9 +18,12 @@ public class ConversionParametersTest {
         Assert.assertFalse(parameters.isValid());
 
         parameters.campaign = 12;
-        Assert.assertTrue(parameters.isValid());
+        Assert.assertFalse(parameters.isValid());
 
         parameters.revenue = 50;
+        Assert.assertFalse(parameters.isValid());
+
+        parameters.email = "email@getamb.com";
         Assert.assertTrue(parameters.isValid());
 
         parameters.campaign = -1;

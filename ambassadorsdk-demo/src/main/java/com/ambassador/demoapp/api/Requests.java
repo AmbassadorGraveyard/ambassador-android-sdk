@@ -2,6 +2,7 @@ package com.ambassador.demoapp.api;
 
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 import com.ambassador.demoapp.api.pojo.GetCampaignsResponse;
+import com.ambassador.demoapp.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demoapp.api.pojo.LoginRequest;
 import com.ambassador.demoapp.api.pojo.LoginResponse;
 
@@ -23,6 +24,10 @@ public class Requests {
 
     public void getCampaigns(String universalToken, Callback<GetCampaignsResponse> callback) {
         client.getCampaigns("UniversalToken " + universalToken, callback);
+    }
+
+    public void getShortCodeFromEmail(String sdkToken, int campaignId, String email, Callback<GetShortCodeFromEmailResponse> callback) {
+        client.getShortCodeFromEmail("SDKToken " + sdkToken, campaignId, email, callback);
     }
 
     public static Requests get() {
