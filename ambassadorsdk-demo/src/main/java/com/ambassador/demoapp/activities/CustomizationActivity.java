@@ -260,6 +260,7 @@ public class CustomizationActivity extends AppCompatActivity {
         dataHandler.setTextField1(defaults.getTitleText());
         dataHandler.setTextField2(defaults.getDescriptionText());
         dataHandler.setHeaderText(defaults.getToolbarTitle());
+        dataHandler.setHeaderTextColor(defaults.getHomeToolbarTextColor());
         dataHandler.setHeaderColor(defaults.getHomeToolbarColor());
         dataHandler.setTextField1Color(defaults.getHomeWelcomeTitleColor());
         dataHandler.setTextField2Color(defaults.getHomeWelcomeDescriptionColor());
@@ -473,7 +474,7 @@ public class CustomizationActivity extends AppCompatActivity {
                     .setContactsSendButtonColor(getButtonColor())
                     .setContactNoPhotoAvailableBackgroundColor(getButtonColor())
                     .build();
-            
+
             integration.setRafOptions(rafOptions);
             return integration;
         }
