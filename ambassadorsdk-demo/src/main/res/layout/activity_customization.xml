@@ -131,6 +131,21 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:text="Header Text Color" />
+
+        <com.ambassador.demoapp.views.ColorInputView
+            android:id="@+id/civHeaderText"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="15dp" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
             android:text="Header Color" />
 
         <com.ambassador.demoapp.views.ColorInputView
