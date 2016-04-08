@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 
+import java.lang.reflect.Field;
+
 /**
  * Stores information relevant for registering a conversion on the backend.
  */
@@ -133,11 +135,26 @@ public final class ConversionParameters {
     }
 
     public boolean isValid() {
-        return campaign > -1 && revenue > -1;
+        return campaign > -1 && revenue > -1 && email != null && !"".equals(email);
     }
 
     public ConversionsApi.RegisterConversionRequestBody.FieldsObject getFieldsObject() {
         return new ConversionsApi.RegisterConversionRequestBody.FieldsObject(this, shortCode);
+    }
+
+    public void prettyPrint() {
+        String logTag = "AMB-PARAMS";
+        Log.v(logTag, "-------");
+
+        for (Field field : getClass().getFields()) {
+            try {
+                Log.v(logTag, field.getName() + " = " + field.get(this).toString());
+            } catch (Exception e) {
+                // ignore, not useful to log
+            }
+        }
+
+        Log.v(logTag, "-------");
     }
 
     public static class Builder {
