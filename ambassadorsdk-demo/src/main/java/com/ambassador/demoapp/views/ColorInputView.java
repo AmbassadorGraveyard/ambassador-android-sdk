@@ -68,7 +68,7 @@ public class ColorInputView extends RelativeLayout implements View.OnClickListen
         GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setCornerRadius(500);
         gradientDrawable.setColor(color);
-        gradientDrawable.setStroke(1, Color.parseColor("#e6e6e6"));
+        gradientDrawable.setStroke(3, Color.parseColor("#e6e6e6"));
         setBackground(gradientDrawable);
     }
 
