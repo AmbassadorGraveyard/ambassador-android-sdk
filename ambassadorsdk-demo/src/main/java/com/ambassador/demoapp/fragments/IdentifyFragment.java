@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.BuildConfig;
 import com.ambassador.demoapp.CustomizationPackage;
@@ -51,6 +52,7 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
                 if (etEmail.getText().length() != 0) {
                     String email = etEmail.getText().toString();
                     if (!(new Identify(email).isValidEmail())) {
+                        new Device(getActivity()).closeSoftKeyboard(etEmail);
                         Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid email address!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -63,6 +65,7 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
                     AmbassadorSDK.identify(email);
                     closeSoftKeyboard();
                 } else {
+                    new Device(getActivity()).closeSoftKeyboard(etEmail);
                     Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter an email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -99,6 +102,7 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
     @Override
     public void onActionClicked() {
         if (etEmail == null || !new Identify(etEmail.getText().toString()).isValidEmail()) {
+            new Device(getActivity()).closeSoftKeyboard(etEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid email address!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

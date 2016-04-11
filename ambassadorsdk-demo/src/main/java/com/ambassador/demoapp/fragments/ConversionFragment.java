@@ -25,6 +25,7 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.demoapp.R;
@@ -115,6 +116,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
                                 Snackbar.make(getActivity().findViewById(android.R.id.content), "An ambassador could not be found for the email and campaign provided.", Snackbar.LENGTH_LONG).show();
                             }
                         });
@@ -146,6 +148,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         if (getView() == null) return false;
 
         if (!(new Identify(etReferrerEmail.getText().toString()).isValidEmail()) && includeReferrer) {
+            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referrer email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -157,6 +160,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         }
 
         if (!(new Identify(etReferredEmail.getText().toString()).isValidEmail())) {
+            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referred email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -168,6 +172,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         }
 
         if (!stringHasContent(etRevenue.getText().toString())) {
+            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a revenue amount!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -179,6 +184,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         }
 
         if (!stringHasContent(etCampaign.getText().toString())) {
+            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a campaign ID!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
