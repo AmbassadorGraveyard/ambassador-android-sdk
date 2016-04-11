@@ -27,6 +27,10 @@ public class ConversionUtility {
     @Inject protected User user;
     @Inject protected Campaign campaign;
 
+    public ConversionUtility() {
+        this(AmbSingleton.context);
+    }
+
     // Constructors for ConversionUtility
     public ConversionUtility(Context context) {
         helper = new ConversionDBHelper(context);
@@ -35,15 +39,17 @@ public class ConversionUtility {
     }
 
     public ConversionUtility(Context context, ConversionParameters parameters) {
+        this(context);
+        setParameters(parameters);
+    }
+
+    public void setParameters(ConversionParameters parameters) {
         this.parameters = parameters;
-        helper = new ConversionDBHelper(context);
-        db = helper.getWritableDatabase();
-        AmbSingleton.inject(this);
     }
 
     public void registerConversion() {
         //if either augur identify or install intent (shortcode) hasn't come back yet, OR we don't know their email yet, insert into DB for later retry
-        if (user.getAugurData() == null || campaign.getReferredByShortCode() == null || user.getEmail() == null) {
+        if (user.getAugurData() == null || campaign.getReferredByShortCode() == null) {
             ContentValues values = ConversionDBHelper.createValuesFromConversion(parameters);
             db.insert(ConversionSQLStrings.ConversionSQLEntry.TABLE_NAME, null, values);
             Utilities.debugLog("Conversion", "Inserted row into table");
@@ -81,7 +87,7 @@ public class ConversionUtility {
     public void readAndSaveDatabaseEntries() {
         //if we don't have an identify object yet, that means neither the intent nor augur has returned
         //so bail out and try again later
-        if (user.getAugurData() == null || campaign.getReferredByShortCode() == null || user.getEmail() == null) return;
+        if (user.getAugurData() == null || campaign.getReferredByShortCode() == null) return;
 
         String[] projection = {
                 ConversionSQLStrings.ConversionSQLEntry._ID,
@@ -122,10 +128,13 @@ public class ConversionUtility {
         //if anything in the database, cycles through and makes requests to register conversions
         do {
             final ConversionParameters DBparameters = ConversionDBHelper.createConversionParameterWithCursor(cursor);
-            makeConversionRequest(DBparameters);
 
-            // Deletes row after registering conversion and will resave if failure occurs
-            ConversionDBHelper.deleteRow(db, cursor.getInt(cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry._ID)));
+            if (DBparameters.isValid()) {
+                makeConversionRequest(DBparameters);
+
+                // Deletes row after registering conversion and will resave if failure occurs
+                ConversionDBHelper.deleteRow(db, cursor.getInt(cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry._ID)));
+            }
         } while (cursor.moveToNext());
     }
 
@@ -133,7 +142,10 @@ public class ConversionUtility {
         //in the case of an install conversion, we didn't have the shortCode right away, so that conversion got stored in the database.
         //now that we know we have it (wouldn't have gotten this far if we didn't) set that parameter value.
         newParameters.updateShortCode(campaign.getReferredByShortCode());
-        newParameters.email = user.getEmail();
+
+        if (newParameters.email == null || "".equals(newParameters.email)) {
+            newParameters.email = user.getEmail();
+        }
 
         requestManager.registerConversionRequest(newParameters, new RequestManager.RequestCompletion() {
             @Override

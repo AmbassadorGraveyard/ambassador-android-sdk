@@ -9,6 +9,5 @@ if [ "$CIRCLE_BRANCH" != "master" ]
     rainforest upload --token $RAINFOREST_TOKEN
 
     GITHUB_PULL_NUMBER=$(echo $CI_PULL_REQUEST | awk -F/ '{print $7}')
-    rainforest run all --fg --fail-fast --git-trigger --token "$RAINFOREST_TOKEN" --site-id "$RAINFOREST_SITE" --description "CI run for $CIRCLE_BRANCH"
+    rainforest run all --fg --fail-fast --git-trigger --token "$RAINFOREST_TOKEN" --site-id "$RAINFOREST_SITE" --description "CI run for $CIRCLE_BRANCH" --browsers android_phone_portrait
 fi
-

@@ -42,15 +42,17 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
+import com.ambassador.ambassadorsdk.internal.SmsSendObserver;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskUrlDialog;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
-import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
-import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.utils.ContactList;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
@@ -59,6 +61,7 @@ import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView;
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -75,6 +78,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
 
     // region Constants
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
+    private static final int SEND_SMS = 1234;
     private static final int MAX_SMS_LENGTH = 160;
     private static final int LENGTH_GOOD_COLOR = RAFOptions.get().getContactsSendButtonTextColor(); // TODO: make this not suck
     private static final int LENGTH_BAD_COLOR = new ColorResource(android.R.color.holo_red_dark).getColor();
@@ -102,13 +106,14 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     // region Dependencies
     @Inject protected PusherManager     pusherManager;
     @Inject protected BulkShareHelper   bulkShareHelper;
+    @Inject protected RequestManager    requestManager;
     @Inject protected User              user;
     @Inject protected Campaign          campaign;
     @Inject protected Device            device;
     // endregion
 
     // region Local members
-    protected  RAFOptions               raf = RAFOptions.get();
+    protected RAFOptions                raf = RAFOptions.get();
     protected List<Contact>             contactList;
     protected ContactListAdapter        contactListAdapter;
     protected JsonObject                pusherData;
@@ -116,6 +121,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     protected AskNameDialog             askNameDialog;
     protected ProgressDialog            progressDialog;
     protected float                     lastSendHeight;
+    protected boolean                   didSendSms;
     // endregion
 
     // endregion
@@ -177,6 +183,29 @@ public final class ContactSelectorActivity extends AppCompatActivity {
 
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SEND_SMS && didSendSms) {
+            // The activity closes so fast it almost looks like something went wrong, so I wait a second
+            // to make it appear as if the SDK is doing work.
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            finish();
+                            Toast.makeText(ContactSelectorActivity.this, new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+            }, 1000);
+        } else if (requestCode == SEND_SMS) {
+            progressDialog.dismiss();
         }
     }
 
@@ -647,6 +676,23 @@ public final class ContactSelectorActivity extends AppCompatActivity {
             public void bulkShareFailure() {
                 progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void launchSmsIntent(final String phoneNumber, Intent intent) {
+                final SmsSendObserver observer = new SmsSendObserver(ContactSelectorActivity.this, phoneNumber);
+                observer.setSmsSendListener(new SmsSendObserver.SmsSendListener() {
+                    @Override
+                    public void onSmsSent() {
+                        didSendSms = true;
+                        observer.stop();
+                        List<Contact> contact = new ArrayList<>();
+                        contact.add(new Contact.Builder().setPhoneNumber(phoneNumber).build());
+                        requestManager.bulkShareTrack(contact, BulkShareHelper.SocialServiceTrackType.SMS);
+                    }
+                });
+                observer.start();
+                startActivityForResult(intent, SEND_SMS);
             }
         });
     }

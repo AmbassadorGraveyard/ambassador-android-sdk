@@ -283,7 +283,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
             tvNumberOrEmail.setTextSize(raf.getContactsListValueSize());
             tvNumberOrEmail.setTypeface(raf.getContactsListValueFont());
 
-            ivCheckMark.setColorFilter(raf.getContactsToolbarColor());
+            ivCheckMark.setColorFilter(raf.getContactsSendButtonColor());
 
             this.listener = listener;
             itemView.setOnClickListener(this);

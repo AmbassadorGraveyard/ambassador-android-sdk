@@ -59,7 +59,7 @@ public class RecyclerViewMatcher {
                     return view == childView;
                 } else {
                     View targetView = childView.findViewById(targetViewId);
-                    return view == targetView;
+                    return view.equals(targetView);
                 }
 
             }

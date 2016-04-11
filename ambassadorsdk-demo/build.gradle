@@ -52,6 +52,15 @@ dependencies {
         provided "${it}"
     }
 
+    rootProject.ext.demoTestCompile.each {
+        testCompile "${it}"
+    }
+
+    rootProject.ext.demoTestApt.each {
+        testApt "${it}"
+    }
+
+
     rootProject.ext.demoAndroidTestCompile.each {
         androidTestCompile "${it}"
     }
@@ -59,6 +68,9 @@ dependencies {
     rootProject.ext.demoAndroidTestApt.each {
         androidTestApt "${it}"
     }
+
+    compile 'asia.ivity.android:drag-sort-listview:1.0'
+    compile 'com.squareup:javapoet:1.6.1'
 }
 
 

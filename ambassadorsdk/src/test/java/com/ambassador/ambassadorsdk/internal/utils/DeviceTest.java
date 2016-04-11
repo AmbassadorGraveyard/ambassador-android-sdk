@@ -22,8 +22,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 })
 public class DeviceTest {
 
-    private Context context;
-    private Resources resources;
     private Configuration configuration;
 
     @Before
@@ -32,8 +30,8 @@ public class DeviceTest {
                 AmbSingleton.class
         );
 
-        context = Mockito.mock(Context.class);
-        resources = Mockito.mock(Resources.class);
+        Context context = Mockito.mock(Context.class);
+        Resources resources = Mockito.mock(Resources.class);
         configuration = Mockito.mock(Configuration.class);
 
         Mockito.when(AmbSingleton.getContext()).thenReturn(context);

@@ -2,23 +2,10 @@ package com.ambassador.ambassadorsdk.internal.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.google.gson.Gson;
-
-import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
-import twitter4j.ResponseList;
-import twitter4j.Status;
-import twitter4j.TwitterAdapter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterMethod;
-import twitter4j.auth.AccessToken;
 
 
 /**
@@ -30,9 +17,8 @@ public class Auth implements Data {
     // region Fields
     protected String universalId;
     protected String universalToken;
-    protected String linkedInToken;
-    protected String twitterToken;
-    protected String twitterSecret;
+    protected String envoyId;
+    protected String envoySecret;
     // endregion
 
     // region Getters / Setters
@@ -41,7 +27,7 @@ public class Auth implements Data {
         return universalId;
     }
 
-    public void setUniversalId(String universalId) {
+    public void setUniversalId(@Nullable String universalId) {
         this.universalId = universalId;
         save();
     }
@@ -51,38 +37,28 @@ public class Auth implements Data {
         return universalToken;
     }
 
-    public void setUniversalToken(String universalToken) {
+    public void setUniversalToken(@Nullable String universalToken) {
         this.universalToken = universalToken;
         save();
     }
 
     @Nullable
-    public String getLinkedInToken() {
-        return linkedInToken;
+    public String getEnvoyId() {
+        return envoyId;
     }
 
-    public void setLinkedInToken(String linkedInToken) {
-        this.linkedInToken = linkedInToken;
+    public void setEnvoyId(@Nullable String envoyId) {
+        this.envoyId = envoyId;
         save();
     }
 
     @Nullable
-    public String getTwitterToken() {
-        return twitterToken;
+    public String getEnvoySecret() {
+        return envoySecret;
     }
 
-    public void setTwitterToken(String twitterToken) {
-        this.twitterToken = twitterToken;
-        save();
-    }
-
-    @Nullable
-    public String getTwitterSecret() {
-        return twitterSecret;
-    }
-
-    public void setTwitterSecret(String twitterSecret) {
-        this.twitterSecret = twitterSecret;
+    public void setEnvoySecret(@Nullable String envoySecret) {
+        this.envoySecret = envoySecret;
         save();
     }
     // endregion
@@ -107,9 +83,8 @@ public class Auth implements Data {
     public void clear() {
         universalId = null;
         universalToken = null;
-        linkedInToken = null;
-        twitterToken = null;
-        twitterSecret = null;
+        envoyId = null;
+        envoySecret = null;
     }
 
     /**
@@ -126,111 +101,13 @@ public class Auth implements Data {
         Auth auth = new Gson().fromJson(json, Auth.class);
         setUniversalId(auth.getUniversalId());
         setUniversalToken(auth.getUniversalToken());
-        setLinkedInToken(auth.getLinkedInToken());
-        setTwitterToken(auth.getTwitterToken());
-        setTwitterSecret(auth.getTwitterSecret());
+        setEnvoyId(auth.getEnvoyId());
+        setEnvoySecret(auth.getEnvoySecret());
     }
     // endregion
 
     // region Nullify methods
 
-    /**
-     * Checks the User's twitter token and secret for validity, and returns
-     * results through the passed in callback.
-     * @param listener completion listener to pass back result of nullify
-     */
-    public void nullifyTwitterIfInvalid(final NullifyCompleteListener listener) {
-        String accessToken = getTwitterToken();
-        String accessSecret = getTwitterSecret();
-
-        if (accessToken == null || accessSecret == null) {
-            setTwitterToken(null);
-            setTwitterSecret(null);
-            callNullifyComplete(listener);
-            return;
-        }
-
-        AsyncTwitter twitter = getTwitter();
-        String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
-        String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
-        twitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
-        twitter.setOAuthAccessToken(new AccessToken(accessToken, accessSecret));
-
-        ambTwitterAdapter.setListener(listener);
-        twitter.addListener(ambTwitterAdapter);
-
-        twitter.getUserTimeline();
-    }
-
-    protected AsyncTwitter getTwitter() {
-        return new AsyncTwitterFactory().getInstance();
-    }
-
-    protected AmbTwitterAdapter ambTwitterAdapter = new AmbTwitterAdapter() {
-
-        @Override
-        public void gotUserTimeline(ResponseList<Status> statuses) {
-            callNullifyComplete(listener);
-        }
-
-        @Override
-        public void onException(TwitterException te, TwitterMethod method) {
-            setTwitterSecret(null);
-            setTwitterToken(null);
-            callNullifyComplete(listener);
-        }
-
-    };
-
-    protected class AmbTwitterAdapter extends TwitterAdapter {
-
-        protected NullifyCompleteListener listener;
-
-        public void setListener(NullifyCompleteListener listener) {
-            this.listener = listener;
-        }
-
-    }
-
-    /**
-     * Checks the User's linkedin token for validity, and returns
-     * results through the passed in callback.
-     * @param listener completion listener to pass back result of nullify
-     */
-    public void nullifyLinkedInIfInvalid(final NullifyCompleteListener listener) {
-        if (getLinkedInToken() != null) {
-            RequestManager rm = buildRequestManager();
-            rm.getProfileLinkedIn(new RequestManager.RequestCompletion() {
-                @Override
-                public void onSuccess(Object successResponse) {
-                    callNullifyComplete(listener);
-                }
-
-                @Override
-                public void onFailure(Object failureResponse) {
-                    setLinkedInToken(null);
-                    callNullifyComplete(listener);
-                }
-            });
-        } else {
-            callNullifyComplete(listener);
-        }
-    }
-
-    @NonNull
-    protected RequestManager buildRequestManager() {
-        return new RequestManager();
-    }
-
-    protected void callNullifyComplete(NullifyCompleteListener listener) {
-        if (listener != null) {
-            listener.nullifyComplete();
-        }
-    }
-
-    public interface NullifyCompleteListener {
-        void nullifyComplete();
-    }
     // endregion
 
 }

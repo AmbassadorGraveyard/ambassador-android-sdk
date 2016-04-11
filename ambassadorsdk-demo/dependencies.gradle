@@ -10,6 +10,18 @@ rootProject.ext.demoProvided = [
         rootProject.ext.deps.glassfish_annotation,
 ]
 
+rootProject.ext.demoTestCompile = [
+        rootProject.ext.deps.junit,
+        rootProject.ext.deps.mockito_new,
+        rootProject.ext.deps.powermock,
+        rootProject.ext.deps.powermock_mockito,
+]
+
+rootProject.ext.demoTestApt = [
+        rootProject.ext.deps.dagger_compiler,
+]
+
+
 rootProject.ext.demoAndroidTestCompile = [
         rootProject.ext.deps.hamcrest,
         rootProject.ext.deps.uiautomator,
@@ -19,6 +31,7 @@ rootProject.ext.demoAndroidTestCompile = [
         rootProject.ext.deps.mockito,
         rootProject.ext.deps.dexmaker,
         rootProject.ext.deps.dexmaker_mockito,
+        rootProject.ext.deps.spoon,
 ]
 
 rootProject.ext.demoAndroidTestApt = [

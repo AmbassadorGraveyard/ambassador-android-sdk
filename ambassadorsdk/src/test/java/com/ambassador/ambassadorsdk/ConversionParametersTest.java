@@ -20,16 +20,13 @@ public class ConversionParametersTest {
         parameters.campaign = 12;
         Assert.assertFalse(parameters.isValid());
 
-        parameters.email = "test@getambassador.com";
+        parameters.revenue = 50;
         Assert.assertFalse(parameters.isValid());
 
-        parameters.revenue = 50;
+        parameters.email = "email@getamb.com";
         Assert.assertTrue(parameters.isValid());
 
         parameters.campaign = -1;
-        Assert.assertFalse(parameters.isValid());
-
-        parameters.email = "";
         Assert.assertFalse(parameters.isValid());
     }
 
@@ -46,7 +43,7 @@ public class ConversionParametersTest {
         String mbsy_custom2 = "custom2";
         String mbsy_custom3 = "custom3";
         int mbsy_auto_create = 17;
-        int mbsy_revenue = 18;
+        float mbsy_revenue = 18.0f;
         int mbsy_deactivate_new_ambassador = 19;
         String mbsy_transaction_uid = "s1";
         String mbsy_add_to_group_id = "s2";
