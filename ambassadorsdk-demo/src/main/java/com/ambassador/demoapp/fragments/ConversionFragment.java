@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,21 +18,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
-import com.ambassador.ambassadorsdk.internal.utils.Identify;
-import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
+import com.ambassador.ambassadorsdk.internal.utils.Identify;
+import com.ambassador.demoapp.CustomizationPackage;
 import com.ambassador.demoapp.R;
+import com.ambassador.demoapp.activities.MainActivity;
 import com.ambassador.demoapp.api.Requests;
 import com.ambassador.demoapp.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demoapp.data.User;
-import com.ambassador.demoapp.activities.MainActivity;
 import com.ambassador.demoapp.utils.Share;
 
 import butterknife.Bind;
@@ -65,10 +65,10 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     @Bind(R.id.etEventData2) protected EditText etEventData2;
     @Bind(R.id.etEventData3) protected EditText etEventData3;
 
-    @Bind(R.id.swConversionApproved) protected Switch swApproved;
-    @Bind(R.id.swAutoCreate) protected Switch swAutoCreate;
-    @Bind(R.id.swDeactivateNewAmbassador) protected Switch swDeactivateNewAmbassador;
-    @Bind(R.id.swEmailNewAmbassador) protected Switch swEmailNewAmbassador;
+    @Bind(R.id.swConversionApproved) protected SwitchCompat swApproved;
+    @Bind(R.id.swAutoCreate) protected SwitchCompat swAutoCreate;
+    @Bind(R.id.swDeactivateNewAmbassador) protected SwitchCompat swDeactivateNewAmbassador;
+    @Bind(R.id.swEmailNewAmbassador) protected SwitchCompat swEmailNewAmbassador;
 
     @Bind(R.id.btnConversion) protected Button btnConversion;
 

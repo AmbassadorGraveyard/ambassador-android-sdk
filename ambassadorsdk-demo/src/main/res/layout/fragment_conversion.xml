@@ -353,7 +353,7 @@
                     android:gravity="center_vertical"
                     android:text="Is approved" />
 
-                <Switch
+                <android.support.v7.widget.SwitchCompat
                     android:id="@+id/swConversionApproved"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -372,7 +372,7 @@
                     android:gravity="center_vertical"
                     android:text="Auto create" />
 
-                <Switch
+                <android.support.v7.widget.SwitchCompat
                     android:id="@+id/swAutoCreate"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -391,7 +391,7 @@
                     android:gravity="center_vertical"
                     android:text="Deactivate new ambassador" />
 
-                <Switch
+                <android.support.v7.widget.SwitchCompat
                     android:id="@+id/swDeactivateNewAmbassador"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -410,7 +410,7 @@
                     android:gravity="center_vertical"
                     android:text="Email new ambassador" />
 
-                <Switch
+                <android.support.v7.widget.SwitchCompat
                     android:id="@+id/swEmailNewAmbassador"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
