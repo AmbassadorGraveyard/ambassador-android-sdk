@@ -340,7 +340,7 @@ public class ColorChooserDialog extends Dialog implements DialogInterface.OnKeyL
                 int green = Integer.parseInt(etGreenValue.getText().toString());
                 int blue = Integer.parseInt(etBlueValue.getText().toString());
 
-                if (red >= 0 && red <= 255 && green >= 0 && green < 255 && blue >= 0 && blue < 255) {
+                if (red >= 0 && red <= 255 && green >= 0 && green <= 255 && blue >= 0 && blue <= 255) {
                     float[] hsv = new float[3];
                     Color.RGBToHSV(red, green, blue, hsv);
                     color = Color.HSVToColor(hsv);
