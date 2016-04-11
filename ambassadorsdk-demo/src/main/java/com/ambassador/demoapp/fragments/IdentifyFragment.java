@@ -51,14 +51,24 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
                 if (etEmail.getText().length() != 0) {
                     String email = etEmail.getText().toString();
                     if (!(new Identify(email).isValidEmail())) {
-                        Toast.makeText(getActivity(), "Please enter a valid email!", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid email address!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                etEmail.requestFocus();
+                            }
+                        }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
                         return;
                     }
                     Toast.makeText(getActivity(), "Identifying!", Toast.LENGTH_LONG).show();
                     AmbassadorSDK.identify(email);
                     closeSoftKeyboard();
                 } else {
-                    Toast.makeText(getActivity(), "Please enter an email!", Toast.LENGTH_LONG).show();
+                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter an email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            etEmail.requestFocus();
+                        }
+                    }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
                 }
             }
         });

@@ -108,7 +108,7 @@ public final class MainActivity extends AppCompatActivity {
             }
         }
     }
-    
+
     protected ViewPager.OnPageChangeListener vpPagesChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
