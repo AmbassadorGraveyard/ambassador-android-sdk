@@ -71,7 +71,7 @@ public class SurveyActivity extends Activity implements SurveyView {
         ObjectAnimator loadingAnimator = ObjectAnimator.ofFloat(rlLoading, "alpha", 0, 1);
         loadingAnimator.setDuration(300);
 
-        ObjectAnimator surveyAnimator = ObjectAnimator.ofFloat(llSurvey, "alpha", 1, 0);
+        ObjectAnimator surveyAnimator = ObjectAnimator.ofFloat(llSurvey, "alpha", llSurvey.getAlpha() < 0.1 ? 0 : 1, 0);
         surveyAnimator.setDuration(300);
 
         loadingAnimator.start();
@@ -83,7 +83,7 @@ public class SurveyActivity extends Activity implements SurveyView {
         ObjectAnimator surveyAnimator = ObjectAnimator.ofFloat(llSurvey, "alpha", 0, 1);
         surveyAnimator.setDuration(300);
 
-        ObjectAnimator loadingAnimator = ObjectAnimator.ofFloat(rlLoading, "alpha", 1, 0);
+        ObjectAnimator loadingAnimator = ObjectAnimator.ofFloat(rlLoading, "alpha", rlLoading.getAlpha() < 0.1 ? 0 : 1, 0);
         loadingAnimator.setDuration(300);
 
         surveyAnimator.start();
