@@ -1,72 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:contentDescription="referFragment"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/ivLogo"
-        android:layout_width="68dp"
-        android:layout_height="68dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="24dp"
-        android:src="@drawable/raf_img" />
-
-    <TextView
-        android:id="@+id/tvTitle1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:text="Refer a Friend"
-        android:textColor="#787878"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/tvTitle2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Integrations"
-        android:textColor="#6b6b6b"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvCampaignId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        android:fontFamily="sans-serif-thin"
-        android:text="Campaign ID:"
-        android:textColor="@android:color/black"
-        android:textSize="14sp" />
-
-    <EditText
-        android:id="@+id/etCampaignId"
-        android:layout_width="72dp"
-        android:layout_height="24dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/et_only"
-        android:contentDescription="campaignIdField"
-        android:ems="10"
-        android:gravity="center"
-        android:inputType="number"
-        android:lines="1"
-        android:scrollHorizontally="true"
-        android:singleLine="true"
-        android:textSize="12sp" />
-
-    <ListView
-        android:id="@+id/lvRafs"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="34dp"
-        android:divider="@android:color/white"
-        android:dividerHeight="5dp" />
+        android:background="@android:color/white">
 
-</LinearLayout>
+        <LinearLayout
+            android:id="@+id/fragmentRefer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:contentDescription="referFragment"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ivFlags"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/auth_button"
+                android:padding="8dp"
+                android:src="@drawable/raf_icon" />
+
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="14dp"
+                android:fontFamily="sans-serif"
+                android:text="@string/raf_title_text"
+                android:textColor="#253244"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.3"
+                android:text="@string/raf_message_text"
+                android:textAlignment="center"
+                android:textColor="#9097a1"
+                android:textSize="13sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="20dp"
+                android:background="#eeeeee" />
+
+            <TextView
+                android:id="@+id/tvNoRafs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="26dp"
+                android:width="250dp"
+                android:gravity="center"
+                android:text="You don\'t have any refer a friend views. Create your first one!"
+                android:textAlignment="center"
+                android:textColor="@android:color/black" />
+
+            <com.ambassador.ambassadorsdk.internal.views.CircleImageView
+                android:id="@+id/ivAddRaf"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="18dp"
+                android:elevation="5dp" />
+
+            <ListView
+                android:id="@+id/lvRafs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:divider="@android:color/white"
+                android:dividerHeight="5dp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/fabAdd"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/ic_add_white"
+        android:visibility="gone"
+        app:backgroundTint="@color/ambassador_blue" />
+
+</RelativeLayout>

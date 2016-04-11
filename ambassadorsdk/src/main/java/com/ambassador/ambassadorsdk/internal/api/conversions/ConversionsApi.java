@@ -137,7 +137,7 @@ public final class ConversionsApi {
             private String mbsy_custom2;
             private String mbsy_custom3;
             private int mbsy_auto_create;
-            private int mbsy_revenue;
+            private float mbsy_revenue;
             private int mbsy_deactivate_new_ambassador;
             private String mbsy_transaction_uid;
             private String mbsy_add_to_group_id;

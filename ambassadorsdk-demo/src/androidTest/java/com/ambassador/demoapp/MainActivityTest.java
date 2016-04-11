@@ -1,30 +1,42 @@
 package com.ambassador.demoapp;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.TabLayout;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
-import android.support.test.filters.SdkSuppress;
+import android.support.test.espresso.action.ViewActions;
+import android.support.test.espresso.core.deps.guava.collect.Iterables;
+import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject;
-import android.support.test.uiautomator.UiSelector;
-import android.support.test.uiautomator.Until;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
+import android.support.test.runner.lifecycle.Stage;
+import android.view.View;
+import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
+import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.ambassador.demoapp.activities.LoginActivity;
+import com.ambassador.demoapp.activities.MainActivity;
+import com.ambassador.demoapp.api.Requests;
+import com.ambassador.demoapp.api.pojo.GetShortCodeFromEmailResponse;
+import com.ambassador.demoapp.api.pojo.LoginResponse;
 
-import org.hamcrest.Matchers;
-import org.junit.Assert;
+import junit.framework.Assert;
+
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -33,434 +45,440 @@ import org.mockito.stubbing.Answer;
 
 import javax.inject.Inject;
 
+import retrofit.Callback;
+
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 @RunWith(AndroidJUnit4.class)
-@SdkSuppress(minSdkVersion = 18)
 public class MainActivityTest {
 
-    private static final int LAUNCH_TIMEOUT = 5000;
-    private static final String PACKAGE_NAME = "com.ambassador.demoapp";
+    @Rule public ActivityTestRule<MainActivity> activityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
-    private UiDevice device;
-    private int width;
-    private int height;
-
-    private UiObject signupTab;
-    private UiObject storeTab;
-    private UiObject referTab;
-    private UiObject shortCodeEditText;
-
+    @Inject protected ConversionUtility conversionUtility;
+    @Inject protected RequestManager requestManager;
     @Inject protected PusherManager pusherManager;
     @Inject protected User user;
-    @Inject protected Campaign campaign;
-    @Inject protected RequestManager requestManager;
+
+    protected Context context;
+
+    protected Requests requests;
 
     @Before
-    public void startMainActivityFromHomeScreen() throws Exception {
-        this.device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        this.width = device.getDisplayWidth();
-        this.height = device.getDisplayWidth();
+    public void beforeEachTest() {
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+        context = instrumentation.getTargetContext().getApplicationContext();
 
-        device.pressHome();
+        LoginResponse loginResponse = new LoginResponse();
+        loginResponse.company = new LoginResponse.Company();
+        loginResponse.company.first_name = "kitty";
+        loginResponse.company.last_name = "cat";
+        loginResponse.company.universal_id = "universal_id";
+        loginResponse.company.sdk_token = "sdk_token";
+        loginResponse.company.avatar_url = "http://catfacts.jazzychad.net/img/cat.jpg";
+        com.ambassador.demoapp.data.User.get().load(loginResponse);
 
-        String launcherPackage = device.getLauncherPackageName();
-        Assert.assertThat(launcherPackage, Matchers.notNullValue());
-        device.wait(Until.hasObject(By.pkg(launcherPackage).depth(0)), LAUNCH_TIMEOUT);
-
-        Context context = InstrumentationRegistry.getContext();
+        requests = Mockito.mock(Requests.class);
+        Requests.instance = requests;
 
         AmbSingleton.init(context, new TestModule());
+        AmbassadorSDK.runWithKeys(context, "ut", "uid");
         AmbSingleton.inject(this);
 
-        mockAmbassadorSDK();
-
-        Intent intent  = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-
-        device.wait(Until.hasObject(By.pkg(PACKAGE_NAME).depth(0)), LAUNCH_TIMEOUT);
-
-        this.signupTab = getUi("signupTab");
-        this.storeTab = getUi("storeTab");
-        this.referTab = getUi("referTab");
-
-        shortCodeEditText = device.findObject(new UiSelector().resourceId("com.ambassador.demoapp:id/etShortURL"));
-
-        Demo.get().identify(null);
-        Demo.get().setCampaignId(null);
-
-        Demo.get().runWithKeys();
+        Intent intent = new Intent();
+        activityTestRule.launchActivity(intent);
     }
 
     @Test
-    public void loginFilledInputsDoesIdentifyTest() throws Exception {
-        // ARRANGE
-        UiObject usernameField = getUi("loginUsernameField");
-        UiObject passwordField = getUi("loginPasswordField");
-        UiObject loginButton = getUi("loginButton");
+    public void testsSwipingTabs() throws Exception {
+        // Verify starts on 1st tab.
+        onView(withId(R.id.tlTabs)).check(matches(withTabActivated(0)));
 
-        // ACT
-        usernameField.click();
-        usernameField.setText("jake@getambassador.com");
+        // Swipe left and verify 2nd tab.
+        onView(withId(R.id.vpPages)).perform(ViewActions.swipeLeft());
+        onView(withId(R.id.tlTabs)).check(matches(withTabActivated(1)));
 
-        passwordField.click();
-        passwordField.setText("password");
+        // Swipe left and verify 3rd tab.
+        onView(withId(R.id.vpPages)).perform(ViewActions.swipeLeft());
+        onView(withId(R.id.tlTabs)).check(matches(withTabActivated(2)));
 
-        loginButton.click();
+        // Swipe left and verify 4th tab.
+        onView(withId(R.id.vpPages)).perform(ViewActions.swipeLeft());
+        onView(withId(R.id.tlTabs)).check(matches(withTabActivated(3)));
 
-        // ASSERT
-        Assert.assertEquals("jake@getambassador.com", Demo.get().getEmail());
+        // Swipe left again and verify still 4th tab.
+        onView(withId(R.id.vpPages)).perform(ViewActions.swipeLeft());
+        onView(withId(R.id.tlTabs)).check(matches(withTabActivated(3)));
+
+        // Swipe right and verify 3rd tab.
+        onView(withId(R.id.vpPages)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.tlTabs)).check(matches(withTabActivated(2)));
+
+        // Swipe right and verify 2nd tab.
+        onView(withId(R.id.vpPages)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.tlTabs)).check(matches(withTabActivated(1)));
+
+        // Swipe right and verify 1st tab.
+        onView(withId(R.id.vpPages)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.tlTabs)).check(matches(withTabActivated(0)));
+
+        // Swipe right again and verify still 1st tab.
+        onView(withId(R.id.vpPages)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.tlTabs)).check(matches(withTabActivated(0)));
     }
 
     @Test
-    public void loginEmptyInputsFailsTest() throws Exception {
-        // ARRANGE
-        UiObject loginButton = getUi("loginButton");
-
-        // ACT
-        loginButton.click();
-
-        // ASSERT
-        Assert.assertNull(Demo.get().getEmail());
-        Mockito.verify(requestManager, Mockito.times(0)).identifyRequest();
-    }
-
-    @Test
-    public void signupFilledInputsDoesConversionTest() throws Exception {
-        // ARRANGE
-        UiObject emailField = getUi("signupEmailField");
-        UiObject usernameField = getUi("signupUsernameField");
-        UiObject passwordField = getUi("signupPasswordField");
-        UiObject signupButton = getUi("signupButton");
-
-        // ACT
-        signupTab.click();
-
-        emailField.click();
-        emailField.setText("jake@getambassador.com");
-
-        usernameField.click();
-        usernameField.setText("jake");
-
-        passwordField.click();
-        passwordField.setText("password");
-
-        signupButton.click();
-
-        // ASSERT
-        Assert.assertEquals(1, Demo.get().getConversions().size());
-    }
-
-    @Test
-    public void signupEmptyInputsFailsTest() throws Exception {
-        // ARRANGE
-        UiObject signupButton = getUi("signupButton");
-
-        // ACT
-        signupTab.click();
-        signupButton.click();
-
-        // ASSERT
-        Assert.assertEquals(0, Demo.get().getConversions().size());
-        Mockito.verify(requestManager, Mockito.times(0)).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
-    }
-
-    @Test
-    public void buyNowAuthenticatedDoesConversionTest() throws Exception {
-        // ARRANGE
-        UiObject storeFragment = getUi("storeFragment");
-        UiObject buyButton = getUi("buyButton");
-        UiObject alertTextView = device.findObject(new UiSelector().text("Purchase successful"));
-        UiObject alertDoneButton = device.findObject(new UiSelector().text("Done"));
-
-        // ACT
-        Demo.get().identify("jake@getambassador.com");
-        storeTab.click();
-        buyButton.click();
-
-        // ASSERT
-        Assert.assertTrue(alertTextView.exists());
-
-        // ACT
-        alertDoneButton.click();
-
-        // ASSERT
-        Assert.assertTrue(storeFragment.exists());
-        Assert.assertEquals(1, Demo.get().getConversions().size());
-    }
-
-    @Test
-    public void buyNowUnauthenticatedFailsCancelledTest() throws Exception {
-        // ARRANGE
-        UiObject storeFragment = getUi("storeFragment");
-        UiObject buyButton = getUi("buyButton");
-        UiObject alertTextView = device.findObject(new UiSelector().text("Authentication needed"));
-        UiObject alertCancelButton = device.findObject(new UiSelector().text("Cancel").resourceId("android:id/button2"));
-
-        // ACT
-        Demo.get().setEmail(null);
-        storeTab.click();
-        buyButton.click();
-
-        // ASSERT
-        Assert.assertTrue(alertTextView.exists());
-
-        // ACT
-        alertCancelButton.click();
-
-        // ASSERT
-        Assert.assertFalse(alertTextView.exists());
-        Assert.assertTrue(storeFragment.exists());
-        Assert.assertEquals(0, Demo.get().getConversions().size());
-        Mockito.verify(requestManager, Mockito.times(0)).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
-
-    }
-
-    @Test
-    public void buyNowUnauthenticatedFailsLoginTest() throws Exception {
-        // ARRANGE
-        UiObject storeFragment = getUi("storeFragment");
-        UiObject loginFragment = getUi("loginFragment");
-        UiObject buyButton = getUi("buyButton");
-        UiObject alertTextView = device.findObject(new UiSelector().text("Authentication needed"));
-        UiObject alertLoginButton = device.findObject(new UiSelector().text("Login").resourceId("android:id/button1"));
-
-        // ACT
-        Demo.get().setEmail(null);
-        storeTab.click();
-        buyButton.click();
-
-        // ASSERT
-        Assert.assertTrue(alertTextView.exists());
-
-        // ACT
-        alertLoginButton.click();
-
-        // ASSERT
-        Assert.assertFalse(alertTextView.exists());
-        Assert.assertFalse(storeFragment.exists());
-        Assert.assertTrue(loginFragment.exists());
-        Assert.assertEquals(0, Demo.get().getConversions().size());
-        Mockito.verify(requestManager, Mockito.times(0)).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
-    }
-
-    @Test
-    public void rafIdentifiedSucceedsTest() throws Exception {
-        // ARRANGE
-        UiObject shoeRaf = getUi("shoeRaf");
-        UiObject progressDialog = device.findObject(new UiSelector().resourceId("android:id/parentPanel").className("android.widget.LinearLayout"));
-
-        // ACT
-        Demo.get().identify("jake@getambassador.com");
-        referTab.click();
-        shoeRaf.clickAndWaitForNewWindow();
-        shortCodeEditText.waitForExists(5000);
-
-        // ASSERT
-        Assert.assertTrue(shortCodeEditText.exists());
-        Assert.assertTrue(!progressDialog.exists());
-    }
-
-    // TODO: fix
-    @Test
-    public void rafUnidentifiedFailsTest() throws Exception {
-        // ARRANGE
-        UiObject shoeRaf = getUi("shoeRaf");
-        UiObject referFragment = getUi("referFragment");
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                for (PusherManager.PusherListener callback : pusherManager.getPusherListeners()) {
-                    if (callback != null) callback.connectionFailed();
-                }
-                return null;
-            }
-        }).when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
-
-        // ACT
-        referTab.click();
-        shoeRaf.clickAndWaitForNewWindow();
-        Thread.sleep(1000); // Give it time to close with error
-
-        // ASSERT
-        Assert.assertTrue(referFragment.exists());
-        Assert.assertFalse(shortCodeEditText.exists());
-    }
-
-    @Test
-    public void rafNoMatchingCampaignIdsFailsTest() throws Exception {
-        // ARRANGE
-        UiObject shoeRaf = getUi("shoeRaf");
-        UiObject referFragment = getUi("referFragment");
-        JsonObject pusherResponse = new JsonParser().parse("{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[]}").getAsJsonObject();
-        Mockito.when(user.getPusherInfo()).thenReturn(pusherResponse);
-
-        // ACT
-        Demo.get().identify("jake@getambassador.com");
-        referTab.click();
-        shoeRaf.clickAndWaitForNewWindow();
-
-        // ASSERT
-        Assert.assertTrue(referFragment.exists());
-        Assert.assertFalse(shortCodeEditText.exists());
-    }
-
-    @Test
-    public void rafCampaignIdChangeTest() throws Exception {
-        // ARRANGE
-        UiObject campaignIdField = getUi("campaignIdField");
-        UiObject shoeRaf = getUi("shoeRaf");
-
-        // ACT
-        Demo.get().identify("jake@getambassador.com");
-        referTab.click();
-
-        campaignIdField.click();
-        campaignIdField.setText("260");
-        closeSoftKeyboard();
-        shoeRaf.clickAndWaitForNewWindow();
-        String url1 = shortCodeEditText.getText();
-        device.pressBack();
-
-        campaignIdField.click();
-        campaignIdField.setText("999");
-        closeSoftKeyboard();
-        shoeRaf.clickAndWaitForNewWindow();
-        String url2 = shortCodeEditText.getText();
-        device.pressBack();
-
-        // ASSERT
-        Assert.assertNotEquals(url1, url2);
-        Assert.assertTrue(url1.endsWith("jzqC"));
-        Assert.assertTrue(url2.endsWith("ljTq"));
-    }
-
-    @Test
-    public void rafsAreStyledDifferentlyTest() throws Exception {
-        // ARRANGE
-        UiObject shoeRaf = getUi("shoeRaf");
-        UiObject shirtRaf = getUi("shirtRaf");
-        UiObject ambassadorRaf = getUi("ambassadorRaf");
-        UiObject titleText = device.findObject(new UiSelector().resourceId("com.ambassador.demoapp:id/tvWelcomeTitle"));
-
-        // ACT
-        Demo.get().identify("jake@getambassador.com");
-        referTab.click();
-
-        shoeRaf.clickAndWaitForNewWindow();
-        String title1 = titleText.getText();
-        device.pressBack();
-
-        shirtRaf.clickAndWaitForNewWindow();
-        String title2 = titleText.getText();
-        device.pressBack();
-
-        ambassadorRaf.clickAndWaitForNewWindow();
-        String title3 = titleText.getText();
-        device.pressBack();
-
-        // ASSERT
-        Assert.assertNotEquals(title1, title2);
-        Assert.assertNotEquals(title2, title3);
-        Assert.assertNotEquals(title3, title1);
-    }
-
-    @Test
-    public void pagesDoSwipeTest() throws Exception {
-        // ARRANGE
-        UiObject loginFragment = getUi("loginFragment");
-        UiObject singupFragment = getUi("signupFragment");
-        UiObject storeFragment = getUi("storeFragment");
-        UiObject referFragment = getUi("referFragment");
-
-        // ACT & ASSERT
-        Assert.assertTrue(loginFragment.exists());
-        swipeToRightPage();
-
-        Assert.assertTrue(singupFragment.exists());
-        swipeToRightPage();
-
-        Assert.assertTrue(storeFragment.exists());
-        swipeToRightPage();
-
-        Assert.assertTrue(referFragment.exists());
-        swipeToLeftPage();
-
-        Assert.assertTrue(storeFragment.exists());
-        swipeToLeftPage();
-
-        Assert.assertTrue(singupFragment.exists());
-        swipeToLeftPage();
-
-        Assert.assertTrue(loginFragment.exists());
-    }
-
-    @Test
-    public void keyboardClosesAndFocusResetsOnPageChangeTest() throws Exception {
-        // ARRANGE
-        UiObject loginUsernameField = getUi("loginUsernameField");
-        UiObject loginPasswordField = getUi("loginPasswordField");
-        UiObject signupEmailField = getUi("signupEmailField");
-        UiObject signupPasswordField = getUi("signupPasswordField");
-
-        // ACT & ASSERT
-        Assert.assertTrue(loginUsernameField.isFocused());
-        loginPasswordField.click();
-        loginPasswordField.setText("password");
-        swipeToRightPage();
-
-        Assert.assertTrue(signupEmailField.isFocused());
-        signupPasswordField.click();
-        signupPasswordField.setText("password");
-        swipeToLeftPage();
-
-        Assert.assertTrue(loginUsernameField.isFocused());
-    }
-
-    private UiObject getUi(String contentDescription) {
-        return device.findObject(new UiSelector().description(contentDescription));
-    }
-
-    private void swipeToRightPage() {
-        device.swipe(width - 100, height / 2, 100, height / 2, 10);
-    }
-
-    private void swipeToLeftPage() {
-        device.swipe(100, height / 2, width - 100, height / 2, 10);
-    }
-
-    private void closeSoftKeyboard() {
+    public void testsIdentifyWithValidInput() throws Exception {
+        // Select Identify tab.
+        onView(withTabName("Identify")).perform(ViewActions.click());
+
+        // Focus identify input and type a valid email address.
+        onView(withId(R.id.etIdentify)).perform(ViewActions.click());
+        onView(withId(R.id.etIdentify)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
+
+        // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
-        try {
-            Thread.sleep(500);
-        } catch (Exception e) {
-            //
-        }
+
+        // Click the identify button.
+        onView(withId(R.id.btnIdentify)).perform(ViewActions.click());
+
+        // Verify identify happens.
+        Mockito.verify(user).setEmail(Mockito.eq("jake@getambassador.com"));
     }
 
-    private void mockAmbassadorSDK() throws Exception {
-        JsonObject pusherResponse = new JsonParser().parse("{\"email\":\"jake@getambassador.com\",\"firstName\":\"\",\"lastName\":\"ere\",\"phoneNumber\":\"null\",\"urls\":[{\"url\":\"http://staging.mbsy.co\\/jzqC\",\"short_code\":\"jzqC\",\"campaign_uid\":260,\"subject\":\"Check out BarderrTahwn ®!\"}, {\"url\":\"http://staging.mbsy.co\\/ljTq\",\"short_code\":\"ljTq\",\"campaign_uid\":999,\"subject\":\"Check out BarderrTahwn ®!\"}]}").getAsJsonObject();
-        Mockito.when(user.getPusherInfo()).thenReturn(pusherResponse);
+    @Test
+    public void testsIdentifyWithInvalidInput() throws Exception {
+        // Select Identify tab.
+        onView(withTabName("Identify")).perform(ViewActions.click());
 
-        Mockito.doAnswer(new Answer<Void>() {
-            public Void answer(InvocationOnMock invocation) {
-                sendPusherIntent();
-                return null;
-            }
-        }).when(requestManager).identifyRequest();
+        // Focus identify input and type a valid email address.
+        onView(withId(R.id.etIdentify)).perform(ViewActions.click());
+        onView(withId(R.id.etIdentify)).perform(ViewActions.typeTextIntoFocusedView("jake$$"));
 
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Click the submit button.
+        onView(withId(R.id.btnIdentify)).perform(ViewActions.click());
+
+        // Verify identify does not happen.
+        Mockito.verify(user, Mockito.never()).setEmail(Mockito.anyString());
+        Mockito.verify(pusherManager, Mockito.never()).startNewChannel();
+    }
+
+    @Test
+    public void testsIdentifyWithNoInput() throws Exception {
+        // Select Identify tab.
+        onView(withTabName("Identify")).perform(ViewActions.click());
+
+        // Click the submit button.
+        onView(withId(R.id.btnIdentify)).perform(ViewActions.click());
+
+        // Verify identify does not happen.
+        Mockito.verify(user, Mockito.never()).setEmail(Mockito.anyString());
+        Mockito.verify(pusherManager, Mockito.never()).startNewChannel();
+    }
+
+    @Test
+    public void testsConversionWithValidInputAndNotApproved() throws Exception {
+        // Mock get short code.
+        mockShortCodeResponse();
+
+        // Select Conversion tab.
+        onView(withTabName("Conversion")).perform(ViewActions.click());
+
+        // Focus referrer email input and type a valid email address.
+        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake1@getambassador.com"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Focus email input and type a valid email address.
+        onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake2@getambassador.com"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Focus revenue input and type a valid currency amount.
+        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Focus campaign ID input and type a valid campaign ID.
+        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Click the submit button.
+        onView(withId(R.id.btnConversion)).perform(ViewActions.scrollTo(), ViewActions.click());
+
+        // Verify conversion details and confirm fires.
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                sendPusherIntent();
+                ConversionParameters conversionParameters = (ConversionParameters) invocation.getArguments()[0];
+                Assert.assertEquals("jake2@getambassador.com", conversionParameters.getEmail());
+                Assert.assertEquals(25.55, conversionParameters.getRevenue());
+                Assert.assertEquals(260, conversionParameters.getCampaign());
+                Assert.assertEquals(0, conversionParameters.getIsApproved());
                 return null;
             }
-        }).when(requestManager).createPusherChannel(Mockito.any(RequestManager.RequestCompletion.class));
+        }).when(conversionUtility).setParameters(Mockito.any(ConversionParameters.class));
+        Mockito.verify(conversionUtility).registerConversion();
     }
 
-    private void sendPusherIntent() {
-        Intent intent = new Intent("pusherData");
-        LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
+    @Test
+    public void testsConversionWithValidInputAndApproved() throws Exception {
+        // Mock get short code.
+        mockShortCodeResponse();
+
+        // Select Conversion tab.
+        onView(withTabName("Conversion")).perform(ViewActions.click());
+
+        // Focus referrer email input and type a valid email address.
+        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake1@getambassador.com"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Focus email input and type a valid email address.
+        onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake2@getambassador.com"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Focus revenue input and type a valid currency amount.
+        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Focus campaign ID input and type a valid campaign ID.
+        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Activate is approved switch.
+        onView(withId(R.id.swConversionApproved)).perform(ViewActions.scrollTo(), ViewActions.click());
+
+        // Click the submit button.
+        onView(withId(R.id.btnConversion)).perform(ViewActions.scrollTo(), ViewActions.click());
+
+        // Verify conversion details and confirm fires.
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ConversionParameters conversionParameters = (ConversionParameters) invocation.getArguments()[0];
+                Assert.assertEquals("jake@getambassador.com", conversionParameters.getEmail());
+                Assert.assertEquals(25.55, conversionParameters.getRevenue());
+                Assert.assertEquals(260, conversionParameters.getCampaign());
+                Assert.assertEquals(1, conversionParameters.getIsApproved());
+                return null;
+            }
+        }).when(conversionUtility).setParameters(Mockito.any(ConversionParameters.class));
+        Mockito.verify(conversionUtility).registerConversion();
+    }
+
+    @Test
+    public void testsConversionWithNoEmail() throws Exception {
+        // Select Conversion tab.
+        onView(withTabName("Conversion")).perform(ViewActions.click());
+
+        // Focus revenue input and type a valid currency amount.
+        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Focus campaign ID input and type a valid campaign ID.
+        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Click the submit button.
+        onView(withId(R.id.btnConversion)).perform(ViewActions.scrollTo(), ViewActions.click());
+    }
+
+    @Test
+    public void testsConversionWithNoRevenue() throws Exception {
+        // Select Conversion tab.
+        onView(withTabName("Conversion")).perform(ViewActions.click());
+
+        // Focus email input and type a valid email address.
+        onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Focus campaign ID input and type a valid campaign ID.
+        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Click the submit button.
+        onView(withId(R.id.btnConversion)).perform(ViewActions.scrollTo(), ViewActions.click());
+
+        // Verify no conversion fires.
+        Mockito.verify(conversionUtility, Mockito.never()).registerConversion();
+    }
+
+    @Test
+    public void testsConversionWithNoCampaignID() throws Exception {
+        // Select Conversion tab.
+        onView(withTabName("Conversion")).perform(ViewActions.click());
+
+        // Focus email input and type a valid email address.
+        onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Focus revenue input and type a valid currency amount.
+        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
+
+        // Close the keyboard to ensure other views all visible.
+        Espresso.closeSoftKeyboard();
+
+        // Click the submit button.
+        onView(withId(R.id.btnConversion)).perform(ViewActions.scrollTo(), ViewActions.click());
+
+        // Verify no conversion fires.
+        Mockito.verify(conversionUtility, Mockito.never()).registerConversion();
+    }
+
+    @Test
+    public void testsSettingsCopyUniversalId() throws Exception {
+        // Select Settings tab.
+        onView(withTabName("Settings")).perform(ViewActions.click());
+
+        // Click copy button for universal ID.
+        onView(withId(R.id.ivCopyUniversalId)).perform(ViewActions.click());
+
+        // Verify clip data.
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                String clipboardData = clipboardManager.getPrimaryClip().getItemAt(0).getText().toString();
+                Assert.assertEquals("universal_id", clipboardData);
+            }
+        });
+    }
+
+    @Test
+    public void testsSettingsCopySdkToken() throws Exception {
+        // Select Settings tab.
+        onView(withTabName("Settings")).perform(ViewActions.click());
+
+        // Click copy button for sdk token.
+        onView(withId(R.id.ivCopySdkToken)).perform(ViewActions.click());
+
+        // Verify clip data.
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                String clipboardData = clipboardManager.getPrimaryClip().getItemAt(0).getText().toString();
+                Assert.assertEquals("sdk_token", clipboardData);
+            }
+        });
+    }
+
+    @Test
+    public void testsSettingsLogout() throws Exception {
+        // Select Settings tab.
+        onView(withTabName("Settings")).perform(ViewActions.click());
+
+        // Click the logout button.
+        onView(withId(R.id.rlLogout)).perform(ViewActions.click());
+
+        // Sleep 500ms to compensate for LaunchActivity, and verify LoginActivity.
+        Thread.sleep(500);
+        final Activity[] activity = new Activity[1];
+        InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
+            @Override
+            public void run() {
+                activity[0] = Iterables.getOnlyElement(ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED));
+            }
+        });
+        Assert.assertTrue(activity[0] instanceof LoginActivity);
+    }
+
+    private static Matcher<View> withTabActivated(final int index) {
+        return new TypeSafeMatcher<View>() {
+
+            @Override
+            public boolean matchesSafely(View view) {
+                if (!(view instanceof TabLayout)) {
+                    return false;
+                }
+
+                TabLayout tabLayout = (TabLayout) view;
+                return tabLayout.getSelectedTabPosition() == index;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                // Not needed.
+            }
+
+        };
+    }
+
+    private static Matcher<View> withTabName(final String name) {
+        return new TypeSafeMatcher<View>() {
+
+            @Override
+            protected boolean matchesSafely(View view) {
+                if (view.getId() == R.id.tvTabTitle && view instanceof TextView) {
+                    TextView textView = (TextView) view;
+                    return textView.getText().toString().equals(name);
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                // Not needed.
+            }
+
+        };
+    }
+
+    protected void mockShortCodeResponse() {
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<GetShortCodeFromEmailResponse> callback = (Callback) invocation.getArguments()[3];
+                GetShortCodeFromEmailResponse response = new GetShortCodeFromEmailResponse();
+                response.count = 1;
+                response.results = new GetShortCodeFromEmailResponse.Result[1];
+                response.results[0] = new GetShortCodeFromEmailResponse.Result();
+                response.results[0].short_code = "abcd";
+                callback.success(response, null);
+                return null;
+            }
+        }).when(requests).getShortCodeFromEmail(Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(), Mockito.any(Callback.class));
     }
 
 }

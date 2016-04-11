@@ -4,4 +4,16 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="raf_title_text">Refer a Friend</string>
+    <string name="raf_message_text">Use this tool to encourage your ambassadors to refer. Create and preview your own custom refer a friend views below. When you\'re done, click share to send your configuration to your app developer.</string>
+
+    <string name="identify_title_text">Identify</string>
+    <string name="identify_message_text">Use this method to identify your users. Enter an email below to see how this works.</string>
+
+    <string name="conversion_title_text">Conversion</string>
+    <string name="conversion_message_text">Use this method to track conversion events and create commissions. Test out different options using the form below to see how this works.</string>
+    <string name="conversion_message_text_2">NOTE: You\'ll need to identify before a commission can be created.</string>
+
+    <string name="no_account">Don\'t have an account?</string>
 </resources>

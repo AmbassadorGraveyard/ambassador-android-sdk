@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,19 +30,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
-import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
@@ -51,13 +51,6 @@ import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.LockableScrollView;
 import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.internal.views.StaticGridView;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.share.Sharer;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.widget.ShareDialog;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -72,13 +65,6 @@ import javax.inject.Inject;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
-import twitter4j.AsyncTwitter;
-import twitter4j.AsyncTwitterFactory;
-import twitter4j.TwitterAdapter;
-import twitter4j.TwitterException;
-import twitter4j.TwitterMethod;
-import twitter4j.auth.AccessToken;
-import twitter4j.auth.RequestToken;
 
 /**
  * Activity that handles sharing options and copying the share URL.
@@ -137,23 +123,46 @@ public final class AmbassadorActivity extends AppCompatActivity {
         AmbSingleton.inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
-
+        
         // Requirement checks
         finishIfSingletonInvalid();
         if (isFinishing()) return;
 
-        // Other setup
         setUpData();
         setUpShareManagers();
-        setUpAuth();
         setUpLockingScrollView();
         setUpOptions();
         setUpToolbar();
         setUpSocialGridView();
         setUpCustomImages();
-        setUpLoader();
-        setUpPusher();
         setUpCopy();
+
+        if (user.getEmail() != null) {
+            setUpLoader();
+            setUpPusher();
+        } else {
+            final AskEmailDialog askEmailDialog = new AskEmailDialog(this);
+            askEmailDialog.setOnEmailReceivedListener(new AskEmailDialog.OnEmailReceivedListener() {
+                @Override
+                public void onEmailReceived(String email) {
+                    if (AmbassadorSDK.identify(email)) {
+                        askEmailDialog.dismiss();
+                        setUpLoader();
+                        setUpPusher();
+                    } else {
+                        Toast.makeText(AmbassadorActivity.this, new StringResource(R.string.invalid_email).getValue(), Toast.LENGTH_SHORT).show();
+                        askEmailDialog.shake();
+                    }
+                }
+
+                @Override
+                public void onCanceled() {
+                    askEmailDialog.dismiss();
+                    finish();
+                }
+            });
+            askEmailDialog.show();
+        }
     }
 
     @Override
@@ -193,6 +202,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
     // region Setup
     protected void setUpData() {
         user.refresh();
+        user.setFacebookAccessToken(null);
+        user.setTwitterAccessToken(null);
         campaign.refresh();
     }
 
@@ -202,11 +213,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         linkedInManager = new LinkedInManager();
         emailManager = new EmailManager();
         smsManager = new SmsManager();
-    }
-
-    protected void setUpAuth() {
-        auth.nullifyTwitterIfInvalid(null);
-        auth.nullifyLinkedInIfInvalid(null);
     }
 
     protected void setUpLockingScrollView() {
@@ -294,7 +300,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
             try {
                 drawable = Drawable.createFromStream(getAssets().open(drawablePath), null);
             } catch (Exception e) {
-                drawable = getResources().getDrawable(drawableId);
+                try {
+                    drawable = Drawable.createFromStream(openFileInput(drawablePath), null);
+                } catch (Exception e2) {
+                    drawable = getResources().getDrawable(drawableId);
+                }
             }
 
             if (drawable == null) return;
@@ -361,7 +371,18 @@ public final class AmbassadorActivity extends AppCompatActivity {
             @Override
             public void subscribed() {
                 super.subscribed();
-                requestManager.identifyRequest();
+                requestManager.identifyRequest(new RequestManager.RequestCompletion() {
+                    @Override
+                    public void onSuccess(Object successResponse) {
+                        // All is swell, do nothing.
+                    }
+
+                    @Override
+                    public void onFailure(Object failureResponse) {
+                        AmbassadorSDK.identify(null);
+                        showNetworkError();
+                    }
+                });
             }
 
             @Override
@@ -394,6 +415,27 @@ public final class AmbassadorActivity extends AppCompatActivity {
     private void copyShortUrlToClipboard(@NonNull String copyText, @NonNull Context context) {
         device.copyToClipboard(copyText);
         Toast.makeText(context, new StringResource(R.string.copied_to_clipboard).getValue(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void requestReauthFacebook() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage(new StringResource(R.string.facebook_reauthenticate_message).getValue())
+                .setPositiveButton(new StringResource(R.string.ok).getValue(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        facebookManager.onShareRequested();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(new StringResource(R.string.cancel).getValue(), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
+
+        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
     }
 
     private void requestReauthTwitter() {
@@ -594,67 +636,66 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
     protected class FacebookManager implements ShareManager {
 
-        protected CallbackManager callbackManager;
 
         protected FacebookManager() {
-            FacebookSdk.sdkInitialize(AmbSingleton.getContext());
-            callbackManager = CallbackManager.Factory.create();
+
         }
 
         @Override
         public void onShareRequested() {
-            ShareLinkContent content = new ShareLinkContent.Builder()
-                    .setContentTitle(raf.getDefaultShareMessage())
-                    .setContentUrl(Uri.parse(campaign.getUrl()))
-                    .build();
-            callbackManager = CallbackManager.Factory.create();
+            if (user.getFacebookAccessToken() != null) {
+                SocialShareDialog facebookDialog = new SocialShareDialog(AmbassadorActivity.this);
+                facebookDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.FACEBOOK);
+                facebookDialog.setOwnerActivity(AmbassadorActivity.this);
+                facebookDialog.setSocialDialogEventListener(new SocialShareDialog.ShareDialogEventListener() {
+                    @Override
+                    public void postSuccess() {
 
-            ShareDialog shareDialog = new ShareDialog(AmbassadorActivity.this);
-            shareDialog.registerCallback(callbackManager, new FacebookCallback<Sharer.Result>() {
-                @Override
-                public void onSuccess(Sharer.Result result) {
-                    if (result.getPostId() != null) {
-                        Toast.makeText(getApplicationContext(), new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-                        requestManager.bulkShareTrack(BulkShareHelper.SocialServiceTrackType.FACEBOOK);
                     }
-                }
 
-                @Override
-                public void onCancel() {
+                    @Override
+                    public void postFailed() {
 
-                }
+                    }
 
-                @Override
-                public void onError(FacebookException e) {
-                    Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
-                }
-            });
-            shareDialog.show(content);
+                    @Override
+                    public void postCancelled() {
+
+                    }
+
+                    @Override
+                    public void needAuth() {
+                        user.setFacebookAccessToken(null);
+                        requestReauthFacebook();
+                    }
+                });
+                facebookDialog.show();
+            } else {
+                Intent intent = new Intent(AmbassadorActivity.this, SocialOAuthActivity.class);
+                intent.putExtra("socialNetwork", "facebook");
+                startActivityForResult(intent, 5555);
+            }
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+            if (user.getFacebookAccessToken() != null) {
+                onShareRequested();
+            }
         }
 
     }
 
     protected class TwitterManager implements ShareManager {
 
-        protected AsyncTwitter twitter;
 
         protected TwitterManager() {
-            AsyncTwitter asyncTwitter = new AsyncTwitterFactory().getInstance();
-            String twitterConsumerKey = new StringResource(R.string.twitter_consumer_key).getValue();
-            String twitterConsumerSecret = new StringResource(R.string.twitter_consumer_secret).getValue();
-            asyncTwitter.setOAuthConsumer(twitterConsumerKey, twitterConsumerSecret);
 
-            this.twitter = asyncTwitter;
         }
 
         @Override
         public void onShareRequested() {
-            if (auth.getTwitterToken() != null) {
+            if (user.getTwitterAccessToken() != null) {
                 SocialShareDialog tweetDialog = new SocialShareDialog(AmbassadorActivity.this);
                 tweetDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.TWITTER);
                 tweetDialog.setOwnerActivity(AmbassadorActivity.this);
@@ -676,54 +717,22 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void needAuth() {
-                        auth.setTwitterSecret(null);
-                        auth.setTwitterToken(null);
+                        user.setTwitterAccessToken(null);
                         requestReauthTwitter();
                     }
                 });
                 tweetDialog.show();
             } else {
-                Intent twitterLogin = new Intent(AmbassadorActivity.this, TwitterLoginActivity.class);
-                startActivityForResult(twitterLogin, 5555);
+                Intent intent = new Intent(AmbassadorActivity.this, SocialOAuthActivity.class);
+                intent.putExtra("socialNetwork", "twitter");
+                startActivityForResult(intent, 5555);
             }
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            if (data != null) {
-                String verifier = data.getStringExtra("verifier");
-                RequestToken requestToken = (RequestToken) data.getExtras().get("request");
-
-                twitter.addListener(new TwitterAdapter() {
-
-                    @Override
-                    public void gotOAuthAccessToken(AccessToken token) {
-                        super.gotOAuthAccessToken(token);
-                        String accessToken = token.getToken();
-                        String accessSecret = token.getTokenSecret();
-
-                        auth.setTwitterToken(accessToken);
-                        auth.setTwitterSecret(accessSecret);
-
-                        if (accessToken != null && accessSecret != null) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(AmbassadorActivity.this, new StringResource(R.string.login_success).getValue(), Toast.LENGTH_SHORT).show();
-                                    onShareRequested();
-                                }
-                            });
-                        }
-                    }
-
-                    @Override
-                    public void onException(TwitterException te, TwitterMethod method) {
-                        super.onException(te, method);
-                    }
-
-                });
-
-                twitter.getOAuthAccessTokenAsync(requestToken, verifier);
+            if (user.getTwitterAccessToken() != null) {
+                onShareRequested();
             }
         }
 
@@ -732,7 +741,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         @Override
         public void onShareRequested() {
-            if (auth.getLinkedInToken() != null) {
+            if (user.getLinkedInAccessToken() != null) {
                 SocialShareDialog linkedInDialog = new SocialShareDialog(AmbassadorActivity.this);
                 linkedInDialog.setSocialNetwork(SocialShareDialog.SocialNetwork.LINKEDIN);
                 linkedInDialog.setOwnerActivity(AmbassadorActivity.this);
@@ -754,20 +763,21 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                     @Override
                     public void needAuth() {
-                        auth.setLinkedInToken(null);
+                        user.setLinkedInAccessToken(null);
                         requestReauthLinkedIn();
                     }
                 });
                 linkedInDialog.show();
             } else {
-                Intent intent = new Intent(AmbassadorActivity.this, LinkedInLoginActivity.class);
+                Intent intent = new Intent(AmbassadorActivity.this, SocialOAuthActivity.class);
+                intent.putExtra("socialNetwork", "linkedin");
                 startActivityForResult(intent, 123);
             }
         }
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-            if (auth.getLinkedInToken() != null) {
+            if (user.getLinkedInAccessToken() != null) {
                 onShareRequested();
             }
         }

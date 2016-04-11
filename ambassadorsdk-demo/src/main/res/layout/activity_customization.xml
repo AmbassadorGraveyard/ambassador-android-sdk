@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:demo="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/svCustomization"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.ambassador.ambassadorsdk.internal.views.CircleImageView
+            android:id="@+id/ivProductPhoto"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="25dp" />
+
+        <TextView
+            android:id="@+id/tvProductPhotoInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="8dp"
+            android:text="Upload Product Photo"
+            android:textColor="@android:color/black"
+            android:textSize="15sp" />
+
+        <com.ambassador.demoapp.views.ListHeadingView
+            android:id="@+id/lhvGeneral"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            demo:text="General" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Integration Name" />
+
+        <com.ambassador.demoapp.views.InputView
+            android:id="@+id/inputIntegrationName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:hint="Integration Name"
+            android:singleLine="true"
+            android:textColor="#253244" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Campaign" />
+
+        <RelativeLayout
+            android:id="@+id/rvCampaignChooser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/et_only"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp">
+
+            <TextView
+                android:id="@+id/tvSelectedCampaign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select a Campaign"
+                android:textColor="#e6e6e6"
+                android:textSize="14sp"
+                android:layout_marginRight="25dp"/>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_expand_more" />
+
+        </RelativeLayout>
+
+        <com.ambassador.demoapp.views.ListHeadingView
+            android:id="@+id/lhvHeader"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            demo:text="Header" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Header Text" />
+
+        <com.ambassador.demoapp.views.InputView
+            android:id="@+id/inputHeaderText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:hint="Header Text"
+            android:textColor="#253244" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Header Text Color" />
+
+        <com.ambassador.demoapp.views.ColorInputView
+            android:id="@+id/civHeaderText"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="15dp" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Header Color" />
+
+        <com.ambassador.demoapp.views.ColorInputView
+            android:id="@+id/civHeader"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="15dp" />
+
+        <com.ambassador.demoapp.views.ListHeadingView
+            android:id="@+id/lhvTextField1"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            demo:text="Text Field One" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Text Field" />
+
+        <com.ambassador.demoapp.views.InputView
+            android:id="@+id/inputTextField1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:hint="Text Field One"
+            android:textColor="#253244" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Text Color" />
+
+        <com.ambassador.demoapp.views.ColorInputView
+            android:id="@+id/civTextField1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="15dp" />
+
+        <com.ambassador.demoapp.views.ListHeadingView
+            android:id="@+id/lhvTextField2"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            demo:text="Text Field Two" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Text Field" />
+
+        <com.ambassador.demoapp.views.InputView
+            android:id="@+id/inputTextField2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="5dp"
+            android:hint="Text Field Two"
+            android:textColor="#253244" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Text Color" />
+
+        <com.ambassador.demoapp.views.ColorInputView
+            android:id="@+id/civTextField2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="15dp" />
+
+        <com.ambassador.demoapp.views.ListHeadingView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            demo:text="Social Channels" />
+
+        <com.mobeta.android.dslv.DragSortListView xmlns:dslv="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/lvChannels"
+            android:layout_width="match_parent"
+            android:layout_height="375dp"
+            dslv:drag_handle_id="@+id/ivDrag"
+            dslv:float_background_color="@android:color/background_light" />
+
+        <com.ambassador.demoapp.views.ListHeadingView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            demo:text="Buttons" />
+
+        <com.ambassador.demoapp.views.InputNameView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:text="Button Color" />
+
+        <com.ambassador.demoapp.views.ColorInputView
+            android:id="@+id/civButtons"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="25dp"
+            android:layout_marginLeft="15dp" />
+
+    </LinearLayout>
+
+</ScrollView>

@@ -53,7 +53,7 @@ public class ConversionDBHelper extends SQLiteOpenHelper {
         return values;
     }
 
-    static ContentValues buildContentValues() {
+    protected static ContentValues buildContentValues() {
         return new ContentValues();
     }
 
@@ -108,7 +108,7 @@ public class ConversionDBHelper extends SQLiteOpenHelper {
                         )
                 )
                 .setRevenue(
-                        cursor.getInt(
+                        cursor.getFloat(
                                 cursor.getColumnIndex(ConversionSQLStrings.ConversionSQLEntry.MBSY_REVENUE)
                         )
                 )

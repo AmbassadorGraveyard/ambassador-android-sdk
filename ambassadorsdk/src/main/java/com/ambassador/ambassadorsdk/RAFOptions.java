@@ -11,10 +11,12 @@ import com.ambassador.ambassadorsdk.internal.factories.ResourceFactory;
 import com.google.gson.Gson;
 
 /**
- *
+ * Stores design options set by the 3rd party developer. Used throughout codebase. Can be instantiated
+ * directly using RAFOptions.Builder or indirectly with an XML file (see RAFOptionsFactory).
  */
-public final class RAFOptions {
+public class RAFOptions {
 
+    /** The RAFOptions instantiation inflated with options from 3rd party and used throughout code. */
     private static RAFOptions instance;
     
     private String defaultShareMessage;
@@ -71,14 +73,6 @@ public final class RAFOptions {
     private int contactsSearchIconColor;
 
     private int contactNoPhotoAvailableBackgroundColor;
-
-    private int linkedInToolbarColor;
-    private int linkedInToolbarTextColor;
-    private int linkedInToolbarArrowColor;
-
-    private int twitterToolbarColor;
-    private int twitterToolbarTextColor;
-    private int twitterToolbarArrowColor;
 
     private String[] channels;
 
@@ -242,30 +236,6 @@ public final class RAFOptions {
         return contactNoPhotoAvailableBackgroundColor;
     }
 
-    public int getLinkedInToolbarColor() {
-        return linkedInToolbarColor;
-    }
-
-    public int getLinkedInToolbarTextColor() {
-        return linkedInToolbarTextColor;
-    }
-
-    public int getLinkedInToolbarArrowColor() {
-        return linkedInToolbarArrowColor;
-    }
-
-    public int getTwitterToolbarColor() {
-        return twitterToolbarColor;
-    }
-
-    public int getTwitterToolbarTextColor() {
-        return twitterToolbarTextColor;
-    }
-
-    public int getTwitterToolbarArrowColor() {
-        return twitterToolbarArrowColor;
-    }
-
     public String[] getChannels() {
         return channels;
     }
@@ -335,38 +305,35 @@ public final class RAFOptions {
 
         private int contactNoPhotoAvailableBackgroundColor = ResourceFactory.getColor(R.color.ambassador_blue).getColor();
 
-        private int linkedInToolbarColor = ResourceFactory.getColor(R.color.linkedin_blue).getColor();
-        private int linkedInToolbarTextColor = ResourceFactory.getColor(android.R.color.white).getColor();
-        private int linkedInToolbarArrowColor = ResourceFactory.getColor(android.R.color.white).getColor();
-
-        private int twitterToolbarColor = ResourceFactory.getColor(R.color.twitter_blue).getColor();
-        private int twitterToolbarTextColor = ResourceFactory.getColor(android.R.color.white).getColor();
-        private int twitterToolbarArrowColor = ResourceFactory.getColor(android.R.color.white).getColor();
-
         private String[] channels = new String[]{"Facebook", "Twitter", "LinkedIn", "Email", "SMS"};
 
         private float socialOptionCornerRadius;
 
         public Builder() {}
 
-        public void setDefaultShareMessage(String defaultShareMessage) {
+        public Builder setDefaultShareMessage(String defaultShareMessage) {
             this.defaultShareMessage = defaultShareMessage;
+            return this;
         }
 
-        public void setTitleText(String titleText) {
+        public Builder setTitleText(String titleText) {
             this.titleText = titleText;
+            return this;
         }
 
-        public void setDescriptionText(String descriptionText) {
+        public Builder setDescriptionText(String descriptionText) {
             this.descriptionText = descriptionText;
+            return this;
         }
 
-        public void setToolbarTitle(String toolbarTitle) {
+        public Builder setToolbarTitle(String toolbarTitle) {
             this.toolbarTitle = toolbarTitle;
+            return this;
         }
 
-        public void setLogoPosition(String logoPosition) {
+        public Builder setLogoPosition(String logoPosition) {
             this.logoPosition = logoPosition;
+            return this;
         }
 
         public Builder setLogo(String logo) {
@@ -379,164 +346,174 @@ public final class RAFOptions {
             return this;
         }
 
-        public void setHomeBackgroundColor(int homeBackgroundColor) {
+        public Builder setHomeBackgroundColor(int homeBackgroundColor) {
             this.homeBackgroundColor = homeBackgroundColor;
+            return this;
         }
 
-        public void setHomeWelcomeTitleColor(int homeWelcomeTitleColor) {
+        public Builder setHomeWelcomeTitleColor(int homeWelcomeTitleColor) {
             this.homeWelcomeTitleColor = homeWelcomeTitleColor;
+            return this;
         }
 
-        public void setHomeWelcomeTitleSize(float homeWelcomeTitleSize) {
+        public Builder setHomeWelcomeTitleSize(float homeWelcomeTitleSize) {
             this.homeWelcomeTitleSize = homeWelcomeTitleSize;
+            return this;
         }
 
-        public void setHomeWelcomeTitleFont(Typeface homeWelcomeTitleFont) {
+        public Builder setHomeWelcomeTitleFont(Typeface homeWelcomeTitleFont) {
             this.homeWelcomeTitleFont = homeWelcomeTitleFont;
+            return this;
         }
 
-        public void setHomeWelcomeDescriptionColor(int homeWelcomeDescriptionColor) {
+        public Builder setHomeWelcomeDescriptionColor(int homeWelcomeDescriptionColor) {
             this.homeWelcomeDescriptionColor = homeWelcomeDescriptionColor;
+            return this;
         }
 
-        public void setHomeWelcomeDescriptionSize(float homeWelcomeDescriptionSize) {
+        public Builder setHomeWelcomeDescriptionSize(float homeWelcomeDescriptionSize) {
             this.homeWelcomeDescriptionSize = homeWelcomeDescriptionSize;
+            return this;
         }
 
-        public void setHomeWelcomeDescriptionFont(Typeface homeWelcomeDescriptionFont) {
+        public Builder setHomeWelcomeDescriptionFont(Typeface homeWelcomeDescriptionFont) {
             this.homeWelcomeDescriptionFont = homeWelcomeDescriptionFont;
+            return this;
         }
 
-        public void setHomeToolbarColor(int homeToolbarColor) {
+        public Builder setHomeToolbarColor(int homeToolbarColor) {
             this.homeToolbarColor = homeToolbarColor;
+            return this;
         }
 
-        public void setHomeToolbarTextColor(int homeToolbarTextColor) {
+        public Builder setHomeToolbarTextColor(int homeToolbarTextColor) {
             this.homeToolbarTextColor = homeToolbarTextColor;
+            return this;
         }
 
-        public void setHomeToolbarTextFont(Typeface homeToolbarTextFont) {
+        public Builder setHomeToolbarTextFont(Typeface homeToolbarTextFont) {
             this.homeToolbarTextFont = homeToolbarTextFont;
+            return this;
         }
 
-        public void setHomeToolbarArrowColor(int homeToolbarArrowColor) {
+        public Builder setHomeToolbarArrowColor(int homeToolbarArrowColor) {
             this.homeToolbarArrowColor = homeToolbarArrowColor;
+            return this;
         }
 
-        public void setHomeShareTextBar(int homeShareTextBar) {
+        public Builder setHomeShareTextBar(int homeShareTextBar) {
             this.homeShareTextBar = homeShareTextBar;
+            return this;
         }
 
-        public void setHomeShareTextColor(int homeShareTextColor) {
+        public Builder setHomeShareTextColor(int homeShareTextColor) {
             this.homeShareTextColor = homeShareTextColor;
+            return this;
         }
 
-        public void setHomeShareTextSize(float homeShareTextSize) {
+        public Builder setHomeShareTextSize(float homeShareTextSize) {
             this.homeShareTextSize = homeShareTextSize;
+            return this;
         }
 
-        public void setHomeShareTextFont(Typeface homeShareTextFont) {
+        public Builder setHomeShareTextFont(Typeface homeShareTextFont) {
             this.homeShareTextFont = homeShareTextFont;
+            return this;
         }
 
-        public void setSocialGridTextFont(Typeface socialGridTextFont) {
+        public Builder setSocialGridTextFont(Typeface socialGridTextFont) {
             this.socialGridTextFont = socialGridTextFont;
+            return this;
         }
 
-        public void setContactsListViewBackgroundColor(int contactsListViewBackgroundColor) {
+        public Builder setContactsListViewBackgroundColor(int contactsListViewBackgroundColor) {
             this.contactsListViewBackgroundColor = contactsListViewBackgroundColor;
+            return this;
         }
 
-        public void setContactsListNameSize(float contactsListNameSize) {
+        public Builder setContactsListNameSize(float contactsListNameSize) {
             this.contactsListNameSize = contactsListNameSize;
+            return this;
         }
 
-        public void setContactsListNameFont(Typeface contactsListNameFont) {
+        public Builder setContactsListNameFont(Typeface contactsListNameFont) {
             this.contactsListNameFont = contactsListNameFont;
+            return this;
         }
 
-        public void setContactsListValueSize(float contactsListValueSize) {
+        public Builder setContactsListValueSize(float contactsListValueSize) {
             this.contactsListValueSize = contactsListValueSize;
+            return this;
         }
 
-        public void setContactsListValueFont(Typeface contactsListValueFont) {
+        public Builder setContactsListValueFont(Typeface contactsListValueFont) {
             this.contactsListValueFont = contactsListValueFont;
+            return this;
         }
 
-        public void setContactsSendBackground(int contactsSendBackground) {
+        public Builder setContactsSendBackground(int contactsSendBackground) {
             this.contactsSendBackground = contactsSendBackground;
+            return this;
         }
 
-        public void setContactSendMessageTextFont(Typeface contactSendMessageTextFont) {
+        public Builder setContactSendMessageTextFont(Typeface contactSendMessageTextFont) {
             this.contactSendMessageTextFont = contactSendMessageTextFont;
+            return this;
         }
 
-        public void setContactsToolbarColor(int contactsToolbarColor) {
+        public Builder setContactsToolbarColor(int contactsToolbarColor) {
             this.contactsToolbarColor = contactsToolbarColor;
+            return this;
         }
 
-        public void setContactsToolbarTextColor(int contactsToolbarTextColor) {
+        public Builder setContactsToolbarTextColor(int contactsToolbarTextColor) {
             this.contactsToolbarTextColor = contactsToolbarTextColor;
+            return this;
         }
 
-        public void setContactsToolbarArrowColor(int contactsToolbarArrowColor) {
+        public Builder setContactsToolbarArrowColor(int contactsToolbarArrowColor) {
             this.contactsToolbarArrowColor = contactsToolbarArrowColor;
+            return this;
         }
 
-        public void setContactsSendButtonColor(int contactsSendButtonColor) {
+        public Builder setContactsSendButtonColor(int contactsSendButtonColor) {
             this.contactsSendButtonColor = contactsSendButtonColor;
+            return this;
         }
 
-        public void setContactsSendButtonTextColor(int contactsSendButtonTextColor) {
+        public Builder setContactsSendButtonTextColor(int contactsSendButtonTextColor) {
             this.contactsSendButtonTextColor = contactsSendButtonTextColor;
+            return this;
         }
 
-        public void setContactsDoneButtonTextColor(int contactsDoneButtonTextColor) {
+        public Builder setContactsDoneButtonTextColor(int contactsDoneButtonTextColor) {
             this.contactsDoneButtonTextColor = contactsDoneButtonTextColor;
+            return this;
         }
 
-        public void setContactsSearchBarColor(int contactsSearchBarColor) {
+        public Builder setContactsSearchBarColor(int contactsSearchBarColor) {
             this.contactsSearchBarColor = contactsSearchBarColor;
+            return this;
         }
 
-        public void setContactsSearchIconColor(int contactsSearchIconColor) {
+        public Builder setContactsSearchIconColor(int contactsSearchIconColor) {
             this.contactsSearchIconColor = contactsSearchIconColor;
+            return this;
         }
 
-        public void setContactNoPhotoAvailableBackgroundColor(int contactNoPhotoAvailableBackgroundColor) {
+        public Builder setContactNoPhotoAvailableBackgroundColor(int contactNoPhotoAvailableBackgroundColor) {
             this.contactNoPhotoAvailableBackgroundColor = contactNoPhotoAvailableBackgroundColor;
+            return this;
         }
 
-        public void setLinkedInToolbarColor(int linkedInToolbarColor) {
-            this.linkedInToolbarColor = linkedInToolbarColor;
-        }
-
-        public void setLinkedInToolbarTextColor(int linkedInToolbarTextColor) {
-            this.linkedInToolbarTextColor = linkedInToolbarTextColor;
-        }
-
-        public void setLinkedInToolbarArrowColor(int linkedInToolbarArrowColor) {
-            this.linkedInToolbarArrowColor = linkedInToolbarArrowColor;
-        }
-
-        public void setTwitterToolbarColor(int twitterToolbarColor) {
-            this.twitterToolbarColor = twitterToolbarColor;
-        }
-
-        public void setTwitterToolbarTextColor(int twitterToolbarTextColor) {
-            this.twitterToolbarTextColor = twitterToolbarTextColor;
-        }
-
-        public void setTwitterToolbarArrowColor(int twitterToolbarArrowColor) {
-            this.twitterToolbarArrowColor = twitterToolbarArrowColor;
-        }
-
-        public void setChannels(String[] channels) {
+        public Builder setChannels(String[] channels) {
             this.channels = channels;
+            return this;
         }
 
-        public void setSocialOptionCornerRadius(float socialOptionCornerRadius) {
+        public Builder setSocialOptionCornerRadius(float socialOptionCornerRadius) {
             this.socialOptionCornerRadius = socialOptionCornerRadius;
+            return this;
         }
 
         @NonNull
@@ -582,12 +559,6 @@ public final class RAFOptions {
             tmp.contactsSearchBarColor = this.contactsSearchBarColor;
             tmp.contactsSearchIconColor = this.contactsSearchIconColor;
             tmp.contactNoPhotoAvailableBackgroundColor = this.contactNoPhotoAvailableBackgroundColor;
-            tmp.linkedInToolbarColor = this.linkedInToolbarColor;
-            tmp.linkedInToolbarTextColor = this.linkedInToolbarTextColor;
-            tmp.linkedInToolbarArrowColor = this.linkedInToolbarArrowColor;
-            tmp.twitterToolbarColor = this.twitterToolbarColor;
-            tmp.twitterToolbarTextColor = this.twitterToolbarTextColor;
-            tmp.twitterToolbarArrowColor = this.twitterToolbarArrowColor;
             tmp.channels = this.channels;
             tmp.socialOptionCornerRadius = this.socialOptionCornerRadius;
 
@@ -601,15 +572,26 @@ public final class RAFOptions {
 
     }
 
+    /**
+     * Sets the instance RAFOptions. Will also be serialized into JSON and stored in SharedPreferences
+     * keyed on the current campaign ID.
+     * @param rafOptions the RAFOptions instantiation to store. Don't pass null.
+     */
     public static void set(@NonNull RAFOptions rafOptions) {
         instance = rafOptions;
         String campaignId = new Campaign().getId();
         String data = new Gson().toJson(rafOptions);
-        if (AmbSingleton.getContext() != null) {
-            AmbSingleton.getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE).edit().putString(campaignId, data).apply();
-        }
+        AmbSingleton.getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE).edit().putString(campaignId, data).apply();
     }
 
+    /**
+     * Returns an instance of RAFOptions. This will never be null and will always be populated. If the
+     * stored instance is not null it will be returned directly. If the stored instance is null the
+     * RAFOptions are either not set or the instance has been lost. First method will attempt to
+     * un-serialize RAFOptions that may be stored in SharedPreferences and set as the instance. If not
+     * successful the method will set instance as the default RAFOptions.
+     * @return a NonNull RAFOptions object.
+     */
     @NonNull
     public static RAFOptions get() {
         if (instance == null) {

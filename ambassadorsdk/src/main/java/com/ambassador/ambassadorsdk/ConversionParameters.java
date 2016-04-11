@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 
+import java.lang.reflect.Field;
+
 /**
  * Stores information relevant for registering a conversion on the backend.
  */
@@ -20,7 +22,7 @@ public final class ConversionParameters {
     public String custom2;
     public String custom3;
     public int autoCreate;
-    public int revenue;
+    public float revenue;
     public int deactivateNewAmbassador;
     public String transactionUid;
     public String addToGroupId;
@@ -70,8 +72,8 @@ public final class ConversionParameters {
         return autoCreate;
     }
 
-    public int getRevenue() {
-        return revenue;
+    public float getRevenue() {
+        return ((int) (revenue * 100)) / 100f;
     }
 
     public int getDeactivateNewAmbassador() {
@@ -121,7 +123,7 @@ public final class ConversionParameters {
         this.custom2 = "";
         this.custom3 = "";
         this.autoCreate = 1;
-        this.revenue = -1;
+        this.revenue = 0;
         this.deactivateNewAmbassador = 0;
         this.transactionUid = "";
         this.addToGroupId = "";
@@ -133,11 +135,26 @@ public final class ConversionParameters {
     }
 
     public boolean isValid() {
-        return campaign > -1 && !"".equals(email) && revenue > -1;
+        return campaign > -1 && revenue > -1 && email != null && !"".equals(email);
     }
 
     public ConversionsApi.RegisterConversionRequestBody.FieldsObject getFieldsObject() {
         return new ConversionsApi.RegisterConversionRequestBody.FieldsObject(this, shortCode);
+    }
+
+    public void prettyPrint() {
+        String logTag = "AMB-PARAMS";
+        Log.v(logTag, "-------");
+
+        for (Field field : getClass().getFields()) {
+            try {
+                Log.v(logTag, field.getName() + " = " + field.get(this).toString());
+            } catch (Exception e) {
+                // ignore, not useful to log
+            }
+        }
+
+        Log.v(logTag, "-------");
     }
 
     public static class Builder {
@@ -154,7 +171,7 @@ public final class ConversionParameters {
         private String mbsy_custom2;
         private String mbsy_custom3;
         private int mbsy_auto_create;
-        private int mbsy_revenue = -1;
+        private float mbsy_revenue = 0;
         private int mbsy_deactivate_new_ambassador;
         private String mbsy_transaction_uid;
         private String mbsy_add_to_group_id;
@@ -232,7 +249,7 @@ public final class ConversionParameters {
         }
 
         @NonNull
-        public Builder setRevenue(int mbsy_revenue) {
+        public Builder setRevenue(float mbsy_revenue) {
             this.mbsy_revenue = mbsy_revenue;
             this.revenueCheck = true;
             return this;

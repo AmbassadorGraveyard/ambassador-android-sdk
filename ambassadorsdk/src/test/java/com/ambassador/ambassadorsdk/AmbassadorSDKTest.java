@@ -6,13 +6,13 @@ import android.content.IntentFilter;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.IIdentify;
+import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -47,7 +47,7 @@ public class AmbassadorSDKTest {
     private Auth auth;
     private User user;
     private Campaign campaign;
-
+    private ConversionUtility conversionUtility;
     private PusherManager pusherManager;
 
     @Before
@@ -74,6 +74,9 @@ public class AmbassadorSDKTest {
 
         pusherManager = Mockito.mock(PusherManager.class);
         AmbassadorSDK.pusherManager = pusherManager;
+
+        conversionUtility = Mockito.mock(ConversionUtility.class);
+        AmbassadorSDK.conversionUtility = conversionUtility;
     }
 
     @Test
@@ -84,8 +87,8 @@ public class AmbassadorSDKTest {
     @Test
     public void identifyTest() throws Exception {
         // ARRANGE
-        String email = "email";
-        IIdentify identify = Mockito.mock(IIdentify.class);
+        String email = "email@gmail.com";
+        IdentifyAugurSDK identify = Mockito.mock(IdentifyAugurSDK.class);
         PowerMockito.doReturn(identify).when(AmbassadorSDK.class, "buildIdentify");
 
         // ACT
@@ -115,11 +118,14 @@ public class AmbassadorSDKTest {
     @Test
     public void registerConversionNonInstallTest() throws Exception {
         // ARRANGE
-        ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
+        //ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
+        ConversionParameters conversionParameters = new ConversionParameters.Builder()
+                .setEmail("jake@getambassador.com")
+                .setRevenue(15.55f)
+                .setCampaign(260)
+                .build();
         boolean restrictToInstall = false;
         Mockito.when(campaign.isConvertedOnInstall()).thenReturn(false);
-        ConversionUtility conversionUtility = Mockito.mock(ConversionUtility.class);
-        PowerMockito.doReturn(conversionUtility).when(AmbassadorSDK.class, "buildConversionUtility", conversionParameters);
         Mockito.doNothing().when(conversionUtility).registerConversion();
 
         // ACT

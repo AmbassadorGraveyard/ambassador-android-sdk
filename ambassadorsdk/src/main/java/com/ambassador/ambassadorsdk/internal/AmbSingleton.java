@@ -2,7 +2,6 @@ package com.ambassador.ambassadorsdk.internal;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.ambassador.ambassadorsdk.internal.injection.AmbModule;
 
@@ -45,16 +44,28 @@ public class AmbSingleton {
      * @param module the module to use to provide injection dependencies.
      */
     public static void init(@NonNull Context context, @NonNull Object module) {
-        init(context);
         AmbSingleton.graph = ObjectGraph.create(module);
+        init(context);
     }
 
-    @Nullable
+    /**
+     * Returns context. NonNull because the only case in which this should return null is if the developer
+     * does not call runWithKeys, or the parent application is garbage collected.  These are both things
+     * not handled by us, so assume not null.
+     * @return Context context
+     */
+    @NonNull
     public static Context getContext() {
         return context;
     }
 
-    @Nullable
+    /**
+     * Returns graph. NonNull because the only case in which this should return null is if the developer
+     * does not call runWithKeys, or the parent application is garbage collected.  These are both things
+     * not handled by us, so assume not null.
+     * @return ObjectGraph graph
+     */
+    @NonNull
     public static ObjectGraph getGraph() {
         return graph;
     }
