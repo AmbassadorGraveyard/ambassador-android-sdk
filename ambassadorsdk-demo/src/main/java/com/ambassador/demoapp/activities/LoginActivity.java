@@ -104,7 +104,7 @@ public class LoginActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse("https://getambassador.com"));
+                intent.setData(Uri.parse("https://www.getambassador.com/schedule-a-demo"));
                 startActivity(intent);
             }
         });
