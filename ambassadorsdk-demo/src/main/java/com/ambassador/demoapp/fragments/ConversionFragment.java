@@ -112,7 +112,12 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
                     @Override
                     public void failure() {
-                        Toast.makeText(getActivity(), "An ambassador could not be found for the email and campaign provided.", Toast.LENGTH_SHORT).show();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Snackbar.make(getActivity().findViewById(android.R.id.content), "An ambassador could not be found for the email and campaign provided.", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
                     }
                 });
             }
@@ -293,6 +298,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                     InstallReceiver.getInstance().onReceive(getActivity(), data);
 
                     listener.success();
+                } else {
+                    failure(null);
                 }
             }
 
