@@ -140,11 +140,11 @@ public class CustomizationActivity extends AppCompatActivity {
             new DataHandler().setIntegration(integration);
         }
 
-        startupIntegration = new DataHandler().getIntegration();
-
         if (!editing) {
             setDefaults();
         }
+
+        startupIntegration = new DataHandler().getIntegration();
     }
 
     @Override
