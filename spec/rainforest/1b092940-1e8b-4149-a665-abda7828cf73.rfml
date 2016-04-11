@@ -1,0 +1,19 @@
+#! 1b092940-1e8b-4149-a665-abda7828cf73 (Test ID - only edit if this test has not yet been uploaded)
+# title: Android Quick Test
+# tags: android
+# browsers: android_phone_portrait
+#
+# Lines starting with # are test attributes or comments
+# Possible attributes: start_uri, title, tags
+#
+# Steps are composed of two lines: an action and a question. Example:
+#
+# This is the step action.
+# This is the step question?
+#
+
+Go to https://www.dropbox.com/s/71is376940as1r4/ambassadorsdk-demo-release.apk?dl=0 and download and install the app.
+Did the app install on the device?
+
+Remain on the home screen.
+Do you see fields to enter a username and password?
