@@ -18,7 +18,7 @@ public abstract class BasePresenter<M, V> {
     }
 
     protected void resetState() {
-
+        // Do any teardown for when a new model is set.
     }
 
     public void bindView(@NonNull V view) {
