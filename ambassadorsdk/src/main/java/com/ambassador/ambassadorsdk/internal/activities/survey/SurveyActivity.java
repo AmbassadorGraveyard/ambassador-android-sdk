@@ -2,15 +2,19 @@ package com.ambassador.ambassadorsdk.internal.activities.survey;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.PresenterManager;
 
 import butterfork.Bind;
@@ -27,9 +31,12 @@ public class SurveyActivity extends Activity implements SurveyView {
     @Bind(B.id.tvSurveyTitle) protected TextView tvSurveyTitle;
     @Bind(B.id.tvSurveyDescription) protected TextView tvSurveyDescription;
 
+    @Bind(B.id.pbLoading) protected ProgressBar pbLoading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utilities.setStatusBar(getWindow(), Color.parseColor("#24313f"));
 
         if (savedInstanceState == null) {
             surveyPresenter = new SurveyPresenter();
@@ -39,6 +46,8 @@ public class SurveyActivity extends Activity implements SurveyView {
 
         setContentView(R.layout.activity_survey);
         ButterFork.bind(this);
+
+        pbLoading.getIndeterminateDrawable().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
 
         ivExit.setOnClickListener(new View.OnClickListener() {
             @Override
