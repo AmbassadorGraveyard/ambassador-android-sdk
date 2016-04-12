@@ -126,8 +126,8 @@ public class AmbassadorActivityTest {
         JsonParser parser = new JsonParser();
         JsonObject o = parser.parse(pusherResponse).getAsJsonObject();
         when(user.getPusherInfo()).thenReturn(o);
-        when(auth.getUniversalToken()).thenReturn("SDKToken ***REMOVED***");
-        when(auth.getUniversalId()).thenReturn("***REMOVED***");
+        when(auth.getUniversalToken()).thenReturn("SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a");
+        when(auth.getUniversalId()).thenReturn("abfd1c89-4379-44e2-8361-ee7b87332e32");
 
         //app workflow is identify -> backend calls pusher and triggers a response which is received by our app and
         //calls tryAndSetURL
