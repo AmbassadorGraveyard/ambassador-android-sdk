@@ -82,11 +82,6 @@ then
     # Get current time for naming
     TIME=`date +%s`;
 
-    # Build the app APK
-    echo "Assembling debug APK...";
-    ./gradlew -p ambassadorsdk-demo assembleDebug --quiet;
-    echo "Assemble complete";
-
     # Create new name for app APK as current epoch time + '.apk'
     APK_NAME="app$TIME.apk";
 

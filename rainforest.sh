@@ -5,6 +5,11 @@ set -o errexit
 
 if [ "$CIRCLE_BRANCH" != "master" ]
   then
+    sha=`git rev-parse HEAD`;
+    APK_NAME="$sha.apk";
+    cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug.apk $CIRCLE_ARTIFACTS/$APK_NAME;
+    curl -H "Authorization: Bearer $DROPBOX_TOKEN" https://api-content.dropbox.com/1/files_put/auto/ -T $CIRCLE_ARTIFACTS/$APK_NAME
+
     rainforest validate
     rainforest upload --token $RAINFOREST_TOKEN
 
