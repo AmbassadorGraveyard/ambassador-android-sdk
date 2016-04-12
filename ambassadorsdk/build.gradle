@@ -25,9 +25,9 @@ android {
     buildTypes {
         all {
             buildConfigField "boolean", "IS_RELEASE_BUILD", "false"
-            buildConfigField "string", "PUSHER_KEY_PROD", System.getenv('PUSHER_KEY_PROD')
-            buildConfigField "string", "PUSHER_KEY_DEV", System.getenv('PUSHER_KEY_DEV')
-            buildConfigField "string", "AUGUR_KEY", System.getenv('AUGUR_KEY')
+            for (String key : rootProject.ext.secretsMap.keySet()) {
+                buildConfigField "String", key, "\"" + rootProject.ext.secretsMap.get(key) + "\""
+            }
         }
         release {
             minifyEnabled false

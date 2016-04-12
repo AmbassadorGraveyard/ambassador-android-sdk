@@ -26,6 +26,11 @@ subprojects { -> project
     }
 }
 
+Map<String, String> secrets = new HashMap<String, String>();
+new File('secrets.txt').eachLine { line ->
+    secrets.put(line.split('=')[0], line.split('=')[1]);
+}
+
 apply from: file('gradle/jacoco.gradle')
 
 ext {
@@ -33,6 +38,7 @@ ext {
     targetSdkVersion = 23
     compileSdkVersion = 23
     buildToolsVersion = '23.0.1'
+    secretsMap = secrets
 }
 
 ext.deps = [
