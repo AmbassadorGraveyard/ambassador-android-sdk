@@ -26,7 +26,10 @@ public class Device { // TODO: Make final after UI tests figured out
     protected WindowManager         windowManager;
 
     public Device() {
-        Context context = AmbSingleton.getContext();
+        this(AmbSingleton.getContext());
+    }
+
+    public Device(Context context) {
         configuration = context.getResources().getConfiguration();
         connectivityManager =
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
