@@ -11,6 +11,7 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
+import com.ambassador.ambassadorsdk.internal.Secrets;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
@@ -167,7 +168,7 @@ public final class AmbassadorSDK {
                     for (StackTraceElement element : exception.getStackTrace()) {
                         element.getClassName();
                         if (element.getClassName().contains("com.ambassador.ambassadorsdk")) {
-                            DefaultRavenFactory.ravenInstance("***REMOVED***")
+                            DefaultRavenFactory.ravenInstance(Secrets.getSentryUrl())
                                     .sendException((Exception) ex);
                             Log.v("amb", "Sending exception to Sentry:");
                             Log.v("amb", ex.toString());

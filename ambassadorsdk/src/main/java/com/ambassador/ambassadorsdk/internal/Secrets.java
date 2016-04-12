@@ -12,4 +12,8 @@ public final class Secrets {
         return BuildConfig.IS_RELEASE_BUILD ? BuildConfig.PUSHER_KEY_PROD : BuildConfig.PUSHER_KEY_DEV;
     }
 
+    public static String getSentryUrl() {
+        return BuildConfig.SENTRY_URL;
+    }
+
 }
