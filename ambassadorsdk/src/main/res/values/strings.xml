@@ -56,10 +56,6 @@
     <string name="envoy_api_url_dev">https://dev-envoy-api.herokuapp.com</string>
     <!-- // -->
 
-    <!-- AUGUR -->
-    <string name="augur_api_key">***REMOVED***</string>
-    <!-- // -->
-
     <!-- FACEBOOK -->
     <string name="facebook_reauthenticate_message">We need you to re-authenticate Facebook. Continue?</string>
     <string name="facebook_share_dialog_title">Facebook Post</string>
@@ -75,8 +71,6 @@
     <!-- // -->
 
     <!-- PUSHER -->
-    <string name="pusher_key_dev">***REMOVED***</string>
-    <string name="pusher_key_prod">***REMOVED***</string>
     <string name="pusher_callback_url">https://api.getambassador.com/auth/subscribe/</string>
     <string name="pusher_callback_url_dev">https://dev-ambassador-api.herokuapp.com/auth/subscribe/</string>
     <!-- // -->
