@@ -141,7 +141,9 @@ public class ConversionUtility {
     public void makeConversionRequest(final ConversionParameters newParameters) {
         //in the case of an install conversion, we didn't have the shortCode right away, so that conversion got stored in the database.
         //now that we know we have it (wouldn't have gotten this far if we didn't) set that parameter value.
-        newParameters.updateShortCode(campaign.getReferredByShortCode());
+        if (campaign.getReferredByShortCode() != null && !"".equals(campaign.getReferredByShortCode())) {
+            newParameters.updateShortCode(campaign.getReferredByShortCode());
+        }
 
         if (newParameters.email == null || "".equals(newParameters.email)) {
             newParameters.email = user.getEmail();
