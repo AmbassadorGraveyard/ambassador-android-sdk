@@ -35,10 +35,6 @@
             android:label="@string/app_name"
             android:theme="@style/ActivityTheme" />
 
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-
         <activity
             android:name=".internal.activities.oauth.SocialOAuthActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
@@ -62,10 +58,6 @@
                 <action android:name="com.android.vending.INSTALL_REFERRER" />
             </intent-filter>
         </receiver>
-
-        <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="f37bb68c5b927a94a1c10fd005732a15f578eb2d" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

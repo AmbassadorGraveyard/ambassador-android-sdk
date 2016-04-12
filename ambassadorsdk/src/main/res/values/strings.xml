@@ -56,37 +56,21 @@
     <string name="envoy_api_url_dev">https://dev-envoy-api.herokuapp.com</string>
     <!-- // -->
 
-    <!-- AUGUR -->
-    <string name="augur_api_key">***REMOVED***</string>
-    <!-- // -->
-
     <!-- FACEBOOK -->
-    <string name="facebook_app_id">***REMOVED***</string>
-    <string name="facebook_app_secret">52ffd023589b20767fcc77bc48439679</string>
     <string name="facebook_reauthenticate_message">We need you to re-authenticate Facebook. Continue?</string>
     <string name="facebook_share_dialog_title">Facebook Post</string>
     <!-- // -->
 
     <!-- TWITTER -->
-    <string name="twitter_consumer_key">***REMOVED***</string>
-    <string name="twitter_consumer_secret">***REMOVED***</string>
     <string name="twitter_reauthenticate_message">We need you to re-authenticate Twitter. Continue?</string>
     <string name="twitter_share_dialog_title">Twitter Post</string>
     <!-- // -->
 
     <!-- LINKEDIN -->
-    <string name="linked_in_client_id">***REMOVED***</string>
-    <string name="linked_in_client_secret">***REMOVED***</string>
-    <string name="linked_in_callback_url">http://getambassador.com</string>
     <string name="linked_in_reauthenticate_message">We need you to re-authenticate LinkedIn. Continue?</string>
-    <string name="linked_in_w_share_permission">w_share</string>
-    <string name="linked_in_r_profile_permission">r_basicprofile</string>
-    <string name="linked_in_login_response_type">code</string>
     <!-- // -->
 
     <!-- PUSHER -->
-    <string name="pusher_key_dev">***REMOVED***</string>
-    <string name="pusher_key_prod">***REMOVED***</string>
     <string name="pusher_callback_url">https://api.getambassador.com/auth/subscribe/</string>
     <string name="pusher_callback_url_dev">https://dev-ambassador-api.herokuapp.com/auth/subscribe/</string>
     <!-- // -->

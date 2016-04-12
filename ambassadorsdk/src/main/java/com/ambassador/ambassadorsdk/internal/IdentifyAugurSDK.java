@@ -3,10 +3,8 @@ package com.ambassador.ambassadorsdk.internal;
 import android.os.Handler;
 import android.os.Message;
 
-import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
-import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -26,7 +24,7 @@ public class IdentifyAugurSDK {
     }
 
     public void getIdentity() {
-        String augurKey = new StringResource(R.string.augur_api_key).getValue();
+        String augurKey = Secrets.getAugurKey();
         JSONObject augurConfig = new JSONObject();
 
         try {
