@@ -4,6 +4,7 @@ dependencies:
     - sudo java -jar jpm4j.jar -g init
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
     - sudo pip install awscli
+    - bash secrets.sh
 
 test:
   override:
