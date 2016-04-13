@@ -65,8 +65,8 @@ public class RequestManagerTest {
     private BulkShareHelper bulkShareHelper;
     private PusherManager pusherManager;
 
-    private String universalId = "abfd1c89-4379-44e2-8361-ee7b87332e32";
-    private String universalToken = "SDKToken 9de5757f801ca60916599fa3f3c92131b0e63c6a";
+    private String universalId = "***REMOVED***";
+    private String universalToken = "SDKToken ***REMOVED***";
     private String userFirstName = "Test";
     private String userLastName = "User";
     private JsonObject identifyObject = new JsonObject();

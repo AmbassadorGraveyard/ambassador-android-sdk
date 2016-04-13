@@ -30,22 +30,24 @@
         android:hardwareAccelerated="true">
 
         <activity
-            android:name=".internal.activities.AmbassadorActivity"
+            android:name=".internal.activities.ambassador.AmbassadorActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@style/ActivityTheme" />
 
         <activity
-            android:name=".internal.activities.SocialOAuthActivity"
+            android:name=".internal.activities.oauth.SocialOAuthActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@style/ActivityTheme" />
 
         <activity
-            android:name=".internal.activities.ContactSelectorActivity"
+            android:name=".internal.activities.contacts.ContactSelectorActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@style/ActivityTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        
+
+        <activity android:name=".internal.activities.survey.SurveyActivity" />
+
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
 
         <receiver

@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal.activities;
+package com.ambassador.ambassadorsdk.internal.activities.oauth;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
