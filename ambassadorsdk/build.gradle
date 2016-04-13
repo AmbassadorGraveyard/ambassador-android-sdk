@@ -25,6 +25,9 @@ android {
     buildTypes {
         all {
             buildConfigField "boolean", "IS_RELEASE_BUILD", "false"
+            for (String key : rootProject.ext.secretsMap.keySet()) {
+                buildConfigField "String", key, "\"" + rootProject.ext.secretsMap.get(key) + "\""
+            }
         }
         release {
             minifyEnabled false

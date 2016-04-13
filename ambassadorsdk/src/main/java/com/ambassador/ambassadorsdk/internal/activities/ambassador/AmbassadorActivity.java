@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal.activities;
+package com.ambassador.ambassadorsdk.internal.activities.ambassador;
 
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
@@ -36,6 +36,8 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
+import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;

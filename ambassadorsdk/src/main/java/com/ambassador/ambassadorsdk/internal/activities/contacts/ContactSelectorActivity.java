@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal.activities;
+package com.ambassador.ambassadorsdk.internal.activities.contacts;
 
 import android.Manifest;
 import android.animation.Animator;

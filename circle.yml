@@ -14,6 +14,7 @@ dependencies:
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
     - sudo pip install awscli
     - gem install rainforest-cli
+    - bash secrets.sh
 
 test:
   override:

@@ -10,7 +10,7 @@ import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 
-import com.ambassador.ambassadorsdk.internal.activities.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyActivity;
 import com.ambassador.ambassadorsdk.internal.models.NotificationData;
 
 public final class PushNotification {
@@ -29,7 +29,7 @@ public final class PushNotification {
     }
 
     public void execute() {
-        Intent result = new Intent(context, AmbassadorActivity.class);
+        Intent result = new Intent(context, SurveyActivity.class);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0, result, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(), context.getApplicationInfo().icon);
@@ -45,9 +45,7 @@ public final class PushNotification {
 
         int notificationId = 001;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        // TODO: uncomment this when it's time to use notifications
-        // notificationManager.notify(notificationId, notification);
+        notificationManager.notify(notificationId, notification);
     }
 
 }

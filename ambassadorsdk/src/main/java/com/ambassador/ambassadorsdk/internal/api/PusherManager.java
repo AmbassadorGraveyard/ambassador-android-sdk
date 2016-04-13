@@ -9,6 +9,7 @@ import android.util.Log;
 import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
+import com.ambassador.ambassadorsdk.internal.Secrets;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
@@ -261,8 +262,7 @@ public class PusherManager {
             options.setAuthorizer(authorizer);
             options.setEncrypted(true);
 
-            int keyId = BuildConfig.IS_RELEASE_BUILD ? R.string.pusher_key_prod : R.string.pusher_key_dev;
-            String key = new StringResource(keyId).getValue();
+            String key = Secrets.getPusherKey();
 
             return new Pusher(key, options);
         }
