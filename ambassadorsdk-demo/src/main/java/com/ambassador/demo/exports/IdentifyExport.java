@@ -24,7 +24,7 @@ public class IdentifyExport extends BaseExport<String> {
 
     @Override
     public String getZipName() {
-        return null;
+        return "ambassador-identify.zip";
     }
 
 }

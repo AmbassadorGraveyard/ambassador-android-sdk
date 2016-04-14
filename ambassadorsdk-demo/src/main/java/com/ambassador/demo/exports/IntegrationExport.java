@@ -26,7 +26,7 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     @Override
     public String getZipName() {
-        return null;
+        return "ambassador-integration.zip";
     }
 
 }

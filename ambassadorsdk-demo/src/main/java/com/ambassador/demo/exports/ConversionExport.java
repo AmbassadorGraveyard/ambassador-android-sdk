@@ -26,7 +26,7 @@ public class ConversionExport extends BaseExport<ConversionParameters> {
 
     @Override
     public String getZipName() {
-        return null;
+        return "ambassador-conversion.zip";
     }
 
 }
