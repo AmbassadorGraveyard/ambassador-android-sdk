@@ -9,7 +9,8 @@ public interface Export<T> {
     String getJavaImplementation();
     String getSwiftImplementation();
     String getObjectiveCImplementation();
-    void addExtra(String pathToAdd, String pathToContent);
+    void addExtraContent(String filename, String content);
+    void addExtraFile(String filename);
     String zip(Context context);
     String getZipName();
 

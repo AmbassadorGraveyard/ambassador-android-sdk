@@ -2,9 +2,20 @@ package com.ambassador.demo.exports;
 
 import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public abstract class BaseExport<T> implements Export<T> {
 
     protected T model;
+    protected HashMap<String, String> extraContent;
+    protected List<String> extraFiles;
+
+    public BaseExport() {
+        this.extraContent = new HashMap<>();
+        this.extraFiles = new ArrayList<>();
+    }
 
     @Override
     public void setModel(T t) {
@@ -24,18 +35,32 @@ public abstract class BaseExport<T> implements Export<T> {
     public abstract String getObjectiveCImplementation();
 
     @Override
-    public void addExtra(String pathToAdd, String pathToContent) {
+    public void addExtraContent(String filename, String content) {
+        this.extraContent.put(filename, content);
+    }
 
+    @Override
+    public void addExtraFile(String filename) {
+        this.extraFiles.add(filename);
     }
 
     @Override
     public String zip(Context context) {
-        return new Zipper(context)
+        Zipper zipper =  new Zipper(context)
                 .add("README.txt", getReadme())
                 .add("MyActivity.java", getJavaImplementation())
                 .add("AppDelegate.swift", getSwiftImplementation())
-                .add("AppDelegate.m", getObjectiveCImplementation())
-                .zip(getZipName());
+                .add("AppDelegate.m", getObjectiveCImplementation());
+
+        for (String key : extraContent.keySet()) {
+            zipper.add(key, extraContent.get(key));
+        }
+
+        for (String file : extraFiles) {
+            zipper.add(file);
+        }
+
+        return zipper.zip(getZipName());
     }
 
     @Override

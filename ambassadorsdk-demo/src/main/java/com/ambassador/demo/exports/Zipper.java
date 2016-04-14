@@ -78,6 +78,17 @@ public class Zipper {
     }
 
     /**
+     * Adds a file to the package with a passed location from app internal storage.
+     * @param path the String relative path inside internal storage.
+     * @return this Zipper, useful for chaining methods.
+     */
+    @NonNull
+    public Zipper add(@NonNull String path) {
+        files.add(path);
+        return this;
+    }
+
+    /**
      * Zips all the added files and returns the path.
      * @return the String path + filename of the zip file.
      */

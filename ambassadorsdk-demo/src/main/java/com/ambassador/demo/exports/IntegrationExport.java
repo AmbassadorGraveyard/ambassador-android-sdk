@@ -1,5 +1,7 @@
 package com.ambassador.demo.exports;
 
+import android.content.Context;
+
 import com.ambassador.demo.data.Integration;
 import com.ambassador.demo.data.User;
 
@@ -54,6 +56,15 @@ public class IntegrationExport extends BaseExport<Integration> {
     @Override
     public String getObjectiveCImplementation() {
         return null;
+    }
+
+    @Override
+    public String zip(Context context) {
+        addExtraContent("raf.xml", "raf");
+        if (model.getRafOptions().getLogo() != null) {
+            addExtraFile(model.getRafOptions().getLogo());
+        }
+        return super.zip(context);
     }
 
     @Override
