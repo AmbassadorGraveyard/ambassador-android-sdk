@@ -94,4 +94,14 @@ public class IdentifyExport extends BaseExport<String> {
         return "ambassador-identify.zip";
     }
 
+    @Override
+    public String javaClassName() {
+        return "MyApplication";
+    }
+
+    @Override
+    public String iOSClassName() {
+        return "AppDelegate";
+    }
+
 }

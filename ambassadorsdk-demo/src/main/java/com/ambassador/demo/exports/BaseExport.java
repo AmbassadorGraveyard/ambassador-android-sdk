@@ -46,9 +46,9 @@ public abstract class BaseExport<T> implements Export<T> {
     public String zip(Context context) {
         Zipper zipper =  new Zipper(context)
                 .add("README.txt", getReadme())
-                .add("MyActivity.java", getJavaImplementation())
-                .add("AppDelegate.swift", getSwiftImplementation())
-                .add("AppDelegate.m", getObjectiveCImplementation());
+                .add(javaClassName() + ".java", getJavaImplementation())
+                .add(iOSClassName() + ".swift", getSwiftImplementation())
+                .add(iOSClassName() + ".m", getObjectiveCImplementation());
 
         for (String key : extraContent.keySet()) {
             zipper.add(key, extraContent.get(key));
@@ -63,6 +63,12 @@ public abstract class BaseExport<T> implements Export<T> {
 
     @Override
     public abstract String getZipName();
+
+    @Override
+    public abstract String javaClassName();
+
+    @Override
+    public abstract String iOSClassName();
 
     protected static class PlaintextFile {
 

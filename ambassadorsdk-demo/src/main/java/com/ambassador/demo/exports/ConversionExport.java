@@ -184,4 +184,14 @@ public class ConversionExport extends BaseExport<ConversionParameters> {
         return "ambassador-conversion.zip";
     }
 
+    @Override
+    public String javaClassName() {
+        return  "MyApplication";
+    }
+
+    @Override
+    public String iOSClassName() {
+        return "AppDelegate";
+    }
+
 }

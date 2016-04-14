@@ -11,5 +11,7 @@ public interface Export<T> {
     String getObjectiveCImplementation();
     String zip(Context context);
     String getZipName();
+    String javaClassName();
+    String iOSClassName();
 
 }

@@ -400,4 +400,14 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     }
 
+    @Override
+    public String javaClassName() {
+        return "MyActivity";
+    }
+
+    @Override
+    public String iOSClassName() {
+        return "ViewControllerTest";
+    }
+
 }
