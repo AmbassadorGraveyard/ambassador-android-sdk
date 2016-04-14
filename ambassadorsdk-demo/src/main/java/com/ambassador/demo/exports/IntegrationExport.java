@@ -1,7 +1,9 @@
 package com.ambassador.demo.exports;
 
 import android.content.Context;
+import android.graphics.Typeface;
 
+import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.demo.data.Integration;
 import com.ambassador.demo.data.User;
 
@@ -108,9 +110,105 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     protected static class XmlIntegrationTranscriber implements IntegrationTranscriber {
 
+        private String getAttributeString(String tag, String name, String value) {
+            String string = "";
+            string += "    <";
+            string += tag;
+            string += " name=\"";
+            string += name;
+            string += "\"";
+            string += ">";
+            string += value;
+            string += "</";
+            string += tag;
+            string += ">\n";
+            return string;
+        }
+
+        private String getAttributeString(String tag, String name, int value) {
+            switch (tag) {
+                case "color":
+                    return getAttributeString(tag, name, String.format("#%06X", (0xFFFFFF & value)));
+                default:
+                    return "";
+            }
+        }
+
+        private String getAttributeString(String tag, String name, float value) {
+            switch (tag) {
+                case "dimen":
+                    return getAttributeString(tag, name, String.valueOf((int) (value)) + "sp");
+                default:
+                    return "";
+            }
+        }
+
+        private String getAttributeString(String tag, String name, Typeface value) {
+            switch (tag) {
+                case "string":
+                    return getAttributeString(tag, name, "sans-serif");
+                default:
+                    return "";
+            }
+        }
+
         @Override
         public String transcribe(Integration integration) {
-            return "xml";
+            RAFOptions rafOptions = integration.getRafOptions();
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+            stringBuilder.append("<resources>\n");
+
+            stringBuilder.append(getAttributeString("string", "RAFdefaultShareMessage", rafOptions.getDefaultShareMessage()));
+            stringBuilder.append(getAttributeString("string", "RAFtitleText", rafOptions.getTitleText()));
+            stringBuilder.append(getAttributeString("string", "RAFLogoPosition", rafOptions.getLogoPosition()));
+            stringBuilder.append(getAttributeString("string", "RAFLogo", rafOptions.getLogo()));
+            stringBuilder.append(getAttributeString("color", "homeBackground", rafOptions.getHomeBackgroundColor()));
+            stringBuilder.append(getAttributeString("color", "homeWelcomeTitle", rafOptions.getHomeWelcomeTitleColor()));
+            stringBuilder.append(getAttributeString("dimen", "homeWelcomeTitle", rafOptions.getHomeWelcomeTitleSize()));
+            stringBuilder.append(getAttributeString("string", "homeWelcomeTitle", rafOptions.getHomeWelcomeTitleFont()));
+            stringBuilder.append(getAttributeString("color", "homeWelcomeDesc", rafOptions.getHomeWelcomeDescriptionColor()));
+            stringBuilder.append(getAttributeString("dimen", "homeWelcomeDesc", rafOptions.getHomeWelcomeDescriptionSize()));
+            stringBuilder.append(getAttributeString("string", "homeWelcomeDesc", rafOptions.getHomeWelcomeDescriptionFont()));
+            stringBuilder.append(getAttributeString("color", "homeToolBar", rafOptions.getHomeToolbarColor()));
+            stringBuilder.append(getAttributeString("color", "homeToolBarText", rafOptions.getHomeToolbarTextColor()));
+            stringBuilder.append(getAttributeString("string", "homeToolBarText", rafOptions.getHomeToolbarTextFont()));
+            stringBuilder.append(getAttributeString("color", "homeToolBarArrow", rafOptions.getHomeToolbarArrowColor()));
+            stringBuilder.append(getAttributeString("color", "homeShareTextBar", rafOptions.getHomeShareTextBar()));
+            stringBuilder.append(getAttributeString("color", "homeShareText", rafOptions.getHomeShareTextColor()));
+            stringBuilder.append(getAttributeString("dimen", "homeShareText", rafOptions.getHomeShareTextSize()));
+            stringBuilder.append(getAttributeString("string", "homeShareText", rafOptions.getHomeShareTextFont()));
+            stringBuilder.append(getAttributeString("string", "socialGridText", rafOptions.getSocialGridTextFont()));
+            stringBuilder.append(getAttributeString("dimen", "socialOptionCornerRadius", rafOptions.getSocialOptionCornerRadius()));
+
+            stringBuilder.append("    <array name=\"channels\">\n");
+            for (String channel : rafOptions.getChannels()) {
+                stringBuilder.append("        <item>");
+                stringBuilder.append(channel);
+                stringBuilder.append("</item>\n");
+            }
+            stringBuilder.append("    </array>\n");
+
+            stringBuilder.append(getAttributeString("color", "contactsListViewBackground", rafOptions.getContactsListViewBackgroundColor()));
+            stringBuilder.append(getAttributeString("dimen", "contactsListName", rafOptions.getContactsListNameSize()));
+            stringBuilder.append(getAttributeString("string", "contactsListName", rafOptions.getContactsListNameFont()));
+            stringBuilder.append(getAttributeString("dimen", "contactsListValue", rafOptions.getContactsListValueSize()));
+            stringBuilder.append(getAttributeString("string", "contactsListValue", rafOptions.getContactsListValueFont()));
+            stringBuilder.append(getAttributeString("color", "contactsSendBackground", rafOptions.getContactsSendBackground()));
+            stringBuilder.append(getAttributeString("string", "contactSendMessageText", rafOptions.getContactSendMessageTextFont()));
+            stringBuilder.append(getAttributeString("color", "contactsToolBar", rafOptions.getContactsToolbarColor()));
+            stringBuilder.append(getAttributeString("color", "contactsToolBarText", rafOptions.getContactsToolbarTextColor()));
+            stringBuilder.append(getAttributeString("color", "contactsToolBarArrow", rafOptions.getContactsToolbarArrowColor()));
+            stringBuilder.append(getAttributeString("color", "contactsSendButton", rafOptions.getContactsSendButtonColor()));
+            stringBuilder.append(getAttributeString("color", "contactsSendButtonText", rafOptions.getContactsSendButtonTextColor()));
+            stringBuilder.append(getAttributeString("color", "contactsDoneButtonText", rafOptions.getContactsDoneButtonTextColor()));
+            stringBuilder.append(getAttributeString("color", "contactsSearchBar", rafOptions.getContactsSearchBarColor()));
+            stringBuilder.append(getAttributeString("color", "contactsSearchIcon", rafOptions.getContactsSearchIconColor()));
+            stringBuilder.append(getAttributeString("color", "contactNoPhotoAvailableBackground", rafOptions.getContactNoPhotoAvailableBackgroundColor()));
+
+            stringBuilder.append("</resources>\n");
+            return stringBuilder.toString();
         }
 
     }
