@@ -24,7 +24,7 @@ public class IntegrationExport extends BaseExport<Integration> {
         readme.addLine("Ambassador iOS SDK v1.0.3");
         readme.addLine("Take a look at the iOS docs for an in-depth explanation on adding and integrating the SDK:");
         readme.addLine("https://docs.getambassador.com/v2.0.0/page/ios-sdk");
-        readme.addLine("Check out the AppDelegate.m or AppDelegate.swift files for examples of this integration.");
+        readme.addLine("Check out the ViewControllerTest.m or ViewControllerTest.swift files for examples of this integration.");
         readme.addLine("Add the image to your app's image assets folder and add the .plist file to your project.");
 
         return readme.get();
