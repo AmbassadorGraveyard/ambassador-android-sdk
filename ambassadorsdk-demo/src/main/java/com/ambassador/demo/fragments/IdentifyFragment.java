@@ -131,8 +131,8 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
         identifyBuilder.append("}");
 
         String filename = new Zipper(getActivity())
-                .add("MyApplication.java", identifyBuilder.toString(), Zipper.Directory.FILES)
-                .add("README.txt", readmeBuilder.toString(), Zipper.Directory.FILES)
+                .add("MyApplication.java", identifyBuilder.toString())
+                .add("README.txt", readmeBuilder.toString())
                 .zip("android-identify.zip");
 
         new Share(filename).execute(getActivity());

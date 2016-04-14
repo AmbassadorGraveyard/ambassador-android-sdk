@@ -350,8 +350,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         identifyBuilder.append("}");
 
         String filename = new Zipper(getActivity())
-                .add("MyApplication.java", identifyBuilder.toString(), Zipper.Directory.FILES)
-                .add("README.txt", readmeBuilder.toString(), Zipper.Directory.FILES)
+                .add("MyApplication.java", identifyBuilder.toString())
+                .add("README.txt", readmeBuilder.toString())
                 .zip("android-conversion.zip");
 
         new Share(filename).execute(getActivity());
