@@ -40,7 +40,7 @@ public class IntegrationExport extends BaseExport<Integration> {
         java.addLineWithPadding(4, "public void onCreate(Bundle savedInstanceState) {");
         java.addLineWithPadding(8, "super.onCreate(savedInstanceState);");
         java.addLineWithPadding(8, String.format("AmbassadorSDK.runWithKeys(this, \"SDKToken %s\", \"%s\");", User.get().getSdkToken(), User.get().getUniversalId()));
-        java.addLineWithPadding(8, String.format("AmbassadorSDK.presentRAF(this, \"%s\", \"raf.xml\");", model.getCampaignId()));
+        java.addLineWithPadding(8, String.format("AmbassadorSDK.presentRAF(this, \"%s\", \"ambassador-raf.xml\");", model.getCampaignId()));
         java.addLineWithPadding(4, "}");
         java.addLine("");
         java.addLine("}");
@@ -60,7 +60,8 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     @Override
     public String zip(Context context) {
-        addExtraContent("raf.xml", "raf");
+        addExtraContent("ambassador-raf.xml", new XmlIntegrationTranscriber().transcribe(model));
+        addExtraContent("ambassador-raf.plist", new plistIntegrationTranscriber().transcribe(model));
         if (model.getRafOptions().getLogo() != null) {
             addExtraFile(model.getRafOptions().getLogo());
         }
@@ -70,6 +71,28 @@ public class IntegrationExport extends BaseExport<Integration> {
     @Override
     public String getZipName() {
         return "ambassador-integration.zip";
+    }
+
+    protected interface IntegrationTranscriber {
+        String transcribe(Integration integration);
+    }
+
+    protected static class XmlIntegrationTranscriber implements IntegrationTranscriber {
+
+        @Override
+        public String transcribe(Integration integration) {
+            return "xml";
+        }
+
+    }
+
+    protected static class plistIntegrationTranscriber implements IntegrationTranscriber {
+
+        @Override
+        public String transcribe(Integration integration) {
+            return "plist";
+        }
+
     }
 
 }
