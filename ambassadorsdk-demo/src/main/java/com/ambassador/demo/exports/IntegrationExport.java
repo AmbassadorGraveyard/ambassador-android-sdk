@@ -2,6 +2,7 @@ package com.ambassador.demo.exports;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.ColorInt;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.demo.data.Integration;
@@ -215,9 +216,163 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     protected static class plistIntegrationTranscriber implements IntegrationTranscriber {
 
+        private String getColorValue(@ColorInt int color) {
+            return String.format("#%06X", (0xFFFFFF & color));
+        }
+
+        private String getKeyString(String key) {
+            return "    <key>" + key + "</key>\n";
+        }
+
+        private String getValueString(String value) {
+            return "    <string>" + value + "</string>\n";
+        }
+
         @Override
         public String transcribe(Integration integration) {
-            return "plist";
+            RAFOptions rafOptions = integration.getRafOptions();
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+            stringBuilder.append("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n");
+            stringBuilder.append("<plist version=\"1.0\">\n");
+            stringBuilder.append("<dict>\n");
+
+            stringBuilder.append(getKeyString("ALERT BUTTON ---------"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("AlertButtonBackgroundColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("AlertButtonTextColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("CONTACT SEARCH BAR ----------"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("CONTACT SEND BUTTON ---------"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("CONTACT TABLEVIEW ------------"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("Channels"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactAvatarBackgroundColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactAvatarColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactSearchBackgroundColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactSearchDoneButtonTextColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactSendButtonBackgroundColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactSendButtonTextColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactSendButtonTextFont"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactTableBackgroundColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactTableCheckMarkColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactTableInfoTextColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactTableInfoTextFont"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactTableNameTextColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ContactTableNameTextFont"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("DefaultShareMessage"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("NAVIGATION BAR -- - -- - - - - "));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("NavBarColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("NavBarTextColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("NavBarTextFont"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("NavBarTextMessage"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAF DESCRIPTION LABEL ------"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAF PAGE ------------------------"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAF WELCOME LABEL ----------"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAFBackgroundColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAFDescriptionTextColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAFDescriptionTextFont"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAFDescriptionTextMessage"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAFLogo"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAFWelcomeTextColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAFWelcomeTextFont"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("RAFWelcomeTextMessage"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("SHARE URL FIELD ----------------"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("SOCIAL SHARE GRID ------------"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ShareFieldBackgroundColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ShareFieldCornerRadius"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ShareFieldHeight"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ShareFieldTextColor"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append(getKeyString("ShareFieldTextFont"));
+            stringBuilder.append(getValueString(""));
+
+            stringBuilder.append("</dict>\n");
+            stringBuilder.append("</plist>\n");
+            return stringBuilder.toString();
         }
 
     }
