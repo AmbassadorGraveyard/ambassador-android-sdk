@@ -97,14 +97,6 @@ public class Zipper {
     }
 
     /**
-     * zip(...) no-parameter overload. Zips with filename "android-raf.zip".
-     */
-    @NonNull
-    public String zip() {
-        return zip("android-raf.zip");
-    }
-
-    /**
      * Zips all the added files and returns the path.
      * @return the String path + filename of the zip file.
      */
