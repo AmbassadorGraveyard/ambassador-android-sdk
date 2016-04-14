@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
-import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 import com.ambassador.demo.R;
 import com.ambassador.demo.data.User;
 import com.ambassador.demo.fragments.ConversionFragment;
@@ -41,8 +40,6 @@ public final class MainActivity extends AppCompatActivity {
     @Bind(R.id.vpPages)     protected ViewPager     vpPages;
 
     protected TabFragmentPagerAdapter adapter;
-
-    protected WelcomeScreenDialog welcomeScreenDialog;
 
     protected MenuItem menuItem;
 
@@ -150,7 +147,7 @@ public final class MainActivity extends AppCompatActivity {
         public TabFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             tabs = new TabModel[4];
-            String rafTitle = getResources().getDisplayMetrics().densityDpi < 300 ? "Referrals" : "Refer a Friend";
+            String rafTitle = getResources().getDisplayMetrics().densityDpi < 300 ? "Referrals" : "Refer-a-Friend";
             tabs[0] = new TabModel(rafTitle, R.drawable.ic_raf, new ReferFragment())
                     .setContentDescription("referTab");
             tabs[1] = new TabModel("Identify", R.drawable.ic_identify, new IdentifyFragment())

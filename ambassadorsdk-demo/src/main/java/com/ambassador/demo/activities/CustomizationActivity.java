@@ -232,7 +232,7 @@ public class CustomizationActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar == null) return;
         actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
-        setTitle(Html.fromHtml("<small>Edit Refer a Friend View</small>"));
+        setTitle(Html.fromHtml("<small>Edit Refer-a-Friend View</small>"));
     }
 
     protected void handleEditing() {
