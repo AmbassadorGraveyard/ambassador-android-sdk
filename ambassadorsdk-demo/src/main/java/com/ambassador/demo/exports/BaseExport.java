@@ -24,6 +24,11 @@ public abstract class BaseExport<T> implements Export<T> {
     public abstract String getObjectiveCImplementation();
 
     @Override
+    public void addExtra(String pathToAdd, String pathToContent) {
+
+    }
+
+    @Override
     public String zip(Context context) {
         return new Zipper(context)
                 .add("README.txt", getReadme())

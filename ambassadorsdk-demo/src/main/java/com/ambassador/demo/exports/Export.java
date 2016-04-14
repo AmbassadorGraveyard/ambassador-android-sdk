@@ -9,6 +9,7 @@ public interface Export<T> {
     String getJavaImplementation();
     String getSwiftImplementation();
     String getObjectiveCImplementation();
+    void addExtra(String pathToAdd, String pathToContent);
     String zip(Context context);
     String getZipName();
 
