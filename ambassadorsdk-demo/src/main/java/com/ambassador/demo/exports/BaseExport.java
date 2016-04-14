@@ -34,12 +34,10 @@ public abstract class BaseExport<T> implements Export<T> {
     @Override
     public abstract String getObjectiveCImplementation();
 
-    @Override
     public void addExtraContent(String filename, String content) {
         this.extraContent.put(filename, content);
     }
 
-    @Override
     public void addExtraFile(String filename) {
         this.extraFiles.add(filename);
     }
