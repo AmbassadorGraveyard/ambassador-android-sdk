@@ -1,4 +1,4 @@
 package com.ambassador.demo.exports;
 
-public class ConversionExport {
+public class ConversionExport implements Export {
 }

@@ -1,4 +1,4 @@
 package com.ambassador.demo.exports;
 
-public class IdentifyExport {
+public class IdentifyExport implements Export {
 }
