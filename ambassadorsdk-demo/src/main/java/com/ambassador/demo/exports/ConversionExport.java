@@ -126,18 +126,52 @@ public class ConversionExport extends BaseExport<ConversionParameters> {
     @Override
     public String getObjectiveCImplementation() {
         PlaintextFile objc = new PlaintextFile();
-        objc.addLine("#import \"ViewControllerTest.h\"");
+        objc.addLine("#import \"AppDelegate.h\"");
         objc.addLine("#import <Ambassador/Ambassador.h>");
         objc.addLine("");
-        objc.addLine("@interface ViewControllerTest ()");
+        objc.addLine("@interface AppDelegate ()");
         objc.addLine("");
         objc.addLine("@end");
         objc.addLine("");
-        objc.addLine("@implementation ViewControllerTest");
+        objc.addLine("@implementation AppDelegate");
         objc.addLine("");
-        objc.addLine("- (void)viewDidAppear:(BOOL)animated {");
+        objc.addLine("- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {");
+
         objc.addLineWithPadding(4, String.format("[AmbassadorSDK runWithUniversalToken:\"%s\" universalID:\"%s\"];", User.get().getSdkToken(), User.get().getUniversalId()));
-        objc.addLineWithPadding(4, String.format("[AmbassadorSDK presentRAFForCampaign:@\"%s\" FromViewController:self withThemePlist:@\"ambassador-raf\"];", model.getCampaignId()));
+        objc.addLine("");
+        objc.addLineWithPadding(4, "AMBConversionParameters *conversionParameters = [[AMBConversionParameters alloc] init];");
+        objc.addLine("");
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_campaign = @%s;", model.getCampaign()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_email = @\"%s\";", model.getEmail()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_revenue = @%s;", model.getRevenue()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_first_name = @\"%s\";", model.getFirstName()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_last_name = @\"%s\";", model.getLastName()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_email_new_ambassador = @%s;", model.getCampaign() == 1 ? "YES" : "NO"));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_uid = @\"%s\";", model.getUid()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_custom1 = @\"%s\";", model.getCustom1()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_custom2 = @\"%s\";", model.getCustom2()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_custom3 = @\"%s\";", model.getCustom3()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_auto_create = @%s;", model.getAutoCreate() == 1 ? "YES" : "NO"));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_deactivate_new_ambassador = @%s;", model.getDeactivateNewAmbassador() == 1 ? "YES" : "NO"));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_transaction_uid = @\"%s\";", model.getTransactionUid()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_add_to_group_id = @\"%s\";", model.getAddToGroupId()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_event_data1 = @\"%s\";", model.getEventData1()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_event_data2 = @\"%s\";", model.getEventData2()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_event_data3 = @\"%s\";", model.getEventData3()));
+        objc.addLineWithPadding(4, String.format("conversionParameters.mbsy_is_approved = @%s;", model.getIsApproved() == 1 ? "YES" : "NO"));
+        objc.addLine("");
+
+        objc.addLineWithPadding(4, "[AmbassadorSDK registerConversion:conversionParameters restrictToInstall:NO completion:^(NSError *error) {");
+        objc.addLineWithPadding(8, "if (error) {");
+        objc.addLineWithPadding(12, "NSLog(@\"Error registering conversion - %@\", error);");
+        objc.addLineWithPadding(8, "} else {");
+        objc.addLineWithPadding(12, "NSLog(@\"Conversion registered successfully!\");");
+        objc.addLineWithPadding(8, "};");
+        objc.addLineWithPadding(4, "}];");
+
+        objc.addLine("");
+        objc.addLineWithPadding(4, "return YES;");
+
         objc.addLine("}");
         objc.addLine("");
         objc.addLine("@end");
