@@ -259,24 +259,6 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
         Integration integration = adapter.getItem(item);
         RAFOptions rafOptions = integration.getRafOptions();
         if (rafOptions != null) {
-            StringBuilder readmeBuilder = new StringBuilder();
-            readmeBuilder.append("AmbassadorSDK 1.1.4\n");
-            readmeBuilder.append("Take a look at the android docs for an in-depth explanation on installing and integrating the SDK:\nhttps://docs.getambassador.com/v2.0.0/page/android-sdk\n\n");
-            readmeBuilder.append("Add the items from the assets folder to your application's local assets folder.\n");
-            readmeBuilder.append("Refer to Application.java for an example implementation of this integration.\n");
-
-            StringBuilder integrationBuilder = new StringBuilder();
-            integrationBuilder.append("package com.example.example;\n\n");
-            integrationBuilder.append("import android.app.Activity;\n");
-            integrationBuilder.append("import com.ambassador.ambassadorsdk.AmbassadorSDK;\n\n");
-            integrationBuilder.append("public class MyActivity extends Activity {\n\n");
-            integrationBuilder.append("    @Override\n");
-            integrationBuilder.append("    public void onCreate() {\n");
-            integrationBuilder.append("        super.onCreate();\n");
-            integrationBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, \"SDKToken %s\", \"%s\");\n", User.get().getSdkToken(), User.get().getUniversalId()));
-            integrationBuilder.append(String.format("        AmbassadorSDK.presentRAF(this, \"%s\", \"%s\");\n", integration.getCampaignId(), "raf.xml"));
-            integrationBuilder.append("    }\n\n");
-            integrationBuilder.append("}");
 
             Export<Integration> export = new IntegrationExport();
             export.setModel(integration);
