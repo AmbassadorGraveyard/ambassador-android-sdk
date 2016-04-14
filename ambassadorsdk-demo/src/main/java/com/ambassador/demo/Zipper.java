@@ -23,21 +23,11 @@ import java.util.zip.ZipOutputStream;
  */
 public class Zipper {
 
-    /**
-     * Enum describing the directory in the zip to place a file.
-     */
-    public enum Directory {
-        FILES, ASSETS
-    }
-
     /** A context reference passed into the class constructor used for saving and reading files properly. */
     protected Context context;
 
     /** List of String path+file that need to be packaged into the zip as the base directory. */
     protected List<String> files;
-
-    /** List of String path+file that need to be packaged into the zip in assets/ */
-    protected List<String> assets;
 
     /**
      * Default constructor.
@@ -46,7 +36,6 @@ public class Zipper {
     public Zipper(@NonNull Context context) {
         this.context = context;
         this.files = new ArrayList<>();
-        this.assets = new ArrayList<>();
     }
 
      /**
@@ -57,7 +46,7 @@ public class Zipper {
      * @return this Zipper, useful for chaining methods.
      */
     @NonNull
-    public Zipper add(@NonNull String pathWithName, @NonNull String content, @NonNull Directory directory) {
+    public Zipper add(@NonNull String pathWithName, @NonNull String content) {
         FileOutputStream outputStream;
         try {
             outputStream = context.openFileOutput(pathWithName, Context.MODE_PRIVATE);
@@ -67,16 +56,8 @@ public class Zipper {
             e.printStackTrace();
         }
 
-        switch (directory) {
-            case FILES:
-                files.add(pathWithName);
-                break;
-            case ASSETS:
-                assets.add(pathWithName);
-                break;
-            default:
-                break;
-        }
+        files.add(pathWithName);
+
         return this;
     }
 
@@ -90,10 +71,10 @@ public class Zipper {
     public Zipper add(@NonNull String pathWithName, @NonNull RAFOptions rafOptions) {
         String logo = rafOptions.getLogo();
         if (logo != null) {
-            assets.add(logo);
+            files.add(logo);
         }
 
-        return add(pathWithName, new OptionXmlTranscriber(rafOptions).transcribe(), Directory.ASSETS);
+        return add(pathWithName, new OptionXmlTranscriber(rafOptions).transcribe());
     }
 
     /**
@@ -113,20 +94,6 @@ public class Zipper {
                 origin = new BufferedInputStream(fi, 1024);
 
                 ZipEntry entry = new ZipEntry(files.get(i).substring(files.get(i).lastIndexOf("/") + 1));
-                out.putNextEntry(entry);
-                int count;
-
-                while ((count = origin.read(data, 0, 1024)) != -1) {
-                    out.write(data, 0, count);
-                }
-                origin.close();
-            }
-
-            for (int i = 0; i < assets.size(); i++) {
-                FileInputStream fi = context.openFileInput(assets.get(i));
-                origin = new BufferedInputStream(fi, 1024);
-
-                ZipEntry entry = new ZipEntry("assets/" + assets.get(i).substring(assets.get(i).lastIndexOf("/") + 1));
                 out.putNextEntry(entry);
                 int count;
 

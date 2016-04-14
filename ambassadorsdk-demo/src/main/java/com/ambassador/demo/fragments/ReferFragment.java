@@ -281,7 +281,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                     .add("MyActivity.java", integrationBuilder.toString(), Zipper.Directory.FILES)
                     .add("raf.xml", rafOptions)
                     .add("README.txt", readmeBuilder.toString(), Zipper.Directory.FILES)
-                    .zip();
+                    .zip("android-raf.zip");
 
             new Share(filename).execute(getActivity());
         }
