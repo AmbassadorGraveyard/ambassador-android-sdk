@@ -216,6 +216,11 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     protected static class plistIntegrationTranscriber implements IntegrationTranscriber {
 
+        private String getLogoValue(String logoPath) {
+            if (logoPath == null) return "";
+            return logoPath.substring(0, logoPath.lastIndexOf(".")) + ", 1";
+        }
+
         private String getChannelValue(String[] channels) {
             String out = "";
             for (String channel : channels) {
@@ -352,7 +357,7 @@ public class IntegrationExport extends BaseExport<Integration> {
             stringBuilder.append(getValueString(rafOptions.getDescriptionText()));
 
             stringBuilder.append(getKeyString("RAFLogo"));
-            stringBuilder.append(getValueString(""));
+            stringBuilder.append(getValueString(getLogoValue(rafOptions.getLogo())));
 
             stringBuilder.append(getKeyString("RAFWelcomeTextColor"));
             stringBuilder.append(getValueString(getColorValue(rafOptions.getHomeWelcomeTitleColor())));
