@@ -165,6 +165,8 @@ public class IntegrationExport extends BaseExport<Integration> {
 
             stringBuilder.append(getAttributeString("string", "RAFdefaultShareMessage", rafOptions.getDefaultShareMessage()));
             stringBuilder.append(getAttributeString("string", "RAFtitleText", rafOptions.getTitleText()));
+            stringBuilder.append(getAttributeString("string", "RAFdescriptionText", rafOptions.getDescriptionText()));
+            stringBuilder.append(getAttributeString("string", "RAFtoolbarTitle", rafOptions.getToolbarTitle()));
             stringBuilder.append(getAttributeString("string", "RAFLogoPosition", rafOptions.getLogoPosition()));
             stringBuilder.append(getAttributeString("string", "RAFLogo", rafOptions.getLogo()));
             stringBuilder.append(getAttributeString("color", "homeBackground", rafOptions.getHomeBackgroundColor()));
