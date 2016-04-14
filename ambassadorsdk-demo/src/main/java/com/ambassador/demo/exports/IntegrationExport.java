@@ -140,7 +140,7 @@ public class IntegrationExport extends BaseExport<Integration> {
         private String getAttributeString(String tag, String name, float value) {
             switch (tag) {
                 case "dimen":
-                    return getAttributeString(tag, name, String.valueOf((int) (value)) + "sp");
+                    return getAttributeString(tag, name, String.valueOf((int) (value)) + (name.equals("socialOptionCornerRadius") ? "dp" :"sp"));
                 default:
                     return "";
             }
