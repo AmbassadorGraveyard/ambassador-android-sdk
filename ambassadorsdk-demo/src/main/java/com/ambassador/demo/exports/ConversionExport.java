@@ -73,12 +73,76 @@ public class ConversionExport extends BaseExport<ConversionParameters> {
 
     @Override
     public String getSwiftImplementation() {
-        return null;
+        PlaintextFile swift = new PlaintextFile();
+        swift.addLine("import UIKit");
+        swift.addLine("");
+        swift.addLine("@UIApplicationMainclass AppDelegate: UIResponder, UIApplicationDelegate {");
+        swift.addLine("");
+        swift.addLineWithPadding(4, "var window: UIWindow?");
+        swift.addLine("");
+        swift.addLineWithPadding(4, "func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {");
+        swift.addLineWithPadding(8, String.format("AmbassadorSDK.runWithUniversalToken(\"%s\", universalID: \"%s\")", User.get().getSdkToken(), User.get().getUniversalId()));
+
+        swift.addLine("");
+
+        swift.addLineWithPadding(8, "let conversionParameters = AMBConversionParameters()");
+        swift.addLine("");
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_campaign = %s", model.getCampaign()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_email = \"%s\"", model.getEmail()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_revenue = %s", model.getRevenue()));
+
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_first_name = \"%s\"", model.getFirstName()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_last_name = \"%s\"", model.getLastName()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_email_new_ambassador = %s", model.getCampaign() == 1));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_uid = \"%s\"", model.getUid()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_custom1 = \"%s\"", model.getCustom1()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_custom2 = \"%s\"", model.getCustom2()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_custom3 = \"%s\"", model.getCustom3()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_auto_create = %s", model.getAutoCreate() == 1));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_deactivate_new_ambassador = %s", model.getDeactivateNewAmbassador() == 1));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_transaction_uid = \"%s\"", model.getTransactionUid()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_add_to_group_id = \"%s\"", model.getAddToGroupId()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_event_data1 = \"%s\"", model.getEventData1()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_event_data2 = \"%s\"", model.getEventData2()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_event_data3 = \"%s\"", model.getEventData3()));
+        swift.addLineWithPadding(8, String.format("conversionParameters.mbsy_is_approved = %s", model.getIsApproved() == 1));
+
+        swift.addLine("");
+
+        swift.addLineWithPadding(8, "AmbassadorSDK.registerConversion(conversionParameters, restrictToInstall: false) { (error) -> Void in");
+        swift.addLineWithPadding(12, "if ((error) != nil) {");
+        swift.addLineWithPadding(16, "print(\"Error (error)\")");
+        swift.addLineWithPadding(12, "} else {");
+        swift.addLineWithPadding(16, "print(\"All conversion parameters are set properly\")");
+        swift.addLineWithPadding(12, "}");
+        swift.addLineWithPadding(8, "}");
+        swift.addLineWithPadding(4, "}");
+        swift.addLine("");
+        swift.addLine("}");
+
+        return swift.get();
     }
 
     @Override
     public String getObjectiveCImplementation() {
-        return null;
+        PlaintextFile objc = new PlaintextFile();
+        objc.addLine("#import \"ViewControllerTest.h\"");
+        objc.addLine("#import <Ambassador/Ambassador.h>");
+        objc.addLine("");
+        objc.addLine("@interface ViewControllerTest ()");
+        objc.addLine("");
+        objc.addLine("@end");
+        objc.addLine("");
+        objc.addLine("@implementation ViewControllerTest");
+        objc.addLine("");
+        objc.addLine("- (void)viewDidAppear:(BOOL)animated {");
+        objc.addLineWithPadding(4, String.format("[AmbassadorSDK runWithUniversalToken:\"%s\" universalID:\"%s\"];", User.get().getSdkToken(), User.get().getUniversalId()));
+        objc.addLineWithPadding(4, String.format("[AmbassadorSDK presentRAFForCampaign:@\"%s\" FromViewController:self withThemePlist:@\"ambassador-raf\"];", model.getCampaignId()));
+        objc.addLine("}");
+        objc.addLine("");
+        objc.addLine("@end");
+
+        return objc.get();
     }
 
     @Override
