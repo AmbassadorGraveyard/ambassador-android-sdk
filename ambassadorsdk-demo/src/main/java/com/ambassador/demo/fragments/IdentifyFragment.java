@@ -20,10 +20,10 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demo.BuildConfig;
-import com.ambassador.demo.exports.Zipper;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.MainActivity;
 import com.ambassador.demo.data.User;
+import com.ambassador.demo.exports.IdentifyExport;
 import com.ambassador.demo.utils.Share;
 
 import butterknife.Bind;
@@ -130,11 +130,14 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
 
-        String filename = new Zipper(getActivity())
-                .add("MyApplication.java", identifyBuilder.toString())
-                .add("README.txt", readmeBuilder.toString())
-                .zip("android-identify.zip");
+//        String filename = new Zipper(getActivity())
+//                .add("MyApplication.java", identifyBuilder.toString())
+//                .add("README.txt", readmeBuilder.toString())
+//                .zip("android-identify.zip");
 
+        IdentifyExport identifyExport = new IdentifyExport();
+        identifyExport.setModel(etEmail.getText().toString());
+        String filename = identifyExport.zip();
         new Share(filename).execute(getActivity());
     }
 
