@@ -130,14 +130,9 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
 
-//        String filename = new Zipper(getActivity())
-//                .add("MyApplication.java", identifyBuilder.toString())
-//                .add("README.txt", readmeBuilder.toString())
-//                .zip("android-identify.zip");
-
         IdentifyExport identifyExport = new IdentifyExport();
         identifyExport.setModel(etEmail.getText().toString());
-        String filename = identifyExport.zip();
+        String filename = identifyExport.zip(getActivity());
         new Share(filename).execute(getActivity());
     }
 

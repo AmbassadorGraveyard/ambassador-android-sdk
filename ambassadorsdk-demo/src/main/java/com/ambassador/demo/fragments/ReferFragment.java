@@ -26,16 +26,16 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
-import com.ambassador.demo.exports.Zipper;
 import com.ambassador.demo.Demo;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.CustomizationActivity;
 import com.ambassador.demo.activities.MainActivity;
 import com.ambassador.demo.data.Integration;
 import com.ambassador.demo.data.User;
+import com.ambassador.demo.exports.IntegrationExport;
+import com.ambassador.demo.utils.Share;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.ambassador.demo.utils.Share;
 import com.google.gson.JsonParser;
 
 import java.text.SimpleDateFormat;
@@ -277,12 +277,9 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             integrationBuilder.append("    }\n\n");
             integrationBuilder.append("}");
 
-            String filename = new Zipper(getActivity())
-                    .add("MyActivity.java", integrationBuilder.toString())
-                    .add("raf.xml", rafOptions)
-                    .add("README.txt", readmeBuilder.toString())
-                    .zip("android-raf.zip");
-
+            IntegrationExport integrationExport = new IntegrationExport();
+            integrationExport.setModel(integration);
+            String filename = integrationExport.zip(getActivity());
             new Share(filename).execute(getActivity());
         }
     }

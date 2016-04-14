@@ -27,6 +27,7 @@ import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
+import com.ambassador.demo.exports.ConversionExport;
 import com.ambassador.demo.exports.Zipper;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.MainActivity;
@@ -348,12 +349,10 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         identifyBuilder.append("        AmbassadorSDK.registerConversion(conversionParameters, false);\n");
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
-
-        String filename = new Zipper(getActivity())
-                .add("MyApplication.java", identifyBuilder.toString())
-                .add("README.txt", readmeBuilder.toString())
-                .zip("android-conversion.zip");
-
+        
+        ConversionExport conversionExport = new ConversionExport();
+        conversionExport.setModel(getConversionParametersBasedOnInputs());
+        String filename = conversionExport.zip(getActivity());
         new Share(filename).execute(getActivity());
     }
 
