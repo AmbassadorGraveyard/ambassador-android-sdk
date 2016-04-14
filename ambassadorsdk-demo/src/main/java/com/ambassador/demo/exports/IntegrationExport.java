@@ -1,6 +1,7 @@
 package com.ambassador.demo.exports;
 
 import com.ambassador.demo.data.Integration;
+import com.ambassador.demo.data.User;
 
 public class IntegrationExport extends BaseExport<Integration> {
 
@@ -24,7 +25,25 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     @Override
     public String getJavaImplementation() {
-        return null;
+        PlaintextFile java = new PlaintextFile();
+        java.addLine("package com.example.example;");
+        java.addLine("");
+        java.addLine("import android.app.Activity;");
+        java.addLine("import android.os.Bundle;");
+        java.addLine("import com.ambassador.ambassadorsdk.AmbassadorSDK;");
+        java.addLine("");
+        java.addLine("public class MyActivity extends Activity {");
+        java.addLine("");
+        java.addLineWithPadding(4, "@Override");
+        java.addLineWithPadding(4, "public void onCreate(Bundle savedInstanceState) {");
+        java.addLineWithPadding(8, "super.onCreate(savedInstanceState);");
+        java.addLineWithPadding(8, String.format("AmbassadorSDK.runWithKeys(this, \"SDKToken %s\", \"%s\");", User.get().getSdkToken(), User.get().getUniversalId()));
+        java.addLineWithPadding(8, String.format("AmbassadorSDK.presentRAF(this, \"%s\", \"raf.xml\");", model.getCampaignId()));
+        java.addLineWithPadding(4, "}");
+        java.addLine("");
+        java.addLine("}");
+
+        return java.get();
     }
 
     @Override
