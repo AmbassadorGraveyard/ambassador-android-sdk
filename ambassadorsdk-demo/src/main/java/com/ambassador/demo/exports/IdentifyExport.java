@@ -1,6 +1,6 @@
 package com.ambassador.demo.exports;
 
-public class IdentifyExport implements Export<String> {
+public class IdentifyExport extends BaseExport<String> {
 
     @Override
     public void setModel(String s) {
@@ -28,7 +28,7 @@ public class IdentifyExport implements Export<String> {
     }
 
     @Override
-    public String zip() {
+    public String getZipName() {
         return null;
     }
 

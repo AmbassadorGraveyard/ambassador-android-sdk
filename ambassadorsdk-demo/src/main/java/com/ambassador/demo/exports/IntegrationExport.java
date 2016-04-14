@@ -2,7 +2,7 @@ package com.ambassador.demo.exports;
 
 import com.ambassador.demo.data.Integration;
 
-public class IntegrationExport implements Export<Integration> {
+public class IntegrationExport extends BaseExport<Integration> {
 
     @Override
     public void setModel(Integration integration) {
@@ -30,7 +30,7 @@ public class IntegrationExport implements Export<Integration> {
     }
 
     @Override
-    public String zip() {
+    public String getZipName() {
         return null;
     }
 

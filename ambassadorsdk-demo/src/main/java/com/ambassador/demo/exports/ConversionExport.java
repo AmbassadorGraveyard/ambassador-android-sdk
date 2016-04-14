@@ -2,7 +2,7 @@ package com.ambassador.demo.exports;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 
-public class ConversionExport implements Export<ConversionParameters> {
+public class ConversionExport extends BaseExport<ConversionParameters> {
 
     @Override
     public void setModel(ConversionParameters conversionParameters) {
@@ -30,7 +30,7 @@ public class ConversionExport implements Export<ConversionParameters> {
     }
 
     @Override
-    public String zip() {
+    public String getZipName() {
         return null;
     }
 

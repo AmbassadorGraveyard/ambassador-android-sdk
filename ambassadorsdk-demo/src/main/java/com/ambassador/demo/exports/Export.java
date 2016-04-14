@@ -1,5 +1,7 @@
 package com.ambassador.demo.exports;
 
+import android.content.Context;
+
 public interface Export<T> {
 
     void setModel(T t);
@@ -7,6 +9,7 @@ public interface Export<T> {
     String getJavaImplementation();
     String getSwiftImplementation();
     String getObjectiveCImplementation();
-    String zip();
+    String zip(Context context);
+    String getZipName();
 
 }
