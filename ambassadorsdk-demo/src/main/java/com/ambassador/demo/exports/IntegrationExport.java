@@ -17,6 +17,7 @@ public class IntegrationExport extends BaseExport<Integration> {
         readme.addLine("Take a look at the Android docs for an in-depth explanation on adding and integrating the SDK:");
         readme.addLine("https://docs.getambassador.com/v2.0.0/page/android-sdk");
         readme.addLine("Check out the MyApplication.java file for an example of this integration.");
+        readme.addLine("Place the image and ambassador-raf.xml files into the root of your application's assets folder.");
 
         readme.addLine("");
 
@@ -24,6 +25,7 @@ public class IntegrationExport extends BaseExport<Integration> {
         readme.addLine("Take a look at the iOS docs for an in-depth explanation on adding and integrating the SDK:");
         readme.addLine("https://docs.getambassador.com/v2.0.0/page/ios-sdk");
         readme.addLine("Check out the AppDelegate.m or AppDelegate.swift files for examples of this integration.");
+        readme.addLine("Add the image to your app's image assets folder and add the .plist file to your project.");
 
         return readme.get();
     }
