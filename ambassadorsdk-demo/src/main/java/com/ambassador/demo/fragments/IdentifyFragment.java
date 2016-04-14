@@ -20,7 +20,7 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demo.BuildConfig;
-import com.ambassador.demo.CustomizationPackage;
+import com.ambassador.demo.Zipper;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.MainActivity;
 import com.ambassador.demo.data.User;
@@ -126,13 +126,13 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
         identifyBuilder.append("    public void onCreate() {\n");
         identifyBuilder.append("        super.onCreate();\n");
         identifyBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, \"SDKToken %s\", \"%s\");\n", User.get().getSdkToken(), User.get().getUniversalId()));
-        identifyBuilder.append(String.format("        AmbassadorSDK.identify(\"%s\");\n", etEmail.getText().toString()));
+        identifyBuilder.append(String.format("        AmbassadorSDK.identify(\"%s\");w\n", etEmail.getText().toString()));
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
 
-        String filename = new CustomizationPackage(getActivity())
-                .add("MyApplication.java", identifyBuilder.toString(), CustomizationPackage.Directory.FILES)
-                .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
+        String filename = new Zipper(getActivity())
+                .add("MyApplication.java", identifyBuilder.toString(), Zipper.Directory.FILES)
+                .add("README.txt", readmeBuilder.toString(), Zipper.Directory.FILES)
                 .zip("android-identify.zip");
 
         new Share(filename).execute(getActivity());

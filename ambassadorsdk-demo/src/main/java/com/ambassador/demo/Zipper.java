@@ -21,7 +21,7 @@ import java.util.zip.ZipOutputStream;
  * Handles custom packaging in the demo app for sharing integrations. Class can be used to add files
  * at a given path + filename and then zip it. Has special logic for stuff like RAFOptions and ConversionParameters.
  */
-public class CustomizationPackage {
+public class Zipper {
 
     /**
      * Enum describing the directory in the zip to place a file.
@@ -43,7 +43,7 @@ public class CustomizationPackage {
      * Default constructor.
      * @param context a reference to a valid Context.
      */
-    public CustomizationPackage(@NonNull Context context) {
+    public Zipper(@NonNull Context context) {
         this.context = context;
         this.files = new ArrayList<>();
         this.assets = new ArrayList<>();
@@ -54,10 +54,10 @@ public class CustomizationPackage {
      * it and will later be packaged into the zip.
      * @param pathWithName the String relative path inside assets with the filename on the end.
      * @param content the String content to write in the file.
-     * @return this CustomizationPackage, useful for chaining methods.
+     * @return this Zipper, useful for chaining methods.
      */
     @NonNull
-    public CustomizationPackage add(@NonNull String pathWithName, @NonNull String content, @NonNull Directory directory) {
+    public Zipper add(@NonNull String pathWithName, @NonNull String content, @NonNull Directory directory) {
         FileOutputStream outputStream;
         try {
             outputStream = context.openFileOutput(pathWithName, Context.MODE_PRIVATE);
@@ -84,10 +84,10 @@ public class CustomizationPackage {
      * Converts RAFOptions to a String XML representation and calls through to add(String pathWithName, String content).
      * @param pathWithName the String relative path inside assets with the filename on the end.
      * @param rafOptions the RAFOptions object to convert to XML and write to the file.
-     * @return this CustomizationPackage, useful for chaining methods.
+     * @return this Zipper, useful for chaining methods.
      */
     @NonNull
-    public CustomizationPackage add(@NonNull String pathWithName, @NonNull RAFOptions rafOptions) {
+    public Zipper add(@NonNull String pathWithName, @NonNull RAFOptions rafOptions) {
         String logo = rafOptions.getLogo();
         if (logo != null) {
             assets.add(logo);

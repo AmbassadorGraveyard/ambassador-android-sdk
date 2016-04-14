@@ -27,7 +27,7 @@ import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
-import com.ambassador.demo.CustomizationPackage;
+import com.ambassador.demo.Zipper;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.MainActivity;
 import com.ambassador.demo.api.Requests;
@@ -349,9 +349,9 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
 
-        String filename = new CustomizationPackage(getActivity())
-                .add("MyApplication.java", identifyBuilder.toString(), CustomizationPackage.Directory.FILES)
-                .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
+        String filename = new Zipper(getActivity())
+                .add("MyApplication.java", identifyBuilder.toString(), Zipper.Directory.FILES)
+                .add("README.txt", readmeBuilder.toString(), Zipper.Directory.FILES)
                 .zip("android-conversion.zip");
 
         new Share(filename).execute(getActivity());

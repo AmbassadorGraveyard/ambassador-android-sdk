@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
-import com.ambassador.demo.CustomizationPackage;
+import com.ambassador.demo.Zipper;
 import com.ambassador.demo.Demo;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.CustomizationActivity;
@@ -277,10 +277,10 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             integrationBuilder.append("    }\n\n");
             integrationBuilder.append("}");
 
-            String filename = new CustomizationPackage(getActivity())
-                    .add("MyActivity.java", integrationBuilder.toString(), CustomizationPackage.Directory.FILES)
+            String filename = new Zipper(getActivity())
+                    .add("MyActivity.java", integrationBuilder.toString(), Zipper.Directory.FILES)
                     .add("raf.xml", rafOptions)
-                    .add("README.txt", readmeBuilder.toString(), CustomizationPackage.Directory.FILES)
+                    .add("README.txt", readmeBuilder.toString(), Zipper.Directory.FILES)
                     .zip();
 
             new Share(filename).execute(getActivity());
