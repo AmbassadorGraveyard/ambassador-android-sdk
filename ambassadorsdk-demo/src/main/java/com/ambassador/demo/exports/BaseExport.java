@@ -41,4 +41,35 @@ public abstract class BaseExport<T> implements Export<T> {
     @Override
     public abstract String getZipName();
 
+    protected static class PlaintextFile {
+
+        protected String text;
+
+        public PlaintextFile() {
+            this.text = "";
+        }
+
+        public void add(String text) {
+            this.text += text;
+        }
+
+        public void addLine(String text) {
+            this.text += (this.text.isEmpty() ? "" : "\n") + text;
+        }
+
+        public void addLineWithPadding(int spaces, String text) {
+            addLine("");
+            for (int i = 0; i < spaces; i++) {
+                add(" ");
+            }
+
+            add(text);
+        }
+
+        public String get() {
+            return text;
+        }
+
+    }
+
 }

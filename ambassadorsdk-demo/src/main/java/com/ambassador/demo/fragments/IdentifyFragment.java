@@ -22,7 +22,6 @@ import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demo.BuildConfig;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.MainActivity;
-import com.ambassador.demo.data.User;
 import com.ambassador.demo.exports.Export;
 import com.ambassador.demo.exports.IdentifyExport;
 import com.ambassador.demo.utils.Share;
@@ -112,24 +111,6 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
             return;
         }
-
-        StringBuilder readmeBuilder = new StringBuilder();
-        readmeBuilder.append("AmbassadorSDK 1.1.4\n");
-        readmeBuilder.append("Take a look at the android docs for an in-depth explanation on installing and integrating the SDK:\nhttps://docs.getambassador.com/v2.0.0/page/android-sdk\n\n");
-        readmeBuilder.append("Checkout the MyApplication.java file as an example implementation of this identify request.\n");
-
-        StringBuilder identifyBuilder = new StringBuilder();
-        identifyBuilder.append("package com.example.example;\n\n");
-        identifyBuilder.append("import android.app.Application;\n");
-        identifyBuilder.append("import com.ambassador.ambassadorsdk.AmbassadorSDK;\n\n");
-        identifyBuilder.append("public class MyApplication extends Application {\n\n");
-        identifyBuilder.append("    @Override\n");
-        identifyBuilder.append("    public void onCreate() {\n");
-        identifyBuilder.append("        super.onCreate();\n");
-        identifyBuilder.append(String.format("        AmbassadorSDK.runWithKeys(this, \"SDKToken %s\", \"%s\");\n", User.get().getSdkToken(), User.get().getUniversalId()));
-        identifyBuilder.append(String.format("        AmbassadorSDK.identify(\"%s\");w\n", etEmail.getText().toString()));
-        identifyBuilder.append("    }\n\n");
-        identifyBuilder.append("}");
 
         Export<String> export = new IdentifyExport();
         export.setModel(etEmail.getText().toString());
