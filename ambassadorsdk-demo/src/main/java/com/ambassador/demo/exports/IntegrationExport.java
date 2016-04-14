@@ -5,11 +5,6 @@ import com.ambassador.demo.data.Integration;
 public class IntegrationExport extends BaseExport<Integration> {
 
     @Override
-    public void setModel(Integration integration) {
-
-    }
-
-    @Override
     public String getReadme() {
         return null;
     }

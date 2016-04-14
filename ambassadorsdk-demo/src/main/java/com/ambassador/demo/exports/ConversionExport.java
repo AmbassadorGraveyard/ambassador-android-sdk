@@ -5,11 +5,6 @@ import com.ambassador.ambassadorsdk.ConversionParameters;
 public class ConversionExport extends BaseExport<ConversionParameters> {
 
     @Override
-    public void setModel(ConversionParameters conversionParameters) {
-
-    }
-
-    @Override
     public String getReadme() {
         return null;
     }

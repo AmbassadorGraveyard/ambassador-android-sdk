@@ -3,11 +3,6 @@ package com.ambassador.demo.exports;
 public class IdentifyExport extends BaseExport<String> {
 
     @Override
-    public void setModel(String s) {
-
-    }
-
-    @Override
     public String getReadme() {
         return null;
     }

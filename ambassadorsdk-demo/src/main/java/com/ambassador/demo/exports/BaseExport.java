@@ -4,8 +4,12 @@ import android.content.Context;
 
 public abstract class BaseExport<T> implements Export<T> {
 
+    protected T model;
+
     @Override
-    public abstract void setModel(T t);
+    public void setModel(T t) {
+        this.model = t;
+    }
 
     @Override
     public abstract String getReadme();
