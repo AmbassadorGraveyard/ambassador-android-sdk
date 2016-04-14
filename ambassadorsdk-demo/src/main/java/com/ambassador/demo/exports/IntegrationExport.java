@@ -16,7 +16,7 @@ public class IntegrationExport extends BaseExport<Integration> {
         readme.addLine("Ambassador Android SDK v1.1.4");
         readme.addLine("Take a look at the Android docs for an in-depth explanation on adding and integrating the SDK:");
         readme.addLine("https://docs.getambassador.com/v2.0.0/page/android-sdk");
-        readme.addLine("Check out the MyApplication.java file for an example of this integration.");
+        readme.addLine("Check out the MyActivity.java file for an example of this integration.");
         readme.addLine("Place the image and ambassador-raf.xml files into the root of your application's assets folder.");
 
         readme.addLine("");
@@ -386,7 +386,7 @@ public class IntegrationExport extends BaseExport<Integration> {
 
             stringBuilder.append(getKeyString("AlertButtonTextColor"));
             stringBuilder.append(getValueString("#FFFFFF"));
-            
+
             stringBuilder.append(getKeyString("SOCIAL SHARE GRID ------------"));
             stringBuilder.append(getValueString(""));
 
