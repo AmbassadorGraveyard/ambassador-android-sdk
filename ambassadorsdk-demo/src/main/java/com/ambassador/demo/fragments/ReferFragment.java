@@ -26,7 +26,7 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
-import com.ambassador.demo.Zipper;
+import com.ambassador.demo.exports.Zipper;
 import com.ambassador.demo.Demo;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.CustomizationActivity;

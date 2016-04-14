@@ -1,4 +1,4 @@
-package com.ambassador.demo;
+package com.ambassador.demo.exports;
 
 import android.content.Context;
 import android.graphics.Typeface;

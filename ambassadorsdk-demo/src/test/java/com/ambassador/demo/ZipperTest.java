@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.demo.exports.Zipper;
 
 import junit.framework.Assert;
 
