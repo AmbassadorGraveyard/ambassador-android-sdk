@@ -50,12 +50,41 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     @Override
     public String getSwiftImplementation() {
-        return null;
+        PlaintextFile swift = new PlaintextFile();
+        swift.addLine("import UIKit");
+        swift.addLine("");
+        swift.addLine("class ViewController: UIViewController {");
+        swift.addLine("");
+        swift.addLineWithPadding(4, "override func viewDidAppear(animated: Bool) {");
+        swift.addLineWithPadding(8, String.format("AmbassadorSDK.runWithUniversalToken(\"%s\", universalID: \"%s\")", User.get().getSdkToken(), User.get().getUniversalId()));
+        swift.addLineWithPadding(8, String.format("AmbassadorSDK.presentRAFForCampaign(\"%s\", fromViewController: self, withThemePlist: \"ambassador-raf\")", model.getCampaignId()));
+        swift.addLineWithPadding(4, "}");
+        swift.addLine("");
+        swift.addLine("}");
+
+        return swift.get();
     }
 
     @Override
     public String getObjectiveCImplementation() {
-        return null;
+        PlaintextFile objc = new PlaintextFile();
+        objc.addLine("#import \"ViewControllerTest.h\"");
+        objc.addLine("#import <Ambassador/Ambassador.h>");
+        objc.addLine("");
+        objc.addLine("@interface ViewControllerTest ()");
+        objc.addLine("");
+        objc.addLine("@end");
+        objc.addLine("");
+        objc.addLine("@implementation ViewControllerTest");
+        objc.addLine("");
+        objc.addLine("- (void)viewDidAppear:(BOOL)animated {");
+        objc.addLineWithPadding(4, String.format("[AmbassadorSDK runWithUniversalToken:\"%s\" universalID:\"%s\"];", User.get().getSdkToken(), User.get().getUniversalId()));
+        objc.addLineWithPadding(4, String.format("[AmbassadorSDK presentRAFForCampaign:@\"%s\" FromViewController:self withThemePlist:@\"ambassador-raf\"];", model.getCampaignId()));
+        objc.addLine("}");
+        objc.addLine("");
+        objc.addLine("@end");
+
+        return objc.get();
     }
 
     @Override
