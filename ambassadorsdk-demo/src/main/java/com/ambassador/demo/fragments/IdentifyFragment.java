@@ -23,6 +23,7 @@ import com.ambassador.demo.BuildConfig;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.MainActivity;
 import com.ambassador.demo.data.User;
+import com.ambassador.demo.exports.Export;
 import com.ambassador.demo.exports.IdentifyExport;
 import com.ambassador.demo.utils.Share;
 
@@ -130,9 +131,9 @@ public final class IdentifyFragment extends Fragment implements MainActivity.Tab
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
 
-        IdentifyExport identifyExport = new IdentifyExport();
-        identifyExport.setModel(etEmail.getText().toString());
-        String filename = identifyExport.zip(getActivity());
+        Export<String> export = new IdentifyExport();
+        export.setModel(etEmail.getText().toString());
+        String filename = export.zip(getActivity());
         new Share(filename).execute(getActivity());
     }
 

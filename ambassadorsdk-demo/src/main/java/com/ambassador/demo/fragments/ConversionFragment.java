@@ -27,13 +27,13 @@ import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
-import com.ambassador.demo.exports.ConversionExport;
-import com.ambassador.demo.exports.Zipper;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.MainActivity;
 import com.ambassador.demo.api.Requests;
 import com.ambassador.demo.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demo.data.User;
+import com.ambassador.demo.exports.ConversionExport;
+import com.ambassador.demo.exports.Export;
 import com.ambassador.demo.utils.Share;
 
 import butterknife.Bind;
@@ -349,10 +349,10 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         identifyBuilder.append("        AmbassadorSDK.registerConversion(conversionParameters, false);\n");
         identifyBuilder.append("    }\n\n");
         identifyBuilder.append("}");
-        
-        ConversionExport conversionExport = new ConversionExport();
-        conversionExport.setModel(getConversionParametersBasedOnInputs());
-        String filename = conversionExport.zip(getActivity());
+
+        Export<ConversionParameters> export = new ConversionExport();
+        export.setModel(getConversionParametersBasedOnInputs());
+        String filename = export.zip(getActivity());
         new Share(filename).execute(getActivity());
     }
 

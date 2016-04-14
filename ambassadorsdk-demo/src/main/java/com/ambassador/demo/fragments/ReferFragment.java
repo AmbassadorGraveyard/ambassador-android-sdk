@@ -32,6 +32,7 @@ import com.ambassador.demo.activities.CustomizationActivity;
 import com.ambassador.demo.activities.MainActivity;
 import com.ambassador.demo.data.Integration;
 import com.ambassador.demo.data.User;
+import com.ambassador.demo.exports.Export;
 import com.ambassador.demo.exports.IntegrationExport;
 import com.ambassador.demo.utils.Share;
 import com.google.gson.Gson;
@@ -277,9 +278,9 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             integrationBuilder.append("    }\n\n");
             integrationBuilder.append("}");
 
-            IntegrationExport integrationExport = new IntegrationExport();
-            integrationExport.setModel(integration);
-            String filename = integrationExport.zip(getActivity());
+            Export<Integration> export = new IntegrationExport();
+            export.setModel(integration);
+            String filename = export.zip(getActivity());
             new Share(filename).execute(getActivity());
         }
     }
