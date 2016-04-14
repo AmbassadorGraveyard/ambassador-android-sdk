@@ -1,6 +1,13 @@
 package com.ambassador.demo.exports;
 
-public class IntegrationExport implements Export {
+import com.ambassador.demo.data.Integration;
+
+public class IntegrationExport implements Export<Integration> {
+
+    @Override
+    public void setModel(Integration integration) {
+        
+    }
 
     @Override
     public String zip() {

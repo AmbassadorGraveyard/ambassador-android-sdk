@@ -1,6 +1,13 @@
 package com.ambassador.demo.exports;
 
-public class ConversionExport implements Export {
+import com.ambassador.ambassadorsdk.ConversionParameters;
+
+public class ConversionExport implements Export<ConversionParameters> {
+
+    @Override
+    public void setModel(ConversionParameters conversionParameters) {
+
+    }
 
     @Override
     public String zip() {
