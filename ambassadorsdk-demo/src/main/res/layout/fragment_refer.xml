@@ -68,7 +68,7 @@
                 android:layout_marginTop="26dp"
                 android:width="250dp"
                 android:gravity="center"
-                android:text="You don\'t have any refer a friend views. Create your first one!"
+                android:text="You don\'t have any refer-a-friend views. Create your first one!"
                 android:textAlignment="center"
                 android:textColor="@android:color/black" />
 
