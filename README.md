@@ -1,4 +1,7 @@
 # Ambassador Android SDK
+
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/c20d0e4a62674af38c6caef27cdf1c39)](https://www.codacy.com) [![Codacy Badge](https://api.codacy.com/project/badge/coverage/c20d0e4a62674af38c6caef27cdf1c39)](https://www.codacy.com)
+
 _**Support Level**_: API 16+ (4.1+)
 
 ## Getting Started
