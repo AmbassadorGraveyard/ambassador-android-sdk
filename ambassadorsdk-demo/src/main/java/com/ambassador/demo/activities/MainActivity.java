@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
-import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 import com.ambassador.demo.R;
 import com.ambassador.demo.data.User;
 import com.ambassador.demo.fragments.ConversionFragment;
@@ -41,8 +40,6 @@ public final class MainActivity extends AppCompatActivity {
     @Bind(R.id.vpPages)     protected ViewPager     vpPages;
 
     protected TabFragmentPagerAdapter adapter;
-
-    protected WelcomeScreenDialog welcomeScreenDialog;
 
     protected MenuItem menuItem;
 
