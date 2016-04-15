@@ -111,7 +111,7 @@ public class ConversionExport extends BaseExport<ConversionParameters> {
 
         swift.addLineWithPadding(8, "AmbassadorSDK.registerConversion(conversionParameters, restrictToInstall: false) { (error) -> Void in");
         swift.addLineWithPadding(12, "if ((error) != nil) {");
-        swift.addLineWithPadding(16, "print(\"Error (error)\")");
+        swift.addLineWithPadding(16, "print(\"Error \\(error)\")");
         swift.addLineWithPadding(12, "} else {");
         swift.addLineWithPadding(16, "print(\"All conversion parameters are set properly\")");
         swift.addLineWithPadding(12, "}");
