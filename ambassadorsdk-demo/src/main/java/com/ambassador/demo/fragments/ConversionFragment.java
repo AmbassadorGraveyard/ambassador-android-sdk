@@ -43,6 +43,7 @@ import com.ambassador.demo.dialogs.GroupChooserDialog;
 import com.ambassador.demo.exports.ConversionExport;
 import com.ambassador.demo.exports.Export;
 import com.ambassador.demo.utils.Share;
+import com.ambassador.demo.views.ExpandableLayout;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -56,8 +57,9 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     @Bind(R.id.svConversion) protected ScrollView svConversion;
 
-    @Bind(R.id.tvAmbassadorSection) protected TextView tvReferrerEmail;
-    @Bind(R.id.tvCustomerSection) protected TextView tvRequiredParameters;
+    @Bind(R.id.elAmbassador) protected ExpandableLayout elAmbassador;
+    @Bind(R.id.elCustomer) protected ExpandableLayout elCustomer;
+    @Bind(R.id.elCommission) protected ExpandableLayout elCommission;
 
     @Bind(R.id.etReferrerEmail) protected EditText etReferrerEmail;
 
@@ -194,6 +196,10 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             }
         });
 
+        elAmbassador.setTitle("Ambassador");
+        elCustomer.setTitle("Customer");
+        elCommission.setTitle("Commission");
+
         return view;
     }
 
@@ -227,7 +233,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referrer email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    svConversion.smoothScrollTo(0, tvReferrerEmail.getTop());
+                    svConversion.smoothScrollTo(0, elAmbassador.getTop());
                     etReferrerEmail.requestFocus();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
@@ -239,7 +245,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referred email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
+                    svConversion.smoothScrollTo(0, elCustomer.getTop());
                     etReferredEmail.requestFocus();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
@@ -251,7 +257,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a revenue amount!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
+                    svConversion.smoothScrollTo(0, elCommission.getTop());
                     etRevenue.requestFocus();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
@@ -263,7 +269,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a campaign ID!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
+                    svConversion.smoothScrollTo(0, elCommission.getTop());
                     etCampaign.performClick();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();

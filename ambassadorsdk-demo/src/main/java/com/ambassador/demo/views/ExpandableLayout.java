@@ -8,6 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,7 +22,10 @@ import butterknife.ButterKnife;
 
 public class ExpandableLayout extends LinearLayout {
 
+    protected String title;
+
     protected ExpandableLayoutHeader header;
+    protected ImageView ivExpand;
     protected boolean isInflated;
     protected int height;
 
@@ -41,6 +47,7 @@ public class ExpandableLayout extends LinearLayout {
     protected void init() {
         setOrientation(VERTICAL);
         this.header = new ExpandableLayoutHeader(getContext());
+        ivExpand = (ImageView) this.header.findViewById(R.id.ivExpand);
         this.header.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +81,13 @@ public class ExpandableLayout extends LinearLayout {
         }
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+        if (header != null) {
+            header.setText(title);
+        }
+    }
+
     public void inflate() {
         if (isInflated) return;
         isInflated = true;
@@ -92,6 +106,9 @@ public class ExpandableLayout extends LinearLayout {
             }
         });
         valueAnimator.start();
+
+        RotateAnimation rotate = (RotateAnimation) AnimationUtils.loadAnimation(getContext(), R.anim.rotate_reverse);
+        ivExpand.startAnimation(rotate);
     }
 
     public void deflate() {
@@ -113,6 +130,9 @@ public class ExpandableLayout extends LinearLayout {
             }
         });
         valueAnimator.start();
+
+        RotateAnimation rotate = (RotateAnimation) AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
+        ivExpand.startAnimation(rotate);
     }
 
     protected static class ExpandableLayoutHeader extends RelativeLayout {
