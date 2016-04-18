@@ -1,5 +1,7 @@
 package com.ambassador.demo.views;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -102,6 +104,15 @@ public class ExpandableLayout extends LinearLayout {
                 int val = (Integer) animation.getAnimatedValue();
                 ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
                 layoutParams.height = val;
+                child.setLayoutParams(layoutParams);
+            }
+        });
+        valueAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                ViewGroup.LayoutParams layoutParams = child.getLayoutParams();
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 child.setLayoutParams(layoutParams);
             }
         });

@@ -351,24 +351,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/etConversionRevenue"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        android:background="@drawable/et_only"
-                        android:fontFamily="sans-serif"
-                        android:hint="Revenue Amount *"
-                        android:inputType="numberDecimal"
-                        android:paddingBottom="12dp"
-                        android:paddingLeft="10dp"
-                        android:paddingRight="10dp"
-                        android:paddingTop="12dp"
-                        android:textColorHint="@color/etHint"
-                        android:textCursorDrawable="@drawable/et_cursor"
-                        android:textSize="14sp" />
-
                     <RelativeLayout
                         android:id="@+id/rlCampaignChooser"
                         android:layout_width="match_parent"
@@ -398,6 +380,24 @@
 
                     </RelativeLayout>
 
+                    <EditText
+                        android:id="@+id/etConversionRevenue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp"
+                        android:background="@drawable/et_only"
+                        android:fontFamily="sans-serif"
+                        android:hint="Revenue Amount *"
+                        android:inputType="numberDecimal"
+                        android:paddingBottom="12dp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="12dp"
+                        android:textColorHint="@color/etHint"
+                        android:textCursorDrawable="@drawable/et_cursor"
+                        android:textSize="14sp" />
+
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
@@ -407,7 +407,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical"
-                            android:text="Is approved"
+                            android:text="Approve commission"
                             android:textColor="#aaaaaa" />
 
                         <android.support.v7.widget.SwitchCompat
