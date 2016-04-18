@@ -16,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +74,9 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     @Bind(R.id.btnConversion) protected Button btnConversion;
 
+    @Bind(R.id.swEnrollAsAmbassador) protected SwitchCompat swEnrollAsAmbassador;
+    @Bind(R.id.rlEnrollSubInputs) protected RelativeLayout rlEnrollSubInputs;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +90,17 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         ButterKnife.bind(this, view);
 
         swApproved.setChecked(true);
+
+        swEnrollAsAmbassador.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    rlEnrollSubInputs.setVisibility(View.VISIBLE);
+                } else {
+                    rlEnrollSubInputs.setVisibility(View.GONE);
+                }
+            }
+        });
 
         btnConversion.setOnClickListener(new View.OnClickListener() {
             @Override
