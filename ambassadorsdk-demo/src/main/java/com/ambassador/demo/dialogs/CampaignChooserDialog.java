@@ -32,8 +32,8 @@ import retrofit.client.Response;
 
 public class CampaignChooserDialog extends Dialog {
 
-    @Bind(R.id.lvCampaignChooser) protected ListView lvCampaignChooser;
-    @Bind(R.id.pbCampaignsLoading) protected ProgressBar pbCampaignsLoading;
+    @Bind(R.id.lvChooser) protected ListView lvCampaignChooser;
+    @Bind(R.id.pbLoading) protected ProgressBar pbCampaignsLoading;
 
     protected List<Campaign> campaigns;
     protected Campaign selectedCampaign;
@@ -53,7 +53,7 @@ public class CampaignChooserDialog extends Dialog {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_campaign_chooser);
+        setContentView(R.layout.dialog_chooser);
         ButterKnife.bind(this);
         populateCampaigns();
         adapter = new CampaignAdapter(getContext(), campaigns);
@@ -138,15 +138,15 @@ public class CampaignChooserDialog extends Dialog {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.view_campaign_item, parent, false);
+                convertView = LayoutInflater.from(context).inflate(R.layout.view_chooser_item, parent, false);
             }
 
             Campaign campaign = getItem(position);
 
-            TextView tvChannelName = (TextView) convertView.findViewById(R.id.tvCampaignName);
+            TextView tvChannelName = (TextView) convertView.findViewById(R.id.tvChooserName);
             tvChannelName.setText(campaign.getName());
 
-            TextView tvCampaignId = (TextView) convertView.findViewById(R.id.tvCampaignId);
+            TextView tvCampaignId = (TextView) convertView.findViewById(R.id.tvChooserSubName);
             tvCampaignId.setText("Campaign ID: " + campaign.getId());
 
             return convertView;

@@ -12,14 +12,14 @@
         android:layout_centerVertical="true">
 
         <TextView
-            android:id="@+id/tvCampaignName"
+            android:id="@+id/tvChooserName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#253244"
             android:textSize="16sp" />
 
         <TextView
-            android:id="@+id/tvCampaignId"
+            android:id="@+id/tvChooserSubName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#9097a1"

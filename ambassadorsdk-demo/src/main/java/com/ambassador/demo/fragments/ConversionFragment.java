@@ -39,6 +39,7 @@ import com.ambassador.demo.api.Requests;
 import com.ambassador.demo.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demo.data.User;
 import com.ambassador.demo.dialogs.CampaignChooserDialog;
+import com.ambassador.demo.dialogs.GroupChooserDialog;
 import com.ambassador.demo.exports.ConversionExport;
 import com.ambassador.demo.exports.Export;
 import com.ambassador.demo.utils.Share;
@@ -144,6 +145,14 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                     }
                 });
                 campaignChooserDialog.show();
+            }
+        });
+
+        etGroupId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final GroupChooserDialog groupChooserDialog = new GroupChooserDialog(getActivity());
+                groupChooserDialog.show();
             }
         });
 

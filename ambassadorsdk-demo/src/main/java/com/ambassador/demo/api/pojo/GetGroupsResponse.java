@@ -6,8 +6,8 @@ public class GetGroupsResponse {
 
     public static class GroupResponse {
 
-        public String uid;
         public String group_name;
+        public String group_id;
 
     }
 
