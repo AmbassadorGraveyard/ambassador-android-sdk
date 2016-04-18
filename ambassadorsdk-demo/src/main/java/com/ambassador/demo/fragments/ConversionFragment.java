@@ -96,8 +96,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         swEnrollAsAmbassador.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
-                float dp30 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30 + 8 + 10, getActivity().getResources().getDisplayMetrics());
-                int finalHeight = etCampaign.getMeasuredHeight() + (int) dp30;
+                float dp18 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, getActivity().getResources().getDisplayMetrics());
+                int finalHeight = (int) (etGroupId.getMeasuredHeight() + swEmailNewAmbassador.getMeasuredHeight() + dp18);
                 ValueAnimator valueAnimator;
                 if (isChecked) {
                     valueAnimator = ValueAnimator.ofInt(rlEnrollSubInputs.getHeight(), finalHeight);
