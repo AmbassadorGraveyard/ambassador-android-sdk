@@ -46,7 +46,7 @@ public class CampaignChooserDialog extends BaseListChooser<GetCampaignsResponse.
 
     @Override
     public String getResult() {
-        return campaign.getJson();
+        return campaign != null ? campaign.getJson() : null;
     }
 
     protected class CampaignChooserAdapter extends BaseChooserAdapter {
