@@ -65,7 +65,9 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     @Bind(R.id.rlCampaignChooser) protected RelativeLayout etCampaign;
     @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
 
-    @Bind(R.id.etGroupId) protected EditText etGroupId;
+    @Bind(R.id.rlGroupChooser) protected RelativeLayout etGroupId;
+    @Bind(R.id.tvSelectedGroups) protected TextView selectedGroups;
+
     @Bind(R.id.etFirstName) protected EditText etFirstName;
     @Bind(R.id.etLastName) protected EditText etLastName;
     @Bind(R.id.etUID) protected EditText etUID;
@@ -272,7 +274,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         float revenueAmount = new ValueOrDefault<>(etRevenue, defaults.revenue).getFloat();
         int campaignId = selectedCampaign.getId();
 
-        String addToGroupId = new ValueOrDefault<>(etGroupId, defaults.addToGroupId).get();
+        String addToGroupId = "gid";
         String firstName = new ValueOrDefault<>(etFirstName, defaults.firstName).get();
         String lastName = new ValueOrDefault<>(etLastName, defaults.lastName).get();
         String uid = new ValueOrDefault<>(etUID, defaults.uid).get();
