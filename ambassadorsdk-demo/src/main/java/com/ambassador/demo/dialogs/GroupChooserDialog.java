@@ -23,6 +23,7 @@ import retrofit.client.Response;
 public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupResponse, BaseListChooser.BaseChooserAdapter> {
 
     protected GroupChooserAdapter adapter;
+    protected boolean wasCanceled;
 
     public GroupChooserDialog(Context context) {
         super(context, "Choose Groups");
@@ -43,12 +44,14 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
         findViewById(R.id.tvCancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                wasCanceled = true;
                 dismiss();
             }
         });
         findViewById(R.id.tvSelect).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                wasCanceled = false;
                 dismiss();
             }
         });
@@ -64,7 +67,13 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
 
     @Override
     public String getResult() {
-        return null;
+        String[] selected = getAdapter().getChecked();
+        String out = "";
+        for (int i = 0; i < selected.length - 1; i++) {
+            out += selected[i] + ", ";
+        }
+        out += selected[selected.length - 1];
+        return out;
     }
 
     protected class GroupChooserAdapter extends BaseChooserAdapter {
@@ -119,17 +128,9 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
         public String[] getChecked() {
             String[] out = new String[checks.size()];
             for (int i = 0; i < checks.size(); i++) {
-                out[i] = checks.get(i).group_name;
+                out[i] = checks.get(i).group_id;
             }
             return out;
-        }
-
-    }
-
-    protected class SerializableGroups extends SerializablePojo {
-
-        public SerializableGroups() {
-
         }
 
     }

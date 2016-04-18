@@ -69,7 +69,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
 
     @Bind(R.id.rlGroupChooser) protected RelativeLayout etGroupId;
-    @Bind(R.id.tvSelectedGroups) protected TextView selectedGroups;
+    @Bind(R.id.tvSelectedGroups) protected TextView tvSelectedGroups;
 
     @Bind(R.id.etFirstName) protected EditText etFirstName;
     @Bind(R.id.etLastName) protected EditText etLastName;
@@ -92,6 +92,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     protected String selectedCampaignName;
     protected int selectedCampaignId;
+    protected String selectedGroups;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -155,6 +156,13 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             @Override
             public void onClick(View v) {
                 final GroupChooserDialog groupChooserDialog = new GroupChooserDialog(getActivity());
+                groupChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        String data = groupChooserDialog.getResult();
+                        setGroups(data);
+                    }
+                });
                 groupChooserDialog.show();
             }
         });
@@ -219,6 +227,12 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         selectedCampaignId = id;
         tvSelectedCampaign.setText(name);
         tvSelectedCampaign.setTextColor(Color.parseColor("#333333"));
+    }
+
+    public void setGroups(String groups) {
+        selectedGroups = groups;
+        tvSelectedGroups.setText(groups);
+        tvSelectedGroups.setTextColor(Color.parseColor("#333333"));
     }
 
     protected boolean verifiedInputs() {
