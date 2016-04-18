@@ -74,6 +74,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_toLeftOf="@+id/strut"
+                android:background="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 android:text="Cancel"
                 android:textColor="#253244"
@@ -83,7 +84,7 @@
                 android:id="@+id/strut"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"/>
+                android:layout_centerHorizontal="true" />
 
             <TextView
                 android:id="@+id/tvSelect"
@@ -91,6 +92,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
                 android:layout_toRightOf="@+id/strut"
+                android:background="?android:attr/selectableItemBackground"
                 android:gravity="center"
                 android:text="Select"
                 android:textColor="#253244"
