@@ -2,6 +2,7 @@ package com.ambassador.demo.fragments;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -37,9 +38,12 @@ import com.ambassador.demo.activities.MainActivity;
 import com.ambassador.demo.api.Requests;
 import com.ambassador.demo.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demo.data.User;
+import com.ambassador.demo.dialogs.CampaignChooserDialog;
 import com.ambassador.demo.exports.ConversionExport;
 import com.ambassador.demo.exports.Export;
 import com.ambassador.demo.utils.Share;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -58,7 +62,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     @Bind(R.id.etConversionEmail) protected EditText etReferredEmail;
     @Bind(R.id.etConversionRevenue) protected EditText etRevenue;
-    @Bind(R.id.etConversionCampaign) protected EditText etCampaign;
+    @Bind(R.id.rlCampaignChooser) protected RelativeLayout etCampaign;
+    @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
 
     @Bind(R.id.etGroupId) protected EditText etGroupId;
     @Bind(R.id.etFirstName) protected EditText etFirstName;
@@ -79,6 +84,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     @Bind(R.id.swEnrollAsAmbassador) protected SwitchCompat swEnrollAsAmbassador;
     @Bind(R.id.rlEnrollSubInputs) protected RelativeLayout rlEnrollSubInputs;
+
+    protected CampaignChooserDialog.Campaign selectedCampaign;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,6 +124,24 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                     }
                 });
                 valueAnimator.start();
+            }
+        });
+
+        etCampaign.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(getActivity());
+                campaignChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (campaignChooserDialog.getSelectedCampaign() == null) return;
+                        JsonObject json = new JsonParser().parse(campaignChooserDialog.getSelectedCampaign()).getAsJsonObject();
+                        String name = json.get("name").getAsString();
+                        int id = json.get("id").getAsInt();
+                        setCampaign(new CampaignChooserDialog.Campaign(id, name));
+                    }
+                });
+                campaignChooserDialog.show();
             }
         });
 
@@ -171,6 +196,11 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
     }
 
+    public void setCampaign(@NonNull CampaignChooserDialog.Campaign campaign) {
+        selectedCampaign = campaign;
+        tvSelectedCampaign.setText(campaign.getName());
+        tvSelectedCampaign.setTextColor(Color.parseColor("#222222"));
+    }
 
     protected boolean verifiedInputs() {
         return verifiedInputs(true);
@@ -215,13 +245,13 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             return false;
         }
 
-        if (!stringHasContent(etCampaign.getText().toString())) {
+        if (selectedCampaign == null) {
             new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a campaign ID!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
-                    etCampaign.requestFocus();
+                    etCampaign.performClick();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
             return false;
@@ -240,7 +270,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
         String referredEmail = new ValueOrDefault<>(etReferredEmail, defaults.email).get();
         float revenueAmount = new ValueOrDefault<>(etRevenue, defaults.revenue).getFloat();
-        int campaignId = new ValueOrDefault<>(etCampaign, defaults.campaign).getInteger();
+        int campaignId = selectedCampaign.getId();
 
         String addToGroupId = new ValueOrDefault<>(etGroupId, defaults.addToGroupId).get();
         String firstName = new ValueOrDefault<>(etFirstName, defaults.firstName).get();
