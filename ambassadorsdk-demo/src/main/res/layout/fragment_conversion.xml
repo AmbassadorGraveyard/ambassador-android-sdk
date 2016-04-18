@@ -190,7 +190,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="Enroll as ambassador" />
+                    android:text="Enroll as ambassador"
+                    android:textColor="#aaaaaa"/>
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/swEnrollAsAmbassador"
@@ -236,7 +237,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
-                        android:text="Send welcome email" />
+                        android:text="Send welcome email"
+                        android:textColor="#aaaaaa"/>
 
                     <android.support.v7.widget.SwitchCompat
                         android:id="@+id/swEmailNewAmbassador"
@@ -363,7 +365,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
-                    android:text="Is approved" />
+                    android:text="Is approved"
+                    android:textColor="#aaaaaa"/>
 
                 <android.support.v7.widget.SwitchCompat
                     android:id="@+id/swConversionApproved"
