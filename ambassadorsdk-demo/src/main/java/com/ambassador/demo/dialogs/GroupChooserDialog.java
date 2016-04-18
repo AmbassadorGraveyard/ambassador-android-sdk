@@ -1,12 +1,13 @@
 package com.ambassador.demo.dialogs;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ambassador.demo.R;
 import com.ambassador.demo.api.Requests;
@@ -14,6 +15,8 @@ import com.ambassador.demo.api.pojo.GetGroupsResponse;
 import com.ambassador.demo.data.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -29,7 +32,8 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GetGroupsResponse.GroupResponse groupResponse = getAdapter().getItem(position);
-                Toast.makeText(getOwnerActivity(), groupResponse.group_name, Toast.LENGTH_SHORT).show();
+                getAdapter().check(position);
+                getAdapter().notifyDataSetChanged();
             }
         });
     }
@@ -49,6 +53,8 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
 
     protected class GroupChooserAdapter extends BaseChooserAdapter {
 
+        protected Map<GetGroupsResponse.GroupResponse, Boolean> checks;
+
         public GroupChooserAdapter(Context context) {
             super(context, new ArrayList<GetGroupsResponse.GroupResponse>());
             Requests.get().getGroups(User.get().getUniversalToken(), new Callback<GetGroupsResponse>() {
@@ -67,6 +73,7 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
                 }
             });
 
+            checks = new HashMap<>();
         }
 
         @Override
@@ -77,11 +84,25 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
 
             TextView tv1 = (TextView) convertView.findViewById(R.id.tvChooserName);
             TextView tv2 = (TextView) convertView.findViewById(R.id.tvChooserSubName);
+            ImageView ivCheckMark = (ImageView) convertView.findViewById(R.id.ivCheckMark);
 
             tv1.setText(item.group_name);
             tv2.setText("Group ID: " + item.group_id);
 
+            ivCheckMark.setColorFilter(ContextCompat.getColor(getContext(), R.color.primary));
+
+            if (checks.keySet().contains(item) && checks.get(item)) {
+                ivCheckMark.setVisibility(View.VISIBLE);
+            } else {
+                ivCheckMark.setVisibility(View.INVISIBLE);
+            }
+
             return convertView;
+        }
+
+        protected void check(int position) {
+            GetGroupsResponse.GroupResponse item = getAdapter().getItem(position);
+            checks.put(item, true);
         }
 
     }
