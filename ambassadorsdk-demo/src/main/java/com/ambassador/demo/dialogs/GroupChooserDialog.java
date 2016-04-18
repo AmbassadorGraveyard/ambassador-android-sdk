@@ -1,6 +1,7 @@
 package com.ambassador.demo.dialogs;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,24 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
                 GetGroupsResponse.GroupResponse groupResponse = getAdapter().getItem(position);
                 getAdapter().check(position);
                 getAdapter().notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        findViewById(R.id.rlChooserButtons).setVisibility(View.VISIBLE);
+        findViewById(R.id.tvCancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+        findViewById(R.id.tvSelect).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
             }
         });
     }
@@ -95,6 +114,22 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
             } else {
                 checks.add(item);
             }
+        }
+
+        public String[] getChecked() {
+            String[] out = new String[checks.size()];
+            for (int i = 0; i < checks.size(); i++) {
+                out[i] = checks.get(i).group_name;
+            }
+            return out;
+        }
+
+    }
+
+    protected class SerializableGroups extends SerializablePojo {
+
+        public SerializableGroups() {
+
         }
 
     }
