@@ -46,8 +46,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     @Bind(R.id.svConversion) protected ScrollView svConversion;
 
-    @Bind(R.id.tvReferrerEmail) protected TextView tvReferrerEmail;
-    @Bind(R.id.tvRequiredParameters) protected TextView tvRequiredParameters;
+    @Bind(R.id.tvAmbassadorSection) protected TextView tvReferrerEmail;
+    @Bind(R.id.tvCustomerSection) protected TextView tvRequiredParameters;
 
     @Bind(R.id.etReferrerEmail) protected EditText etReferrerEmail;
 
@@ -68,8 +68,6 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     @Bind(R.id.etEventData3) protected EditText etEventData3;
 
     @Bind(R.id.swConversionApproved) protected SwitchCompat swApproved;
-    @Bind(R.id.swAutoCreate) protected SwitchCompat swAutoCreate;
-    @Bind(R.id.swDeactivateNewAmbassador) protected SwitchCompat swDeactivateNewAmbassador;
     @Bind(R.id.swEmailNewAmbassador) protected SwitchCompat swEmailNewAmbassador;
 
     @Bind(R.id.btnConversion) protected Button btnConversion;
@@ -87,7 +85,6 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         ButterKnife.bind(this, view);
 
         swApproved.setChecked(true);
-        swAutoCreate.setChecked(true);
 
         btnConversion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,8 +221,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         String eventData3 = new ValueOrDefault<>(etEventData3, defaults.eventData3).get();
 
         int isApproved = swApproved.isChecked() ? 1 : 0;
-        int autoCreate = swAutoCreate.isChecked() ? 1 : 0;
-        int deactivateNewAmbassador = swDeactivateNewAmbassador.isChecked() ? 1 : 0;
+        int autoCreate = 0;
+        int deactivateNewAmbassador = 0;
         int emailNewAmbassador = swEmailNewAmbassador.isChecked() ? 1 : 0;
 
         return new ConversionParameters.Builder()
