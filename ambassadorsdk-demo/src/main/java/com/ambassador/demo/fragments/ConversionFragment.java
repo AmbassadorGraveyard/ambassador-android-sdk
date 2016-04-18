@@ -199,7 +199,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     public void setCampaign(@NonNull CampaignChooserDialog.Campaign campaign) {
         selectedCampaign = campaign;
         tvSelectedCampaign.setText(campaign.getName());
-        tvSelectedCampaign.setTextColor(Color.parseColor("#222222"));
+        tvSelectedCampaign.setTextColor(Color.parseColor("#333333"));
     }
 
     protected boolean verifiedInputs() {
