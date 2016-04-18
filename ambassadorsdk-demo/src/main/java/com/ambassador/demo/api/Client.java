@@ -2,6 +2,7 @@ package com.ambassador.demo.api;
 
 import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.demo.api.pojo.GetCampaignsResponse;
+import com.ambassador.demo.api.pojo.GetGroupsResponse;
 import com.ambassador.demo.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demo.api.pojo.LoginRequest;
 import com.ambassador.demo.api.pojo.LoginResponse;
@@ -29,6 +30,12 @@ public interface Client {
     void getCampaigns(
             @Header("Authorization") String universalToken,
             Callback<GetCampaignsResponse> getCampaignsResponse
+    );
+
+    @GET("/groups/")
+    void getGroups(
+            @Header("Authorization") String universalToken,
+            Callback<GetGroupsResponse> getGroupsResponse
     );
 
     @GET("/urls/")
