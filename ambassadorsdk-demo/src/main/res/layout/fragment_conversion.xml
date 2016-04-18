@@ -70,6 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical">
 
             <TextView
@@ -85,7 +86,8 @@
             <com.ambassador.demo.views.ExpandableLayout
                 android:id="@+id/elAmbassador"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -116,7 +118,8 @@
             <com.ambassador.demo.views.ExpandableLayout
                 android:id="@+id/elCustomer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
