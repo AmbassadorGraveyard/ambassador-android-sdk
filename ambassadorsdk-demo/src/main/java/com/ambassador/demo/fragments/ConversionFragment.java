@@ -230,9 +230,13 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     }
 
     public void setGroups(String groups) {
-        selectedGroups = groups;
-        tvSelectedGroups.setText(groups);
-        tvSelectedGroups.setTextColor(Color.parseColor("#333333"));
+        if (groups == null) {
+            return;
+        } else {
+            selectedGroups = groups;
+            tvSelectedGroups.setText(groups);
+            tvSelectedGroups.setTextColor(Color.parseColor("#333333"));
+        }
     }
 
     protected boolean verifiedInputs() {
