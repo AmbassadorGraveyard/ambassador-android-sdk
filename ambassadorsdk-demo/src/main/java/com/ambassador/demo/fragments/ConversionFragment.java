@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.SwitchCompat;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -104,7 +105,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                 } else {
                     valueAnimator = ValueAnimator.ofInt(rlEnrollSubInputs.getHeight(), 0);
                 }
-                valueAnimator.setDuration(250);
+                valueAnimator.setInterpolator(new FastOutSlowInInterpolator());
+                valueAnimator.setDuration(500);
                 valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                     @Override
                     public void onAnimationUpdate(ValueAnimator animation) {
