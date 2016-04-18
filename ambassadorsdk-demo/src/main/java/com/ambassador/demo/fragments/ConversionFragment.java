@@ -1,5 +1,6 @@
 package com.ambassador.demo.fragments;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.SwitchCompat;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,12 +95,26 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
         swEnrollAsAmbassador.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                float dp30 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30 + 8 + 10, getActivity().getResources().getDisplayMetrics());
+                int finalHeight = etCampaign.getMeasuredHeight() + (int) dp30;
+                ValueAnimator valueAnimator;
                 if (isChecked) {
-                    rlEnrollSubInputs.setVisibility(View.VISIBLE);
+                    valueAnimator = ValueAnimator.ofInt(rlEnrollSubInputs.getHeight(), finalHeight);
                 } else {
-                    rlEnrollSubInputs.setVisibility(View.GONE);
+                    valueAnimator = ValueAnimator.ofInt(rlEnrollSubInputs.getHeight(), 0);
                 }
+                valueAnimator.setDuration(250);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        int val = (Integer) animation.getAnimatedValue();
+                        ViewGroup.LayoutParams layoutParams = rlEnrollSubInputs.getLayoutParams();
+                        layoutParams.height = val;
+                        rlEnrollSubInputs.setLayoutParams(layoutParams);
+                    }
+                });
+                valueAnimator.start();
             }
         });
 
