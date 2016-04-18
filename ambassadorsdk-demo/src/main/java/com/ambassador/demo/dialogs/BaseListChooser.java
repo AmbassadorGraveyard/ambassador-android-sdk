@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ambassador.demo.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +107,14 @@ public abstract class BaseListChooser<D, A extends BaseListChooser.BaseChooserAd
             }
 
             return convertView;
+        }
+
+    }
+
+    protected abstract class SerializablePojo {
+
+        public String getJson() {
+            return new Gson().toJson(this);
         }
 
     }

@@ -21,13 +21,16 @@ import retrofit.client.Response;
 public class CampaignChooserDialog extends BaseListChooser<GetCampaignsResponse.CampaignResponse, BaseListChooser.BaseChooserAdapter> {
 
     protected CampaignChooserAdapter adapter;
+    protected SerializableCampaign campaign;
 
     public CampaignChooserDialog(Context context) {
         super(context, "Choose a Campaign");
         setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                GetCampaignsResponse.CampaignResponse response = getAdapter().getItem(position);
+                campaign = new SerializableCampaign(response.name, response.uid);
+                dismiss();
             }
         });
     }
@@ -43,7 +46,7 @@ public class CampaignChooserDialog extends BaseListChooser<GetCampaignsResponse.
 
     @Override
     public String getResult() {
-        return null;
+        return campaign.getJson();
     }
 
     protected class CampaignChooserAdapter extends BaseChooserAdapter {
@@ -80,6 +83,18 @@ public class CampaignChooserDialog extends BaseListChooser<GetCampaignsResponse.
             tv2.setText("Campaign ID: " + item.uid);
 
             return convertView;
+        }
+
+    }
+
+    public class SerializableCampaign extends SerializablePojo {
+
+        public String name;
+        public int id;
+
+        public SerializableCampaign(String name, int id) {
+            this.name = name;
+            this.id = id;
         }
 
     }
