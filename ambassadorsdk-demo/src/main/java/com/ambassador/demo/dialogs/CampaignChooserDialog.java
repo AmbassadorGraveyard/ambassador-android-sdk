@@ -1,161 +1,87 @@
 package com.ambassador.demo.dialogs;
 
-import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
-import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ambassador.demo.R;
 import com.ambassador.demo.api.Requests;
 import com.ambassador.demo.api.pojo.GetCampaignsResponse;
 import com.ambassador.demo.data.User;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class CampaignChooserDialog extends Dialog {
+public class CampaignChooserDialog extends BaseListChooser<GetCampaignsResponse.CampaignResponse, BaseListChooser.BaseChooserAdapter> {
 
-    @Bind(R.id.lvChooser) protected ListView lvCampaignChooser;
-    @Bind(R.id.pbLoading) protected ProgressBar pbCampaignsLoading;
-
-    protected List<Campaign> campaigns;
-    protected Campaign selectedCampaign;
-
-    protected CampaignAdapter adapter;
+    protected CampaignChooserAdapter adapter;
 
     public CampaignChooserDialog(Context context) {
-        super(context);
-        if (context instanceof Activity) {
-            setOwnerActivity((Activity) context);
-        }
+        super(context, "Choose a Campaign");
+        setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        campaigns = new ArrayList<>();
+            }
+        });
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_chooser);
-        ButterKnife.bind(this);
-        populateCampaigns();
-        adapter = new CampaignAdapter(getContext(), campaigns);
-        lvCampaignChooser.setAdapter(adapter);
-        lvCampaignChooser.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Campaign campaign = adapter.getItem(position);
-                selectedCampaign = campaign;
-                dismiss();
-            }
-        });
+    protected BaseChooserAdapter getAdapter() {
+        if (adapter == null) {
+            adapter = new CampaignChooserAdapter(getOwnerActivity());
+        }
+
+        return adapter;
     }
 
-    protected void populateCampaigns() {
-        Requests.get().getCampaigns(User.get().getUniversalToken(), new Callback<GetCampaignsResponse>() {
-            @Override
-            public void success(GetCampaignsResponse getCampaignsResponse, Response response) {
-                for (GetCampaignsResponse.CampaignResponse campaignResponse : getCampaignsResponse.results) {
-                    campaigns.add(new Campaign(campaignResponse.uid, campaignResponse.name));
-                    if (adapter != null) {
-                        adapter.notifyDataSetChanged();
+    @Override
+    public String getResult() {
+        return null;
+    }
+
+    protected class CampaignChooserAdapter extends BaseChooserAdapter {
+
+        public CampaignChooserAdapter(Context context) {
+            super(context, new ArrayList<GetCampaignsResponse.CampaignResponse>());
+            Requests.get().getCampaigns(User.get().getUniversalToken(), new Callback<GetCampaignsResponse>() {
+                @Override
+                public void success(GetCampaignsResponse getCampaignsResponse, Response response) {
+                    GetCampaignsResponse.CampaignResponse[] results = getCampaignsResponse.results;
+                    for (GetCampaignsResponse.CampaignResponse result : results) {
+                        data.add(result);
                     }
+                    notifyDataSetChanged();
                 }
 
-                pbCampaignsLoading.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                Toast.makeText(getContext(), "An error occurred while getting campaigns!", Toast.LENGTH_SHORT).show();
-                dismiss();
-            }
-        });
-    }
-
-    public static class Campaign {
-
-        protected int id;
-        protected String name;
-
-        public Campaign(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-    }
-
-    protected static class CampaignAdapter extends BaseAdapter {
-
-        protected Context context;
-        protected List<Campaign> campaigns;
-
-        public CampaignAdapter(Context context, List<Campaign> campaigns) {
-            this.context = context;
-            this.campaigns = campaigns;
-        }
-
-        @Override
-        public int getCount() {
-            return campaigns.size();
-        }
-
-        @Override
-        public Campaign getItem(int position) {
-            return campaigns.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
+                @Override
+                public void failure(RetrofitError error) {
+                    Log.e(getClass().getSimpleName(), error.toString());
+                }
+            });
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(context).inflate(R.layout.view_chooser_item, parent, false);
-            }
+            convertView = super.getView(position, convertView, parent);
 
-            Campaign campaign = getItem(position);
+            GetCampaignsResponse.CampaignResponse item = getItem(position);
 
-            TextView tvChannelName = (TextView) convertView.findViewById(R.id.tvChooserName);
-            tvChannelName.setText(campaign.getName());
+            TextView tv1 = (TextView) convertView.findViewById(R.id.tvChooserName);
+            TextView tv2 = (TextView) convertView.findViewById(R.id.tvChooserSubName);
 
-            TextView tvCampaignId = (TextView) convertView.findViewById(R.id.tvChooserSubName);
-            tvCampaignId.setText("Campaign ID: " + campaign.getId());
+            tv1.setText(item.name);
+            tv2.setText("Campaign ID: " + item.uid);
 
             return convertView;
         }
 
-    }
-
-    public String getSelectedCampaign() {
-        return selectedCampaign == null ? null : new Gson().toJson(selectedCampaign);
     }
 
 }

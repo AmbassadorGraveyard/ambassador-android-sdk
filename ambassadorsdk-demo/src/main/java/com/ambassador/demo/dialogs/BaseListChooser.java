@@ -56,6 +56,7 @@ public abstract class BaseListChooser<D, A extends BaseListChooser.BaseChooserAd
     }
 
     protected abstract A getAdapter();
+    public abstract String getResult();
 
     protected void setTitle(String title) {
         this.title = title != null ? title : "Chooser Dialog";

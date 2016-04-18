@@ -88,7 +88,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     @Bind(R.id.swEnrollAsAmbassador) protected SwitchCompat swEnrollAsAmbassador;
     @Bind(R.id.rlEnrollSubInputs) protected RelativeLayout rlEnrollSubInputs;
 
-    protected CampaignChooserDialog.Campaign selectedCampaign;
+    protected String selectedCampaignName;
+    protected int selectedCampaignId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -137,11 +138,11 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                 campaignChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        if (campaignChooserDialog.getSelectedCampaign() == null) return;
-                        JsonObject json = new JsonParser().parse(campaignChooserDialog.getSelectedCampaign()).getAsJsonObject();
+                        if (campaignChooserDialog.getResult() == null) return;
+                        JsonObject json = new JsonParser().parse(campaignChooserDialog.getResult()).getAsJsonObject();
                         String name = json.get("name").getAsString();
                         int id = json.get("id").getAsInt();
-                        setCampaign(new CampaignChooserDialog.Campaign(id, name));
+                        setCampaign(name, id);
                     }
                 });
                 campaignChooserDialog.show();
@@ -207,9 +208,10 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
     }
 
-    public void setCampaign(@NonNull CampaignChooserDialog.Campaign campaign) {
-        selectedCampaign = campaign;
-        tvSelectedCampaign.setText(campaign.getName());
+    public void setCampaign(String name, int id) {
+        selectedCampaignName = name;
+        selectedCampaignId = id;
+        tvSelectedCampaign.setText(name);
         tvSelectedCampaign.setTextColor(Color.parseColor("#333333"));
     }
 
@@ -256,7 +258,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             return false;
         }
 
-        if (selectedCampaign == null) {
+        if (selectedCampaignName == null) {
             new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a campaign ID!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
@@ -281,7 +283,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
         String referredEmail = new ValueOrDefault<>(etReferredEmail, defaults.email).get();
         float revenueAmount = new ValueOrDefault<>(etRevenue, defaults.revenue).getFloat();
-        int campaignId = selectedCampaign.getId();
+        int campaignId = selectedCampaignId;
 
         String addToGroupId = "gid";
         String firstName = new ValueOrDefault<>(etFirstName, defaults.firstName).get();

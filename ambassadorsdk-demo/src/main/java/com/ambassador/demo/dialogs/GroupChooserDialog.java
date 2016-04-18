@@ -42,7 +42,12 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
         return adapter;
     }
 
-    public class GroupChooserAdapter extends BaseChooserAdapter {
+    @Override
+    public String getResult() {
+        return null;
+    }
+
+    protected class GroupChooserAdapter extends BaseChooserAdapter {
 
         public GroupChooserAdapter(Context context) {
             super(context, new ArrayList<GetGroupsResponse.GroupResponse>());
