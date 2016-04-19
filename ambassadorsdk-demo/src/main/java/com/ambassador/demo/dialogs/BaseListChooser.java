@@ -3,7 +3,9 @@ package com.ambassador.demo.dialogs;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ambassador.demo.R;
@@ -29,6 +32,7 @@ public abstract class BaseListChooser<D, A extends BaseListChooser.BaseChooserAd
 
     @Bind(R.id.tvChooserTitle) protected TextView tvChooserTitle;
     @Bind(R.id.lvChooser) protected ListView lvChooser;
+    @Bind(R.id.pbLoading) protected ProgressBar pbLoading;
 
     private String title;
     private AdapterView.OnItemClickListener onItemClickListener;
@@ -54,6 +58,8 @@ public abstract class BaseListChooser<D, A extends BaseListChooser.BaseChooserAd
         setOnItemClickListener(onItemClickListener);
 
         lvChooser.setAdapter(getAdapter());
+
+        pbLoading.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(getContext(), R.color.primary), PorterDuff.Mode.SRC_IN);
     }
 
     protected abstract A getAdapter();
@@ -107,6 +113,14 @@ public abstract class BaseListChooser<D, A extends BaseListChooser.BaseChooserAd
             }
 
             return convertView;
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+            if (getCount() > 0) {
+                pbLoading.setVisibility(View.GONE);
+            }
         }
 
     }
