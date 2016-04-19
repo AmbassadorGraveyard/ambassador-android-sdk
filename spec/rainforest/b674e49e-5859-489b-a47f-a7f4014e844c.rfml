@@ -30,3 +30,12 @@ Do fields appear under it?
 
 Toggle the switch that appears next to the text "Enroll as ambassador".
 Do new fields appear under it?
+
+Click the field that says "Select groups".
+Does a new dialog open with a list loaded into it?
+
+Click an item in the list.
+Does a checkmark slide out?
+
+Click cancel.
+Does the input still say "Select groups"?
