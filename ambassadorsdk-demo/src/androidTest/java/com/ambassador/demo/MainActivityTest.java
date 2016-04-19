@@ -27,6 +27,7 @@ import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.demo.activities.LoginActivity;
 import com.ambassador.demo.activities.MainActivity;
 import com.ambassador.demo.api.Requests;
+import com.ambassador.demo.api.pojo.GetCampaignsResponse;
 import com.ambassador.demo.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demo.api.pojo.LoginResponse;
 
@@ -47,9 +48,11 @@ import javax.inject.Inject;
 
 import retrofit.Callback;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.anything;
 
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
@@ -182,6 +185,8 @@ public class MainActivityTest {
 
     @Test
     public void testsConversionWithValidInputAndNotApproved() throws Exception {
+        mockCampaignsResponse();
+
         // Mock get short code.
         mockShortCodeResponse();
 
@@ -189,29 +194,29 @@ public class MainActivityTest {
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
         // Focus referrer email input and type a valid email address.
-        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.scrollTo(), ViewActions.click());
         onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.typeTextIntoFocusedView("jake1@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus email input and type a valid email address.
-        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.scrollTo(), ViewActions.click());
         onView(withId(R.id.etCustomerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake2@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus revenue input and type a valid currency amount.
-        onView(withId(R.id.etRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etRevenue)).perform(ViewActions.scrollTo(), ViewActions.click());
         onView(withId(R.id.etRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus campaign ID input and type a valid campaign ID.
-        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.click());
-        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.typeTextIntoFocusedView("260"));
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.scrollTo(), ViewActions.click());
+        onData(anything()).inAdapterView(withId(R.id.lvChooser)).atPosition(1).perform(ViewActions.click());
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
@@ -236,6 +241,8 @@ public class MainActivityTest {
 
     @Test
     public void testsConversionWithValidInputAndApproved() throws Exception {
+        mockCampaignsResponse();
+
         // Mock get short code.
         mockShortCodeResponse();
 
@@ -243,29 +250,29 @@ public class MainActivityTest {
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
         // Focus referrer email input and type a valid email address.
-        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.scrollTo(), ViewActions.click());
         onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.typeTextIntoFocusedView("jake1@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus email input and type a valid email address.
-        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.scrollTo(), ViewActions.click());
         onView(withId(R.id.etCustomerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake2@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus revenue input and type a valid currency amount.
-        onView(withId(R.id.etRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etRevenue)).perform(ViewActions.scrollTo(), ViewActions.click());
         onView(withId(R.id.etRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus campaign ID input and type a valid campaign ID.
-        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.click());
-        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.typeTextIntoFocusedView("260"));
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.scrollTo(), ViewActions.click());
+        onData(anything()).inAdapterView(withId(R.id.lvChooser)).atPosition(1).perform(ViewActions.click());
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
@@ -293,19 +300,21 @@ public class MainActivityTest {
 
     @Test
     public void testsConversionWithNoEmail() throws Exception {
+        mockCampaignsResponse();
+
         // Select Conversion tab.
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
         // Focus revenue input and type a valid currency amount.
-        onView(withId(R.id.etRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etRevenue)).perform(ViewActions.scrollTo(), ViewActions.click());
         onView(withId(R.id.etRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus campaign ID input and type a valid campaign ID.
-        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.click());
-        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.typeTextIntoFocusedView("260"));
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.scrollTo(), ViewActions.click());
+        onData(anything()).inAdapterView(withId(R.id.lvChooser)).atPosition(1).perform(ViewActions.click());
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
@@ -316,19 +325,21 @@ public class MainActivityTest {
 
     @Test
     public void testsConversionWithNoRevenue() throws Exception {
+        mockCampaignsResponse();
+
         // Select Conversion tab.
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
         // Focus email input and type a valid email address.
-        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.scrollTo(), ViewActions.click());
         onView(withId(R.id.etCustomerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
-        // Focus campaign ID input and type a valid campaign ID.
-        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.click());
-        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.typeTextIntoFocusedView("260"));
+        // Focus campaign ID input and click a campaign.
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.scrollTo(), ViewActions.click());
+        onData(anything()).inAdapterView(withId(R.id.lvChooser)).atPosition(1).perform(ViewActions.click());
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
@@ -346,14 +357,14 @@ public class MainActivityTest {
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
         // Focus email input and type a valid email address.
-        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.scrollTo(), ViewActions.click());
         onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus revenue input and type a valid currency amount.
-        onView(withId(R.id.etRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etRevenue)).perform(ViewActions.scrollTo(), ViewActions.click());
         onView(withId(R.id.etRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
         // Close the keyboard to ensure other views all visible.
@@ -479,6 +490,28 @@ public class MainActivityTest {
                 return null;
             }
         }).when(requests).getShortCodeFromEmail(Mockito.anyString(), Mockito.anyInt(), Mockito.anyString(), Mockito.any(Callback.class));
+    }
+
+    protected void mockCampaignsResponse() {
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                Callback<GetCampaignsResponse> responseCallback = (Callback) invocation.getArguments()[1];
+                GetCampaignsResponse getCampaignsResponse = new GetCampaignsResponse();
+                getCampaignsResponse.results = new GetCampaignsResponse.CampaignResponse[3];
+                getCampaignsResponse.results[0] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[1] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[2] = new GetCampaignsResponse.CampaignResponse();
+                getCampaignsResponse.results[0].name = "Test campaign 1";
+                getCampaignsResponse.results[0].uid = 123;
+                getCampaignsResponse.results[1].name = "Test campaign 2";
+                getCampaignsResponse.results[1].uid = 124;
+                getCampaignsResponse.results[2].name = "Test campaign 3";
+                getCampaignsResponse.results[2].uid = 125;
+                responseCallback.success(getCampaignsResponse, null);
+                return null;
+            }
+        }).when(requests).getCampaigns(Mockito.anyString(), Mockito.any(Callback.class));
     }
 
 }
