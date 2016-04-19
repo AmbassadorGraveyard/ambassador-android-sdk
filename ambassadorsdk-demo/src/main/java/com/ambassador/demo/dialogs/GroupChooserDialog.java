@@ -80,6 +80,7 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
         if (wasCanceled) return null;
         if (getAdapter().getChecked().length == 0) return "";
         String[] selected = getAdapter().getChecked();
+        Arrays.sort(selected);
         String out = "";
         for (int i = 0; i < selected.length - 1; i++) {
             out += selected[i] + ", ";
