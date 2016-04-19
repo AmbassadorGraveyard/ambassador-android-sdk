@@ -29,7 +29,7 @@ public class ExpandableLayout extends LinearLayout {
     protected ExpandableLayoutHeader header;
     protected ImageView ivExpand;
     protected boolean isInflated;
-    protected int height;
+    protected int height = -1;
 
     public ExpandableLayout(Context context) {
         super(context);
@@ -95,7 +95,7 @@ public class ExpandableLayout extends LinearLayout {
         isInflated = true;
         final View child = getChildAt(1);
 
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(0, height);
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(child.getMeasuredHeight(), height);
         valueAnimator.setInterpolator(new FastOutSlowInInterpolator());
         valueAnimator.setDuration(500);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -126,9 +126,9 @@ public class ExpandableLayout extends LinearLayout {
         if (!isInflated) return;
         isInflated = false;
         final View child = getChildAt(1);
-        height = child.getMeasuredHeight();
+        if (height < 0) height = child.getMeasuredHeight();
 
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(height, 0);
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(child.getMeasuredHeight(), 0);
         valueAnimator.setInterpolator(new FastOutSlowInInterpolator());
         valueAnimator.setDuration(500);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
