@@ -124,6 +124,10 @@ public abstract class BaseListChooser<D, A extends BaseListChooser.BaseChooserAd
             if (getCount() > 0) {
                 pbLoading.setVisibility(View.GONE);
             }
+
+            if (findViewById(R.id.rlChooserButtons).getVisibility() == View.GONE) {
+                lvChooser.setPadding(0, 0, 0, 0);
+            }
         }
 
     }
