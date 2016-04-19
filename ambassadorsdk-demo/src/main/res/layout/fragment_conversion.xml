@@ -86,8 +86,7 @@
             <com.ambassador.demo.views.ExpandableLayout
                 android:id="@+id/elAmbassador"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_height="wrap_content">
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -98,7 +97,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
                         android:background="@drawable/et_only"
                         android:fontFamily="sans-serif"
                         android:hint="Email Address *"
@@ -118,8 +116,7 @@
             <com.ambassador.demo.views.ExpandableLayout
                 android:id="@+id/elCustomer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -131,7 +128,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
                         android:background="@drawable/et_only"
                         android:fontFamily="sans-serif"
                         android:hint="Email Address *"
@@ -358,7 +354,6 @@
                         android:id="@+id/rlCampaignChooser"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:background="@drawable/et_only"
                         android:paddingBottom="11dp"
                         android:paddingLeft="10dp"
