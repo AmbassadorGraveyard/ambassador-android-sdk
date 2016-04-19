@@ -337,7 +337,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         String eventData3 = new ValueOrDefault<>(etEventData3, defaults.eventData3).get();
 
         int isApproved = swApproved.isChecked() ? 1 : 0;
-        int autoCreate = 0;
+        int autoCreate = swEnrollAsAmbassador.isChecked() ? 1 : 0;
         int deactivateNewAmbassador = 0;
         int emailNewAmbassador = swEmailNewAmbassador.isChecked() ? 1 : 0;
 

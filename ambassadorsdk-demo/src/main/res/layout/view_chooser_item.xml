@@ -34,4 +34,14 @@
         android:layout_alignParentBottom="true"
         android:background="#eee" />
 
+    <ImageView
+        android:id="@+id/ivCheckMark"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/checkmark"
+        android:translationX="100px" />
+
 </RelativeLayout>

@@ -1,11 +1,14 @@
 package com.ambassador.demo.dialogs;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ambassador.demo.R;
@@ -31,8 +34,13 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GetGroupsResponse.GroupResponse groupResponse = getAdapter().getItem(position);
-                getAdapter().check(position);
-                getAdapter().notifyDataSetChanged();
+                boolean added = getAdapter().check(position);
+                ImageView ivCheckMark = (ImageView) view.findViewById(R.id.ivCheckMark);
+                if (added) {
+                    ivCheckMark.animate().translationX(0).setDuration(250).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                } else {
+                    ivCheckMark.animate().translationX(100).setDuration(250).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                }
             }
         });
     }
@@ -111,19 +119,29 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
 
             TextView tv1 = (TextView) convertView.findViewById(R.id.tvChooserName);
             TextView tv2 = (TextView) convertView.findViewById(R.id.tvChooserSubName);
+            ImageView ivCheckMark = (ImageView) convertView.findViewById(R.id.ivCheckMark);
 
             tv1.setText(item.group_name);
             tv2.setText("Group ID: " + item.group_id);
+            ivCheckMark.setColorFilter(Color.parseColor("#28446B"));
+
+            if (checks.contains(item)) {
+                ivCheckMark.setTranslationX(0);
+            } else {
+                ivCheckMark.setTranslationX(100);
+            }
 
             return convertView;
         }
 
-        protected void check(int position) {
+        protected boolean check(int position) {
             GetGroupsResponse.GroupResponse item = getAdapter().getItem(position);
             if (checks.contains(item)) {
                 checks.remove(item);
+                return false;
             } else {
                 checks.add(item);
+                return true;
             }
         }
 
