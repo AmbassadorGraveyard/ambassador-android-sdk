@@ -1,5 +1,5 @@
 #! b674e49e-5859-489b-a47f-a7f4014e844c
-# title: Download, install, and open, and login to app
+# title: QA Conversion Page
 # start_uri: /
 # tags: android
 #
@@ -26,7 +26,7 @@ Click on the heading that says "Commission".
 Do the fields under it disappear?
 
 Click on the heading that says "Customer".
-Do fields appear under it?
+Does a "Select groups" field and a "Send welcome email" switch appear under it?
 
 Toggle the switch that appears next to the text "Enroll as ambassador".
 Do new fields appear under it?
@@ -38,4 +38,13 @@ Click an item in the list.
 Does a checkmark slide out?
 
 Click cancel.
-Does the input still say "Select groups"?
+Does the field still say "Select groups"?
+
+Click the field that says "Select groups".
+Does a new dialog open with a list loaded into it?
+
+Click the first 2 items in the list.
+Do checkmarks slide out next to the items?
+
+Click "Select".
+Does the text on the field now have 2 numbers separated by a comma?
