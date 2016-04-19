@@ -1,5 +1,7 @@
 package com.ambassador.demo.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -134,6 +136,17 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                         ViewGroup.LayoutParams layoutParams = rlEnrollSubInputs.getLayoutParams();
                         layoutParams.height = val;
                         rlEnrollSubInputs.setLayoutParams(layoutParams);
+                    }
+                });
+                valueAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        ViewGroup.LayoutParams layoutParams = rlEnrollSubInputs.getLayoutParams();
+                        if (layoutParams.height >= 10) {
+                            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            rlEnrollSubInputs.setLayoutParams(layoutParams);
+                        }
                     }
                 });
                 valueAnimator.start();
