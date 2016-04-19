@@ -60,7 +60,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
 
     // Ambassador section views
     @Bind(R.id.elAmbassador) protected ExpandableLayout elAmbassador;
-    @Bind(R.id.etReferrerEmail) protected EditText etAmbassadorEmail;
+    @Bind(R.id.etAmbassadorEmail) protected EditText etAmbassadorEmail;
 
     // Customer section views
     @Bind(R.id.elCustomer) protected ExpandableLayout elCustomer;
