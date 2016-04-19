@@ -324,7 +324,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         float revenueAmount = new ValueOrDefault<>(etRevenue, defaults.revenue).getFloat();
         int campaignId = selectedCampaignId;
 
-        String addToGroupId = "gid";
+        String addToGroupId = selectedGroups != null ? selectedGroups.replaceAll(" ", "") : "";
         String firstName = new ValueOrDefault<>(etFirstName, defaults.firstName).get();
         String lastName = new ValueOrDefault<>(etLastName, defaults.lastName).get();
         String uid = new ValueOrDefault<>(etUID, defaults.uid).get();
