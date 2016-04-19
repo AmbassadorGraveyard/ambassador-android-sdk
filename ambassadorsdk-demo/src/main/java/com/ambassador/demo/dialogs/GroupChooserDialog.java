@@ -6,7 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,9 +38,9 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
                 boolean added = getAdapter().check(position);
                 ImageView ivCheckMark = (ImageView) view.findViewById(R.id.ivCheckMark);
                 if (added) {
-                    ivCheckMark.animate().translationX(0).setDuration(250).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                    ivCheckMark.animate().translationX(0).setDuration(500).setInterpolator(new OvershootInterpolator()).start();
                 } else {
-                    ivCheckMark.animate().translationX(100).setDuration(250).setInterpolator(new AccelerateDecelerateInterpolator()).start();
+                    ivCheckMark.animate().translationX(100).setDuration(250).setInterpolator(new AccelerateInterpolator()).start();
                 }
             }
         });
