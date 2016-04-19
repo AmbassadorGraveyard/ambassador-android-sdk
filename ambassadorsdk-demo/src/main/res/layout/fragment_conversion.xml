@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content">
 
                     <EditText
-                        android:id="@+id/etReferrerEmail"
+                        android:id="@+id/etAmbassadorEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -127,7 +127,7 @@
                     android:orientation="vertical">
 
                     <EditText
-                        android:id="@+id/etConversionEmail"
+                        android:id="@+id/etCustomerEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
@@ -384,7 +384,7 @@
                     </RelativeLayout>
 
                     <EditText
-                        android:id="@+id/etConversionRevenue"
+                        android:id="@+id/etRevenue"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"

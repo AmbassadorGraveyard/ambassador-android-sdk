@@ -55,43 +55,49 @@ import retrofit.client.Response;
 
 public final class ConversionFragment extends Fragment implements MainActivity.TabFragment {
 
+    /** ScrollView encapsulating all views. */
     @Bind(R.id.svConversion) protected ScrollView svConversion;
 
+    // Ambassador section views
     @Bind(R.id.elAmbassador) protected ExpandableLayout elAmbassador;
+    @Bind(R.id.etReferrerEmail) protected EditText etAmbassadorEmail;
+
+    // Customer section views
     @Bind(R.id.elCustomer) protected ExpandableLayout elCustomer;
-    @Bind(R.id.elCommission) protected ExpandableLayout elCommission;
-
-    @Bind(R.id.etReferrerEmail) protected EditText etReferrerEmail;
-
-    @Bind(R.id.etConversionEmail) protected EditText etReferredEmail;
-    @Bind(R.id.etConversionRevenue) protected EditText etRevenue;
-    @Bind(R.id.rlCampaignChooser) protected RelativeLayout etCampaign;
-    @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
-
-    @Bind(R.id.rlGroupChooser) protected RelativeLayout etGroupId;
-    @Bind(R.id.tvSelectedGroups) protected TextView tvSelectedGroups;
-
+    @Bind(R.id.etCustomerEmail) protected EditText etCustomerEmail;
     @Bind(R.id.etFirstName) protected EditText etFirstName;
     @Bind(R.id.etLastName) protected EditText etLastName;
     @Bind(R.id.etUID) protected EditText etUID;
+    @Bind(R.id.swEnrollAsAmbassador) protected SwitchCompat swEnrollAsAmbassador;
+    @Bind(R.id.rlEnrollSubInputs) protected RelativeLayout rlEnrollSubInputs;
+    @Bind(R.id.rlGroupChooser) protected RelativeLayout rlGroupChooser;
+    @Bind(R.id.tvSelectedGroups) protected TextView tvSelectedGroups;
+    @Bind(R.id.swEmailNewAmbassador) protected SwitchCompat swEmailNewAmbassador;
     @Bind(R.id.etCustom1) protected EditText etCustom1;
     @Bind(R.id.etCustom2) protected EditText etCustom2;
     @Bind(R.id.etCustom3) protected EditText etCustom3;
+
+    // Commission section views
+    @Bind(R.id.elCommission) protected ExpandableLayout elCommission;
+    @Bind(R.id.rlCampaignChooser) protected RelativeLayout rlCampaignChooser;
+    @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
+    @Bind(R.id.etRevenue) protected EditText etRevenue;
+    @Bind(R.id.swConversionApproved) protected SwitchCompat swApproved;
     @Bind(R.id.etTransactionUID) protected EditText etTransactionUID;
     @Bind(R.id.etEventData1) protected EditText etEventData1;
     @Bind(R.id.etEventData2) protected EditText etEventData2;
     @Bind(R.id.etEventData3) protected EditText etEventData3;
 
-    @Bind(R.id.swConversionApproved) protected SwitchCompat swApproved;
-    @Bind(R.id.swEmailNewAmbassador) protected SwitchCompat swEmailNewAmbassador;
-
+    // Conversion buttons
     @Bind(R.id.btnConversion) protected Button btnConversion;
 
-    @Bind(R.id.swEnrollAsAmbassador) protected SwitchCompat swEnrollAsAmbassador;
-    @Bind(R.id.rlEnrollSubInputs) protected RelativeLayout rlEnrollSubInputs;
-
+    /** Name of the selected campaign. */
     protected String selectedCampaignName;
+
+    /** Ambassador backend ID for selected campaign. */
     protected int selectedCampaignId;
+
+    /** String of selected groups separated by commas. */
     protected String selectedGroups;
 
     @Override
@@ -112,7 +118,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             @Override
             public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
                 float dp18 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, getActivity().getResources().getDisplayMetrics());
-                int finalHeight = (int) (etGroupId.getMeasuredHeight() + swEmailNewAmbassador.getMeasuredHeight() + dp18);
+                int finalHeight = (int) (rlGroupChooser.getMeasuredHeight() + swEmailNewAmbassador.getMeasuredHeight() + dp18);
                 ValueAnimator valueAnimator;
                 if (isChecked) {
                     valueAnimator = ValueAnimator.ofInt(rlEnrollSubInputs.getHeight(), finalHeight);
@@ -134,7 +140,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             }
         });
 
-        etCampaign.setOnClickListener(new View.OnClickListener() {
+        rlCampaignChooser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(getActivity());
@@ -152,7 +158,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             }
         });
 
-        etGroupId.setOnClickListener(new View.OnClickListener() {
+        rlGroupChooser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final GroupChooserDialog groupChooserDialog = new GroupChooserDialog(getActivity());
@@ -175,7 +181,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                 new IdentifyAugurSDK().getIdentity();
 
                 final ConversionParameters parameters = getConversionParametersBasedOnInputs();
-                String referrerEmail = etReferrerEmail.getText().toString();
+                String referrerEmail = etAmbassadorEmail.getText().toString();
 
                 registerShortCode(parameters.getCampaign(), referrerEmail, new ShortCodeRegistrationListener() {
                     @Override
@@ -195,7 +201,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
+                                new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
                                 Snackbar.make(getActivity().findViewById(android.R.id.content), "An ambassador could not be found for the email and campaign provided.", Snackbar.LENGTH_LONG).show();
                             }
                         });
@@ -250,32 +256,32 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     protected boolean verifiedInputs(boolean includeReferrer) {
         if (getView() == null) return false;
 
-        if (!(new Identify(etReferrerEmail.getText().toString()).isValidEmail()) && includeReferrer) {
-            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
+        if (!(new Identify(etAmbassadorEmail.getText().toString()).isValidEmail()) && includeReferrer) {
+            new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referrer email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     svConversion.smoothScrollTo(0, elAmbassador.getTop());
-                    etReferrerEmail.requestFocus();
+                    etAmbassadorEmail.requestFocus();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
             return false;
         }
 
-        if (!(new Identify(etReferredEmail.getText().toString()).isValidEmail())) {
-            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
+        if (!(new Identify(etCustomerEmail.getText().toString()).isValidEmail())) {
+            new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referred email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     svConversion.smoothScrollTo(0, elCustomer.getTop());
-                    etReferredEmail.requestFocus();
+                    etCustomerEmail.requestFocus();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
             return false;
         }
 
         if (!stringHasContent(etRevenue.getText().toString())) {
-            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
+            new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a revenue amount!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -287,12 +293,12 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         }
 
         if (selectedCampaignName == null) {
-            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
+            new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a campaign ID!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     svConversion.smoothScrollTo(0, elCommission.getTop());
-                    etCampaign.performClick();
+                    rlCampaignChooser.performClick();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
             return false;
@@ -309,7 +315,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     protected ConversionParameters getConversionParametersBasedOnInputs() {
         ConversionParameters defaults = new ConversionParameters();
 
-        String referredEmail = new ValueOrDefault<>(etReferredEmail, defaults.email).get();
+        String referredEmail = new ValueOrDefault<>(etCustomerEmail, defaults.email).get();
         float revenueAmount = new ValueOrDefault<>(etRevenue, defaults.revenue).getFloat();
         int campaignId = selectedCampaignId;
 
