@@ -86,6 +86,10 @@ public abstract class BaseExport<T> implements Export<T> {
             this.text += (this.text.isEmpty() ? "" : "\n") + text;
         }
 
+        public void addHtmlLine(String text) {
+            this.text += (this.text.isEmpty() ? "" : "<br/>") + text;
+        }
+
         public void addLineWithPadding(int spaces, String text) {
             addLine("");
             for (int i = 0; i < spaces; i++) {
