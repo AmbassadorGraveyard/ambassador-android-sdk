@@ -46,7 +46,7 @@ public class Share {
                 .setStream(uri)
                 .setChooserTitle("Share Integration")
                 .setSubject(subject)
-                .setText(body)
+                .setHtmlText(body)
                 .createChooserIntent()
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
