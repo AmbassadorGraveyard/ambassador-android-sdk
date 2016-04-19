@@ -37,6 +37,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rlChooserContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rvChooserTitle"
@@ -53,14 +54,13 @@
             android:id="@+id/lvChooser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/rlChooserButtons"
             android:background="@android:color/white" />
 
         <RelativeLayout
             android:id="@+id/rlChooserButtons"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/lvChooser"
             android:visibility="gone">
 
             <View

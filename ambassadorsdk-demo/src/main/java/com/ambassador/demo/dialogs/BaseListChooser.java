@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ambassador.demo.R;
@@ -31,6 +32,7 @@ public abstract class BaseListChooser<D, A extends BaseListChooser.BaseChooserAd
     protected A adapter;
 
     @Bind(R.id.tvChooserTitle) protected TextView tvChooserTitle;
+    @Bind(R.id.rlChooserContent) protected RelativeLayout rlChooserContent;
     @Bind(R.id.lvChooser) protected ListView lvChooser;
     @Bind(R.id.pbLoading) protected ProgressBar pbLoading;
 
@@ -118,6 +120,7 @@ public abstract class BaseListChooser<D, A extends BaseListChooser.BaseChooserAd
         @Override
         public void notifyDataSetChanged() {
             super.notifyDataSetChanged();
+            rlChooserContent.setMinimumHeight(0);
             if (getCount() > 0) {
                 pbLoading.setVisibility(View.GONE);
             }
