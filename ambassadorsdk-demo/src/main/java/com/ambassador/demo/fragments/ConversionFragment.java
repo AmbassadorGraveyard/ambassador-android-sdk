@@ -257,6 +257,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         if (getView() == null) return false;
 
         if (!(new Identify(etAmbassadorEmail.getText().toString()).isValidEmail()) && includeReferrer) {
+            elAmbassador.inflate();
             new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referrer email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
@@ -269,6 +270,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         }
 
         if (!(new Identify(etCustomerEmail.getText().toString()).isValidEmail())) {
+            elCustomer.inflate();
             new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referred email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
@@ -280,25 +282,28 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             return false;
         }
 
-        if (!stringHasContent(etRevenue.getText().toString())) {
-            new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
-            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a revenue amount!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    svConversion.smoothScrollTo(0, elCommission.getTop());
-                    etRevenue.requestFocus();
-                }
-            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
-            return false;
-        }
-
         if (selectedCampaignName == null) {
+            elCommission.inflate();
             new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a campaign ID!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     svConversion.smoothScrollTo(0, elCommission.getTop());
                     rlCampaignChooser.performClick();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        if (!stringHasContent(etRevenue.getText().toString())) {
+            elCommission.inflate();
+            new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a revenue amount!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    elCommission.inflate();
+                    svConversion.smoothScrollTo(0, elCommission.getTop());
+                    etRevenue.requestFocus();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
             return false;
