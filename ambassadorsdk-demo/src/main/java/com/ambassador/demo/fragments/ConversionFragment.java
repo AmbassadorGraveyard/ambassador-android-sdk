@@ -162,6 +162,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             @Override
             public void onClick(View v) {
                 final GroupChooserDialog groupChooserDialog = new GroupChooserDialog(getActivity());
+                if (selectedGroups != null && !selectedGroups.equals("")) groupChooserDialog.setSelected(selectedGroups.replaceAll(" ", ""));
                 groupChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {

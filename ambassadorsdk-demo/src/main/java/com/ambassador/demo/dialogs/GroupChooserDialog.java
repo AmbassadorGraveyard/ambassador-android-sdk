@@ -18,6 +18,7 @@ import com.ambassador.demo.api.pojo.GetGroupsResponse;
 import com.ambassador.demo.data.User;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit.Callback;
@@ -28,6 +29,7 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
 
     protected GroupChooserAdapter adapter;
     protected boolean wasCanceled;
+    protected List<String> startupGroups;
 
     public GroupChooserDialog(Context context) {
         super(context, "Choose Groups");
@@ -87,6 +89,10 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
         return out;
     }
 
+    public void setSelected(String groups) {
+        this.startupGroups = Arrays.asList(groups.split(","));
+    }
+
     protected class GroupChooserAdapter extends BaseChooserAdapter {
 
         protected List<GetGroupsResponse.GroupResponse> checks;
@@ -99,6 +105,9 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
                     GetGroupsResponse.GroupResponse[] results = getGroupsResponse.results;
                     for (GetGroupsResponse.GroupResponse result : results) {
                         data.add(result);
+                        if (startupGroups != null && startupGroups.contains(result.group_id)) {
+                            checks.add(result);
+                        }
                     }
                     notifyDataSetChanged();
                 }
