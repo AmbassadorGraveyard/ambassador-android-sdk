@@ -51,7 +51,6 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        findViewById(R.id.rlChooserButtons).setVisibility(View.VISIBLE);
         findViewById(R.id.tvCancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,6 +160,12 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
                 out[i] = checks.get(i).group_id;
             }
             return out;
+        }
+
+        @Override
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
+            findViewById(R.id.rlChooserButtons).setVisibility(View.VISIBLE);
         }
 
     }
