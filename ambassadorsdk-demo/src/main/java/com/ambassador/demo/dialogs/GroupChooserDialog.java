@@ -68,6 +68,7 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
     @Override
     public String getResult() {
         if (wasCanceled) return null;
+        if (getAdapter().getChecked().length == 0) return "";
         String[] selected = getAdapter().getChecked();
         String out = "";
         for (int i = 0; i < selected.length - 1; i++) {
