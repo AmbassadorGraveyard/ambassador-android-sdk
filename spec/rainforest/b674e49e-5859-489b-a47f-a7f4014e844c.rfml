@@ -4,7 +4,7 @@
 # tags: android
 #
 
-Go to https://www.dropbox.com/s/dudvvr0grb9qyn7/ambassadorsdk-demo-release.apk?dl=0 and download the app. Install it and click "Open".
+Go to https://www.dropbox.com/s/dudvvr0grb9qyn7/ambassadorsdk-demo-release.apk?dl=0. Click the button in the top right of the page and click direct download. Drag down the top bar of the device and click the downloaded file. Install it and click "Open".
 Did the app install and open on the device?
 
 Remain on the home screen.
@@ -26,10 +26,10 @@ Click on the heading that says "Commission".
 Do the fields under it disappear?
 
 Click on the heading that says "Customer".
-Does a "Select groups" field and a "Send welcome email" switch appear under it?
+Do fields appear under the heading?
 
 Toggle the switch that appears next to the text "Enroll as ambassador".
-Do new fields appear under it?
+Does a "Select groups" field and a "Send welcome email" switch appear under it?
 
 Click the field that says "Select groups".
 Does a new dialog open with a list loaded into it?
