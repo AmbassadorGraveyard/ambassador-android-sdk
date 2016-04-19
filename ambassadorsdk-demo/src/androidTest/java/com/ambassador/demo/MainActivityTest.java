@@ -189,29 +189,29 @@ public class MainActivityTest {
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
         // Focus referrer email input and type a valid email address.
-        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.click());
-        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake1@getambassador.com"));
+        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.typeTextIntoFocusedView("jake1@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus email input and type a valid email address.
-        onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake2@getambassador.com"));
+        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake2@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus revenue input and type a valid currency amount.
-        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
+        onView(withId(R.id.etRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus campaign ID input and type a valid campaign ID.
-        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.click());
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.typeTextIntoFocusedView("260"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
@@ -243,29 +243,29 @@ public class MainActivityTest {
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
         // Focus referrer email input and type a valid email address.
-        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.click());
-        onView(withId(R.id.etReferrerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake1@getambassador.com"));
+        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.typeTextIntoFocusedView("jake1@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus email input and type a valid email address.
-        onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake2@getambassador.com"));
+        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake2@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus revenue input and type a valid currency amount.
-        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
+        onView(withId(R.id.etRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus campaign ID input and type a valid campaign ID.
-        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.click());
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.typeTextIntoFocusedView("260"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
@@ -297,15 +297,15 @@ public class MainActivityTest {
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
         // Focus revenue input and type a valid currency amount.
-        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
+        onView(withId(R.id.etRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus campaign ID input and type a valid campaign ID.
-        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.click());
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.typeTextIntoFocusedView("260"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
@@ -320,15 +320,15 @@ public class MainActivityTest {
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
         // Focus email input and type a valid email address.
-        onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
+        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etCustomerEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus campaign ID input and type a valid campaign ID.
-        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionCampaign)).perform(ViewActions.typeTextIntoFocusedView("260"));
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.click());
+        onView(withId(R.id.rlCampaignChooser)).perform(ViewActions.typeTextIntoFocusedView("260"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
@@ -346,15 +346,15 @@ public class MainActivityTest {
         onView(withTabName("Conversion")).perform(ViewActions.click());
 
         // Focus email input and type a valid email address.
-        onView(withId(R.id.etConversionEmail)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
+        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.click());
+        onView(withId(R.id.etAmbassadorEmail)).perform(ViewActions.typeTextIntoFocusedView("jake@getambassador.com"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
 
         // Focus revenue input and type a valid currency amount.
-        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.click());
-        onView(withId(R.id.etConversionRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
+        onView(withId(R.id.etRevenue)).perform(ViewActions.click());
+        onView(withId(R.id.etRevenue)).perform(ViewActions.typeTextIntoFocusedView("25.55"));
 
         // Close the keyboard to ensure other views all visible.
         Espresso.closeSoftKeyboard();
