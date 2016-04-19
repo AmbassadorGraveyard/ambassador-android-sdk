@@ -353,7 +353,6 @@ public class CustomizationActivity extends AppCompatActivity {
         public void drop(int from, int to) {
             Channel movedItem = getItem(from);
             channelItems.remove(from);
-            if (from > to) from--;
             channelItems.add(to, movedItem);
             notifyDataSetChanged();
         }

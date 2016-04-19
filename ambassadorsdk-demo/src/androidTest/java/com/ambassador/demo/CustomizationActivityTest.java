@@ -437,31 +437,6 @@ public class CustomizationActivityTest {
         };
     }
 
-    private static ViewAction touchAt(final int x, final int y) {
-        return new ViewAction() {
-
-            @Override
-            public Matcher<View> getConstraints() {
-                return ViewMatchers.isDisplayed();
-            }
-
-            @Override
-            public String getDescription() {
-                return "Touches the view at a specified x and y coordinate.";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                try {
-                    MotionEvents.sendDown(uiController, new float[]{x, y}, new float[]{0 ,0});
-                } catch (Exception e) {
-
-                }
-            }
-
-        };
-    }
-
     protected void mockCampaignsResponse() {
         Mockito.doAnswer(new Answer() {
             @Override
