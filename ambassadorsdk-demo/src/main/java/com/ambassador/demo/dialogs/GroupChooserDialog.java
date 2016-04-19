@@ -101,6 +101,7 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
             Requests.get().getGroups(User.get().getUniversalToken(), new Callback<GetGroupsResponse>() {
                 @Override
                 public void success(GetGroupsResponse getGroupsResponse, Response response) {
+                    findViewById(R.id.rlChooserButtons).setVisibility(View.VISIBLE);
                     GetGroupsResponse.GroupResponse[] results = getGroupsResponse.results;
                     for (GetGroupsResponse.GroupResponse result : results) {
                         data.add(result);
@@ -160,12 +161,6 @@ public class GroupChooserDialog extends BaseListChooser<GetGroupsResponse.GroupR
                 out[i] = checks.get(i).group_id;
             }
             return out;
-        }
-
-        @Override
-        public void notifyDataSetChanged() {
-            super.notifyDataSetChanged();
-            findViewById(R.id.rlChooserButtons).setVisibility(View.VISIBLE);
         }
 
     }

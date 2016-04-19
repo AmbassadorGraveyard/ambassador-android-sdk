@@ -54,13 +54,15 @@
             android:id="@+id/lvChooser"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white" />
+            android:background="@android:color/white"
+            android:paddingBottom="50dp"/>
 
         <RelativeLayout
             android:id="@+id/rlChooserButtons"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_below="@+id/lvChooser"
+            android:layout_alignBottom="@+id/lvChooser"
+            android:background="@android:color/white"
             android:visibility="gone">
 
             <View
