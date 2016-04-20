@@ -28,7 +28,7 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demo.Demo;
 import com.ambassador.demo.R;
-import com.ambassador.demo.activities.CustomizationActivity;
+import com.ambassador.demo.activities.customization.CustomizationActivity;
 import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.data.Integration;
 import com.ambassador.demo.data.User;

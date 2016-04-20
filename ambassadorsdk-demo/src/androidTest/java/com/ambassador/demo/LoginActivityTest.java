@@ -14,7 +14,7 @@ import android.widget.EditText;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.demo.activities.LoginActivity;
+import com.ambassador.demo.activities.login.LoginActivity;
 import com.ambassador.demo.api.Requests;
 
 import org.hamcrest.Description;

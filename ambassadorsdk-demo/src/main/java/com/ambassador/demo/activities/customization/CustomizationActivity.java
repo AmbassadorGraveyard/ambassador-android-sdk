@@ -1,4 +1,4 @@
-package com.ambassador.demo.activities;
+package com.ambassador.demo.activities.customization;
 
 import android.app.Activity;
 import android.content.DialogInterface;

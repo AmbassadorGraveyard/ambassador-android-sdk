@@ -1,4 +1,4 @@
-package com.ambassador.demo.activities;
+package com.ambassador.demo.activities.login;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;

@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.demo.activities.CustomizationActivity;
+import com.ambassador.demo.activities.customization.CustomizationActivity;
 import com.ambassador.demo.api.Requests;
 import com.ambassador.demo.api.pojo.GetCampaignsResponse;
 import com.mobeta.android.dslv.DragSortItemView;
