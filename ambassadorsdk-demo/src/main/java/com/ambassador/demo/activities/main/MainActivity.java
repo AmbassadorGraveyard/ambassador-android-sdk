@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.demo.R;
+import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.data.User;
 import com.ambassador.demo.fragments.ConversionFragment;
 import com.ambassador.demo.fragments.IdentifyFragment;
@@ -34,7 +35,9 @@ import com.ambassador.demo.fragments.SettingsFragment;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class MainActivity extends AppCompatActivity {
+public final class MainActivity extends AppCompatActivity implements MainView {
+
+    protected MainPresenter mainPresenter;
 
     @Bind(R.id.tlTabs)      protected TabLayout     tlTabs;
     @Bind(R.id.vpPages)     protected ViewPager     vpPages;
@@ -46,9 +49,18 @@ public final class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AmbassadorSDK.runWithKeys(this, "SDKToken " + User.get().getSdkToken(), User.get().getUniversalId());
+
+        if (savedInstanceState == null) {
+            mainPresenter = new MainPresenter();
+        } else {
+            mainPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
+        }
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+
+        AmbassadorSDK.runWithKeys(this, "SDKToken " + User.get().getSdkToken(), User.get().getUniversalId());
 
         adapter = new TabFragmentPagerAdapter(getSupportFragmentManager());
         vpPages.setOffscreenPageLimit(4);
@@ -104,6 +116,19 @@ public final class MainActivity extends AppCompatActivity {
                 menuItem.setIcon(tabFragment.getActionDrawable());
             }
         }
+        mainPresenter.bindView(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mainPresenter.unbindView();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        PresenterManager.getInstance().savePresenter(mainPresenter, outState);
     }
 
     protected ViewPager.OnPageChangeListener vpPagesChangeListener = new ViewPager.OnPageChangeListener() {

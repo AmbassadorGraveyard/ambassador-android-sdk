@@ -129,6 +129,8 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         return view;
     }
 
+    
+
     @Override
     public void onResume() {
         super.onResume();
