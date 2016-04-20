@@ -2,6 +2,7 @@
 # title: Settings page logout test
 # start_uri: /
 # tags: android
+# browsers: android_phone_portrait
 #
 
 - 1b092940-1e8b-4149-a665-abda7828cf73
