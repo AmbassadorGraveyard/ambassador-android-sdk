@@ -28,6 +28,7 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.demo.Demo;
 import com.ambassador.demo.R;
+import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.activities.customization.CustomizationActivity;
 import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.data.Integration;
@@ -49,7 +50,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public final class IntegrationFragment extends Fragment implements MainActivity.TabFragment {
+public final class IntegrationFragment extends Fragment implements IntegrationView, MainActivity.TabFragment {
+
+    protected IntegrationPresenter integrationPresenter;
 
     protected static final int LISTVIEW_EXTRA_PADDING = 110;
 
@@ -65,7 +68,12 @@ public final class IntegrationFragment extends Fragment implements MainActivity.
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+
+        if (savedInstanceState == null) {
+            integrationPresenter = new IntegrationPresenter();
+        } else {
+            integrationPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
+        }
     }
 
     @Nullable
@@ -119,6 +127,7 @@ public final class IntegrationFragment extends Fragment implements MainActivity.
     @Override
     public void onResume() {
         super.onResume();
+        integrationPresenter.bindView(this);
         closeSoftKeyboard();
         adapter = new RafAdapter();
         lvRafs.setAdapter(adapter);
@@ -138,6 +147,18 @@ public final class IntegrationFragment extends Fragment implements MainActivity.
         }
 
         ((MainActivity) getActivity()).notifyIntegrationSetInvalidated();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        integrationPresenter.unbindView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        PresenterManager.getInstance().savePresenter(integrationPresenter, outState);
     }
 
     private void closeSoftKeyboard() {

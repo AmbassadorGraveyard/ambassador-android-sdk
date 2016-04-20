@@ -8,5 +8,5 @@ public class IntegrationPresenter extends BasePresenter<IntegrationModel, Integr
     protected void updateView() {
 
     }
-    
+
 }
