@@ -49,7 +49,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 
-public final class ReferFragment extends Fragment implements MainActivity.TabFragment {
+public final class IntegrationFragment extends Fragment implements MainActivity.TabFragment {
 
     protected static final int LISTVIEW_EXTRA_PADDING = 110;
 

@@ -29,7 +29,7 @@ import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.data.User;
 import com.ambassador.demo.fragments.ConversionFragment;
 import com.ambassador.demo.fragments.IdentifyFragment;
-import com.ambassador.demo.activities.main.integration.ReferFragment;
+import com.ambassador.demo.activities.main.integration.IntegrationFragment;
 import com.ambassador.demo.fragments.SettingsFragment;
 
 import butterknife.Bind;
@@ -173,7 +173,7 @@ public final class MainActivity extends AppCompatActivity implements MainView {
             super(fm);
             tabs = new TabModel[4];
             String rafTitle = getResources().getDisplayMetrics().densityDpi < 300 ? "Referrals" : "Refer a Friend";
-            tabs[0] = new TabModel(rafTitle, R.drawable.ic_raf, new ReferFragment())
+            tabs[0] = new TabModel(rafTitle, R.drawable.ic_raf, new IntegrationFragment())
                     .setContentDescription("referTab");
             tabs[1] = new TabModel("Identify", R.drawable.ic_identify, new IdentifyFragment())
                     .setContentDescription("loginTab");
