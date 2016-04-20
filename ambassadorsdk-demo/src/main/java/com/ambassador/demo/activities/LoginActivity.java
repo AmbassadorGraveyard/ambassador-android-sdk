@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demo.R;
+import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.api.Requests;
 import com.ambassador.demo.api.pojo.LoginResponse;
 import com.ambassador.demo.data.User;

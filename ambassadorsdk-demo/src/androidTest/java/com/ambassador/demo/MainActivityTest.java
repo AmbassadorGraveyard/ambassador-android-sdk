@@ -25,7 +25,7 @@ import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.demo.activities.LoginActivity;
-import com.ambassador.demo.activities.MainActivity;
+import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.api.Requests;
 import com.ambassador.demo.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demo.api.pojo.LoginResponse;

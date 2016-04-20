@@ -20,7 +20,7 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.LaunchActivity;
-import com.ambassador.demo.activities.MainActivity;
+import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.data.User;
 
 import butterknife.Bind;

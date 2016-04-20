@@ -15,7 +15,7 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.demo.activities.LaunchActivity;
 import com.ambassador.demo.activities.LoginActivity;
-import com.ambassador.demo.activities.MainActivity;
+import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.api.pojo.LoginResponse;
 import com.ambassador.demo.data.User;
 

@@ -1,4 +1,4 @@
-package com.ambassador.demo.activities;
+package com.ambassador.demo.activities.main;
 
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;

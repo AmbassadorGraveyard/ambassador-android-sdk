@@ -21,7 +21,7 @@ import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demo.BuildConfig;
 import com.ambassador.demo.R;
-import com.ambassador.demo.activities.MainActivity;
+import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.exports.Export;
 import com.ambassador.demo.exports.IdentifyExport;
 import com.ambassador.demo.utils.Share;
