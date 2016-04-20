@@ -45,7 +45,6 @@ public abstract class BaseExport<T> implements Export<T> {
     @Override
     public String zip(Context context) {
         Zipper zipper =  new Zipper(context)
-                .add("README.txt", getReadme())
                 .add(javaClassName() + ".java", getJavaImplementation())
                 .add(iOSClassName() + ".swift", getSwiftImplementation())
                 .add(iOSClassName() + ".m", getObjectiveCImplementation());
