@@ -254,7 +254,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             return;
         } else if (groups.equals("")) {
             selectedGroups = null;
-            tvSelectedGroups.setText("Select groups");
+            tvSelectedGroups.setText("Add to groups");
             tvSelectedGroups.setTextColor(Color.parseColor("#e6e6e6"));
         } else {
             selectedGroups = groups;
