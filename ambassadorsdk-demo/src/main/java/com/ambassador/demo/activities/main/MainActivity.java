@@ -29,7 +29,7 @@ import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.data.User;
 import com.ambassador.demo.fragments.ConversionFragment;
 import com.ambassador.demo.fragments.IdentifyFragment;
-import com.ambassador.demo.fragments.ReferFragment;
+import com.ambassador.demo.activities.main.integration.ReferFragment;
 import com.ambassador.demo.fragments.SettingsFragment;
 
 import butterknife.Bind;

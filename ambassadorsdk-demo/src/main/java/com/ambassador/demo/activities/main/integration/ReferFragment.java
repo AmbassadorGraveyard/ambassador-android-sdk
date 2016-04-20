@@ -1,4 +1,4 @@
-package com.ambassador.demo.fragments;
+package com.ambassador.demo.activities.main.integration;
 
 import android.content.Context;
 import android.content.DialogInterface;
