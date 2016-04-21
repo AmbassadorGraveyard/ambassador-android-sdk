@@ -338,7 +338,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         float revenueAmount = new ValueOrDefault<>(etRevenue, defaults.revenue).getFloat();
         int campaignId = selectedCampaignId;
 
-        String addToGroupId = selectedGroups != null ? selectedGroups.replaceAll(" ", "") : "";
+        String addToGroupId = swEnrollAsAmbassador.isChecked() && selectedGroups != null ? selectedGroups.replaceAll(" ", "") : "";
         String firstName = new ValueOrDefault<>(etFirstName, defaults.firstName).get();
         String lastName = new ValueOrDefault<>(etLastName, defaults.lastName).get();
         String uid = new ValueOrDefault<>(etUID, defaults.uid).get();
@@ -353,7 +353,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         int isApproved = swApproved.isChecked() ? 1 : 0;
         int autoCreate = swEnrollAsAmbassador.isChecked() ? 1 : 0;
         int deactivateNewAmbassador = 0;
-        int emailNewAmbassador = swEmailNewAmbassador.isChecked() ? 1 : 0;
+        int emailNewAmbassador = swEnrollAsAmbassador.isChecked() && swEmailNewAmbassador.isChecked() ? 1 : 0;
 
         return new ConversionParameters.Builder()
                 .setEmail(referredEmail)
