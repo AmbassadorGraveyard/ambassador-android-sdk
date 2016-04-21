@@ -1,0 +1,17 @@
+#! 0d2f526b-0423-4d2a-8ca2-4f677bc77135
+# title: Settings page logout test
+# start_uri: /
+# tags: android, 117449499
+# browsers: android_phone_portrait
+#
+
+- 1b092940-1e8b-4149-a665-abda7828cf73
+
+Click the settings tab on the bottom of the app.
+Are you brought to a page titled "Settings"?
+
+Click the button on the bottom of the page that says "Logout".
+Do you see fields to enter an email address and a password?
+
+Click the back button on the device.
+Does the application close?

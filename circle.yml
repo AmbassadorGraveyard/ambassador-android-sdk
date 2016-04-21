@@ -21,6 +21,7 @@ test:
     - ./gradlew -p ambassadorsdk jacocoReport
     - cp -r ambassadorsdk/build/reports/jacoco/jacocoReport/* $CIRCLE_TEST_REPORTS
     - cp -r ambassadorsdk/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
+    - ./gradlew -p ambassadorsdk-demo assembleDebug --quiet;
     - ./rainforest.sh
     - bash devicefarm.sh
 

@@ -1,19 +1,13 @@
-#! 1b092940-1e8b-4149-a665-abda7828cf73 (Test ID - only edit if this test has not yet been uploaded)
-# title: Android Quick Test
-# tags: android
+#! 1b092940-1e8b-4149-a665-abda7828cf73
+# title: Download, install, and open, and login to app
 # browsers: android_phone_portrait
 #
-# Lines starting with # are test attributes or comments
-# Possible attributes: start_uri, title, tags
-#
-# Steps are composed of two lines: an action and a question. Example:
-#
-# This is the step action.
-# This is the step question?
-#
 
-Go to https://www.dropbox.com/s/71is376940as1r4/ambassadorsdk-demo-release.apk?dl=0 and download and install the app.
-Did the app install on the device?
+Go to https://www.dropbox.com/s/mgmu3207079bde7/rainforest.apk?dl=0. Click the button in the top right of the page and click direct download. Drag down the top bar of the device and click the downloaded file. Install it and click "Open". Do NOT click "Done", Click "Open".
+Did the app install and open on the device?
 
 Remain on the home screen.
-Do you see fields to enter a username and password?
+Do you see fields to enter an email address and password?
+
+Enter {{ambassador_client_login.email}} in the Email field, then enter {{ambassador_client_login.password}} in the Password field, then click Sign In.
+Did you successfully sign in?
