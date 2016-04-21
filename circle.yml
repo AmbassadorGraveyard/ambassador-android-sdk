@@ -9,9 +9,9 @@ machine:
 
 dependencies:
  pre:
-    - curl -sL http://bit.ly/jpm4j >jpm4j.jar
-    - sudo java -jar jpm4j.jar -g init
-    - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
+    #- curl -sL http://bit.ly/jpm4j >jpm4j.jar
+    #- sudo java -jar jpm4j.jar -g init
+    #- sudo jpm install com.codacy:codacy-coverage-reporter:assembly
     - sudo pip install awscli
     - gem install rainforest-cli
     - bash secrets.sh
@@ -24,5 +24,5 @@ test:
     - ./rainforest.sh
     - bash devicefarm.sh
 
-  post:
-    - codacy-coverage-reporter -l Java -r $CIRCLE_TEST_REPORTS/jacocoReport.xml
+  #post:
+    #- codacy-coverage-reporter -l Java -r $CIRCLE_TEST_REPORTS/jacocoReport.xml
