@@ -1,6 +1,10 @@
 package com.ambassador.demo.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -10,13 +14,17 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.SwitchCompat;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,9 +40,14 @@ import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.api.Requests;
 import com.ambassador.demo.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.demo.data.User;
+import com.ambassador.demo.dialogs.CampaignChooserDialog;
+import com.ambassador.demo.dialogs.GroupChooserDialog;
 import com.ambassador.demo.exports.ConversionExport;
 import com.ambassador.demo.exports.Export;
 import com.ambassador.demo.utils.Share;
+import com.ambassador.demo.views.ExpandableLayout;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -44,35 +57,50 @@ import retrofit.client.Response;
 
 public final class ConversionFragment extends Fragment implements MainActivity.TabFragment {
 
+    /** ScrollView encapsulating all views. */
     @Bind(R.id.svConversion) protected ScrollView svConversion;
 
-    @Bind(R.id.tvReferrerEmail) protected TextView tvReferrerEmail;
-    @Bind(R.id.tvRequiredParameters) protected TextView tvRequiredParameters;
+    // Ambassador section views
+    @Bind(R.id.elAmbassador) protected ExpandableLayout elAmbassador;
+    @Bind(R.id.etAmbassadorEmail) protected EditText etAmbassadorEmail;
 
-    @Bind(R.id.etReferrerEmail) protected EditText etReferrerEmail;
-
-    @Bind(R.id.etConversionEmail) protected EditText etReferredEmail;
-    @Bind(R.id.etConversionRevenue) protected EditText etRevenue;
-    @Bind(R.id.etConversionCampaign) protected EditText etCampaign;
-
-    @Bind(R.id.etGroupId) protected EditText etGroupId;
+    // Customer section views
+    @Bind(R.id.elCustomer) protected ExpandableLayout elCustomer;
+    @Bind(R.id.etCustomerEmail) protected EditText etCustomerEmail;
     @Bind(R.id.etFirstName) protected EditText etFirstName;
     @Bind(R.id.etLastName) protected EditText etLastName;
     @Bind(R.id.etUID) protected EditText etUID;
+    @Bind(R.id.swEnrollAsAmbassador) protected SwitchCompat swEnrollAsAmbassador;
+    @Bind(R.id.rlEnrollSubInputs) protected RelativeLayout rlEnrollSubInputs;
+    @Bind(R.id.rlGroupChooser) protected RelativeLayout rlGroupChooser;
+    @Bind(R.id.tvSelectedGroups) protected TextView tvSelectedGroups;
+    @Bind(R.id.swEmailNewAmbassador) protected SwitchCompat swEmailNewAmbassador;
     @Bind(R.id.etCustom1) protected EditText etCustom1;
     @Bind(R.id.etCustom2) protected EditText etCustom2;
     @Bind(R.id.etCustom3) protected EditText etCustom3;
+
+    // Commission section views
+    @Bind(R.id.elCommission) protected ExpandableLayout elCommission;
+    @Bind(R.id.rlCampaignChooser) protected RelativeLayout rlCampaignChooser;
+    @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
+    @Bind(R.id.etRevenue) protected EditText etRevenue;
+    @Bind(R.id.swConversionApproved) protected SwitchCompat swApproved;
     @Bind(R.id.etTransactionUID) protected EditText etTransactionUID;
     @Bind(R.id.etEventData1) protected EditText etEventData1;
     @Bind(R.id.etEventData2) protected EditText etEventData2;
     @Bind(R.id.etEventData3) protected EditText etEventData3;
 
-    @Bind(R.id.swConversionApproved) protected SwitchCompat swApproved;
-    @Bind(R.id.swAutoCreate) protected SwitchCompat swAutoCreate;
-    @Bind(R.id.swDeactivateNewAmbassador) protected SwitchCompat swDeactivateNewAmbassador;
-    @Bind(R.id.swEmailNewAmbassador) protected SwitchCompat swEmailNewAmbassador;
-
+    // Conversion buttons
     @Bind(R.id.btnConversion) protected Button btnConversion;
+
+    /** Name of the selected campaign. */
+    protected String selectedCampaignName;
+
+    /** Ambassador backend ID for selected campaign. */
+    protected int selectedCampaignId;
+
+    /** String of selected groups separated by commas. */
+    protected String selectedGroups;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,7 +115,77 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         ButterKnife.bind(this, view);
 
         swApproved.setChecked(true);
-        swAutoCreate.setChecked(true);
+
+        swEnrollAsAmbassador.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, final boolean isChecked) {
+                float dp18 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 18, getActivity().getResources().getDisplayMetrics());
+                int finalHeight = (int) (rlGroupChooser.getMeasuredHeight() + swEmailNewAmbassador.getMeasuredHeight() + dp18);
+                ValueAnimator valueAnimator;
+                if (isChecked) {
+                    valueAnimator = ValueAnimator.ofInt(rlEnrollSubInputs.getHeight(), finalHeight);
+                } else {
+                    valueAnimator = ValueAnimator.ofInt(rlEnrollSubInputs.getHeight(), 0);
+                }
+                valueAnimator.setInterpolator(new FastOutSlowInInterpolator());
+                valueAnimator.setDuration(500);
+                valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        int val = (Integer) animation.getAnimatedValue();
+                        ViewGroup.LayoutParams layoutParams = rlEnrollSubInputs.getLayoutParams();
+                        layoutParams.height = val;
+                        rlEnrollSubInputs.setLayoutParams(layoutParams);
+                    }
+                });
+                valueAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        ViewGroup.LayoutParams layoutParams = rlEnrollSubInputs.getLayoutParams();
+                        if (layoutParams.height >= 10) {
+                            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                            rlEnrollSubInputs.setLayoutParams(layoutParams);
+                        }
+                    }
+                });
+                valueAnimator.start();
+            }
+        });
+
+        rlCampaignChooser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(getActivity());
+                campaignChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (campaignChooserDialog.getResult() == null) return;
+                        JsonObject json = new JsonParser().parse(campaignChooserDialog.getResult()).getAsJsonObject();
+                        String name = json.get("name").getAsString();
+                        int id = json.get("id").getAsInt();
+                        setCampaign(name, id);
+                    }
+                });
+                campaignChooserDialog.show();
+            }
+        });
+
+        rlGroupChooser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final GroupChooserDialog groupChooserDialog = new GroupChooserDialog(getActivity());
+                if (selectedGroups != null && !selectedGroups.equals("")) groupChooserDialog.setSelected(selectedGroups.replaceAll(" ", ""));
+                groupChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        String data = groupChooserDialog.getResult();
+                        setGroups(data);
+                    }
+                });
+                groupChooserDialog.show();
+            }
+        });
 
         btnConversion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +195,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                 new IdentifyAugurSDK().getIdentity();
 
                 final ConversionParameters parameters = getConversionParametersBasedOnInputs();
-                String referrerEmail = etReferrerEmail.getText().toString();
+                String referrerEmail = etAmbassadorEmail.getText().toString();
 
                 registerShortCode(parameters.getCampaign(), referrerEmail, new ShortCodeRegistrationListener() {
                     @Override
@@ -117,7 +215,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
+                                new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
                                 Snackbar.make(getActivity().findViewById(android.R.id.content), "An ambassador could not be found for the email and campaign provided.", Snackbar.LENGTH_LONG).show();
                             }
                         });
@@ -125,6 +223,10 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
                 });
             }
         });
+
+        elAmbassador.setTitle("Ambassador");
+        elCustomer.setTitle("Customer");
+        elCommission.setTitle("Commission");
 
         return view;
     }
@@ -140,6 +242,26 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
     }
 
+    public void setCampaign(String name, int id) {
+        selectedCampaignName = name;
+        selectedCampaignId = id;
+        tvSelectedCampaign.setText(name);
+        tvSelectedCampaign.setTextColor(Color.parseColor("#333333"));
+    }
+
+    public void setGroups(String groups) {
+        if (groups == null) {
+            return;
+        } else if ("".equals(groups)) {
+            selectedGroups = null;
+            tvSelectedGroups.setText("Add to groups");
+            tvSelectedGroups.setTextColor(Color.parseColor("#e6e6e6"));
+        } else {
+            selectedGroups = groups;
+            tvSelectedGroups.setText(groups);
+            tvSelectedGroups.setTextColor(Color.parseColor("#333333"));
+        }
+    }
 
     protected boolean verifiedInputs() {
         return verifiedInputs(true);
@@ -148,49 +270,54 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     protected boolean verifiedInputs(boolean includeReferrer) {
         if (getView() == null) return false;
 
-        if (!(new Identify(etReferrerEmail.getText().toString()).isValidEmail()) && includeReferrer) {
-            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
+        if (!(new Identify(etAmbassadorEmail.getText().toString()).isValidEmail()) && includeReferrer) {
+            elAmbassador.inflate();
+            new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referrer email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    svConversion.smoothScrollTo(0, tvReferrerEmail.getTop());
-                    etReferrerEmail.requestFocus();
+                    svConversion.smoothScrollTo(0, elAmbassador.getTop());
+                    etAmbassadorEmail.requestFocus();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
             return false;
         }
 
-        if (!(new Identify(etReferredEmail.getText().toString()).isValidEmail())) {
-            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
+        if (!(new Identify(etCustomerEmail.getText().toString()).isValidEmail())) {
+            elCustomer.inflate();
+            new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid referred email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
-                    etReferredEmail.requestFocus();
+                    svConversion.smoothScrollTo(0, elCustomer.getTop());
+                    etCustomerEmail.requestFocus();
+                }
+            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+            return false;
+        }
+
+        if (selectedCampaignName == null) {
+            elCommission.inflate();
+            new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
+            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a campaign ID!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    svConversion.smoothScrollTo(0, elCommission.getTop());
+                    rlCampaignChooser.performClick();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
             return false;
         }
 
         if (!stringHasContent(etRevenue.getText().toString())) {
-            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
+            elCommission.inflate();
+            new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
             Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a revenue amount!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
+                    elCommission.inflate();
+                    svConversion.smoothScrollTo(0, elCommission.getTop());
                     etRevenue.requestFocus();
-                }
-            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
-            return false;
-        }
-
-        if (!stringHasContent(etCampaign.getText().toString())) {
-            new Device(getActivity()).closeSoftKeyboard(etReferredEmail);
-            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a campaign ID!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    svConversion.smoothScrollTo(0, tvRequiredParameters.getTop());
-                    etCampaign.requestFocus();
                 }
             }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
             return false;
@@ -207,11 +334,11 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
     protected ConversionParameters getConversionParametersBasedOnInputs() {
         ConversionParameters defaults = new ConversionParameters();
 
-        String referredEmail = new ValueOrDefault<>(etReferredEmail, defaults.email).get();
+        String referredEmail = new ValueOrDefault<>(etCustomerEmail, defaults.email).get();
         float revenueAmount = new ValueOrDefault<>(etRevenue, defaults.revenue).getFloat();
-        int campaignId = new ValueOrDefault<>(etCampaign, defaults.campaign).getInteger();
+        int campaignId = selectedCampaignId;
 
-        String addToGroupId = new ValueOrDefault<>(etGroupId, defaults.addToGroupId).get();
+        String addToGroupId = swEnrollAsAmbassador.isChecked() && selectedGroups != null ? selectedGroups.replaceAll(" ", "") : "";
         String firstName = new ValueOrDefault<>(etFirstName, defaults.firstName).get();
         String lastName = new ValueOrDefault<>(etLastName, defaults.lastName).get();
         String uid = new ValueOrDefault<>(etUID, defaults.uid).get();
@@ -224,9 +351,9 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
         String eventData3 = new ValueOrDefault<>(etEventData3, defaults.eventData3).get();
 
         int isApproved = swApproved.isChecked() ? 1 : 0;
-        int autoCreate = swAutoCreate.isChecked() ? 1 : 0;
-        int deactivateNewAmbassador = swDeactivateNewAmbassador.isChecked() ? 1 : 0;
-        int emailNewAmbassador = swEmailNewAmbassador.isChecked() ? 1 : 0;
+        int autoCreate = swEnrollAsAmbassador.isChecked() ? 1 : 0;
+        int deactivateNewAmbassador = 0;
+        int emailNewAmbassador = swEnrollAsAmbassador.isChecked() && swEmailNewAmbassador.isChecked() ? 1 : 0;
 
         return new ConversionParameters.Builder()
                 .setEmail(referredEmail)

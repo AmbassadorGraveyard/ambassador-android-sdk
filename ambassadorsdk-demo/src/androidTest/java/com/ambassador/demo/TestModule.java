@@ -34,7 +34,6 @@ import dagger.Provides;
 @Module(injects = {
         MainActivityTest.class,
         LaunchActivityTest.class,
-        LoginActivityTest.class,
         CustomizationActivityTest.class,
         AmbassadorActivityTest.class,
         AmbassadorActivity.class,

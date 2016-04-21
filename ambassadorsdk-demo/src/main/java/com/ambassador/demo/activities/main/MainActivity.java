@@ -172,8 +172,7 @@ public final class MainActivity extends AppCompatActivity implements MainView {
         public TabFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             tabs = new TabModel[4];
-            String rafTitle = getResources().getDisplayMetrics().densityDpi < 300 ? "Referrals" : "Refer a Friend";
-            tabs[0] = new TabModel(rafTitle, R.drawable.ic_raf, new IntegrationFragment())
+            tabs[0] = new TabModel("Refer a Friend", R.drawable.ic_raf, new IntegrationFragment())
                     .setContentDescription("referTab");
             tabs[1] = new TabModel("Identify", R.drawable.ic_identify, new IdentifyFragment())
                     .setContentDescription("loginTab");

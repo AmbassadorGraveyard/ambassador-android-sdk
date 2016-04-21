@@ -114,8 +114,8 @@ public class CustomizationActivity extends AppCompatActivity {
                 campaignChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        if (campaignChooserDialog.getSelectedCampaign() == null) return;
-                        JsonObject json = new JsonParser().parse(campaignChooserDialog.getSelectedCampaign()).getAsJsonObject();
+                        if (campaignChooserDialog.getResult() == null) return;
+                        JsonObject json = new JsonParser().parse(campaignChooserDialog.getResult()).getAsJsonObject();
                         String name = json.get("name").getAsString();
                         int id = json.get("id").getAsInt();
                         Campaign campaign = new Campaign();
@@ -353,7 +353,6 @@ public class CustomizationActivity extends AppCompatActivity {
         public void drop(int from, int to) {
             Channel movedItem = getItem(from);
             channelItems.remove(from);
-            if (from > to) from--;
             channelItems.add(to, movedItem);
             notifyDataSetChanged();
         }

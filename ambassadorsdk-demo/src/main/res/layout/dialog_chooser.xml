@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <RelativeLayout
+        android:id="@+id/rvChooserTitle"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/ivBadge"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/tvChooserTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="7dp"
+            android:layout_toRightOf="@+id/ivBadge"
+            android:textColor="@android:color/black"
+            android:textSize="17sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="#eee" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlChooserContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rvChooserTitle"
+        android:background="@android:color/white"
+        android:minHeight="200dp">
+
+        <ProgressBar
+            android:id="@+id/pbLoading"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_centerInParent="true" />
+
+        <ListView
+            android:id="@+id/lvChooser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:paddingBottom="50dp"/>
+
+        <RelativeLayout
+            android:id="@+id/rlChooserButtons"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignBottom="@+id/lvChooser"
+            android:background="@android:color/white"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="#eeeeee" />
+
+            <TextView
+                android:id="@+id/tvCancel"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/strut"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="Cancel"
+                android:textColor="#253244"
+                android:textSize="14sp" />
+
+            <View
+                android:id="@+id/strut"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/tvSelect"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@+id/strut"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="Select"
+                android:textColor="#253244"
+                android:textSize="14sp" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
