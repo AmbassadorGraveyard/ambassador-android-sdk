@@ -94,21 +94,6 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
     }
 
     @Override
-    public void onActionClicked() {
-
-    }
-
-    @Override
-    public Drawable getActionDrawable() {
-        return ContextCompat.getDrawable(getActivity(), R.drawable.ic_add_white);
-    }
-
-    @Override
-    public boolean getActionVisibility() {
-        return false;
-    }
-
-    @Override
     public void setUserPicture(String url) {
         if (!ivDisplayPicture.didLoad()) {
             ivDisplayPicture.load(url);
@@ -136,6 +121,21 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    public void onActionClicked() {
+
+    }
+
+    @Override
+    public Drawable getActionDrawable() {
+        return ContextCompat.getDrawable(getActivity(), R.drawable.ic_add_white);
+    }
+
+    @Override
+    public boolean getActionVisibility() {
+        return false;
     }
 
 }
