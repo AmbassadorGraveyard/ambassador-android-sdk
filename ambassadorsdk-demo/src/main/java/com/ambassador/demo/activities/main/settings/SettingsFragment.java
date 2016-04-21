@@ -1,8 +1,5 @@
 package com.ambassador.demo.activities.main.settings;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -15,14 +12,12 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.LaunchActivity;
 import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.activities.main.MainActivity;
-import com.ambassador.demo.data.User;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,7 +27,7 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
     protected SettingsPresenter settingsPresenter;
 
     @Bind(R.id.ivDisplayPicture) protected NetworkCircleImageView ivDisplayPicture;
-    @Bind(R.id.tvSettingsName) protected TextView tvSettingsName;
+    @Bind(R.id.tvUserName) protected TextView tvUserName;
     @Bind(R.id.tvUniversalId) protected TextView tvUniversalId;
     @Bind(R.id.tvSdkToken) protected TextView tvSdkToken;
     @Bind(R.id.ivCopyUniversalId) protected ImageButton ivCopyUniversalId;
@@ -56,33 +51,24 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         ButterKnife.bind(this, view);
 
-        ivDisplayPicture.load(User.get().getAvatarUrl());
-        tvSettingsName.setText(User.get().getName());
-        tvUniversalId.setText(User.get().getUniversalId());
-        tvSdkToken.setText(User.get().getSdkToken());
-
         ivCopyUniversalId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                copyToClipboard(User.get().getUniversalId());
+                settingsPresenter.onCopyUniversalIdClicked();
             }
         });
 
         ivCopySdkToken.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                copyToClipboard(User.get().getSdkToken());
+                settingsPresenter.onCopySdkTokenClicked();
             }
         });
 
         rlLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User.logout();
-                Intent intent = new Intent(getActivity(), LaunchActivity.class)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                settingsPresenter.onLogoutClicked();
             }
         });
 
@@ -107,12 +93,6 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
         PresenterManager.getInstance().savePresenter(settingsPresenter, outState);
     }
 
-    protected void copyToClipboard(String text) {
-        ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        clipboardManager.setPrimaryClip(ClipData.newPlainText("simpleText", text));
-        Toast.makeText(getActivity(), "Copied to clipboard!", Toast.LENGTH_SHORT).show();
-    }
-
     @Override
     public void onActionClicked() {
 
@@ -126,6 +106,36 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
     @Override
     public boolean getActionVisibility() {
         return false;
+    }
+
+    @Override
+    public void setUserPicture(String url) {
+        if (!ivDisplayPicture.didLoad()) {
+            ivDisplayPicture.load(url);
+        }
+    }
+
+    @Override
+    public void setUserName(String name) {
+        tvUserName.setText(name);
+    }
+
+    @Override
+    public void setUniversalId(String universalId) {
+        tvUniversalId.setText(universalId);
+    }
+
+    @Override
+    public void setSdkToken(String sdkToken) {
+        tvSdkToken.setText(sdkToken);
+    }
+
+    @Override
+    public void logout() {
+        Intent intent = new Intent(getActivity(), LaunchActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
 }

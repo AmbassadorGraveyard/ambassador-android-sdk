@@ -28,9 +28,9 @@ public class SurveyPresenter extends BasePresenter<SurveyModel, SurveyView> {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                SurveyModel tmp = new SurveyModel();
-                tmp.ambassadorName = "John";
-                setModel(tmp);
+                SurveyModel surveyModel = new SurveyModel();
+                surveyModel.ambassadorName = "John";
+                setModel(surveyModel);
             }
         }, 3000);
     }
