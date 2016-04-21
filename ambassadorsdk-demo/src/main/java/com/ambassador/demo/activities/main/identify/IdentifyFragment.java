@@ -21,6 +21,7 @@ import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demo.BuildConfig;
 import com.ambassador.demo.R;
+import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.exports.Export;
 import com.ambassador.demo.exports.IdentifyExport;
@@ -39,7 +40,12 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+
+        if (savedInstanceState == null) {
+            identifyPresenter = new IdentifyPresenter();
+        } else {
+            identifyPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
+        }
     }
 
     @Nullable

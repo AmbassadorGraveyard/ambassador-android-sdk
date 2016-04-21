@@ -36,6 +36,7 @@ import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demo.R;
+import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.api.Requests;
 import com.ambassador.demo.api.pojo.GetShortCodeFromEmailResponse;
@@ -107,7 +108,12 @@ public final class ConversionFragment extends Fragment implements ConversionView
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+
+        if (savedInstanceState == null) {
+            conversionPresenter = new ConversionPresenter();
+        } else {
+            conversionPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
+        }
     }
 
     @Nullable

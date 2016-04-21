@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.LaunchActivity;
+import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.activities.main.MainActivity;
 import com.ambassador.demo.data.User;
 
@@ -41,7 +42,12 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+
+        if (savedInstanceState == null) {
+            settingsPresenter = new SettingsPresenter();
+        } else {
+            settingsPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
+        }
     }
 
     @Nullable
