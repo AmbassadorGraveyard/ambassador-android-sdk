@@ -26,7 +26,9 @@ import com.ambassador.demo.data.User;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class SettingsFragment extends Fragment implements MainActivity.TabFragment {
+public final class SettingsFragment extends Fragment implements SettingsView, MainActivity.TabFragment {
+
+    protected SettingsPresenter settingsPresenter;
 
     @Bind(R.id.ivDisplayPicture) protected NetworkCircleImageView ivDisplayPicture;
     @Bind(R.id.tvSettingsName) protected TextView tvSettingsName;

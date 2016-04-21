@@ -55,7 +55,9 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public final class ConversionFragment extends Fragment implements MainActivity.TabFragment {
+public final class ConversionFragment extends Fragment implements ConversionView, MainActivity.TabFragment {
+
+    protected ConversionPresenter conversionPresenter;
 
     /** ScrollView encapsulating all views. */
     @Bind(R.id.svConversion) protected ScrollView svConversion;

@@ -29,7 +29,9 @@ import com.ambassador.demo.utils.Share;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public final class IdentifyFragment extends Fragment implements MainActivity.TabFragment {
+public final class IdentifyFragment extends Fragment implements IdentifyView, MainActivity.TabFragment {
+
+    protected IdentifyPresenter identifyPresenter;
 
     @Bind(R.id.etIdentify)  protected EditText  etEmail;
     @Bind(R.id.btnIdentify) protected Button    btnIdentify;
