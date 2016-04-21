@@ -89,6 +89,24 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        settingsPresenter.bindView(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        settingsPresenter.unbindView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        PresenterManager.getInstance().savePresenter(settingsPresenter, outState);
+    }
+
     protected void copyToClipboard(String text) {
         ClipboardManager clipboardManager = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
         clipboardManager.setPrimaryClip(ClipData.newPlainText("simpleText", text));

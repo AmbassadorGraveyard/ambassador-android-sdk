@@ -98,8 +98,21 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     @Override
     public void onResume() {
         super.onResume();
+        identifyPresenter.bindView(this);
         etEmail.requestFocus();
         closeSoftKeyboard();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        identifyPresenter.unbindView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        PresenterManager.getInstance().savePresenter(identifyPresenter, outState);
     }
 
     private void closeSoftKeyboard() {

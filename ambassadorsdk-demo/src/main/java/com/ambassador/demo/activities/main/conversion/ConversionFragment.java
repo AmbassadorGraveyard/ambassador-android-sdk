@@ -242,7 +242,20 @@ public final class ConversionFragment extends Fragment implements ConversionView
     @Override
     public void onResume() {
         super.onResume();
+        conversionPresenter.bindView(this);
         closeSoftKeyboard();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        conversionPresenter.unbindView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        PresenterManager.getInstance().savePresenter(conversionPresenter, outState);
     }
 
     private void closeSoftKeyboard() {
