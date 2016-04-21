@@ -125,7 +125,7 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
 
     @Override
     public void onActionClicked() {
-
+        // This fragment has no action.
     }
 
     @Override
