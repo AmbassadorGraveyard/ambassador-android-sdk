@@ -12,7 +12,7 @@ subprojects { -> project
             jcenter()
         }
         dependencies {
-            classpath 'com.android.tools.build:gradle:2.0.0-beta7'
+            classpath 'com.android.tools.build:gradle:2.1.0-beta1'
             classpath 'com.neenbedankt.gradle.plugins:android-apt:1.7'
             classpath 'com.google.gms:google-services:2.0.0-alpha6'
             classpath 'com.oguzbabaoglu:butterfork-plugin:1.0.0'

@@ -37,7 +37,6 @@ public class InputView extends EditText {
 
         Resources r = getResources();
 
-        int sp14 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, r.getDisplayMetrics());
         setTextSize(14);
 
         int dp10 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, r.getDisplayMetrics());

@@ -7,7 +7,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
-import android.support.test.espresso.action.MotionEvents;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
@@ -43,8 +42,8 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(AndroidJUnit4.class)
@@ -126,10 +125,10 @@ public class CustomizationActivityTest {
         onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.click());
 
         // Confirm dialog launches.
-        onView(withId(R.id.rvCampaignChooserTitle)).check(matches(isDisplayed()));
+        onView(withId(R.id.rvChooserTitle)).check(matches(isDisplayed()));
 
         // Click the 2nd campaign.
-        onData(anything()).inAdapterView(withId(R.id.lvCampaignChooser)).atPosition(1).perform(ViewActions.click());
+        onData(anything()).inAdapterView(withId(R.id.lvChooser)).atPosition(1).perform(ViewActions.click());
 
         // Confirm text set on textview.
         onView(withId(R.id.tvSelectedCampaign)).check(matches(withText("Test campaign 2")));
@@ -150,7 +149,7 @@ public class CustomizationActivityTest {
         onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.click());
 
         // Confirm dialog launches.
-        onView(withId(R.id.rvCampaignChooserTitle)).check(matches(isDisplayed()));
+        onView(withId(R.id.rvChooserTitle)).check(matches(isDisplayed()));
 
         // Press back.
         Espresso.pressBack();
@@ -174,10 +173,10 @@ public class CustomizationActivityTest {
         onView(withId(R.id.rvCampaignChooser)).perform(ViewActions.click());
 
         // Check progress bar gone after request answered.
-        onView(withId(R.id.pbCampaignsLoading)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.pbLoading)).check(matches(not(isDisplayed())));
 
         // Confirm dialog launches.
-        onView(withId(R.id.rvCampaignChooserTitle)).check(matches(isDisplayed()));
+        onView(withId(R.id.rvChooserTitle)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -282,10 +281,10 @@ public class CustomizationActivityTest {
         onView(withId(android.support.design.R.id.snackbar_action)).perform(ViewActions.click());
 
         // Verify campaign dialog launches.
-        onView(withId(R.id.rvCampaignChooserTitle)).check(matches(isDisplayed()));
+        onView(withId(R.id.rvChooserTitle)).check(matches(isDisplayed()));
 
         // Select 1st campaign.
-        onData(anything()).inAdapterView(withId(R.id.lvCampaignChooser)).atPosition(0).perform(ViewActions.click());
+        onData(anything()).inAdapterView(withId(R.id.lvChooser)).atPosition(0).perform(ViewActions.click());
 
         // Scroll to bottom.
         onView(withId(R.id.civButtons)).perform(ViewActions.scrollTo());
@@ -432,31 +431,6 @@ public class CustomizationActivityTest {
             @Override
             public void describeTo(Description description) {
                 // Not needed.
-            }
-
-        };
-    }
-
-    private static ViewAction touchAt(final int x, final int y) {
-        return new ViewAction() {
-
-            @Override
-            public Matcher<View> getConstraints() {
-                return ViewMatchers.isDisplayed();
-            }
-
-            @Override
-            public String getDescription() {
-                return "Touches the view at a specified x and y coordinate.";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                try {
-                    MotionEvents.sendDown(uiController, new float[]{x, y}, new float[]{0 ,0});
-                } catch (Exception e) {
-
-                }
             }
 
         };
