@@ -1,4 +1,4 @@
-package com.ambassador.demo.fragments;
+package com.ambassador.demo.activities.main.conversion;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

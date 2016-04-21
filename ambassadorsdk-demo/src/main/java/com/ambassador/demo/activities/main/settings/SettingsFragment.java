@@ -1,4 +1,4 @@
-package com.ambassador.demo.fragments;
+package com.ambassador.demo.activities.main.settings;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;

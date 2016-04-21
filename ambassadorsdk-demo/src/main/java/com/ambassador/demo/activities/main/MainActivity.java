@@ -27,10 +27,10 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.data.User;
-import com.ambassador.demo.fragments.ConversionFragment;
-import com.ambassador.demo.fragments.IdentifyFragment;
+import com.ambassador.demo.activities.main.conversion.ConversionFragment;
+import com.ambassador.demo.activities.main.identify.IdentifyFragment;
 import com.ambassador.demo.activities.main.integration.IntegrationFragment;
-import com.ambassador.demo.fragments.SettingsFragment;
+import com.ambassador.demo.activities.main.settings.SettingsFragment;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

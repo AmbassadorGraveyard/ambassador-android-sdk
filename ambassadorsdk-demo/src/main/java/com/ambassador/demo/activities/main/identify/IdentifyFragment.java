@@ -1,4 +1,4 @@
-package com.ambassador.demo.fragments;
+package com.ambassador.demo.activities.main.identify;
 
 import android.content.Context;
 import android.graphics.Color;
