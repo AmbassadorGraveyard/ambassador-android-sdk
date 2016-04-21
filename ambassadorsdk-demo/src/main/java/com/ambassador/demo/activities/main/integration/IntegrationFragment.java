@@ -284,7 +284,7 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
             Export<Integration> export = new IntegrationExport();
             export.setModel(integration);
             String filename = export.zip(getActivity());
-            new Share(filename).execute(getActivity());
+            new Share(filename).withSubject("Ambassador RAF Integration Example Implementation").withBody(export.getReadme()).execute(getActivity());
         }
     }
 

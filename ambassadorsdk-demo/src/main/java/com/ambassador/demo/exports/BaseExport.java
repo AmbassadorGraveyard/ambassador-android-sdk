@@ -45,7 +45,6 @@ public abstract class BaseExport<T> implements Export<T> {
     @Override
     public String zip(Context context) {
         Zipper zipper =  new Zipper(context)
-                .add("README.txt", getReadme())
                 .add(javaClassName() + ".java", getJavaImplementation())
                 .add(iOSClassName() + ".swift", getSwiftImplementation())
                 .add(iOSClassName() + ".m", getObjectiveCImplementation());
@@ -84,6 +83,10 @@ public abstract class BaseExport<T> implements Export<T> {
 
         public void addLine(String text) {
             this.text += (this.text.isEmpty() ? "" : "\n") + text;
+        }
+
+        public void addHtmlLine(String text) {
+            this.text += (this.text.isEmpty() ? "" : "<br/>") + text;
         }
 
         public void addLineWithPadding(int spaces, String text) {

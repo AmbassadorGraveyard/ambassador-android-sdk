@@ -479,7 +479,7 @@ public final class ConversionFragment extends Fragment implements ConversionView
         Export<ConversionParameters> export = new ConversionExport();
         export.setModel(getConversionParametersBasedOnInputs());
         String filename = export.zip(getActivity());
-        new Share(filename).execute(getActivity());
+        new Share(filename).withSubject("Ambassador Conversion Example Implementation").withBody(export.getReadme()).execute(getActivity());
     }
 
     @Override

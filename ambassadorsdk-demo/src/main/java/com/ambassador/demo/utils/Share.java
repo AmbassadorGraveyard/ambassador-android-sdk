@@ -13,6 +13,8 @@ import java.io.File;
 public class Share {
 
     protected Uri uri;
+    protected String subject;
+    protected String body;
 
     public Share(String filename) {
         this(new File(Demo.get().getFilesDir(), filename));
@@ -26,6 +28,16 @@ public class Share {
         this.uri = uri;
     }
 
+    public Share withSubject(String subject) {
+        this.subject = subject;
+        return this;
+    }
+
+    public Share withBody(String body) {
+        this.body = body;
+        return this;
+    }
+
     public void execute(Activity activity) {
         if (uri == null) return;
 
@@ -33,6 +45,8 @@ public class Share {
                 .setType("*/*")
                 .setStream(uri)
                 .setChooserTitle("Share Integration")
+                .setSubject(subject)
+                .setHtmlText(body)
                 .createChooserIntent()
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

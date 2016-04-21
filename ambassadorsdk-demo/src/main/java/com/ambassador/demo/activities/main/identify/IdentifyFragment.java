@@ -136,7 +136,7 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         Export<String> export = new IdentifyExport();
         export.setModel(etEmail.getText().toString());
         String filename = export.zip(getActivity());
-        new Share(filename).execute(getActivity());
+        new Share(filename).withSubject("Ambassador Identify Example Implementation").withBody(export.getReadme()).execute(getActivity());
     }
 
     @Override
