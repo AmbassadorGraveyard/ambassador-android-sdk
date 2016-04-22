@@ -4,7 +4,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.internal.activities.BasePresenter;
 import com.ambassador.demo.Demo;
@@ -54,7 +53,7 @@ public class SettingsPresenter extends BasePresenter<SettingsModel, SettingsView
     protected void copyToClipboard(String text) {
         ClipboardManager clipboardManager = (ClipboardManager) Demo.get().getSystemService(Context.CLIPBOARD_SERVICE);
         clipboardManager.setPrimaryClip(ClipData.newPlainText("simpleText", text));
-        Toast.makeText(Demo.get(), "Copied to clipboard!", Toast.LENGTH_SHORT).show();
+        view().notifyCopiedToClipboard();
     }
 
 }

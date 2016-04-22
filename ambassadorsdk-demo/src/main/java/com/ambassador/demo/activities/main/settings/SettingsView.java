@@ -7,5 +7,6 @@ public interface SettingsView {
     void setUniversalId(String universalId);
     void setSdkToken(String sdkToken);
     void logout();
+    void notifyCopiedToClipboard();
 
 }

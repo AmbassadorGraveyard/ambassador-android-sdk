@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView;
+import com.ambassador.demo.Demo;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.LaunchActivity;
 import com.ambassador.demo.activities.PresenterManager;
@@ -121,6 +123,11 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
+    }
+
+    @Override
+    public void notifyCopiedToClipboard() {
+        Toast.makeText(Demo.get(), "Copied to clipboard!", Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -16,10 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
-import com.ambassador.demo.BuildConfig;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.activities.main.MainActivity;
@@ -57,38 +55,7 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         btnIdentify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (etEmail.getText().length() != 0) {
-                    String email = etEmail.getText().toString();
-                    if (!(new Identify(email).isValidEmail())) {
-                        new Device(getActivity()).closeSoftKeyboard(etEmail);
-                        Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid email address!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                etEmail.requestFocus();
-                            }
-                        }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
-                        return;
-                    }
-                    Toast.makeText(getActivity(), "Identifying!", Toast.LENGTH_LONG).show();
-                    AmbassadorSDK.identify(email);
-                    closeSoftKeyboard();
-                } else {
-                    new Device(getActivity()).closeSoftKeyboard(etEmail);
-                    Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter an email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            etEmail.requestFocus();
-                        }
-                    }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
-                }
-            }
-        });
-
-        view.findViewById(R.id.ivFlags).setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(getActivity(), "Version Code: " + BuildConfig.VERSION_CODE, Toast.LENGTH_SHORT).show();
-                return false;
+                identifyPresenter.onSubmitClicked();
             }
         });
 
@@ -115,7 +82,38 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         PresenterManager.getInstance().savePresenter(identifyPresenter, outState);
     }
 
-    private void closeSoftKeyboard() {
+    @Override
+    public String getEmailAddress() {
+        return etEmail.getText().toString();
+    }
+
+    @Override
+    public void notifyNoEmail() {
+        Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter an email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etEmail.requestFocus();
+            }
+        }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+    }
+
+    @Override
+    public void notifyInvalidEmail() {
+        Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid email address!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etEmail.requestFocus();
+            }
+        }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+    }
+
+    @Override
+    public void notifyIdentifying() {
+        Toast.makeText(getActivity(), "Identifying!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
     }
