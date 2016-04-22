@@ -263,7 +263,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             Export<Integration> export = new IntegrationExport();
             export.setModel(integration);
             String filename = export.zip(getActivity());
-            new Share(filename).withSubject("Ambassador RAF Integration Example Implementation").withBody(export.getReadme()).execute(getActivity());
+            new Share(filename).withSubject("Ambassador RAF Integration Implementation").withBody(export.getReadme()).execute(getActivity());
         }
     }
 
