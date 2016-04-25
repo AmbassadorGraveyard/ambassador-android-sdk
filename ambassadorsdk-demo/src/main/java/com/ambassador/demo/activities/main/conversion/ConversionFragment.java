@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -25,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.activities.main.MainActivity;
@@ -208,22 +210,55 @@ public final class ConversionFragment extends Fragment implements ConversionView
 
     @Override
     public void notifyInvalidAmbassadorEmail() {
-
+        elAmbassador.inflate();
+        new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
+        Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid ambassador email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                svConversion.smoothScrollTo(0, elAmbassador.getTop());
+                etAmbassadorEmail.requestFocus();
+            }
+        }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
     }
 
     @Override
     public void notifyInvalidCustomerEmail() {
-
+        elCustomer.inflate();
+        new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
+        Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid customer email!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                svConversion.smoothScrollTo(0, elCustomer.getTop());
+                etCustomerEmail.requestFocus();
+            }
+        }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
     }
 
     @Override
     public void notifyNoCampaign() {
-
+        elCommission.inflate();
+        new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
+        Snackbar.make(getActivity().findViewById(android.R.id.content), "Please select a campaign!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                svConversion.smoothScrollTo(0, elCommission.getTop());
+                rlCampaignChooser.performClick();
+            }
+        }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
     }
 
     @Override
     public void notifyNoRevenue() {
-
+        elCommission.inflate();
+        new Device(getActivity()).closeSoftKeyboard(etCustomerEmail);
+        Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a revenue amount!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                elCommission.inflate();
+                svConversion.smoothScrollTo(0, elCommission.getTop());
+                etRevenue.requestFocus();
+            }
+        }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
     }
 
     @Override
