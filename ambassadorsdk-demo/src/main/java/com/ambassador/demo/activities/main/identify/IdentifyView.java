@@ -1,13 +1,15 @@
 package com.ambassador.demo.activities.main.identify;
 
-public interface IdentifyView {
+import com.ambassador.demo.utils.Share;
 
-    String getEmailAddress();
+public interface IdentifyView {
 
     void notifyNoEmail();
     void notifyInvalidEmail();
     void notifyIdentifying();
 
     void closeSoftKeyboard();
+
+    void share(Share share);
 
 }

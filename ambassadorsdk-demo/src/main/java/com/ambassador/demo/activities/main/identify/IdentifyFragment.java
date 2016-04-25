@@ -16,13 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.ambassador.ambassadorsdk.internal.utils.Device;
-import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.activities.main.MainActivity;
-import com.ambassador.demo.exports.Export;
-import com.ambassador.demo.exports.IdentifyExport;
 import com.ambassador.demo.utils.Share;
 
 import butterknife.Bind;
@@ -55,7 +51,7 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         btnIdentify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                identifyPresenter.onSubmitClicked();
+                identifyPresenter.onSubmitClicked(etEmail.getText().toString());
             }
         });
 
@@ -67,7 +63,6 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         super.onResume();
         identifyPresenter.bindView(this);
         etEmail.requestFocus();
-        closeSoftKeyboard();
     }
 
     @Override
@@ -80,11 +75,6 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         PresenterManager.getInstance().savePresenter(identifyPresenter, outState);
-    }
-
-    @Override
-    public String getEmailAddress() {
-        return etEmail.getText().toString();
     }
 
     @Override
@@ -119,22 +109,13 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     }
 
     @Override
-    public void onActionClicked() {
-        if (etEmail == null || !new Identify(etEmail.getText().toString()).isValidEmail()) {
-            new Device(getActivity()).closeSoftKeyboard(etEmail);
-            Snackbar.make(getActivity().findViewById(android.R.id.content), "Please enter a valid email address!", Snackbar.LENGTH_LONG).setAction("OK", new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    etEmail.requestFocus();
-                }
-            }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
-            return;
-        }
+    public void share(Share share) {
+        share.execute(getActivity());
+    }
 
-        Export<String> export = new IdentifyExport();
-        export.setModel(etEmail.getText().toString());
-        String filename = export.zip(getActivity());
-        new Share(filename).withSubject("Ambassador Identify Example Implementation").withBody(export.getReadme()).execute(getActivity());
+    @Override
+    public void onActionClicked() {
+        identifyPresenter.onActionClicked(etEmail.getText().toString());
     }
 
     @Override
