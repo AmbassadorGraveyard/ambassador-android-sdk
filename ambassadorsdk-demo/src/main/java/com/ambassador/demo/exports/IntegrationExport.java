@@ -13,19 +13,17 @@ public class IntegrationExport extends BaseExport<Integration> {
     @Override
     public String getReadme() {
         PlaintextFile readme = new PlaintextFile();
-        readme.addHtmlLine("<b>Ambassador Android SDK v1.1.4</b>");
-        readme.addHtmlLine("Take a look at the Android docs for an in-depth explanation on adding and integrating the SDK:");
-        readme.addHtmlLine("https://docs.getambassador.com/v2.0.0/page/android-sdk");
-        readme.addHtmlLine("Check out the MyActivity.java file for an example of this integration.");
-        readme.addHtmlLine("Place the image and ambassador-raf.xml files into the root of your application's assets folder.");
-
+        readme.addHtmlLine("Hey! Here are the instructions you should need to set up a refer-a-friend integration with the Ambassador SDK. I’ve included both Android and iOS.");
         readme.addHtmlLine("");
-
-        readme.addHtmlLine("<b>Ambassador iOS SDK v1.0.3</b>");
-        readme.addHtmlLine("Take a look at the iOS docs for an in-depth explanation on adding and integrating the SDK:");
-        readme.addHtmlLine("https://docs.getambassador.com/v2.0.0/page/ios-sdk");
-        readme.addHtmlLine("Check out the ViewControllerTest.m or ViewControllerTest.swift files for examples of this integration.");
-        readme.addHtmlLine("Add the image to your app's image assets folder and add the .plist file to your project.");
+        readme.addHtmlLine("For the iOS Ambassador SDK version 1.0.3 take a look <a href=\"https://docs.getambassador.com/v2.0.0/page/ios-sdk\">here</a> for an in-depth explanation on adding and integrating the SDK.");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("For the refer-a-friend integration code check out the ViewControllerTest.m or ViewControllerTest.swift files and the ambassador-raf.plist file for examples.");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("For the Android Ambassador SDK version 1.1.4 take a look <a href=\"https://docs.getambassador.com/v2.0.0/page/android-sdk\">here</a> for an in-depth explanation on adding and integrating the SDK.");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("For the refer-a-friend integration code check out the MyActivity.java file and the ambassador-raf.xml file for an example.");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("Let me know if you have any questions!");
 
         return readme.get();
     }

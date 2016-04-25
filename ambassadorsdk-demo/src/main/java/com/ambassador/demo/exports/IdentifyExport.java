@@ -7,7 +7,7 @@ public class IdentifyExport extends BaseExport<String> {
     @Override
     public String getReadme() {
         PlaintextFile readme = new PlaintextFile();
-        readme.addHtmlLine("Hey! Here are the instructions you should need to set up a conversion with the Ambassador SDK. I’ve included both Android and iOS.");
+        readme.addHtmlLine("Hey! Here are the instructions you should need to set up an identify with the Ambassador SDK. I’ve included both Android and iOS.");
         readme.addHtmlLine("");
         readme.addHtmlLine("For the iOS Ambassador SDK version 1.0.3 take a look <a href=\"https://docs.getambassador.com/v2.0.0/page/ios-sdk\">here</a> for an in-depth explanation on adding and integrating the SDK.");
         readme.addHtmlLine("");
