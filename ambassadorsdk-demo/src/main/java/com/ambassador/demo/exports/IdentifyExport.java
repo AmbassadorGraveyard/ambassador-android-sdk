@@ -18,6 +18,8 @@ public class IdentifyExport extends BaseExport<String> {
         readme.addHtmlLine("Android -> https://docs.getambassador.com/v2.0.0/page/android-sdk");
         readme.addHtmlLine("");
         readme.addHtmlLine("Let me know if you have any questions!");
+
+        // This seems to prevent "Let me know..." from going into signature, sometimes.
         readme.addHtmlLine("");
         readme.addHtmlLine("");
         readme.addHtmlLine("");
