@@ -32,6 +32,8 @@ public class IntegrationExport extends BaseExport<Integration> {
         readme.addHtmlLine("");
         readme.addHtmlLine("");
         readme.addHtmlLine("");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("");
 
         return readme.get();
     }
