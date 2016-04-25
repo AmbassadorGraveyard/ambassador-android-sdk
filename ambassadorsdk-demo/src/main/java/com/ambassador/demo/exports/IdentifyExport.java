@@ -7,17 +7,17 @@ public class IdentifyExport extends BaseExport<String> {
     @Override
     public String getReadme() {
         PlaintextFile readme = new PlaintextFile();
-        readme.addHtmlLine("<b>Ambassador Android SDK v1.1.4</b>");
-        readme.addHtmlLine("Take a look at the Android docs for an in-depth explanation on adding and integrating the SDK:");
-        readme.addHtmlLine("https://docs.getambassador.com/v2.0.0/page/android-sdk");
-        readme.addHtmlLine("Check out the MyApplication.java file for an example of this identify request.");
-
+        readme.addHtmlLine("Hey! Here are the instructions you should need to set up a conversion with the Ambassador SDK. I’ve included both Android and iOS.");
         readme.addHtmlLine("");
-
-        readme.addHtmlLine("<b>Ambassador iOS SDK v1.0.3</b>");
-        readme.addHtmlLine("Take a look at the iOS docs for an in-depth explanation on adding and integrating the SDK:");
-        readme.addHtmlLine("https://docs.getambassador.com/v2.0.0/page/ios-sdk");
-        readme.addHtmlLine("Check out the AppDelegate.m or AppDelegate.swift files for examples of this identify request.");
+        readme.addHtmlLine("For the iOS Ambassador SDK version 1.0.3 take a look <a href=\"https://docs.getambassador.com/v2.0.0/page/ios-sdk\">here</a> for an in-depth explanation on adding and integrating the SDK.");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("For the identify code check out the AppDelegate.m or AppDelegate.swift files for examples.");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("For the Android Ambassador SDK version 1.1.4 take a look <a href=\"https://docs.getambassador.com/v2.0.0/page/android-sdk\">here</a> for an in-depth explanation on adding and integrating the SDK.");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("For the identify code check out the MyApplication.java file for an example.");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("Let me know if you have any questions!");
 
         return readme.get();
     }
