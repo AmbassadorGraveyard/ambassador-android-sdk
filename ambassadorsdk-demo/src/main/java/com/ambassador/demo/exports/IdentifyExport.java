@@ -7,21 +7,19 @@ public class IdentifyExport extends BaseExport<String> {
     @Override
     public String getReadme() {
         PlaintextFile readme = new PlaintextFile();
-        readme.addHtmlLine("Hey! I've attached the examples you should need to identify users in our mobile app with the Ambassador SDK.");
+        readme.addHtmlLine("Hey! I've attached examples showing how to identify a user in our mobile app with the Ambassador SDK.");
         readme.addHtmlLine("");
         readme.addHtmlLine("The attachment includes examples for");
-        readme.addHtmlLine("");
-        readme.addHtmlLine("iOS (v1.0.3): AppDelegate.m or AppDelegate.swift");
-        readme.addHtmlLine("");
+        readme.addHtmlLine("iOS (v1.0.3): AppDelegate.m or AppDelegate.swift,");
         readme.addHtmlLine("Android (v1.1.4): MyApplication.java.");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For in-depth explanations on adding and integrating the SDKs check out the following");
-        readme.addHtmlLine("");
-        readme.addHtmlLine("iOS: https://docs.getambassador.com/v2.0.0/page/ios-sdk");
-        readme.addHtmlLine("");
-        readme.addHtmlLine("Android: https://docs.getambassador.com/v2.0.0/page/android-sdk.");
+        readme.addHtmlLine("For in-depth explanations on adding and integrating the SDKs check out these links:");
+        readme.addHtmlLine("iOS -> https://docs.getambassador.com/v2.0.0/page/ios-sdk");
+        readme.addHtmlLine("Android -> https://docs.getambassador.com/v2.0.0/page/android-sdk");
         readme.addHtmlLine("");
         readme.addHtmlLine("Let me know if you have any questions!");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("");
         readme.addHtmlLine("");
         readme.addHtmlLine("");
         return readme.get();

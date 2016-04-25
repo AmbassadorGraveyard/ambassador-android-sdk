@@ -15,27 +15,21 @@ public class IntegrationExport extends BaseExport<Integration> {
         String image = model.getRafOptions().getLogo();
 
         PlaintextFile readme = new PlaintextFile();
-        readme.addHtmlLine("Hey! I've attached the examples you should need to set up a refer-a-friend view in our mobile app with the Ambassador SDK.");
+        readme.addHtmlLine("Hey! I've attached examples showing how to set up a refer-a-friend view in our mobile app with the Ambassador SDK.");
         readme.addHtmlLine("");
         readme.addHtmlLine("The attachment includes examples for");
-        readme.addHtmlLine("");
-        readme.addHtmlLine("iOS (v1.0.3): ViewControllerTest.m or ViewControllerTest.swift and ambassador-raf.plist");
-        readme.addHtmlLine("");
-        readme.addHtmlLine("Android (v1.1.4): MyActivity.java and ambassador-raf.xml" + (image != null ? "" : "."));
-        readme.addHtmlLine("");
-
+        readme.addHtmlLine("iOS (v1.0.3): ViewControllerTest.m or ViewControllerTest.swift and ambassador-raf.plist,");
+        readme.addHtmlLine("Android (v1.1.4): MyActivity.java and ambassador-raf.xml" + (image != null ? "," : "."));
         if (image != null) {
             readme.addHtmlLine("and " + image + ", a custom image used in the theme configuration.");
-            readme.addHtmlLine("");
         }
-
-        readme.addHtmlLine("For in-depth explanations on adding and integrating the SDKs check out the following");
         readme.addHtmlLine("");
-        readme.addHtmlLine("iOS: https://docs.getambassador.com/v2.0.0/page/ios-sdk");
-        readme.addHtmlLine("");
-        readme.addHtmlLine("Android: https://docs.getambassador.com/v2.0.0/page/android-sdk.");
+        readme.addHtmlLine("For in-depth explanations on adding and integrating the SDKs check out these links:");
+        readme.addHtmlLine("iOS -> https://docs.getambassador.com/v2.0.0/page/ios-sdk");
+        readme.addHtmlLine("Android -> https://docs.getambassador.com/v2.0.0/page/android-sdk");
         readme.addHtmlLine("");
         readme.addHtmlLine("Let me know if you have any questions!");
+        readme.addHtmlLine("");
         readme.addHtmlLine("");
         readme.addHtmlLine("");
 
