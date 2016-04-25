@@ -2,7 +2,12 @@ package com.ambassador.demo.activities.main.conversion;
 
 import android.support.annotation.NonNull;
 
+import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.activities.BasePresenter;
+import com.ambassador.demo.Demo;
+import com.ambassador.demo.exports.ConversionExport;
+import com.ambassador.demo.exports.Export;
+import com.ambassador.demo.utils.Share;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -64,7 +69,11 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
     }
 
     public void onActionClicked() {
-
+        Export<ConversionParameters> export = new ConversionExport();
+        export.setModel(getConversionParametersBasedOnInputs());
+        String filename = export.zip(Demo.get());
+        Share share = new Share(filename).withSubject("Ambassador Conversion Example Implementation").withBody(export.getReadme());
+        
     }
 
 }
