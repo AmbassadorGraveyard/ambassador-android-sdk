@@ -15,11 +15,11 @@ public class IntegrationExport extends BaseExport<Integration> {
         PlaintextFile readme = new PlaintextFile();
         readme.addHtmlLine("Hey! Here are the instructions you should need to set up a refer-a-friend integration with the Ambassador SDK. I’ve included both Android and iOS.");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For the iOS Ambassador SDK version 1.0.3 take a look <a href=\"https://docs.getambassador.com/v2.0.0/page/ios-sdk\">here</a> for an in-depth explanation on adding and integrating the SDK.");
+        readme.addHtmlLine("For an in-depth explanation on adding and integrating the iOS Ambassador SDK version 1.0.3, go here -> https://docs.getambassador.com/v2.0.0/page/ios-sdk");
         readme.addHtmlLine("");
         readme.addHtmlLine("For the refer-a-friend integration code check out the ViewControllerTest.m or ViewControllerTest.swift files and the ambassador-raf.plist file for examples.");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For the Android Ambassador SDK version 1.1.4 take a look <a href=\"https://docs.getambassador.com/v2.0.0/page/android-sdk\">here</a> for an in-depth explanation on adding and integrating the SDK.");
+        readme.addHtmlLine("For an in-depth explanation on adding and integrating the Android Ambassador SDK version 1.1.4, go here -> https://docs.getambassador.com/v2.0.0/page/android-sdk");
         readme.addHtmlLine("");
         readme.addHtmlLine("For the refer-a-friend integration code check out the MyActivity.java file and the ambassador-raf.xml file for an example.");
         readme.addHtmlLine("");

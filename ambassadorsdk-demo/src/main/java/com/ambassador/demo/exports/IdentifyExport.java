@@ -9,11 +9,11 @@ public class IdentifyExport extends BaseExport<String> {
         PlaintextFile readme = new PlaintextFile();
         readme.addHtmlLine("Hey! Here are the instructions you should need to set up an identify with the Ambassador SDK. I’ve included both Android and iOS.");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For the iOS Ambassador SDK version 1.0.3 take a look <a href=\"https://docs.getambassador.com/v2.0.0/page/ios-sdk\">here</a> for an in-depth explanation on adding and integrating the SDK.");
+        readme.addHtmlLine("For an in-depth explanation on adding and integrating the iOS Ambassador SDK version 1.0.3, go here -> https://docs.getambassador.com/v2.0.0/page/ios-sdk");
         readme.addHtmlLine("");
         readme.addHtmlLine("For the identify code check out the AppDelegate.m or AppDelegate.swift files for examples.");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For the Android Ambassador SDK version 1.1.4 take a look <a href=\"https://docs.getambassador.com/v2.0.0/page/android-sdk\">here</a> for an in-depth explanation on adding and integrating the SDK.");
+        readme.addHtmlLine("For an in-depth explanation on adding and integrating the Android Ambassador SDK version 1.1.4, go here -> https://docs.getambassador.com/v2.0.0/page/android-sdk");
         readme.addHtmlLine("");
         readme.addHtmlLine("For the identify code check out the MyApplication.java file for an example.");
         readme.addHtmlLine("");
