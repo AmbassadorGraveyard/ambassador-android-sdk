@@ -60,14 +60,11 @@ public final class ConversionFragment extends Fragment implements ConversionView
 
     protected ConversionPresenter conversionPresenter;
 
-    /** ScrollView encapsulating all views. */
     @Bind(R.id.svConversion) protected ScrollView svConversion;
 
-    // Ambassador section views
     @Bind(R.id.elAmbassador) protected ExpandableLayout elAmbassador;
     @Bind(R.id.etAmbassadorEmail) protected EditText etAmbassadorEmail;
 
-    // Customer section views
     @Bind(R.id.elCustomer) protected ExpandableLayout elCustomer;
     @Bind(R.id.etCustomerEmail) protected EditText etCustomerEmail;
     @Bind(R.id.etFirstName) protected EditText etFirstName;
@@ -82,7 +79,6 @@ public final class ConversionFragment extends Fragment implements ConversionView
     @Bind(R.id.etCustom2) protected EditText etCustom2;
     @Bind(R.id.etCustom3) protected EditText etCustom3;
 
-    // Commission section views
     @Bind(R.id.elCommission) protected ExpandableLayout elCommission;
     @Bind(R.id.rlCampaignChooser) protected RelativeLayout rlCampaignChooser;
     @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
@@ -93,16 +89,10 @@ public final class ConversionFragment extends Fragment implements ConversionView
     @Bind(R.id.etEventData2) protected EditText etEventData2;
     @Bind(R.id.etEventData3) protected EditText etEventData3;
 
-    // Conversion buttons
     @Bind(R.id.btnConversion) protected Button btnConversion;
 
-    /** Name of the selected campaign. */
     protected String selectedCampaignName;
-
-    /** Ambassador backend ID for selected campaign. */
     protected int selectedCampaignId;
-
-    /** String of selected groups separated by commas. */
     protected String selectedGroups;
 
     @Override
@@ -258,7 +248,8 @@ public final class ConversionFragment extends Fragment implements ConversionView
         PresenterManager.getInstance().savePresenter(conversionPresenter, outState);
     }
 
-    private void closeSoftKeyboard() {
+    @Override
+    public void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
     }
@@ -468,6 +459,11 @@ public final class ConversionFragment extends Fragment implements ConversionView
     protected interface ShortCodeRegistrationListener {
         void success();
         void failure();
+    }
+
+    @Override
+    public void share(Share share) {
+        share.execute(getActivity());
     }
 
     @Override
