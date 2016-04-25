@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,6 +28,8 @@ import android.widget.TextView;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.PresenterManager;
 import com.ambassador.demo.activities.main.MainActivity;
+import com.ambassador.demo.dialogs.CampaignChooserDialog;
+import com.ambassador.demo.dialogs.GroupChooserDialog;
 import com.ambassador.demo.utils.Share;
 import com.ambassador.demo.views.ExpandableLayout;
 
@@ -162,6 +166,64 @@ public final class ConversionFragment extends Fragment implements ConversionView
             }
         });
         valueAnimator.start();
+    }
+
+    @Override
+    public void getGroups(String preselected) {
+        final GroupChooserDialog groupChooserDialog = new GroupChooserDialog(getActivity());
+        if (preselected != null) groupChooserDialog.setSelected(preselected);
+        groupChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                conversionPresenter.onGroupsResult(groupChooserDialog.getResult());
+            }
+        });
+        groupChooserDialog.show();
+    }
+
+    @Override
+    public void setGroupsText(String groupsText, boolean isHint) {
+        int color = isHint ? Color.parseColor("#e6e6e6") : Color.parseColor("#333333");
+        tvSelectedGroups.setText(groupsText);
+        tvSelectedGroups.setTextColor(color);
+    }
+
+    @Override
+    public void getCampaigns() {
+        final CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(getActivity());
+        campaignChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                conversionPresenter.onCampaignResult(campaignChooserDialog.getResult());
+            }
+        });
+        campaignChooserDialog.show();
+    }
+
+    @Override
+    public void setCampaignText(String campaignText) {
+        tvSelectedCampaign.setText(campaignText);
+        tvSelectedCampaign.setTextColor(Color.parseColor("#333333"));
+    }
+
+    @Override
+    public void notifyInvalidAmbassadorEmail() {
+
+    }
+
+    @Override
+    public void notifyInvalidCustomerEmail() {
+
+    }
+
+    @Override
+    public void notifyNoCampaign() {
+
+    }
+
+    @Override
+    public void notifyNoRevenue() {
+
     }
 
     @Override
