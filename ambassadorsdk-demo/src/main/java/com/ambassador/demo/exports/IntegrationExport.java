@@ -12,18 +12,32 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     @Override
     public String getReadme() {
+        String image = model.getRafOptions().getLogo();
+
         PlaintextFile readme = new PlaintextFile();
-        readme.addHtmlLine("Hey! Here are the instructions you should need to set up a refer-a-friend integration with the Ambassador SDK. I’ve included both Android and iOS.");
+        readme.addHtmlLine("Hey! I've attached the examples you should need to set up a refer-a-friend view in our mobile app with the Ambassador SDK.");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For an in-depth explanation on adding and integrating the iOS Ambassador SDK version 1.0.3, go here -> https://docs.getambassador.com/v2.0.0/page/ios-sdk");
+        readme.addHtmlLine("The attachment includes examples for");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For the refer-a-friend integration code check out the ViewControllerTest.m or ViewControllerTest.swift files and the ambassador-raf.plist file for examples.");
+        readme.addHtmlLine("iOS (v1.0.3): ViewControllerTest.m or ViewControllerTest.swift and ambassador-raf.plist");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For an in-depth explanation on adding and integrating the Android Ambassador SDK version 1.1.4, go here -> https://docs.getambassador.com/v2.0.0/page/android-sdk");
+        readme.addHtmlLine("Android (v1.1.4): MyActivity.java and ambassador-raf.xml" + (image != null ? "" : "."));
         readme.addHtmlLine("");
-        readme.addHtmlLine("For the refer-a-friend integration code check out the MyActivity.java file and the ambassador-raf.xml file for an example.");
+
+        if (image != null) {
+            readme.addHtmlLine("and " + image + ", a custom image used in the theme configuration.");
+            readme.addHtmlLine("");
+        }
+
+        readme.addHtmlLine("For in-depth explanations on adding and integrating the SDKs check out the following");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("iOS: https://docs.getambassador.com/v2.0.0/page/ios-sdk");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("Android: https://docs.getambassador.com/v2.0.0/page/android-sdk.");
         readme.addHtmlLine("");
         readme.addHtmlLine("Let me know if you have any questions!");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("");
 
         return readme.get();
     }

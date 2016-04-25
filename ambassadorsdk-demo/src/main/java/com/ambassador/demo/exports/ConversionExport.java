@@ -8,18 +8,23 @@ public class ConversionExport extends BaseExport<ConversionParameters> {
     @Override
     public String getReadme() {
         PlaintextFile readme = new PlaintextFile();
-        readme.addHtmlLine("Hey! Here are the instructions you should need to set up a conversion with the Ambassador SDK. I’ve included both Android and iOS.");
+        readme.addHtmlLine("Hey! I've attached the examples you should need to set up a conversion in our mobile app with the Ambassador SDK.");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For an in-depth explanation on adding and integrating the iOS Ambassador SDK version 1.0.3, go here -> https://docs.getambassador.com/v2.0.0/page/ios-sdk");
+        readme.addHtmlLine("The attachment includes examples for");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For the conversion code check out the AppDelegate.m or AppDelegate.swift files for examples.");
+        readme.addHtmlLine("iOS (v1.0.3): AppDelegate.m or AppDelegate.swift");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For an in-depth explanation on adding and integrating the Android Ambassador SDK version 1.1.4, go here -> https://docs.getambassador.com/v2.0.0/page/android-sdk");
+        readme.addHtmlLine("Android (v1.1.4): MyApplication.java.");
         readme.addHtmlLine("");
-        readme.addHtmlLine("For the conversion code check out the MyApplication.java file for an example.");
+        readme.addHtmlLine("For in-depth explanations on adding and integrating the SDKs check out the following");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("iOS: https://docs.getambassador.com/v2.0.0/page/ios-sdk");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("Android: https://docs.getambassador.com/v2.0.0/page/android-sdk.");
         readme.addHtmlLine("");
         readme.addHtmlLine("Let me know if you have any questions!");
-
+        readme.addHtmlLine("");
+        readme.addHtmlLine("");
         return readme.get();
     }
 
