@@ -9,4 +9,24 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
 
     }
 
+    public void onEnrollAsAmbassadorToggled(boolean isChecked) {
+        view().toggleEnrollAsAmbassadorInputs(isChecked);
+    }
+
+    public void onGroupChooserClicked() {
+
+    }
+
+    public void onCampaignChooserClicked() {
+
+    }
+
+    public void onSubmitClicked() {
+
+    }
+
+    public void onActionClicked() {
+
+    }
+
 }
