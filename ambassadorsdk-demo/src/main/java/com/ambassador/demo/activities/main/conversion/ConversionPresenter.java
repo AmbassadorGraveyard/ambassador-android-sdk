@@ -68,9 +68,9 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
 
     }
 
-    public void onActionClicked() {
+    public void onActionClicked(ConversionParameters conversionParameters) {
         Export<ConversionParameters> export = new ConversionExport();
-        export.setModel(getConversionParametersBasedOnInputs());
+        export.setModel(conversionParameters);
         String filename = export.zip(Demo.get());
         Share share = new Share(filename).withSubject("Ambassador Conversion Example Implementation").withBody(export.getReadme());
         

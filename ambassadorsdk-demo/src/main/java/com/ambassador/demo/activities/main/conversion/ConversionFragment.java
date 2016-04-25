@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.demo.R;
 import com.ambassador.demo.activities.PresenterManager;
@@ -274,7 +275,7 @@ public final class ConversionFragment extends Fragment implements ConversionView
 
     @Override
     public void onActionClicked() {
-        conversionPresenter.onActionClicked();
+        conversionPresenter.onActionClicked(new ConversionParameters());
     }
 
     @Override
