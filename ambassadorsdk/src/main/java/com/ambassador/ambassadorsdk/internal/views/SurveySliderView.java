@@ -120,6 +120,7 @@ public class SurveySliderView extends RelativeLayout {
             setLayoutParams(layoutParams);
 
             GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setColor(Color.parseColor("#24313F"));
             gradientDrawable.setStroke(5, Color.WHITE);
             gradientDrawable.setCornerRadius(10000);
             setBackground(gradientDrawable);
