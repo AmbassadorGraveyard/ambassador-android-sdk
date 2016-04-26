@@ -68,7 +68,7 @@
                 android:background="@drawable/submit_button"
                 android:elevation="0dp"
                 android:text="Submit"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white" />
 
