@@ -84,7 +84,7 @@ public class SurveySliderView extends RelativeLayout {
             for (int i = 0; i < 10; i++) {
                 canvas.drawLine(0, currentHeight, getWidth() / 2 - 10, currentHeight, paint);
                 canvas.drawLine(getWidth() / 2 + 10, currentHeight, getWidth(), currentHeight, paint);
-                currentHeight += height / 10;
+                currentHeight += height / 9;
             }
         }
 
