@@ -83,7 +83,7 @@
                 android:textSize="14sp"
                 android:visibility="gone" />
 
-            <com.ambassador.demo.views.ExpandableLayout
+            <com.ambassador.app.views.ExpandableLayout
                 android:id="@+id/elAmbassador"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -111,9 +111,9 @@
 
                 </FrameLayout>
 
-            </com.ambassador.demo.views.ExpandableLayout>
+            </com.ambassador.app.views.ExpandableLayout>
 
-            <com.ambassador.demo.views.ExpandableLayout
+            <com.ambassador.app.views.ExpandableLayout
                 android:id="@+id/elCustomer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -338,9 +338,9 @@
 
                 </LinearLayout>
 
-            </com.ambassador.demo.views.ExpandableLayout>
+            </com.ambassador.app.views.ExpandableLayout>
 
-            <com.ambassador.demo.views.ExpandableLayout
+            <com.ambassador.app.views.ExpandableLayout
                 android:id="@+id/elCommission"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -490,7 +490,7 @@
 
                 </LinearLayout>
 
-            </com.ambassador.demo.views.ExpandableLayout>
+            </com.ambassador.app.views.ExpandableLayout>
 
             <Button
                 android:id="@+id/btnConversion"

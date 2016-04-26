@@ -29,14 +29,14 @@
             android:textColor="@android:color/black"
             android:textSize="15sp" />
 
-        <com.ambassador.demo.views.ListHeadingView
+        <com.ambassador.app.views.ListHeadingView
             android:id="@+id/lhvGeneral"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
             demo:text="General" />
 
-        <com.ambassador.demo.views.InputNameView
+        <com.ambassador.app.views.InputNameView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -45,7 +45,7 @@
             android:layout_marginTop="10dp"
             android:text="Integration Name" />
 
-        <com.ambassador.demo.views.InputView
+        <com.ambassador.app.views.InputView
             android:id="@+id/inputIntegrationName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
             android:singleLine="true"
             android:textColor="#253244" />
 
-        <com.ambassador.demo.views.InputNameView
+        <com.ambassador.app.views.InputNameView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -97,14 +97,14 @@
 
         </RelativeLayout>
 
-        <com.ambassador.demo.views.ListHeadingView
+        <com.ambassador.app.views.ListHeadingView
             android:id="@+id/lhvHeader"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
             demo:text="Header" />
 
-        <com.ambassador.demo.views.InputNameView
+        <com.ambassador.app.views.InputNameView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -113,7 +113,7 @@
             android:layout_marginTop="10dp"
             android:text="Header Text" />
 
-        <com.ambassador.demo.views.InputView
+        <com.ambassador.app.views.InputView
             android:id="@+id/inputHeaderText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
             android:hint="Header Text"
             android:textColor="#253244" />
 
-        <com.ambassador.demo.views.InputNameView
+        <com.ambassador.app.views.InputNameView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -133,13 +133,13 @@
             android:layout_marginTop="10dp"
             android:text="Header Text Color" />
 
-        <com.ambassador.demo.views.ColorInputView
+        <com.ambassador.app.views.ColorInputView
             android:id="@+id/civHeaderText"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="15dp" />
 
-        <com.ambassador.demo.views.InputNameView
+        <com.ambassador.app.views.InputNameView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -148,20 +148,20 @@
             android:layout_marginTop="10dp"
             android:text="Header Color" />
 
-        <com.ambassador.demo.views.ColorInputView
+        <com.ambassador.app.views.ColorInputView
             android:id="@+id/civHeader"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="15dp" />
 
-        <com.ambassador.demo.views.ListHeadingView
+        <com.ambassador.app.views.ListHeadingView
             android:id="@+id/lhvTextField1"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
             demo:text="Text Field One" />
 
-        <com.ambassador.demo.views.InputNameView
+        <com.ambassador.app.views.InputNameView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -170,7 +170,7 @@
             android:layout_marginTop="10dp"
             android:text="Text Field" />
 
-        <com.ambassador.demo.views.InputView
+        <com.ambassador.app.views.InputView
             android:id="@+id/inputTextField1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -181,7 +181,7 @@
             android:hint="Text Field One"
             android:textColor="#253244" />
 
-        <com.ambassador.demo.views.InputNameView
+        <com.ambassador.app.views.InputNameView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -190,20 +190,20 @@
             android:layout_marginTop="10dp"
             android:text="Text Color" />
 
-        <com.ambassador.demo.views.ColorInputView
+        <com.ambassador.app.views.ColorInputView
             android:id="@+id/civTextField1"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="15dp" />
 
-        <com.ambassador.demo.views.ListHeadingView
+        <com.ambassador.app.views.ListHeadingView
             android:id="@+id/lhvTextField2"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
             demo:text="Text Field Two" />
 
-        <com.ambassador.demo.views.InputNameView
+        <com.ambassador.app.views.InputNameView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -212,7 +212,7 @@
             android:layout_marginTop="10dp"
             android:text="Text Field" />
 
-        <com.ambassador.demo.views.InputView
+        <com.ambassador.app.views.InputView
             android:id="@+id/inputTextField2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -223,7 +223,7 @@
             android:hint="Text Field Two"
             android:textColor="#253244" />
 
-        <com.ambassador.demo.views.InputNameView
+        <com.ambassador.app.views.InputNameView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -232,13 +232,13 @@
             android:layout_marginTop="10dp"
             android:text="Text Color" />
 
-        <com.ambassador.demo.views.ColorInputView
+        <com.ambassador.app.views.ColorInputView
             android:id="@+id/civTextField2"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="15dp" />
 
-        <com.ambassador.demo.views.ListHeadingView
+        <com.ambassador.app.views.ListHeadingView
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="20dp"
@@ -251,12 +251,12 @@
             dslv:drag_handle_id="@+id/ivDrag"
             dslv:float_background_color="@android:color/background_light" />
 
-        <com.ambassador.demo.views.ListHeadingView
+        <com.ambassador.app.views.ListHeadingView
             android:layout_width="match_parent"
             android:layout_height="40dp"
             demo:text="Buttons" />
 
-        <com.ambassador.demo.views.InputNameView
+        <com.ambassador.app.views.InputNameView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
@@ -265,7 +265,7 @@
             android:layout_marginTop="10dp"
             android:text="Button Color" />
 
-        <com.ambassador.demo.views.ColorInputView
+        <com.ambassador.app.views.ColorInputView
             android:id="@+id/civButtons"
             android:layout_width="40dp"
             android:layout_height="40dp"
