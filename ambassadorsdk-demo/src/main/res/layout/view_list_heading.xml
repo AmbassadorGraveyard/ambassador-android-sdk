@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
-        android:textColor="#8c939b"
-        android:textSize="12sp" />
+        android:textColor="#777E85"
+        android:textSize="14sp" />
 
 </RelativeLayout>
