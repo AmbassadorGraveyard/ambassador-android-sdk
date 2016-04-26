@@ -4,11 +4,15 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
@@ -19,6 +23,8 @@ import butterfork.ButterFork;
 public class SurveySliderView extends RelativeLayout {
 
     @Bind(B.id.flLines) protected FrameLayout flLines;
+
+    protected ScoreMarker scoreMarker;
 
     public SurveySliderView(Context context) {
         super(context);
@@ -40,12 +46,11 @@ public class SurveySliderView extends RelativeLayout {
         ButterFork.bind(this);
 
         flLines.addView(new LinesView(getContext()));
-    }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+        scoreMarker = new ScoreMarker(getContext());
+        addView(scoreMarker);
 
+        scoreMarker.setText("5");
     }
 
     protected class LinesView extends View {
@@ -85,6 +90,56 @@ public class SurveySliderView extends RelativeLayout {
                 canvas.drawLine(0, currentHeight, getWidth() / 2 - 6, currentHeight, paint);
                 canvas.drawLine(getWidth() / 2 + 6, currentHeight, getWidth(), currentHeight, paint);
                 currentHeight += height / 9;
+            }
+        }
+
+    }
+
+    protected class ScoreMarker extends RelativeLayout {
+
+        protected TextView tvScore;
+        protected String text = "5";
+
+        public ScoreMarker(Context context) {
+            super(context);
+            init();
+        }
+
+        public ScoreMarker(Context context, AttributeSet attrs) {
+            super(context, attrs);
+            init();
+        }
+
+        public ScoreMarker(Context context, AttributeSet attrs, int defStyleAttr) {
+            super(context, attrs, defStyleAttr);
+            init();
+        }
+
+        protected void init() {
+            LayoutParams layoutParams = new LayoutParams(114, 114);
+            setLayoutParams(layoutParams);
+
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setStroke(5, Color.WHITE);
+            gradientDrawable.setCornerRadius(10000);
+            setBackground(gradientDrawable);
+
+            tvScore = new TextView(getContext());
+            tvScore.setTextColor(Color.WHITE);
+            tvScore.setTextSize(42);
+            tvScore.setGravity(Gravity.CENTER);
+            LayoutParams tvLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            tvLayoutParams.addRule(CENTER_IN_PARENT, TRUE);
+            tvScore.setLayoutParams(tvLayoutParams);
+            addView(tvScore);
+
+            setText(text);
+        }
+
+        public void setText(String text) {
+            this.text = text;
+            if (tvScore != null) {
+                tvScore.setText(text);
             }
         }
 
