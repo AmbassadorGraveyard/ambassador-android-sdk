@@ -12,20 +12,30 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     @Override
     public String getReadme() {
+        String image = model.getRafOptions().getLogo();
+
         PlaintextFile readme = new PlaintextFile();
-        readme.addHtmlLine("<b>Ambassador Android SDK v1.1.4</b>");
-        readme.addHtmlLine("Take a look at the Android docs for an in-depth explanation on adding and integrating the SDK:");
-        readme.addHtmlLine("https://docs.getambassador.com/v2.0.0/page/android-sdk");
-        readme.addHtmlLine("Check out the MyActivity.java file for an example of this integration.");
-        readme.addHtmlLine("Place the image and ambassador-raf.xml files into the root of your application's assets folder.");
-
+        readme.addHtmlLine("Hey! I've attached examples showing how to set up a refer-a-friend view in our mobile app with the Ambassador SDK.");
         readme.addHtmlLine("");
+        readme.addHtmlLine("The attachment includes examples for");
+        readme.addHtmlLine("iOS (v1.0.3): ViewControllerTest.m or ViewControllerTest.swift and ambassador-raf.plist,");
+        readme.addHtmlLine("Android (v1.1.4): MyActivity.java and ambassador-raf.xml" + (image != null ? "," : "."));
+        if (image != null) {
+            readme.addHtmlLine("and " + image + ", a custom image used in the theme configuration.");
+        }
+        readme.addHtmlLine("");
+        readme.addHtmlLine("For in-depth explanations on adding and integrating the SDKs check out these links:");
+        readme.addHtmlLine("iOS -> https://docs.getambassador.com/v2.0.0/page/ios-sdk");
+        readme.addHtmlLine("Android -> https://docs.getambassador.com/v2.0.0/page/android-sdk");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("Let me know if you have any questions!");
 
-        readme.addHtmlLine("<b>Ambassador iOS SDK v1.0.3</b>");
-        readme.addHtmlLine("Take a look at the iOS docs for an in-depth explanation on adding and integrating the SDK:");
-        readme.addHtmlLine("https://docs.getambassador.com/v2.0.0/page/ios-sdk");
-        readme.addHtmlLine("Check out the ViewControllerTest.m or ViewControllerTest.swift files for examples of this integration.");
-        readme.addHtmlLine("Add the image to your app's image assets folder and add the .plist file to your project.");
+        // This seems to prevent "Let me know..." from going into signature, sometimes.
+        readme.addHtmlLine("");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("");
+        readme.addHtmlLine("");
 
         return readme.get();
     }
