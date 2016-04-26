@@ -30,6 +30,7 @@ public class SurveyPresenter extends BasePresenter<SurveyModel, SurveyView> {
             public void run() {
                 SurveyModel tmp = new SurveyModel();
                 tmp.ambassadorName = "John";
+                tmp.companyName = "Ambassador";
                 setModel(tmp);
             }
         }, 3000);
