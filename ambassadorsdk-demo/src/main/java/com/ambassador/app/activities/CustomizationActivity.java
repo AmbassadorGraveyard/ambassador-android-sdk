@@ -171,6 +171,11 @@ public class CustomizationActivity extends AppCompatActivity {
             }
 
             integration.save();
+
+            IntegrationExport export = new IntegrationExport();
+            export.setModel(integration);
+            new ZipIntegrationTask().execute(export);
+
             finish();
         }
         return true;
