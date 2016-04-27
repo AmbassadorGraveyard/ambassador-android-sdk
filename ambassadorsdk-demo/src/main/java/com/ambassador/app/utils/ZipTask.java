@@ -2,6 +2,7 @@ package com.ambassador.app.utils;
 
 
 import android.os.AsyncTask;
+import android.os.Handler;
 
 import com.ambassador.app.Demo;
 import com.ambassador.app.exports.IntegrationExport;
@@ -37,7 +38,12 @@ public class ZipTask extends AsyncTask<IntegrationExport, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        runningTasks.remove(id);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                runningTasks.remove(id);
+            }
+        }, 5000);
     }
 
     public static boolean isRunning(long id) {

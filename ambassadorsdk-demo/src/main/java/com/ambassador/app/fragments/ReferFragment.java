@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,8 +22,8 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
@@ -90,7 +91,6 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
         adapter = new RafAdapter();
         lvRafs.setAdapter(adapter);
 
-
         if (adapter.getCount() > 0) {
             tvNoRafs.setVisibility(View.GONE);
             ivAddRaf.setVisibility(View.GONE);
@@ -152,9 +152,11 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
     private final class RafAdapter extends BaseAdapter {
 
         private List<Integration> items;
+        private List<Integration> loading;
 
         public RafAdapter() {
             items = new ArrayList<>();
+            loading = new ArrayList<>();
             SharedPreferences preferences = Demo.get().getSharedPreferences("integrations", Context.MODE_PRIVATE);
             String integrationsArrayString = preferences.getString(User.get().getUniversalId(), "[]");
             JsonArray integrationsArray = new JsonParser().parse(integrationsArrayString).getAsJsonArray();
@@ -205,7 +207,6 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                 ivShare.setImageResource(R.drawable.ic_share_white);
             }
             ivShare.setColorFilter(Color.parseColor("#232f3b"));
-
             ivShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -216,6 +217,17 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                     }
                 }
             });
+
+            ProgressBar pbShare = (ProgressBar) convertView.findViewById(R.id.pbLoadingShare);
+            pbShare.getIndeterminateDrawable().setColorFilter(getActivity().getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
+
+            if (loading.contains(item)) {
+                ivShare.setVisibility(View.GONE);
+                pbShare.setVisibility(View.VISIBLE);
+            } else {
+                pbShare.setVisibility(View.GONE);
+                ivShare.setVisibility(View.VISIBLE);
+            }
 
             ImageView ivDelete = (ImageView) convertView.findViewById(R.id.ivDeleteRaf);
             if (editing) {
@@ -235,6 +247,14 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             });
 
             return convertView;
+        }
+
+        public void setLoading(Integration integration) {
+            loading.add(integration);
+        }
+
+        public void setNotLoading(Integration integration) {
+            loading.remove(integration);
         }
 
     }
@@ -263,7 +283,8 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
         Integration integration = adapter.getItem(item);
 
         if (ZipTask.isRunning(integration.getCreatedAtDate())) {
-            Toast.makeText(getActivity(), "No", Toast.LENGTH_SHORT).show();
+            adapter.setLoading(integration);
+            adapter.notifyDataSetChanged();
             return;
         }
 
