@@ -116,14 +116,19 @@ public class SurveySliderView extends RelativeLayout {
         }
 
         protected void init() {
-            LayoutParams layoutParams = new LayoutParams(114, 114);
+            LayoutParams layoutParams = new LayoutParams(200, 200);
             setLayoutParams(layoutParams);
+
+            RelativeLayout circle = new RelativeLayout(getContext());
+            LayoutParams circleLayoutParams = new LayoutParams(114, 114);
+            circleLayoutParams.addRule(CENTER_IN_PARENT, TRUE);
+            circle.setLayoutParams(circleLayoutParams);
 
             GradientDrawable gradientDrawable = new GradientDrawable();
             gradientDrawable.setColor(Color.parseColor("#24313F"));
             gradientDrawable.setStroke(5, Color.WHITE);
             gradientDrawable.setCornerRadius(10000);
-            setBackground(gradientDrawable);
+            circle.setBackground(gradientDrawable);
 
             tvScore = new TextView(getContext());
             tvScore.setTextColor(Color.WHITE);
@@ -132,9 +137,11 @@ public class SurveySliderView extends RelativeLayout {
             LayoutParams tvLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             tvLayoutParams.addRule(CENTER_IN_PARENT, TRUE);
             tvScore.setLayoutParams(tvLayoutParams);
-            addView(tvScore);
+            circle.addView(tvScore);
 
             setText(text);
+
+            addView(circle);
         }
 
         public void setText(String text) {
@@ -142,6 +149,43 @@ public class SurveySliderView extends RelativeLayout {
             if (tvScore != null) {
                 tvScore.setText(text);
             }
+        }
+
+        public class ArrowView extends View {
+
+            protected Paint paint;
+            protected float rotation;
+
+            public ArrowView(Context context) {
+                super(context);
+                init();
+            }
+
+            public ArrowView(Context context, AttributeSet attrs) {
+                super(context, attrs);
+                init();
+            }
+
+            public ArrowView(Context context, AttributeSet attrs, int defStyleAttr) {
+                super(context, attrs, defStyleAttr);
+                init();
+            }
+
+            protected void init() {
+                paint = new Paint();
+                paint.setColor(Color.WHITE);
+                paint.setStyle(Paint.Style.FILL);
+            }
+
+            @Override
+            protected void onDraw(Canvas canvas) {
+                super.onDraw(canvas);
+            }
+
+            public void setRotation(float degrees) {
+                this.rotation = degrees;
+            }
+
         }
 
     }
