@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -30,6 +31,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -78,6 +80,7 @@ public class CustomizationActivity extends AppCompatActivity {
     @Bind(R.id.lhvTextField1) protected ListHeadingView lhvTextField1;
     @Bind(R.id.lhvTextField2) protected ListHeadingView lhvTextField2;
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
+    @Bind(R.id.pbProductPhoto) protected ProgressBar pbProductPhoto;
     @Bind(R.id.tvProductPhotoInfo) protected TextView tvProductPhotoInfo;
     @Bind(R.id.inputIntegrationName) protected InputView inputIntegrationName;
     @Bind(R.id.inputHeaderText) protected InputView inputHeaderText;
@@ -99,6 +102,8 @@ public class CustomizationActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setUpActionBar();
         handleEditing();
+
+        pbProductPhoto.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this, R.color.primary), PorterDuff.Mode.SRC_IN);
 
         ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.add_photo));
         ivProductPhoto.setOnClickListener(new View.OnClickListener() {
@@ -192,6 +197,8 @@ public class CustomizationActivity extends AppCompatActivity {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         imageSaveFilename = System.currentTimeMillis() + ".png";
                         new SaveImageTask(imageSaveFilename).execute(bitmap);
+                        pbProductPhoto.setVisibility(View.VISIBLE);
+                        ivProductPhoto.setImageDrawable(new ColorDrawable(Color.WHITE));
                     } catch (IOException e) {
                         Log.e(CustomizationActivity.class.getSimpleName(), e.toString());
                     }
@@ -727,6 +734,7 @@ public class CustomizationActivity extends AppCompatActivity {
             try {
                 if (bitmap != null) {
                     ivProductPhoto.setImageBitmap(bitmap);
+                    pbProductPhoto.setVisibility(View.GONE);
                     tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
                     tvProductPhotoInfo.setText("Remove Product Photo");
                     hasPhoto = true;
