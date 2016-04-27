@@ -40,11 +40,11 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
-import com.ambassador.app.Demo;
 import com.ambassador.app.R;
 import com.ambassador.app.data.Integration;
 import com.ambassador.app.dialogs.CampaignChooserDialog;
 import com.ambassador.app.exports.IntegrationExport;
+import com.ambassador.app.utils.ZipTask;
 import com.ambassador.app.views.ColorInputView;
 import com.ambassador.app.views.InputView;
 import com.ambassador.app.views.ListHeadingView;
@@ -179,7 +179,7 @@ public class CustomizationActivity extends AppCompatActivity {
 
             IntegrationExport export = new IntegrationExport();
             export.setModel(integration);
-            new ZipIntegrationTask().execute(export);
+            new ZipTask(integration.getCreatedAtDate()).execute(export);
 
             finish();
         }
@@ -752,22 +752,6 @@ public class CustomizationActivity extends AppCompatActivity {
             } catch (Exception e) {
                 // No handling needed. This would maybe throw if they exited Activity while image loading.
             }
-        }
-
-    }
-
-    protected class ZipIntegrationTask extends AsyncTask<IntegrationExport, Void, Void> {
-
-        @Override
-        protected Void doInBackground(IntegrationExport... params) {
-            if (params.length < 0) {
-                return null;
-            }
-
-            IntegrationExport export = params[0];
-            String zip = export.zip(Demo.get());
-
-            return null;
         }
 
     }

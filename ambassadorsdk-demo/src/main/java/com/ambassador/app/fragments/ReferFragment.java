@@ -22,6 +22,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
@@ -35,6 +36,7 @@ import com.ambassador.app.data.User;
 import com.ambassador.app.exports.Export;
 import com.ambassador.app.exports.IntegrationExport;
 import com.ambassador.app.utils.Share;
+import com.ambassador.app.utils.ZipTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
@@ -259,6 +261,12 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
 
     protected void share(int item) {
         Integration integration = adapter.getItem(item);
+
+        if (ZipTask.isRunning(integration.getCreatedAtDate())) {
+            Toast.makeText(getActivity(), "No", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         RAFOptions rafOptions = integration.getRafOptions();
 
         if (rafOptions == null) {
