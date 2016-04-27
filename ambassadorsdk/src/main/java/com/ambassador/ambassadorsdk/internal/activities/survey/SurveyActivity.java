@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -34,6 +35,8 @@ public class SurveyActivity extends Activity implements SurveyView {
 
     @Bind(B.id.surveySliderView) protected SurveySliderView surveySliderView;
 
+    @Bind(B.id.btnSubmit) protected Button btnSubmit;
+
     @Bind(B.id.pbLoading) protected ProgressBar pbLoading;
 
     @Override
@@ -56,6 +59,13 @@ public class SurveyActivity extends Activity implements SurveyView {
             @Override
             public void onClick(View v) {
                 surveyPresenter.onExitButtonClicked();
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                surveyPresenter.onSubmitButtonClicked();
             }
         });
     }

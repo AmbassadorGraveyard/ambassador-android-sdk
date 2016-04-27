@@ -40,4 +40,8 @@ public class SurveyPresenter extends BasePresenter<SurveyModel, SurveyView> {
         view().exit();
     }
 
+    public void onSubmitButtonClicked() {
+        view().exit();
+    }
+
 }
