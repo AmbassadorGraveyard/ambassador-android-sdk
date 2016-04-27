@@ -8,6 +8,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -20,7 +21,7 @@ import com.ambassador.ambassadorsdk.R;
 import butterfork.Bind;
 import butterfork.ButterFork;
 
-public class SurveySliderView extends RelativeLayout {
+public class SurveySliderView extends RelativeLayout implements View.OnTouchListener {
 
     @Bind(B.id.flLines) protected FrameLayout flLines;
 
@@ -48,9 +49,19 @@ public class SurveySliderView extends RelativeLayout {
         flLines.addView(new LinesView(getContext()));
 
         scoreMarker = new ScoreMarker(getContext());
+        scoreMarker.setId(R.id.adjust_height);
         addView(scoreMarker);
 
         scoreMarker.setText("5");
+
+        setOnTouchListener(this);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        scoreMarker.setTranslationX(event.getX() - scoreMarker.getWidth() / 2);
+        scoreMarker.setTranslationY(event.getY() - scoreMarker.getHeight() / 2);
+        return true;
     }
 
     protected class LinesView extends View {
@@ -95,7 +106,7 @@ public class SurveySliderView extends RelativeLayout {
 
     }
 
-    protected class ScoreMarker extends RelativeLayout {
+    public class ScoreMarker extends RelativeLayout {
 
         protected TextView tvScore;
         protected String text = "5";

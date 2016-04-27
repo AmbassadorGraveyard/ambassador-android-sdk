@@ -68,6 +68,7 @@ public class SurveyActivity extends Activity implements SurveyView {
                 surveyPresenter.onSubmitButtonClicked();
             }
         });
+
     }
 
     @Override
