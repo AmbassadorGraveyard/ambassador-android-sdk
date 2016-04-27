@@ -48,7 +48,9 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
         flLines.addView(new LinesView(getContext()));
 
+
         scoreMarker = new ScoreMarker(getContext());
+
         addView(scoreMarker);
 
         scoreMarker.setText("5");
@@ -58,7 +60,6 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        scoreMarker.setTranslationX(event.getX() - scoreMarker.getWidth() / 2);
         scoreMarker.setTranslationY(event.getY() - scoreMarker.getHeight() / 2);
         return true;
     }
@@ -86,6 +87,8 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             paint = new Paint();
             paint.setColor(Color.parseColor("#48545E"));
             paint.setStrokeWidth(2);
+
+            setId(R.id.adjust_height);
         }
 
         @Override
@@ -126,8 +129,11 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         }
 
         protected void init() {
-            LayoutParams layoutParams = new LayoutParams(200, 200);
+            LayoutParams layoutParams = new LayoutParams(150, 150);
+            layoutParams.addRule(CENTER_HORIZONTAL, TRUE);
             setLayoutParams(layoutParams);
+
+            setTranslationX(-150);
 
             RelativeLayout circle = new RelativeLayout(getContext());
             LayoutParams circleLayoutParams = new LayoutParams(114, 114);
