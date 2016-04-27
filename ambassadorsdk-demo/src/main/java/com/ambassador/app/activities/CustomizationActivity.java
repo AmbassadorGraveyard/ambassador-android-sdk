@@ -80,6 +80,7 @@ public class CustomizationActivity extends AppCompatActivity {
     @Bind(R.id.inputHeaderText) protected InputView inputHeaderText;
     @Bind(R.id.inputTextField1) protected InputView inputTextField1;
     @Bind(R.id.inputTextField2) protected InputView inputTextField2;
+    @Bind(R.id.inputShareMessage) protected InputView inputShareMessage;
     @Bind(R.id.rvCampaignChooser) protected RelativeLayout rvCampaignChooser;
     @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
     @Bind(R.id.lvChannels) protected DragSortListView lvChannels;
@@ -259,6 +260,7 @@ public class CustomizationActivity extends AppCompatActivity {
         dataHandler.setHeaderColor(defaults.getHomeToolbarColor());
         dataHandler.setTextField1Color(defaults.getHomeWelcomeTitleColor());
         dataHandler.setTextField2Color(defaults.getHomeWelcomeDescriptionColor());
+        dataHandler.setShareMessage(defaults.getDefaultShareMessage());
         dataHandler.setButtonColor(defaults.getContactsSendButtonColor());
     }
 
@@ -417,6 +419,7 @@ public class CustomizationActivity extends AppCompatActivity {
             setTextField1Color(rafOptions.getHomeWelcomeTitleColor());
             setTextField2(rafOptions.getDescriptionText());
             setTextField2Color(rafOptions.getHomeWelcomeDescriptionColor());
+            setShareMessage(rafOptions.getDefaultShareMessage());
             setChannels(rafOptions.getChannels());
             setButtonColor(rafOptions.getContactsSendButtonColor());
 
@@ -470,6 +473,7 @@ public class CustomizationActivity extends AppCompatActivity {
                     .setChannels(getChannels())
                     .setContactsSendButtonColor(getButtonColor())
                     .setContactNoPhotoAvailableBackgroundColor(getButtonColor())
+                    .setDefaultShareMessage(getShareMessage())
                     .build();
 
             integration.setRafOptions(rafOptions);
@@ -562,6 +566,15 @@ public class CustomizationActivity extends AppCompatActivity {
 
         public void setTextField2Color(@ColorInt int color) {
             civTextField2.setColor(color);
+        }
+
+        @NonNull
+        public String getShareMessage() {
+            return inputShareMessage.getText().toString();
+        }
+
+        public void setShareMessage(@NonNull String text) {
+            inputShareMessage.setText(text);
         }
 
         public void setChannels(@NonNull String[] channels) {
