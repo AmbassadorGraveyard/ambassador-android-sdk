@@ -279,12 +279,23 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
         adapter.notifyDataSetChanged();
     }
 
-    protected void share(int item) {
-        Integration integration = adapter.getItem(item);
+    protected void share(final int item) {
+        final Integration integration = adapter.getItem(item);
 
         if (ZipTask.isRunning(integration.getCreatedAtDate())) {
             adapter.setLoading(integration);
             adapter.notifyDataSetChanged();
+
+            ZipTask.addOnTaskCompleteListener(integration.getCreatedAtDate(), new ZipTask.OnTaskCompleteListener() {
+                @Override
+                public void onTaskComplete() {
+                    adapter.setNotLoading(integration);
+                    adapter.notifyDataSetChanged();
+
+                    share(item);
+                }
+            });
+
             return;
         }
 
