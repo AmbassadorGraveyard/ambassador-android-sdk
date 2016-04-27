@@ -49,7 +49,6 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         flLines.addView(new LinesView(getContext()));
 
         scoreMarker = new ScoreMarker(getContext());
-        scoreMarker.setId(R.id.adjust_height);
         addView(scoreMarker);
 
         scoreMarker.setText("5");
