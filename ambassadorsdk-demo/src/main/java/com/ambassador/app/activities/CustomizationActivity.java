@@ -190,10 +190,10 @@ public class CustomizationActivity extends AppCompatActivity {
                     Uri uri = data.getData();
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                        ivProductPhoto.setImageBitmap(bitmap);
                         imageSaveFilename = System.currentTimeMillis() + ".png";
-                        boolean didSave = saveImage(bitmap, imageSaveFilename);
-                        if (didSave) {
+                        Bitmap savedBitmap = saveImage(bitmap, imageSaveFilename);
+                        if (savedBitmap != null) {
+                            ivProductPhoto.setImageBitmap(savedBitmap);
                             tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
                             tvProductPhotoInfo.setText("Remove Product Photo");
                             hasPhoto = true;
@@ -281,26 +281,50 @@ public class CustomizationActivity extends AppCompatActivity {
         });
     }
 
-    protected boolean saveImage(Bitmap bitmap, String filename) {
+    protected Bitmap saveImage(Bitmap bitmap, String filename) {
+        float maxWidth = 1024.0f;
+        float maxHeight = 1024.0f;
+        int actualHeight = bitmap.getHeight();
+        int actualWidth = bitmap.getWidth();
+        float imgRatio = (float) actualWidth / (float) actualHeight;
+        float maxRatio = maxWidth / maxHeight;
+
+        if (actualHeight > maxHeight || actualWidth > maxWidth) {
+            if (imgRatio < maxRatio) {
+                imgRatio = maxHeight / actualHeight;
+                actualWidth = (int) (imgRatio * actualWidth);
+                actualHeight = (int) maxHeight;
+            } else if (imgRatio > maxRatio) {
+                imgRatio = maxWidth / actualWidth;
+                actualHeight = (int) (imgRatio * actualHeight);
+                actualWidth = (int) maxWidth;
+            } else {
+                actualHeight = (int) maxHeight;
+                actualWidth = (int) maxWidth;
+            }
+        }
+
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, actualWidth, actualHeight, false);
+
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = openFileOutput(filename, MODE_PRIVATE);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 75, fileOutputStream);
             Log.v("Ambassador-Demo", "Image saved with filename: " + filename);
         } catch (Exception e) {
             Log.e("Ambassador-Demo", e.toString());
-            return false;
+            return null;
         } finally {
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
                 } catch (IOException e) {
                     Log.e("Ambassador-Demo", e.toString());
-                    return false;
+                    return null;
                 }
             }
         }
-        return true;
+        return scaledBitmap;
     }
 
     protected static class ChannelAdapter extends BaseAdapter {
