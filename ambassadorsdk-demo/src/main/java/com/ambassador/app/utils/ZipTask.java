@@ -2,7 +2,6 @@ package com.ambassador.app.utils;
 
 
 import android.os.AsyncTask;
-import android.os.Handler;
 
 import com.ambassador.app.Demo;
 import com.ambassador.app.exports.IntegrationExport;
@@ -41,21 +40,15 @@ public class ZipTask extends AsyncTask<IntegrationExport, Void, Void> {
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                runningTasks.remove(id);
+        runningTasks.remove(id);
 
-                if (listeners.keySet().contains(id)) {
-                    for (OnTaskCompleteListener listener : listeners.get(id)) {
-                        listener.onTaskComplete();
-                    }
-
-                    listeners.get(id).clear();
-                }
-
+        if (listeners.keySet().contains(id)) {
+            for (OnTaskCompleteListener listener : listeners.get(id)) {
+                listener.onTaskComplete();
             }
-        }, 5000);
+
+            listeners.get(id).clear();
+        }
     }
 
     public static boolean isRunning(long id) {
