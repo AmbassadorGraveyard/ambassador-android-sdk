@@ -282,8 +282,8 @@ public class CustomizationActivity extends AppCompatActivity {
     }
 
     protected Bitmap saveImage(Bitmap bitmap, String filename) {
-        float maxWidth = 1024.0f;
-        float maxHeight = 1024.0f;
+        float maxWidth = 1920.0f;
+        float maxHeight = 1920.0f;
         int actualHeight = bitmap.getHeight();
         int actualWidth = bitmap.getWidth();
         float imgRatio = (float) actualWidth / (float) actualHeight;
@@ -309,7 +309,7 @@ public class CustomizationActivity extends AppCompatActivity {
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = openFileOutput(filename, MODE_PRIVATE);
-            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 75, fileOutputStream);
+            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
             Log.v("Ambassador-Demo", "Image saved with filename: " + filename);
         } catch (Exception e) {
             Log.e("Ambassador-Demo", e.toString());
