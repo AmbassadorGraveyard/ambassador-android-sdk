@@ -39,6 +39,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -259,11 +260,19 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
         Integration integration = adapter.getItem(item);
         RAFOptions rafOptions = integration.getRafOptions();
         if (rafOptions != null) {
-
             Export<Integration> export = new IntegrationExport();
             export.setModel(integration);
             String filename = export.zip(getActivity());
-            new Share(filename).withSubject("Ambassador RAF Integration Instructions").withBody(export.getReadme()).execute(getActivity());
+
+            try {
+                FileChannel from = getActivity().openFileInput(filename).getChannel();
+                FileChannel to = getActivity().openFileOutput("ambassador-raf.zip", Context.MODE_PRIVATE).getChannel();
+                to.transferFrom(from, 0, from.size());
+            } catch (Exception e) {
+                new Share(filename).withSubject("Ambassador RAF Integration Instructions").withBody(export.getReadme()).execute(getActivity());
+            }
+
+            new Share("ambassador-raf.zip").withSubject("Ambassador RAF Integration Instructions").withBody(export.getReadme()).execute(getActivity());
         }
     }
 

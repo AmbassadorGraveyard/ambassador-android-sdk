@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
@@ -37,9 +38,11 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
+import com.ambassador.app.Demo;
 import com.ambassador.app.R;
 import com.ambassador.app.data.Integration;
 import com.ambassador.app.dialogs.CampaignChooserDialog;
+import com.ambassador.app.exports.IntegrationExport;
 import com.ambassador.app.views.ColorInputView;
 import com.ambassador.app.views.InputView;
 import com.ambassador.app.views.ListHeadingView;
@@ -473,6 +476,7 @@ public class CustomizationActivity extends AppCompatActivity {
                     .build();
 
             integration.setRafOptions(rafOptions);
+
             return integration;
         }
 
@@ -687,6 +691,22 @@ public class CustomizationActivity extends AppCompatActivity {
                 default:
                     return null;
             }
+        }
+
+    }
+
+    protected class ZipIntegrationTask extends AsyncTask<IntegrationExport, Void, Void> {
+
+        @Override
+        protected Void doInBackground(IntegrationExport... params) {
+            if (params.length < 0) {
+                return null;
+            }
+
+            IntegrationExport export = params[0];
+            String zip = export.zip(Demo.get());
+
+            return null;
         }
 
     }
