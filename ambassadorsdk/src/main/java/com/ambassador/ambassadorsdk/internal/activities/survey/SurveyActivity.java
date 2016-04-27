@@ -16,6 +16,7 @@ import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.PresenterManager;
+import com.ambassador.ambassadorsdk.internal.views.SurveySliderView;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
@@ -30,6 +31,8 @@ public class SurveyActivity extends Activity implements SurveyView {
     @Bind(B.id.ivExit) protected ImageView ivExit;
     @Bind(B.id.tvSurveyTitle) protected TextView tvSurveyTitle;
     @Bind(B.id.tvSurveyDescription) protected TextView tvSurveyDescription;
+
+    @Bind(B.id.surveySliderView) protected SurveySliderView surveySliderView;
 
     @Bind(B.id.pbLoading) protected ProgressBar pbLoading;
 

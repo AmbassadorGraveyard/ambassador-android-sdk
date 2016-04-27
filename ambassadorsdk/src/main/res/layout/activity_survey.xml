@@ -50,6 +50,7 @@
             android:layout_height="match_parent">
 
             <com.ambassador.ambassadorsdk.internal.views.SurveySliderView
+                android:id="@+id/surveySliderView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/btnSubmit"
