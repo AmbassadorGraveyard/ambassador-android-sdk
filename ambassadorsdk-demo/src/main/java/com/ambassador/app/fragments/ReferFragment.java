@@ -39,6 +39,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
+import java.io.File;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -259,21 +260,37 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
     protected void share(int item) {
         Integration integration = adapter.getItem(item);
         RAFOptions rafOptions = integration.getRafOptions();
-        if (rafOptions != null) {
-            Export<Integration> export = new IntegrationExport();
-            export.setModel(integration);
-            String filename = export.zip(getActivity());
 
-            try {
-                FileChannel from = getActivity().openFileInput(filename).getChannel();
-                FileChannel to = getActivity().openFileOutput("ambassador-raf.zip", Context.MODE_PRIVATE).getChannel();
-                to.transferFrom(from, 0, from.size());
-            } catch (Exception e) {
-                new Share(filename).withSubject("Ambassador RAF Integration Instructions").withBody(export.getReadme()).execute(getActivity());
-            }
-
-            new Share("ambassador-raf.zip").withSubject("Ambassador RAF Integration Instructions").withBody(export.getReadme()).execute(getActivity());
+        if (rafOptions == null) {
+            return;
         }
+
+        Export<Integration> export = new IntegrationExport();
+        export.setModel(integration);
+
+        String filename = "";
+        try {
+            File file = getActivity().getBaseContext().getFileStreamPath(integration.getCreatedAtDate() + ".zip");
+            if (file.exists()) {
+                filename = integration.getCreatedAtDate() + ".zip";
+            }
+        } catch (Exception e) {
+
+        }
+
+        if ("".equals(filename)) {
+            filename = export.zip(getActivity());
+        }
+
+        try {
+            FileChannel from = getActivity().openFileInput(filename).getChannel();
+            FileChannel to = getActivity().openFileOutput("ambassador-raf.zip", Context.MODE_PRIVATE).getChannel();
+            to.transferFrom(from, 0, from.size());
+        } catch (Exception e) {
+            new Share(filename).withSubject("Ambassador RAF Integration Instructions").withBody(export.getReadme()).execute(getActivity());
+        }
+
+        new Share("ambassador-raf.zip").withSubject("Ambassador RAF Integration Instructions").withBody(export.getReadme()).execute(getActivity());
     }
 
     protected void edit(int item) {
