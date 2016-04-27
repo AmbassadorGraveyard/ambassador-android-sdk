@@ -191,23 +191,7 @@ public class CustomizationActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         imageSaveFilename = System.currentTimeMillis() + ".png";
-                        Bitmap savedBitmap = saveImage(bitmap, imageSaveFilename);
-                        if (savedBitmap != null) {
-                            ivProductPhoto.setImageBitmap(savedBitmap);
-                            tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
-                            tvProductPhotoInfo.setText("Remove Product Photo");
-                            hasPhoto = true;
-                            tvProductPhotoInfo.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(CustomizationActivity.this, R.drawable.add_photo));
-                                    tvProductPhotoInfo.setTextColor(Color.BLACK);
-                                    tvProductPhotoInfo.setText("Upload Product Photo");
-                                    tvProductPhotoInfo.setOnClickListener(null);
-                                    hasPhoto = false;
-                                }
-                            });
-                        }
+                        new SaveImageTask(imageSaveFilename).execute(bitmap);
                     } catch (IOException e) {
                         Log.e(CustomizationActivity.class.getSimpleName(), e.toString());
                     }
@@ -279,52 +263,6 @@ public class CustomizationActivity extends AppCompatActivity {
                 channelAdapter.drop(from, to);
             }
         });
-    }
-
-    protected Bitmap saveImage(Bitmap bitmap, String filename) {
-        float maxWidth = 1920.0f;
-        float maxHeight = 1920.0f;
-        int actualHeight = bitmap.getHeight();
-        int actualWidth = bitmap.getWidth();
-        float imgRatio = (float) actualWidth / (float) actualHeight;
-        float maxRatio = maxWidth / maxHeight;
-
-        if (actualHeight > maxHeight || actualWidth > maxWidth) {
-            if (imgRatio < maxRatio) {
-                imgRatio = maxHeight / actualHeight;
-                actualWidth = (int) (imgRatio * actualWidth);
-                actualHeight = (int) maxHeight;
-            } else if (imgRatio > maxRatio) {
-                imgRatio = maxWidth / actualWidth;
-                actualHeight = (int) (imgRatio * actualHeight);
-                actualWidth = (int) maxWidth;
-            } else {
-                actualHeight = (int) maxHeight;
-                actualWidth = (int) maxWidth;
-            }
-        }
-
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, actualWidth, actualHeight, false);
-
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = openFileOutput(filename, MODE_PRIVATE);
-            scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-            Log.v("Ambassador-Demo", "Image saved with filename: " + filename);
-        } catch (Exception e) {
-            Log.e("Ambassador-Demo", e.toString());
-            return null;
-        } finally {
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.close();
-                } catch (IOException e) {
-                    Log.e("Ambassador-Demo", e.toString());
-                    return null;
-                }
-            }
-        }
-        return scaledBitmap;
     }
 
     protected static class ChannelAdapter extends BaseAdapter {
@@ -719,6 +657,92 @@ public class CustomizationActivity extends AppCompatActivity {
                     return SMS;
                 default:
                     return null;
+            }
+        }
+
+    }
+
+    protected class SaveImageTask extends AsyncTask<Bitmap, Void, Bitmap> {
+
+        protected String filename;
+
+        public SaveImageTask(String filename) {
+            super();
+            this.filename = filename;
+        }
+
+        @Override
+        protected Bitmap doInBackground(Bitmap... params) {
+            Bitmap bitmap = params[0];
+
+            float maxWidth = 1920.0f;
+            float maxHeight = 1920.0f;
+            int actualHeight = bitmap.getHeight();
+            int actualWidth = bitmap.getWidth();
+            float imgRatio = (float) actualWidth / (float) actualHeight;
+            float maxRatio = maxWidth / maxHeight;
+
+            if (actualHeight > maxHeight || actualWidth > maxWidth) {
+                if (imgRatio < maxRatio) {
+                    imgRatio = maxHeight / actualHeight;
+                    actualWidth = (int) (imgRatio * actualWidth);
+                    actualHeight = (int) maxHeight;
+                } else if (imgRatio > maxRatio) {
+                    imgRatio = maxWidth / actualWidth;
+                    actualHeight = (int) (imgRatio * actualHeight);
+                    actualWidth = (int) maxWidth;
+                } else {
+                    actualHeight = (int) maxHeight;
+                    actualWidth = (int) maxWidth;
+                }
+            }
+
+            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, actualWidth, actualHeight, false);
+
+            FileOutputStream fileOutputStream = null;
+            try {
+                fileOutputStream = openFileOutput(filename, MODE_PRIVATE);
+                scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+                Log.v("Ambassador-Demo", "Image saved with filename: " + filename);
+            } catch (Exception e) {
+                Log.e("Ambassador-Demo", e.toString());
+                return null;
+            } finally {
+                if (fileOutputStream != null) {
+                    try {
+                        fileOutputStream.close();
+                    } catch (IOException e) {
+                        Log.e("Ambassador-Demo", e.toString());
+                        return null;
+                    }
+                }
+            }
+
+            return scaledBitmap;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            super.onPostExecute(bitmap);
+            try {
+                if (bitmap != null) {
+                    ivProductPhoto.setImageBitmap(bitmap);
+                    tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
+                    tvProductPhotoInfo.setText("Remove Product Photo");
+                    hasPhoto = true;
+                    tvProductPhotoInfo.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(CustomizationActivity.this, R.drawable.add_photo));
+                            tvProductPhotoInfo.setTextColor(Color.BLACK);
+                            tvProductPhotoInfo.setText("Upload Product Photo");
+                            tvProductPhotoInfo.setOnClickListener(null);
+                            hasPhoto = false;
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                // No handling needed. This would maybe throw if they exited Activity while image loading.
             }
         }
 
