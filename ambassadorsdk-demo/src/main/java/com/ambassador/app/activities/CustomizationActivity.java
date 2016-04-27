@@ -74,6 +74,8 @@ public class CustomizationActivity extends AppCompatActivity {
     protected boolean hasPhoto = false;
     protected Integration startupIntegration;
 
+    protected MenuItem menuItem;
+
     @Bind(R.id.svCustomization) protected ScrollView svCustomization;
     @Bind(R.id.lhvGeneral) protected ListHeadingView lhvGeneral;
     @Bind(R.id.lhvHeader) protected ListHeadingView lhvHeader;
@@ -158,7 +160,7 @@ public class CustomizationActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_customizer, menu);
-        MenuItem menuItem = menu.findItem(R.id.action_save);
+        menuItem = menu.findItem(R.id.action_save);
         menuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.save_icon));
         return true;
     }
@@ -167,6 +169,11 @@ public class CustomizationActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(findViewById(android.R.id.content).getWindowToken(), 0);
+
+        if (pbProductPhoto.getVisibility() == View.VISIBLE) {
+            return true;
+        }
+
         if (verifiedInputs()) {
             Integration integration = new DataHandler().getIntegration();
 
@@ -197,6 +204,7 @@ public class CustomizationActivity extends AppCompatActivity {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         imageSaveFilename = System.currentTimeMillis() + ".png";
                         new SaveImageTask(imageSaveFilename).execute(bitmap);
+                        menuItem.getIcon().setAlpha(128);
                         pbProductPhoto.setVisibility(View.VISIBLE);
                         ivProductPhoto.setImageDrawable(new ColorDrawable(Color.WHITE));
                     } catch (IOException e) {
@@ -748,6 +756,10 @@ public class CustomizationActivity extends AppCompatActivity {
                             hasPhoto = false;
                         }
                     });
+
+                    if (menuItem != null) {
+                        menuItem.getIcon().setAlpha(255);
+                    }
                 }
             } catch (Exception e) {
                 // No handling needed. This would maybe throw if they exited Activity while image loading.
