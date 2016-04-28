@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
@@ -28,15 +29,11 @@ public class SurveyActivity extends Activity implements SurveyView {
 
     @Bind(B.id.llSurvey) protected LinearLayout llSurvey;
     @Bind(B.id.rlLoading) protected RelativeLayout rlLoading;
-
     @Bind(B.id.ivExit) protected ImageView ivExit;
     @Bind(B.id.tvSurveyTitle) protected TextView tvSurveyTitle;
     @Bind(B.id.tvSurveyDescription) protected TextView tvSurveyDescription;
-
     @Bind(B.id.surveySliderView) protected SurveySliderView surveySliderView;
-
     @Bind(B.id.btnSubmit) protected Button btnSubmit;
-
     @Bind(B.id.pbLoading) protected ProgressBar pbLoading;
 
     @Override
@@ -65,7 +62,7 @@ public class SurveyActivity extends Activity implements SurveyView {
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                surveyPresenter.onSubmitButtonClicked();
+                Toast.makeText(SurveyActivity.this, "" + surveySliderView.getScore(), Toast.LENGTH_SHORT).show();
             }
         });
 

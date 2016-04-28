@@ -265,6 +265,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
             protected Paint paint;
             protected float rotation;
+            protected Path path;
 
             public ArrowView(Context context) {
                 super(context);
@@ -289,20 +290,23 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             }
 
             @Override
-            protected void onDraw(Canvas canvas) {
-                super.onDraw(canvas);
-
+            protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+                super.onSizeChanged(w, h, oldw, oldh);
                 Point a = new Point(getWidth() / 2, getHeight() / 3 - 5);
                 Point b = new Point(getWidth(), getHeight() / 2);
                 Point c = new Point(getWidth() / 2, getHeight() / 3 * 2 + 5);
 
-                Path path = new Path();
+                path = new Path();
                 path.setFillType(Path.FillType.EVEN_ODD);
                 path.moveTo(b.x, b.y);
                 path.lineTo(c.x, c.y);
                 path.lineTo(a.x, a.y);
                 path.close();
+            }
 
+            @Override
+            protected void onDraw(Canvas canvas) {
+                super.onDraw(canvas);
                 canvas.drawPath(path, paint);
             }
 
