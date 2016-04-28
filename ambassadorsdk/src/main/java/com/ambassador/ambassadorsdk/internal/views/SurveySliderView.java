@@ -114,7 +114,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
             setId(R.id.adjust_height);
 
-            lineSpots = new int[10];
+            lineSpots = new int[11];
         }
 
         @Override
@@ -125,24 +125,24 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             int offset = 25;
             int height = getHeight() - offset * 2;
             int currentHeight = offset;
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 11; i++) {
                 lineSpots[i] = currentHeight;
                 canvas.drawLine(0, currentHeight, getWidth() / 2 - 6, currentHeight, paint);
                 canvas.drawLine(getWidth() / 2 + 6, currentHeight, getWidth(), currentHeight, paint);
-                currentHeight += height / 9;
+                currentHeight += height / 10;
             }
         }
 
         public int getScoreForPosition(int y) {
             int jump = lineSpots[1] - lineSpots[0];
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 11; i++) {
                 int height = lineSpots[i];
                 if (y >= height - jump / 2 && y < height + jump / 2) {
-                    return i + 1;
+                    return 10 - i;
                 }
             }
 
-            return -1;
+            return y < getHeight() / 2 ? 10 : 0;
         }
 
     }
