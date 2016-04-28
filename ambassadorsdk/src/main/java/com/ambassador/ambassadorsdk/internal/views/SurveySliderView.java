@@ -1,6 +1,5 @@
 package com.ambassador.ambassadorsdk.internal.views;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -28,11 +27,12 @@ import butterfork.ButterFork;
 
 public class SurveySliderView extends RelativeLayout implements View.OnTouchListener {
 
+    @Bind(B.id.tv10) protected TextView tv10;
     @Bind(B.id.flLines) protected FrameLayout flLines;
+    @Bind(B.id.tv0) protected TextView tv0;
 
+    protected LinesView linesView;
     protected ScoreMarker scoreMarker;
-
-    protected ValueAnimator scoreMarkerAnimator;
 
     public SurveySliderView(Context context) {
         super(context);
@@ -53,41 +53,31 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         LayoutInflater.from(getContext()).inflate(R.layout.view_survey_slider, this);
         ButterFork.bind(this);
 
-        flLines.addView(new LinesView(getContext()));
+        linesView = new LinesView(getContext());
+        flLines.addView(linesView);
         scoreMarker = new ScoreMarker(getContext());
         addView(scoreMarker);
 
         scoreMarker.setText("5");
+        scoreMarker.setTranslationY(getHeight() / 2);
         setOnTouchListener(this);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         float target;
-        if (event.getY() < scoreMarker.getHeight() / 2) {
-            target = 0;
-        } else if (event.getY() > getHeight() - scoreMarker.getHeight() / 2) {
-            target = getHeight() - scoreMarker.getHeight();
+        if (event.getY() < flLines.getY()) {
+            target = flLines.getY() - scoreMarker.getHeight() / 2;
+        } else if (event.getY() > flLines.getY() + flLines.getHeight()) {
+            target = flLines.getY() + flLines.getHeight() - scoreMarker.getHeight() / 2;
         } else {
             target = event.getY() - scoreMarker.getHeight() / 2;
         }
 
         scoreMarker.setTranslationY(target);
 
-//        if (scoreMarkerAnimator != null) {
-//            scoreMarkerAnimator.cancel();
-//        }
-//
-//        scoreMarkerAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), target);
-//        scoreMarkerAnimator.setDuration(500);
-//        scoreMarkerAnimator.setInterpolator(new AccelerateInterpolator());
-//        scoreMarkerAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//            @Override
-//            public void onAnimationUpdate(ValueAnimator animation) {
-//                scoreMarker.setTranslationY((Float) animation.getAnimatedValue());
-//            }
-//        });
-//        scoreMarkerAnimator.start();
+        int score = linesView.getScoreForPosition((int) event.getY() - tv10.getMeasuredHeight());
+        scoreMarker.setText(score + "");
 
         return true;
     }
@@ -95,6 +85,8 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
     protected class LinesView extends View {
 
         protected Paint paint;
+
+        protected int[] lineSpots;
 
         public LinesView(Context context) {
             super(context);
@@ -117,6 +109,8 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             paint.setStrokeWidth(2);
 
             setId(R.id.adjust_height);
+
+            lineSpots = new int[10];
         }
 
         @Override
@@ -128,10 +122,23 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             int height = getHeight() - offset * 2;
             int currentHeight = offset;
             for (int i = 0; i < 10; i++) {
+                lineSpots[i] = currentHeight;
                 canvas.drawLine(0, currentHeight, getWidth() / 2 - 6, currentHeight, paint);
                 canvas.drawLine(getWidth() / 2 + 6, currentHeight, getWidth(), currentHeight, paint);
                 currentHeight += height / 9;
             }
+        }
+
+        public int getScoreForPosition(int y) {
+            int jump = lineSpots[1] - lineSpots[0];
+            for (int i = 0; i < 10; i++) {
+                int height = lineSpots[i];
+                if (y >= height - jump / 2 && y < height + jump / 2) {
+                    return i + 1;
+                }
+            }
+
+            return -1;
         }
 
     }
