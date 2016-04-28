@@ -185,9 +185,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
                 }
             }
 
-            return 0;
-
-            //return y < getHeight() / 2 ? lineSpots[0] : lineSpots[10];
+            return y < lineSpots[0] ? lineSpots[0] : lineSpots[10] - getHeight();
         }
 
     }
