@@ -60,7 +60,9 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        scoreMarker.setTranslationY(event.getY() - scoreMarker.getHeight() / 2);
+        if (event.getY() > scoreMarker.getHeight() / 2 && event.getY() < getHeight() - scoreMarker.getHeight() / 2) {
+            scoreMarker.setTranslationY(event.getY() - scoreMarker.getHeight() / 2);
+        }
         return true;
     }
 
