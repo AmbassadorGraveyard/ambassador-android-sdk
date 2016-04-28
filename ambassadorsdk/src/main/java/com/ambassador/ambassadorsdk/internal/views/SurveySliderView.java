@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -34,8 +35,6 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     protected LinesView linesView;
     protected ScoreMarker scoreMarker;
-
-    protected float y = 0;
 
     public SurveySliderView(Context context) {
         super(context);
@@ -58,6 +57,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
         linesView = new LinesView(getContext());
         flLines.addView(linesView);
+
         scoreMarker = new ScoreMarker(getContext());
         addView(scoreMarker);
 
@@ -75,29 +75,56 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             target = event.getY() - scoreMarker.getHeight() / 2;
         }
 
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            dropAt(target);
+        } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            pickupAt(target);
+        } else {
+            dragTo(target);
+        }
+
+
         Resources r = getResources();
         int dp4 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
-
-        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-            int jump = linesView.getJumpForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
-            ValueAnimator valueAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), target + jump);
-            valueAnimator.setDuration(250);
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    scoreMarker.setTranslationY((float) animation.getAnimatedValue());
-                }
-            });
-            valueAnimator.start();
-        } else {
-            scoreMarker.setTranslationY(target);
-        }
 
         int score = linesView.getScoreForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
         scoreMarker.setText(score + "");
 
-        this.y = event.getY();
         return true;
+    }
+
+    protected void pickupAt(float y) {
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), y);
+        valueAnimator.setDuration(500);
+        valueAnimator.setInterpolator(new OvershootInterpolator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                scoreMarker.setTranslationY((float) animation.getAnimatedValue());
+            }
+        });
+        valueAnimator.start();
+    }
+
+    protected void dragTo(float y) {
+        scoreMarker.setTranslationY(y);
+    }
+
+    protected void dropAt(float y) {
+        Resources r = getResources();
+        int dp4 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
+
+        int jump = linesView.getJumpForPosition((int) y + scoreMarker.getHeight() / 2 - tv10.getMeasuredHeight() - dp4);
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), y + jump);
+        valueAnimator.setDuration(500);
+        valueAnimator.setInterpolator(new OvershootInterpolator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                scoreMarker.setTranslationY((float) animation.getAnimatedValue());
+            }
+        });
+        valueAnimator.start();
     }
 
     public void setScore(int score) {
@@ -105,7 +132,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
     }
 
     public int getScore() {
-        return scoreMarker.getScore();
+        return Integer.parseInt(scoreMarker.getText());
     }
 
     protected class LinesView extends View {
@@ -257,14 +284,13 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             }
         }
 
-        public int getScore() {
-            return Integer.parseInt(tvScore.getText().toString());
+        public String getText() {
+            return tvScore.getText().toString();
         }
 
         public class ArrowView extends View {
 
             protected Paint paint;
-            protected float rotation;
             protected Path path;
 
             public ArrowView(Context context) {
@@ -308,10 +334,6 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             protected void onDraw(Canvas canvas) {
                 super.onDraw(canvas);
                 canvas.drawPath(path, paint);
-            }
-
-            public void setRotation(float degrees) {
-                this.rotation = degrees;
             }
 
         }
