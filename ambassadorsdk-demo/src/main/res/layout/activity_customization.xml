@@ -11,12 +11,25 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <com.ambassador.ambassadorsdk.internal.views.CircleImageView
-            android:id="@+id/ivProductPhoto"
+        <FrameLayout
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="25dp" />
+            android:layout_marginTop="25dp">
+
+            <com.ambassador.ambassadorsdk.internal.views.CircleImageView
+                android:id="@+id/ivProductPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <ProgressBar
+                android:id="@+id/pbProductPhoto"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tvProductPhotoInfo"
@@ -83,10 +96,10 @@
                 android:id="@+id/tvSelectedCampaign"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
                 android:text="Select a Campaign"
                 android:textColor="#e6e6e6"
-                android:textSize="14sp"
-                android:layout_marginRight="25dp"/>
+                android:textSize="14sp" />
 
             <ImageView
                 android:layout_width="20dp"

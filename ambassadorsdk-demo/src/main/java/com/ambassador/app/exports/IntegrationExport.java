@@ -114,7 +114,7 @@ public class IntegrationExport extends BaseExport<Integration> {
 
     @Override
     public String getZipName() {
-        return "ambassador-integration.zip";
+        return model.getCreatedAtDate() + ".zip";
     }
 
     protected interface IntegrationTranscriber {

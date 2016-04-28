@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
@@ -35,10 +38,13 @@ import com.ambassador.app.data.User;
 import com.ambassador.app.exports.Export;
 import com.ambassador.app.exports.IntegrationExport;
 import com.ambassador.app.utils.Share;
+import com.ambassador.app.utils.ZipTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 
+import java.io.File;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,7 +91,6 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
 
         adapter = new RafAdapter();
         lvRafs.setAdapter(adapter);
-
 
         if (adapter.getCount() > 0) {
             tvNoRafs.setVisibility(View.GONE);
@@ -148,9 +153,11 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
     private final class RafAdapter extends BaseAdapter {
 
         private List<Integration> items;
+        private List<Integration> loading;
 
         public RafAdapter() {
             items = new ArrayList<>();
+            loading = new ArrayList<>();
             SharedPreferences preferences = Demo.get().getSharedPreferences("integrations", Context.MODE_PRIVATE);
             String integrationsArrayString = preferences.getString(User.get().getUniversalId(), "[]");
             JsonArray integrationsArray = new JsonParser().parse(integrationsArrayString).getAsJsonArray();
@@ -201,7 +208,6 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                 ivShare.setImageResource(R.drawable.ic_share_white);
             }
             ivShare.setColorFilter(Color.parseColor("#232f3b"));
-
             ivShare.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -212,6 +218,17 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                     }
                 }
             });
+
+            ProgressBar pbShare = (ProgressBar) convertView.findViewById(R.id.pbLoadingShare);
+            pbShare.getIndeterminateDrawable().setColorFilter(getActivity().getResources().getColor(R.color.primary), PorterDuff.Mode.SRC_IN);
+
+            if (loading.contains(item)) {
+                ivShare.setVisibility(View.GONE);
+                pbShare.setVisibility(View.VISIBLE);
+            } else {
+                pbShare.setVisibility(View.GONE);
+                ivShare.setVisibility(View.VISIBLE);
+            }
 
             ImageView ivDelete = (ImageView) convertView.findViewById(R.id.ivDeleteRaf);
             if (editing) {
@@ -231,6 +248,14 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
             });
 
             return convertView;
+        }
+
+        public void setLoading(Integration integration) {
+            loading.add(integration);
+        }
+
+        public void setNotLoading(Integration integration) {
+            loading.remove(integration);
         }
 
     }
@@ -255,16 +280,58 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
         adapter.notifyDataSetChanged();
     }
 
-    protected void share(int item) {
-        Integration integration = adapter.getItem(item);
-        RAFOptions rafOptions = integration.getRafOptions();
-        if (rafOptions != null) {
+    protected void share(final int item) {
+        final Integration integration = adapter.getItem(item);
 
-            Export<Integration> export = new IntegrationExport();
-            export.setModel(integration);
-            String filename = export.zip(getActivity());
+        if (ZipTask.isRunning(integration.getCreatedAtDate())) {
+            adapter.setLoading(integration);
+            adapter.notifyDataSetChanged();
+
+            ZipTask.addOnTaskCompleteListener(integration.getCreatedAtDate(), new ZipTask.OnTaskCompleteListener() {
+                @Override
+                public void onTaskComplete() {
+                    adapter.setNotLoading(integration);
+                    adapter.notifyDataSetChanged();
+
+                    share(item);
+                }
+            });
+
+            return;
+        }
+
+        RAFOptions rafOptions = integration.getRafOptions();
+
+        if (rafOptions == null) {
+            return;
+        }
+
+        Export<Integration> export = new IntegrationExport();
+        export.setModel(integration);
+
+        String filename = "";
+        try {
+            File file = getActivity().getBaseContext().getFileStreamPath(integration.getCreatedAtDate() + ".zip");
+            if (file.exists()) {
+                filename = integration.getCreatedAtDate() + ".zip";
+            }
+        } catch (Exception e) {
+            Log.w("AmbassadorSDK", "Failed to open file stream path to possible existing integration zip file. Zipping now.");
+        }
+
+        if ("".equals(filename)) {
+            filename = export.zip(getActivity());
+        }
+
+        try {
+            FileChannel from = getActivity().openFileInput(filename).getChannel();
+            FileChannel to = getActivity().openFileOutput("ambassador-raf.zip", Context.MODE_PRIVATE).getChannel();
+            to.transferFrom(from, 0, from.size());
+        } catch (Exception e) {
             new Share(filename).withSubject("Ambassador RAF Integration Instructions").withBody(export.getReadme()).execute(getActivity());
         }
+
+        new Share("ambassador-raf.zip").withSubject("Ambassador RAF Integration Instructions").withBody(export.getReadme()).execute(getActivity());
     }
 
     protected void edit(int item) {

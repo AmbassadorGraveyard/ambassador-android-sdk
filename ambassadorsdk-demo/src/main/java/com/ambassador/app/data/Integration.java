@@ -2,6 +2,7 @@ package com.ambassador.app.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.app.Demo;
@@ -9,6 +10,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import java.io.File;
 
 public class Integration implements Comparable<Integration> {
 
@@ -85,6 +88,14 @@ public class Integration implements Comparable<Integration> {
         }
 
         sharedPreferences.edit().putString(User.get().getUniversalId(), integrationArray.toString()).apply();
+
+        try {
+            File dir = Demo.get().getFilesDir();
+            File file = new File(dir, createdAtDate + ".zip");
+            file.delete();
+        } catch (Exception e) {
+            Log.w("AmbassadorSDK", "No zip file available to delete");
+        }
     }
 
     public static Integration get(long createdAtDate) {
