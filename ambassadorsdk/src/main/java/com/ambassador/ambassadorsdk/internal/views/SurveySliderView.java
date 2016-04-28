@@ -173,7 +173,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         protected void init() {
             Resources r = getResources();
             float dp56 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, r.getDisplayMetrics());
-            float dp12 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 54, r.getDisplayMetrics());
+            float dp12 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64, r.getDisplayMetrics());
 
             CIRCLE_DIAMETER = (int) dp56;
             ARROW_PADDING = (int) dp12;
@@ -254,9 +254,9 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             protected void onDraw(Canvas canvas) {
                 super.onDraw(canvas);
 
-                Point a = new Point(getWidth() / 2, getHeight() / 4);
+                Point a = new Point(getWidth() / 2, getHeight() / 3 - 5);
                 Point b = new Point(getWidth(), getHeight() / 2);
-                Point c = new Point(getWidth() / 2, getHeight() / 4 * 3);
+                Point c = new Point(getWidth() / 2, getHeight() / 3 * 2 + 5);
 
                 Path path = new Path();
                 path.setFillType(Path.FillType.EVEN_ODD);
