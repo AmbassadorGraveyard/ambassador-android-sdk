@@ -76,7 +76,11 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
         scoreMarker.setTranslationY(target);
 
-        int score = linesView.getScoreForPosition((int) event.getY() - tv10.getMeasuredHeight());
+
+        Resources r = getResources();
+        int dp4 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
+
+        int score = linesView.getScoreForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
         scoreMarker.setText(score + "");
 
         return true;
