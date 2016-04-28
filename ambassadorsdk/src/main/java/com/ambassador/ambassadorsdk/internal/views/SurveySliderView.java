@@ -60,9 +60,14 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (event.getY() > scoreMarker.getHeight() / 2 && event.getY() < getHeight() - scoreMarker.getHeight() / 2) {
+        if (event.getY() < scoreMarker.getHeight() / 2) {
+            scoreMarker.setTranslationY(0);
+        } else if (event.getY() > getHeight() - scoreMarker.getHeight() / 2) {
+            scoreMarker.setTranslationY(getHeight() - scoreMarker.getHeight());
+        } else {
             scoreMarker.setTranslationY(event.getY() - scoreMarker.getHeight() / 2);
         }
+
         return true;
     }
 
@@ -112,6 +117,9 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     public class ScoreMarker extends RelativeLayout {
 
+        protected int CIRCLE_DIAMETER;
+        protected int ARROW_PADDING;
+
         protected TextView tvScore;
         protected String text = "5";
 
@@ -131,14 +139,19 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         }
 
         protected void init() {
-            LayoutParams layoutParams = new LayoutParams(150, 150);
+            CIRCLE_DIAMETER = 114;
+            ARROW_PADDING = 36;
+
+            int total = CIRCLE_DIAMETER + ARROW_PADDING;
+
+            LayoutParams layoutParams = new LayoutParams(total, total);
             layoutParams.addRule(CENTER_HORIZONTAL, TRUE);
             setLayoutParams(layoutParams);
 
-            setTranslationX(-150);
+            setTranslationX(-total);
 
             RelativeLayout circle = new RelativeLayout(getContext());
-            LayoutParams circleLayoutParams = new LayoutParams(114, 114);
+            LayoutParams circleLayoutParams = new LayoutParams(CIRCLE_DIAMETER, CIRCLE_DIAMETER);
             circleLayoutParams.addRule(CENTER_IN_PARENT, TRUE);
             circle.setLayoutParams(circleLayoutParams);
 
