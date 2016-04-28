@@ -74,11 +74,15 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             target = event.getY() - scoreMarker.getHeight() / 2;
         }
 
-        scoreMarker.setTranslationY(target);
-
-
         Resources r = getResources();
         int dp4 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
+
+        int jump = 0;
+        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+            jump = linesView.getJumpForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
+        }
+
+        scoreMarker.setTranslationY(target + jump);
 
         int score = linesView.getScoreForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
         scoreMarker.setText(score + "");
@@ -143,6 +147,20 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             }
 
             return y < getHeight() / 2 ? 10 : 0;
+        }
+
+        public int getJumpForPosition(int y) {
+            int jump = lineSpots[1] - lineSpots[0];
+            for (int i = 0; i < 11; i++) {
+                int height = lineSpots[i];
+                if (y >= height - jump / 2 && y < height + jump / 2) {
+                    return height - y;
+                }
+            }
+
+            return 0;
+
+            //return y < getHeight() / 2 ? lineSpots[0] : lineSpots[10];
         }
 
     }
