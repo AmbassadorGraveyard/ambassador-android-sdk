@@ -100,6 +100,14 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         return true;
     }
 
+    public void setScore(int score) {
+
+    }
+
+    public int getScore() {
+        return scoreMarker.getScore();
+    }
+
     protected class LinesView extends View {
 
         protected Paint paint;
@@ -247,6 +255,10 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             if (tvScore != null) {
                 tvScore.setText(text);
             }
+        }
+
+        public int getScore() {
+            return Integer.parseInt(tvScore.getText().toString());
         }
 
         public class ArrowView extends View {
