@@ -1,10 +1,13 @@
 package com.ambassador.ambassadorsdk.internal.views;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -29,6 +32,8 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     protected ScoreMarker scoreMarker;
 
+    protected ValueAnimator scoreMarkerAnimator;
+
     public SurveySliderView(Context context) {
         super(context);
         init();
@@ -49,26 +54,40 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         ButterFork.bind(this);
 
         flLines.addView(new LinesView(getContext()));
-
-
         scoreMarker = new ScoreMarker(getContext());
-
         addView(scoreMarker);
 
         scoreMarker.setText("5");
-
         setOnTouchListener(this);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        float target;
         if (event.getY() < scoreMarker.getHeight() / 2) {
-            scoreMarker.setTranslationY(0);
+            target = 0;
         } else if (event.getY() > getHeight() - scoreMarker.getHeight() / 2) {
-            scoreMarker.setTranslationY(getHeight() - scoreMarker.getHeight());
+            target = getHeight() - scoreMarker.getHeight();
         } else {
-            scoreMarker.setTranslationY(event.getY() - scoreMarker.getHeight() / 2);
+            target = event.getY() - scoreMarker.getHeight() / 2;
         }
+
+        scoreMarker.setTranslationY(target);
+
+//        if (scoreMarkerAnimator != null) {
+//            scoreMarkerAnimator.cancel();
+//        }
+//
+//        scoreMarkerAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), target);
+//        scoreMarkerAnimator.setDuration(500);
+//        scoreMarkerAnimator.setInterpolator(new AccelerateInterpolator());
+//        scoreMarkerAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                scoreMarker.setTranslationY((Float) animation.getAnimatedValue());
+//            }
+//        });
+//        scoreMarkerAnimator.start();
 
         return true;
     }
@@ -143,18 +162,23 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         protected void init() {
             Resources r = getResources();
             float dp56 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, r.getDisplayMetrics());
-            float dp12 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, r.getDisplayMetrics());
+            float dp12 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 54, r.getDisplayMetrics());
 
             CIRCLE_DIAMETER = (int) dp56;
             ARROW_PADDING = (int) dp12;
 
             int total = CIRCLE_DIAMETER + ARROW_PADDING;
 
-            LayoutParams layoutParams = new LayoutParams(total, total);
+            LayoutParams layoutParams = new LayoutParams(total, total - ARROW_PADDING / 2);
             layoutParams.addRule(CENTER_HORIZONTAL, TRUE);
             setLayoutParams(layoutParams);
 
-            setTranslationX(-total);
+            setTranslationX(-total/2);
+
+            ArrowView arrowView = new ArrowView(getContext());
+            LayoutParams arrowLayoutParams = new LayoutParams(total, total);
+            arrowView.setLayoutParams(arrowLayoutParams);
+            addView(arrowView);
 
             RelativeLayout circle = new RelativeLayout(getContext());
             LayoutParams circleLayoutParams = new LayoutParams(CIRCLE_DIAMETER, CIRCLE_DIAMETER);
@@ -217,6 +241,19 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             @Override
             protected void onDraw(Canvas canvas) {
                 super.onDraw(canvas);
+
+                Point a = new Point(getWidth() / 2, getHeight() / 4);
+                Point b = new Point(getWidth(), getHeight() / 2);
+                Point c = new Point(getWidth() / 2, getHeight() / 4 * 3);
+
+                Path path = new Path();
+                path.setFillType(Path.FillType.EVEN_ODD);
+                path.moveTo(b.x, b.y);
+                path.lineTo(c.x, c.y);
+                path.lineTo(a.x, a.y);
+                path.close();
+
+                canvas.drawPath(path, paint);
             }
 
             public void setRotation(float degrees) {
