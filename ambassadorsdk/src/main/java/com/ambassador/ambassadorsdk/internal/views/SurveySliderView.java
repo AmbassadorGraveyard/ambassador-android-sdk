@@ -61,8 +61,6 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         scoreMarker = new ScoreMarker(getContext());
         addView(scoreMarker);
 
-        scoreMarker.setText("5");
-        scoreMarker.setTranslationY(getHeight() / 2);
         setOnTouchListener(this);
     }
 
@@ -97,21 +95,6 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
         int score = linesView.getScoreForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
         scoreMarker.setText(score + "");
-
-//        float dy = Math.abs(event.getY() - this.y);
-//        if (event.getY() < this.y && dy > 5) {
-//            scoreMarker.setPivotX(scoreMarker.getWidth());
-//            scoreMarker.setPivotY(scoreMarker.getHeight() /2);
-//            scoreMarker.setRotation(15);
-//        } else if (event.getY() > this.y && dy > 5) {
-//            scoreMarker.setPivotX(scoreMarker.getWidth());
-//            scoreMarker.setPivotY(scoreMarker.getHeight() /2);
-//            scoreMarker.setRotation(-15);
-//        } else {
-////            scoreMarker.setPivotX(scoreMarker.getWidth());
-////            scoreMarker.setPivotY(scoreMarker.getHeight() /2);
-////            scoreMarker.setRotation(0);
-//        }
 
         this.y = event.getY();
         return true;
