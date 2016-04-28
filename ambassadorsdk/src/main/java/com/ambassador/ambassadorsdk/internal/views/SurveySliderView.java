@@ -1,5 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.views;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -79,12 +80,20 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         Resources r = getResources();
         int dp4 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
 
-        int jump = 0;
         if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-            jump = linesView.getJumpForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
+            int jump = linesView.getJumpForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), target + jump);
+            valueAnimator.setDuration(250);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    scoreMarker.setTranslationY((float) animation.getAnimatedValue());
+                }
+            });
+            valueAnimator.start();
+        } else {
+            scoreMarker.setTranslationY(target);
         }
-
-        scoreMarker.setTranslationY(target + jump);
 
         int score = linesView.getScoreForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
         scoreMarker.setText(score + "");
@@ -159,7 +168,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             int jump = lineSpots[1] - lineSpots[0];
             for (int i = 0; i < 11; i++) {
                 int height = lineSpots[i];
-                if (y >= height - jump / 2 && y < height + jump / 2) {
+                if (y >= height - jump / 2 && y <= height + jump / 2) {
                     return 10 - i;
                 }
             }
