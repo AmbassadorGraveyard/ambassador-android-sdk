@@ -1,11 +1,13 @@
 package com.ambassador.ambassadorsdk.internal.views;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -139,8 +141,12 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         }
 
         protected void init() {
-            CIRCLE_DIAMETER = 114;
-            ARROW_PADDING = 36;
+            Resources r = getResources();
+            float dp56 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, r.getDisplayMetrics());
+            float dp12 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 12, r.getDisplayMetrics());
+
+            CIRCLE_DIAMETER = (int) dp56;
+            ARROW_PADDING = (int) dp12;
 
             int total = CIRCLE_DIAMETER + ARROW_PADDING;
 
