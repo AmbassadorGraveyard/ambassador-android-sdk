@@ -34,6 +34,8 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
     protected LinesView linesView;
     protected ScoreMarker scoreMarker;
 
+    protected float y = 0;
+
     public SurveySliderView(Context context) {
         super(context);
         init();
@@ -87,6 +89,22 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         int score = linesView.getScoreForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
         scoreMarker.setText(score + "");
 
+//        float dy = Math.abs(event.getY() - this.y);
+//        if (event.getY() < this.y && dy > 5) {
+//            scoreMarker.setPivotX(scoreMarker.getWidth());
+//            scoreMarker.setPivotY(scoreMarker.getHeight() /2);
+//            scoreMarker.setRotation(15);
+//        } else if (event.getY() > this.y && dy > 5) {
+//            scoreMarker.setPivotX(scoreMarker.getWidth());
+//            scoreMarker.setPivotY(scoreMarker.getHeight() /2);
+//            scoreMarker.setRotation(-15);
+//        } else {
+////            scoreMarker.setPivotX(scoreMarker.getWidth());
+////            scoreMarker.setPivotY(scoreMarker.getHeight() /2);
+////            scoreMarker.setRotation(0);
+//        }
+
+        this.y = event.getY();
         return true;
     }
 
@@ -153,7 +171,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             int jump = lineSpots[1] - lineSpots[0];
             for (int i = 0; i < 11; i++) {
                 int height = lineSpots[i];
-                if (y >= height - jump / 2 && y < height + jump / 2) {
+                if (y >= height - jump / 2 && y <= height + jump / 2) {
                     return height - y;
                 }
             }
@@ -222,7 +240,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
             tvScore = new TextView(getContext());
             tvScore.setTextColor(Color.WHITE);
-            tvScore.setTextSize(42);
+            tvScore.setTextSize(38);
             tvScore.setGravity(Gravity.CENTER);
             LayoutParams tvLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             tvLayoutParams.addRule(CENTER_IN_PARENT, TRUE);
