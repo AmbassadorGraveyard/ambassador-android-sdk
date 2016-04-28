@@ -215,8 +215,8 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
         protected void init() {
             Resources r = getResources();
-            float dp56 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 56, r.getDisplayMetrics());
-            float dp12 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 64, r.getDisplayMetrics());
+            float dp56 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70, r.getDisplayMetrics());
+            float dp12 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, r.getDisplayMetrics());
 
             CIRCLE_DIAMETER = (int) dp56;
             ARROW_PADDING = (int) dp12;
@@ -247,7 +247,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
             tvScore = new TextView(getContext());
             tvScore.setTextColor(Color.WHITE);
-            tvScore.setTextSize(38);
+            tvScore.setTextSize(45);
             tvScore.setGravity(Gravity.CENTER);
             LayoutParams tvLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             tvLayoutParams.addRule(CENTER_IN_PARENT, TRUE);
