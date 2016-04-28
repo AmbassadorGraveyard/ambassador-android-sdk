@@ -13,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -315,7 +316,7 @@ public final class ReferFragment extends Fragment implements MainActivity.TabFra
                 filename = integration.getCreatedAtDate() + ".zip";
             }
         } catch (Exception e) {
-
+            Log.w("AmbassadorSDK", "Failed to open file stream path to possible existing integration zip file. Zipping now.");
         }
 
         if ("".equals(filename)) {
