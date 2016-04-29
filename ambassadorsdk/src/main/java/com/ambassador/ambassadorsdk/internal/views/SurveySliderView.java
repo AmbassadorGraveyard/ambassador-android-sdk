@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -36,9 +37,21 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
     protected LinesView linesView;
     protected ScoreMarker scoreMarker;
 
+    protected ValueAnimator valueAnimator;
+
+    protected Handler handler;
+    protected boolean started = false;
+    protected int currentTarget;
+    protected int currentY;
+    protected int executingStep = 0;
+    protected float animatedFraction = 0;
+    protected OvershootInterpolator overshootInterpolator;
+
     public SurveySliderView(Context context) {
         super(context);
         init();
+
+        OvershootInterpolator interpolator = new OvershootInterpolator();
     }
 
     public SurveySliderView(Context context, AttributeSet attrs) {
@@ -54,6 +67,9 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
     protected void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_survey_slider, this);
         ButterFork.bind(this);
+
+        handler = new Handler();
+        overshootInterpolator = new OvershootInterpolator();
 
         linesView = new LinesView(getContext());
         flLines.addView(linesView);
@@ -75,26 +91,35 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             target = event.getY() - scoreMarker.getHeight() / 2;
         }
 
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            dropAt(target);
-        } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            pickupAt(target);
-        } else {
-            dragTo(target);
-        }
-
+        this.animatedFraction = 0;
+        this.currentTarget = (int) target;
 
         Resources r = getResources();
         int dp4 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
 
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            int jump = linesView.getJumpForPosition((int) target + scoreMarker.getHeight() / 2 - tv10.getMeasuredHeight() - dp4);
+            this.currentTarget += jump;
+        }
+
         int score = linesView.getScoreForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
         scoreMarker.setText(score + "");
+
+        this.executingStep = currentTarget - currentY;
+
+        if (!started) {
+            handler.post(runnable);
+        }
 
         return true;
     }
 
     protected void pickupAt(float y) {
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), y);
+        if (valueAnimator != null) {
+            valueAnimator.cancel();
+        }
+
+        valueAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), y);
         valueAnimator.setDuration(500);
         valueAnimator.setInterpolator(new OvershootInterpolator());
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -107,14 +132,22 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
     }
 
     protected void dragTo(float y) {
+        if (valueAnimator != null) {
+            valueAnimator.cancel();
+        }
+
         scoreMarker.setTranslationY(y);
     }
 
     protected void dropAt(float y) {
         Resources r = getResources();
         int dp4 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
-
         int jump = linesView.getJumpForPosition((int) y + scoreMarker.getHeight() / 2 - tv10.getMeasuredHeight() - dp4);
+
+        if (valueAnimator != null) {
+            valueAnimator.cancel();
+        }
+
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), y + jump);
         valueAnimator.setDuration(500);
         valueAnimator.setInterpolator(new OvershootInterpolator());
@@ -134,6 +167,32 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
     public int getScore() {
         return Integer.parseInt(scoreMarker.getText());
     }
+
+    protected Runnable runnable = new Runnable() {
+
+        protected int lastStartY;
+
+        @Override
+        public void run() {
+            if (animatedFraction == 0) {
+                lastStartY = currentY;
+            }
+
+            animatedFraction += 1f/15f;
+
+            if (animatedFraction > 1) {
+                animatedFraction = 1;
+            }
+
+            float interpolationFactor = overshootInterpolator.getInterpolation(animatedFraction);
+            currentY = (int) (lastStartY + executingStep * interpolationFactor);
+            scoreMarker.setTranslationY(currentY);
+
+            if (animatedFraction != 1) {
+                handler.postDelayed(this, 16);
+            }
+        }
+    };
 
     protected class LinesView extends View {
 
