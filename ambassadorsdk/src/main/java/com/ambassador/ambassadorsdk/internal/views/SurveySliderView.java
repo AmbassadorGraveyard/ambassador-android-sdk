@@ -233,11 +233,8 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
         protected void init() {
             Resources r = getResources();
-            float dp70 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70, r.getDisplayMetrics());
-            float dp80 = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, r.getDisplayMetrics());
-
-            CIRCLE_DIAMETER = (int) dp70;
-            ARROW_PADDING = (int) dp80;
+            CIRCLE_DIAMETER = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70, r.getDisplayMetrics());
+            ARROW_PADDING = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, r.getDisplayMetrics());
 
             int total = CIRCLE_DIAMETER + ARROW_PADDING;
 
