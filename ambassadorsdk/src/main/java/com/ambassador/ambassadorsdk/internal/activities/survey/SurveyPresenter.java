@@ -11,6 +11,9 @@ public class SurveyPresenter extends BasePresenter<SurveyModel, SurveyView> {
     protected void updateView() {
         view().setTitle(model.getTitle());
         view().setDescription(model.getDescription());
+        view().setBackgroundColor(model.getBackgroundColor());
+        view().setContentColor(model.getContentColor());
+        view().setButtonColor(model.getButtonColor());
         view().showSurvey();
     }
 

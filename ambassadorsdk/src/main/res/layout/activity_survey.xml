@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flSurveyParent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#24313f">
@@ -9,6 +10,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:padding="17dp"
+        android:alpha="0.75"
         android:src="@drawable/survey_exit" />
 
     <LinearLayout
@@ -27,7 +29,7 @@
             android:gravity="center"
             android:text="Hey John"
             android:textAlignment="center"
-            android:textColor="#f7f7f7"
+            android:textColor="#ffffffff"
             android:textSize="18sp" />
 
         <TextView
@@ -42,7 +44,7 @@
             android:lineSpacingMultiplier="1.2"
             android:text="How likely are you to refer a friend to FingerPrint? 10 being very likely."
             android:textAlignment="center"
-            android:textColor="#788089"
+            android:textColor="#88ffffff"
             android:textSize="15sp" />
 
         <RelativeLayout

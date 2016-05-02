@@ -4,9 +4,12 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -27,6 +30,7 @@ public class SurveyActivity extends Activity implements SurveyView {
 
     protected SurveyPresenter surveyPresenter;
 
+    @Bind(B.id.flSurveyParent) protected FrameLayout flSurveyParent;
     @Bind(B.id.llSurvey) protected LinearLayout llSurvey;
     @Bind(B.id.rlLoading) protected RelativeLayout rlLoading;
     @Bind(B.id.ivExit) protected ImageView ivExit;
@@ -118,6 +122,33 @@ public class SurveyActivity extends Activity implements SurveyView {
     @Override
     public void setDescription(String description) {
         tvSurveyDescription.setText(description);
+    }
+
+    @Override
+    public void setBackgroundColor(@ColorInt int backgroundColor) {
+        flSurveyParent.setBackgroundColor(backgroundColor);
+        surveySliderView.setBackgroundColor(backgroundColor);
+    }
+
+    @Override
+    public void setContentColor(@ColorInt int contentColor) {
+        int r = Color.red(contentColor);
+        int g = Color.green(contentColor);
+        int b = Color.blue(contentColor);
+
+        tvSurveyTitle.setTextColor(Color.argb(255, r, g, b));
+        tvSurveyDescription.setTextColor(Color.argb(128, r, g, b));
+        surveySliderView.setColor(contentColor);
+
+        ivExit.setColorFilter(Color.argb(255, r, g, b));
+    }
+
+    @Override
+    public void setButtonColor(@ColorInt int buttonColor) {
+        GradientDrawable gradientDrawable = new GradientDrawable();
+        gradientDrawable.setColor(buttonColor);
+        gradientDrawable.setCornerRadius(10);
+        btnSubmit.setBackground(gradientDrawable);
     }
 
     @Override

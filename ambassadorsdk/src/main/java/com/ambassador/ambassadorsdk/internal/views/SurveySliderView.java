@@ -9,6 +9,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
+import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.Choreographer;
@@ -105,6 +106,22 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     public int getScore() {
         return Integer.parseInt(scoreMarker.getText());
+    }
+
+    public void setColor(@ColorInt int color) {
+        int r = Color.red(color);
+        int g = Color.green(color);
+        int b = Color.blue(color);
+
+        tv10.setTextColor(Color.argb(200, r, g, b));
+        tv0.setTextColor(Color.argb(200, r, g, b));
+        scoreMarker.setColor(Color.argb(255, r, g, b));
+
+        linesView.setColor(Color.argb(200, r, g, b));
+    }
+
+    public void setBackgroundColor(@ColorInt int color) {
+        scoreMarker.setMarkerBackgroundColor(color);
     }
 
     protected class AnimationHandler implements Runnable {
@@ -246,6 +263,15 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             listeners.add(listener);
         }
 
+        public void setColor(@ColorInt int color) {
+            int r = Color.red(color);
+            int g = Color.green(color);
+            int b = Color.blue(color);
+
+            paint.setColor(Color.argb(100, r, g, b));
+            invalidate();
+        }
+
     }
 
     // This has to live outside of LinesView because Java.
@@ -255,8 +281,12 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     protected class ScoreMarker extends RelativeLayout {
 
+        protected RelativeLayout circle;
         protected TextView tvScore;
-        protected String text;
+        protected ArrowView arrowView;
+
+        @ColorInt protected int foregroundColor;
+        @ColorInt protected int backgroundColor;
 
         public ScoreMarker(Context context) {
             super(context);
@@ -286,27 +316,19 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             setLayoutParams(layoutParams);
 
             // Create arrow and set to match parent.
-            ArrowView arrowView = new ArrowView(getContext());
+            arrowView = new ArrowView(getContext());
             LayoutParams arrowLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             arrowView.setLayoutParams(arrowLayoutParams);
             addView(arrowView);
 
             // Create circle and set dimens to circleDiameter, center in parent.
-            RelativeLayout circle = new RelativeLayout(getContext());
+            circle = new RelativeLayout(getContext());
             LayoutParams circleLayoutParams = new LayoutParams(circleDiameter, circleDiameter);
             circleLayoutParams.addRule(CENTER_IN_PARENT, TRUE);
             circle.setLayoutParams(circleLayoutParams);
 
-            // Create white circle and set as circle background.
-            GradientDrawable gradientDrawable = new GradientDrawable();
-            gradientDrawable.setColor(Color.parseColor("#24313F"));
-            gradientDrawable.setStroke(13, Color.WHITE);
-            gradientDrawable.setCornerRadius(10000);
-            circle.setBackground(gradientDrawable);
-
             // Create text and add to circle, and center in parent.
             tvScore = new TextView(getContext());
-            tvScore.setTextColor(Color.WHITE);
             tvScore.setTextSize(58);
             tvScore.setGravity(Gravity.CENTER);
             LayoutParams tvLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -319,17 +341,36 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
             // Translate 50% left to be to left of line.
             setTranslationX(-width/2);
+
+            setupViewAttrs();
+        }
+
+        protected void setupViewAttrs() {
+            arrowView.setColor(foregroundColor);
+            GradientDrawable gradientDrawable = new GradientDrawable();
+            gradientDrawable.setColor(backgroundColor);
+            gradientDrawable.setStroke(13, foregroundColor);
+            gradientDrawable.setCornerRadius(10000);
+            circle.setBackground(gradientDrawable);
+            tvScore.setTextColor(foregroundColor);
         }
 
         public void setText(String text) {
-            this.text = text;
-            if (tvScore != null) {
-                tvScore.setText(text);
-            }
+            tvScore.setText(text);
         }
 
         public String getText() {
             return tvScore.getText().toString();
+        }
+
+        public void setColor(@ColorInt int color) {
+            this.foregroundColor = color;
+            setupViewAttrs();
+        }
+
+        public void setMarkerBackgroundColor(@ColorInt int color) {
+            this.backgroundColor = color;
+            setupViewAttrs();
         }
 
         protected class ArrowView extends View {
@@ -378,6 +419,11 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             protected void onDraw(Canvas canvas) {
                 super.onDraw(canvas);
                 canvas.drawPath(path, paint);
+            }
+
+            public void setColor(@ColorInt int color) {
+                paint.setColor(color);
+                invalidate();
             }
 
         }

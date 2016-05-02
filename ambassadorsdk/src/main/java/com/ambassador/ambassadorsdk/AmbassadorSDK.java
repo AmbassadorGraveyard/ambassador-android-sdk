@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -14,6 +15,7 @@ import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Secrets;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
@@ -257,6 +259,20 @@ public final class AmbassadorSDK {
         WelcomeScreenDialog.setActivity(activity);
         WelcomeScreenDialog.setAvailabilityCallback(availabilityCallback);
         WelcomeScreenDialog.setParameters(parameters);
+    }
+
+    /**
+     * Sets colors for an NPS survey activated via a notification.
+     * @param backgroundColor ColorInt to set as the background of the survey.
+     * @param contentColor ColorInt to set on the content of the survey (text, lines, x, etc.).
+     * @param buttonColor ColorInt to set as the submit button background color.
+     */
+    public static void configureSurvey(
+            @ColorInt int backgroundColor,
+            @ColorInt int contentColor,
+            @ColorInt int buttonColor) {
+
+        SurveyModel.setDefaultColors(backgroundColor, contentColor, buttonColor);
     }
 
 }
