@@ -39,7 +39,6 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     protected AnimationHandler animationHandler;
 
-    protected boolean started = false;
     protected int currentTarget;
     protected int currentY;
     protected int executingStep = 0;
@@ -63,47 +62,32 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         LayoutInflater.from(getContext()).inflate(R.layout.view_survey_slider, this);
         ButterFork.bind(this);
 
-        animationHandler = new AnimationHandler();
-
         linesView = new LinesView(getContext());
-        flLines.addView(linesView);
-
         scoreMarker = new ScoreMarker(getContext());
+
+        flLines.addView(linesView);
         addView(scoreMarker);
 
         setOnTouchListener(this);
+        animationHandler = new AnimationHandler();
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        float target;
-        if (event.getY() < flLines.getY()) {
-            target = flLines.getY() - scoreMarker.getHeight() / 2;
-        } else if (event.getY() > flLines.getY() + flLines.getHeight()) {
-            target = flLines.getY() + flLines.getHeight() - scoreMarker.getHeight() / 2;
-        } else {
-            target = event.getY() - scoreMarker.getHeight() / 2;
-        }
+        this.currentTarget =
+                event.getY() < flLines.getY() ? (int) (flLines.getY() - scoreMarker.getHeight() / 2) :
+                        event.getY() > flLines.getY() + flLines.getHeight() ? (int) (flLines.getY() + flLines.getHeight() - scoreMarker.getHeight() / 2) :
+                                (int) (event.getY() - scoreMarker.getHeight() / 2);
 
-        animationHandler.reset();
-        this.currentTarget = (int) target;
+        int relativeY = (int) (event.getY() - tv10.getMeasuredHeight() - TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics()));
+        this.currentTarget += event.getAction() == MotionEvent.ACTION_UP ? linesView.getJumpForPosition(relativeY) : 0;
 
-        Resources r = getResources();
-        int dp4 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
-
-        if (event.getAction() == MotionEvent.ACTION_UP) {
-            int jump = linesView.getJumpForPosition((int) target + scoreMarker.getHeight() / 2 - tv10.getMeasuredHeight() - dp4);
-            this.currentTarget += jump;
-        }
-
-        int score = linesView.getScoreForPosition((int) event.getY() - tv10.getMeasuredHeight() - dp4);
+        int score = linesView.getScoreForPosition(relativeY);
         scoreMarker.setText(score + "");
 
         this.executingStep = currentTarget - currentY;
-
-        if (!started) {
-            animationHandler.start();
-        }
+        animationHandler.reset();
+        animationHandler.start();
 
         return true;
     }
