@@ -1,6 +1,5 @@
 package com.ambassador.ambassadorsdk.internal.views;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -37,21 +36,18 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
     protected LinesView linesView;
     protected ScoreMarker scoreMarker;
 
-    protected ValueAnimator valueAnimator;
+    protected AnimationHandler animationHandler;
 
     protected Handler handler;
     protected boolean started = false;
     protected int currentTarget;
     protected int currentY;
     protected int executingStep = 0;
-    protected float animatedFraction = 0;
     protected OvershootInterpolator overshootInterpolator;
 
     public SurveySliderView(Context context) {
         super(context);
         init();
-
-        OvershootInterpolator interpolator = new OvershootInterpolator();
     }
 
     public SurveySliderView(Context context, AttributeSet attrs) {
@@ -67,6 +63,8 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
     protected void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.view_survey_slider, this);
         ButterFork.bind(this);
+
+        animationHandler = new AnimationHandler();
 
         handler = new Handler();
         overshootInterpolator = new OvershootInterpolator();
@@ -91,7 +89,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             target = event.getY() - scoreMarker.getHeight() / 2;
         }
 
-        this.animatedFraction = 0;
+        animationHandler.reset();
         this.currentTarget = (int) target;
 
         Resources r = getResources();
@@ -108,69 +106,20 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         this.executingStep = currentTarget - currentY;
 
         if (!started) {
-            handler.post(runnable);
+            animationHandler.start();
         }
 
         return true;
-    }
-
-    protected void pickupAt(float y) {
-        if (valueAnimator != null) {
-            valueAnimator.cancel();
-        }
-
-        valueAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), y);
-        valueAnimator.setDuration(500);
-        valueAnimator.setInterpolator(new OvershootInterpolator());
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                scoreMarker.setTranslationY((float) animation.getAnimatedValue());
-            }
-        });
-        valueAnimator.start();
-    }
-
-    protected void dragTo(float y) {
-        if (valueAnimator != null) {
-            valueAnimator.cancel();
-        }
-
-        scoreMarker.setTranslationY(y);
-    }
-
-    protected void dropAt(float y) {
-        Resources r = getResources();
-        int dp4 = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, r.getDisplayMetrics());
-        int jump = linesView.getJumpForPosition((int) y + scoreMarker.getHeight() / 2 - tv10.getMeasuredHeight() - dp4);
-
-        if (valueAnimator != null) {
-            valueAnimator.cancel();
-        }
-
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(scoreMarker.getTranslationY(), y + jump);
-        valueAnimator.setDuration(500);
-        valueAnimator.setInterpolator(new OvershootInterpolator());
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                scoreMarker.setTranslationY((float) animation.getAnimatedValue());
-            }
-        });
-        valueAnimator.start();
-    }
-
-    public void setScore(int score) {
-
     }
 
     public int getScore() {
         return Integer.parseInt(scoreMarker.getText());
     }
 
-    protected Runnable runnable = new Runnable() {
+    protected class AnimationHandler implements Runnable {
 
         protected int lastStartY;
+        protected float animatedFraction;
 
         @Override
         public void run() {
@@ -178,7 +127,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
                 lastStartY = currentY;
             }
 
-            animatedFraction += 1f/15f;
+            animatedFraction += 1f/30f;
 
             if (animatedFraction > 1) {
                 animatedFraction = 1;
@@ -192,13 +141,21 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
                 handler.postDelayed(this, 16);
             }
         }
+
+        public void start() {
+            handler.post(this);
+        }
+
+        public void reset() {
+            animatedFraction = 0;
+        }
+
     };
 
     protected class LinesView extends View {
 
         protected Paint paint;
-
-        protected int[] lineSpots;
+        protected int[] linePosYs;
 
         public LinesView(Context context) {
             super(context);
@@ -220,21 +177,26 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             paint.setColor(Color.parseColor("#48545E"));
             paint.setStrokeWidth(2);
 
-            setId(R.id.adjust_height);
-
-            lineSpots = new int[11];
+            linePosYs = new int[11];
         }
 
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
+
+            // Draw the vertical line.
             canvas.drawLine(getWidth() / 2, 0, getWidth() / 2, getHeight(), paint);
 
-            int offset = 25;
+            // Offset/height for the ends of the line markers.
+            int offset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 15, getResources().getDisplayMetrics());
+
+            // Height of the container for horizontal lines (with each end line at edge of height -- no margin).
             int height = getHeight() - offset * 2;
+
+            // Draw the horizontal lines.
             int currentHeight = offset;
-            for (int i = 0; i < 11; i++) {
-                lineSpots[i] = currentHeight;
+            for (int i = 0; i <= 10; i++) {
+                linePosYs[i] = currentHeight;
                 canvas.drawLine(0, currentHeight, getWidth() / 2 - 6, currentHeight, paint);
                 canvas.drawLine(getWidth() / 2 + 6, currentHeight, getWidth(), currentHeight, paint);
                 currentHeight += height / 10;
@@ -242,9 +204,9 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         }
 
         public int getScoreForPosition(int y) {
-            int jump = lineSpots[1] - lineSpots[0];
+            int jump = linePosYs[1] - linePosYs[0];
             for (int i = 0; i < 11; i++) {
-                int height = lineSpots[i];
+                int height = linePosYs[i];
                 if (y >= height - jump / 2 && y <= height + jump / 2) {
                     return 10 - i;
                 }
@@ -254,26 +216,23 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         }
 
         public int getJumpForPosition(int y) {
-            int jump = lineSpots[1] - lineSpots[0];
+            int jump = linePosYs[1] - linePosYs[0];
             for (int i = 0; i < 11; i++) {
-                int height = lineSpots[i];
+                int height = linePosYs[i];
                 if (y >= height - jump / 2 && y <= height + jump / 2) {
                     return height - y;
                 }
             }
 
-            return y < lineSpots[0] ? lineSpots[0] : lineSpots[10] - getHeight();
+            return y < linePosYs[0] ? linePosYs[0] : linePosYs[10] - getHeight();
         }
 
     }
 
-    public class ScoreMarker extends RelativeLayout {
-
-        protected int CIRCLE_DIAMETER;
-        protected int ARROW_PADDING;
+    protected class ScoreMarker extends RelativeLayout {
 
         protected TextView tvScore;
-        protected String text = "5";
+        protected String text;
 
         public ScoreMarker(Context context) {
             super(context);
@@ -292,33 +251,36 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
         protected void init() {
             Resources r = getResources();
-            CIRCLE_DIAMETER = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70, r.getDisplayMetrics());
-            ARROW_PADDING = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, r.getDisplayMetrics());
+            int circleDiameter = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70, r.getDisplayMetrics());
+            int arrowPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, r.getDisplayMetrics());
+            int width = circleDiameter + arrowPadding;
+            int height = circleDiameter + arrowPadding / 2;
 
-            int total = CIRCLE_DIAMETER + ARROW_PADDING;
-
-            LayoutParams layoutParams = new LayoutParams(total, total - ARROW_PADDING / 2);
+            // Set parent layout params to width + height.
+            LayoutParams layoutParams = new LayoutParams(width, height);
             layoutParams.addRule(CENTER_HORIZONTAL, TRUE);
             setLayoutParams(layoutParams);
 
-            setTranslationX(-total/2);
-
+            // Create arrow and set to match parent.
             ArrowView arrowView = new ArrowView(getContext());
-            LayoutParams arrowLayoutParams = new LayoutParams(total, total);
+            LayoutParams arrowLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             arrowView.setLayoutParams(arrowLayoutParams);
             addView(arrowView);
 
+            // Create circle and set dimens to circleDiameter, center in parent.
             RelativeLayout circle = new RelativeLayout(getContext());
-            LayoutParams circleLayoutParams = new LayoutParams(CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+            LayoutParams circleLayoutParams = new LayoutParams(circleDiameter, circleDiameter);
             circleLayoutParams.addRule(CENTER_IN_PARENT, TRUE);
             circle.setLayoutParams(circleLayoutParams);
 
+            // Create white circle and set as circle background.
             GradientDrawable gradientDrawable = new GradientDrawable();
             gradientDrawable.setColor(Color.parseColor("#24313F"));
             gradientDrawable.setStroke(5, Color.WHITE);
             gradientDrawable.setCornerRadius(10000);
             circle.setBackground(gradientDrawable);
 
+            // Create text and add to circle, and center in parent.
             tvScore = new TextView(getContext());
             tvScore.setTextColor(Color.WHITE);
             tvScore.setTextSize(45);
@@ -328,9 +290,11 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             tvScore.setLayoutParams(tvLayoutParams);
             circle.addView(tvScore);
 
-            setText(text);
-
+            // Add circle to parent.
             addView(circle);
+
+            // Translate 50% left to be to left of line.
+            setTranslationX(-width/2);
         }
 
         public void setText(String text) {
@@ -344,7 +308,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             return tvScore.getText().toString();
         }
 
-        public class ArrowView extends View {
+        protected class ArrowView extends View {
 
             protected Paint paint;
             protected Path path;
