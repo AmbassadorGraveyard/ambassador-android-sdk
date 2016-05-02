@@ -11,6 +11,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.Choreographer;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -38,12 +39,10 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     protected AnimationHandler animationHandler;
 
-    protected Handler handler;
     protected boolean started = false;
     protected int currentTarget;
     protected int currentY;
     protected int executingStep = 0;
-    protected OvershootInterpolator overshootInterpolator;
 
     public SurveySliderView(Context context) {
         super(context);
@@ -65,9 +64,6 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         ButterFork.bind(this);
 
         animationHandler = new AnimationHandler();
-
-        handler = new Handler();
-        overshootInterpolator = new OvershootInterpolator();
 
         linesView = new LinesView(getContext());
         flLines.addView(linesView);
@@ -118,16 +114,27 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
     protected class AnimationHandler implements Runnable {
 
+        protected Handler handler;
+        protected float frameDelay;
+        protected int stepCurrent;
+        protected int stepTotal;
+        protected OvershootInterpolator overshootInterpolator;
+
         protected int lastStartY;
         protected float animatedFraction;
 
+        public AnimationHandler() {
+            this.handler = new Handler();
+            this.frameDelay = 1000f / 60f;
+            this.stepCurrent = 0;
+            this.stepTotal = 36;
+            this.overshootInterpolator = new OvershootInterpolator(1f);
+        }
+
         @Override
         public void run() {
-            if (animatedFraction == 0) {
-                lastStartY = currentY;
-            }
-
-            animatedFraction += 1f/30f;
+            stepCurrent++;
+            animatedFraction += 1f / stepTotal;
 
             if (animatedFraction > 1) {
                 animatedFraction = 1;
@@ -135,14 +142,20 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
             float interpolationFactor = overshootInterpolator.getInterpolation(animatedFraction);
             currentY = (int) (lastStartY + executingStep * interpolationFactor);
-            scoreMarker.setTranslationY(currentY);
 
-            if (animatedFraction != 1) {
-                handler.postDelayed(this, 16);
-            }
+            Choreographer.getInstance().postFrameCallbackDelayed(new Choreographer.FrameCallback() {
+                @Override
+                public void doFrame(long frameTimeNanos) {
+                    scoreMarker.setTranslationY(currentY);
+                    if (animatedFraction != 1) {
+                        handler.post(AnimationHandler.this);
+                    }
+                }
+            }, (long) frameDelay);
         }
 
         public void start() {
+            lastStartY = currentY;
             handler.post(this);
         }
 
@@ -251,8 +264,8 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
         protected void init() {
             Resources r = getResources();
-            int circleDiameter = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 70, r.getDisplayMetrics());
-            int arrowPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, r.getDisplayMetrics());
+            int circleDiameter = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 85, r.getDisplayMetrics());
+            int arrowPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, r.getDisplayMetrics());
             int width = circleDiameter + arrowPadding;
             int height = circleDiameter + arrowPadding / 2;
 
