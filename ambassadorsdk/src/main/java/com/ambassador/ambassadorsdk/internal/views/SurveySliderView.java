@@ -300,14 +300,14 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             // Create white circle and set as circle background.
             GradientDrawable gradientDrawable = new GradientDrawable();
             gradientDrawable.setColor(Color.parseColor("#24313F"));
-            gradientDrawable.setStroke(5, Color.WHITE);
+            gradientDrawable.setStroke(13, Color.WHITE);
             gradientDrawable.setCornerRadius(10000);
             circle.setBackground(gradientDrawable);
 
             // Create text and add to circle, and center in parent.
             tvScore = new TextView(getContext());
             tvScore.setTextColor(Color.WHITE);
-            tvScore.setTextSize(54);
+            tvScore.setTextSize(58);
             tvScore.setGravity(Gravity.CENTER);
             LayoutParams tvLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             tvLayoutParams.addRule(CENTER_IN_PARENT, TRUE);
