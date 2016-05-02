@@ -25,6 +25,9 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterfork.Bind;
 import butterfork.ButterFork;
 
@@ -63,6 +66,14 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         ButterFork.bind(this);
 
         linesView = new LinesView(getContext());
+        linesView.addOnPositionsReadyListener(new OnPositionsReadyListener() {
+            @Override
+            public void onPositionsReady(int[] positions) {
+                MotionEvent motionEvent = MotionEvent.obtain(0, 0, MotionEvent.ACTION_DOWN, 0, getHeight() / 2, 0);
+                onTouch(null, motionEvent);
+            }
+        });
+
         scoreMarker = new ScoreMarker(getContext());
 
         flLines.addView(linesView);
@@ -83,7 +94,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         this.currentTarget += event.getAction() == MotionEvent.ACTION_UP ? linesView.getJumpForPosition(relativeY) : 0;
 
         int score = linesView.getScoreForPosition(relativeY);
-        scoreMarker.setText(score + "");
+        scoreMarker.setText(String.valueOf(score));
 
         this.executingStep = currentTarget - currentY;
         animationHandler.reset();
@@ -153,6 +164,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
 
         protected Paint paint;
         protected int[] linePosYs;
+        protected List<OnPositionsReadyListener> listeners;
 
         public LinesView(Context context) {
             super(context);
@@ -170,6 +182,8 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
         }
 
         protected void init() {
+            listeners = new ArrayList<>();
+
             paint = new Paint();
             paint.setColor(Color.parseColor("#48545E"));
             paint.setStrokeWidth(2);
@@ -198,6 +212,10 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
                 canvas.drawLine(getWidth() / 2 + 6, currentHeight, getWidth(), currentHeight, paint);
                 currentHeight += height / 10;
             }
+
+            for (OnPositionsReadyListener listener : listeners) {
+                listener.onPositionsReady(linePosYs);
+            }
         }
 
         public int getScoreForPosition(int y) {
@@ -224,6 +242,15 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             return y < linePosYs[0] ? linePosYs[0] : linePosYs[10] - getHeight();
         }
 
+        public void addOnPositionsReadyListener(OnPositionsReadyListener listener) {
+            listeners.add(listener);
+        }
+
+    }
+
+    // This has to live outside of LinesView because Java.
+    public interface OnPositionsReadyListener {
+        void onPositionsReady(int[] positions);
     }
 
     protected class ScoreMarker extends RelativeLayout {
@@ -280,7 +307,7 @@ public class SurveySliderView extends RelativeLayout implements View.OnTouchList
             // Create text and add to circle, and center in parent.
             tvScore = new TextView(getContext());
             tvScore.setTextColor(Color.WHITE);
-            tvScore.setTextSize(45);
+            tvScore.setTextSize(54);
             tvScore.setGravity(Gravity.CENTER);
             LayoutParams tvLayoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             tvLayoutParams.addRule(CENTER_IN_PARENT, TRUE);

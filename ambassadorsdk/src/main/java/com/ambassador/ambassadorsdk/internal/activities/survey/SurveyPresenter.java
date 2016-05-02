@@ -1,5 +1,6 @@
 package com.ambassador.ambassadorsdk.internal.activities.survey;
 
+import android.os.Handler;
 import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.internal.activities.BasePresenter;
@@ -24,10 +25,16 @@ public class SurveyPresenter extends BasePresenter<SurveyModel, SurveyView> {
     }
 
     protected void loadData() {
-        SurveyModel tmp = new SurveyModel();
+        final SurveyModel tmp = new SurveyModel();
         tmp.ambassadorName = "John";
         tmp.companyName = "Ambassador";
-        setModel(tmp);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setModel(tmp);
+            }
+        }, 500);
     }
 
     public void onExitButtonClicked() {
