@@ -6,11 +6,14 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <permission android:name="com.ambassador.ambassadorsdk.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+
+    <permission
+        android:name="com.ambassador.ambassadorsdk.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
     <uses-permission android:name="com.ambassador.amassadorsdk.permission.C2D_MESSAGE" />
 
     <!-- from Augur -->
@@ -24,10 +27,10 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:hardwareAccelerated="true">
+        android:theme="@style/AppTheme">
 
         <activity
             android:name=".internal.activities.ambassador.AmbassadorActivity"
@@ -46,7 +49,9 @@
             android:theme="@style/ActivityTheme"
             android:windowSoftInputMode="stateAlwaysHidden" />
 
-        <activity android:name=".internal.activities.survey.SurveyActivity" />
+        <activity
+            android:name=".internal.activities.survey.SurveyActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name="com.google.android.gms.analytics.CampaignTrackingService" />
 
@@ -62,7 +67,7 @@
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <category android:name="com.example.gcm" />
@@ -71,7 +76,7 @@
 
         <service
             android:name=".internal.notifications.GcmListener"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
