@@ -43,7 +43,6 @@ public class SurveyActivity extends Activity implements SurveyView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utilities.setStatusBar(getWindow(), Color.parseColor("#24313f"));
 
         if (savedInstanceState == null) {
             surveyPresenter = new SurveyPresenter();
@@ -128,6 +127,8 @@ public class SurveyActivity extends Activity implements SurveyView {
     public void setBackgroundColor(@ColorInt int backgroundColor) {
         flSurveyParent.setBackgroundColor(backgroundColor);
         surveySliderView.setBackgroundColor(backgroundColor);
+
+        Utilities.setStatusBar(getWindow(), backgroundColor);
     }
 
     @Override
