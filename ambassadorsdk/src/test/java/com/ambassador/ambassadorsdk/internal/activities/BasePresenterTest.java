@@ -20,7 +20,7 @@ public class BasePresenterTest {
         basePresenter = new BasePresenter<Object, Object>() {
             @Override
             protected void updateView() {
-
+                // Mock, not implemented.
             }
         };
 
