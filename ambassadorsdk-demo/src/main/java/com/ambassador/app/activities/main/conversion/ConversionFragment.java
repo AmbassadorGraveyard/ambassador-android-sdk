@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
@@ -116,7 +117,7 @@ public final class ConversionFragment extends Fragment implements ConversionView
         btnConversion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                conversionPresenter.onSubmitClicked();
+                conversionPresenter.onSubmitClicked(etAmbassadorEmail.getText().toString(), new ConversionParameters());
             }
         });
 
@@ -260,6 +261,16 @@ public final class ConversionFragment extends Fragment implements ConversionView
                 etRevenue.requestFocus();
             }
         }).setActionTextColor(Color.parseColor("#8FD3FF")).show();
+    }
+
+    @Override
+    public void notifyNoAmbassadorFound() {
+        Toast.makeText(getActivity(), "An ambassador could not be found for the email and campaign provided.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void notifyConversion() {
+        Toast.makeText(getActivity(), "Conversion registered!", Toast.LENGTH_SHORT).show();
     }
 
     @Override

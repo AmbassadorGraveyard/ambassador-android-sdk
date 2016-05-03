@@ -14,6 +14,8 @@ public interface ConversionView {
     void notifyInvalidCustomerEmail();
     void notifyNoCampaign();
     void notifyNoRevenue();
+    void notifyNoAmbassadorFound();
+    void notifyConversion();
 
     void closeSoftKeyboard();
     void share(Share share);
