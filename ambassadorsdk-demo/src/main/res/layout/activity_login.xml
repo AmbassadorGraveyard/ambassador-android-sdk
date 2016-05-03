@@ -13,7 +13,7 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/ambassador_word_logo" />
 
-    <com.ambassador.demo.views.LoginEditText
+    <com.ambassador.app.views.LoginEditText
         android:id="@+id/etEmail"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="55dp" />
 
-    <com.ambassador.demo.views.LoginEditText
+    <com.ambassador.app.views.LoginEditText
         android:id="@+id/etPassword"
         android:layout_width="275dp"
         android:layout_height="wrap_content"
