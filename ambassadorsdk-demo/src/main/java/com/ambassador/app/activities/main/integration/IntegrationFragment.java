@@ -79,15 +79,13 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_refer, container, false);
+        View view = inflater.inflate(R.layout.fragment_integration, container, false);
         ButterKnife.bind(this, view);
 
-        ivAddRaf.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.add_raf));
         ivAddRaf.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CustomizationActivity.class);
-                startActivity(intent);
+                integrationPresenter.onAddClicked();
             }
         });
 

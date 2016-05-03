@@ -9,4 +9,24 @@ public class IntegrationPresenter extends BasePresenter<IntegrationModel, Integr
 
     }
 
+    public void onAddClicked() {
+        view().createIntegration();
+    }
+
+    public void onIntegrationClicked() {
+
+    }
+
+    public void onShareClicked() {
+
+    }
+
+    public void onEditClicked() {
+
+    }
+
+    public void onDeleteClicked() {
+
+    }
+
 }
