@@ -17,7 +17,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyActivity;
 import com.ambassador.ambassadorsdk.internal.views.NetworkCircleImageView;
 import com.ambassador.app.R;
 import com.ambassador.app.activities.LaunchActivity;
@@ -48,14 +47,6 @@ public final class SettingsFragment extends Fragment implements MainActivity.Tab
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_settings, container, false);
         ButterKnife.bind(this, view);
-
-        ivDisplayPicture.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                startActivity(new Intent(getActivity(), SurveyActivity.class));
-                return false;
-            }
-        });
 
         ivDisplayPicture.load(User.get().getAvatarUrl());
         tvSettingsName.setText(User.get().getName());
