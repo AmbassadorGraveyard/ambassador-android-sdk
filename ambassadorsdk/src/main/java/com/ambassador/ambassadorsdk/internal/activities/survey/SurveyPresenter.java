@@ -11,6 +11,9 @@ public class SurveyPresenter extends BasePresenter<SurveyModel, SurveyView> {
     protected void updateView() {
         view().setTitle(model.getTitle());
         view().setDescription(model.getDescription());
+        view().setBackgroundColor(model.getBackgroundColor());
+        view().setContentColor(model.getContentColor());
+        view().setButtonColor(model.getButtonColor());
         view().showSurvey();
     }
 
@@ -25,17 +28,23 @@ public class SurveyPresenter extends BasePresenter<SurveyModel, SurveyView> {
     }
 
     protected void loadData() {
+        final SurveyModel tmp = new SurveyModel();
+        tmp.ambassadorName = "John";
+        tmp.companyName = "Ambassador";
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                SurveyModel surveyModel = new SurveyModel();
-                surveyModel.ambassadorName = "John";
-                setModel(surveyModel);
+                setModel(tmp);
             }
-        }, 3000);
+        }, 500);
     }
 
     public void onExitButtonClicked() {
+        view().exit();
+    }
+
+    public void onSubmitButtonClicked() {
         view().exit();
     }
 

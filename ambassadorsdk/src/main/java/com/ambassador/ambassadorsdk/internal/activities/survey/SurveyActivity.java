@@ -4,18 +4,24 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.PresenterManager;
+import com.ambassador.ambassadorsdk.internal.views.SurveySliderView;
 
 import butterfork.Bind;
 import butterfork.ButterFork;
@@ -24,19 +30,19 @@ public class SurveyActivity extends Activity implements SurveyView {
 
     protected SurveyPresenter surveyPresenter;
 
+    @Bind(B.id.flSurveyParent) protected FrameLayout flSurveyParent;
     @Bind(B.id.llSurvey) protected LinearLayout llSurvey;
     @Bind(B.id.rlLoading) protected RelativeLayout rlLoading;
-
     @Bind(B.id.ivExit) protected ImageView ivExit;
     @Bind(B.id.tvSurveyTitle) protected TextView tvSurveyTitle;
     @Bind(B.id.tvSurveyDescription) protected TextView tvSurveyDescription;
-
+    @Bind(B.id.surveySliderView) protected SurveySliderView surveySliderView;
+    @Bind(B.id.btnSubmit) protected Button btnSubmit;
     @Bind(B.id.pbLoading) protected ProgressBar pbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utilities.setStatusBar(getWindow(), Color.parseColor("#24313f"));
 
         if (savedInstanceState == null) {
             surveyPresenter = new SurveyPresenter();
@@ -55,6 +61,14 @@ public class SurveyActivity extends Activity implements SurveyView {
                 surveyPresenter.onExitButtonClicked();
             }
         });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(SurveyActivity.this, "" + surveySliderView.getScore(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     @Override
@@ -107,6 +121,35 @@ public class SurveyActivity extends Activity implements SurveyView {
     @Override
     public void setDescription(String description) {
         tvSurveyDescription.setText(description);
+    }
+
+    @Override
+    public void setBackgroundColor(@ColorInt int backgroundColor) {
+        flSurveyParent.setBackgroundColor(backgroundColor);
+        surveySliderView.setBackgroundColor(backgroundColor);
+
+        Utilities.setStatusBar(getWindow(), backgroundColor);
+    }
+
+    @Override
+    public void setContentColor(@ColorInt int contentColor) {
+        int r = Color.red(contentColor);
+        int g = Color.green(contentColor);
+        int b = Color.blue(contentColor);
+
+        tvSurveyTitle.setTextColor(Color.argb(255, r, g, b));
+        tvSurveyDescription.setTextColor(Color.argb(128, r, g, b));
+        surveySliderView.setColor(contentColor);
+
+        ivExit.setColorFilter(Color.argb(255, r, g, b));
+    }
+
+    @Override
+    public void setButtonColor(@ColorInt int buttonColor) {
+        GradientDrawable gradientDrawable = new GradientDrawable();
+        gradientDrawable.setColor(buttonColor);
+        gradientDrawable.setCornerRadius(10);
+        btnSubmit.setBackground(gradientDrawable);
     }
 
     @Override
