@@ -115,7 +115,7 @@ public final class ConversionFragment extends Fragment implements ConversionView
         btnConversion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                conversionPresenter.onSubmitClicked(etAmbassadorEmail.getText().toString(), new ConversionParameters());
+                conversionPresenter.onSubmitClicked(etAmbassadorEmail.getText().toString(), getConversionParametersBuilderFromInputs());
             }
         });
 
@@ -284,7 +284,7 @@ public final class ConversionFragment extends Fragment implements ConversionView
 
     @Override
     public void onActionClicked() {
-        conversionPresenter.onActionClicked(new ConversionParameters());
+        conversionPresenter.onActionClicked(getConversionParametersBuilderFromInputs());
     }
 
     @DrawableRes
@@ -301,6 +301,29 @@ public final class ConversionFragment extends Fragment implements ConversionView
     @Override
     public String getTitle() {
         return "Conversion";
+    }
+
+    protected ConversionParameters.Builder getConversionParametersBuilderFromInputs() {
+        ConversionParameters.Builder builder = new ConversionParameters.Builder();
+
+        builder.setEmail(etCustomerEmail.getText().toString());
+        builder.setFirstName(etFirstName.getText().toString());
+        builder.setLastName(etLastName.getText().toString());
+        builder.setUid(etUID.getText().toString());
+        builder.setAutoCreate(swEnrollAsAmbassador.isChecked() ? 1 : 0);
+        builder.setEmailNewAmbassador(swEnrollAsAmbassador.isChecked() ? (swEmailNewAmbassador.isChecked() ? 1 : 0) : 0);
+        builder.setCustom1(etCustom1.getText().toString());
+        builder.setCustom2(etCustom2.getText().toString());
+        builder.setCustom3(etCustom3.getText().toString());
+
+        builder.setRevenue(etRevenue.getText().toString().isEmpty() ? -1 : Float.parseFloat(etRevenue.getText().toString()));
+        builder.setIsApproved(swApproved.isChecked() ? 1 : 0);
+        builder.setTransactionUid(etTransactionUID.getText().toString());
+        builder.setEventData1(etEventData1.getText().toString());
+        builder.setEventData2(etEventData2.getText().toString());
+        builder.setEventData3(etEventData3.getText().toString());
+
+        return builder;
     }
 
 }

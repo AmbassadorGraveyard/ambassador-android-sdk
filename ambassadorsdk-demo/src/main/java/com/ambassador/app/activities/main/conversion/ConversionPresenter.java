@@ -73,7 +73,11 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
         }
     }
 
-    public void onSubmitClicked(String ambassadorEmail, final ConversionParameters conversionParameters) {
+    public void onSubmitClicked(String ambassadorEmail, final ConversionParameters.Builder conversionParametersBuilder) {
+        conversionParametersBuilder.setCampaign(model.selectedCampaignId);
+        conversionParametersBuilder.setAddToGroupId(model.selectedGroups != null ? model.selectedGroups.replaceAll(" ", "") : null);
+        final ConversionParameters conversionParameters = conversionParametersBuilder.build();
+
         if (!(new Identify(ambassadorEmail).isValidEmail())) {
             view().notifyInvalidAmbassadorEmail();
             return;
@@ -84,12 +88,12 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
             return;
         }
 
-        if (conversionParameters.getCampaign() == -1) {
+        if (conversionParameters.getCampaign() == 0) {
             view().notifyNoCampaign();
             return;
         }
 
-        if (conversionParameters.getRevenue() == Float.MIN_VALUE) {
+        if (conversionParameters.getRevenue() < 0) {
             view().notifyNoRevenue();
             return;
         }
@@ -114,7 +118,26 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
         });
     }
 
-    public void onActionClicked(ConversionParameters conversionParameters) {
+    public void onActionClicked(ConversionParameters.Builder conversionParametersBuilder) {
+        conversionParametersBuilder.setCampaign(model.selectedCampaignId);
+        conversionParametersBuilder.setAddToGroupId(model.selectedGroups != null ? model.selectedGroups.replaceAll(" ", "") : null);
+        ConversionParameters conversionParameters = conversionParametersBuilder.build();
+
+        if (!(new Identify(conversionParameters.getEmail()).isValidEmail())) {
+            view().notifyInvalidCustomerEmail();
+            return;
+        }
+
+        if (conversionParameters.getCampaign() == 0) {
+            view().notifyNoCampaign();
+            return;
+        }
+
+        if (conversionParameters.getRevenue() < 0) {
+            view().notifyNoRevenue();
+            return;
+        }
+
         Export<ConversionParameters> export = new ConversionExport();
         export.setModel(conversionParameters);
         String filename = export.zip(Demo.get());
