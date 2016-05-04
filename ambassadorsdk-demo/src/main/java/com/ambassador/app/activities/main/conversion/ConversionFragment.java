@@ -74,7 +74,6 @@ public final class ConversionFragment extends Fragment implements ConversionView
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (savedInstanceState == null) {
             conversionPresenter = new ConversionPresenter();
         } else {

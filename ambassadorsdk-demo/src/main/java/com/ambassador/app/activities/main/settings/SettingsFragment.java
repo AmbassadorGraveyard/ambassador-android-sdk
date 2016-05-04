@@ -39,7 +39,6 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (savedInstanceState == null) {
             settingsPresenter = new SettingsPresenter();
         } else {

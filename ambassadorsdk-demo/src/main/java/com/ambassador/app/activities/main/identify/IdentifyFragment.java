@@ -34,7 +34,6 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (savedInstanceState == null) {
             identifyPresenter = new IdentifyPresenter();
         } else {
