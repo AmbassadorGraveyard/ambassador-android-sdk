@@ -1,11 +1,9 @@
 package com.ambassador.app.activities.main;
 
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +12,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,17 +36,15 @@ public final class MainActivity extends AppCompatActivity implements MainView {
 
     protected MainPresenter mainPresenter;
 
-    @Bind(R.id.tlTabs)      protected TabLayout     tlTabs;
-    @Bind(R.id.vpPages)     protected ViewPager     vpPages;
-
-    protected TabFragmentPagerAdapter adapter;
+    @Bind(R.id.vpPages) protected ViewPager vpPages;
+    @Bind(R.id.tlTabs) protected TabLayout tlTabs;
 
     protected MenuItem menuItem;
+    protected TabFragmentPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (savedInstanceState == null) {
             mainPresenter = new MainPresenter();
         } else {
@@ -58,7 +53,6 @@ public final class MainActivity extends AppCompatActivity implements MainView {
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
 
         AmbassadorSDK.runWithKeys(this, "SDKToken " + User.get().getSdkToken(), User.get().getUniversalId());
 
@@ -75,7 +69,6 @@ public final class MainActivity extends AppCompatActivity implements MainView {
             }
         }
 
-        setTitle(Html.fromHtml("<small>" + adapter.getTitle(0) + "</small>"));
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.actionBarColor)));
@@ -87,35 +80,19 @@ public final class MainActivity extends AppCompatActivity implements MainView {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         menuItem = menu.findItem(R.id.action_main);
-        menuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.edit_icon));
-        notifyIntegrationSetInvalidated();
+        mainPresenter.updateView();
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Fragment fragment = adapter.getItem(vpPages.getCurrentItem());
-        if (fragment instanceof TabFragment) {
-            TabFragment tabFragment = (TabFragment) fragment;
-            tabFragment.onActionClicked();
-            menuItem.setVisible(tabFragment.getActionVisibility());
-            menuItem.setIcon(tabFragment.getActionDrawable());
-        }
-
+        mainPresenter.onOptionsItemSelected();
         return true;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (adapter != null && menuItem != null) {
-            Fragment fragment = adapter.getItem(vpPages.getCurrentItem());
-            if (fragment instanceof TabFragment) {
-                TabFragment tabFragment = (TabFragment) fragment;
-                menuItem.setVisible(tabFragment.getActionVisibility());
-                menuItem.setIcon(tabFragment.getActionDrawable());
-            }
-        }
         mainPresenter.bindView(this);
     }
 
@@ -131,57 +108,83 @@ public final class MainActivity extends AppCompatActivity implements MainView {
         PresenterManager.getInstance().savePresenter(mainPresenter, outState);
     }
 
-    protected ViewPager.OnPageChangeListener vpPagesChangeListener = new ViewPager.OnPageChangeListener() {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    public void notifyIntegrationSetInvalidated() {
+        mainPresenter.updateView();
+    }
 
-        }
+    @Override
+    public void setIntegrationFragment(IntegrationFragment integrationFragment) {
+        this.adapter.tabs[0].fragment = integrationFragment;
+    }
 
-        @Override
-        public void onPageSelected(int position) {
-            Fragment fragment = adapter.getItem(position);
-            fragment.onResume();
-            setToolbarTitle(Html.fromHtml("<small>" + adapter.getTitle(position) + "</small>"));
+    @Override
+    public void setIdentifyFragment(IdentifyFragment identifyFragment) {
+        this.adapter.tabs[1].fragment = identifyFragment;
+    }
 
-            if (menuItem == null) return;
+    @Override
+    public void setConversionFragment(ConversionFragment conversionFragment) {
+        this.adapter.tabs[2].fragment = conversionFragment;
+    }
 
-            if (fragment instanceof TabFragment) {
-                TabFragment tabFragment = (TabFragment) fragment;
-                menuItem.setVisible(tabFragment.getActionVisibility());
-                menuItem.setIcon(tabFragment.getActionDrawable());
-            }
-        }
+    @Override
+    public void setSettingsFragment(SettingsFragment settingsFragment) {
+        this.adapter.tabs[3].fragment = settingsFragment;
+    }
 
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    };
-
-    private void setToolbarTitle(Spanned title) {
+    @Override
+    public void setToolbarTitle(Spanned title) {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle(title);
         }
     }
 
-    private final class TabFragmentPagerAdapter extends FragmentPagerAdapter {
+    @Override
+    public void setMenuItemIcon(@DrawableRes int drawable) {
+        if (menuItem != null) {
+            menuItem.setIcon(drawable);
+        }
+    }
 
-        private TabModel[] tabs;
+    @Override
+    public void setMenuItemVisibility(boolean visible) {
+        if (menuItem != null) {
+            menuItem.setVisible(visible);
+        }
+    }
+
+    protected ViewPager.OnPageChangeListener vpPagesChangeListener = new ViewPager.OnPageChangeListener() {
+
+        @Override
+        public void onPageSelected(int position) {
+            mainPresenter.onPageSelected(position);
+        }
+
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+
+        @Override
+        public void onPageScrollStateChanged(int state) {}
+
+    };
+
+    protected final class TabFragmentPagerAdapter extends FragmentPagerAdapter {
+
+        protected TabModel[] tabs;
+
+        @Bind(R.id.ivIcon) protected ImageView ivIcon;
+        @Bind(R.id.tvTitle) protected TextView tvTitle;
 
         public TabFragmentPagerAdapter(FragmentManager fm) {
             super(fm);
             tabs = new TabModel[4];
-            tabs[0] = new TabModel("Refer a Friend", R.drawable.ic_raf, new IntegrationFragment())
-                    .setContentDescription("referTab");
-            tabs[1] = new TabModel("Identify", R.drawable.ic_identify, new IdentifyFragment())
-                    .setContentDescription("loginTab");
-            tabs[2] = new TabModel("Conversion", R.drawable.ic_conversion, new ConversionFragment())
-                    .setContentDescription("storeTab");
-            tabs[3] = new TabModel("Settings", R.drawable.ic_settings, new SettingsFragment())
-                    .setContentDescription("signupTab");
+            tabs[0] = new TabModel("Refer a Friend", R.drawable.ic_integration);
+            tabs[1] = new TabModel("Identify", R.drawable.ic_identify);
+            tabs[2] = new TabModel("Conversion", R.drawable.ic_conversion);
+            tabs[3] = new TabModel("Settings", R.drawable.ic_settings);
         }
-        
+
         @Override
         public int getCount() {
             return tabs.length;
@@ -195,38 +198,23 @@ public final class MainActivity extends AppCompatActivity implements MainView {
         @NonNull
         public View getTabView(int position) {
             View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.tab, null);
+            ButterKnife.bind(this, view);
 
-            ImageView ivIcon = (ImageView) view.findViewById(R.id.ivIcon);
             ivIcon.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, tabs[position].getDrawableId()));
-
-            TextView tvTitle = (TextView) view.findViewById(R.id.tvTabTitle);
             tvTitle.setText(tabs[position].getTitle());
-
-            view.setContentDescription(getContentDescription(position));
 
             return view;
         }
 
-        @Nullable
-        public String getContentDescription(int position) {
-            return tabs[position].getContentDescription();
-        }
+        protected final class TabModel {
 
-        public String getTitle(int position) {
-            return tabs[position].getTitle();
-        }
+            protected String title;
+            protected int drawableId;
+            protected Fragment fragment;
 
-        private final class TabModel {
-
-            private String title;
-            private int drawableId;
-            private Fragment fragment;
-            private String contentDescription;
-
-            public TabModel(String title, @DrawableRes int drawableId, Fragment fragment) {
+            public TabModel(String title, @DrawableRes int drawableId) {
                 this.title = title;
                 this.drawableId = drawableId;
-                this.fragment = fragment;
             }
 
             public String getTitle() {
@@ -238,16 +226,7 @@ public final class MainActivity extends AppCompatActivity implements MainView {
             }
 
             public Fragment getFragment() {
-                return fragment;
-            }
-
-            public TabModel setContentDescription(String contentDescription) {
-                this.contentDescription = contentDescription;
-                return this;
-            }
-
-            public String getContentDescription() {
-                return contentDescription;
+                return fragment != null ? fragment : new Fragment();
             }
 
         }
@@ -257,20 +236,11 @@ public final class MainActivity extends AppCompatActivity implements MainView {
     public interface TabFragment {
 
         void onActionClicked();
-        Drawable getActionDrawable();
         boolean getActionVisibility();
+        @DrawableRes int getActionDrawable();
+        String getTitle();
 
     }
 
-    public void notifyIntegrationSetInvalidated() {
-        if (adapter != null && menuItem != null) {
-            Fragment fragment = adapter.getItem(vpPages.getCurrentItem());
-            if (fragment instanceof TabFragment) {
-                TabFragment tabFragment = (TabFragment) fragment;
-                menuItem.setVisible(tabFragment.getActionVisibility());
-                menuItem.setIcon(tabFragment.getActionDrawable());
-            }
-        }
-    }
 
 }

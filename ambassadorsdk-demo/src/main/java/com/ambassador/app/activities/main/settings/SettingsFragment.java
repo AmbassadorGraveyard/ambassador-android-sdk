@@ -1,11 +1,10 @@
 package com.ambassador.app.activities.main.settings;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,9 +133,10 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
         // This fragment has no action.
     }
 
+    @DrawableRes
     @Override
-    public Drawable getActionDrawable() {
-        return ContextCompat.getDrawable(getActivity(), R.drawable.ic_add_white);
+    public int getActionDrawable() {
+        return R.drawable.ic_add_white;
     }
 
     @Override
@@ -144,4 +144,8 @@ public final class SettingsFragment extends Fragment implements SettingsView, Ma
         return false;
     }
 
+    @Override
+    public String getTitle() {
+        return "Settings";
+    }
 }

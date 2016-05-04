@@ -6,12 +6,11 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.SwitchCompat;
 import android.util.TypedValue;
@@ -288,14 +287,20 @@ public final class ConversionFragment extends Fragment implements ConversionView
         conversionPresenter.onActionClicked(new ConversionParameters());
     }
 
+    @DrawableRes
     @Override
-    public Drawable getActionDrawable() {
-        return ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_white);
+    public int getActionDrawable() {
+        return R.drawable.ic_share_white;
     }
 
     @Override
     public boolean getActionVisibility() {
         return true;
+    }
+
+    @Override
+    public String getTitle() {
+        return "Conversion";
     }
 
 }

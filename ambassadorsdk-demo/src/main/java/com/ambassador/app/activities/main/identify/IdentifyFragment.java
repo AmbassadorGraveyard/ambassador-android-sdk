@@ -2,12 +2,11 @@ package com.ambassador.app.activities.main.identify;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -117,14 +116,20 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         identifyPresenter.onActionClicked(etEmail.getText().toString());
     }
 
+    @DrawableRes
     @Override
-    public Drawable getActionDrawable() {
-        return ContextCompat.getDrawable(getActivity(), R.drawable.ic_share_white);
+    public int getActionDrawable() {
+        return R.drawable.ic_share_white;
     }
 
     @Override
     public boolean getActionVisibility() {
         return true;
+    }
+
+    @Override
+    public String getTitle() {
+        return "Identify";
     }
 
 }

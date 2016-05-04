@@ -4,12 +4,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -112,21 +111,6 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
     }
 
     @Override
-    public void onActionClicked() {
-        integrationPresenter.onActionClicked();
-    }
-
-    @Override
-    public Drawable getActionDrawable() {
-        return ContextCompat.getDrawable(getActivity(), editing ? R.drawable.done_icon : R.drawable.edit_icon);
-    }
-
-    @Override
-    public boolean getActionVisibility() {
-        return integrationAdapter.getCount() > 0;
-    }
-
-    @Override
     public void closeSoftKeyboard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(getActivity().findViewById(android.R.id.content).getWindowToken(), 0);
@@ -167,7 +151,9 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
         integrationAdapter.notifyDataSetChanged();
 
         lvRafs.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 85 * content.size(), getResources().getDisplayMetrics());
+
         ((MainActivity) getActivity()).notifyIntegrationSetInvalidated();
+
         if (content.size() == 0) editing = false;
     }
 
@@ -212,6 +198,27 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
     @Override
     public void share(Share share) {
         share.execute(getActivity());
+    }
+
+    @Override
+    public void onActionClicked() {
+        integrationPresenter.onActionClicked();
+    }
+
+    @Override
+    public boolean getActionVisibility() {
+        return integrationAdapter != null && integrationAdapter.getCount() > 0 ;
+    }
+
+    @DrawableRes
+    @Override
+    public int getActionDrawable() {
+        return editing ? R.drawable.done_icon : R.drawable.edit_icon;
+    }
+
+    @Override
+    public String getTitle() {
+        return "Refer a Friend";
     }
 
     protected final class IntegrationAdapter extends BaseAdapter {
