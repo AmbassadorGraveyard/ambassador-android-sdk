@@ -90,6 +90,11 @@ public class IntegrationPresenter extends BasePresenter<IntegrationModel, Integr
     public void onDeleteConfirmed(Integration integration) {
         integration.delete();
         model.integrations.remove(integration);
+        updateView();
+    }
+
+    public void onActionClicked() {
+        view().toggleEditing();
     }
 
 }

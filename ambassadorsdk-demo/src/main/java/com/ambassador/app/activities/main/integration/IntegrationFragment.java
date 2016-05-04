@@ -113,7 +113,7 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
 
     @Override
     public void onActionClicked() {
-        editing = !editing;
+        integrationPresenter.onActionClicked();
     }
 
     @Override
@@ -123,7 +123,7 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
 
     @Override
     public boolean getActionVisibility() {
-        return true;
+        return integrationAdapter.getCount() > 0;
     }
 
     @Override
@@ -167,6 +167,8 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
         integrationAdapter.notifyDataSetChanged();
 
         lvRafs.getLayoutParams().height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 85 * content.size(), getResources().getDisplayMetrics());
+        ((MainActivity) getActivity()).notifyIntegrationSetInvalidated();
+        if (content.size() == 0) editing = false;
     }
 
     @Override
@@ -177,7 +179,8 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
 
     @Override
     public void toggleEditing() {
-
+        editing = !editing;
+        integrationAdapter.notifyDataSetInvalidated();
     }
 
     @Override
@@ -243,28 +246,29 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
         public View getView(final int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(getContext()).inflate(R.layout.view_integration_item, parent, false);
-                ButterKnife.bind(this, convertView);
-
-                ivShare.setColorFilter(Color.parseColor("#232f3b"));
-                ivShare.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (editing) {
-                            integrationPresenter.onEditClicked(position);
-                        } else {
-                            integrationPresenter.onShareClicked(position);
-                        }
-                    }
-                });
-
-                ivDelete.setColorFilter(Color.parseColor("#e34d41"));
-                ivDelete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        integrationPresenter.onDeleteClicked(position);
-                    }
-                });
             }
+
+            ButterKnife.bind(this, convertView);
+
+            ivShare.setColorFilter(Color.parseColor("#232f3b"));
+            ivShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (editing) {
+                        integrationPresenter.onEditClicked(position);
+                    } else {
+                        integrationPresenter.onShareClicked(position);
+                    }
+                }
+            });
+
+            ivDelete.setColorFilter(Color.parseColor("#e34d41"));
+            ivDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    integrationPresenter.onDeleteClicked(position);
+                }
+            });
 
             Integration item = getItem(position);
 
