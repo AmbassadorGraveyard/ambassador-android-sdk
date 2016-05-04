@@ -180,7 +180,7 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
     @Override
     public void toggleEditing() {
         editing = !editing;
-        integrationAdapter.notifyDataSetInvalidated();
+        integrationPresenter.updateView();
     }
 
     @Override
