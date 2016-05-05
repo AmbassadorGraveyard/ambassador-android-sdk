@@ -31,7 +31,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
-import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
+import com.ambassador.ambassadorsdk.internal.AugurIdentify;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
@@ -192,7 +192,7 @@ public final class ConversionFragment extends Fragment implements MainActivity.T
             public void onClick(View v) {
                 if (!verifiedInputs()) return;
 
-                new IdentifyAugurSDK().getIdentity();
+                new AugurIdentify().getIdentity();
 
                 final ConversionParameters parameters = getConversionParametersBasedOnInputs();
                 String referrerEmail = etAmbassadorEmail.getText().toString();

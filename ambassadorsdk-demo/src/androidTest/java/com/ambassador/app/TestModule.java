@@ -6,7 +6,7 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
+import com.ambassador.ambassadorsdk.internal.AugurIdentify;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;
@@ -20,6 +20,7 @@ import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
+import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 import com.ambassador.ambassadorsdk.internal.notifications.InstanceIdListener;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.app.ambassadorsdk.AmbassadorActivityTest;
@@ -47,11 +48,12 @@ import dagger.Provides;
         AmbassadorSDK.class,
         AskNameDialog.class,
         AskEmailDialog.class,
-        IdentifyAugurSDK.class,
+        AugurIdentify.class,
         PusherManager.class,
         PusherManager.Channel.class,
         InstallReceiver.class,
         InstanceIdListener.class,
+        GcmHandler.class,
 }, staticInjections = {
         AmbassadorSDK.class
 }, library = true)

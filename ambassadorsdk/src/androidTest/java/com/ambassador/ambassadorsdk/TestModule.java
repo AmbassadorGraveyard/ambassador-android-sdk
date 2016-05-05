@@ -2,9 +2,9 @@ package com.ambassador.ambassadorsdk;
 
 import android.support.annotation.NonNull;
 
+import com.ambassador.ambassadorsdk.internal.AugurIdentify;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;
@@ -40,7 +40,7 @@ import dagger.Provides;
         AmbassadorSDK.class,
         AskNameDialog.class,
         AskEmailDialog.class,
-        IdentifyAugurSDK.class,
+        AugurIdentify.class,
         PusherManager.class,
         PusherManager.Channel.class,
         InstallReceiver.class,

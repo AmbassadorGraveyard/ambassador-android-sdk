@@ -220,7 +220,7 @@ public class RequestManager {
         String uid = auth.getUniversalId();
         String authToken = auth.getUniversalToken();
         IdentifyApi.UpdateGcmTokenBody body = new IdentifyApi.UpdateGcmTokenBody(email, registrationToken);
-        identifyApi.updateGcmToken(sessionId, requestId, uid, authToken, body, completion);
+     //   identifyApi.updateGcmToken(sessionId, requestId, uid, authToken, body, completion);
     }
 
     /**

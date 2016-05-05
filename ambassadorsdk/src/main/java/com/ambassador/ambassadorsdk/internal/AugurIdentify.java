@@ -1,5 +1,6 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 
@@ -14,22 +15,22 @@ import javax.inject.Inject;
 
 import io.augur.wintermute.Augur;
 
-public class IdentifyAugurSDK {
+public class AugurIdentify {
 
     @Inject protected Device deviceObj;
     @Inject protected User user;
 
-    public IdentifyAugurSDK() {
+    public AugurIdentify() {
         AmbSingleton.inject(this);
     }
 
-    public void getIdentity() {
+    public void getIdentity(Context context) {
         String augurKey = Secrets.getAugurKey();
         JSONObject augurConfig = new JSONObject();
 
         try {
             // required
-            augurConfig.put("context", AmbSingleton.getContext());
+            augurConfig.put("context", context);
             augurConfig.put("apiKey", augurKey);
             // optional
             //augurConfig.put("timeout", 1000); // default: 5000 (5 seconds)
