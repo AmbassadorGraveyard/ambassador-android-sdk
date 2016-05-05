@@ -75,7 +75,7 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
 
     public void onSubmitClicked(String ambassadorEmail, final ConversionParameters.Builder conversionParametersBuilder) {
         conversionParametersBuilder.setCampaign(model.selectedCampaignId);
-        conversionParametersBuilder.setAddToGroupId(model.selectedGroups != null ? model.selectedGroups.replaceAll(" ", "") : null);
+        conversionParametersBuilder.setAddToGroupId(model.selectedGroups != null ? model.selectedGroups.replaceAll(" ", "") : "");
         final ConversionParameters conversionParameters = conversionParametersBuilder.build();
 
         if (!(new Identify(ambassadorEmail).isValidEmail())) {
@@ -120,7 +120,7 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
 
     public void onActionClicked(ConversionParameters.Builder conversionParametersBuilder) {
         conversionParametersBuilder.setCampaign(model.selectedCampaignId);
-        conversionParametersBuilder.setAddToGroupId(model.selectedGroups != null ? model.selectedGroups.replaceAll(" ", "") : null);
+        conversionParametersBuilder.setAddToGroupId(model.selectedGroups != null ? model.selectedGroups.replaceAll(" ", "") : "");
         ConversionParameters conversionParameters = conversionParametersBuilder.build();
 
         if (!(new Identify(conversionParameters.getEmail()).isValidEmail())) {
