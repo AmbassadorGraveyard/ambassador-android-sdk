@@ -20,6 +20,8 @@ import java.lang.ref.WeakReference;
  */
 public class NetworkCircleImageView extends CircleImageView {
 
+    protected boolean didLoad = false;
+
     /** Default constructor. */
     public NetworkCircleImageView(Context context) {
         super(context);
@@ -43,6 +45,16 @@ public class NetworkCircleImageView extends CircleImageView {
         if (url != null) {
             new LoadImageTask(this).execute(url);
         }
+    }
+
+    @Override
+    public void setImageBitmap(Bitmap bm) {
+        super.setImageBitmap(bm);
+        didLoad = true;
+    }
+
+    public boolean didLoad() {
+        return didLoad;
     }
 
     /**

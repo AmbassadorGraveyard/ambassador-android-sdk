@@ -24,8 +24,8 @@ import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.app.activities.LoginActivity;
-import com.ambassador.app.activities.MainActivity;
+import com.ambassador.app.activities.login.LoginActivity;
+import com.ambassador.app.activities.main.MainActivity;
 import com.ambassador.app.api.Requests;
 import com.ambassador.app.api.pojo.GetCampaignsResponse;
 import com.ambassador.app.api.pojo.GetShortCodeFromEmailResponse;
@@ -51,8 +51,8 @@ import retrofit.Callback;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.anything;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {

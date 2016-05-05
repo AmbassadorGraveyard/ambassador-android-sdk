@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.app.activities.CustomizationActivity;
+import com.ambassador.app.activities.customization.CustomizationActivity;
 import com.ambassador.app.api.Requests;
 import com.ambassador.app.api.pojo.GetCampaignsResponse;
 import com.mobeta.android.dslv.DragSortItemView;
@@ -45,6 +45,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.not;
+
 
 @RunWith(AndroidJUnit4.class)
 public class CustomizationActivityTest {

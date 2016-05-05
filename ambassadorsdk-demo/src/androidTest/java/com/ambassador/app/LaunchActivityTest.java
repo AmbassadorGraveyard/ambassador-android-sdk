@@ -14,8 +14,8 @@ import android.support.test.runner.lifecycle.Stage;
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.app.activities.LaunchActivity;
-import com.ambassador.app.activities.LoginActivity;
-import com.ambassador.app.activities.MainActivity;
+import com.ambassador.app.activities.login.LoginActivity;
+import com.ambassador.app.activities.main.MainActivity;
 import com.ambassador.app.api.pojo.LoginResponse;
 import com.ambassador.app.data.User;
 

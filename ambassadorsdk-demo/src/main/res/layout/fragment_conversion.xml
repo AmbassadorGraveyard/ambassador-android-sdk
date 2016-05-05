@@ -3,12 +3,13 @@
     android:id="@+id/svConversion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:isScrollContainer="false" 
     android:background="@android:color/white">
 
     <LinearLayout
         android:id="@+id/fragmentStore"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="30dp">
 
