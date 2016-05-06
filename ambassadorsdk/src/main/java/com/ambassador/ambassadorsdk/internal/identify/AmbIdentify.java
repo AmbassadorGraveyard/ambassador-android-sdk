@@ -25,7 +25,7 @@ public class AmbIdentify {
     }
 
     public void execute() {
-        for (final AmbIdentifyTask task :identifyTasks) {
+        for (final AmbIdentifyTask task : identifyTasks) {
             try {
                 task.execute(new AmbIdentifyTask.OnCompleteListener() {
                     @Override
