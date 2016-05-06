@@ -127,8 +127,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         ButterFork.bind(this);
         raf = RAFOptions.get();
 
-        Log.v("AMB-DATA", user.getIdentifyData());
-
         // Requirement checks
         finishIfSingletonInvalid();
         if (isFinishing()) return;
@@ -147,7 +145,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 JsonObject data = new JsonParser().parse(user.getIdentifyData()).getAsJsonObject();
                 JsonArray urls = data.getAsJsonObject("body").getAsJsonArray("urls");
 
-                tryAndSetURL(urls, raf.getDefaultShareMessage());
+                boolean found = tryAndSetURL(urls, raf.getDefaultShareMessage());
             } else {
                 setUpLoader();
                 setUpPusher();
@@ -420,7 +418,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
         // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
         @Override
         public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(user.getPusherInfo(), raf.getDefaultShareMessage());
+            boolean found = tryAndSetURL(user.getPusherInfo(), raf.getDefaultShareMessage());
+            if (!found) {
+                Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         }
     };
 
@@ -492,12 +494,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
     }
 
-    protected void tryAndSetURL(JsonObject pusherData, String initialShareMessage) {
+    protected boolean tryAndSetURL(JsonObject pusherData, String initialShareMessage) {
         JsonArray urlArray = pusherData.get("urls").getAsJsonArray();
-        tryAndSetURL(urlArray, initialShareMessage);
+        return tryAndSetURL(urlArray, initialShareMessage);
     }
 
-    protected void tryAndSetURL(JsonArray urlArray, String initialShareMessage) {
+    protected boolean tryAndSetURL(JsonArray urlArray, String initialShareMessage) {
         boolean campaignFound = false;
             // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
 
@@ -526,10 +528,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             networkTimer.cancel();
         }
 
-        if (!campaignFound) {
-            Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        return campaignFound;
     }
 
     private void showNetworkError() {
