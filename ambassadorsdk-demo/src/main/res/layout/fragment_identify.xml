@@ -7,10 +7,9 @@
     <LinearLayout
         android:id="@+id/fragmentLogin"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white"
-        android:contentDescription="loginFragment"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="30dp">
 
         <ImageView
             android:id="@+id/ivFlags"
@@ -32,7 +31,7 @@
             android:text="@string/identify_title_text"
             android:textColor="#253244"
             android:textSize="15sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvMessage"
@@ -44,11 +43,11 @@
             android:layout_marginTop="5dp"
             android:fontFamily="sans-serif"
             android:gravity="center"
+            android:lineSpacingMultiplier="1.3"
             android:text="@string/identify_message_text"
             android:textAlignment="center"
             android:textColor="#9097a1"
-            android:textSize="13sp"
-            android:lineSpacingMultiplier="1.3"/>
+            android:textSize="13sp" />
 
         <EditText
             android:id="@+id/etIdentify"
@@ -59,7 +58,6 @@
             android:layout_marginRight="50dp"
             android:layout_marginTop="20dp"
             android:background="@drawable/et_only"
-            android:contentDescription="loginUsernameField"
             android:fontFamily="sans-serif"
             android:hint="Email address"
             android:inputType="textEmailAddress"
@@ -80,7 +78,6 @@
             android:layout_marginRight="50dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/auth_button"
-            android:contentDescription="loginButton"
             android:text="Submit"
             android:textColor="@android:color/white"
             android:textSize="13sp"

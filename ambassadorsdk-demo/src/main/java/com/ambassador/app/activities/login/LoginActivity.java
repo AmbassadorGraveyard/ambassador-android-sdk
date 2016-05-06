@@ -1,4 +1,4 @@
-package com.ambassador.app.activities;
+package com.ambassador.app.activities.login;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.app.R;
+import com.ambassador.app.activities.main.MainActivity;
 import com.ambassador.app.api.Requests;
 import com.ambassador.app.api.pojo.LoginResponse;
 import com.ambassador.app.data.User;

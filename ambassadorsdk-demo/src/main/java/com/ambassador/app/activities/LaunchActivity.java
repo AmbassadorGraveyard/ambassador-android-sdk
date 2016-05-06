@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.ambassador.app.activities.login.LoginActivity;
+import com.ambassador.app.activities.main.MainActivity;
 import com.ambassador.app.data.User;
 
 public class LaunchActivity extends Activity {

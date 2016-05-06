@@ -1,15 +1,13 @@
-package com.ambassador.app.activities;
+package com.ambassador.app.activities.customization;
 
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.ColorInt;
@@ -31,7 +29,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.CompoundButton;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -43,8 +40,6 @@ import com.ambassador.ambassadorsdk.internal.views.CircleImageView;
 import com.ambassador.app.R;
 import com.ambassador.app.data.Integration;
 import com.ambassador.app.dialogs.CampaignChooserDialog;
-import com.ambassador.app.exports.IntegrationExport;
-import com.ambassador.app.utils.ZipTask;
 import com.ambassador.app.views.ColorInputView;
 import com.ambassador.app.views.InputView;
 import com.ambassador.app.views.ListHeadingView;
@@ -74,21 +69,17 @@ public class CustomizationActivity extends AppCompatActivity {
     protected boolean hasPhoto = false;
     protected Integration startupIntegration;
 
-    protected MenuItem menuItem;
-
     @Bind(R.id.svCustomization) protected ScrollView svCustomization;
     @Bind(R.id.lhvGeneral) protected ListHeadingView lhvGeneral;
     @Bind(R.id.lhvHeader) protected ListHeadingView lhvHeader;
     @Bind(R.id.lhvTextField1) protected ListHeadingView lhvTextField1;
     @Bind(R.id.lhvTextField2) protected ListHeadingView lhvTextField2;
     @Bind(R.id.ivProductPhoto) protected CircleImageView ivProductPhoto;
-    @Bind(R.id.pbProductPhoto) protected ProgressBar pbProductPhoto;
     @Bind(R.id.tvProductPhotoInfo) protected TextView tvProductPhotoInfo;
     @Bind(R.id.inputIntegrationName) protected InputView inputIntegrationName;
     @Bind(R.id.inputHeaderText) protected InputView inputHeaderText;
     @Bind(R.id.inputTextField1) protected InputView inputTextField1;
     @Bind(R.id.inputTextField2) protected InputView inputTextField2;
-    @Bind(R.id.inputShareMessage) protected InputView inputShareMessage;
     @Bind(R.id.rvCampaignChooser) protected RelativeLayout rvCampaignChooser;
     @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
     @Bind(R.id.lvChannels) protected DragSortListView lvChannels;
@@ -105,8 +96,6 @@ public class CustomizationActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setUpActionBar();
         handleEditing();
-
-        pbProductPhoto.getIndeterminateDrawable().setColorFilter(ContextCompat.getColor(this, R.color.primary), PorterDuff.Mode.SRC_IN);
 
         ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.add_photo));
         ivProductPhoto.setOnClickListener(new View.OnClickListener() {
@@ -161,7 +150,7 @@ public class CustomizationActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_customizer, menu);
-        menuItem = menu.findItem(R.id.action_save);
+        MenuItem menuItem = menu.findItem(R.id.action_save);
         menuItem.setIcon(ContextCompat.getDrawable(this, R.drawable.save_icon));
         return true;
     }
@@ -170,11 +159,6 @@ public class CustomizationActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(findViewById(android.R.id.content).getWindowToken(), 0);
-
-        if (pbProductPhoto.getVisibility() == View.VISIBLE) {
-            return true;
-        }
-
         if (verifiedInputs()) {
             Integration integration = new DataHandler().getIntegration();
 
@@ -184,11 +168,6 @@ public class CustomizationActivity extends AppCompatActivity {
             }
 
             integration.save();
-
-            IntegrationExport export = new IntegrationExport();
-            export.setModel(integration);
-            new ZipTask(integration.getCreatedAtDate()).execute(export);
-
             finish();
         }
         return true;
@@ -203,11 +182,24 @@ public class CustomizationActivity extends AppCompatActivity {
                     Uri uri = data.getData();
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        ivProductPhoto.setImageBitmap(bitmap);
                         imageSaveFilename = System.currentTimeMillis() + ".png";
-                        new SaveImageTask(imageSaveFilename).execute(bitmap);
-                        menuItem.getIcon().setAlpha(128);
-                        pbProductPhoto.setVisibility(View.VISIBLE);
-                        ivProductPhoto.setImageDrawable(new ColorDrawable(Color.WHITE));
+                        boolean didSave = saveImage(bitmap, imageSaveFilename);
+                        if (didSave) {
+                            tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
+                            tvProductPhotoInfo.setText("Remove Product Photo");
+                            hasPhoto = true;
+                            tvProductPhotoInfo.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(CustomizationActivity.this, R.drawable.add_photo));
+                                    tvProductPhotoInfo.setTextColor(Color.BLACK);
+                                    tvProductPhotoInfo.setText("Upload Product Photo");
+                                    tvProductPhotoInfo.setOnClickListener(null);
+                                    hasPhoto = false;
+                                }
+                            });
+                        }
                     } catch (IOException e) {
                         Log.e(CustomizationActivity.class.getSimpleName(), e.toString());
                     }
@@ -267,7 +259,6 @@ public class CustomizationActivity extends AppCompatActivity {
         dataHandler.setHeaderColor(defaults.getHomeToolbarColor());
         dataHandler.setTextField1Color(defaults.getHomeWelcomeTitleColor());
         dataHandler.setTextField2Color(defaults.getHomeWelcomeDescriptionColor());
-        dataHandler.setShareMessage(defaults.getDefaultShareMessage());
         dataHandler.setButtonColor(defaults.getContactsSendButtonColor());
     }
 
@@ -280,6 +271,28 @@ public class CustomizationActivity extends AppCompatActivity {
                 channelAdapter.drop(from, to);
             }
         });
+    }
+
+    protected boolean saveImage(Bitmap bitmap, String filename) {
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = openFileOutput(filename, MODE_PRIVATE);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
+            Log.v("Ambassador-Demo", "Image saved with filename: " + filename);
+        } catch (Exception e) {
+            Log.e("Ambassador-Demo", e.toString());
+            return false;
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    Log.e("Ambassador-Demo", e.toString());
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     protected static class ChannelAdapter extends BaseAdapter {
@@ -404,7 +417,6 @@ public class CustomizationActivity extends AppCompatActivity {
             setTextField1Color(rafOptions.getHomeWelcomeTitleColor());
             setTextField2(rafOptions.getDescriptionText());
             setTextField2Color(rafOptions.getHomeWelcomeDescriptionColor());
-            setShareMessage(rafOptions.getDefaultShareMessage());
             setChannels(rafOptions.getChannels());
             setButtonColor(rafOptions.getContactsSendButtonColor());
 
@@ -458,11 +470,9 @@ public class CustomizationActivity extends AppCompatActivity {
                     .setChannels(getChannels())
                     .setContactsSendButtonColor(getButtonColor())
                     .setContactNoPhotoAvailableBackgroundColor(getButtonColor())
-                    .setDefaultShareMessage(getShareMessage())
                     .build();
 
             integration.setRafOptions(rafOptions);
-
             return integration;
         }
 
@@ -552,15 +562,6 @@ public class CustomizationActivity extends AppCompatActivity {
 
         public void setTextField2Color(@ColorInt int color) {
             civTextField2.setColor(color);
-        }
-
-        @NonNull
-        public String getShareMessage() {
-            return inputShareMessage.getText().toString();
-        }
-
-        public void setShareMessage(@NonNull String text) {
-            inputShareMessage.setText(text);
         }
 
         public void setChannels(@NonNull String[] channels) {
@@ -685,97 +686,6 @@ public class CustomizationActivity extends AppCompatActivity {
                     return SMS;
                 default:
                     return null;
-            }
-        }
-
-    }
-
-    protected class SaveImageTask extends AsyncTask<Bitmap, Void, Bitmap> {
-
-        protected String filename;
-
-        public SaveImageTask(String filename) {
-            super();
-            this.filename = filename;
-        }
-
-        @Override
-        protected Bitmap doInBackground(Bitmap... params) {
-            Bitmap bitmap = params[0];
-
-            float maxWidth = 1920.0f;
-            float maxHeight = 1920.0f;
-            int actualHeight = bitmap.getHeight();
-            int actualWidth = bitmap.getWidth();
-            float imgRatio = (float) actualWidth / (float) actualHeight;
-            float maxRatio = maxWidth / maxHeight;
-
-            if (actualHeight > maxHeight || actualWidth > maxWidth) {
-                if (imgRatio < maxRatio) {
-                    imgRatio = maxHeight / actualHeight;
-                    actualWidth = (int) (imgRatio * actualWidth);
-                    actualHeight = (int) maxHeight;
-                } else if (imgRatio > maxRatio) {
-                    imgRatio = maxWidth / actualWidth;
-                    actualHeight = (int) (imgRatio * actualHeight);
-                    actualWidth = (int) maxWidth;
-                } else {
-                    actualHeight = (int) maxHeight;
-                    actualWidth = (int) maxWidth;
-                }
-            }
-
-            Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, actualWidth, actualHeight, false);
-
-            FileOutputStream fileOutputStream = null;
-            try {
-                fileOutputStream = openFileOutput(filename, MODE_PRIVATE);
-                scaledBitmap.compress(Bitmap.CompressFormat.PNG, 100, fileOutputStream);
-                Log.v("Ambassador-Demo", "Image saved with filename: " + filename);
-            } catch (Exception e) {
-                Log.e("Ambassador-Demo", e.toString());
-                return null;
-            } finally {
-                if (fileOutputStream != null) {
-                    try {
-                        fileOutputStream.close();
-                    } catch (IOException e) {
-                        Log.e("Ambassador-Demo", e.toString());
-                        return null;
-                    }
-                }
-            }
-
-            return scaledBitmap;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            super.onPostExecute(bitmap);
-            try {
-                if (bitmap != null) {
-                    ivProductPhoto.setImageBitmap(bitmap);
-                    pbProductPhoto.setVisibility(View.GONE);
-                    tvProductPhotoInfo.setTextColor(Color.parseColor("#4197d0"));
-                    tvProductPhotoInfo.setText("Remove Product Photo");
-                    hasPhoto = true;
-                    tvProductPhotoInfo.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ivProductPhoto.setImageDrawable(ContextCompat.getDrawable(CustomizationActivity.this, R.drawable.add_photo));
-                            tvProductPhotoInfo.setTextColor(Color.BLACK);
-                            tvProductPhotoInfo.setText("Upload Product Photo");
-                            tvProductPhotoInfo.setOnClickListener(null);
-                            hasPhoto = false;
-                        }
-                    });
-
-                    if (menuItem != null) {
-                        menuItem.getIcon().setAlpha(255);
-                    }
-                }
-            } catch (Exception e) {
-                // No handling needed. This would maybe throw if they exited Activity while image loading.
             }
         }
 
