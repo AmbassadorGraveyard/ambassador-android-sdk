@@ -105,7 +105,7 @@ public final class AmbassadorSDK {
             return false;
         }
 
-        new AmbIdentify(emailAddress).execute();
+        AmbIdentify.get(emailAddress).execute();
         return true;
     }
 

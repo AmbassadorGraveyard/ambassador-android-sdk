@@ -100,4 +100,8 @@ public class AmbIdentify {
         void complete();
     }
 
+    public static AmbIdentify get(String emailAddress) {
+        return new AmbIdentify(emailAddress);
+    }
+
 }
