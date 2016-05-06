@@ -97,9 +97,8 @@ public final class AmbassadorSDK {
 
     /**
      * Identifies a user to the Ambassador SDK using an email address.
-     *
-     * @param emailAddress
-     * @return
+     * @param emailAddress the email address of the user being identified.
+     * @return boolean determining email address parameter validity.
      */
     public static boolean identify(String emailAddress) {
         if (!new Identify(emailAddress).isValidEmail()) {
@@ -107,7 +106,6 @@ public final class AmbassadorSDK {
         }
 
         new AmbIdentify(emailAddress).execute();
-
         return true;
     }
 

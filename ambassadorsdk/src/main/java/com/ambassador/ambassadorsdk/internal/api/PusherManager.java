@@ -214,6 +214,10 @@ public class PusherManager {
 
         Intent intent = new Intent("pusherData");
         LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
+
+        for (PusherListener pusherListener : pusherListeners) {
+            pusherListener.onIdentifyComplete();
+        }
     }
 
     /**
@@ -398,6 +402,7 @@ public class PusherManager {
         void connectionFailed();
         void subscriptionFailed();
         void onEvent(String data);
+        void onIdentifyComplete();
     }
 
     /**
