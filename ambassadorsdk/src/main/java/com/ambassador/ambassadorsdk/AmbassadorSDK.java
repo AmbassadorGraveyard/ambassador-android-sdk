@@ -7,9 +7,8 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.AmbIdentify;
+import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.ambassadorsdk.internal.AugurIdentify;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Secrets;
@@ -22,7 +21,6 @@ import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
-import com.ambassador.ambassadorsdk.internal.notifications.GcmHandler;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 
 import net.kencochrane.raven.DefaultRavenFactory;
@@ -108,7 +106,7 @@ public final class AmbassadorSDK {
             return false;
         }
 
-        new AmbIdentify(emailAddress).execute(AmbSingleton.getContext());
+        new AmbIdentify(emailAddress).execute();
 
         return true;
     }

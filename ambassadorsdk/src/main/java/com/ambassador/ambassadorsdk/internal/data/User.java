@@ -3,6 +3,7 @@ package com.ambassador.ambassadorsdk.internal.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.google.gson.Gson;
@@ -70,6 +71,7 @@ public class User implements Data {
     }
 
     public void setGcmToken(String gcmToken) {
+        Log.v("Ambassador", gcmToken);
         this.gcmToken = gcmToken;
         save();
     }

@@ -2,7 +2,6 @@ package com.ambassador.ambassadorsdk;
 
 import android.support.annotation.NonNull;
 
-import com.ambassador.ambassadorsdk.internal.AugurIdentify;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
