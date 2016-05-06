@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 public class AmbIdentify {
 
-    @Inject protected PusherManager pusherManager;
     @Inject protected RequestManager requestManager;
 
     protected String emailAddress;
@@ -48,12 +47,21 @@ public class AmbIdentify {
     }
 
     protected void onPreExecutionComplete() {
+        final PusherManager pusherManager = new PusherManager();
         pusherManager.addPusherListener(new PusherListenerAdapter() {
+
             @Override
             public void subscribed() {
                 super.subscribed();
                 requestManager.identifyRequest(null);
             }
+
+            @Override
+            public void onEvent(String data) {
+                super.onEvent(data);
+                pusherManager.disconnect();
+            }
+
         });
 
         pusherManager.subscribeChannelToAmbassador();

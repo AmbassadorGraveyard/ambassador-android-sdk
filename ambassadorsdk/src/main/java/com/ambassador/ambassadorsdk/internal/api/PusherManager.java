@@ -215,6 +215,17 @@ public class PusherManager {
     }
 
     /**
+     * Disconnects and disposes of the current pusher channel.
+     */
+    public void disconnect() {
+        if (channel != null) {
+            channel.disconnect();
+        }
+
+
+    }
+
+    /**
      * Handles a single connection to Pusher.  Keeps track of a channel name and session id.
      * Connects and subscribes with this information and receives events, which are pushed back
      * to parent.
