@@ -71,7 +71,6 @@ public class PusherManager {
             @Override
             public void onEvent(String data) {
                 super.onEvent(data);
-                user.setIdentifyData(data);
                 Utilities.debugLog("PusherSDK", "data = " + data);
                 JsonObject jsonData = new JsonParser().parse(data).getAsJsonObject();
                 if (jsonData.has("url")) {
@@ -210,6 +209,8 @@ public class PusherManager {
 
         user.setFirstName(pusherObject.get("first_name").getAsString());
         user.setLastName(pusherObject.get("last_name").getAsString());
+
+        user.setIdentifyData(data.toString());
 
         Intent intent = new Intent("pusherData");
         LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);

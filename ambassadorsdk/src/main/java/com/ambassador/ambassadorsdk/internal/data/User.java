@@ -72,7 +72,7 @@ public class User implements Data {
     }
 
     public void setGcmToken(String gcmToken) {
-        Log.v("Ambassador", gcmToken);
+        Log.v("Ambassador", gcmToken + "");
         this.gcmToken = gcmToken;
         save();
     }

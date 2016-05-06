@@ -36,8 +36,8 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
-import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -55,6 +55,7 @@ import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.internal.views.StaticGridView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -125,7 +126,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
         AmbSingleton.inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
-        
+
+        Log.v("AMB-DATA", user.getIdentifyData());
+
         // Requirement checks
         finishIfSingletonInvalid();
         if (isFinishing()) return;
@@ -140,8 +143,15 @@ public final class AmbassadorActivity extends AppCompatActivity {
         setUpCopy();
 
         if (user.getEmail() != null) {
-            setUpLoader();
-            setUpPusher();
+            if (user.getIdentifyData() != null) {
+                JsonObject data = new JsonParser().parse(user.getIdentifyData()).getAsJsonObject();
+                JsonArray urls = data.getAsJsonObject("body").getAsJsonArray("urls");
+
+                tryAndSetURL(urls, raf.getDefaultShareMessage());
+            } else {
+                setUpLoader();
+                setUpPusher();
+            }
         } else {
             final AskEmailDialog askEmailDialog = new AskEmailDialog(this);
             askEmailDialog.setOnEmailReceivedListener(new AskEmailDialog.OnEmailReceivedListener() {
@@ -483,9 +493,13 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     protected void tryAndSetURL(JsonObject pusherData, String initialShareMessage) {
+        JsonArray urlArray = pusherData.get("urls").getAsJsonArray();
+        tryAndSetURL(urlArray, initialShareMessage);
+    }
+
+    protected void tryAndSetURL(JsonArray urlArray, String initialShareMessage) {
         boolean campaignFound = false;
             // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
-        JsonArray urlArray = pusherData.get("urls").getAsJsonArray();
 
         // Iterates throught all the urls in the PusherSDK object until we find one will a matching campaign ID
         for (int i = 0; i < urlArray.size(); i++) {
