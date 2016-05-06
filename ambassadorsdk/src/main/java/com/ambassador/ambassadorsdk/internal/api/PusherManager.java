@@ -71,6 +71,7 @@ public class PusherManager {
             @Override
             public void onEvent(String data) {
                 super.onEvent(data);
+                user.setIdentifyData(data);
                 Utilities.debugLog("PusherSDK", "data = " + data);
                 JsonObject jsonData = new JsonParser().parse(data).getAsJsonObject();
                 if (jsonData.has("url")) {

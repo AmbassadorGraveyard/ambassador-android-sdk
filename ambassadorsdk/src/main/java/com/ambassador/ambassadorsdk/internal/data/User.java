@@ -27,6 +27,7 @@ public class User implements Data {
     protected String facebookAccessToken;
     protected String twitterAccessToken;
     protected String linkedInAccessToken;
+    protected String identifyData;
     // endregion
 
     // region Getters / Setters
@@ -136,6 +137,15 @@ public class User implements Data {
         save();
     }
 
+    @Nullable
+    public String getIdentifyData() {
+        return identifyData;
+    }
+
+    public void setIdentifyData(String identifyData) {
+        this.identifyData = identifyData;
+        save();
+    }
     // endregion
 
     // region Persistence methods
@@ -166,6 +176,7 @@ public class User implements Data {
         facebookAccessToken = null;
         twitterAccessToken = null;
         linkedInAccessToken = null;
+        identifyData = null;
     }
 
     /**
@@ -193,6 +204,7 @@ public class User implements Data {
         setFacebookAccessToken(user.getFacebookAccessToken());
         setTwitterAccessToken(user.getTwitterAccessToken());
         setLinkedInAccessToken(user.getLinkedInAccessToken());
+        setIdentifyData(user.getIdentifyData());
     }
     // endregion
 
