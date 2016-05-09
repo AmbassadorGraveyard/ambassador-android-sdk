@@ -92,6 +92,7 @@ public class AmbIdentify {
                 if (completionListener != null) {
                     completionListener.complete();
                 }
+                pusherManager.disconnect();
             }
 
         });
