@@ -39,7 +39,7 @@ public class AmbIdentifyTest {
 
     @Test
     public void testsGetDoesCreateInstanceWithEmail() throws Exception {
-        Assert.assertEquals("jake@getamb.com", ambIdentify.emailAddress);
+        Assert.assertEquals("jake@getambassador.com", ambIdentify.emailAddress);
     }
 
     @Test

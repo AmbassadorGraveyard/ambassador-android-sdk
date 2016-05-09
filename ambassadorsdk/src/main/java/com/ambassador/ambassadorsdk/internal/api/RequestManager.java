@@ -28,7 +28,6 @@ public class RequestManager {
     @Inject protected Auth auth;
     @Inject protected User user;
     @Inject protected Campaign campaign;
-    @Inject protected PusherManager pusherManager;
     @Inject protected BulkShareHelper bulkShareHelper;
 
     protected BulkShareApi bulkShareApi;
@@ -152,14 +151,6 @@ public class RequestManager {
     }
 
     /**
-     * Updates the PusherChannel request ID to the current time in
-     * milliseconds.
-     */
-    private void updateRequestId() {
-        pusherManager.newRequest();
-    }
-
-    /**
      * Identifies the user on the Ambassador backend using the session info
      * and the identify info returned from augur.
      */
@@ -169,7 +160,7 @@ public class RequestManager {
             return;
         }
 
-        updateRequestId();
+        pusherManager.newRequest();
 
         String sessionId = pusherManager.getSessionId();
         String requestId = String.valueOf(pusherManager.getRequestId());
@@ -196,7 +187,7 @@ public class RequestManager {
             return;
         }
 
-        updateRequestId();
+        pusherManager.newRequest();
 
         String sessionId = pusherManager.getSessionId();
         String requestId = String.valueOf(pusherManager.getRequestId());
@@ -213,10 +204,10 @@ public class RequestManager {
      * @param completion callback for request completion
      */
     public void updateGcmRegistrationToken(final String email, final String registrationToken, final RequestCompletion completion) {
-        updateRequestId();
+//        updateRequestId();
 
-        String sessionId = pusherManager.getSessionId();
-        String requestId = String.valueOf(pusherManager.getRequestId());
+//        String sessionId = pusherManager.getSessionId();
+  //      String requestId = String.valueOf(pusherManager.getRequestId());
         String uid = auth.getUniversalId();
         String authToken = auth.getUniversalToken();
         IdentifyApi.UpdateGcmTokenBody body = new IdentifyApi.UpdateGcmTokenBody(email, registrationToken);
