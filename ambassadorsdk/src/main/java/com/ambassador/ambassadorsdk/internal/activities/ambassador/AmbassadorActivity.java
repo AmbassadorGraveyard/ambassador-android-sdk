@@ -453,6 +453,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             if (!found) {
                 if (!retried && AmbassadorSDK.identify(user.getEmail())) {
                     retried = true;
+                    setUpLoader();
                     AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
                         @Override
                         public void complete() {
@@ -460,8 +461,13 @@ public final class AmbassadorActivity extends AppCompatActivity {
                         }
                     });
                 } else {
-                    Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
                 }
             }
         } else {
