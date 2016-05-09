@@ -481,7 +481,17 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 if (AmbassadorSDK.identify(email)) {
                     askEmailDialog.dismiss();
                     setUpLoader();
-                    setUpPusher();
+                    AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
+                        @Override
+                        public void complete() {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    identifyWithStoredInfo();
+                                }
+                            });
+                        }
+                    });
                 } else {
                     Toast.makeText(AmbassadorActivity.this, new StringResource(R.string.invalid_email).getValue(), Toast.LENGTH_SHORT).show();
                     askEmailDialog.shake();
