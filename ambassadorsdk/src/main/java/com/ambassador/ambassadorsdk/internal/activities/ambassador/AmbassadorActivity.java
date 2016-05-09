@@ -1,18 +1,15 @@
 package com.ambassador.ambassadorsdk.internal.activities.ambassador;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -103,6 +100,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     protected LinkedInManager       linkedInManager;
     protected EmailManager          emailManager;
     protected SmsManager            smsManager;
+    protected boolean retried;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,7 +149,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         if (progressDialog != null) progressDialog.dismiss();
         if (networkTimer != null) {
             networkTimer.cancel();
@@ -343,8 +340,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     protected void setUpPusher() {
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
-
         pusherManager.refreshListeners();
         pusherManager.addPusherListener(new PusherListenerAdapter() {
             @Override
@@ -380,18 +375,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         pusherManager.startNewChannel();
         pusherManager.subscribeChannelToAmbassador();
     }
-
-    final private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            boolean found = tryAndSetURL(user.getPusherInfo(), raf.getDefaultShareMessage());
-            if (!found) {
-                Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        }
-    };
 
     private void copyShortUrlToClipboard(@NonNull String copyText, @NonNull Context context) {
         device.copyToClipboard(copyText);
@@ -467,6 +450,20 @@ public final class AmbassadorActivity extends AppCompatActivity {
             JsonArray urls = data.getAsJsonObject("body").getAsJsonArray("urls");
 
             boolean found = tryAndSetURL(urls, raf.getDefaultShareMessage());
+            if (!found) {
+                if (!retried && AmbassadorSDK.identify(user.getEmail())) {
+                    retried = true;
+                    AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
+                        @Override
+                        public void complete() {
+                            identifyWithStoredInfo();
+                        }
+                    });
+                } else {
+                    Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
         } else {
             setUpLoader();
             setUpPusher();
