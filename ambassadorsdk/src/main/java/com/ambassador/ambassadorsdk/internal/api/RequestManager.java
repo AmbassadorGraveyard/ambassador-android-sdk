@@ -191,7 +191,7 @@ public class RequestManager {
      * @param lastName the new last name to save in the Ambassador backend
      * @param completion callback for request completion
      */
-    public void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
+    public void updateNameRequest(PusherManager pusherManager, final String email, final String firstName, final String lastName, final RequestCompletion completion) {
         if (pusherManager.getChannel() == null) {
             return;
         }

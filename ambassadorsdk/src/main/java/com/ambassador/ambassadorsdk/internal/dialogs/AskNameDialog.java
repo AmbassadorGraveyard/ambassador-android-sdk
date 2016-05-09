@@ -14,7 +14,9 @@ import android.widget.Toast;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
+import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
@@ -34,31 +36,20 @@ import butterfork.ButterFork;
  */
 public final class AskNameDialog extends Dialog {
 
-    // region Views
     @Bind(B.id.etFirstName) protected ShakableEditText  etFirstName;
     @Bind(B.id.etLastName)  protected ShakableEditText  etLastName;
     @Bind(B.id.btnCancel)   protected Button            btnCancel;
     @Bind(B.id.btnContinue) protected Button            btnContinue;
-    // endregion
 
-    // region Dependencies
     @Inject protected RequestManager    requestManager;
     @Inject protected User              user;
     @Inject protected Device            device;
-    // endregion
-
-    // region Local members
-    protected ProgressDialog pd;
-    // endregion
 
     public AskNameDialog(Context context, ProgressDialog pd) {
         super(context);
-
         if (context instanceof Activity) {
             setOwnerActivity((Activity) context);
         }
-
-        this.pd = pd;
     }
 
     @Override
@@ -114,7 +105,7 @@ public final class AskNameDialog extends Dialog {
     }
 
     private void updateName(@NonNull final String firstName, @NonNull final String lastName) throws JSONException {
-        JsonObject pusherData = user.getPusherInfo();
+        final JsonObject pusherData = user.getPusherInfo();
         if (pusherData == null) return;
 
         pusherData.remove("firstName");
@@ -122,24 +113,30 @@ public final class AskNameDialog extends Dialog {
         pusherData.remove("lastName");
         pusherData.addProperty("lastName", lastName);
 
-        pd.show();
         user.setPusherInfo(pusherData);
 
-        requestManager.updateNameRequest(pusherData.get("email").getAsString(), firstName, lastName, new RequestManager.RequestCompletion() {
-            @Override
-            public void onSuccess(Object successResponse) {
-                user.setFirstName(etFirstName.getText().toString());
-                user.setLastName(etLastName.getText().toString());
-                pd.dismiss();
-                hide();
-            }
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
 
+        PusherManager pusherManager = new PusherManager();
+        pusherManager.addPusherListener(new PusherListenerAdapter() {
             @Override
-            public void onFailure(Object failureResponse) {
-                Toast.makeText(getOwnerActivity(), new StringResource(R.string.update_failure).getValue(), Toast.LENGTH_SHORT).show();
-                pd.dismiss();
+            public void subscribed() {
+                super.subscribed();
+                requestManager.updateNameRequest(new PusherManager(), pusherData.get("email").getAsString(), firstName, lastName, new RequestManager.RequestCompletion() {
+                    @Override
+                    public void onSuccess(Object successResponse) {}
+                    @Override
+                    public void onFailure(Object failureResponse) {}
+                });
+
+                dismiss();
             }
         });
+
+        pusherManager.startNewChannel();
+        pusherManager.subscribeChannelToAmbassador();
+        hide();
     }
 
     public void showKeyboard() {
