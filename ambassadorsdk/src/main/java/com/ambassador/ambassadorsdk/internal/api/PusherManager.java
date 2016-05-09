@@ -236,7 +236,7 @@ public class PusherManager {
      * Connects and subscribes with this information and receives events, which are pushed back
      * to parent.
      */
-    public static class Channel {
+    public class Channel {
 
         protected Pusher pusher;
 
@@ -246,8 +246,7 @@ public class PusherManager {
         protected long requestId;
         protected ConnectionState connectionState;
 
-        @Inject protected Auth auth;
-        @Inject protected PusherManager pusherManager;
+        protected PusherManager pusherManager;
 
         /**
          * Default non-accessible constructor. Injects dependencies.
@@ -255,6 +254,7 @@ public class PusherManager {
          */
         protected Channel() {
             AmbSingleton.inject(this);
+            pusherManager = PusherManager.this;
         }
 
         /**

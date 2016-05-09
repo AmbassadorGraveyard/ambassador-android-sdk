@@ -350,7 +350,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             @Override
             public void subscribed() {
                 super.subscribed();
-                requestManager.identifyRequest(new RequestManager.RequestCompletion() {
+                requestManager.identifyRequest(pusherManager, new RequestManager.RequestCompletion() {
                     @Override
                     public void onSuccess(Object successResponse) {
                         // All is swell, do nothing.

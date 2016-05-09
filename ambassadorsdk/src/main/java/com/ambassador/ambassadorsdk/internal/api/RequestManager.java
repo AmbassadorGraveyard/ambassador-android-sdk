@@ -163,9 +163,9 @@ public class RequestManager {
      * Identifies the user on the Ambassador backend using the session info
      * and the identify info returned from augur.
      */
-    public void identifyRequest(RequestCompletion completion) {
+    public void identifyRequest(PusherManager pusherManager, RequestCompletion completion) {
         if (pusherManager.getChannel() == null) {
-            completion.onFailure(null);
+            if (completion != null) completion.onFailure(null);
             return;
         }
 

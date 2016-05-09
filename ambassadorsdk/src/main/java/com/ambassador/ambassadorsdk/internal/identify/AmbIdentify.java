@@ -7,6 +7,7 @@ import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.data.User;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -17,30 +18,31 @@ public class AmbIdentify {
 
     @Inject protected User user;
     @Inject protected RequestManager requestManager;
-    @Inject protected PusherManager pusherManager;
-
+    protected PusherManager pusherManager;
     protected String emailAddress;
     protected AmbIdentifyTask[] identifyTasks;
-
     protected CompletionListener completionListener;
+    protected boolean subscribed;
 
-    public AmbIdentify(String emailAddress) {
+    protected AmbIdentify(String emailAddress) {
         AmbSingleton.inject(this);
         this.emailAddress = emailAddress;
         this.identifyTasks = new AmbIdentifyTask[2];
         this.identifyTasks[0] = new AmbGcmTokenTask();
         this.identifyTasks[1] = new AmbAugurTask();
+
+        this.pusherManager = new PusherManager();
     }
 
     public void execute() {
         runningInstance = this;
 
+        setupPusher();
+
         user.clear();
         user.setEmail(emailAddress);
         final List<AmbIdentifyTask> identifyTasksList = new ArrayList<>();
-        for (AmbIdentifyTask task : identifyTasks) {
-            identifyTasksList.add(task);
-        }
+        Collections.addAll(identifyTasksList, identifyTasks);
 
         for (final AmbIdentifyTask task : identifyTasks) {
             try {
@@ -64,14 +66,24 @@ public class AmbIdentify {
         }
     }
 
-    protected void onPreExecutionComplete() {
+    protected void setupPusher() {
         pusherManager.addPusherListener(new PusherListenerAdapter() {
 
             @Override
             public void subscribed() {
                 super.subscribed();
-                requestManager.identifyRequest(null);
+                subscribed = true;
             }
+
+        });
+
+
+        pusherManager.startNewChannel();
+        pusherManager.subscribeChannelToAmbassador();
+    }
+
+    protected void onPreExecutionComplete() {
+        pusherManager.addPusherListener(new PusherListenerAdapter() {
 
             @Override
             public void onIdentifyComplete() {
@@ -84,8 +96,17 @@ public class AmbIdentify {
 
         });
 
-        pusherManager.startNewChannel();
-        pusherManager.subscribeChannelToAmbassador();
+        if (subscribed) {
+            requestManager.identifyRequest(pusherManager, null);
+        } else {
+            pusherManager.addPusherListener(new PusherListenerAdapter() {
+                @Override
+                public void subscribed() {
+                    super.subscribed();
+                    requestManager.identifyRequest(pusherManager, null);
+                }
+            });
+        }
     }
 
     public void setCompletionListener(CompletionListener completionListener) {
