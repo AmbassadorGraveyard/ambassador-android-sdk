@@ -204,14 +204,8 @@ public class RequestManager {
      * @param completion callback for request completion
      */
     public void updateGcmRegistrationToken(final String email, final String registrationToken, final RequestCompletion completion) {
-//        updateRequestId();
-
-//        String sessionId = pusherManager.getSessionId();
-  //      String requestId = String.valueOf(pusherManager.getRequestId());
-        String uid = auth.getUniversalId();
-        String authToken = auth.getUniversalToken();
         IdentifyApi.UpdateGcmTokenBody body = new IdentifyApi.UpdateGcmTokenBody(email, registrationToken);
-     //   identifyApi.updateGcmToken(sessionId, requestId, uid, authToken, body, completion);
+        completion.onSuccess("success");
     }
 
     /**
