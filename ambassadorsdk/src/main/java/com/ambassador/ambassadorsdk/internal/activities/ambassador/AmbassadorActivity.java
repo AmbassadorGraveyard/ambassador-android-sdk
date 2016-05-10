@@ -138,6 +138,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
                         }
                     });
                 }
+
+                @Override
+                public void noSDK() {
+                    Toast.makeText(AmbassadorActivity.this, "No SDK!", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             });
         } else if (user.getEmail() != null) {
             identifyWithStoredInfo();
@@ -459,6 +465,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
                         public void complete() {
                             identifyWithStoredInfo();
                         }
+
+                        @Override
+                        public void noSDK() {
+                            Toast.makeText(AmbassadorActivity.this, "No SDK!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
                     });
                 } else {
                     runOnUiThread(new Runnable() {
@@ -493,6 +505,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
                                     identifyWithStoredInfo();
                                 }
                             });
+                        }
+
+                        @Override
+                        public void noSDK() {
+                            Toast.makeText(AmbassadorActivity.this, "No SDK!", Toast.LENGTH_SHORT).show();
+                            finish();
                         }
                     });
                 } else {
