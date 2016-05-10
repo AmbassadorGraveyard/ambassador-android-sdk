@@ -568,6 +568,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (networkTimer != null) networkTimer.cancel();
                 new AlertDialog.Builder(AmbassadorActivity.this)
                         .setMessage("You currently don't have access to the SDK. If you have any questions please contact support.")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
