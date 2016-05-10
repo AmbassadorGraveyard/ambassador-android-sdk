@@ -63,7 +63,6 @@ public class RequestManagerTest {
     private EnvoyApi envoyApi;
 
     private BulkShareHelper bulkShareHelper;
-    private PusherManager pusherManager;
 
     private String universalId = "***REMOVED***";
     private String universalToken = "SDKToken ***REMOVED***";
@@ -137,14 +136,6 @@ public class RequestManagerTest {
                 return null;
             }
         }).when(AmbSingleton.class, "inject", Mockito.any(PusherManager.class));
-
-        pusherManager = Mockito.spy(new PusherManager());
-        PusherManager.Channel channel = Mockito.spy(new PusherManager.Channel());
-        pusherManager.channel = channel;
-        channel.requestId = requestId;
-        channel.sessionId = sessionId;
-
-        requestManager.pusherManager = pusherManager;
     }
 
     @Test
@@ -210,12 +201,19 @@ public class RequestManagerTest {
     @Test
     public void identifyRequestTest() throws Exception {
         // ACT
-        requestManager.identifyRequest(new RequestManager.RequestCompletion() {
+        PusherManager pusherManager = Mockito.spy(PusherManager.class);
+        PusherManager.Channel channel = Mockito.mock(PusherManager.Channel.class);
+        Mockito.when(pusherManager.getChannel()).thenReturn(channel);
+        pusherManager.channel = channel;
+        channel.requestId = requestId;
+        channel.sessionId = sessionId;
+
+        requestManager.identifyRequest(pusherManager, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {}
             @Override
-            public void onFailure(Object failureResponse) {}}
-        );
+            public void onFailure(Object failureResponse) {}
+        });
         String reqId = "" + pusherManager.channel.requestId;
 
         // ASSERT
@@ -226,13 +224,18 @@ public class RequestManagerTest {
     @Test
     public void updateNameRequest() {
         // ARRANGE
+        PusherManager pusherManager = Mockito.spy(PusherManager.class);
+        PusherManager.Channel channel = Mockito.mock(PusherManager.Channel.class);
+        pusherManager.channel = channel;
+        channel.requestId = requestId;
+        channel.sessionId = sessionId;
         String email = "test@getambasasdor.com";
         String firstName = "firstName";
         String lastName = "lastName";
         RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
 
         // ACT
-        requestManager.updateNameRequest(email, firstName, lastName, requestCompletion);
+        requestManager.updateNameRequest(pusherManager, email, firstName, lastName, requestCompletion);
         String reqId = "" + pusherManager.channel.requestId;
 
         // ASSERT

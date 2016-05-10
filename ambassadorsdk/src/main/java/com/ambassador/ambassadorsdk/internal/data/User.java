@@ -3,6 +3,7 @@ package com.ambassador.ambassadorsdk.internal.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.google.gson.Gson;
@@ -26,6 +27,7 @@ public class User implements Data {
     protected String facebookAccessToken;
     protected String twitterAccessToken;
     protected String linkedInAccessToken;
+    protected String identifyData;
     // endregion
 
     // region Getters / Setters
@@ -70,6 +72,7 @@ public class User implements Data {
     }
 
     public void setGcmToken(String gcmToken) {
+        Log.v("Ambassador", gcmToken + "");
         this.gcmToken = gcmToken;
         save();
     }
@@ -134,6 +137,15 @@ public class User implements Data {
         save();
     }
 
+    @Nullable
+    public String getIdentifyData() {
+        return identifyData;
+    }
+
+    public void setIdentifyData(String identifyData) {
+        this.identifyData = identifyData;
+        save();
+    }
     // endregion
 
     // region Persistence methods
@@ -164,6 +176,7 @@ public class User implements Data {
         facebookAccessToken = null;
         twitterAccessToken = null;
         linkedInAccessToken = null;
+        identifyData = null;
     }
 
     /**
@@ -191,6 +204,7 @@ public class User implements Data {
         setFacebookAccessToken(user.getFacebookAccessToken());
         setTwitterAccessToken(user.getTwitterAccessToken());
         setLinkedInAccessToken(user.getLinkedInAccessToken());
+        setIdentifyData(user.getIdentifyData());
     }
     // endregion
 

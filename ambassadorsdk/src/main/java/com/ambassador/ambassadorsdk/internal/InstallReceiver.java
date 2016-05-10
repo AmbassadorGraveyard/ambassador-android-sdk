@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -126,8 +127,10 @@ public final class InstallReceiver extends BroadcastReceiver {
         });
     }
 
-    public static InstallReceiver getInstance() {
-        return new InstallReceiver();
+    public void registerWith(Context context) {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
+        context.registerReceiver(this, intentFilter);
     }
 
 }

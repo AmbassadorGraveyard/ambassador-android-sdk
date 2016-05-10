@@ -28,7 +28,6 @@ public class RequestManager {
     @Inject protected Auth auth;
     @Inject protected User user;
     @Inject protected Campaign campaign;
-    @Inject protected PusherManager pusherManager;
     @Inject protected BulkShareHelper bulkShareHelper;
 
     protected BulkShareApi bulkShareApi;
@@ -152,24 +151,16 @@ public class RequestManager {
     }
 
     /**
-     * Updates the PusherChannel request ID to the current time in
-     * milliseconds.
-     */
-    private void updateRequestId() {
-        pusherManager.newRequest();
-    }
-
-    /**
      * Identifies the user on the Ambassador backend using the session info
      * and the identify info returned from augur.
      */
-    public void identifyRequest(RequestCompletion completion) {
+    public void identifyRequest(PusherManager pusherManager, RequestCompletion completion) {
         if (pusherManager.getChannel() == null) {
-            completion.onFailure(null);
+            if (completion != null) completion.onFailure(null);
             return;
         }
 
-        updateRequestId();
+        pusherManager.newRequest();
 
         String sessionId = pusherManager.getSessionId();
         String requestId = String.valueOf(pusherManager.getRequestId());
@@ -191,12 +182,12 @@ public class RequestManager {
      * @param lastName the new last name to save in the Ambassador backend
      * @param completion callback for request completion
      */
-    public void updateNameRequest(final String email, final String firstName, final String lastName, final RequestCompletion completion) {
+    public void updateNameRequest(PusherManager pusherManager, final String email, final String firstName, final String lastName, final RequestCompletion completion) {
         if (pusherManager.getChannel() == null) {
             return;
         }
 
-        updateRequestId();
+        pusherManager.newRequest();
 
         String sessionId = pusherManager.getSessionId();
         String requestId = String.valueOf(pusherManager.getRequestId());
@@ -213,14 +204,8 @@ public class RequestManager {
      * @param completion callback for request completion
      */
     public void updateGcmRegistrationToken(final String email, final String registrationToken, final RequestCompletion completion) {
-        updateRequestId();
-
-        String sessionId = pusherManager.getSessionId();
-        String requestId = String.valueOf(pusherManager.getRequestId());
-        String uid = auth.getUniversalId();
-        String authToken = auth.getUniversalToken();
         IdentifyApi.UpdateGcmTokenBody body = new IdentifyApi.UpdateGcmTokenBody(email, registrationToken);
-        identifyApi.updateGcmToken(sessionId, requestId, uid, authToken, body, completion);
+        completion.onSuccess("success");
     }
 
     /**

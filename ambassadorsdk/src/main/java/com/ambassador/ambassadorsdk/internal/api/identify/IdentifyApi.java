@@ -76,7 +76,7 @@ public final class IdentifyApi {
             public void success(IdentifyRequestResponse identifyRequestResponse, Response response) {
                 // This should never happen, this request is not returning JSON so it hits the failure
                 Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.identifyRequest(...)");
-                requestCompletion.onSuccess(null);
+                if (requestCompletion != null) requestCompletion.onSuccess(null);
             }
 
             @Override
@@ -84,11 +84,11 @@ public final class IdentifyApi {
                 if (new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     // successful
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.identifyRequest(...)");
-                    requestCompletion.onSuccess(null);
+                    if (requestCompletion != null) requestCompletion.onSuccess(null);
                 } else {
                     // unsuccessful
                     Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.identifyRequest(...)");
-                    requestCompletion.onFailure(null);
+                    if (requestCompletion != null) requestCompletion.onFailure(null);
                 }
             }
         });
@@ -109,17 +109,17 @@ public final class IdentifyApi {
             @Override
             public void success(UpdateNameRequestResponse updateNameRequestResponse, Response response) {
                 // This should never happen, this request is not returning JSON so it hits the failure
-                completion.onSuccess(requestId);
+                if (completion != null) completion.onSuccess(requestId);
                 Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
-                    completion.onSuccess(requestId);
+                    if (completion != null) completion.onSuccess(requestId);
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
                 } else {
-                    completion.onFailure("failure");
+                    if (completion != null) completion.onFailure("failure");
                     Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.updateNameRequest(...)");
                 }
             }

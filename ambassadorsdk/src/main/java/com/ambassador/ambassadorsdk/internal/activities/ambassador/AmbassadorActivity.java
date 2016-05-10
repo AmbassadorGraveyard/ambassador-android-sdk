@@ -1,18 +1,15 @@
 package com.ambassador.ambassadorsdk.internal.activities.ambassador;
 
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -36,8 +33,8 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
-import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -47,6 +44,7 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
+import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
@@ -55,6 +53,7 @@ import com.ambassador.ambassadorsdk.internal.views.ShakableEditText;
 import com.ambassador.ambassadorsdk.internal.views.StaticGridView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,9 +72,6 @@ import butterfork.ButterFork;
  */
 public final class AmbassadorActivity extends AppCompatActivity {
 
-    // region Fields
-
-    // region Views
     @Nullable
     @Bind(B.id.action_bar)      protected Toolbar               toolbar;
 
@@ -87,18 +83,14 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Bind(B.id.etShortURL)      protected ShakableEditText      etShortUrl;
     @Bind(B.id.btnCopy)         protected ImageButton           btnCopy;
     @Bind(B.id.gvSocialGrid)    protected StaticGridView        gvSocialGrid;
-    // endregion
 
-    // region Dependencies
     @Inject protected RequestManager        requestManager;
     @Inject protected Auth                  auth;
     @Inject protected User                  user;
     @Inject protected Campaign              campaign;
     @Inject protected PusherManager         pusherManager;
     @Inject protected Device                device;
-    // endregion
 
-    // region Local members
     protected RAFOptions            raf;
     protected ProgressDialog        progressDialog;
     protected Timer                 networkTimer;
@@ -108,13 +100,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
     protected LinkedInManager       linkedInManager;
     protected EmailManager          emailManager;
     protected SmsManager            smsManager;
-    // endregion
+    protected boolean retried;
 
-    // endregion
-
-    // region Methods
-
-    // region Activity overrides
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +112,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         AmbSingleton.inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
-        
+
         // Requirement checks
         finishIfSingletonInvalid();
         if (isFinishing()) return;
@@ -139,38 +126,29 @@ public final class AmbassadorActivity extends AppCompatActivity {
         setUpCustomImages();
         setUpCopy();
 
-        if (user.getEmail() != null) {
+        if (AmbIdentify.getRunningInstance() != null) {
             setUpLoader();
-            setUpPusher();
-        } else {
-            final AskEmailDialog askEmailDialog = new AskEmailDialog(this);
-            askEmailDialog.setOnEmailReceivedListener(new AskEmailDialog.OnEmailReceivedListener() {
+            AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
                 @Override
-                public void onEmailReceived(String email) {
-                    if (AmbassadorSDK.identify(email)) {
-                        askEmailDialog.dismiss();
-                        setUpLoader();
-                        setUpPusher();
-                    } else {
-                        Toast.makeText(AmbassadorActivity.this, new StringResource(R.string.invalid_email).getValue(), Toast.LENGTH_SHORT).show();
-                        askEmailDialog.shake();
-                    }
-                }
-
-                @Override
-                public void onCanceled() {
-                    askEmailDialog.dismiss();
-                    finish();
+                public void complete() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            identifyWithStoredInfo();
+                        }
+                    });
                 }
             });
-            askEmailDialog.show();
+        } else if (user.getEmail() != null) {
+            identifyWithStoredInfo();
+        } else {
+            identifyWithDialog();
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
         if (progressDialog != null) progressDialog.dismiss();
         if (networkTimer != null) {
             networkTimer.cancel();
@@ -191,17 +169,13 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         currentManager = null;
     }
-    // endregion
 
-    // region Requirement checks
     protected void finishIfSingletonInvalid() {
         if (!AmbSingleton.isValid()) {
             finish();
         }
     }
-    // endregion
 
-    // region Setup
     protected void setUpData() {
         user.refresh();
         user.setFacebookAccessToken(null);
@@ -366,14 +340,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     protected void setUpPusher() {
-        LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver, new IntentFilter("pusherData"));
-
         pusherManager.refreshListeners();
         pusherManager.addPusherListener(new PusherListenerAdapter() {
             @Override
             public void subscribed() {
                 super.subscribed();
-                requestManager.identifyRequest(new RequestManager.RequestCompletion() {
+                requestManager.identifyRequest(pusherManager, new RequestManager.RequestCompletion() {
                     @Override
                     public void onSuccess(Object successResponse) {
                         // All is swell, do nothing.
@@ -403,16 +375,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
         pusherManager.startNewChannel();
         pusherManager.subscribeChannelToAmbassador();
     }
-    // endregion
-
-    // region Other
-    final private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        // Executed when PusherSDK data is received, used to update the shortURL editText if loading screen is present
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            tryAndSetURL(user.getPusherInfo(), raf.getDefaultShareMessage());
-        }
-    };
 
     private void copyShortUrlToClipboard(@NonNull String copyText, @NonNull Context context) {
         device.copyToClipboard(copyText);
@@ -482,10 +444,80 @@ public final class AmbassadorActivity extends AppCompatActivity {
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.twitter_blue));
     }
 
-    protected void tryAndSetURL(JsonObject pusherData, String initialShareMessage) {
+    protected void identifyWithStoredInfo() {
+        if (user.getIdentifyData() != null) {
+            JsonObject data = new JsonParser().parse(user.getIdentifyData()).getAsJsonObject();
+            JsonArray urls = data.getAsJsonObject("body").getAsJsonArray("urls");
+
+            boolean found = tryAndSetURL(urls, raf.getDefaultShareMessage());
+            if (!found) {
+                if (!retried && AmbassadorSDK.identify(user.getEmail())) {
+                    retried = true;
+                    setUpLoader();
+                    AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
+                        @Override
+                        public void complete() {
+                            identifyWithStoredInfo();
+                        }
+                    });
+                } else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    });
+                }
+            }
+        } else {
+            setUpLoader();
+            setUpPusher();
+        }
+    }
+
+    protected void identifyWithDialog() {
+        final AskEmailDialog askEmailDialog = new AskEmailDialog(this);
+        askEmailDialog.setOnEmailReceivedListener(new AskEmailDialog.OnEmailReceivedListener() {
+            @Override
+            public void onEmailReceived(String email) {
+                if (AmbassadorSDK.identify(email)) {
+                    askEmailDialog.dismiss();
+                    setUpLoader();
+                    AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
+                        @Override
+                        public void complete() {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    identifyWithStoredInfo();
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    Toast.makeText(AmbassadorActivity.this, new StringResource(R.string.invalid_email).getValue(), Toast.LENGTH_SHORT).show();
+                    askEmailDialog.shake();
+                }
+            }
+
+            @Override
+            public void onCanceled() {
+                askEmailDialog.dismiss();
+                finish();
+            }
+        });
+        askEmailDialog.show();
+    }
+
+    protected boolean tryAndSetURL(JsonObject pusherData, String initialShareMessage) {
+        JsonArray urlArray = pusherData.get("urls").getAsJsonArray();
+        return tryAndSetURL(urlArray, initialShareMessage);
+    }
+
+    protected boolean tryAndSetURL(JsonArray urlArray, String initialShareMessage) {
         boolean campaignFound = false;
             // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
-        JsonArray urlArray = pusherData.get("urls").getAsJsonArray();
 
         // Iterates throught all the urls in the PusherSDK object until we find one will a matching campaign ID
         for (int i = 0; i < urlArray.size(); i++) {
@@ -512,10 +544,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             networkTimer.cancel();
         }
 
-        if (!campaignFound) {
-            Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
-            finish();
-        }
+        return campaignFound;
     }
 
     private void showNetworkError() {
@@ -527,11 +556,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             }
         });
     }
-    // endregion
 
-    // endregion
-
-    // region Share method setup
     @NonNull
     protected List<ShareMethod> getShareMethods() {
         HashMap<String, ShareMethod.Builder> shareMethodMap = getDefaultShareMethodBuilderMap();
@@ -623,9 +648,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         return map;
     }
-    // endregion
 
-    // region ShareManagers
     private void launchShareMethod(@NonNull ShareManager shareManager) {
         this.currentManager = shareManager;
         shareManager.onShareRequested();
@@ -817,6 +840,5 @@ public final class AmbassadorActivity extends AppCompatActivity {
         }
 
     }
-    //endregion
 
 }

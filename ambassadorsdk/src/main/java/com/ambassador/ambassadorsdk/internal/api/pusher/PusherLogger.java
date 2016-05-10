@@ -45,4 +45,9 @@ public class PusherLogger implements PusherManager.PusherListener {
         Log.v("AMB-PUSHER", "onEvent(" + data + ")");
     }
 
+    @Override
+    public void onIdentifyComplete() {
+        Log.v("AMB-PUSHER", "onIdentifyComplete()");
+    }
+
 }

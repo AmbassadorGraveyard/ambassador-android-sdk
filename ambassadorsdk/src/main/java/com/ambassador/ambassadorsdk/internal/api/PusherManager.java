@@ -210,8 +210,25 @@ public class PusherManager {
         user.setFirstName(pusherObject.get("first_name").getAsString());
         user.setLastName(pusherObject.get("last_name").getAsString());
 
+        user.setIdentifyData(data.toString());
+
         Intent intent = new Intent("pusherData");
         LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
+
+        for (PusherListener pusherListener : pusherListeners) {
+            pusherListener.onIdentifyComplete();
+        }
+    }
+
+    /**
+     * Disconnects and disposes of the current pusher channel.
+     */
+    public void disconnect() {
+        if (channel != null) {
+            channel.disconnect();
+        }
+
+
     }
 
     /**
@@ -219,7 +236,7 @@ public class PusherManager {
      * Connects and subscribes with this information and receives events, which are pushed back
      * to parent.
      */
-    public static class Channel {
+    public class Channel {
 
         protected Pusher pusher;
 
@@ -229,8 +246,7 @@ public class PusherManager {
         protected long requestId;
         protected ConnectionState connectionState;
 
-        @Inject protected Auth auth;
-        @Inject protected PusherManager pusherManager;
+        protected PusherManager pusherManager;
 
         /**
          * Default non-accessible constructor. Injects dependencies.
@@ -238,6 +254,7 @@ public class PusherManager {
          */
         protected Channel() {
             AmbSingleton.inject(this);
+            pusherManager = PusherManager.this;
         }
 
         /**
@@ -385,6 +402,7 @@ public class PusherManager {
         void connectionFailed();
         void subscriptionFailed();
         void onEvent(String data);
+        void onIdentifyComplete();
     }
 
     /**

@@ -1,204 +1,85 @@
 package com.ambassador.ambassadorsdk;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.IntentFilter;
+import android.app.Activity;
+import android.graphics.Color;
 
-import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.ambassadorsdk.internal.ConversionUtility;
-import com.ambassador.ambassadorsdk.internal.IdentifyAugurSDK;
-import com.ambassador.ambassadorsdk.internal.InstallReceiver;
-import com.ambassador.ambassadorsdk.internal.Utilities;
-import com.ambassador.ambassadorsdk.internal.api.PusherManager;
-import com.ambassador.ambassadorsdk.internal.data.Auth;
-import com.ambassador.ambassadorsdk.internal.data.Campaign;
-import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
+import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
+
+import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import dagger.ObjectGraph;
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest ({
-        AmbassadorSDK.class,
-        Auth.class,
-        User.class,
-        Campaign.class,
-        AmbSingleton.class,
-        Utilities.class,
-        InstallReceiver.class,
-        ConversionParameters.class
+        AmbIdentify.class,
+        Color.class
 })
 public class AmbassadorSDKTest {
 
-    private Context context;
-
-    private Auth auth;
-    private User user;
-    private Campaign campaign;
-    private ConversionUtility conversionUtility;
-    private PusherManager pusherManager;
-
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         PowerMockito.mockStatic(
-                AmbSingleton.class,
-                Utilities.class,
-                InstallReceiver.class
+                AmbIdentify.class,
+                Color.class
         );
 
-        context = Mockito.mock(Context.class);
-        TestUtils.mockStrings(context);
-
-        PowerMockito.spy(AmbassadorSDK.class);
-
-        auth = Mockito.mock(Auth.class);
-        AmbassadorSDK.auth = auth;
-
-        user = Mockito.mock(User.class);
-        AmbassadorSDK.user = user;
-
-        campaign = Mockito.mock(Campaign.class);
-        AmbassadorSDK.campaign = campaign;
-
-        pusherManager = Mockito.mock(PusherManager.class);
-        AmbassadorSDK.pusherManager = pusherManager;
-
-        conversionUtility = Mockito.mock(ConversionUtility.class);
-        AmbassadorSDK.conversionUtility = conversionUtility;
+        PowerMockito.when(AmbIdentify.class, "get", Mockito.anyString()).thenReturn(Mockito.mock(AmbIdentify.class));
     }
 
     @Test
-    public void presentRAFTest() throws Exception {
-
-    }
-
-    @Test
-    public void identifyTest() throws Exception {
-        // ARRANGE
+    public void testsIdentifyWithValidEmail() throws Exception {
         String email = "email@gmail.com";
-        IdentifyAugurSDK identify = Mockito.mock(IdentifyAugurSDK.class);
-        PowerMockito.doReturn(identify).when(AmbassadorSDK.class, "buildIdentify");
 
-        // ACT
-        AmbassadorSDK.identify(email);
+        boolean result = AmbassadorSDK.identify(email);
 
-        // ASSERT
-        Mockito.verify(user).setEmail(Mockito.eq(email));
-        Mockito.verify(identify).getIdentity();
-        Mockito.verify(pusherManager).startNewChannel();
-
+        Assert.assertTrue(result);
     }
 
     @Test
-    public void registerConversionRestrictToInstallTest() {
-        // ARRANGE
-        ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
-        boolean restrictToInstall = true;
-        Mockito.when(campaign.isConvertedOnInstall()).thenReturn(true);
+    public void testsIdentifyWithInvalidEmail() throws Exception {
+        String email = "email";
 
-        // ACT
-        AmbassadorSDK.registerConversion(conversionParameters, restrictToInstall);
+        boolean result = AmbassadorSDK.identify(email);
 
-        // ASSERT
-        Mockito.verify(campaign).isConvertedOnInstall();
+        Assert.assertFalse(result);
     }
 
     @Test
-    public void registerConversionNonInstallTest() throws Exception {
-        // ARRANGE
-        //ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
-        ConversionParameters conversionParameters = new ConversionParameters.Builder()
-                .setEmail("jake@getambassador.com")
-                .setRevenue(15.55f)
-                .setCampaign(260)
-                .build();
-        boolean restrictToInstall = false;
-        Mockito.when(campaign.isConvertedOnInstall()).thenReturn(false);
-        Mockito.doNothing().when(conversionUtility).registerConversion();
+    public void testsIdentifyWithNullEmail() throws Exception {
+        String email = null;
 
-        // ACT
-        AmbassadorSDK.registerConversion(conversionParameters, restrictToInstall);
+        boolean result = AmbassadorSDK.identify(email);
 
-        // ASSERT
-        Mockito.verify(conversionUtility).registerConversion();
+        Assert.assertFalse(result);
     }
 
     @Test
-    public void runWithKeysTest() throws Exception {
-        // ARRANGE
-        String universalToken = "universalToken";
-        String universalID = "universalID";
-        ObjectGraph objectGraph = Mockito.mock(ObjectGraph.class);
-        PowerMockito.doReturn(objectGraph).when(AmbSingleton.class, "getGraph");
-        Mockito.doNothing().when(objectGraph).injectStatics();
-        PowerMockito.doNothing().when(AmbassadorSDK.class, "registerInstallReceiver", context);
-        PowerMockito.doNothing().when(AmbassadorSDK.class, "startConversionTimer");
-        PowerMockito.doNothing().when(AmbassadorSDK.class, "setupGcm", context);
-        Mockito.doNothing().when(auth).setUniversalToken(Mockito.anyString());
-        Mockito.doNothing().when(auth).setUniversalId(Mockito.anyString());
+    public void testsPresentWelcomeScreenDoesSetFields() throws Exception {
+        Activity activity = Mockito.mock(Activity.class);
+        WelcomeScreenDialog.AvailabilityCallback availabilityCallback = Mockito.mock(WelcomeScreenDialog.AvailabilityCallback.class);
+        WelcomeScreenDialog.Parameters parameters = Mockito.mock(WelcomeScreenDialog.Parameters.class);
 
-        // ACT
-        AmbassadorSDK.runWithKeys(context, universalToken, universalID);
+        AmbassadorSDK.presentWelcomeScreen(activity, availabilityCallback, parameters);
 
-        // ASSERT
-        Mockito.verify(auth).setUniversalToken(Mockito.eq(universalToken));
-        Mockito.verify(auth).setUniversalId(Mockito.eq(universalID));
+        Assert.assertEquals(activity, WelcomeScreenDialog.getActivity());
+        Assert.assertEquals(availabilityCallback, WelcomeScreenDialog.getAvailabilityCallback());
+        Assert.assertEquals(parameters, WelcomeScreenDialog.getParameters());
     }
 
     @Test
-    public void registerInstallReceiverTest() throws Exception {
-        // ARRANGE
-        IntentFilter intentFilter = Mockito.mock(IntentFilter.class);
-        PowerMockito.doReturn(intentFilter).when(AmbassadorSDK.class, "buildIntentFilter");
-        Mockito.doNothing().when(intentFilter).addAction(Mockito.anyString());
-        Mockito.doReturn(null).when(context).registerReceiver(Mockito.any(BroadcastReceiver.class), Mockito.any(IntentFilter.class));
-        InstallReceiver broadcastReceiver = Mockito.mock(InstallReceiver.class);
-        PowerMockito.doReturn(broadcastReceiver).when(InstallReceiver.class, "getInstance");
+    public void testsConfigureSurveyDoesSetColors() throws Exception {
+        AmbassadorSDK.configureSurvey(Color.RED, Color.BLUE, Color.GREEN);
 
-        // ACT
-        AmbassadorSDK.registerInstallReceiver(context);
-
-        // ASSERT
-        Mockito.verify(intentFilter).addAction(Mockito.eq("com.android.vending.INSTALL_REFERRER"));
-        Mockito.verify(context).registerReceiver(Mockito.eq(broadcastReceiver), Mockito.eq(intentFilter));
-    }
-
-    @Test
-    public void startConversionTimerTest() throws Exception {
-        // ARRANGE
-        ConversionUtility conversionUtility = Mockito.mock(ConversionUtility.class);
-        Mockito.doNothing().when(conversionUtility).readAndSaveDatabaseEntries();
-        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
-        PowerMockito.doReturn(conversionUtility).when(AmbassadorSDK.class, "buildConversionUtility", context);
-        Timer timer = Mockito.mock(Timer.class);
-        PowerMockito.doReturn(timer).when(AmbassadorSDK.class, "buildTimer");
-        Mockito.doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                TimerTask timerTask = (TimerTask) invocation.getArguments()[0];
-                timerTask.run();
-                return null;
-            }
-        }).when(timer).scheduleAtFixedRate(Mockito.any(TimerTask.class), Mockito.eq(10000L), Mockito.eq(10000L));
-
-        // ACT
-        AmbassadorSDK.startConversionTimer();
-
-        // ASSERT
-        Mockito.verify(timer).scheduleAtFixedRate(Mockito.any(TimerTask.class), Mockito.eq(10000L), Mockito.eq(10000L));
-        Mockito.verify(conversionUtility).readAndSaveDatabaseEntries();
+        Assert.assertEquals(Color.RED, new SurveyModel().getBackgroundColor());
+        Assert.assertEquals(Color.BLUE, new SurveyModel().getContentColor());
+        Assert.assertEquals(Color.GREEN, new SurveyModel().getButtonColor());
     }
 
 }

@@ -45,9 +45,7 @@ import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.SmsSendObserver;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
-import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
@@ -74,17 +72,13 @@ import butterfork.ButterFork;
  */
 public final class ContactSelectorActivity extends AppCompatActivity {
 
-    // region Fields
 
-    // region Constants
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
     private static final int SEND_SMS = 1234;
     private static final int MAX_SMS_LENGTH = 160;
     private static final int LENGTH_GOOD_COLOR = RAFOptions.get().getContactsSendButtonTextColor(); // TODO: make this not suck
     private static final int LENGTH_BAD_COLOR = new ColorResource(android.R.color.holo_red_dark).getColor();
-    // endregion
-    
-    // region Views
+
     @Nullable
     @Bind(B.id.action_bar)      protected Toolbar               toolbar;
 
@@ -101,18 +95,13 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     @Bind(B.id.tvSendContacts)  protected CrossfadedTextView    tvSendContacts;
     @Bind(B.id.tvSendCount)     protected TextView              tvSendCount;
     @Bind(B.id.tvNoContacts)    protected TextView              tvNoContacts;
-    // endregion
 
-    // region Dependencies
-    @Inject protected PusherManager     pusherManager;
     @Inject protected BulkShareHelper   bulkShareHelper;
     @Inject protected RequestManager    requestManager;
     @Inject protected User              user;
     @Inject protected Campaign          campaign;
     @Inject protected Device            device;
-    // endregion
 
-    // region Local members
     protected RAFOptions                raf = RAFOptions.get();
     protected List<Contact>             contactList;
     protected ContactListAdapter        contactListAdapter;
@@ -122,13 +111,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     protected ProgressDialog            progressDialog;
     protected float                     lastSendHeight;
     protected boolean                   didSendSms;
-    // endregion
 
-    // endregion
-
-    // region Methods
-
-    // region Activity overrides
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -149,14 +132,12 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         setUpOnClicks();
         setUpProgressDialog();
         setUpUI();
-        setUpPusher();
         populateContacts();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        pusherManager.removePusherListener(pusherListener);
         if (askNameDialog != null && askNameDialog.isShowing()) {
             askNameDialog.dismiss();
         }
@@ -230,17 +211,13 @@ public final class ContactSelectorActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-    // endregion
 
-    // region Requirement checks
     private void finishIfSingletonInvalid() {
         if (!AmbSingleton.isValid()) {
             finish();
         }
     }
-    // endregion
 
-    // region Setup
     private void processIntent() {
         Intent data = getIntent();
         showPhoneNumbers = data.getBooleanExtra("showPhoneNumbers", true);
@@ -360,22 +337,6 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         });
     }
 
-    private void setUpPusher() {
-        pusherData = user.getPusherInfo();
-        pusherManager.addPusherListener(pusherListener);
-    }
-
-    protected PusherListenerAdapter pusherListener = new PusherListenerAdapter() {
-        @Override
-        public void onEvent(String data) {
-            super.onEvent(data);
-            identified();
-            pusherManager.removePusherListener(this);
-        }
-    };
-    // endregion
-
-    // region OnClickListeners
     private void rlSendClicked() {
         if (ableToSend()) {
             send();
@@ -422,9 +383,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                     }
                 }).start();
     }
-    // endregion
 
-    // region UI helpers
     private void toggleSearch() {
         final float scale = Utilities.getScreenDensity();
         int finalHeight = (rlSearch.getHeight() > 0) ? 0 : (int) (50 * scale + 0.5f);
@@ -525,9 +484,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         btnSendText += (numOfContacts > 1) ? " CONTACTS" : " CONTACT";
         tvSendContacts.setText(btnSendText);
     }
-    // endregion
 
-    // region Contacts & sending
     private void populateContacts() {
         if (!handleContactsPermission()) {
             return;
@@ -568,7 +525,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         boolean noneSelected = contactListAdapter.getSelectedContacts().size() <= 0;
         boolean emptyMessage = etShareMessage.getText().toString().length() <= 0;
         boolean haveUrl = Utilities.containsURL(etShareMessage.getText().toString(), campaign.getUrl());
-        boolean haveName = pusherHasKey("firstName") && pusherHasKey("lastName");
+        boolean haveName = user.getFirstName() != null && !user.getFirstName().isEmpty() && user.getLastName() != null && !user.getLastName().isEmpty();
 
         if (lengthToShort && noneSelected) {
             negativeTextViewFeedback(tvSendCount);
@@ -639,6 +596,12 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                 askNameDialog.showKeyboard();
             }
         });
+        askNameDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                send();
+            }
+        });
         askNameDialog.show();
     }
 
@@ -649,10 +612,6 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    public void identified() {
-        send();
     }
 
     private void send() {
@@ -696,8 +655,5 @@ public final class ContactSelectorActivity extends AppCompatActivity {
             }
         });
     }
-    // endregion
-
-    // endregion
 
 }

@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.google.gson.JsonObject;
@@ -18,6 +19,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
         AmbSingleton.class,
+        Log.class,
 })
 public class UserTest {
 
@@ -28,7 +30,8 @@ public class UserTest {
     @Before
     public void setUp() {
         PowerMockito.mockStatic(
-                AmbSingleton.class
+                AmbSingleton.class,
+                Log.class
         );
 
         context = Mockito.mock(Context.class);
@@ -119,9 +122,14 @@ public class UserTest {
         user.setLastName("lastName");
         user.setGcmToken("gcmToken");
         user.setAugurData(new JsonObject());
+        user.setWebDeviceId("web");
+        user.setFacebookAccessToken("facebook");
+        user.setTwitterAccessToken("twitter");
+        user.setLinkedInAccessToken("linkedin");
+        user.setIdentifyData("identifyData");
 
         // ASSERT
-        Mockito.verify(user, Mockito.times(5)).save();
+        Mockito.verify(user, Mockito.times(10)).save();
     }
 
 }
