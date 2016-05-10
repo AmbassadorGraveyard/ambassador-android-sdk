@@ -34,7 +34,7 @@ public class AmbIdentifyTest {
                 AmbSingleton.class
         );
 
-        ambIdentify = Mockito.spy(AmbIdentify.get("jake@getambassador.com"));
+        ambIdentify = Mockito.spy(AmbIdentify.get("jake@getambassador.com", new AmbassadorIdentification()));
         user = Mockito.mock(User.class);
         ambIdentify.user = user;
         requestManager = Mockito.mock(RequestManager.class);
@@ -44,7 +44,7 @@ public class AmbIdentifyTest {
 
     @Test
     public void testsGetDoesCreateInstanceWithEmail() throws Exception {
-        Assert.assertEquals("jake@getambassador.com", ambIdentify.emailAddress);
+        Assert.assertEquals("jake@getambassador.com", ambIdentify.userId);
     }
 
     @Test

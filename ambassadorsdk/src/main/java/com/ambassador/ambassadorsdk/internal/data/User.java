@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
+import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -20,6 +21,7 @@ public class User implements Data {
     protected String firstName;
     protected String lastName;
     protected String email;
+    protected AmbassadorIdentification ambassadorIdentification;
     protected String gcmToken;
     protected JsonObject pusherInfo;
     protected JsonObject augurData;
@@ -64,6 +66,16 @@ public class User implements Data {
                 .edit()
                 .putString("email", email)
                 .apply();
+    }
+
+    @Nullable
+    public AmbassadorIdentification getAmbassadorIdentification() {
+        return ambassadorIdentification;
+    }
+
+    public void setAmbassadorIdentification(AmbassadorIdentification ambassadorIdentification) {
+        this.ambassadorIdentification = ambassadorIdentification;
+        save();
     }
 
     @Nullable
@@ -170,6 +182,7 @@ public class User implements Data {
         firstName = null;
         lastName = null;
         email = null;
+        ambassadorIdentification = null;
         gcmToken = null;
         augurData = null;
         webDeviceId = null;
@@ -198,6 +211,7 @@ public class User implements Data {
         setFirstName(user.getFirstName());
         setLastName(user.getLastName());
         setEmail(user.getEmail());
+        setAmbassadorIdentification(user.getAmbassadorIdentification());
         setGcmToken(user.getGcmToken());
         setAugurData(user.getAugurData());
         setWebDeviceId(user.getWebDeviceId());
