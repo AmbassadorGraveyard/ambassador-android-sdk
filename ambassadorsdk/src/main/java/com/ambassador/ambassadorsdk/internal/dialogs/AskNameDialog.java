@@ -123,13 +123,7 @@ public final class AskNameDialog extends Dialog {
             @Override
             public void subscribed() {
                 super.subscribed();
-                requestManager.updateNameRequest(new PusherManager(), pusherData.get("email").getAsString(), firstName, lastName, new RequestManager.RequestCompletion() {
-                    @Override
-                    public void onSuccess(Object successResponse) {}
-                    @Override
-                    public void onFailure(Object failureResponse) {}
-                });
-
+                requestManager.updateNameRequest(new PusherManager(), pusherData.get("email").getAsString(), firstName, lastName, null);
                 dismiss();
             }
         });

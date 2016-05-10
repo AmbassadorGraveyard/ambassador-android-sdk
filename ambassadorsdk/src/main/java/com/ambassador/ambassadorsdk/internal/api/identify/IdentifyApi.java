@@ -109,17 +109,17 @@ public final class IdentifyApi {
             @Override
             public void success(UpdateNameRequestResponse updateNameRequestResponse, Response response) {
                 // This should never happen, this request is not returning JSON so it hits the failure
-                completion.onSuccess(requestId);
+                if (completion != null) completion.onSuccess(requestId);
                 Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
             }
 
             @Override
             public void failure(RetrofitError error) {
                 if (new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
-                    completion.onSuccess(requestId);
+                    if (completion != null) completion.onSuccess(requestId);
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
                 } else {
-                    completion.onFailure("failure");
+                    if (completion != null) completion.onFailure("failure");
                     Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.updateNameRequest(...)");
                 }
             }
