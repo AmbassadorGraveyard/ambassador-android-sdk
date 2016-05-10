@@ -141,8 +141,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                 @Override
                 public void noSDK() {
-                    Toast.makeText(AmbassadorActivity.this, "No SDK!", Toast.LENGTH_SHORT).show();
-                    finish();
+                    showNoSDKAccessError();
                 }
             });
         } else if (user.getEmail() != null) {
@@ -368,7 +367,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             @Override
             public void subscriptionFailed() {
                 super.subscriptionFailed();
-                showNetworkError();
+                showNoSDKAccessError();
             }
 
             @Override
@@ -468,8 +467,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                         @Override
                         public void noSDK() {
-                            Toast.makeText(AmbassadorActivity.this, "No SDK!", Toast.LENGTH_SHORT).show();
-                            finish();
+                            showNoSDKAccessError();
                         }
                     });
                 } else {
@@ -509,8 +507,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
                         @Override
                         public void noSDK() {
-                            Toast.makeText(AmbassadorActivity.this, "No SDK!", Toast.LENGTH_SHORT).show();
-                            finish();
+                            showNoSDKAccessError();
                         }
                     });
                 } else {
@@ -528,16 +525,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
         askEmailDialog.show();
     }
 
-    protected boolean tryAndSetURL(JsonObject pusherData, String initialShareMessage) {
-        JsonArray urlArray = pusherData.get("urls").getAsJsonArray();
-        return tryAndSetURL(urlArray, initialShareMessage);
-    }
-
     protected boolean tryAndSetURL(JsonArray urlArray, String initialShareMessage) {
         boolean campaignFound = false;
-            // We get a JSON object from the PusherSDK Info string saved to SharedPreferences
-
-        // Iterates throught all the urls in the PusherSDK object until we find one will a matching campaign ID
         for (int i = 0; i < urlArray.size(); i++) {
             JsonObject urlObj = urlArray.get(i).getAsJsonObject();
             int campID = urlObj.get("campaign_uid").getAsInt();
@@ -571,6 +560,24 @@ public final class AmbassadorActivity extends AppCompatActivity {
             public void run() {
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.loading_failure).getValue(), Toast.LENGTH_SHORT).show();
                 finish();
+            }
+        });
+    }
+
+    protected void showNoSDKAccessError() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(AmbassadorActivity.this)
+                        .setMessage("You currently don't have access to the SDK. If you have any questions please contact support.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
             }
         });
     }
