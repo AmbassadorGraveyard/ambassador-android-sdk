@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -20,7 +21,7 @@ public class User implements Data {
     // region Fields
     protected String firstName;
     protected String lastName;
-    protected String email;
+    protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
     protected String gcmToken;
     protected JsonObject pusherInfo;
@@ -54,23 +55,23 @@ public class User implements Data {
     }
 
     @Nullable
-    public String getEmail() {
-        return email;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserId(String userId) {
+        this.userId = userId;
         save();
         AmbSingleton.getContext()
                 .getSharedPreferences("user", Context.MODE_PRIVATE)
                 .edit()
-                .putString("email", email)
+                .putString("email", userId)
                 .apply();
     }
 
-    @Nullable
+    @NonNull
     public AmbassadorIdentification getAmbassadorIdentification() {
-        return ambassadorIdentification;
+        return ambassadorIdentification != null ? ambassadorIdentification : new AmbassadorIdentification();
     }
 
     public void setAmbassadorIdentification(AmbassadorIdentification ambassadorIdentification) {
@@ -170,7 +171,7 @@ public class User implements Data {
         if (AmbSingleton.getContext() != null) {
             String data = new Gson().toJson(this);
             SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
-            sharedPreferences.edit().putString(email, data).apply();
+            sharedPreferences.edit().putString(userId, data).apply();
         }
     }
 
@@ -181,7 +182,7 @@ public class User implements Data {
     public void clear() {
         firstName = null;
         lastName = null;
-        email = null;
+        userId = null;
         ambassadorIdentification = null;
         gcmToken = null;
         augurData = null;
@@ -210,7 +211,7 @@ public class User implements Data {
         User user = new Gson().fromJson(json, User.class);
         setFirstName(user.getFirstName());
         setLastName(user.getLastName());
-        setEmail(user.getEmail());
+        setUserId(user.getUserId());
         setAmbassadorIdentification(user.getAmbassadorIdentification());
         setGcmToken(user.getGcmToken());
         setAugurData(user.getAugurData());

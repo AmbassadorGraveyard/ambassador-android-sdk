@@ -15,6 +15,7 @@ import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.google.gson.JsonObject;
 
@@ -111,8 +112,9 @@ public class RequestManagerTest {
         Mockito.when(user.getFirstName()).thenReturn(userFirstName);
         Mockito.when(user.getLastName()).thenReturn(userLastName);
         Mockito.when(user.getAugurData()).thenReturn(identifyObject);
+        Mockito.when(user.getAmbassadorIdentification()).thenReturn(Mockito.mock(AmbassadorIdentification.class));
         Mockito.when(campaign.getId()).thenReturn(campaignId);
-        Mockito.when(user.getEmail()).thenReturn(userEmail);
+        Mockito.when(user.getUserId()).thenReturn(userEmail);
         Mockito.when(user.getLinkedInAccessToken()).thenReturn(linkedInToken);
 
         requestManager.auth = auth;

@@ -49,7 +49,7 @@ public class UserTest {
     public void saveWithNonNullContextDoesSaveSerialized() {
         // ARRANGE
         User user = new User();
-        user.email = "jake@getambassador.com";
+        user.userId = "jake@getambassador.com";
         user.firstName = "jake";
         user.lastName = "dunahee";
         user.gcmToken = "gcmToken";
@@ -63,7 +63,7 @@ public class UserTest {
 
         // ASSERT
         Mockito.verify(context).getSharedPreferences(Mockito.eq("user"), Mockito.eq(Context.MODE_PRIVATE));
-        Mockito.verify(editor).putString(Mockito.eq("jake@getambassador.com"), Mockito.eq("{\"firstName\":\"jake\",\"lastName\":\"dunahee\",\"email\":\"jake@getambassador.com\",\"gcmToken\":\"gcmToken\",\"facebookAccessToken\":\"facebookAccessToken\",\"twitterAccessToken\":\"twitterAccessToken\",\"linkedInAccessToken\":\"linkedInAccessToken\"}"));
+        Mockito.verify(editor).putString(Mockito.eq("jake@getambassador.com"), Mockito.eq("{\"firstName\":\"jake\",\"lastName\":\"dunahee\",\"userId\":\"jake@getambassador.com\",\"gcmToken\":\"gcmToken\",\"facebookAccessToken\":\"facebookAccessToken\",\"twitterAccessToken\":\"twitterAccessToken\",\"linkedInAccessToken\":\"linkedInAccessToken\"}"));
         Mockito.verify(editor).apply();
     }
 
@@ -73,7 +73,7 @@ public class UserTest {
         Mockito.when(AmbSingleton.getContext()).thenReturn(null);
 
         User user = new User();
-        user.email = "jake@getambassador.com";
+        user.userId = "jake@getambassador.com";
         user.firstName = "jake";
         user.lastName = "dunahee";
         user.gcmToken = "gcmToken";
@@ -93,7 +93,7 @@ public class UserTest {
     public void clearDoesClearAllFields() {
         // ARRANGE
         User user = new User();
-        user.email = "jake@getambassador.com";
+        user.userId = "jake@getambassador.com";
         user.firstName = "jake";
         user.lastName = "dunahee";
         user.gcmToken = "gcmToken";
@@ -103,7 +103,7 @@ public class UserTest {
         user.clear();
 
         // ASSERT
-        Assert.assertNull(user.getEmail());
+        Assert.assertNull(user.getUserId());
         Assert.assertNull(user.getFirstName());
         Assert.assertNull(user.getLastName());
         Assert.assertNull(user.getGcmToken());
@@ -117,7 +117,7 @@ public class UserTest {
         Mockito.doNothing().when(user).save();
 
         // ACT
-        user.setEmail("jake@getambassador.com");
+        user.setUserId("jake@getambassador.com");
         user.setFirstName("firstName");
         user.setLastName("lastName");
         user.setGcmToken("gcmToken");

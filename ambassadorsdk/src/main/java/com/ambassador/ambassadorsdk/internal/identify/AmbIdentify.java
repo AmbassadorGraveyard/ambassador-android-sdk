@@ -42,7 +42,7 @@ public class AmbIdentify {
         setupPusher();
 
         user.clear();
-        user.setEmail(ambassadorIdentification.getEmail());
+        user.setUserId(userId);
         user.setAmbassadorIdentification(ambassadorIdentification);
         final List<AmbIdentifyTask> identifyTasksList = new ArrayList<>();
         Collections.addAll(identifyTasksList, identifyTasks);

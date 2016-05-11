@@ -18,7 +18,7 @@ public final class InstanceIdListener extends InstanceIDListenerService {
         try {
             AmbSingleton.inject(this);
             GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
-            String email = user.getEmail();
+            String email = user.getAmbassadorIdentification().getEmail();
             String id = gcm.register("440421303402");
             requestManager.updateGcmRegistrationToken(email, id, new RequestManager.RequestCompletion() {
                 @Override

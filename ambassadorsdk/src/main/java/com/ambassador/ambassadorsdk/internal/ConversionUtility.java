@@ -146,7 +146,7 @@ public class ConversionUtility {
         }
 
         if (newParameters.email == null || "".equals(newParameters.email)) {
-            newParameters.email = user.getEmail();
+            newParameters.email = user.getAmbassadorIdentification().getEmail();
         }
 
         requestManager.registerConversionRequest(newParameters, new RequestManager.RequestCompletion() {

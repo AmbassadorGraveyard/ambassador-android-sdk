@@ -114,7 +114,7 @@ public class AmbIdentifyTest {
         Mockito.doNothing().when(ambIdentify).setupPusher();
         ambIdentify.execute();
         Mockito.verify(user).clear();
-        Mockito.verify(user).setEmail(Mockito.eq("jake@getambassador.com"));
+        Mockito.verify(user).setUserId(Mockito.eq("jake@getambassador.com"));
     }
 
     @Test

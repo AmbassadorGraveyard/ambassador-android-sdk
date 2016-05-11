@@ -81,7 +81,7 @@ public class RequestManager {
         String authKey = auth.getUniversalToken();
         List<String> numberList = bulkShareHelper.verifiedSMSList(contacts);
         String name = user.getFirstName() + " " + user.getLastName();
-        String fromEmail = user.getEmail();
+        String fromEmail = user.getAmbassadorIdentification().getEmail();
         BulkShareApi.BulkShareSmsBody body = bulkShareHelper.payloadObjectForSMS(numberList, name, messageToShare, fromEmail);
 
         bulkShareApi.bulkShareSms(uid, authKey, body, completion);
@@ -98,7 +98,7 @@ public class RequestManager {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
         List<String> emailList = bulkShareHelper.verifiedEmailList(contacts);
-        String fromEmail = user.getEmail();
+        String fromEmail = user.getAmbassadorIdentification().getEmail();
         BulkShareApi.BulkShareEmailBody body = bulkShareHelper.payloadObjectForEmail(emailList, campaign.getShortCode(), campaign.getEmailSubject(), messageToShare, fromEmail);
 
         bulkShareApi.bulkShareEmail(uid, authKey, body, completion);
@@ -121,7 +121,7 @@ public class RequestManager {
     public void bulkShareTrack(final List<Contact> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
-        String fromEmail = user.getEmail();
+        String fromEmail = user.getAmbassadorIdentification().getEmail();
         BulkShareApi.BulkShareTrackBody[] body;
         switch (shareType) {
             case SMS:
@@ -168,9 +168,9 @@ public class RequestManager {
         String authKey = auth.getUniversalToken();
 
         String campaignId = campaign.getId();
-        String userEmail = user.getEmail();
+        String userId = user.getUserId();
         String augur = user.getAugurData() != null ? user.getAugurData().toString() : null;
-        IdentifyApi.IdentifyRequestBody body = new IdentifyApi.IdentifyRequestBody(campaignId, userEmail, augur);
+        IdentifyApi.IdentifyRequestBody body = new IdentifyApi.IdentifyRequestBody(campaignId, userId, augur, user.getAmbassadorIdentification());
 
         identifyApi.identifyRequest(sessionId, requestId, uid, authKey, body, completion);
     }
