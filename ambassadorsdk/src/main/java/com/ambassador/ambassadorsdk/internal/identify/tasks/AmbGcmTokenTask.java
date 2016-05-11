@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal.identify;
+package com.ambassador.ambassadorsdk.internal.identify.tasks;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.google.android.gms.common.ConnectionResult;

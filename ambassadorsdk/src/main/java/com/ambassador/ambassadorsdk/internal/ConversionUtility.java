@@ -166,8 +166,7 @@ public class ConversionUtility {
 
     class ConversionParametersException extends Exception {
         public ConversionParametersException() {
-            super("Conversion parameters must have set values for 'revenue," +
-                    "'campaign', and 'email.");
+            super("Conversion parameters must have set values for 'revenue, 'campaign', and 'email.");
         }
     }
 }

@@ -7,20 +7,20 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Secrets;
-import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.conversion.ConversionStatusListener;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
+import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 
 import net.kencochrane.raven.DefaultRavenFactory;
@@ -109,17 +109,40 @@ public final class AmbassadorSDK {
         return true;
     }
 
-    public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
-        //do conversion if it's not an install conversion, or if it is, make sure that we haven't already converted on install by checking sharedprefs
-        if ((!restrictToInstall || !campaign.isConvertedOnInstall()) && conversionParameters.isValid()) {
-            Utilities.debugLog("Conversion", "restrictToInstall: " + restrictToInstall);
-            conversionUtility.setParameters(conversionParameters);
-            conversionUtility.registerConversion();
-        }
+    /**
+     * Registers a conversion to Ambassador.
+     * @param conversionParameters object defining information about the conversion.
+     * @param limitOnce boolean determining if this conversion should ever be allowed to happen more than once.
+     * @param conversionStatusListener callback interface that will return status of the conversion request.
+     */
+    public static void registerConversion(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
 
-        if (restrictToInstall) {
-            campaign.setConvertedOnInstall(true);
-        }
+    }
+
+    /**
+     * @deprecated use {@link #registerConversion(ConversionParameters, boolean, ConversionStatusListener)} instead.
+     * Registers a conversion to Ambassador.
+     * @param conversionParameters object defining information about the conversion.
+     * @param limitOnce boolean determining if this conversion should ever be allowed to happen more than once.
+     */
+    @Deprecated
+    public static void registerConversion(ConversionParameters conversionParameters, Boolean limitOnce) {
+        registerConversion(conversionParameters, limitOnce, new ConversionStatusListener() {
+            @Override
+            public void success() {
+                // No implementation.
+            }
+
+            @Override
+            public void pending() {
+                // No implementation.
+            }
+
+            @Override
+            public void error() {
+                // No implementation.
+            }
+        });
     }
 
     public static void presentRAF(Context context, String campaignID) {

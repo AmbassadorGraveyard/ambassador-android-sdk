@@ -1,4 +1,4 @@
-package com.ambassador.ambassadorsdk.internal.identify;
+package com.ambassador.ambassadorsdk.internal.identify.tasks;
 
 import android.content.Context;
 import android.content.SharedPreferences;

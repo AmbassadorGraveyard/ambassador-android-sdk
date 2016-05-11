@@ -1,11 +1,8 @@
 package com.ambassador.ambassadorsdk;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
-
-import java.lang.reflect.Field;
 
 /**
  * Stores information relevant for registering a conversion on the backend.
@@ -104,10 +101,6 @@ public final class ConversionParameters {
         return isApproved;
     }
 
-    public String getShortCode() {
-        return shortCode;
-    }
-
     public void updateShortCode(String shortCode) {
         this.shortCode = shortCode;
     }
@@ -142,24 +135,7 @@ public final class ConversionParameters {
         return new ConversionsApi.RegisterConversionRequestBody.FieldsObject(this, shortCode);
     }
 
-    public void prettyPrint() {
-        String logTag = "AMB-PARAMS";
-        Log.v(logTag, "-------");
-
-        for (Field field : getClass().getFields()) {
-            try {
-                Log.v(logTag, field.getName() + " = " + field.get(this).toString());
-            } catch (Exception e) {
-                // ignore, not useful to log
-            }
-        }
-
-        Log.v(logTag, "-------");
-    }
-
     public static class Builder {
-
-        private static final String TAG = Builder.class.getSimpleName();
 
         private int campaign = -1;
         private String email;
@@ -180,23 +156,15 @@ public final class ConversionParameters {
         private String mbsy_event_data3;
         private int mbsy_is_approved;
 
-        private boolean revenueCheck = false;
-        private boolean campaignCheck = false;
-        private boolean emailCheck = false;
-
-        public Builder() {}
-
         @NonNull
         public Builder setCampaign(int mbsy_campaign) {
             this.campaign = mbsy_campaign;
-            this.campaignCheck = true;
             return this;
         }
 
         @NonNull
         public Builder setEmail(String mbsy_email) {
             this.email = mbsy_email;
-            this.emailCheck = true;
             return this;
         }
 
@@ -251,7 +219,6 @@ public final class ConversionParameters {
         @NonNull
         public Builder setRevenue(float mbsy_revenue) {
             this.mbsy_revenue = mbsy_revenue;
-            this.revenueCheck = true;
             return this;
         }
 
@@ -299,9 +266,8 @@ public final class ConversionParameters {
 
         @NonNull
         public ConversionParameters build() {
-            validateRequiredFields();
-
             ConversionParameters out = new ConversionParameters();
+
             out.campaign = campaign;
             out.email = email;
             out.firstName = firstName;
@@ -322,23 +288,6 @@ public final class ConversionParameters {
             out.isApproved = mbsy_is_approved;
 
             return out;
-        }
-
-        private void validateRequiredFields() {
-            if (!revenueCheck || mbsy_revenue == -1) {
-                Log.w(TAG, "Warning: you must set revenue!");
-            }
-            if (!campaignCheck || campaign == -1) {
-                Log.w(TAG, "Warning: you must set campaign!");
-            }
-            if (!emailCheck || email == null) {
-                Log.w(TAG, "Warning: you must set email!");
-            }
-        }
-
-        @NonNull
-        public static Builder newInstance() {
-            return new Builder();
         }
 
     }
