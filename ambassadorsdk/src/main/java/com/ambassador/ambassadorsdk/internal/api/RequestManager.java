@@ -3,7 +3,6 @@ package com.ambassador.ambassadorsdk.internal.api;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.envoy.EnvoyApi;
@@ -146,8 +145,8 @@ public class RequestManager {
     public void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
-        ConversionsApi.RegisterConversionRequestBody body = ConversionUtility.createConversionRequestBody(conversionParameters, user.getAugurData().toString());
-        conversionsApi.registerConversionRequest(uid, authKey, body, completion);
+        //ConversionsApi.RegisterConversionRequestBody body = new ConversionsApi.RegisterConversionRequestBody();
+        //conversionsApi.registerConversionRequest(uid, authKey, body, completion);
     }
 
     /**

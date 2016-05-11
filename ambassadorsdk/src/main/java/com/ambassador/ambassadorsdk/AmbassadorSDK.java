@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Secrets;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
@@ -27,8 +26,6 @@ import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import net.kencochrane.raven.DefaultRavenFactory;
 
 import java.io.InputStream;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -44,7 +41,6 @@ public final class AmbassadorSDK {
     @Inject protected static Campaign campaign;
     @Inject protected static PusherManager pusherManager;
     @Inject protected static RequestManager requestManager;
-    @Inject protected static ConversionUtility conversionUtility;
 
     /**
      *
@@ -63,15 +59,6 @@ public final class AmbassadorSDK {
         auth.setUniversalId(universalId);
 
         new InstallReceiver().registerWith(context);
-
-        final ConversionUtility utility = new ConversionUtility(AmbSingleton.getContext());
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                utility.readAndSaveDatabaseEntries();
-            }
-        }, 10000, 10000);
 
         final Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {

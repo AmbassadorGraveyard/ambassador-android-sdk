@@ -6,7 +6,6 @@ import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.TestUtils;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.envoy.EnvoyApi;

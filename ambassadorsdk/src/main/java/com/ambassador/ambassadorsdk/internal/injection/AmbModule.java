@@ -6,7 +6,6 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;
@@ -39,7 +38,6 @@ import dagger.Provides;
         ContactSelectorActivity.class,
         ContactListAdapter.class,
         BulkShareHelper.class,
-        ConversionUtility.class,
         RequestManager.class,
         AmbassadorSDK.class,
         AskNameDialog.class,
@@ -87,13 +85,6 @@ public final class AmbModule {
     @Provides
     public PusherManager providePusherManager() {
         return pusherManager;
-    }
-
-    @NonNull
-    @Provides
-    @Singleton
-    public ConversionUtility provideConversionUtility() {
-        return new ConversionUtility();
     }
 
     @NonNull

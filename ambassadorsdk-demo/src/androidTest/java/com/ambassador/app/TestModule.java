@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;

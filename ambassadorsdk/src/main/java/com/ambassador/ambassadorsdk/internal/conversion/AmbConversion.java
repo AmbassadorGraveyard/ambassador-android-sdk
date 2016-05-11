@@ -15,7 +15,10 @@ public class AmbConversion {
     }
 
     public void execute() {
-
+        if (conversionParameters.getCampaign() == -1 || conversionParameters.getRevenue() < 0) {
+            conversionStatusListener.error();
+            return;
+        }
     }
 
     public static AmbConversion get(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
