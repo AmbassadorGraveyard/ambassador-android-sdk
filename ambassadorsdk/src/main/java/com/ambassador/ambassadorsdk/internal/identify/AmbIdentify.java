@@ -70,6 +70,12 @@ public class AmbIdentify {
         pusherManager.addPusherListener(new PusherListenerAdapter() {
 
             @Override
+            public void connectionFailed() {
+                super.connectionFailed();
+                completionListener.networkError();
+            }
+
+            @Override
             public void subscribed() {
                 super.subscribed();
                 subscribed = true;
@@ -138,6 +144,7 @@ public class AmbIdentify {
     public interface CompletionListener {
         void complete();
         void noSDK();
+        void networkError();
     }
 
     public static AmbIdentify get(String emailAddress) {

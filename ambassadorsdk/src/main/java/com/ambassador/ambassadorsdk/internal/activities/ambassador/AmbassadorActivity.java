@@ -143,6 +143,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 public void noSDK() {
                     showNoSDKAccessError();
                 }
+
+                @Override
+                public void networkError() {
+                    showNetworkError();
+                }
             });
         } else if (user.getEmail() != null) {
             identifyWithStoredInfo();
@@ -341,7 +346,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             public void run() {
                 showNetworkError();
             }
-        }, 30000);
+        }, 15000);
     }
 
     protected void setUpPusher() {
@@ -469,6 +474,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
                         public void noSDK() {
                             showNoSDKAccessError();
                         }
+
+                        @Override
+                        public void networkError() {
+                            showNetworkError();
+                        }
                     });
                 } else {
                     runOnUiThread(new Runnable() {
@@ -508,6 +518,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
                         @Override
                         public void noSDK() {
                             showNoSDKAccessError();
+                        }
+
+                        @Override
+                        public void networkError() {
+                            showNetworkError();
                         }
                     });
                 } else {
