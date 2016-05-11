@@ -15,6 +15,7 @@ import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorAct
 import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.conversion.ConversionStatusListener;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
@@ -116,7 +117,7 @@ public final class AmbassadorSDK {
      * @param conversionStatusListener callback interface that will return status of the conversion request.
      */
     public static void registerConversion(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
-
+        AmbConversion.get(conversionParameters, limitOnce, conversionStatusListener).execute();
     }
 
     /**
