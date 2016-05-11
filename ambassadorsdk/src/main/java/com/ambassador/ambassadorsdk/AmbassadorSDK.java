@@ -106,7 +106,7 @@ public final class AmbassadorSDK {
             ambassadorIdentification.setEmail(userId);
         }
 
-        AmbIdentify.get(userId).execute();
+        AmbIdentify.get(userId, ambassadorIdentification).execute();
     }
 
     /**

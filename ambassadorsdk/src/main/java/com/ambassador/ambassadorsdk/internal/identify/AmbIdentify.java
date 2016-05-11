@@ -20,6 +20,7 @@ public class AmbIdentify {
     @Inject protected RequestManager requestManager;
     protected PusherManager pusherManager;
     protected String userId;
+    protected AmbassadorIdentification ambassadorIdentification;
     protected AmbIdentifyTask[] identifyTasks;
     protected CompletionListener completionListener;
     protected boolean subscribed;
@@ -27,6 +28,7 @@ public class AmbIdentify {
     protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification) {
         AmbSingleton.inject(this);
         this.userId = userId;
+        this.ambassadorIdentification = ambassadorIdentification;
         this.identifyTasks = new AmbIdentifyTask[2];
         this.identifyTasks[0] = new AmbGcmTokenTask();
         this.identifyTasks[1] = new AmbAugurTask();
@@ -40,7 +42,8 @@ public class AmbIdentify {
         setupPusher();
 
         user.clear();
-        user.setEmail(userId);
+        user.setEmail(ambassadorIdentification.getEmail());
+        user.setAmbassadorIdentification(ambassadorIdentification);
         final List<AmbIdentifyTask> identifyTasksList = new ArrayList<>();
         Collections.addAll(identifyTasksList, identifyTasks);
 
