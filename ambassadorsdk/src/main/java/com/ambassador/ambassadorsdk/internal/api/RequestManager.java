@@ -80,7 +80,7 @@ public class RequestManager {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
         List<String> numberList = bulkShareHelper.verifiedSMSList(contacts);
-        String name = user.getFirstName() + " " + user.getLastName();
+        String name = user.getAmbassadorIdentification().getFirstName() + " " + user.getAmbassadorIdentification().getLastName();
         String fromEmail = user.getAmbassadorIdentification().getEmail();
         BulkShareApi.BulkShareSmsBody body = bulkShareHelper.payloadObjectForSMS(numberList, name, messageToShare, fromEmail);
 

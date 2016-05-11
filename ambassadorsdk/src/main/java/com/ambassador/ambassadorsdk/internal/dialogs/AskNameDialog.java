@@ -115,8 +115,8 @@ public final class AskNameDialog extends Dialog {
 
         user.setPusherInfo(pusherData);
 
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
+        user.getAmbassadorIdentification().setFirstName(firstName);
+        user.getAmbassadorIdentification().setLastName(lastName);
 
         PusherManager pusherManager = new PusherManager();
         pusherManager.addPusherListener(new PusherListenerAdapter() {

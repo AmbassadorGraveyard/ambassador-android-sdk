@@ -18,9 +18,6 @@ import com.google.gson.JsonObject;
  */
 public class User implements Data {
 
-    // region Fields
-    protected String firstName;
-    protected String lastName;
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
     protected String gcmToken;
@@ -31,28 +28,6 @@ public class User implements Data {
     protected String twitterAccessToken;
     protected String linkedInAccessToken;
     protected String identifyData;
-    // endregion
-
-    // region Getters / Setters
-    @Nullable
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-        save();
-    }
-
-    @Nullable
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-        save();
-    }
 
     @Nullable
     public String getUserId() {
@@ -71,7 +46,10 @@ public class User implements Data {
 
     @NonNull
     public AmbassadorIdentification getAmbassadorIdentification() {
-        return ambassadorIdentification != null ? ambassadorIdentification : new AmbassadorIdentification();
+        if (ambassadorIdentification == null) {
+            ambassadorIdentification = new AmbassadorIdentification();
+        }
+        return ambassadorIdentification;
     }
 
     public void setAmbassadorIdentification(AmbassadorIdentification ambassadorIdentification) {
@@ -159,9 +137,7 @@ public class User implements Data {
         this.identifyData = identifyData;
         save();
     }
-    // endregion
 
-    // region Persistence methods
     /**
      * Serializes data into a JSON string and saves in SharedPreferences,
      * keyed on the user's email.
@@ -175,13 +151,8 @@ public class User implements Data {
         }
     }
 
-    /**
-     * Clears instance data from this object's fields.
-     */
     @Override
     public void clear() {
-        firstName = null;
-        lastName = null;
         userId = null;
         ambassadorIdentification = null;
         gcmToken = null;
@@ -209,8 +180,6 @@ public class User implements Data {
         if (json == null) return;
 
         User user = new Gson().fromJson(json, User.class);
-        setFirstName(user.getFirstName());
-        setLastName(user.getLastName());
         setUserId(user.getUserId());
         setAmbassadorIdentification(user.getAmbassadorIdentification());
         setGcmToken(user.getGcmToken());
