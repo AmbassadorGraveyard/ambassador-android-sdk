@@ -121,6 +121,10 @@ public class AmbIdentify {
         return runningInstance;
     }
 
+    public void cancel() {
+        runningInstance = null;
+    }
+
     public interface CompletionListener {
         void complete();
     }

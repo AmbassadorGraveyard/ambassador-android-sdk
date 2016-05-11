@@ -551,6 +551,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (AmbIdentify.getRunningInstance() != null) {
+                    AmbIdentify.getRunningInstance().cancel();
+                }
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.loading_failure).getValue(), Toast.LENGTH_SHORT).show();
                 finish();
             }
