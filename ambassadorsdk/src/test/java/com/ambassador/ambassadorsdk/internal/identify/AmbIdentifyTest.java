@@ -34,7 +34,7 @@ public class AmbIdentifyTest {
                 AmbSingleton.class
         );
 
-        ambIdentify = Mockito.spy(AmbIdentify.get("jake@getambassador.com", new AmbassadorIdentification()));
+        ambIdentify = Mockito.spy(AmbIdentify.get("jake@getambassador.com", new AmbassadorIdentification().setEmail("jake@getambassador.com")));
         user = Mockito.mock(User.class);
         ambIdentify.user = user;
         requestManager = Mockito.mock(RequestManager.class);
