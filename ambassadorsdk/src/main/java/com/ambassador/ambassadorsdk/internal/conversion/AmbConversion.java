@@ -44,7 +44,8 @@ public class AmbConversion {
             return;
         }
 
-
+        conversionParameters.email = user.getEmail();
+        conversionParameters.updateShortCode(campaign.getReferredByShortCode());
     }
 
     protected void save() {
