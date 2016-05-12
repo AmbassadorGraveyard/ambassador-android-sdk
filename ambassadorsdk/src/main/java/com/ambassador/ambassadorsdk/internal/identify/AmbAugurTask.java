@@ -44,6 +44,11 @@ public class AmbAugurTask extends AmbIdentifyTask {
                     return true;
                 }
 
+                if (json == null) {
+                    onCompleteListener.complete();
+                    return true;
+                }
+
                 saveFingerprint(json);
                 handleJson(json);
                 onCompleteListener.complete();
