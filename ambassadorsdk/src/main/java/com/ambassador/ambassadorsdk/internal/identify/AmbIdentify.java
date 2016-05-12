@@ -73,13 +73,27 @@ public class AmbIdentify {
         pusherManager.addPusherListener(new PusherListenerAdapter() {
 
             @Override
+            public void connectionFailed() {
+                super.connectionFailed();
+                completionListener.networkError();
+            }
+
+            @Override
             public void subscribed() {
                 super.subscribed();
                 subscribed = true;
             }
 
-        });
+            @Override
+            public void subscriptionFailed() {
+                super.subscriptionFailed();
+                runningInstance = null;
+                if (completionListener != null) {
+                    completionListener.noSDK();
+                }
+            }
 
+        });
 
         pusherManager.startNewChannel();
         pusherManager.subscribeChannelToAmbassador();
@@ -109,6 +123,15 @@ public class AmbIdentify {
                     super.subscribed();
                     requestManager.identifyRequest(pusherManager, null);
                 }
+
+                @Override
+                public void subscriptionFailed() {
+                    super.subscriptionFailed();
+                    runningInstance = null;
+                    if (completionListener != null) {
+                        completionListener.noSDK();
+                    }
+                }
             });
         }
     }
@@ -123,6 +146,8 @@ public class AmbIdentify {
 
     public interface CompletionListener {
         void complete();
+        void noSDK();
+        void networkError();
     }
 
     public static AmbIdentify get(String emailAddress) {
