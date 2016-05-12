@@ -2,8 +2,6 @@ package com.ambassador.ambassadorsdk;
 
 import android.support.annotation.NonNull;
 
-import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
-
 /**
  * Stores information relevant for registering a conversion on the backend.
  */
@@ -27,7 +25,6 @@ public final class ConversionParameters {
     public String eventData2;
     public String eventData3;
     public int isApproved;
-    private String shortCode;
 
     public int getCampaign() {
         return campaign;
@@ -101,10 +98,6 @@ public final class ConversionParameters {
         return isApproved;
     }
 
-    public void updateShortCode(String shortCode) {
-        this.shortCode = shortCode;
-    }
-
     public ConversionParameters() {
         this.campaign = -1;
         this.email = "";
@@ -124,15 +117,6 @@ public final class ConversionParameters {
         this.eventData2 = "";
         this.eventData3 = "";
         this.isApproved = 1;
-        this.shortCode = "";
-    }
-
-    public boolean isValid() {
-        return campaign > -1 && revenue > -1 && email != null && !"".equals(email);
-    }
-
-    public ConversionsApi.RegisterConversionRequestBody.FieldsObject getFieldsObject() {
-        return new ConversionsApi.RegisterConversionRequestBody.FieldsObject(this, shortCode);
     }
 
     public static class Builder {

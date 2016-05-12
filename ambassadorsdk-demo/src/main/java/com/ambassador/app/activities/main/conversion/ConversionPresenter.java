@@ -105,7 +105,7 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
             public void success(GetShortCodeFromEmailResponse getShortCodeFromEmailResponse, Response response) {
                 if (getShortCodeFromEmailResponse.results.length > 0) {
                     String shortCode = getShortCodeFromEmailResponse.results[0].short_code;
-                    conversionParameters.updateShortCode(shortCode);
+                    // TODO: update here
                     AmbassadorSDK.registerConversion(conversionParameters, false, new ConversionStatusListener() {
                         @Override
                         public void success() {

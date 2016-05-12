@@ -48,7 +48,6 @@ public class AmbConversion {
         }
 
         conversionParameters.email = user.getEmail();
-        conversionParameters.updateShortCode(campaign.getReferredByShortCode());
 
         requestManager.registerConversionRequest(conversionParameters, new RequestManager.RequestCompletion() {
             @Override
