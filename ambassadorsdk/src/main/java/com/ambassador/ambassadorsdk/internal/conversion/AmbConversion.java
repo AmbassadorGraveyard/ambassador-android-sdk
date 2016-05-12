@@ -54,7 +54,7 @@ public class AmbConversion {
         String content = sharedPreferences.getString("conversions", "[]");
         JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
         conversions.add(new JsonParser().parse(new Gson().toJson(conversionParameters)).getAsJsonObject());
-        sharedPreferences.edit().putString("conversions", conversions.toString()).apply();
+        sharedPreferences.edit().putString("conversions", conversions.toString()).commit();
     }
 
     public static AmbConversion get(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
@@ -64,7 +64,7 @@ public class AmbConversion {
     public static void attemptExecutePending() {
         SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
         String content = sharedPreferences.getString("conversions", "[]");
-        sharedPreferences.edit().putString("conversions", "[]").apply();
+        sharedPreferences.edit().putString("conversions", "[]").commit();
         final JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
         for (final JsonElement jsonElement : conversions) {
             AmbConversion ambConversion = new Gson().fromJson(jsonElement, AmbConversion.class);
