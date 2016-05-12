@@ -161,7 +161,7 @@ public class RequestManager {
                 new ConversionsApi.RegisterConversionRequestBody.AugurObject(augurUid, augurType, augurId),
                 new ConversionsApi.RegisterConversionRequestBody.FieldsObject(conversionParameters, campaign.getReferredByShortCode())
         );
-        
+
         conversionsApi.registerConversionRequest(uid, authKey, body, completion);
     }
 

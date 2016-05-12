@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.google.gson.Gson;
@@ -19,6 +20,7 @@ public class AmbConversion {
 
     @Inject protected Campaign campaign;
     @Inject protected User user;
+    @Inject protected RequestManager requestManager;
     protected ConversionParameters conversionParameters;
     protected boolean limitOnce;
     protected ConversionStatusListener conversionStatusListener;
@@ -47,6 +49,18 @@ public class AmbConversion {
 
         conversionParameters.email = user.getEmail();
         conversionParameters.updateShortCode(campaign.getReferredByShortCode());
+
+        requestManager.registerConversionRequest(conversionParameters, new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess(Object successResponse) {
+                if (conversionStatusListener != null) conversionStatusListener.success();
+            }
+
+            @Override
+            public void onFailure(Object failureResponse) {
+                if (conversionStatusListener != null) conversionStatusListener.error();
+            }
+        });
     }
 
     protected void save() {
