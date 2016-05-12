@@ -11,6 +11,9 @@ import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import java.util.List;
 
@@ -145,8 +148,21 @@ public class RequestManager {
     public void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
-        //ConversionsApi.RegisterConversionRequestBody body = new ConversionsApi.RegisterConversionRequestBody();
-        //conversionsApi.registerConversionRequest(uid, authKey, body, completion);
+        Gson gson = new Gson();
+        JsonObject augur = gson.fromJson(user.getIdentifyData(), JsonElement.class).getAsJsonObject();
+        JsonObject augurConsumer = augur.getAsJsonObject("consumer");
+        JsonObject augurDevice = augur.getAsJsonObject("device");
+
+        String augurUid = augurConsumer.get("UID").getAsString();
+        String augurType = augurDevice.get("type").getAsString();
+        String augurId = augurDevice.get("ID").getAsString();
+
+        ConversionsApi.RegisterConversionRequestBody body = new ConversionsApi.RegisterConversionRequestBody(
+                new ConversionsApi.RegisterConversionRequestBody.AugurObject(augurUid, augurType, augurId),
+                new ConversionsApi.RegisterConversionRequestBody.FieldsObject(conversionParameters, campaign.getReferredByShortCode())
+        );
+        
+        conversionsApi.registerConversionRequest(uid, authKey, body, completion);
     }
 
     /**
