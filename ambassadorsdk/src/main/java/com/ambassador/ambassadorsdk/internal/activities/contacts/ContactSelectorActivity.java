@@ -599,7 +599,9 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         askNameDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                send();
+                if (askNameDialog.dismissStatus == AskNameDialog.DismissStatus.CONTINUE) {
+                    send();
+                }
             }
         });
         askNameDialog.show();
