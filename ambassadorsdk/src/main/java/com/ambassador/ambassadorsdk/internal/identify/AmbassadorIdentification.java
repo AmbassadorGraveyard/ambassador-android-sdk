@@ -2,6 +2,8 @@ package com.ambassador.ambassadorsdk.internal.identify;
 
 public class AmbassadorIdentification {
 
+    private OnChangeListener onChangeListener;
+
     protected String email;
     protected String firstName;
     protected String lastName;
@@ -22,6 +24,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setEmail(String email) {
         this.email = email;
+        notifyChange();
         return this;
     }
 
@@ -31,6 +34,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setFirstName(String firstName) {
         this.firstName = firstName;
+        notifyChange();
         return this;
     }
 
@@ -40,6 +44,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setLastName(String lastName) {
         this.lastName = lastName;
+        notifyChange();
         return this;
     }
 
@@ -49,6 +54,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setCompany(String company) {
         this.company = company;
+        notifyChange();
         return this;
     }
 
@@ -58,6 +64,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setPhone(String phone) {
         this.phone = phone;
+        notifyChange();
         return this;
     }
 
@@ -67,6 +74,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setStreet(String street) {
         this.street = street;
+        notifyChange();
         return this;
     }
 
@@ -76,6 +84,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setCity(String city) {
         this.city = city;
+        notifyChange();
         return this;
     }
 
@@ -85,6 +94,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setState(String state) {
         this.state = state;
+        notifyChange();
         return this;
     }
 
@@ -94,6 +104,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setPostalCode(String postalCode) {
         this.postalCode = postalCode;
+        notifyChange();
         return this;
     }
 
@@ -103,6 +114,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setCountry(String country) {
         this.country = country;
+        notifyChange();
         return this;
     }
 
@@ -112,6 +124,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setCustomLabel1(String customLabel1) {
         this.customLabel1 = customLabel1;
+        notifyChange();
         return this;
     }
 
@@ -121,6 +134,7 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setCustomLabel2(String customLabel2) {
         this.customLabel2 = customLabel2;
+        notifyChange();
         return this;
     }
 
@@ -130,7 +144,22 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setCustomLabel3(String customLabel3) {
         this.customLabel3 = customLabel3;
+        notifyChange();
         return this;
+    }
+
+    protected void notifyChange() {
+        if (this.onChangeListener != null) {
+            this.onChangeListener.change();
+        }
+    }
+
+    public void setOnChangeListener(OnChangeListener onChangeListener) {
+        this.onChangeListener = onChangeListener;
+    }
+
+    public interface OnChangeListener {
+        void change();
     }
 
 }

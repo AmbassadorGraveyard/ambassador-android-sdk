@@ -47,13 +47,19 @@ public class User implements Data {
     @NonNull
     public AmbassadorIdentification getAmbassadorIdentification() {
         if (ambassadorIdentification == null) {
-            ambassadorIdentification = new AmbassadorIdentification();
+            setAmbassadorIdentification(new AmbassadorIdentification());
         }
         return ambassadorIdentification;
     }
 
     public void setAmbassadorIdentification(AmbassadorIdentification ambassadorIdentification) {
         this.ambassadorIdentification = ambassadorIdentification;
+        this.ambassadorIdentification.setOnChangeListener(new AmbassadorIdentification.OnChangeListener() {
+            @Override
+            public void change() {
+                save();
+            }
+        });
         save();
     }
 
