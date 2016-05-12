@@ -29,6 +29,11 @@ public class AmbConversion {
             return;
         }
 
+        if (true) {
+            save();
+            conversionStatusListener.pending();
+        }
+
     }
 
     protected void save() {
