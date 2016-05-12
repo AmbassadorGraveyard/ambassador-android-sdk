@@ -57,10 +57,6 @@ public class AmbConversion {
         sharedPreferences.edit().putString("conversions", conversions.toString()).apply();
     }
 
-    public static AmbConversion get(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
-        return new AmbConversion(conversionParameters, limitOnce, conversionStatusListener);
-    }
-
     public static void attemptExecutePending() {
         SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
         String content = sharedPreferences.getString("conversions", "[]");
@@ -70,6 +66,10 @@ public class AmbConversion {
             AmbConversion ambConversion = new Gson().fromJson(jsonElement, AmbConversion.class);
             ambConversion.execute();
         }
+    }
+
+    public static AmbConversion get(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
+        return new AmbConversion(conversionParameters, limitOnce, conversionStatusListener);
     }
 
 }
