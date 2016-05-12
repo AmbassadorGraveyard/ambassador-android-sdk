@@ -81,6 +81,8 @@ public final class AmbassadorSDK {
                 defaultHandler.uncaughtException(thread, ex);
             }
         });
+
+        AmbConversion.attemptExecutePending();
     }
 
     /**
