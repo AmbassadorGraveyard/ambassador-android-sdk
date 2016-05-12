@@ -139,7 +139,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     });
                 }
             });
-        } else if (user.getAmbassadorIdentification().getEmail() != null) {
+        } else if (user.getUserId() != null) {
             identifyWithStoredInfo();
         } else {
             identifyWithDialog();
@@ -451,7 +451,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
             boolean found = tryAndSetURL(urls, raf.getDefaultShareMessage());
             if (!found) {
-                if (!retried && AmbassadorSDK.identify(user.getAmbassadorIdentification().getEmail())) {
+                if (!retried && AmbassadorSDK.identify(user.getUserId())) {
                     retried = true;
                     setUpLoader();
                     AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
