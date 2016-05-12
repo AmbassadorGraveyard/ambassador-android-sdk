@@ -13,6 +13,7 @@ import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivit
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
@@ -50,6 +51,7 @@ import dagger.Provides;
         AmbIdentifyTask.class,
         AmbGcmTokenTask.class,
         AmbAugurTask.class,
+        AmbConversion.class,
 }, staticInjections = {
         AmbassadorSDK.class
 }, library = true)
