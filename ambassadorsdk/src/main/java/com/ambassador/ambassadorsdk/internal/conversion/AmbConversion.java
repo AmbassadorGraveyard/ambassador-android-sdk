@@ -38,9 +38,10 @@ public class AmbConversion {
         }
 
         if (campaign.getReferredByShortCode() == null || "".equals(campaign.getReferredByShortCode()) || user.getEmail() == null) {
-            save();
+            Log.w("Ambassador", "Missing referrer data or user email, conversion is pending.");
             if (conversionStatusListener != null) conversionStatusListener.pending();
             conversionStatusListener = null;
+            save();
             return;
         }
 
