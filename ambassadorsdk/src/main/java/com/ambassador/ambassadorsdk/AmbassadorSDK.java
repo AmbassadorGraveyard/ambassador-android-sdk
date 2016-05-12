@@ -96,6 +96,7 @@ public final class AmbassadorSDK {
         }
 
         AmbIdentify.get(emailAddress).execute();
+        AmbConversion.attemptExecutePending();
         return true;
     }
 
