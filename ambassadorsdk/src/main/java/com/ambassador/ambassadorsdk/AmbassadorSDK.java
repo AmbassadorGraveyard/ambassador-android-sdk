@@ -117,22 +117,7 @@ public final class AmbassadorSDK {
      */
     @Deprecated
     public static void registerConversion(ConversionParameters conversionParameters, Boolean limitOnce) {
-        registerConversion(conversionParameters, limitOnce, new ConversionStatusListener() {
-            @Override
-            public void success() {
-                // No implementation.
-            }
-
-            @Override
-            public void pending() {
-                // No implementation.
-            }
-
-            @Override
-            public void error() {
-                // No implementation.
-            }
-        });
+        registerConversion(conversionParameters, limitOnce, null);
     }
 
     public static void presentRAF(Context context, String campaignID) {
