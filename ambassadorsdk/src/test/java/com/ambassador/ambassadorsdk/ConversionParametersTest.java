@@ -13,24 +13,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class ConversionParametersTest {
 
     @Test
-    public void isValidTest() {
-        ConversionParameters parameters = new ConversionParameters();
-        Assert.assertFalse(parameters.isValid());
-
-        parameters.campaign = 12;
-        Assert.assertFalse(parameters.isValid());
-
-        parameters.revenue = 50;
-        Assert.assertFalse(parameters.isValid());
-
-        parameters.email = "email@getamb.com";
-        Assert.assertTrue(parameters.isValid());
-
-        parameters.campaign = -1;
-        Assert.assertFalse(parameters.isValid());
-    }
-
-    @Test
     public void buildTest() {
         // ARRANGE
         int mbsy_campaign = 15;
