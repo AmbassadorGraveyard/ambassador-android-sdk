@@ -1,10 +1,12 @@
 package com.ambassador.app.activities.main.conversion;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.activities.BasePresenter;
+import com.ambassador.ambassadorsdk.internal.conversion.ConversionStatusListener;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.app.Demo;
 import com.ambassador.app.api.Requests;
@@ -104,7 +106,22 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
                 if (getShortCodeFromEmailResponse.results.length > 0) {
                     String shortCode = getShortCodeFromEmailResponse.results[0].short_code;
                     conversionParameters.updateShortCode(shortCode);
-                    AmbassadorSDK.registerConversion(conversionParameters, false);
+                    AmbassadorSDK.registerConversion(conversionParameters, false, new ConversionStatusListener() {
+                        @Override
+                        public void success() {
+                            Log.v("AMBASSADOR CONVERSION", "success()");
+                        }
+
+                        @Override
+                        public void pending() {
+                            Log.v("AMBASSADOR CONVERSION", "pending()");
+                        }
+
+                        @Override
+                        public void error() {
+                            Log.v("AMBASSADOR CONVERSION", "error()");
+                        }
+                    });
                     view().notifyConversion();
                 } else {
                     failure(null);
