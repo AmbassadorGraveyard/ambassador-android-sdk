@@ -149,7 +149,7 @@ public class RequestManager {
         String uid = auth.getUniversalId();
         String authKey = auth.getUniversalToken();
         Gson gson = new Gson();
-        JsonObject augur = gson.fromJson(user.getIdentifyData(), JsonElement.class).getAsJsonObject();
+        JsonObject augur = gson.fromJson(user.getAugurData(), JsonElement.class).getAsJsonObject();
         JsonObject augurConsumer = augur.getAsJsonObject("consumer");
         JsonObject augurDevice = augur.getAsJsonObject("device");
 
