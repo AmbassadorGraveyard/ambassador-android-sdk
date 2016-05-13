@@ -21,6 +21,7 @@ import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
+import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 
 import net.kencochrane.raven.DefaultRavenFactory;
@@ -96,16 +97,30 @@ public final class AmbassadorSDK {
     }
 
     /**
+     * Identifies a user to the Ambassador SDK using a unique identifier and other optional information.
+     * @param userId unique identifier for the user.
+     * @param ambassadorIdentification object with setters for other optional parameters.
+     */
+    public static void identify(String userId, AmbassadorIdentification ambassadorIdentification) {
+        if (ambassadorIdentification.getEmail() == null && new Identify(userId).isValidEmail()) {
+            ambassadorIdentification.setEmail(userId);
+        }
+
+        AmbIdentify.get(userId, ambassadorIdentification).execute();
+    }
+
+    /**
      * Identifies a user to the Ambassador SDK using an email address.
      * @param emailAddress the email address of the user being identified.
      * @return boolean determining email address parameter validity.
      */
+    @Deprecated
     public static boolean identify(String emailAddress) {
         if (!new Identify(emailAddress).isValidEmail()) {
             return false;
         }
 
-        AmbIdentify.get(emailAddress).execute();
+        identify(emailAddress, new AmbassadorIdentification().setEmail(emailAddress));
         return true;
     }
 

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
+import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.google.gson.JsonObject;
 
 import org.junit.Assert;
@@ -49,9 +50,8 @@ public class UserTest {
     public void saveWithNonNullContextDoesSaveSerialized() {
         // ARRANGE
         User user = new User();
-        user.email = "jake@getambassador.com";
-        user.firstName = "jake";
-        user.lastName = "dunahee";
+        user.userId = "jake@getambassador.com";
+        user.ambassadorIdentification = new AmbassadorIdentification();
         user.gcmToken = "gcmToken";
         user.augurData = null;
         user.facebookAccessToken = "facebookAccessToken";
@@ -63,7 +63,7 @@ public class UserTest {
 
         // ASSERT
         Mockito.verify(context).getSharedPreferences(Mockito.eq("user"), Mockito.eq(Context.MODE_PRIVATE));
-        Mockito.verify(editor).putString(Mockito.eq("jake@getambassador.com"), Mockito.eq("{\"firstName\":\"jake\",\"lastName\":\"dunahee\",\"email\":\"jake@getambassador.com\",\"gcmToken\":\"gcmToken\",\"facebookAccessToken\":\"facebookAccessToken\",\"twitterAccessToken\":\"twitterAccessToken\",\"linkedInAccessToken\":\"linkedInAccessToken\"}"));
+        Mockito.verify(editor).putString(Mockito.eq("jake@getambassador.com"), Mockito.eq("{\"userId\":\"jake@getambassador.com\",\"ambassadorIdentification\":{},\"gcmToken\":\"gcmToken\",\"facebookAccessToken\":\"facebookAccessToken\",\"twitterAccessToken\":\"twitterAccessToken\",\"linkedInAccessToken\":\"linkedInAccessToken\"}"));
         Mockito.verify(editor).apply();
     }
 
@@ -73,9 +73,8 @@ public class UserTest {
         Mockito.when(AmbSingleton.getContext()).thenReturn(null);
 
         User user = new User();
-        user.email = "jake@getambassador.com";
-        user.firstName = "jake";
-        user.lastName = "dunahee";
+        user.userId = "jake@getambassador.com";
+        user.ambassadorIdentification = new AmbassadorIdentification();
         user.gcmToken = "gcmToken";
         user.augurData = null;
 
@@ -93,9 +92,8 @@ public class UserTest {
     public void clearDoesClearAllFields() {
         // ARRANGE
         User user = new User();
-        user.email = "jake@getambassador.com";
-        user.firstName = "jake";
-        user.lastName = "dunahee";
+        user.userId = "jake@getambassador.com";
+        user.ambassadorIdentification = new AmbassadorIdentification();
         user.gcmToken = "gcmToken";
         user.augurData = new JsonObject();
 
@@ -103,9 +101,7 @@ public class UserTest {
         user.clear();
 
         // ASSERT
-        Assert.assertNull(user.getEmail());
-        Assert.assertNull(user.getFirstName());
-        Assert.assertNull(user.getLastName());
+        Assert.assertNull(user.getUserId());
         Assert.assertNull(user.getGcmToken());
         Assert.assertNull(user.getAugurData());
     }
@@ -117,9 +113,8 @@ public class UserTest {
         Mockito.doNothing().when(user).save();
 
         // ACT
-        user.setEmail("jake@getambassador.com");
-        user.setFirstName("firstName");
-        user.setLastName("lastName");
+        user.setUserId("jake@getambassador.com");
+        user.setAmbassadorIdentification(new AmbassadorIdentification());
         user.setGcmToken("gcmToken");
         user.setAugurData(new JsonObject());
         user.setWebDeviceId("web");
@@ -129,7 +124,7 @@ public class UserTest {
         user.setIdentifyData("identifyData");
 
         // ASSERT
-        Mockito.verify(user, Mockito.times(10)).save();
+        Mockito.verify(user, Mockito.times(9)).save();
     }
 
 }

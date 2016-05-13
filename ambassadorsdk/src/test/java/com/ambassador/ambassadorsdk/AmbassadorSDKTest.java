@@ -5,6 +5,7 @@ import android.graphics.Color;
 
 import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
+import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 
 import junit.framework.Assert;
 
@@ -30,7 +31,7 @@ public class AmbassadorSDKTest {
                 Color.class
         );
 
-        PowerMockito.when(AmbIdentify.class, "get", Mockito.anyString()).thenReturn(Mockito.mock(AmbIdentify.class));
+        PowerMockito.when(AmbIdentify.class, "get", Mockito.anyString(), Mockito.any(AmbassadorIdentification.class)).thenReturn(Mockito.mock(AmbIdentify.class));
     }
 
     @Test

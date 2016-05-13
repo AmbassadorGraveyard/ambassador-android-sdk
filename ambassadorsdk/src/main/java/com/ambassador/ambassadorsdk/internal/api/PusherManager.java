@@ -207,8 +207,8 @@ public class PusherManager {
 
         user.setPusherInfo(pusherSave);
 
-        user.setFirstName(pusherObject.get("first_name").getAsString());
-        user.setLastName(pusherObject.get("last_name").getAsString());
+        user.getAmbassadorIdentification().setFirstName(pusherObject.get("first_name").getAsString());
+        user.getAmbassadorIdentification().setLastName(pusherObject.get("last_name").getAsString());
 
         user.setIdentifyData(data.toString());
 

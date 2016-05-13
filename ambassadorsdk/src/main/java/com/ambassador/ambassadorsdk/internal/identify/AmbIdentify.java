@@ -19,14 +19,16 @@ public class AmbIdentify {
     @Inject protected User user;
     @Inject protected RequestManager requestManager;
     protected PusherManager pusherManager;
-    protected String emailAddress;
+    protected String userId;
+    protected AmbassadorIdentification ambassadorIdentification;
     protected AmbIdentifyTask[] identifyTasks;
     protected CompletionListener completionListener;
     protected boolean subscribed;
 
-    protected AmbIdentify(String emailAddress) {
+    protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification) {
         AmbSingleton.inject(this);
-        this.emailAddress = emailAddress;
+        this.userId = userId;
+        this.ambassadorIdentification = ambassadorIdentification;
         this.identifyTasks = new AmbIdentifyTask[2];
         this.identifyTasks[0] = new AmbGcmTokenTask();
         this.identifyTasks[1] = new AmbAugurTask();
@@ -40,7 +42,8 @@ public class AmbIdentify {
         setupPusher();
 
         user.clear();
-        user.setEmail(emailAddress);
+        user.setUserId(userId);
+        user.setAmbassadorIdentification(ambassadorIdentification);
         final List<AmbIdentifyTask> identifyTasksList = new ArrayList<>();
         Collections.addAll(identifyTasksList, identifyTasks);
 
@@ -141,14 +144,18 @@ public class AmbIdentify {
         return runningInstance;
     }
 
+    public void cancel() {
+        runningInstance = null;
+    }
+
     public interface CompletionListener {
         void complete();
         void noSDK();
         void networkError();
     }
 
-    public static AmbIdentify get(String emailAddress) {
-        return new AmbIdentify(emailAddress);
+    public static AmbIdentify get(String userId, AmbassadorIdentification ambassadorIdentification) {
+        return new AmbIdentify(userId, ambassadorIdentification);
     }
 
 }

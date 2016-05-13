@@ -49,6 +49,7 @@ public final class MainActivity extends AppCompatActivity implements MainView {
             mainPresenter = new MainPresenter();
         } else {
             mainPresenter = PresenterManager.getInstance().restorePresenter(savedInstanceState);
+            if (mainPresenter == null) mainPresenter = new MainPresenter();
         }
 
         setContentView(R.layout.activity_main);

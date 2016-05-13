@@ -1,8 +1,9 @@
 package com.ambassador.ambassadorsdk.internal.api.identify;
 
-import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
+import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.utils.ResponseCode;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -348,19 +349,46 @@ public final class IdentifyApi {
 
         private boolean enroll;
         private String campaign_id;
-        private String email;
         private String source;
         private String mbsy_source;
         private String mbsy_cookie_code;
         private JsonObject fp;
 
-        public IdentifyRequestBody(String campaign_id, String email, String augur) {
+        private String remote_user_id;
+
+        private String email;
+        private String first_name;
+        private String last_name;
+        private String custom1;
+        private String custom2;
+        private String custom3;
+        private String company;
+        private String street;
+        private String city;
+        private String state;
+        private String zip;
+        private String country;
+
+        public IdentifyRequestBody(String campaign_id, String userId, String augur, AmbassadorIdentification ambassadorIdentification) {
             this.enroll = true;
             this.campaign_id = campaign_id;
-            this.email = email;
             this.source = "android_sdk_pilot";
             this.mbsy_source = "";
             this.mbsy_cookie_code = "";
+            this.remote_user_id = userId;
+
+            this.email = ambassadorIdentification.getEmail();
+            this.first_name = ambassadorIdentification.getFirstName();
+            this.last_name = ambassadorIdentification.getLastName();
+            this.custom1 = ambassadorIdentification.getCustomLabel1();
+            this.custom2 = ambassadorIdentification.getCustomLabel2();
+            this.custom3 = ambassadorIdentification.getCustomLabel3();
+            this.company = ambassadorIdentification.getCompany();
+            this.street = ambassadorIdentification.getStreet();
+            this.city = ambassadorIdentification.getCity();
+            this.state = ambassadorIdentification.getState();
+            this.zip = ambassadorIdentification.getPostalCode();
+            this.country = ambassadorIdentification.getCountry();
 
             try {
                 Gson gson = new Gson();
