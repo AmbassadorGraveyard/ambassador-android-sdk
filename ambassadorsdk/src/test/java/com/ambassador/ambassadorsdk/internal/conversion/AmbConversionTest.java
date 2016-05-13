@@ -147,8 +147,6 @@ public class AmbConversionTest {
         user.setUserId("user");
         campaign.setReferredByShortCode(null);
 
-        ambConversion.user = user;
-        ambConversion.campaign = campaign;
         ambConversion.execute();
 
         Mockito.verify(conversionStatusListener).pending();
@@ -198,12 +196,48 @@ public class AmbConversionTest {
 
     @Test
     public void testsExecuteUsesEmailAddressWhenNotNull() {
+        ConversionParameters conversionParameters = new ConversionParameters.Builder()
+                .setCampaign(260)
+                .setRevenue(12)
+                .build();
+        ConversionStatusListener conversionStatusListener = Mockito.mock(ConversionStatusListener.class);
 
+        AmbConversion ambConversion = Mockito.spy(AmbConversion.get(conversionParameters, false, conversionStatusListener));
+
+        Mockito.doNothing().when(ambConversion).save();
+
+        user.setUserId("test");
+        user.getAmbassadorIdentification().setEmail("jake@getambassador.com");
+        campaign.setReferredByShortCode("abcd");
+
+        Mockito.doNothing().when(requestManager).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
+
+        ambConversion.execute();
+
+        Assert.assertEquals("jake@getambassador.com", conversionParameters.getEmail());
     }
 
     @Test
     public void testsExecuteUsesUserIdWhenEmailNull() {
+        ConversionParameters conversionParameters = new ConversionParameters.Builder()
+                .setCampaign(260)
+                .setRevenue(12)
+                .build();
+        ConversionStatusListener conversionStatusListener = Mockito.mock(ConversionStatusListener.class);
 
+        AmbConversion ambConversion = Mockito.spy(AmbConversion.get(conversionParameters, false, conversionStatusListener));
+
+        Mockito.doNothing().when(ambConversion).save();
+
+        user.setUserId("test");
+        user.getAmbassadorIdentification().setEmail(null);
+        campaign.setReferredByShortCode("abcd");
+
+        Mockito.doNothing().when(requestManager).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
+
+        ambConversion.execute();
+
+        Assert.assertEquals("test", conversionParameters.getEmail());
     }
 
 }
