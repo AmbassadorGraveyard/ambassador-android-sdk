@@ -17,6 +17,7 @@ import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import org.junit.Before;
@@ -194,13 +195,23 @@ public class RequestManagerTest {
         ConversionsApi.RegisterConversionRequestBody requestBody = Mockito.mock(ConversionsApi.RegisterConversionRequestBody.class);
         Gson gson = Mockito.mock(Gson.class);
         PowerMockito.whenNew(Gson.class).withAnyArguments().thenReturn(gson);
-        
+        JsonElement jsonElement = Mockito.mock(JsonElement.class);
+        Mockito.when(gson.fromJson(Mockito.any(JsonObject.class), Mockito.eq(JsonElement.class))).thenReturn(jsonElement);
+        JsonObject jsonObject = new JsonObject();
+        JsonObject consumer = new JsonObject();
+        consumer.addProperty("UID", "UID");
+        jsonObject.add("consumer", consumer);
+        JsonObject device = new JsonObject();
+        device.addProperty("ID", "ID");
+        device.addProperty("type", "type");
+        jsonObject.add("device", device);
+        Mockito.when(jsonElement.getAsJsonObject()).thenReturn(jsonObject);
 
         // ACT
         requestManager.registerConversionRequest(conversionParameters, requestCompletion);
 
         // ASSERT
-        Mockito.verify(conversionsApi).registerConversionRequest(Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.eq(requestBody), Mockito.eq(requestCompletion));
+        Mockito.verify(conversionsApi).registerConversionRequest(Mockito.eq(universalId), Mockito.eq(universalToken), Mockito.any(ConversionsApi.RegisterConversionRequestBody.class), Mockito.eq(requestCompletion));
     }
 
     @Test

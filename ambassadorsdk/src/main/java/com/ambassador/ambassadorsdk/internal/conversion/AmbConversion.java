@@ -39,7 +39,7 @@ public class AmbConversion {
             return;
         }
 
-        if (campaign.getReferredByShortCode() == null || "".equals(campaign.getReferredByShortCode()) || user.getEmail() == null) {
+        if (campaign.getReferredByShortCode() == null || "".equals(campaign.getReferredByShortCode()) || user.getUserId() == null) {
             Log.w("Ambassador", "Missing referrer data or user email, conversion is pending.");
             if (conversionStatusListener != null) conversionStatusListener.pending();
             conversionStatusListener = null;
@@ -47,7 +47,7 @@ public class AmbConversion {
             return;
         }
 
-        conversionParameters.email = user.getEmail();
+        conversionParameters.email = user.getUserId();
 
         requestManager.registerConversionRequest(conversionParameters, new RequestManager.RequestCompletion() {
             @Override

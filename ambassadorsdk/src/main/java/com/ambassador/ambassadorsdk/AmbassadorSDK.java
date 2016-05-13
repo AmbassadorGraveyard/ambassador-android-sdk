@@ -100,9 +100,9 @@ public final class AmbassadorSDK {
     }
 
     /**
-     * Identifies a user to the Ambassador SDK using an email address.
-     * @param emailAddress the email address of the user being identified.
-     * @return boolean determining email address parameter validity.
+     * @deprecated use {@link #identify(String, AmbassadorIdentification)} instead.
+     * @param emailAddress a valid String email address.
+     * @return boolean determining validity of the email passed.
      */
     @Deprecated
     public static boolean identify(String emailAddress) {
