@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.graphics.Color;
 
 import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
+import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
+import com.google.gson.Gson;
 
 import junit.framework.Assert;
 
@@ -19,6 +21,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest ({
         AmbIdentify.class,
+        AmbConversion.class,
         Color.class
 })
 public class AmbassadorSDKTest {
@@ -27,6 +30,7 @@ public class AmbassadorSDKTest {
     public void setUp() throws Exception {
         PowerMockito.mockStatic(
                 AmbIdentify.class,
+                AmbConversion.class,
                 Color.class
         );
 

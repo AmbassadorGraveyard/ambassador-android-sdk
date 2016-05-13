@@ -15,12 +15,12 @@ import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -35,12 +35,12 @@ import java.util.List;
 @PrepareForTest(value = {
         AmbSingleton.class,
         BulkShareHelper.class,
-        ConversionUtility.class,
         IdentifyApi.IdentifyRequestBody.class,
         Log.class,
         RequestManager.class,
         ConversionParameters.class,
         BulkShareApi.class,
+        Gson.class,
         ConversionsApi.class,
         IdentifyApi.class,
         EnvoyApi.class,
@@ -80,7 +80,6 @@ public class RequestManagerTest {
         PowerMockito.mockStatic(
                 AmbSingleton.class,
                 BulkShareHelper.class,
-                ConversionUtility.class,
                 IdentifyApi.IdentifyRequestBody.class,
                 Log.class,
                 PusherManager.Channel.class
@@ -183,12 +182,14 @@ public class RequestManagerTest {
     }
 
     @Test
-    public void registerConversionRequestTest() {
+    public void registerConversionRequestTest() throws Exception {
         // ARRANGE
         ConversionParameters conversionParameters = PowerMockito.mock(ConversionParameters.class);
         RequestManager.RequestCompletion requestCompletion = Mockito.mock(RequestManager.RequestCompletion.class);
         ConversionsApi.RegisterConversionRequestBody requestBody = Mockito.mock(ConversionsApi.RegisterConversionRequestBody.class);
-        BDDMockito.given(ConversionUtility.createConversionRequestBody(conversionParameters, identifyObject.toString())).willReturn(requestBody);
+        Gson gson = Mockito.mock(Gson.class);
+        PowerMockito.whenNew(Gson.class).withAnyArguments().thenReturn(gson);
+        
 
         // ACT
         requestManager.registerConversionRequest(conversionParameters, requestCompletion);
