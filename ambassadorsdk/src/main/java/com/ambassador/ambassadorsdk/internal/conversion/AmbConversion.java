@@ -57,7 +57,8 @@ public class AmbConversion {
 
             @Override
             public void onFailure(Object failureResponse) {
-                if (conversionStatusListener != null) conversionStatusListener.error();
+                if (conversionStatusListener != null) conversionStatusListener.pending();
+                save();
             }
         });
     }
