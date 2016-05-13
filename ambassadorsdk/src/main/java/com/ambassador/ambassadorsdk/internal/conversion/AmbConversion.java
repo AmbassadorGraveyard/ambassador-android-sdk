@@ -18,21 +18,21 @@ import javax.inject.Inject;
 
 public class AmbConversion {
 
-    @Inject protected Campaign campaign;
-    @Inject protected User user;
-    @Inject protected RequestManager requestManager;
+    @Inject protected transient Campaign campaign;
+    @Inject protected transient User user;
+    @Inject protected transient RequestManager requestManager;
     protected ConversionParameters conversionParameters;
     protected boolean limitOnce;
-    protected ConversionStatusListener conversionStatusListener;
+    protected transient ConversionStatusListener conversionStatusListener;
 
     protected AmbConversion(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
-        AmbSingleton.inject(this);
         this.conversionParameters = conversionParameters;
         this.limitOnce = limitOnce;
         this.conversionStatusListener = conversionStatusListener;
     }
 
     public void execute() {
+        AmbSingleton.inject(this);
         if (conversionParameters.getCampaign() == -1 || conversionParameters.getRevenue() < 0) {
             Log.e("Ambassador", "Campaign and Revenue MUST be set on ConversionParameters!");
             if (conversionStatusListener != null) conversionStatusListener.error();
@@ -67,7 +67,7 @@ public class AmbConversion {
         SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
         String content = sharedPreferences.getString("conversions", "[]");
         JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
-        conversions.add(new JsonParser().parse(new Gson().toJson(conversionParameters)).getAsJsonObject());
+        conversions.add(new JsonParser().parse(new Gson().toJson(this)).getAsJsonObject());
         sharedPreferences.edit().putString("conversions", conversions.toString()).apply();
     }
 
