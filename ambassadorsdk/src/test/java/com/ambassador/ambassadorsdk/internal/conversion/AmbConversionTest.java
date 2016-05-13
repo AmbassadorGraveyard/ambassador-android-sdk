@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
+import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.google.gson.Gson;
@@ -32,11 +33,15 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class AmbConversionTest {
 
     protected Context context;
+    protected SharedPreferences sharedPreferences;
+    protected SharedPreferences.Editor editor;
+
+    protected RequestManager requestManager;
     protected Campaign campaign;
     protected User user;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         PowerMockito.mockStatic(
                 AmbSingleton.class,
                 Log.class
@@ -44,18 +49,35 @@ public class AmbConversionTest {
 
         context = Mockito.mock(Context.class);
         PowerMockito.when(AmbSingleton.getContext()).thenReturn(context);
+        sharedPreferences = Mockito.mock(SharedPreferences.class);
+        Mockito.when(context.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(sharedPreferences);
+        editor = Mockito.mock(SharedPreferences.Editor.class);
+        Mockito.when(sharedPreferences.edit()).thenReturn(editor);
+        Mockito.when(editor.putString(Mockito.anyString(), Mockito.anyString())).thenReturn(editor);
 
-        campaign = Mockito.mock(Campaign.class);
-        user = Mockito.mock(User.class);
+        requestManager = Mockito.mock(RequestManager.class);
+
+        campaign = Mockito.spy(Campaign.class);
+        Mockito.doNothing().when(campaign).save();
+
+        user = Mockito.spy(User.class);
+        Mockito.doNothing().when(user).save();
+
+        PowerMockito.when(AmbSingleton.class, "inject", Mockito.any(AmbConversion.class)).thenAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                AmbConversion ambConversion = (AmbConversion) invocation.getArguments()[0];
+                ambConversion.requestManager = requestManager;
+                ambConversion.campaign = campaign;
+                ambConversion.user = user;
+                return null;
+            }
+        });
     }
 
     @Test
     public void testsSaveDoesAddToNonEmptyArray() {
-        SharedPreferences sharedPreferences = Mockito.mock(SharedPreferences.class);
-        Mockito.when(context.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(sharedPreferences);
         Mockito.when(sharedPreferences.getString(Mockito.anyString(), Mockito.anyString())).thenReturn("[{\"cats\":\"cats\"}]");
-        final SharedPreferences.Editor editor = Mockito.mock(SharedPreferences.Editor.class);
-        Mockito.when(sharedPreferences.edit()).thenReturn(editor);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -71,11 +93,7 @@ public class AmbConversionTest {
 
     @Test
     public void testsSaveDoesAddToEmptyArray() {
-        SharedPreferences sharedPreferences = Mockito.mock(SharedPreferences.class);
-        Mockito.when(context.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(sharedPreferences);
         Mockito.when(sharedPreferences.getString(Mockito.anyString(), Mockito.anyString())).thenReturn("[]");
-        final SharedPreferences.Editor editor = Mockito.mock(SharedPreferences.Editor.class);
-        Mockito.when(sharedPreferences.edit()).thenReturn(editor);
         Mockito.doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
@@ -151,9 +169,6 @@ public class AmbConversionTest {
 
         user.setUserId("user");
         campaign.setReferredByShortCode("");
-
-        ambConversion.user = user;
-        ambConversion.campaign = campaign;
         ambConversion.execute();
 
         Mockito.verify(conversionStatusListener).pending();
@@ -175,12 +190,20 @@ public class AmbConversionTest {
         user.setUserId(null);
         campaign.setReferredByShortCode("abcd");
 
-        ambConversion.user = user;
-        ambConversion.campaign = campaign;
         ambConversion.execute();
 
         Mockito.verify(conversionStatusListener).pending();
         Mockito.verify(ambConversion).save();
+    }
+
+    @Test
+    public void testsExecuteUsesEmailAddressWhenNotNull() {
+
+    }
+
+    @Test
+    public void testsExecuteUsesUserIdWhenEmailNull() {
+
     }
 
 }
