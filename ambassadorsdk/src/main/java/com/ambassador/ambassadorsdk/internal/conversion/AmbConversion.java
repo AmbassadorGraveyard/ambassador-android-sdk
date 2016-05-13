@@ -47,7 +47,7 @@ public class AmbConversion {
             return;
         }
 
-        conversionParameters.email = user.getUserId();
+        conversionParameters.email = user.getAmbassadorIdentification().getEmail() != null ? user.getAmbassadorIdentification().getEmail() : user.getUserId();
 
         requestManager.registerConversionRequest(conversionParameters, new RequestManager.RequestCompletion() {
             @Override
