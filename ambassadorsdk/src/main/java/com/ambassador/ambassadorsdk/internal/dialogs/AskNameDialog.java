@@ -36,6 +36,10 @@ import butterfork.ButterFork;
  */
 public final class AskNameDialog extends Dialog {
 
+    public enum DismissStatus {
+        CONTINUE, CANCEL
+    }
+
     @Bind(B.id.etFirstName) protected ShakableEditText  etFirstName;
     @Bind(B.id.etLastName)  protected ShakableEditText  etLastName;
     @Bind(B.id.btnCancel)   protected Button            btnCancel;
@@ -44,6 +48,8 @@ public final class AskNameDialog extends Dialog {
     @Inject protected RequestManager    requestManager;
     @Inject protected User              user;
     @Inject protected Device            device;
+
+    public DismissStatus dismissStatus;
 
     public AskNameDialog(Context context, ProgressDialog pd) {
         super(context);
@@ -59,6 +65,8 @@ public final class AskNameDialog extends Dialog {
         setContentView(R.layout.dialog_contact_name);
         ButterFork.bind(this);
         AmbSingleton.inject(this);
+
+        setCanceledOnTouchOutside(false);
 
         setupTheme();
         setupButtons();
@@ -85,7 +93,8 @@ public final class AskNameDialog extends Dialog {
     }
 
     private void cancelClicked() {
-        hide();
+        dismissStatus = DismissStatus.CANCEL;
+        dismiss();
     }
 
     private void continueClicked() {
@@ -100,6 +109,7 @@ public final class AskNameDialog extends Dialog {
                 updateName(etFirstName.getText().toString(), etLastName.getText().toString());
             } catch (JSONException e) {
                 dismiss();
+                dismissStatus = DismissStatus.CONTINUE;
             }
         }
     }
@@ -115,8 +125,8 @@ public final class AskNameDialog extends Dialog {
 
         user.setPusherInfo(pusherData);
 
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
+        user.getAmbassadorIdentification().setFirstName(firstName);
+        user.getAmbassadorIdentification().setLastName(lastName);
 
         PusherManager pusherManager = new PusherManager();
         pusherManager.addPusherListener(new PusherListenerAdapter() {

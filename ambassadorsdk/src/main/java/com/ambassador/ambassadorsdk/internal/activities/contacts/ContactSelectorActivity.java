@@ -525,7 +525,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         boolean noneSelected = contactListAdapter.getSelectedContacts().size() <= 0;
         boolean emptyMessage = etShareMessage.getText().toString().length() <= 0;
         boolean haveUrl = Utilities.containsURL(etShareMessage.getText().toString(), campaign.getUrl());
-        boolean haveName = user.getFirstName() != null && !user.getFirstName().isEmpty() && user.getLastName() != null && !user.getLastName().isEmpty();
+        boolean haveName = user.getAmbassadorIdentification().getFirstName() != null && !user.getAmbassadorIdentification().getFirstName().isEmpty() && user.getAmbassadorIdentification().getLastName() != null && !user.getAmbassadorIdentification().getLastName().isEmpty();
 
         if (lengthToShort && noneSelected) {
             negativeTextViewFeedback(tvSendCount);
@@ -599,7 +599,9 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         askNameDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                send();
+                if (askNameDialog.dismissStatus == AskNameDialog.DismissStatus.CONTINUE) {
+                    send();
+                }
             }
         });
         askNameDialog.show();

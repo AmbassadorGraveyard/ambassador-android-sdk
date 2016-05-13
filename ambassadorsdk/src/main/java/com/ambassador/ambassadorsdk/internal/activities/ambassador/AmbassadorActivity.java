@@ -149,7 +149,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     showNetworkError();
                 }
             });
-        } else if (user.getEmail() != null) {
+        } else if (user.getUserId() != null) {
             identifyWithStoredInfo();
         } else {
             identifyWithDialog();
@@ -461,7 +461,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
             boolean found = tryAndSetURL(urls, raf.getDefaultShareMessage());
             if (!found) {
-                if (!retried && AmbassadorSDK.identify(user.getEmail())) {
+                if (!retried && AmbassadorSDK.identify(user.getUserId())) {
                     retried = true;
                     setUpLoader();
                     AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
@@ -573,6 +573,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (AmbIdentify.getRunningInstance() != null) {
+                    AmbIdentify.getRunningInstance().cancel();
+                }
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.loading_failure).getValue(), Toast.LENGTH_SHORT).show();
                 finish();
             }

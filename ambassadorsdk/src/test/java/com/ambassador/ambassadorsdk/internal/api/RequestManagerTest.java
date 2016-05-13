@@ -14,6 +14,7 @@ import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -54,6 +55,7 @@ public class RequestManagerTest {
 
     private Auth auth;
     private User user;
+    private AmbassadorIdentification ambId;
     private Campaign campaign;
 
     private BulkShareApi bulkShareApi;
@@ -102,15 +104,18 @@ public class RequestManagerTest {
 
         auth = Mockito.mock(Auth.class);
         user = Mockito.mock(User.class);
+        ambId = Mockito.mock(AmbassadorIdentification.class);
+        Mockito.when(user.getAmbassadorIdentification()).thenReturn(ambId);
         campaign = Mockito.mock(Campaign.class);
 
         Mockito.when(auth.getUniversalId()).thenReturn(universalId);
         Mockito.when(auth.getUniversalToken()).thenReturn(universalToken);
-        Mockito.when(user.getFirstName()).thenReturn(userFirstName);
-        Mockito.when(user.getLastName()).thenReturn(userLastName);
+        Mockito.when(ambId.getFirstName()).thenReturn(userFirstName);
+        Mockito.when(ambId.getLastName()).thenReturn(userLastName);
         Mockito.when(user.getAugurData()).thenReturn(identifyObject);
+        Mockito.when(user.getAmbassadorIdentification()).thenReturn(Mockito.mock(AmbassadorIdentification.class));
         Mockito.when(campaign.getId()).thenReturn(campaignId);
-        Mockito.when(user.getEmail()).thenReturn(userEmail);
+        Mockito.when(user.getUserId()).thenReturn(userEmail);
         Mockito.when(user.getLinkedInAccessToken()).thenReturn(linkedInToken);
 
         requestManager.auth = auth;

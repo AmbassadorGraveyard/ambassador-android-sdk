@@ -2,10 +2,12 @@ package com.ambassador.ambassadorsdk.internal.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
+import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
@@ -16,10 +18,8 @@ import com.google.gson.JsonObject;
  */
 public class User implements Data {
 
-    // region Fields
-    protected String firstName;
-    protected String lastName;
-    protected String email;
+    protected String userId;
+    protected AmbassadorIdentification ambassadorIdentification;
     protected String gcmToken;
     protected JsonObject pusherInfo;
     protected JsonObject augurData;
@@ -28,42 +28,39 @@ public class User implements Data {
     protected String twitterAccessToken;
     protected String linkedInAccessToken;
     protected String identifyData;
-    // endregion
-
-    // region Getters / Setters
-    @Nullable
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-        save();
-    }
 
     @Nullable
-    public String getLastName() {
-        return lastName;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-        save();
-    }
-
-    @Nullable
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserId(String userId) {
+        this.userId = userId;
         save();
         AmbSingleton.getContext()
                 .getSharedPreferences("user", Context.MODE_PRIVATE)
                 .edit()
-                .putString("email", email)
+                .putString("email", userId)
                 .apply();
+    }
+
+    @NonNull
+    public AmbassadorIdentification getAmbassadorIdentification() {
+        if (ambassadorIdentification == null) {
+            setAmbassadorIdentification(new AmbassadorIdentification());
+        }
+        return ambassadorIdentification;
+    }
+
+    public void setAmbassadorIdentification(AmbassadorIdentification ambassadorIdentification) {
+        this.ambassadorIdentification = ambassadorIdentification;
+        this.ambassadorIdentification.setOnChangeListener(new AmbassadorIdentification.OnChangeListener() {
+            @Override
+            public void change() {
+                save();
+            }
+        });
+        save();
     }
 
     @Nullable
@@ -146,9 +143,7 @@ public class User implements Data {
         this.identifyData = identifyData;
         save();
     }
-    // endregion
 
-    // region Persistence methods
     /**
      * Serializes data into a JSON string and saves in SharedPreferences,
      * keyed on the user's email.
@@ -158,18 +153,14 @@ public class User implements Data {
         if (AmbSingleton.getContext() != null) {
             String data = new Gson().toJson(this);
             SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
-            sharedPreferences.edit().putString(email, data).apply();
+            sharedPreferences.edit().putString(userId, data).apply();
         }
     }
 
-    /**
-     * Clears instance data from this object's fields.
-     */
     @Override
     public void clear() {
-        firstName = null;
-        lastName = null;
-        email = null;
+        userId = null;
+        ambassadorIdentification = null;
         gcmToken = null;
         augurData = null;
         webDeviceId = null;
@@ -195,9 +186,8 @@ public class User implements Data {
         if (json == null) return;
 
         User user = new Gson().fromJson(json, User.class);
-        setFirstName(user.getFirstName());
-        setLastName(user.getLastName());
-        setEmail(user.getEmail());
+        setUserId(user.getUserId());
+        setAmbassadorIdentification(user.getAmbassadorIdentification());
         setGcmToken(user.getGcmToken());
         setAugurData(user.getAugurData());
         setWebDeviceId(user.getWebDeviceId());
