@@ -240,4 +240,65 @@ public class AmbConversionTest {
         Assert.assertEquals("test", conversionParameters.getEmail());
     }
 
+    @Test
+    public void testsExecuteDoesReturnSuccessWhenRequestCompletes() {
+        ConversionParameters conversionParameters = new ConversionParameters.Builder()
+                .setCampaign(260)
+                .setRevenue(12)
+                .build();
+        ConversionStatusListener conversionStatusListener = Mockito.mock(ConversionStatusListener.class);
+
+        AmbConversion ambConversion = Mockito.spy(AmbConversion.get(conversionParameters, false, conversionStatusListener));
+
+        Mockito.doNothing().when(ambConversion).save();
+
+        user.setUserId("test");
+        user.getAmbassadorIdentification().setEmail(null);
+        campaign.setReferredByShortCode("abcd");
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion requestCompletion = (RequestManager.RequestCompletion) invocation.getArguments()[1];
+                requestCompletion.onSuccess(null);
+                return null;
+            }
+        }).when(requestManager).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
+
+        ambConversion.execute();
+
+        Mockito.verify(conversionStatusListener).success();
+    }
+
+    @Test
+    public void testsExecuteDoesReturnPendingAndSaveWhenRequestFails() {
+        ConversionParameters conversionParameters = new ConversionParameters.Builder()
+                .setCampaign(260)
+                .setRevenue(12)
+                .build();
+        ConversionStatusListener conversionStatusListener = Mockito.mock(ConversionStatusListener.class);
+
+        AmbConversion ambConversion = Mockito.spy(AmbConversion.get(conversionParameters, false, conversionStatusListener));
+
+        Mockito.doNothing().when(ambConversion).save();
+
+        user.setUserId("test");
+        user.getAmbassadorIdentification().setEmail(null);
+        campaign.setReferredByShortCode("abcd");
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                RequestManager.RequestCompletion requestCompletion = (RequestManager.RequestCompletion) invocation.getArguments()[1];
+                requestCompletion.onFailure(null);
+                return null;
+            }
+        }).when(requestManager).registerConversionRequest(Mockito.any(ConversionParameters.class), Mockito.any(RequestManager.RequestCompletion.class));
+
+        ambConversion.execute();
+
+        Mockito.verify(ambConversion).save();
+        Mockito.verify(conversionStatusListener).pending();
+    }
+
 }
