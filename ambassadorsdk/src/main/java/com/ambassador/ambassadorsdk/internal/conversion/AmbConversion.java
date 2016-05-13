@@ -82,13 +82,6 @@ public class AmbConversion {
         }
     }
 
-    protected static JsonArray getConversionsFromStorage() {
-        SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
-        String content = sharedPreferences.getString("conversions", "[]");
-        sharedPreferences.edit().putString("conversions", "[]").apply();
-        return new JsonParser().parse(content).getAsJsonArray();
-    }
-
     public static AmbConversion get(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
         return new AmbConversion(conversionParameters, limitOnce, conversionStatusListener);
     }
