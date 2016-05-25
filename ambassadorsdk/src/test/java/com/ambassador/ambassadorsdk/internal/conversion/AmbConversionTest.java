@@ -41,7 +41,7 @@ public class AmbConversionTest {
     protected User user;
 
     @Before
-    public void setup() throws Exception {
+    public void setUp() throws Exception {
         PowerMockito.mockStatic(
                 AmbSingleton.class,
                 Log.class

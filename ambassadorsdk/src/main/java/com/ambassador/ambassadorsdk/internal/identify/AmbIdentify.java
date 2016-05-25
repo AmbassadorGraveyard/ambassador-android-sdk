@@ -127,7 +127,7 @@ public class AmbIdentify {
 
                 @Override
                 public void onFailure(Object failureResponse) {
-
+                    // Not handled here.
                 }
             });
         } else {

@@ -33,21 +33,10 @@ public class AmbConversion {
 
     public void execute() {
         AmbSingleton.inject(this);
-        if (conversionParameters.getCampaign() == -1 || conversionParameters.getRevenue() < 0) {
-            Log.e("Ambassador", "Campaign and Revenue MUST be set on ConversionParameters!");
-            if (conversionStatusListener != null) conversionStatusListener.error();
+        boolean ready = checkAndSetRequiredData();
+        if (!ready) {
             return;
         }
-
-        if (campaign.getReferredByShortCode() == null || "".equals(campaign.getReferredByShortCode()) || user.getUserId() == null) {
-            Log.w("Ambassador", "Missing referrer data or user email, conversion is pending.");
-            if (conversionStatusListener != null) conversionStatusListener.pending();
-            conversionStatusListener = null;
-            save();
-            return;
-        }
-
-        conversionParameters.email = user.getAmbassadorIdentification().getEmail() != null ? user.getAmbassadorIdentification().getEmail() : user.getUserId();
 
         requestManager.registerConversionRequest(conversionParameters, new RequestManager.RequestCompletion() {
             @Override
@@ -61,6 +50,25 @@ public class AmbConversion {
                 save();
             }
         });
+    }
+
+    protected boolean checkAndSetRequiredData() {
+        if (conversionParameters.getCampaign() == -1 || conversionParameters.getRevenue() < 0) {
+            Log.e("Ambassador", "Campaign and Revenue MUST be set on ConversionParameters!");
+            if (conversionStatusListener != null) conversionStatusListener.error();
+            return false;
+        }
+
+        if (campaign.getReferredByShortCode() == null || "".equals(campaign.getReferredByShortCode()) || user.getUserId() == null) {
+            Log.w("Ambassador", "Missing referrer data or user email, conversion is pending.");
+            if (conversionStatusListener != null) conversionStatusListener.pending();
+            conversionStatusListener = null;
+            save();
+            return false;
+        }
+
+        conversionParameters.email = user.getAmbassadorIdentification().getEmail() != null ? user.getAmbassadorIdentification().getEmail() : user.getUserId();
+        return true;
     }
 
     protected void save() {
