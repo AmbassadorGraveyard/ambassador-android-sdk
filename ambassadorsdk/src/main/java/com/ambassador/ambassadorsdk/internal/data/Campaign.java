@@ -21,6 +21,7 @@ public class Campaign implements Data {
     protected String emailSubject;
     protected String referredByShortCode;
     protected boolean convertedOnInstall;
+    protected boolean isActive;
     // endregion
 
     // region Getters / Setters
@@ -95,6 +96,13 @@ public class Campaign implements Data {
 
     public void setConvertedOnInstall(boolean convertedOnInstall) {
         this.convertedOnInstall = convertedOnInstall;
+        save();
+    }
+
+    public boolean isActive() { return  isActive; }
+
+    public void setIsActive(boolean isActive) {
+        this.isActive = isActive;
         save();
     }
     // endregion
