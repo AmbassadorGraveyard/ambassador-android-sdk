@@ -499,7 +499,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(getApplicationContext(), "No matching campaign IDs found!", Toast.LENGTH_SHORT).show();
+                            // Creates an error string matching front-end message if we have the user's email, otherwise use 'You'
+                            String errorString = user.getAmbassadorIdentification().getEmail() != null ?
+                                    String.format("%s is not authorized to access this campaign.", user.getAmbassadorIdentification().getEmail()) :
+                                    "You are not authorized to access this campaign";
+
+                            Toast.makeText(getApplicationContext(), errorString, Toast.LENGTH_SHORT).show();
                             finish();
                         }
                     });
