@@ -509,6 +509,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
                         }
                     });
                 }
+
+            // If there is a campaign returned, but the active flag is false
+            } else if (campaign != null && !campaign.isActive()) {
+                showCampaignNotActiveError();
+                return;
             }
         } else {
             setUpLoader();
@@ -571,6 +576,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 campaign.setUrl(urlObj.get("url").getAsString());
                 campaign.setShortCode(urlObj.get("short_code").getAsString());
                 campaign.setEmailSubject(urlObj.get("subject").getAsString());
+                campaign.setIsActive(urlObj.get("is_active").getAsBoolean());
                 campaignFound = true;
 
 
@@ -609,6 +615,25 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 if (networkTimer != null) networkTimer.cancel();
                 new AlertDialog.Builder(AmbassadorActivity.this)
                         .setMessage("You currently don't have access to the SDK. If you have any questions please contact support.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+            }
+        });
+    }
+
+    protected void showCampaignNotActiveError() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (networkTimer != null) networkTimer.cancel();
+                new AlertDialog.Builder(AmbassadorActivity.this)
+                        .setMessage("This campaign is no longer active.")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
