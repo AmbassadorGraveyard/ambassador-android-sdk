@@ -3,6 +3,7 @@ package com.ambassador.ambassadorsdk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -142,7 +143,7 @@ public final class AmbassadorSDK {
      * @param properties information pertaining to the event such as campaign, revenue, etc.
      * @param options additional information that can be added to the event.
      */
-    public static void trackEvent(String eventName, Object properties, Object options) {
+    public static void trackEvent(String eventName, Bundle properties, Bundle options) {
         trackEvent(eventName, properties, options, null);
     }
 
@@ -154,7 +155,7 @@ public final class AmbassadorSDK {
      * @param options additional information that can be added to the event.
      * @param listener a callback interface that will be used if this event is a conversion.
      */
-    public static void trackEvent(String eventName, Object properties, Object options, ConversionStatusListener listener) {
+    public static void trackEvent(String eventName, Bundle properties, Bundle options, ConversionStatusListener listener) {
 
     }
 
