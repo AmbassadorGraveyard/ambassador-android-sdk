@@ -9,8 +9,7 @@ machine:
 
 dependencies:
  pre:
-    - curl -sL http://bit.ly/jpm4j >jpm4j.jar
-    - sudo java -jar jpm4j.jar -g init
+    - sudo curl https://www.jpm4j.org/install/script | sh
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
     - sudo pip install awscli
     - gem install rainforest-cli
