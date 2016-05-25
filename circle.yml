@@ -9,7 +9,8 @@ machine:
 
 dependencies:
  pre:
-    - sudo curl https://www.jpm4j.org/install/script | sh
+    - sudo curl -sL https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBuild/artifact/biz.aQute.jpm/generated/biz.aQute.jpm.run.jar >jpm4j.jar
+    - sudo java -jar jpm4j.jar -g init
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
     - sudo pip install awscli
     - gem install rainforest-cli
