@@ -156,7 +156,20 @@ public final class AmbassadorSDK {
      * @param listener a callback interface that will be used if this event is a conversion.
      */
     public static void trackEvent(String eventName, Bundle properties, Bundle options, ConversionStatusListener listener) {
+        if (options.getBoolean("conversion", false)) {
+            ConversionParameters conversionParameters = new ConversionParameters.Builder()
+                    .setCampaign(properties.getInt("campaign", -1))
+                    .setRevenue(properties.getFloat("revenue", -1f))
+                    .setIsApproved(properties.getInt("commissionApproved", 0))
+                    .setEventData1(properties.getString("eventData1", ""))
+                    .setEventData2(properties.getString("eventData2", ""))
+                    .setEventData3(properties.getString("eventData3", ""))
+                    .setTransactionUid(properties.getString("orderId", ""))
+                    .build();
 
+            boolean limitOnce = options.getBoolean("restrictedToInstall", false);
+            AmbassadorSDK.registerConversion(conversionParameters, limitOnce, listener);
+        }
     }
 
     public static void presentRAF(Context context, String campaignID) {
