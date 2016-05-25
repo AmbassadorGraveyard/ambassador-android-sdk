@@ -111,7 +111,6 @@ public final class AmbassadorSDK {
         }
 
         identify(emailAddress, new AmbassadorIdentification().setEmail(emailAddress));
-        AmbConversion.attemptExecutePending();
         return true;
     }
 
