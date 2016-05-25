@@ -467,17 +467,32 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
                         @Override
                         public void complete() {
-                            identifyWithStoredInfo();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    identifyWithStoredInfo();
+                                }
+                            });
                         }
 
                         @Override
                         public void noSDK() {
-                            showNoSDKAccessError();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showNoSDKAccessError();
+                                }
+                            });
                         }
 
                         @Override
                         public void networkError() {
-                            showNetworkError();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showNetworkError();
+                                }
+                            });
                         }
                     });
                 } else {
