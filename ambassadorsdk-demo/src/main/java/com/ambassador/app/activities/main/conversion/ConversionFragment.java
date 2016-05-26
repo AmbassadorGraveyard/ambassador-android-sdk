@@ -26,11 +26,16 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.conversion.ConversionStatusListener;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 import com.ambassador.app.R;
 import com.ambassador.app.activities.PresenterManager;
 import com.ambassador.app.activities.main.MainActivity;
+import com.ambassador.app.api.Requests;
+import com.ambassador.app.api.pojo.GetShortCodeFromEmailResponse;
+import com.ambassador.app.data.User;
 import com.ambassador.app.dialogs.CampaignChooserDialog;
 import com.ambassador.app.dialogs.GroupChooserDialog;
 import com.ambassador.app.utils.Share;
@@ -38,6 +43,9 @@ import com.ambassador.app.views.ExpandableLayout;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public final class ConversionFragment extends Fragment implements ConversionView, MainActivity.TabFragment {
 
@@ -118,6 +126,52 @@ public final class ConversionFragment extends Fragment implements ConversionView
                 conversionPresenter.onSubmitClicked(etAmbassadorEmail.getText().toString(), getConversionParametersBuilderFromInputs());
             }
         });
+
+        // TEMP
+        btnConversion.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Requests.get().getShortCodeFromEmail(User.get().getSdkToken(), 260, "jake@getambassador.com", new Callback<GetShortCodeFromEmailResponse>() {
+                    @Override
+                    public void success(GetShortCodeFromEmailResponse getShortCodeFromEmailResponse, Response response) {
+                        Bundle properties = new Bundle();
+                        properties.putInt("campaign", 260);
+                        properties.putFloat("revenue", 12.50f);
+                        properties.putInt("commissionApproved", 1);
+                        properties.putString("eventData1", "evt1");
+                        properties.putString("eventData2", "evt2");
+                        properties.putString("eventData3", "evt3");
+                        properties.putString("orderId", "oid");
+                        Bundle options = new Bundle();
+                        options.putBoolean("restrictedToInstall", false);
+                        options.putBoolean("conversion", true);
+                        AmbassadorSDK.trackEvent("conversion", properties, options, new ConversionStatusListener() {
+                            @Override
+                            public void success() {
+                                Toast.makeText(getActivity(), "Track success callback", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void pending() {
+                                Toast.makeText(getActivity(), "Track pending callback", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void error() {
+                                Toast.makeText(getActivity(), "Track error callback", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(getActivity(), "get short code error", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                return true;
+            }
+        });
+        // TEMP
 
         return view;
     }
