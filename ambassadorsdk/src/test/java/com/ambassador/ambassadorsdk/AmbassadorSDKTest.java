@@ -96,8 +96,38 @@ public class AmbassadorSDKTest {
 
 
     @Test
-    public void testsTrackEventWithInterfaceDoesCallBack() {
+    public void testsTrackEventWithInterfaceDoesCallBack() throws Exception {
+        Bundle properties = Mockito.spy(Bundle.class);
+        Bundle options = Mockito.spy(Bundle.class);
+        Mockito.doReturn(true).when(options).getBoolean(Mockito.eq("conversion"), Mockito.anyBoolean());
 
+        AmbConversion ambConversion = Mockito.mock(AmbConversion.class);
+        PowerMockito.doReturn(ambConversion).when(AmbConversion.class, "get", Mockito.any(ConversionParameters.class), Mockito.anyBoolean(), Mockito.any(ConversionStatusListener.class));
+
+        PowerMockito.doAnswer(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ConversionStatusListener listener = (ConversionStatusListener) invocation.getArguments()[2];
+                listener.success();
+                return null;
+            }
+        }).when(AmbassadorSDK.class, "registerConversion", Mockito.any(ConversionParameters.class), Mockito.anyBoolean(), Mockito.any(ConversionStatusListener.class));
+
+        Mockito.doReturn(260).when(properties).getInt(Mockito.eq("campaign"), Mockito.anyInt());
+        Mockito.doReturn(12.50f).when(properties).getFloat(Mockito.eq("revenue"), Mockito.anyFloat());
+        Mockito.doReturn(1).when(properties).getInt(Mockito.eq("commissionApproved"), Mockito.anyInt());
+        Mockito.doReturn("evt1").when(properties).getString(Mockito.eq("eventData1"), Mockito.anyString());
+        Mockito.doReturn("evt2").when(properties).getString(Mockito.eq("eventData2"), Mockito.anyString());
+        Mockito.doReturn("evt3").when(properties).getString(Mockito.eq("eventData3"), Mockito.anyString());
+        Mockito.doReturn("oid").when(properties).getString(Mockito.eq("orderId"), Mockito.anyString());
+
+        Mockito.doReturn(false).when(options).getBoolean(Mockito.eq("restrictedToInstall"), Mockito.anyBoolean());
+
+        ConversionStatusListener listener = Mockito.mock(ConversionStatusListener.class);
+
+        AmbassadorSDK.trackEvent("conversion", properties, options, listener);
+
+        Mockito.verify(listener).success();
     }
 
     @Test
