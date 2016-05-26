@@ -124,6 +124,10 @@ public final class AmbassadorSDK {
         return true;
     }
 
+    public static void unidentify() {
+        user.clear();
+    }
+
     public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
         //do conversion if it's not an install conversion, or if it is, make sure that we haven't already converted on install by checking sharedprefs
         if ((!restrictToInstall || !campaign.isConvertedOnInstall()) && conversionParameters.isValid()) {
