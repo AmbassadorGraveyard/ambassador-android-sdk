@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -28,8 +29,10 @@ import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.conversion.ConversionStatusListener;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.ambassador.app.Demo;
 import com.ambassador.app.R;
 import com.ambassador.app.activities.PresenterManager;
 import com.ambassador.app.activities.main.MainActivity;
@@ -134,6 +137,15 @@ public final class ConversionFragment extends Fragment implements ConversionView
                 Requests.get().getShortCodeFromEmail(User.get().getSdkToken(), 260, "jake@getambassador.com", new Callback<GetShortCodeFromEmailResponse>() {
                     @Override
                     public void success(GetShortCodeFromEmailResponse getShortCodeFromEmailResponse, Response response) {
+                        if (getShortCodeFromEmailResponse.results.length <= 0) {
+                            return;
+                        }
+
+                        String shortCode = getShortCodeFromEmailResponse.results[0].short_code;
+                        Intent data = new Intent();
+                        data.putExtra("referrer", "mbsy_cookie_code=" + shortCode + "&device_id=test1234");
+                        new InstallReceiver().onReceive(Demo.get(), data);
+
                         Bundle properties = new Bundle();
                         properties.putInt("campaign", 260);
                         properties.putFloat("revenue", 12.50f);
