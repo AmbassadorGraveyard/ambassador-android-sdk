@@ -4,7 +4,11 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
+import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbGcmTokenTask;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -115,7 +119,17 @@ public class AmbIdentify {
         });
 
         if (subscribed) {
-            requestManager.identifyRequest(pusherManager, null);
+            requestManager.identifyRequest(pusherManager, new RequestManager.RequestCompletion() {
+                @Override
+                public void onSuccess(Object successResponse) {
+                    AmbConversion.attemptExecutePending();
+                }
+
+                @Override
+                public void onFailure(Object failureResponse) {
+                    // Not handled here.
+                }
+            });
         } else {
             pusherManager.addPusherListener(new PusherListenerAdapter() {
                 @Override

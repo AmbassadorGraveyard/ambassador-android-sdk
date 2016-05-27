@@ -164,6 +164,7 @@ public class User implements Data {
         gcmToken = null;
         augurData = null;
         webDeviceId = null;
+        pusherInfo = null;
         facebookAccessToken = null;
         twitterAccessToken = null;
         linkedInAccessToken = null;
