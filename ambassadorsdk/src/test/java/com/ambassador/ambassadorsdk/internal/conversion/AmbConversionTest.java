@@ -62,6 +62,7 @@ public class AmbConversionTest {
 
         user = Mockito.spy(User.class);
         Mockito.doNothing().when(user).save();
+        Mockito.doNothing().when(user).refresh();
 
         PowerMockito.when(AmbSingleton.class, "inject", Mockito.any(AmbConversion.class)).thenAnswer(new Answer<Object>() {
             @Override
