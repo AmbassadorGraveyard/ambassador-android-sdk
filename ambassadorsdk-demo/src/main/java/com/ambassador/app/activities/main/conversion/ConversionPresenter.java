@@ -136,12 +136,12 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
 
                         @Override
                         public void noSDK() {
-
+                            // Not handled. Conversion won't be registered.
                         }
 
                         @Override
                         public void networkError() {
-
+                            // Not handled. Conversion won't be registered.
                         }
                     });
                     view().notifyConversion();
