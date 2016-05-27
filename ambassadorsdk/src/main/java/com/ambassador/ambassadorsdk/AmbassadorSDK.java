@@ -16,6 +16,7 @@ import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
+import com.ambassador.ambassadorsdk.internal.conversion.ConversionParametersFactory;
 import com.ambassador.ambassadorsdk.internal.conversion.ConversionStatusListener;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
@@ -157,16 +158,7 @@ public final class AmbassadorSDK {
      */
     public static void trackEvent(String eventName, Bundle properties, Bundle options, ConversionStatusListener listener) {
         if (options.getBoolean("conversion", false)) {
-            ConversionParameters conversionParameters = new ConversionParameters.Builder()
-                    .setCampaign(properties.getInt("campaign", -1))
-                    .setRevenue(properties.getFloat("revenue", -1f))
-                    .setIsApproved(properties.getInt("commissionApproved", 0))
-                    .setEventData1(properties.getString("eventData1", ""))
-                    .setEventData2(properties.getString("eventData2", ""))
-                    .setEventData3(properties.getString("eventData3", ""))
-                    .setTransactionUid(properties.getString("orderId", ""))
-                    .build();
-
+            ConversionParameters conversionParameters = ConversionParametersFactory.getFromProperties(properties);
             boolean limitOnce = options.getBoolean("restrictedToInstall", false);
             AmbassadorSDK.registerConversion(conversionParameters, limitOnce, listener);
         }
