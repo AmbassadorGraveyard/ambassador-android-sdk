@@ -129,6 +129,7 @@ public final class AmbassadorSDK {
      */
     public static void unidentify() {
         user.clear();
+        user.setUserId(null);
     }
 
     public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
