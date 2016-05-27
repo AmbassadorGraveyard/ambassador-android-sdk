@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 
 import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
+import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 
@@ -59,6 +60,13 @@ public class AmbassadorSDKTest {
         boolean result = AmbassadorSDK.identify(email);
 
         Assert.assertFalse(result);
+    }
+
+    @Test
+    public void testsUnidentifyDoesClearUser() throws Exception {
+        AmbassadorSDK.user = Mockito.mock(User.class);
+        AmbassadorSDK.unidentify();
+        Mockito.verify(AmbassadorSDK.user).clear();
     }
 
     @Test
