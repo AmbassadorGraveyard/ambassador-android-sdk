@@ -3,11 +3,11 @@ package com.ambassador.ambassadorsdk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
@@ -21,6 +21,7 @@ import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
+import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 
@@ -101,7 +102,7 @@ public final class AmbassadorSDK {
      * @param userId unique identifier for the user.
      * @param ambassadorIdentification object with setters for other optional parameters.
      */
-    public static void identify(String userId, AmbassadorIdentification ambassadorIdentification) {
+    public static void identify(String userId, AmbassadorIdentification ambassadorIdentification, Bundle options) {
         if (ambassadorIdentification.getEmail() == null && new Identify(userId).isValidEmail()) {
             ambassadorIdentification.setEmail(userId);
         }
@@ -120,7 +121,7 @@ public final class AmbassadorSDK {
             return false;
         }
 
-        identify(emailAddress, new AmbassadorIdentification().setEmail(emailAddress));
+        identify(emailAddress, new AmbassadorIdentification().setEmail(emailAddress), null);
         return true;
     }
 
