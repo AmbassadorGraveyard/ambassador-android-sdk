@@ -67,6 +67,7 @@ public class AmbassadorSDKTest {
         AmbassadorSDK.user = Mockito.mock(User.class);
         AmbassadorSDK.unidentify();
         Mockito.verify(AmbassadorSDK.user).clear();
+        Mockito.verify(AmbassadorSDK.user).setUserId(null);
     }
 
     @Test
