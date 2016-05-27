@@ -124,6 +124,9 @@ public final class AmbassadorSDK {
         return true;
     }
 
+    /**
+     * Unidentifies a user to the Ambassador SDK. Equivalent to a logout.
+     */
     public static void unidentify() {
         user.clear();
     }
