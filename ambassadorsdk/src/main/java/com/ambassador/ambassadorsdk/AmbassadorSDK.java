@@ -15,6 +15,7 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Secrets;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -126,19 +127,7 @@ public final class AmbassadorSDK {
     public static void unidentify() {
         user.clear();
         user.setUserId(null);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            CookieManager.getInstance().removeAllCookies(null);
-            CookieManager.getInstance().flush();
-        } else if (AmbSingleton.getContext() != null) {
-            CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(AmbSingleton.getContext());
-            cookieSyncManager.startSync();
-            CookieManager cookieManager = CookieManager.getInstance();
-            cookieManager.removeAllCookie();
-            cookieManager.removeSessionCookie();
-            cookieSyncManager.stopSync();
-            cookieSyncManager.sync();
-        }
+        SocialOAuthActivity.clearCookies();
     }
 
     /**

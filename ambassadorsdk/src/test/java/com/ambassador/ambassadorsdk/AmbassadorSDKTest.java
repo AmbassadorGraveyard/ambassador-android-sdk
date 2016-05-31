@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
@@ -28,7 +29,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
         AmbassadorSDK.class,
         AmbIdentify.class,
         AmbConversion.class,
-        Color.class
+        Color.class,
+        SocialOAuthActivity.class
 })
 public class AmbassadorSDKTest {
 
@@ -37,7 +39,8 @@ public class AmbassadorSDKTest {
         PowerMockito.mockStatic(
                 AmbIdentify.class,
                 AmbConversion.class,
-                Color.class
+                Color.class,
+                SocialOAuthActivity.class
         );
 
         PowerMockito.spy(AmbassadorSDK.class);
@@ -78,6 +81,8 @@ public class AmbassadorSDKTest {
         AmbassadorSDK.unidentify();
         Mockito.verify(AmbassadorSDK.user).clear();
         Mockito.verify(AmbassadorSDK.user).setUserId(null);
+
+
     }
 
     public void testsTrackEventThatIsNotConversionDoesNothing() throws Exception {
