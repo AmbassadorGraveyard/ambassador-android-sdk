@@ -21,8 +21,6 @@ import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
-import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
-import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 
 import net.kencochrane.raven.DefaultRavenFactory;
@@ -100,14 +98,15 @@ public final class AmbassadorSDK {
     /**
      * Identifies a user to the Ambassador SDK using a unique identifier and other optional information.
      * @param userId unique identifier for the user.
-     * @param ambassadorIdentification object with setters for other optional parameters.
+     * @param traits Bundle for other relevant identification properties.
+     * @param options Bundle for other information like "campaign".
      */
-    public static void identify(String userId, AmbassadorIdentification ambassadorIdentification, Bundle options) {
-        if (ambassadorIdentification.getEmail() == null && new Identify(userId).isValidEmail()) {
-            ambassadorIdentification.setEmail(userId);
-        }
-
-        AmbIdentify.get(userId, ambassadorIdentification).execute();
+    public static void identify(String userId, Bundle traits, Bundle options) {
+//        if (ambassadorIdentification.getEmail() == null && new Identify(userId).isValidEmail()) {
+//            ambassadorIdentification.setEmail(userId);
+//        }
+//
+//        AmbIdentify.get(userId, ambassadorIdentification).execute();
     }
 
     /**
@@ -121,7 +120,10 @@ public final class AmbassadorSDK {
             return false;
         }
 
-        identify(emailAddress, new AmbassadorIdentification().setEmail(emailAddress), null);
+        Bundle traits = new Bundle();
+        traits.putString("email", emailAddress);
+
+        identify(emailAddress, traits, null);
         return true;
     }
 
