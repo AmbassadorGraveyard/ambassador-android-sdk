@@ -130,61 +130,6 @@ public final class ConversionFragment extends Fragment implements ConversionView
             }
         });
 
-        // TEMP
-        btnConversion.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Requests.get().getShortCodeFromEmail(User.get().getSdkToken(), 260, "jake@getambassador.com", new Callback<GetShortCodeFromEmailResponse>() {
-                    @Override
-                    public void success(GetShortCodeFromEmailResponse getShortCodeFromEmailResponse, Response response) {
-                        if (getShortCodeFromEmailResponse.results.length <= 0) {
-                            return;
-                        }
-
-                        String shortCode = getShortCodeFromEmailResponse.results[0].short_code;
-                        Intent data = new Intent();
-                        data.putExtra("referrer", "mbsy_cookie_code=" + shortCode + "&device_id=test1234");
-                        new InstallReceiver().onReceive(Demo.get(), data);
-
-                        Bundle properties = new Bundle();
-                        properties.putInt("campaign", 260);
-                        properties.putFloat("revenue", 12.50f);
-                        properties.putInt("commissionApproved", 1);
-                        properties.putString("eventData1", "evt1");
-                        properties.putString("eventData2", "evt2");
-                        properties.putString("eventData3", "evt3");
-                        properties.putString("orderId", "oid");
-                        Bundle options = new Bundle();
-                        options.putBoolean("restrictedToInstall", false);
-                        options.putBoolean("conversion", true);
-                        AmbassadorSDK.trackEvent("conversion", properties, options, new ConversionStatusListener() {
-                            @Override
-                            public void success() {
-                                Toast.makeText(getActivity(), "Track success callback", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void pending() {
-                                Toast.makeText(getActivity(), "Track pending callback", Toast.LENGTH_SHORT).show();
-                            }
-
-                            @Override
-                            public void error() {
-                                Toast.makeText(getActivity(), "Track error callback", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        Toast.makeText(getActivity(), "get short code error", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                return true;
-            }
-        });
-        // TEMP
-
         return view;
     }
 
