@@ -3,10 +3,13 @@ package com.ambassador.ambassadorsdk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
@@ -118,10 +121,24 @@ public final class AmbassadorSDK {
 
     /**
      * Unidentifies a user to the Ambassador SDK. Equivalent to a logout.
+     * Clears cookies so webview OAuth won't re-auth automatically.
      */
     public static void unidentify() {
         user.clear();
         user.setUserId(null);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            CookieManager.getInstance().removeAllCookies(null);
+            CookieManager.getInstance().flush();
+        } else if (AmbSingleton.getContext() != null) {
+            CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(AmbSingleton.getContext());
+            cookieSyncManager.startSync();
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.removeAllCookie();
+            cookieManager.removeSessionCookie();
+            cookieSyncManager.stopSync();
+            cookieSyncManager.sync();
+        }
     }
 
     /**
