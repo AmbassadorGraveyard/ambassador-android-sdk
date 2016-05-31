@@ -4,6 +4,9 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbGcmTokenTask;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
 
 import junit.framework.Assert;
 
