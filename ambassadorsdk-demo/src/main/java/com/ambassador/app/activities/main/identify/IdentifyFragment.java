@@ -62,7 +62,7 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
                 options.putString("campaign", "1048");
                 AmbassadorSDK.identify(etEmail.getText().toString(), traits, options);
                 Toast.makeText(getActivity(), "Long", Toast.LENGTH_SHORT).show();
-=
+
                 return true;
             }
         });
