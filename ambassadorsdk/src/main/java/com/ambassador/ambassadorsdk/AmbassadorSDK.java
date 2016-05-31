@@ -21,6 +21,8 @@ import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
+import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
+import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 
 import net.kencochrane.raven.DefaultRavenFactory;
@@ -102,11 +104,27 @@ public final class AmbassadorSDK {
      * @param options Bundle for other information like "campaign".
      */
     public static void identify(String userId, Bundle traits, Bundle options) {
-//        if (ambassadorIdentification.getEmail() == null && new Identify(userId).isValidEmail()) {
-//            ambassadorIdentification.setEmail(userId);
-//        }
-//
-//        AmbIdentify.get(userId, ambassadorIdentification).execute();
+        AmbassadorIdentification ambassadorIdentification = new AmbassadorIdentification();
+        ambassadorIdentification.setEmail(traits.getString("email", null));
+        ambassadorIdentification.setFirstName(traits.getString("firstName", null));
+        ambassadorIdentification.setLastName(traits.getString("lastName", null));
+        ambassadorIdentification.setCompany(traits.getString("company", null));
+        ambassadorIdentification.setPhone(traits.getString("phone", null));
+        
+        Bundle address = traits.getBundle("address");
+        if (address != null) {
+            ambassadorIdentification.setStreet(traits.getString("street", null));
+            ambassadorIdentification.setCity(traits.getString("city", null));
+            ambassadorIdentification.setState(traits.getString("state", null));
+            ambassadorIdentification.setPostalCode(traits.getString("postalCode", null));
+            ambassadorIdentification.setCountry(traits.getString("country", null));
+        }
+
+        if (ambassadorIdentification.getEmail() == null && new Identify(userId).isValidEmail()) {
+            ambassadorIdentification.setEmail(userId);
+        }
+
+        AmbIdentify.get(userId, ambassadorIdentification).execute();
     }
 
     /**
