@@ -28,14 +28,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @PrepareForTest ({
         AmbassadorSDK.class,
         AmbIdentify.class,
-<<<<<<< HEAD
         Color.class,
-        Bundle.class
-=======
+        Bundle.class,
         AmbConversion.class,
-        Color.class,
         SocialOAuthActivity.class
->>>>>>> master
 })
 public class AmbassadorSDKTest {
 
