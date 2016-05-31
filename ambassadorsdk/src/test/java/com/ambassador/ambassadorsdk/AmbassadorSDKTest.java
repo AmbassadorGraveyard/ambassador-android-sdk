@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.os.Bundle;
 
 import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
@@ -20,7 +21,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest ({
         AmbIdentify.class,
-        Color.class
+        Color.class,
+        Bundle.class
 })
 public class AmbassadorSDKTest {
 
@@ -30,6 +32,8 @@ public class AmbassadorSDKTest {
                 AmbIdentify.class,
                 Color.class
         );
+
+        PowerMockito.whenNew(Bundle.class).withAnyArguments().thenReturn(Mockito.mock(Bundle.class));
 
         PowerMockito.when(AmbIdentify.class, "get", Mockito.anyString(), Mockito.any(AmbassadorIdentification.class)).thenReturn(Mockito.mock(AmbIdentify.class));
     }
