@@ -3,6 +3,7 @@ package com.ambassador.ambassadorsdk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -15,6 +16,7 @@ import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
+import com.ambassador.ambassadorsdk.internal.conversion.ConversionParametersFactory;
 import com.ambassador.ambassadorsdk.internal.conversion.ConversionStatusListener;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
@@ -125,14 +127,41 @@ public final class AmbassadorSDK {
     }
 
     /**
-     * @deprecated use {@link #registerConversion(ConversionParameters, boolean, ConversionStatusListener)} instead.
      * Registers a conversion to Ambassador.
      * @param conversionParameters object defining information about the conversion.
      * @param limitOnce boolean determining if this conversion should ever be allowed to happen more than once.
+     * @deprecated use {@link #registerConversion(ConversionParameters, boolean, ConversionStatusListener)} instead.
      */
     @Deprecated
     public static void registerConversion(ConversionParameters conversionParameters, Boolean limitOnce) {
         registerConversion(conversionParameters, limitOnce, null);
+    }
+
+    /**
+     * Tracks an event with Ambassador.
+     * Currently, the only event Ambassador tracks is a conversion.
+     * @param eventName an optional value for the name of the event being tracked.
+     * @param properties information pertaining to the event such as campaign, revenue, etc.
+     * @param options additional information that can be added to the event.
+     */
+    public static void trackEvent(String eventName, Bundle properties, Bundle options) {
+        trackEvent(eventName, properties, options, null);
+    }
+
+    /**
+     * Tracks an event with Ambassador.
+     * Currently, the only event Ambassador tracks is a conversion.
+     * @param eventName an optional value for the name of the event being tracked.
+     * @param properties information pertaining to the event such as campaign, revenue, etc.
+     * @param options additional information that can be added to the event.
+     * @param listener a callback interface that will be used if this event is a conversion.
+     */
+    public static void trackEvent(String eventName, Bundle properties, Bundle options, ConversionStatusListener listener) {
+        if (options.getBoolean("conversion", false)) {
+            ConversionParameters conversionParameters = ConversionParametersFactory.getFromProperties(properties);
+            boolean limitOnce = options.getBoolean("restrictedToInstall", false);
+            AmbassadorSDK.registerConversion(conversionParameters, limitOnce, listener);
+        }
     }
 
     public static void presentRAF(Context context, String campaignID) {
