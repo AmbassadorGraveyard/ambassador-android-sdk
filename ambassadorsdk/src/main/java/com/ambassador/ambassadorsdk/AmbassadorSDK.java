@@ -127,7 +127,8 @@ public final class AmbassadorSDK {
         String campaignIdStr = options.getString("campaign", null);
         int campaignIdInt = options.getInt("campaign", -1);
         String campaignId = campaignIdStr != null ? campaignIdStr : campaignIdInt != -1 ? String.valueOf(campaignIdInt) : null;
-        AmbIdentify.get(userId, ambassadorIdentification, campaignId).execute();
+        campaign.setId(campaignId);
+        AmbIdentify.get(userId, ambassadorIdentification).execute();
     }
 
     /**
