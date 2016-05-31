@@ -6,7 +6,6 @@ import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;
@@ -14,16 +13,17 @@ import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivit
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
-import com.ambassador.ambassadorsdk.internal.identify.AmbAugurTask;
-import com.ambassador.ambassadorsdk.internal.identify.AmbGcmTokenTask;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbGcmTokenTask;
 import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
-import com.ambassador.ambassadorsdk.internal.identify.AmbIdentifyTask;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
 import com.ambassador.ambassadorsdk.internal.notifications.InstanceIdListener;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
@@ -39,7 +39,6 @@ import dagger.Provides;
         ContactSelectorActivity.class,
         ContactListAdapter.class,
         BulkShareHelper.class,
-        ConversionUtility.class,
         RequestManager.class,
         AmbassadorSDK.class,
         AskNameDialog.class,
@@ -52,6 +51,7 @@ import dagger.Provides;
         AmbIdentifyTask.class,
         AmbGcmTokenTask.class,
         AmbAugurTask.class,
+        AmbConversion.class,
 }, staticInjections = {
         AmbassadorSDK.class
 }, library = true)
@@ -87,13 +87,6 @@ public final class AmbModule {
     @Provides
     public PusherManager providePusherManager() {
         return pusherManager;
-    }
-
-    @NonNull
-    @Provides
-    @Singleton
-    public ConversionUtility provideConversionUtility() {
-        return new ConversionUtility();
     }
 
     @NonNull

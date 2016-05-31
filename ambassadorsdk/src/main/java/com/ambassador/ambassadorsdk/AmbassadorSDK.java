@@ -3,32 +3,32 @@ package com.ambassador.ambassadorsdk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
-import com.ambassador.ambassadorsdk.internal.ConversionUtility;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Secrets;
-import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
+import com.ambassador.ambassadorsdk.internal.conversion.ConversionParametersFactory;
+import com.ambassador.ambassadorsdk.internal.conversion.ConversionStatusListener;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
+import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
 
 import net.kencochrane.raven.DefaultRavenFactory;
 
 import java.io.InputStream;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.inject.Inject;
 
@@ -44,7 +44,6 @@ public final class AmbassadorSDK {
     @Inject protected static Campaign campaign;
     @Inject protected static PusherManager pusherManager;
     @Inject protected static RequestManager requestManager;
-    @Inject protected static ConversionUtility conversionUtility;
 
     /**
      *
@@ -63,15 +62,6 @@ public final class AmbassadorSDK {
         auth.setUniversalId(universalId);
 
         new InstallReceiver().registerWith(context);
-
-        final ConversionUtility utility = new ConversionUtility(AmbSingleton.getContext());
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                utility.readAndSaveDatabaseEntries();
-            }
-        }, 10000, 10000);
 
         final Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -94,6 +84,8 @@ public final class AmbassadorSDK {
                 defaultHandler.uncaughtException(thread, ex);
             }
         });
+
+        AmbConversion.attemptExecutePending();
     }
 
     /**
@@ -110,9 +102,9 @@ public final class AmbassadorSDK {
     }
 
     /**
-     * Identifies a user to the Ambassador SDK using an email address.
-     * @param emailAddress the email address of the user being identified.
-     * @return boolean determining email address parameter validity.
+     * @deprecated use {@link #identify(String, AmbassadorIdentification)} instead.
+     * @param emailAddress a valid String email address.
+     * @return boolean determining validity of the email passed.
      */
     @Deprecated
     public static boolean identify(String emailAddress) {
@@ -132,16 +124,51 @@ public final class AmbassadorSDK {
         user.setUserId(null);
     }
 
-    public static void registerConversion(ConversionParameters conversionParameters, Boolean restrictToInstall) {
-        //do conversion if it's not an install conversion, or if it is, make sure that we haven't already converted on install by checking sharedprefs
-        if ((!restrictToInstall || !campaign.isConvertedOnInstall()) && conversionParameters.isValid()) {
-            Utilities.debugLog("Conversion", "restrictToInstall: " + restrictToInstall);
-            conversionUtility.setParameters(conversionParameters);
-            conversionUtility.registerConversion();
-        }
+    /**
+     * Registers a conversion to Ambassador.
+     * @param conversionParameters object defining information about the conversion.
+     * @param limitOnce boolean determining if this conversion should ever be allowed to happen more than once.
+     * @param conversionStatusListener callback interface that will return status of the conversion request.
+     */
+    public static void registerConversion(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
+        AmbConversion.get(conversionParameters, limitOnce, conversionStatusListener).execute();
+    }
 
-        if (restrictToInstall) {
-            campaign.setConvertedOnInstall(true);
+    /**
+     * Registers a conversion to Ambassador.
+     * @param conversionParameters object defining information about the conversion.
+     * @param limitOnce boolean determining if this conversion should ever be allowed to happen more than once.
+     * @deprecated use {@link #registerConversion(ConversionParameters, boolean, ConversionStatusListener)} instead.
+     */
+    @Deprecated
+    public static void registerConversion(ConversionParameters conversionParameters, Boolean limitOnce) {
+        registerConversion(conversionParameters, limitOnce, null);
+    }
+
+    /**
+     * Tracks an event with Ambassador.
+     * Currently, the only event Ambassador tracks is a conversion.
+     * @param eventName an optional value for the name of the event being tracked.
+     * @param properties information pertaining to the event such as campaign, revenue, etc.
+     * @param options additional information that can be added to the event.
+     */
+    public static void trackEvent(String eventName, Bundle properties, Bundle options) {
+        trackEvent(eventName, properties, options, null);
+    }
+
+    /**
+     * Tracks an event with Ambassador.
+     * Currently, the only event Ambassador tracks is a conversion.
+     * @param eventName an optional value for the name of the event being tracked.
+     * @param properties information pertaining to the event such as campaign, revenue, etc.
+     * @param options additional information that can be added to the event.
+     * @param listener a callback interface that will be used if this event is a conversion.
+     */
+    public static void trackEvent(String eventName, Bundle properties, Bundle options, ConversionStatusListener listener) {
+        if (options.getBoolean("conversion", false)) {
+            ConversionParameters conversionParameters = ConversionParametersFactory.getFromProperties(properties);
+            boolean limitOnce = options.getBoolean("restrictedToInstall", false);
+            AmbassadorSDK.registerConversion(conversionParameters, limitOnce, listener);
         }
     }
 

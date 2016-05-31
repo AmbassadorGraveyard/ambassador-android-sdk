@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -26,11 +27,18 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.InstallReceiver;
+import com.ambassador.ambassadorsdk.internal.conversion.ConversionStatusListener;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
+import com.ambassador.app.Demo;
 import com.ambassador.app.R;
 import com.ambassador.app.activities.PresenterManager;
 import com.ambassador.app.activities.main.MainActivity;
+import com.ambassador.app.api.Requests;
+import com.ambassador.app.api.pojo.GetShortCodeFromEmailResponse;
+import com.ambassador.app.data.User;
 import com.ambassador.app.dialogs.CampaignChooserDialog;
 import com.ambassador.app.dialogs.GroupChooserDialog;
 import com.ambassador.app.utils.Share;
@@ -38,6 +46,9 @@ import com.ambassador.app.views.ExpandableLayout;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public final class ConversionFragment extends Fragment implements ConversionView, MainActivity.TabFragment {
 
