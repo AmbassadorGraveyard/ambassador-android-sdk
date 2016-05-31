@@ -12,6 +12,7 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.Secrets;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.activities.survey.SurveyModel;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -114,6 +115,16 @@ public final class AmbassadorSDK {
 
         identify(emailAddress, new AmbassadorIdentification().setEmail(emailAddress));
         return true;
+    }
+
+    /**
+     * Unidentifies a user to the Ambassador SDK. Equivalent to a logout.
+     * Clears cookies so webview OAuth won't re-auth automatically.
+     */
+    public static void unidentify() {
+        user.clear();
+        user.setUserId(null);
+        SocialOAuthActivity.clearCookies();
     }
 
     /**

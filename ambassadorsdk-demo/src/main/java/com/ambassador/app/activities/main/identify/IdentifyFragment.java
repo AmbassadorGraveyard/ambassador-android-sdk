@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.app.R;
 import com.ambassador.app.activities.PresenterManager;
 import com.ambassador.app.activities.main.MainActivity;
@@ -50,6 +51,15 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
             @Override
             public void onClick(View v) {
                 identifyPresenter.onSubmitClicked(etEmail.getText().toString());
+            }
+        });
+
+        btnIdentify.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AmbassadorSDK.unidentify();
+                Toast.makeText(getActivity(), "Logout", Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
 

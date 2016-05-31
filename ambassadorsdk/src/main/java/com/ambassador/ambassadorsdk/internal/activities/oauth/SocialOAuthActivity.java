@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
@@ -19,6 +20,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -734,6 +737,21 @@ public class SocialOAuthActivity extends AppCompatActivity {
             });
         }
 
+    }
+
+    public static void clearCookies() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            CookieManager.getInstance().removeAllCookies(null);
+            CookieManager.getInstance().flush();
+        } else if (AmbSingleton.getContext() != null) {
+            CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(AmbSingleton.getContext());
+            cookieSyncManager.startSync();
+            CookieManager cookieManager = CookieManager.getInstance();
+            cookieManager.removeAllCookie();
+            cookieManager.removeSessionCookie();
+            cookieSyncManager.stopSync();
+            cookieSyncManager.sync();
+        }
     }
 
 }
