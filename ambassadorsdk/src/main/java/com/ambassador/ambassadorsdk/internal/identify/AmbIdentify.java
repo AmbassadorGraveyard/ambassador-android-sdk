@@ -21,14 +21,16 @@ public class AmbIdentify {
     protected PusherManager pusherManager;
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
+    protected String campaignId;
     protected AmbIdentifyTask[] identifyTasks;
     protected CompletionListener completionListener;
     protected boolean subscribed;
 
-    protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification) {
+    protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification, String campaignId) {
         AmbSingleton.inject(this);
         this.userId = userId;
         this.ambassadorIdentification = ambassadorIdentification;
+        this.campaignId = campaignId;
         this.identifyTasks = new AmbIdentifyTask[2];
         this.identifyTasks[0] = new AmbGcmTokenTask();
         this.identifyTasks[1] = new AmbAugurTask();
@@ -154,8 +156,8 @@ public class AmbIdentify {
         void networkError();
     }
 
-    public static AmbIdentify get(String userId, AmbassadorIdentification ambassadorIdentification) {
-        return new AmbIdentify(userId, ambassadorIdentification);
+    public static AmbIdentify get(String userId, AmbassadorIdentification ambassadorIdentification, String campaignId) {
+        return new AmbIdentify(userId, ambassadorIdentification, campaignId);
     }
 
 }

@@ -110,7 +110,7 @@ public final class AmbassadorSDK {
         ambassadorIdentification.setLastName(traits.getString("lastName", null));
         ambassadorIdentification.setCompany(traits.getString("company", null));
         ambassadorIdentification.setPhone(traits.getString("phone", null));
-        
+
         Bundle address = traits.getBundle("address");
         if (address != null) {
             ambassadorIdentification.setStreet(traits.getString("street", null));
@@ -124,7 +124,10 @@ public final class AmbassadorSDK {
             ambassadorIdentification.setEmail(userId);
         }
 
-        AmbIdentify.get(userId, ambassadorIdentification).execute();
+        String campaignIdStr = options.getString("campaign", null);
+        int campaignIdInt = options.getInt("campaign", -1);
+        String campaignId = campaignIdStr != null ? campaignIdStr : campaignIdInt != -1 ? String.valueOf(campaignIdInt) : null;
+        AmbIdentify.get(userId, ambassadorIdentification, campaignId).execute();
     }
 
     /**
