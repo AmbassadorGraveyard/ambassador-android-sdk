@@ -57,8 +57,12 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         btnIdentify.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                AmbassadorSDK.unidentify();
-                Toast.makeText(getActivity(), "Logout", Toast.LENGTH_SHORT).show();
+                Bundle traits = new Bundle();
+                Bundle options = new Bundle();
+                options.putString("campaign", "1048");
+                AmbassadorSDK.identify(etEmail.getText().toString(), traits, options);
+                Toast.makeText(getActivity(), "Long", Toast.LENGTH_SHORT).show();
+
                 return true;
             }
         });

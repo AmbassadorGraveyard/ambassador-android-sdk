@@ -380,9 +380,6 @@ public final class IdentifyApi {
             this.email = ambassadorIdentification.getEmail();
             this.first_name = ambassadorIdentification.getFirstName();
             this.last_name = ambassadorIdentification.getLastName();
-            this.custom1 = ambassadorIdentification.getCustomLabel1();
-            this.custom2 = ambassadorIdentification.getCustomLabel2();
-            this.custom3 = ambassadorIdentification.getCustomLabel3();
             this.company = ambassadorIdentification.getCompany();
             this.street = ambassadorIdentification.getStreet();
             this.city = ambassadorIdentification.getCity();

@@ -92,9 +92,36 @@ public final class AmbassadorSDK {
     /**
      * Identifies a user to the Ambassador SDK using a unique identifier and other optional information.
      * @param userId unique identifier for the user.
-     * @param ambassadorIdentification object with setters for other optional parameters.
+     * @param traits Bundle for other relevant identification properties.
+     * @param options Bundle for other information like "campaign".
      */
-    public static void identify(String userId, AmbassadorIdentification ambassadorIdentification) {
+    public static void identify(String userId, Bundle traits, Bundle options) {
+        AmbassadorIdentification ambassadorIdentification = new AmbassadorIdentification();
+
+        if (traits != null) {
+            ambassadorIdentification.setEmail(traits.getString("email", null));
+            ambassadorIdentification.setFirstName(traits.getString("firstName", null));
+            ambassadorIdentification.setLastName(traits.getString("lastName", null));
+            ambassadorIdentification.setCompany(traits.getString("company", null));
+            ambassadorIdentification.setPhone(traits.getString("phone", null));
+
+            Bundle address = traits.getBundle("address");
+            if (address != null) {
+                ambassadorIdentification.setStreet(traits.getString("street", null));
+                ambassadorIdentification.setCity(traits.getString("city", null));
+                ambassadorIdentification.setState(traits.getString("state", null));
+                ambassadorIdentification.setPostalCode(traits.getString("postalCode", null));
+                ambassadorIdentification.setCountry(traits.getString("country", null));
+            }
+        }
+
+        if (options != null) {
+            String campaignIdStr = options.getString("campaign", null);
+            int campaignIdInt = options.getInt("campaign", -1);
+            String campaignId = campaignIdStr != null ? campaignIdStr : campaignIdInt != -1 ? String.valueOf(campaignIdInt) : null;
+            campaign.setId(campaignId);
+        }
+
         if (ambassadorIdentification.getEmail() == null && new Identify(userId).isValidEmail()) {
             ambassadorIdentification.setEmail(userId);
         }
@@ -113,7 +140,7 @@ public final class AmbassadorSDK {
             return false;
         }
 
-        identify(emailAddress, new AmbassadorIdentification().setEmail(emailAddress));
+        identify(emailAddress, null, null);
         return true;
     }
 
