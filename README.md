@@ -57,4 +57,6 @@ Select the 4 files from the folder you copied to your desktop. Set the path like
 com/ambassador/ambassadorsdk/{VERSION}
 ```
 
+Save, and make sure you click publish after.
+
 
