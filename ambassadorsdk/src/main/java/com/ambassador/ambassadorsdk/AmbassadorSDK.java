@@ -126,6 +126,10 @@ public final class AmbassadorSDK {
             ambassadorIdentification.setEmail(userId);
         }
 
+        if (ambassadorIdentification.getEmail() == null || !(new Identify(ambassadorIdentification.getEmail()).isValidEmail())) {
+            return;
+        }
+
         AmbIdentify.get(userId, ambassadorIdentification).execute();
     }
 
