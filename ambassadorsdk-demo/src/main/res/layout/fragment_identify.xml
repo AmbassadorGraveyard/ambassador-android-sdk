@@ -281,6 +281,37 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/rlCampaignChooser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/et_only"
+            android:paddingBottom="11dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="11dp">
+
+            <TextView
+                android:id="@+id/tvSelectedCampaign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
+                android:text="Select a Campaign *"
+                android:textColor="#e6e6e6"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_expand_more" />
+
+        </RelativeLayout>
 
         <Button
             android:id="@+id/btnIdentify"
