@@ -28,8 +28,10 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
 
     protected IdentifyPresenter identifyPresenter;
 
-    @Bind(R.id.etIdentify)  protected EditText  etEmail;
-    @Bind(R.id.btnIdentify) protected Button    btnIdentify;
+    @Bind(R.id.etIdentify) protected EditText etEmail;
+    @Bind(R.id.etFirstName) protected EditText etFirstName;
+    @Bind(R.id.etLastName) protected EditText etLastName;
+    @Bind(R.id.btnIdentify) protected Button btnIdentify;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
