@@ -199,6 +199,12 @@ public class PusherManager {
         JsonObject pusherSave = new JsonObject();
         JsonObject pusherObject = data.get("body").getAsJsonObject();
 
+        if (pusherObject.get("urls") == null) {
+            for (PusherListener pusherListener : pusherListeners) {
+                pusherListener.onIdentifyFailed();
+            }
+        }
+
         pusherSave.add("email", pusherObject.get("email"));
         pusherSave.add("firstName", pusherObject.get("first_name"));
         pusherSave.add("lastName", pusherObject.get("last_name"));
@@ -206,10 +212,8 @@ public class PusherManager {
         pusherSave.add("urls", pusherObject.get("urls").getAsJsonArray());
 
         user.setPusherInfo(pusherSave);
-
         user.getAmbassadorIdentification().setFirstName(pusherObject.get("first_name").getAsString());
         user.getAmbassadorIdentification().setLastName(pusherObject.get("last_name").getAsString());
-
         user.setIdentifyData(data.toString());
 
         Intent intent = new Intent("pusherData");
@@ -403,6 +407,7 @@ public class PusherManager {
         void subscriptionFailed();
         void onEvent(String data);
         void onIdentifyComplete();
+        void onIdentifyFailed();
     }
 
     /**

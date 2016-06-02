@@ -116,26 +116,26 @@ public class AmbIdentify {
                 pusherManager.disconnect();
             }
 
+            @Override
+            public void onIdentifyFailed() {
+                super.onIdentifyFailed();
+                runningInstance = null;
+                if (completionListener != null) {
+                    completionListener.networkError();
+                }
+                pusherManager.disconnect();
+            }
+
         });
 
         if (subscribed) {
-            requestManager.identifyRequest(pusherManager, new RequestManager.RequestCompletion() {
-                @Override
-                public void onSuccess(Object successResponse) {
-                    AmbConversion.attemptExecutePending();
-                }
-
-                @Override
-                public void onFailure(Object failureResponse) {
-                    // Not handled here.
-                }
-            });
+            performIdentifyRequest();
         } else {
             pusherManager.addPusherListener(new PusherListenerAdapter() {
                 @Override
                 public void subscribed() {
                     super.subscribed();
-                    requestManager.identifyRequest(pusherManager, null);
+                    performIdentifyRequest();
                 }
 
                 @Override
@@ -148,6 +148,20 @@ public class AmbIdentify {
                 }
             });
         }
+    }
+
+    protected void performIdentifyRequest() {
+        requestManager.identifyRequest(pusherManager, new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess(Object successResponse) {
+                AmbConversion.attemptExecutePending();
+            }
+
+            @Override
+            public void onFailure(Object failureResponse) {
+                // Not handled here.
+            }
+        });
     }
 
     public void setCompletionListener(CompletionListener completionListener) {
