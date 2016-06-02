@@ -7,12 +7,14 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
@@ -38,6 +40,8 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     @Bind(R.id.etState) protected EditText etState;
     @Bind(R.id.etPostalCode) protected EditText etPostalCode;
     @Bind(R.id.etCountry) protected EditText etCountry;
+    @Bind(R.id.swAutoEnroll) protected SwitchCompat swAutoEnroll;
+    @Bind(R.id.rlCampaignChooser) protected RelativeLayout rlCampaignChooser;
     @Bind(R.id.btnIdentify) protected Button btnIdentify;
 
     @Override
