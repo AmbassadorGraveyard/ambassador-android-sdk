@@ -31,6 +31,8 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     @Bind(R.id.etIdentify) protected EditText etEmail;
     @Bind(R.id.etFirstName) protected EditText etFirstName;
     @Bind(R.id.etLastName) protected EditText etLastName;
+    @Bind(R.id.etCompany) protected EditText etCompany;
+    @Bind(R.id.etPhone) protected EditText etPhone;
     @Bind(R.id.btnIdentify) protected Button btnIdentify;
 
     @Override
