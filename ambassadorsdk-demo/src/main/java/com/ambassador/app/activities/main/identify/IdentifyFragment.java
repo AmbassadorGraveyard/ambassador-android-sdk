@@ -65,10 +65,16 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         ButterKnife.bind(this, view);
 
         swAutoEnroll.setChecked(false);
+        rlCampaignChooser.setVisibility(View.GONE);
+
         swAutoEnroll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+                if (isChecked) {
+                    rlCampaignChooser.setVisibility(View.VISIBLE);
+                } else {
+                    rlCampaignChooser.setVisibility(View.GONE);
+                }
             }
         });
 
