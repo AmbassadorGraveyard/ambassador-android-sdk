@@ -29,6 +29,10 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
         }
     }
 
+    public void onCampaignChooserClicked() {
+        view().getCampaigns();
+    }
+
     public void onActionClicked(String emailAddress) {
         if (!new Identify(emailAddress).isValidEmail()) {
             view().notifyInvalidEmail();

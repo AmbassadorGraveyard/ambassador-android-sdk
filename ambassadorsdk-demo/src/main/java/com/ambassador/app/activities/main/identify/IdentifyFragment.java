@@ -17,10 +17,10 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.app.R;
 import com.ambassador.app.activities.PresenterManager;
 import com.ambassador.app.activities.main.MainActivity;
+import com.ambassador.app.dialogs.CampaignChooserDialog;
 import com.ambassador.app.utils.Share;
 
 import butterknife.Bind;
@@ -60,23 +60,17 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         View view = inflater.inflate(R.layout.fragment_identify, container, false);
         ButterKnife.bind(this, view);
 
+        rlCampaignChooser.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                identifyPresenter.onCampaignChooserClicked();
+            }
+        });
+
         btnIdentify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 identifyPresenter.onSubmitClicked(etEmail.getText().toString());
-            }
-        });
-
-        btnIdentify.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Bundle traits = new Bundle();
-                Bundle options = new Bundle();
-                options.putString("campaign", "1048");
-                AmbassadorSDK.identify(etEmail.getText().toString(), traits, options);
-                Toast.makeText(getActivity(), "Long", Toast.LENGTH_SHORT).show();
-
-                return true;
             }
         });
 
@@ -125,6 +119,17 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     @Override
     public void notifyIdentifying() {
         Toast.makeText(getActivity(), "Identifying!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void getCampaigns() {
+        CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(getActivity());
+        campaignChooserDialog.show();
+    }
+
+    @Override
+    public void setCampaignText(String campaignText) {
+
     }
 
     @Override
