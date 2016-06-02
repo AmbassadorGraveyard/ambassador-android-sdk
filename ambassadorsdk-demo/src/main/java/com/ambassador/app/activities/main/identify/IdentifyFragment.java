@@ -1,6 +1,7 @@
 package com.ambassador.app.activities.main.identify;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
@@ -13,8 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ambassador.app.R;
@@ -42,6 +45,7 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     @Bind(R.id.etCountry) protected EditText etCountry;
     @Bind(R.id.swAutoEnroll) protected SwitchCompat swAutoEnroll;
     @Bind(R.id.rlCampaignChooser) protected RelativeLayout rlCampaignChooser;
+    @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
     @Bind(R.id.btnIdentify) protected Button btnIdentify;
 
     @Override
@@ -59,6 +63,14 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_identify, container, false);
         ButterKnife.bind(this, view);
+
+        swAutoEnroll.setChecked(false);
+        swAutoEnroll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            }
+        });
 
         rlCampaignChooser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,13 +135,21 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
 
     @Override
     public void getCampaigns() {
-        CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(getActivity());
+        final CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(getActivity());
+        campaignChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                String result = campaignChooserDialog.getResult();
+                identifyPresenter.onCampaignResult(result);
+            }
+        });
         campaignChooserDialog.show();
     }
 
     @Override
     public void setCampaignText(String campaignText) {
-
+        tvSelectedCampaign.setText(campaignText);
+        tvSelectedCampaign.setTextColor(Color.parseColor("#333333"));
     }
 
     @Override
