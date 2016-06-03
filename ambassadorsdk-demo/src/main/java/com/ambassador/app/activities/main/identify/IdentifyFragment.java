@@ -65,15 +65,15 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         ButterKnife.bind(this, view);
 
         swAutoEnroll.setChecked(false);
-        rlCampaignChooser.setVisibility(View.GONE);
+        rlCampaignChooser.setAlpha(0.4f);
 
         swAutoEnroll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    rlCampaignChooser.setVisibility(View.VISIBLE);
+                    rlCampaignChooser.setAlpha(1f);
                 } else {
-                    rlCampaignChooser.setVisibility(View.GONE);
+                    rlCampaignChooser.setAlpha(0.4f);
                 }
             }
         });
@@ -81,7 +81,11 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         rlCampaignChooser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                identifyPresenter.onCampaignChooserClicked();
+                if (swAutoEnroll.isChecked()) {
+                    identifyPresenter.onCampaignChooserClicked();
+                } else {
+                    Toast.makeText(getActivity(), "Auto enroll must be enabled!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
