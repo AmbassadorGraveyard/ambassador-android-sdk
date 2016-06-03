@@ -94,9 +94,15 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
                 traits.putString("lastName", etLastName.getText().toString());
                 traits.putString("company", etCompany.getText().toString());
                 traits.putString("phone", etPhone.getText().toString());
-                traits.putString("street", etStreet.getText().toString());
-                traits.putString("postalCode", etPostalCode.getText().toString());
-                traits.putString("country", etCountry.getText().toString());
+
+                Bundle address = new Bundle();
+                address.putString("street", etStreet.getText().toString());
+                address.putString("city", etCity.getText().toString());
+                address.putString("state", etState.getText().toString());
+                address.putString("postalCode", etPostalCode.getText().toString());
+                address.putString("country", etCountry.getText().toString());
+
+                traits.putBundle("address", address);
 
                 Bundle options = swAutoEnroll.isChecked() ? new Bundle() : null;
 

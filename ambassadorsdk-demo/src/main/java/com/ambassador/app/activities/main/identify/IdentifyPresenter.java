@@ -34,16 +34,10 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
             options.putString("campaign", model.selectedCampaignId + "");
         }
 
-        if (traits != null) {
-            for (String key : traits.keySet()) {
-                Log.v("AmbassadorSDK", key + "=" + traits.getString(key, ""));
-            }
-        }
-        if (options != null) {
-            for (String key : options.keySet()) {
-                Log.v("AmbassadorSDK", key + "=" + traits.getString(key, ""));
-            }
-        }
+        Log.v("AmbassadorSDK", "Traits -------");
+        printBundle("", traits);
+        Log.v("AmbassadorSDK", "Options -------");
+        printBundle("", options);
 
         String emailAddress = traits.getString("email", null);
         if (emailAddress == null) {
@@ -59,6 +53,20 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
             AmbassadorSDK.identify(emailAddress, traits, options);
             view().notifyIdentifying();
             view().closeSoftKeyboard();
+        }
+    }
+
+    protected void printBundle(String prepend, Bundle bundle) {
+        if (bundle == null) return;
+        for (String key : bundle.keySet()) {
+            Object value = bundle.get(key);
+            if (value == null) continue;
+            if (value instanceof Bundle) {
+                Log.v("AmbassadorSDK", prepend + key + ":");
+                printBundle(prepend + "    ", ((Bundle) value));
+            } else {
+                Log.v("AmbassadorSDK", prepend + key + " = " + value.toString());
+            }
         }
     }
 
