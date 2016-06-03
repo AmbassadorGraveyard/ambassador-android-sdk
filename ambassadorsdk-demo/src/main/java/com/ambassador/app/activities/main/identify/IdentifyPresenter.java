@@ -29,7 +29,7 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
     }
 
     public void onSubmitClicked(Bundle traits, Bundle options) {
-        if (options != null) {
+        if (options != null && model.selectedCampaignName != null) {
             options.putString("campaign", model.selectedCampaignId + "");
         }
 
