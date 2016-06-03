@@ -88,7 +88,19 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         btnIdentify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                identifyPresenter.onSubmitClicked(etEmail.getText().toString());
+                Bundle traits = new Bundle();
+                traits.putString("email", etEmail.getText().toString());
+                traits.putString("firstName", etFirstName.getText().toString());
+                traits.putString("lastName", etLastName.getText().toString());
+                traits.putString("company", etCompany.getText().toString());
+                traits.putString("phone", etPhone.getText().toString());
+                traits.putString("street", etStreet.getText().toString());
+                traits.putString("postalCode", etPostalCode.getText().toString());
+                traits.putString("country", etCountry.getText().toString());
+
+                Bundle options = swAutoEnroll.isChecked() ? new Bundle() : null;
+
+                identifyPresenter.onSubmitClicked(traits, options);
             }
         });
 

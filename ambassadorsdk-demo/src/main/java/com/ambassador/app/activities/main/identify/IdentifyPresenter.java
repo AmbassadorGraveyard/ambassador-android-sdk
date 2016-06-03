@@ -1,5 +1,6 @@
 package com.ambassador.app.activities.main.identify;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
@@ -27,15 +28,23 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
         }
     }
 
-    public void onSubmitClicked(String emailAddress) {
-        if (emailAddress.length() == 0) {
+    public void onSubmitClicked(Bundle traits, Bundle options) {
+        if (options != null) {
+            options.putString("campaign", model.selectedCampaignId + "");
+        }
+
+        String emailAddress = traits.getString("email", null);
+        if (emailAddress == null) {
+            view().notifyNoEmail();
+            view().closeSoftKeyboard();
+        } else if (emailAddress.length() == 0) {
             view().notifyNoEmail();
             view().closeSoftKeyboard();
         } else if (!(new Identify(emailAddress).isValidEmail())) {
             view().notifyInvalidEmail();
             view().closeSoftKeyboard();
         } else {
-            AmbassadorSDK.identify(emailAddress);
+            AmbassadorSDK.identify(emailAddress, traits, options);
             view().notifyIdentifying();
             view().closeSoftKeyboard();
         }
