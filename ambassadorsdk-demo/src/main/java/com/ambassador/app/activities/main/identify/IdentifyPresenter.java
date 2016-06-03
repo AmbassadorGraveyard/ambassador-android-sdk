@@ -2,6 +2,7 @@ package com.ambassador.app.activities.main.identify;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.internal.activities.BasePresenter;
@@ -31,6 +32,17 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
     public void onSubmitClicked(Bundle traits, Bundle options) {
         if (options != null && model.selectedCampaignName != null) {
             options.putString("campaign", model.selectedCampaignId + "");
+        }
+
+        if (traits != null) {
+            for (String key : traits.keySet()) {
+                Log.v("AmbassadorSDK", key + "=" + traits.getString(key, ""));
+            }
+        }
+        if (options != null) {
+            for (String key : options.keySet()) {
+                Log.v("AmbassadorSDK", key + "=" + traits.getString(key, ""));
+            }
         }
 
         String emailAddress = traits.getString("email", null);
