@@ -369,6 +369,8 @@ public final class IdentifyApi {
         private String zip;
         private String country;
 
+        private String add_to_groups;
+
         public IdentifyRequestBody(String campaign_id, String userId, String augur, AmbassadorIdentification ambassadorIdentification) {
             this.enroll = true;
             this.campaign_id = campaign_id;

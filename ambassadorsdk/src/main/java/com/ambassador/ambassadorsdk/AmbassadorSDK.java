@@ -104,6 +104,7 @@ public final class AmbassadorSDK {
             ambassadorIdentification.setLastName(traits.getString("lastName", null));
             ambassadorIdentification.setCompany(traits.getString("company", null));
             ambassadorIdentification.setPhone(traits.getString("phone", null));
+            ambassadorIdentification.setCustomLabel1(traits.getString("customLabel1", null));
 
             Bundle address = traits.getBundle("address");
             if (address != null) {
