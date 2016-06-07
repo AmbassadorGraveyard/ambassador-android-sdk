@@ -8,6 +8,9 @@ public interface IdentifyView {
     void notifyInvalidEmail();
     void notifyIdentifying();
 
+    void getCampaigns();
+    void setCampaignText(String campaignText);
+
     void closeSoftKeyboard();
 
     void share(Share share);

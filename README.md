@@ -24,3 +24,39 @@ Make sure the `pre-push` hook is executable:
 ```sh
 $ chmod +x .git/hooks/pre-push
 ```
+
+## Releasing the SDK
+
+In the ambassadorsdk module's build.gradle, inside of the ext block at the bottom, increment libraryVersion.
+
+Inside the base folder of the project, execute the following command. The command will fail but that is expected.
+
+```sh
+./gradlew bintrayUpload
+```
+
+Now change directory to your local maven repo.
+
+```sh
+cd ~/.m2/repository/com/ambassador/ambassadorsdk
+```
+
+Copy your new version somewhere useful like the desktop. Using version 1.1.5 as an example:
+
+```sh
+cp -r 1.1.5 ~/Desktop/1.1.5
+```
+
+Login to bintray.com and select the Ambassador organization. Select the maven repo. Select the ambassadorsdk package.
+
+Click "New version". Enter your version number for the name, (ex: "1.1.5"). Click submit. Now click the new version. On the right click to upload files using the UI uploader.
+
+Select the 4 files from the folder you copied to your desktop. Set the path like this:
+
+```
+com/ambassador/ambassadorsdk/{VERSION}
+```
+
+Save, and make sure you click publish after.
+
+

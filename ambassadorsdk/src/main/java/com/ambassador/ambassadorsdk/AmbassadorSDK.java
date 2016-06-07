@@ -116,10 +116,9 @@ public final class AmbassadorSDK {
         }
 
         if (options != null) {
-            String campaignIdStr = options.getString("campaign", null);
-            int campaignIdInt = options.getInt("campaign", -1);
-            String campaignId = campaignIdStr != null ? campaignIdStr : campaignIdInt != -1 ? String.valueOf(campaignIdInt) : null;
-            campaign.setId(campaignId);
+            Object campaignIdObj = options.get("campaign");
+            String campaignIdStr = campaignIdObj != null ? campaignIdObj.toString() : null;
+            campaign.setId(campaignIdStr);
         }
 
         if (ambassadorIdentification.getEmail() == null && new Identify(userId).isValidEmail()) {
@@ -130,7 +129,7 @@ public final class AmbassadorSDK {
     }
 
     /**
-     * @deprecated use {@link #identify(String, AmbassadorIdentification)} instead.
+     * @deprecated use {@link #identify(String, Bundle, Bundle)} instead.
      * @param emailAddress a valid String email address.
      * @return boolean determining validity of the email passed.
      */
@@ -203,15 +202,6 @@ public final class AmbassadorSDK {
     }
 
     public static void presentRAF(Context context, String campaignID) {
-        if (context.getResources().getIdentifier("homeWelcomeTitle", "color", context.getPackageName()) != 0) {
-            try {
-                presentRAF(context, campaignID, RAFOptionsFactory.decodeCustomValues(context));
-                return;
-            } catch (Exception e) {
-                // catch all to go to defaults
-            }
-        }
-
         presentRAF(context, campaignID, new RAFOptions.Builder().build());
     }
 

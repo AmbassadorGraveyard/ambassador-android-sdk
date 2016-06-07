@@ -59,7 +59,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/et_only"
             android:fontFamily="sans-serif"
-            android:hint="Email address"
+            android:hint="Email Address"
             android:inputType="textEmailAddress"
             android:paddingBottom="12dp"
             android:paddingLeft="10dp"
@@ -68,6 +68,250 @@
             android:textColorHint="@color/etHint"
             android:textCursorDrawable="@drawable/et_cursor"
             android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="First Name"
+            android:inputType="textPersonName"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Last Name"
+            android:inputType="textPersonName"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etCompany"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Company"
+            android:inputType="textPersonName"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Phone"
+            android:inputType="phone"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvHeaderText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="16dp"
+            android:text="Address"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etStreet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Street"
+            android:inputType="text"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="City"
+            android:inputType="text"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="State"
+            android:inputType="text"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etPostalCode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Postal Code"
+            android:inputType="text"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/etCountry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/et_only"
+            android:fontFamily="sans-serif"
+            android:hint="Country"
+            android:inputType="text"
+            android:paddingBottom="12dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="12dp"
+            android:textColorHint="@color/etHint"
+            android:textCursorDrawable="@drawable/et_cursor"
+            android:textSize="14sp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Auto enroll"
+                android:textColor="#aaaaaa" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/swAutoEnroll"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rlCampaignChooser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="50dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/et_only"
+            android:paddingBottom="11dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="11dp">
+
+            <TextView
+                android:id="@+id/tvSelectedCampaign"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="25dp"
+                android:text="Select a Campaign *"
+                android:textColor="#e6e6e6"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_expand_more" />
+
+        </RelativeLayout>
 
         <Button
             android:id="@+id/btnIdentify"

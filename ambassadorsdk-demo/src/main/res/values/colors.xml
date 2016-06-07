@@ -3,5 +3,5 @@
     <color name="tabBackgroundColor">#25313f</color>
     <color name="actionBarColor">@color/primary</color>
     <color name="primary">#4198d1</color>
-    <color name="etHint">#e6e6e6</color>
+    <color name="etHint">#D4D4D4</color>
 </resources>
