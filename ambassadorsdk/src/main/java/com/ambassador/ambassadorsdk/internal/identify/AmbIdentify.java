@@ -28,6 +28,9 @@ public class AmbIdentify {
     protected AmbIdentifyTask[] identifyTasks;
     protected CompletionListener completionListener;
     protected boolean subscribed;
+    protected String memberIdentifyType;
+
+    public static String identifyType;
 
     protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification) {
         AmbSingleton.inject(this);
@@ -36,6 +39,8 @@ public class AmbIdentify {
         this.identifyTasks = new AmbIdentifyTask[2];
         this.identifyTasks[0] = new AmbGcmTokenTask();
         this.identifyTasks[1] = new AmbAugurTask();
+        this.memberIdentifyType = identifyType;
+        identifyType = "";
 
         this.pusherManager = new PusherManager();
     }

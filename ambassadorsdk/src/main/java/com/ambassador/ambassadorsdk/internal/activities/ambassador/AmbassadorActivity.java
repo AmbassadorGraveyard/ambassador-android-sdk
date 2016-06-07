@@ -526,6 +526,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
         askEmailDialog.setOnEmailReceivedListener(new AskEmailDialog.OnEmailReceivedListener() {
             @Override
             public void onEmailReceived(String email) {
+                AmbIdentify.identifyType = "raf";
                 if (AmbassadorSDK.identify(email)) {
                     askEmailDialog.dismiss();
                     setUpLoader();

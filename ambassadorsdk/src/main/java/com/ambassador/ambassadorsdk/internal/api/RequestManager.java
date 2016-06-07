@@ -169,7 +169,7 @@ public class RequestManager {
      * Identifies the user on the Ambassador backend using the session info
      * and the identify info returned from augur.
      */
-    public void identifyRequest(PusherManager pusherManager, RequestCompletion completion) {
+    public void identifyRequest(String identifyType, PusherManager pusherManager, RequestCompletion completion) {
         if (pusherManager.getChannel() == null) {
             if (completion != null) completion.onFailure(null);
             return;
@@ -186,8 +186,16 @@ public class RequestManager {
         String userId = user.getUserId();
         String augur = user.getAugurData() != null ? user.getAugurData().toString() : null;
         IdentifyApi.IdentifyRequestBody body = new IdentifyApi.IdentifyRequestBody(campaignId, userId, augur, user.getAmbassadorIdentification());
+        body.identify_type = identifyType;
 
         identifyApi.identifyRequest(sessionId, requestId, uid, authKey, body, completion);
+    }
+
+    /**
+     * Identifies a user with default identifyType = "".
+     */
+    public void identifyRequest(PusherManager pusherManager, RequestCompletion completion) {
+        identifyRequest("", pusherManager, completion);
     }
 
     /**

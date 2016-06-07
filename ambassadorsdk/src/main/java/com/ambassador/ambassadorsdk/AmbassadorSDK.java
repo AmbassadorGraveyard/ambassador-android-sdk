@@ -130,6 +130,7 @@ public final class AmbassadorSDK {
         }
 
         if (ambassadorIdentification.getEmail() == null || !(new Identify(ambassadorIdentification.getEmail()).isValidEmail())) {
+            AmbIdentify.identifyType = "";
             return;
         }
 
@@ -144,6 +145,7 @@ public final class AmbassadorSDK {
     @Deprecated
     public static boolean identify(String emailAddress) {
         if (!new Identify(emailAddress).isValidEmail()) {
+            AmbIdentify.identifyType = "";
             return false;
         }
 
