@@ -388,6 +388,7 @@ public final class IdentifyApi {
             this.state = ambassadorIdentification.getState();
             this.zip = ambassadorIdentification.getPostalCode();
             this.country = ambassadorIdentification.getCountry();
+            this.add_to_groups = ambassadorIdentification.getAddToGroups();
 
             try {
                 Gson gson = new Gson();
