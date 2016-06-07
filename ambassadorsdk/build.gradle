@@ -24,7 +24,7 @@ android {
 
     buildTypes {
         all {
-            buildConfigField "boolean", "IS_RELEASE_BUILD", "false"
+            buildConfigField "boolean", "IS_RELEASE_BUILD", "true"
             for (String key : rootProject.ext.secretsMap.keySet()) {
                 buildConfigField "String", key, "\"" + rootProject.ext.secretsMap.get(key) + "\""
             }
@@ -94,7 +94,7 @@ ext {
     siteUrl = 'http://getambassador.com'
     gitUrl = 'https://github.com/GetAmbassador/ambassador-android-sdk.git'
 
-    libraryVersion = '1.1.6'
+    libraryVersion = '1.1.5'
 
     developerId = 'ambassador'
     developerName = 'Ambassador Software'
