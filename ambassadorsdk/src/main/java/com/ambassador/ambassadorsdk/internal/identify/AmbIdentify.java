@@ -156,7 +156,7 @@ public class AmbIdentify {
     }
 
     protected void performIdentifyRequest() {
-        requestManager.identifyRequest(pusherManager, new RequestManager.RequestCompletion() {
+        requestManager.identifyRequest(memberIdentifyType, pusherManager, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
                 AmbConversion.attemptExecutePending();
