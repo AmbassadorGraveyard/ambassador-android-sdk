@@ -30,7 +30,7 @@ public class AmbIdentify {
     protected boolean subscribed;
     protected String memberIdentifyType;
 
-    public static String identifyType;
+    public static String identifyType = "";
 
     protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification) {
         AmbSingleton.inject(this);
