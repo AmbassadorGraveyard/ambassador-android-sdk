@@ -40,20 +40,18 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
         printBundle("", options);
 
         String emailAddress = traits.getString("email", null);
-        if (emailAddress == null) {
+        view().closeSoftKeyboard();
+
+        if (emailAddress == null || emailAddress.length() == 0) {
             view().notifyNoEmail();
-            view().closeSoftKeyboard();
-        } else if (emailAddress.length() == 0) {
-            view().notifyNoEmail();
-            view().closeSoftKeyboard();
+            return;
         } else if (!(new Identify(emailAddress).isValidEmail())) {
             view().notifyInvalidEmail();
-            view().closeSoftKeyboard();
-        } else {
-            AmbassadorSDK.identify(emailAddress, traits, options);
-            view().notifyIdentifying();
-            view().closeSoftKeyboard();
+            return;
         }
+
+        AmbassadorSDK.identify(emailAddress, traits, options);
+        view().notifyIdentifying();
     }
 
     protected void printBundle(String prepend, Bundle bundle) {
