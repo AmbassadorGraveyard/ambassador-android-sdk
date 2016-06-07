@@ -15,6 +15,7 @@ public class ConversionParametersFactory {
                 .setEventData2(properties.getString("eventData2", ""))
                 .setEventData3(properties.getString("eventData3", ""))
                 .setTransactionUid(properties.getString("orderId", ""))
+                .setEmailNewAmbassador(properties.getInt("emailNewAmbassador", 0))
                 .build();
     }
 
