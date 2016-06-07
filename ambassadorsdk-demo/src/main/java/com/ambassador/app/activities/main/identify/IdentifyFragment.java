@@ -1,24 +1,29 @@
 package com.ambassador.app.activities.main.identify;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.app.R;
 import com.ambassador.app.activities.PresenterManager;
 import com.ambassador.app.activities.main.MainActivity;
+import com.ambassador.app.dialogs.CampaignChooserDialog;
 import com.ambassador.app.utils.Share;
 
 import butterknife.Bind;
@@ -28,8 +33,20 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
 
     protected IdentifyPresenter identifyPresenter;
 
-    @Bind(R.id.etIdentify)  protected EditText  etEmail;
-    @Bind(R.id.btnIdentify) protected Button    btnIdentify;
+    @Bind(R.id.etIdentify) protected EditText etEmail;
+    @Bind(R.id.etFirstName) protected EditText etFirstName;
+    @Bind(R.id.etLastName) protected EditText etLastName;
+    @Bind(R.id.etCompany) protected EditText etCompany;
+    @Bind(R.id.etPhone) protected EditText etPhone;
+    @Bind(R.id.etStreet) protected EditText etStreet;
+    @Bind(R.id.etCity) protected EditText etCity;
+    @Bind(R.id.etState) protected EditText etState;
+    @Bind(R.id.etPostalCode) protected EditText etPostalCode;
+    @Bind(R.id.etCountry) protected EditText etCountry;
+    @Bind(R.id.swAutoEnroll) protected SwitchCompat swAutoEnroll;
+    @Bind(R.id.rlCampaignChooser) protected RelativeLayout rlCampaignChooser;
+    @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
+    @Bind(R.id.btnIdentify) protected Button btnIdentify;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,23 +64,53 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         View view = inflater.inflate(R.layout.fragment_identify, container, false);
         ButterKnife.bind(this, view);
 
-        btnIdentify.setOnClickListener(new View.OnClickListener() {
+        swAutoEnroll.setChecked(false);
+        rlCampaignChooser.setAlpha(0.4f);
+
+        swAutoEnroll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                identifyPresenter.onSubmitClicked(etEmail.getText().toString());
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    rlCampaignChooser.setAlpha(1f);
+                } else {
+                    rlCampaignChooser.setAlpha(0.4f);
+                }
             }
         });
 
-        btnIdentify.setOnLongClickListener(new View.OnLongClickListener() {
+        rlCampaignChooser.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                Bundle traits = new Bundle();
-                Bundle options = new Bundle();
-                options.putString("campaign", "1048");
-                AmbassadorSDK.identify(etEmail.getText().toString(), traits, options);
-                Toast.makeText(getActivity(), "Long", Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                if (swAutoEnroll.isChecked()) {
+                    identifyPresenter.onCampaignChooserClicked();
+                } else {
+                    Toast.makeText(getActivity(), "Auto enroll must be enabled!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-                return true;
+        btnIdentify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle traits = new Bundle();
+                traits.putString("email", etEmail.getText().toString());
+                traits.putString("firstName", etFirstName.getText().toString());
+                traits.putString("lastName", etLastName.getText().toString());
+                traits.putString("company", etCompany.getText().toString());
+                traits.putString("phone", etPhone.getText().toString());
+
+                Bundle address = new Bundle();
+                address.putString("street", etStreet.getText().toString());
+                address.putString("city", etCity.getText().toString());
+                address.putString("state", etState.getText().toString());
+                address.putString("postalCode", etPostalCode.getText().toString());
+                address.putString("country", etCountry.getText().toString());
+
+                traits.putBundle("address", address);
+
+                Bundle options = swAutoEnroll.isChecked() ? new Bundle() : null;
+
+                identifyPresenter.onSubmitClicked(traits, options);
             }
         });
 
@@ -112,6 +159,25 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     @Override
     public void notifyIdentifying() {
         Toast.makeText(getActivity(), "Identifying!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void getCampaigns() {
+        final CampaignChooserDialog campaignChooserDialog = new CampaignChooserDialog(getActivity());
+        campaignChooserDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                String result = campaignChooserDialog.getResult();
+                identifyPresenter.onCampaignResult(result);
+            }
+        });
+        campaignChooserDialog.show();
+    }
+
+    @Override
+    public void setCampaignText(String campaignText) {
+        tvSelectedCampaign.setText(campaignText);
+        tvSelectedCampaign.setTextColor(Color.parseColor("#333333"));
     }
 
     @Override
