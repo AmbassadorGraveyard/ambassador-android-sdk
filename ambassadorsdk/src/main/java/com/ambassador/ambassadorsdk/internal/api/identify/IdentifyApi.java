@@ -369,6 +369,9 @@ public final class IdentifyApi {
         private String zip;
         private String country;
 
+        private String add_to_groups;
+        public String identify_type;
+
         public IdentifyRequestBody(String campaign_id, String userId, String augur, AmbassadorIdentification ambassadorIdentification) {
             this.enroll = true;
             this.campaign_id = campaign_id;
@@ -386,6 +389,9 @@ public final class IdentifyApi {
             this.state = ambassadorIdentification.getState();
             this.zip = ambassadorIdentification.getPostalCode();
             this.country = ambassadorIdentification.getCountry();
+            this.add_to_groups = ambassadorIdentification.getAddToGroups();
+
+            this.identify_type = "";
 
             try {
                 Gson gson = new Gson();

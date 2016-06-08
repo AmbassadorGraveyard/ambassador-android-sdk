@@ -104,6 +104,10 @@ public final class AmbassadorSDK {
             ambassadorIdentification.setLastName(traits.getString("lastName", null));
             ambassadorIdentification.setCompany(traits.getString("company", null));
             ambassadorIdentification.setPhone(traits.getString("phone", null));
+            ambassadorIdentification.setCustomLabel1(traits.getString("customLabel1", null));
+            ambassadorIdentification.setCustomLabel2(traits.getString("customLabel1", null));
+            ambassadorIdentification.setCustomLabel3(traits.getString("customLabel1", null));
+            ambassadorIdentification.setAddToGroups(traits.getString("addToGroups", null));
 
             Bundle address = traits.getBundle("address");
             if (address != null) {
@@ -125,6 +129,11 @@ public final class AmbassadorSDK {
             ambassadorIdentification.setEmail(userId);
         }
 
+        if (ambassadorIdentification.getEmail() == null || !(new Identify(ambassadorIdentification.getEmail()).isValidEmail())) {
+            AmbIdentify.identifyType = "";
+            return;
+        }
+
         AmbIdentify.get(userId, ambassadorIdentification).execute();
     }
 
@@ -136,6 +145,7 @@ public final class AmbassadorSDK {
     @Deprecated
     public static boolean identify(String emailAddress) {
         if (!new Identify(emailAddress).isValidEmail()) {
+            AmbIdentify.identifyType = "";
             return false;
         }
 

@@ -134,6 +134,7 @@ public class AmbassadorSDKTest {
         Mockito.doReturn("evt2").when(properties).getString(Mockito.eq("eventData2"), Mockito.anyString());
         Mockito.doReturn("evt3").when(properties).getString(Mockito.eq("eventData3"), Mockito.anyString());
         Mockito.doReturn("oid").when(properties).getString(Mockito.eq("orderId"), Mockito.anyString());
+        Mockito.doReturn(1).when(properties).getInt(Mockito.eq("emailNewAmbassador"), Mockito.anyInt());
 
         Mockito.doReturn(false).when(options).getBoolean(Mockito.eq("restrictedToInstall"), Mockito.anyBoolean());
 
@@ -178,6 +179,7 @@ public class AmbassadorSDKTest {
         Mockito.doReturn("evt2").when(properties).getString(Mockito.eq("eventData2"), Mockito.anyString());
         Mockito.doReturn("evt3").when(properties).getString(Mockito.eq("eventData3"), Mockito.anyString());
         Mockito.doReturn("oid").when(properties).getString(Mockito.eq("orderId"), Mockito.anyString());
+        Mockito.doReturn(1).when(properties).getInt(Mockito.eq("emailNewAmbassador"), Mockito.anyInt());
 
         Mockito.doReturn(false).when(options).getBoolean(Mockito.eq("restrictedToInstall"), Mockito.anyBoolean());
 

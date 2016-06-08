@@ -126,7 +126,7 @@ public class AmbIdentifyTest {
 
         ambIdentify.onPreExecutionComplete();
 
-        Mockito.verify(requestManager, Mockito.times(1)).identifyRequest(Mockito.any(PusherManager.class), Mockito.any(RequestManager.RequestCompletion.class));
+        Mockito.verify(requestManager, Mockito.times(1)).identifyRequest(Mockito.eq(""), Mockito.any(PusherManager.class), Mockito.any(RequestManager.RequestCompletion.class));
     }
 
 }

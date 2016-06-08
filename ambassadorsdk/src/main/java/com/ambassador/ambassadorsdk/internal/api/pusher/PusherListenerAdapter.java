@@ -49,4 +49,9 @@ public abstract class PusherListenerAdapter implements PusherManager.PusherListe
         // Adapter, intentionally  empty.
     }
 
+    @Override
+    public void onIdentifyFailed() {
+        // Adapter, intentionally empty.
+    }
+
 }

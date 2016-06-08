@@ -28,6 +28,9 @@ public class AmbIdentify {
     protected AmbIdentifyTask[] identifyTasks;
     protected CompletionListener completionListener;
     protected boolean subscribed;
+    protected String memberIdentifyType;
+
+    public static String identifyType = "";
 
     protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification) {
         AmbSingleton.inject(this);
@@ -36,6 +39,8 @@ public class AmbIdentify {
         this.identifyTasks = new AmbIdentifyTask[2];
         this.identifyTasks[0] = new AmbGcmTokenTask();
         this.identifyTasks[1] = new AmbAugurTask();
+        this.memberIdentifyType = identifyType;
+        identifyType = "";
 
         this.pusherManager = new PusherManager();
     }
@@ -116,26 +121,26 @@ public class AmbIdentify {
                 pusherManager.disconnect();
             }
 
+            @Override
+            public void onIdentifyFailed() {
+                super.onIdentifyFailed();
+                runningInstance = null;
+                if (completionListener != null) {
+                    completionListener.networkError();
+                }
+                pusherManager.disconnect();
+            }
+
         });
 
         if (subscribed) {
-            requestManager.identifyRequest(pusherManager, new RequestManager.RequestCompletion() {
-                @Override
-                public void onSuccess(Object successResponse) {
-                    AmbConversion.attemptExecutePending();
-                }
-
-                @Override
-                public void onFailure(Object failureResponse) {
-                    // Not handled here.
-                }
-            });
+            performIdentifyRequest();
         } else {
             pusherManager.addPusherListener(new PusherListenerAdapter() {
                 @Override
                 public void subscribed() {
                     super.subscribed();
-                    requestManager.identifyRequest(pusherManager, null);
+                    performIdentifyRequest();
                 }
 
                 @Override
@@ -148,6 +153,20 @@ public class AmbIdentify {
                 }
             });
         }
+    }
+
+    protected void performIdentifyRequest() {
+        requestManager.identifyRequest(memberIdentifyType, pusherManager, new RequestManager.RequestCompletion() {
+            @Override
+            public void onSuccess(Object successResponse) {
+                AmbConversion.attemptExecutePending();
+            }
+
+            @Override
+            public void onFailure(Object failureResponse) {
+                // Not handled here.
+            }
+        });
     }
 
     public void setCompletionListener(CompletionListener completionListener) {

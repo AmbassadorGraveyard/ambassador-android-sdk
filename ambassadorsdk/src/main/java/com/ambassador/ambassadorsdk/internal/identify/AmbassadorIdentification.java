@@ -17,6 +17,7 @@ public class AmbassadorIdentification {
     protected String customLabel1;
     protected String customLabel2;
     protected String customLabel3;
+    protected String addToGroups;
 
     public String getEmail() {
         return email;
@@ -144,6 +145,16 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setCustomLabel3(String customLabel3) {
         this.customLabel3 = customLabel3;
+        notifyChange();
+        return this;
+    }
+
+    public String getAddToGroups() {
+        return addToGroups;
+    }
+
+    public AmbassadorIdentification setAddToGroups(String addToGroups) {
+        this.addToGroups = addToGroups;
         notifyChange();
         return this;
     }
