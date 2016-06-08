@@ -34,6 +34,7 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     protected IdentifyPresenter identifyPresenter;
 
     @Bind(R.id.etIdentify) protected EditText etEmail;
+    @Bind(R.id.etUserId) protected EditText etUserId;
     @Bind(R.id.etFirstName) protected EditText etFirstName;
     @Bind(R.id.etLastName) protected EditText etLastName;
     @Bind(R.id.etCompany) protected EditText etCompany;
@@ -110,7 +111,7 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
 
                 Bundle options = swAutoEnroll.isChecked() ? new Bundle() : null;
 
-                identifyPresenter.onSubmitClicked(traits, options);
+                identifyPresenter.onSubmitClicked(etUserId.getText().toString(), traits, options);
             }
         });
 
