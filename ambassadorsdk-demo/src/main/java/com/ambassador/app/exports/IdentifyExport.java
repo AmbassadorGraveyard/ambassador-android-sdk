@@ -2,7 +2,7 @@ package com.ambassador.app.exports;
 
 import com.ambassador.app.data.User;
 
-public class IdentifyExport extends BaseExport<String> {
+public class IdentifyExport extends BaseExport<IdentifyExport> {
 
     @Override
     public String getReadme() {
