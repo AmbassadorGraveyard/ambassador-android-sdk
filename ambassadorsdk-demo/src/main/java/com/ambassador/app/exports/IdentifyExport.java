@@ -1,6 +1,7 @@
 package com.ambassador.app.exports;
 
 import com.ambassador.app.data.User;
+import com.ambassador.app.utils.AssetFile;
 
 public class IdentifyExport extends BaseExport<IdentifyExport> {
 
@@ -47,7 +48,7 @@ public class IdentifyExport extends BaseExport<IdentifyExport> {
         java.addLine("");
         java.addLine("}");
 
-        return java.get();
+        return new AssetFile("exports/identify/MyApplication.java").getAsString();
     }
 
     @Override

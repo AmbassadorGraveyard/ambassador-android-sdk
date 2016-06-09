@@ -87,8 +87,8 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
             return;
         }
 
-        Export<String> export = new IdentifyExport();
-        export.setModel(emailAddress);
+        Export<IdentifyExport> export = new IdentifyExport();
+        export.setModel(new IdentifyExport());
         String filename = export.zip(Demo.get());
         Share share = new Share(filename).withSubject("Ambassador Identify Example Implementation").withBody(export.getReadme());
         view().share(share);
