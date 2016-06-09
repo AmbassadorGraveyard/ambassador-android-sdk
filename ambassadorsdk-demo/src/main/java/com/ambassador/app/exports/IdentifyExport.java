@@ -1,13 +1,16 @@
 package com.ambassador.app.exports;
 
+import android.os.Bundle;
+
 import com.ambassador.app.data.User;
+import com.ambassador.app.exports.models.IdentifyExportModel;
 import com.ambassador.app.utils.AssetFile;
 
-public class IdentifyExport extends BaseExport<IdentifyExport> {
+public class IdentifyExport extends BaseExport<IdentifyExportModel> {
 
     @Override
     public String getReadme() {
-        return new AssetFile("exports/identify/readme.txt").getAsString().replaceAll("\n", "\n\n\n");
+        return new AssetFile("exports/identify/readme.txt").getAsString().replaceAll("\n", "<br/>");
     }
 
     @Override
@@ -43,9 +46,13 @@ public class IdentifyExport extends BaseExport<IdentifyExport> {
     protected String processHandlebars(String text) {
         if (text == null) return text;
 
+        Bundle traits = model.traits;
+        Bundle options = model.options;
+
         return text
                 .replace("{{SDKTOKEN}}", User.get().getUniversalToken())
-                .replace("{{UNIVERSALID}}", User.get().getUniversalId());
+                .replace("{{UNIVERSALID}}", User.get().getUniversalId())
+                .replace("{{USERID}}", model.userId != null ? model.userId : "null");
     }
 
 }

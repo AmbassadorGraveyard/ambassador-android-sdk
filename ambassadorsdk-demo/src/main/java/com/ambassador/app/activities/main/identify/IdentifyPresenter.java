@@ -10,6 +10,7 @@ import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.app.Demo;
 import com.ambassador.app.exports.Export;
 import com.ambassador.app.exports.IdentifyExport;
+import com.ambassador.app.exports.models.IdentifyExportModel;
 import com.ambassador.app.utils.Share;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -87,8 +88,8 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
             return;
         }
 
-        Export<IdentifyExport> export = new IdentifyExport();
-        export.setModel(new IdentifyExport());
+        Export<IdentifyExportModel> export = new IdentifyExport();
+        export.setModel(new IdentifyExportModel());
         String filename = export.zip(Demo.get());
         Share share = new Share(filename).withSubject("Ambassador Identify Example Implementation").withBody(export.getReadme());
         view().share(share);
