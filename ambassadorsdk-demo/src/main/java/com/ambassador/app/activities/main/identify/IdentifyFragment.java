@@ -193,7 +193,25 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
 
     @Override
     public void onActionClicked() {
-        identifyPresenter.onActionClicked(etEmail.getText().toString());
+        Bundle traits = new Bundle();
+        traits.putString("email", etEmail.getText().toString());
+        traits.putString("firstName", etFirstName.getText().toString());
+        traits.putString("lastName", etLastName.getText().toString());
+        traits.putString("company", etCompany.getText().toString());
+        traits.putString("phone", etPhone.getText().toString());
+
+        Bundle address = new Bundle();
+        address.putString("street", etStreet.getText().toString());
+        address.putString("city", etCity.getText().toString());
+        address.putString("state", etState.getText().toString());
+        address.putString("postalCode", etPostalCode.getText().toString());
+        address.putString("country", etCountry.getText().toString());
+
+        traits.putBundle("address", address);
+
+        Bundle options = swAutoEnroll.isChecked() ? new Bundle() : null;
+
+        identifyPresenter.onActionClicked(etEmail.getText().toString(), traits, options);
     }
 
     @DrawableRes
