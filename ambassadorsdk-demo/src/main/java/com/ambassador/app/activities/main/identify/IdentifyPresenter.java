@@ -30,7 +30,7 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
         }
     }
 
-    public void onSubmitClicked(Bundle traits, Bundle options) {
+    public void onSubmitClicked(String userId, Bundle traits, Bundle options) {
         if (options != null && model.selectedCampaignName != null) {
             options.putString("campaign", model.selectedCampaignId + "");
         }
@@ -51,7 +51,7 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
             return;
         }
 
-        AmbassadorSDK.identify(emailAddress, traits, options);
+        AmbassadorSDK.identify(userId != null && !"".equals(userId) ? userId : null, traits, options);
         view().notifyIdentifying();
     }
 
