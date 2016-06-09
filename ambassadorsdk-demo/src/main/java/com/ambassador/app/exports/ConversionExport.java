@@ -5,6 +5,10 @@ import com.ambassador.app.utils.AssetFile;
 
 public class ConversionExport extends BaseExport<ConversionParameters> {
 
+    protected enum Language {
+        JAVA, SWIFT, OBJ_C
+    }
+
     @Override
     public String getReadme() {
         return new AssetFile("exports/conversion/readme.txt").getAsString();
@@ -38,6 +42,26 @@ public class ConversionExport extends BaseExport<ConversionParameters> {
     @Override
     public String iOSClassName() {
         return "AppDelegate";
+    }
+
+    protected String processConstantHandlebarValues(String text) {
+
+
+        return "";
+    }
+
+    protected String processVariableHandlebarValues(String text, Language language) {
+        switch (language) {
+            case JAVA:
+                break;
+            case SWIFT:
+                break;
+            case OBJ_C:
+                break;
+            default:
+                return null;
+        }
+        return "";
     }
 
 }
