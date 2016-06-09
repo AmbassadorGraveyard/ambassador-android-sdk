@@ -46,13 +46,68 @@ public class IdentifyExport extends BaseExport<IdentifyExportModel> {
     protected String processHandlebars(String text) {
         if (text == null) return text;
 
+        removeNullInstancesInPlace(model);
+
         Bundle traits = model.traits;
+        Bundle address = traits.getBundle("address");
         Bundle options = model.options;
 
         return text
                 .replace("{{SDKTOKEN}}", User.get().getUniversalToken())
                 .replace("{{UNIVERSALID}}", User.get().getUniversalId())
-                .replace("{{USERID}}", model.userId != null ? model.userId : "null");
+                .replace("{{USERID}}", model.userId)
+                .replace("{{EMAIL}}", traits.getString("email"))
+                .replace("{{FIRSTNAME}}", traits.getString("firstName"))
+                .replace("{{LASTNAME}}", traits.getString("lastName"))
+                .replace("{{COMPANY}}", traits.getString("company"))
+                .replace("{{PHONE}}", traits.getString("phone"))
+                .replace("{{STREET}}", address.getString("street"))
+                .replace("{{CITY}}", address.getString("city"))
+                .replace("{{STATE}}", address.getString("state"))
+                .replace("{{POSTALCODE}}", address.getString("postalCode"))
+                .replace("{{COUNTRY}}", address.getString("country"))
+                .replace("{{CAMPAIGN}}", options.getString("campaign"));
+    }
+
+    protected void removeNullInstancesInPlace(IdentifyExportModel model) {
+        model.userId = model.userId != null ? model.userId : "";
+        Bundle traits = model.traits;
+        if (traits == null) {
+            model.traits = new Bundle();
+            traits = model.traits;
+        }
+
+        removeBundleNullInstance(traits, "email");
+        removeBundleNullInstance(traits, "firstName");
+        removeBundleNullInstance(traits, "lastName");
+        removeBundleNullInstance(traits, "company");
+        removeBundleNullInstance(traits, "phone");
+
+        Bundle address = traits.getBundle("address");
+        if (address == null) {
+            traits.putBundle("address", new Bundle());
+            address = traits.getBundle("address");
+        }
+
+        removeBundleNullInstance(address, "street");
+        removeBundleNullInstance(address, "city");
+        removeBundleNullInstance(address, "state");
+        removeBundleNullInstance(address, "postalCode");
+        removeBundleNullInstance(address, "country");
+
+        Bundle options = model.options;
+        if (options == null) {
+            model.options = new Bundle();
+            options = model.options;
+        }
+
+        removeBundleNullInstance(options, "campaign");
+    }
+
+    protected void removeBundleNullInstance(Bundle bundle, String key) {
+        if (bundle.getString(key, null) == null) {
+            bundle.putString(key, "");
+        }
     }
 
 }
