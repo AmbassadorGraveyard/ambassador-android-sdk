@@ -1,9 +1,9 @@
 package com.ambassador.app.exports;
 
-import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.app.exports.models.ConversionExportModel;
 import com.ambassador.app.utils.AssetFile;
 
-public class ConversionExport extends BaseExport<ConversionParameters> {
+public class ConversionExport extends BaseExport<ConversionExportModel> {
 
     protected enum Language {
         JAVA, SWIFT, OBJ_C

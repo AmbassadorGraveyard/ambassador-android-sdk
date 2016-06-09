@@ -17,6 +17,7 @@ import com.ambassador.app.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.app.data.User;
 import com.ambassador.app.exports.ConversionExport;
 import com.ambassador.app.exports.Export;
+import com.ambassador.app.exports.models.ConversionExportModel;
 import com.ambassador.app.utils.Share;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -177,8 +178,8 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
             return;
         }
 
-        Export<ConversionParameters> export = new ConversionExport();
-        export.setModel(conversionParameters);
+        Export<ConversionExportModel> export = new ConversionExport();
+        export.setModel(new ConversionExportModel());
         String filename = export.zip(Demo.get());
         Share share = new Share(filename).withSubject("Ambassador Conversion Example Implementation").withBody(export.getReadme());
         view().share(share);
