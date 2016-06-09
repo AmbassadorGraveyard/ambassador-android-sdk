@@ -11,17 +11,17 @@ public class IdentifyExport extends BaseExport<IdentifyExport> {
 
     @Override
     public String getJavaImplementation() {
-        return new AssetFile("exports/identify/MyApplication.java").getAsString();
+        return processHandlebars(new AssetFile("exports/identify/MyApplication.java").getAsString());
     }
 
     @Override
     public String getSwiftImplementation() {
-        return new AssetFile("exports/identify/AppDelegate.swift").getAsString();
+        return processHandlebars(new AssetFile("exports/identify/AppDelegate.swift").getAsString());
     }
 
     @Override
     public String getObjectiveCImplementation() {
-        return new AssetFile("exports/identify/AppDelegate.m").getAsString();
+        return processHandlebars(new AssetFile("exports/identify/AppDelegate.m").getAsString());
     }
 
     @Override
@@ -37,6 +37,12 @@ public class IdentifyExport extends BaseExport<IdentifyExport> {
     @Override
     public String iOSClassName() {
         return "AppDelegate";
+    }
+
+    protected String processHandlebars(String text) {
+
+
+        return text;
     }
 
 }
