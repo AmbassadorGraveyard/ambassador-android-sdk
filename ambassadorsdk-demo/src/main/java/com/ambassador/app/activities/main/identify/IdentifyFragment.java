@@ -212,7 +212,7 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
 
         Bundle options = swAutoEnroll.isChecked() ? new Bundle() : null;
 
-        identifyPresenter.onActionClicked(etEmail.getText().toString(), traits, options);
+        identifyPresenter.onActionClicked(etUserId.getText().toString(), traits, options);
     }
 
     @DrawableRes
