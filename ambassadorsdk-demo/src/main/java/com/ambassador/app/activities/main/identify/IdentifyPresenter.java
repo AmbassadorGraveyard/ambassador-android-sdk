@@ -10,6 +10,7 @@ import com.ambassador.ambassadorsdk.internal.utils.Identify;
 import com.ambassador.app.Demo;
 import com.ambassador.app.exports.Export;
 import com.ambassador.app.exports.IdentifyExport;
+import com.ambassador.app.exports.models.IdentifyExportModel;
 import com.ambassador.app.utils.Share;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -81,14 +82,19 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
         }
     }
 
-    public void onActionClicked(String emailAddress) {
-        if (!new Identify(emailAddress).isValidEmail()) {
-            view().notifyInvalidEmail();
-            return;
+    public void onActionClicked(String userId, Bundle traits, Bundle options) {
+        IdentifyExportModel identifyExportModel = new IdentifyExportModel();
+        identifyExportModel.userId = userId;
+        identifyExportModel.traits = traits;
+
+        if (options != null) {
+            options.putString("campaign", model.selectedCampaignId + "");
         }
 
-        Export<String> export = new IdentifyExport();
-        export.setModel(emailAddress);
+        identifyExportModel.options = options;
+
+        Export<IdentifyExportModel> export = new IdentifyExport();
+        export.setModel(identifyExportModel);
         String filename = export.zip(Demo.get());
         Share share = new Share(filename).withSubject("Ambassador Identify Example Implementation").withBody(export.getReadme());
         view().share(share);

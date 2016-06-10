@@ -9,7 +9,7 @@ if [ "$CIRCLE_BRANCH" != "master" ]
     cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug.apk $CIRCLE_ARTIFACTS/$APK_NAME;
     curl -H "Authorization: Bearer $DROPBOX_TOKEN" https://api-content.dropbox.com/1/files_put/auto/ -T $CIRCLE_ARTIFACTS/$APK_NAME
 
-    rainforest validate
+    rainforest validate --token $RAINFOREST_TOKEN
     rainforest upload --token $RAINFOREST_TOKEN
 
     GITHUB_PULL_NUMBER=$(echo $CI_PULL_REQUEST | awk -F/ '{print $7}')
