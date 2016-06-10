@@ -6,7 +6,7 @@ import UIKit
 
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        AmbassadorSDK.runWithUniversalToken("{{UNIVERSALTOKEN}}", universalID: "{{UNIVERSALID}}")
+        AmbassadorSDK.runWithUniversalToken("{{SDKTOKEN}}", universalID: "{{UNIVERSALID}}")
 
         // Create dictionary for user traits
         var traitsDict = ["email" : "{{EMAIL}}",
