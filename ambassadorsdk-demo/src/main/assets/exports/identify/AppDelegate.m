@@ -8,7 +8,7 @@
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [AmbassadorSDK runWithUniversalToken:"{{SDKTOKEN}}" universalID:"{{UNIVERSALID}}"];
+    [AmbassadorSDK runWithUniversalToken:@"{{SDKTOKEN}}" universalID:@"{{UNIVERSALID}}"];
 
     // Create dictionary for user traits
     NSDictionary *traitsDict = @{@"email" : @"{{EMAIL}}",
