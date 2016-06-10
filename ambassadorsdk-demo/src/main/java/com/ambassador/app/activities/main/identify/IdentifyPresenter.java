@@ -86,6 +86,11 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
         IdentifyExportModel identifyExportModel = new IdentifyExportModel();
         identifyExportModel.userId = userId;
         identifyExportModel.traits = traits;
+
+        if (options != null) {
+            options.putString("campaign", model.selectedCampaignId + "");
+        }
+
         identifyExportModel.options = options;
 
         Export<IdentifyExportModel> export = new IdentifyExport();
