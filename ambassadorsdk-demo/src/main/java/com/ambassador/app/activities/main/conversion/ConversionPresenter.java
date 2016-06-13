@@ -1,6 +1,7 @@
 package com.ambassador.app.activities.main.conversion;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -158,28 +159,32 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
         });
     }
 
-    public void onActionClicked(ConversionParameters.Builder conversionParametersBuilder) {
-        conversionParametersBuilder.setCampaign(model.selectedCampaignId);
-        conversionParametersBuilder.setAddToGroupId(model.selectedGroups != null ? model.selectedGroups.replaceAll(" ", "") : "");
-        ConversionParameters conversionParameters = conversionParametersBuilder.build();
+    public void onActionClicked(Bundle identifyTraits, Bundle conversionProperties) {
+        identifyTraits.putString("addToGroups", model.selectedGroups != null ? model.selectedGroups : "");
 
-        if (!(new Identify(conversionParameters.getEmail()).isValidEmail())) {
-            view().notifyInvalidCustomerEmail();
-            return;
-        }
 
-        if (conversionParameters.getCampaign() == 0) {
-            view().notifyNoCampaign();
-            return;
-        }
-
-        if (conversionParameters.getRevenue() < 0) {
-            view().notifyNoRevenue();
-            return;
-        }
+//        if (!(new Identify(conversionParameters.getEmail()).isValidEmail())) {
+//            view().notifyInvalidCustomerEmail();
+//            return;
+//        }
+//
+//        if (conversionParameters.getCampaign() == 0) {
+//            view().notifyNoCampaign();
+//            return;
+//        }
+//
+//        if (conversionParameters.getRevenue() < 0) {
+//            view().notifyNoRevenue();
+//            return;
+//        }
 
         Export<ConversionExportModel> export = new ConversionExport();
-        export.setModel(new ConversionExportModel());
+
+        ConversionExportModel conversionExportModel = new ConversionExportModel();
+        conversionExportModel.identifyTraits = identifyTraits;
+        conversionExportModel.conversionProperties = conversionProperties;
+
+        export.setModel(conversionExportModel);
         String filename = export.zip(Demo.get());
         Share share = new Share(filename).withSubject("Ambassador Conversion Example Implementation").withBody(export.getReadme());
         view().share(share);
