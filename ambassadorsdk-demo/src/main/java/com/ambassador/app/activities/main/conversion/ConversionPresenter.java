@@ -1,6 +1,7 @@
 package com.ambassador.app.activities.main.conversion;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -17,6 +18,7 @@ import com.ambassador.app.api.pojo.GetShortCodeFromEmailResponse;
 import com.ambassador.app.data.User;
 import com.ambassador.app.exports.ConversionExport;
 import com.ambassador.app.exports.Export;
+import com.ambassador.app.exports.models.ConversionExportModel;
 import com.ambassador.app.utils.Share;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -157,28 +159,36 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
         });
     }
 
-    public void onActionClicked(ConversionParameters.Builder conversionParametersBuilder) {
-        conversionParametersBuilder.setCampaign(model.selectedCampaignId);
-        conversionParametersBuilder.setAddToGroupId(model.selectedGroups != null ? model.selectedGroups.replaceAll(" ", "") : "");
-        ConversionParameters conversionParameters = conversionParametersBuilder.build();
+    public void onActionClicked(String userId, Bundle identifyTraits, Bundle conversionProperties) {
+        identifyTraits.putString("addToGroups", model.selectedGroups != null ? model.selectedGroups : "");
 
-        if (!(new Identify(conversionParameters.getEmail()).isValidEmail())) {
-            view().notifyInvalidCustomerEmail();
-            return;
-        }
+//        if (!(new Identify(conversionParameters.getEmail()).isValidEmail())) {
+//            view().notifyInvalidCustomerEmail();
+//            return;
+//        }
+//
+//        if (conversionParameters.getCampaign() == 0) {
+//            view().notifyNoCampaign();
+//            return;
+//        }
+//
+//        if (conversionParameters.getRevenue() < 0) {
+//            view().notifyNoRevenue();
+//            return;
+//        }
 
-        if (conversionParameters.getCampaign() == 0) {
-            view().notifyNoCampaign();
-            return;
-        }
+        Bundle identifyOptions = new Bundle();
+        identifyOptions.putString("campaign", model.selectedCampaignId + "");
 
-        if (conversionParameters.getRevenue() < 0) {
-            view().notifyNoRevenue();
-            return;
-        }
+        Export<ConversionExportModel> export = new ConversionExport();
 
-        Export<ConversionParameters> export = new ConversionExport();
-        export.setModel(conversionParameters);
+        ConversionExportModel conversionExportModel = new ConversionExportModel();
+        conversionExportModel.identifyTraits = identifyTraits;
+        conversionExportModel.identifyOptions = identifyOptions;
+        conversionExportModel.userId = userId;
+        conversionExportModel.conversionProperties = conversionProperties;
+
+        export.setModel(conversionExportModel);
         String filename = export.zip(Demo.get());
         Share share = new Share(filename).withSubject("Ambassador Conversion Example Implementation").withBody(export.getReadme());
         view().share(share);
