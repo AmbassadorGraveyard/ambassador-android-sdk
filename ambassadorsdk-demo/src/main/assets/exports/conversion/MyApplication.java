@@ -30,7 +30,6 @@ public class MyApplication extends Application {
 
         // Create properties bundle
         Bundle properties = new Bundle();
-        properties.putInt("email", "{{EMAIL}}");
         properties.putInt("campaign", {{CAMPAIGN}});
         properties.putFloat("revenue", {{REVENUE}}f);
         properties.putInt("commissionApproved", {{COMMISSIONAPPROVED}});
@@ -38,7 +37,6 @@ public class MyApplication extends Application {
         properties.putString("eventData2", "{{EVENT2}}");
         properties.putString("eventData3", "{{EVENT3}}");
         properties.putString("orderId", "{{ORDERID}}");
-
         properties.putInt("emailNewAmbassadord", {{EMAILNEWAMBASSADOR}});
 
         // Create options bundle

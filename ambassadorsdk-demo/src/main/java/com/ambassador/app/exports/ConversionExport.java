@@ -56,9 +56,26 @@ public class ConversionExport extends BaseExport<ConversionExportModel> {
         Bundle identifyOptions = model.identifyOptions;
 
         return text
+                // -- Misc. Replacements
                 .replace("{{SDKTOKEN}}", User.get().getUniversalToken())
                 .replace("{{UNIVERSALID}}", User.get().getUniversalId())
-                .replace("{{USERID}}", "");
+                .replace("{{USERID}}", "")
+                // -- Identify Traits
+                .replace("{{EMAIL}}", identifyTraits.getString("email"))
+                .replace("{{FIRSTNAME}}", identifyTraits.getString("firstName"))
+                .replace("{{LASTNAME}}", identifyTraits.getString("lastName"))
+                .replace("{{GROUPS}}", identifyTraits.getString("addToGroups"))
+                .replace("{{CUSTOM1}}", identifyTraits.getString("custom1"))
+                .replace("{{CUSTOM2}}", identifyTraits.getString("custom2"))
+                .replace("{{CUSTOM3}}", identifyTraits.getString("custom3"))
+                // -- Identify Options
+                .replace("{{CAMPAIGN}}", identifyOptions.getString("campaign"))
+                // -- Campaign Properties
+                .replace("{{REVENUE}}", String.valueOf(conversionProperties.getFloat("revenue")))
+                .replace("{{EVENTDATA1}}", conversionProperties.getString("eventData1"))
+                .replace("{{EVENTDATA2}}", conversionProperties.getString("eventData2"))
+                .replace("{{EVENTDATA3}}", conversionProperties.getString("eventData3"))
+                .replace("{{ORDERID}}", conversionProperties.getString("orderId"));
     }
 
     protected String processVariableHandlebarValues(String text, Language language) {
@@ -69,14 +86,24 @@ public class ConversionExport extends BaseExport<ConversionExportModel> {
 
         switch (language) {
             case JAVA:
+                text = text
+                        .replace("{{EMAILNEWAMBASSADOR}}", conversionProperties.getInt("emailNewAmbassador") == 1 ? "1" : "0")
+                        .replace("{{COMMISSIONAPPROVED}}", conversionProperties.getInt("commissionApproved") == 1 ? "1" : "0");
                 break;
             case SWIFT:
+                text = text
+                        .replace("{{EMAILNEWAMBASSADOR}}", conversionProperties.getInt("emailNewAmbassador") == 1 ? "true" : "false")
+                        .replace("{{COMMISSIONAPPROVED}}", conversionProperties.getInt("commissionApproved") == 1 ? "true" : "false");
                 break;
             case OBJ_C:
+                text = text
+                        .replace("{{EMAILNEWAMBASSADOR}}", conversionProperties.getInt("emailNewAmbassador") == 1 ? "YES" : "NO")
+                        .replace("{{COMMISSIONAPPROVED}}", conversionProperties.getInt("commissionApproved") == 1 ? "YES" : "NO");
                 break;
             default:
                 return null;
         }
+
         return text;
     }
 
