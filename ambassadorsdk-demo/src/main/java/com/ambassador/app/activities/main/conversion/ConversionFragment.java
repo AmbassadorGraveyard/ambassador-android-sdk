@@ -284,7 +284,7 @@ public final class ConversionFragment extends Fragment implements ConversionView
 
     @Override
     public void onActionClicked() {
-        conversionPresenter.onActionClicked(getIdentifyTraitsFromInputs(), getConversionPropertiesFromInputs());
+        conversionPresenter.onActionClicked(etUID.getText().toString(), getIdentifyTraitsFromInputs(), getConversionPropertiesFromInputs());
     }
 
     @DrawableRes

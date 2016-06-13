@@ -59,7 +59,7 @@ public class ConversionExport extends BaseExport<ConversionExportModel> {
                 // -- Misc. Replacements
                 .replace("{{SDKTOKEN}}", User.get().getUniversalToken())
                 .replace("{{UNIVERSALID}}", User.get().getUniversalId())
-                .replace("{{USERID}}", "")
+                .replace("{{USERID}}", model.userId)
                 // -- Identify Traits
                 .replace("{{EMAIL}}", identifyTraits.getString("email"))
                 .replace("{{FIRSTNAME}}", identifyTraits.getString("firstName"))

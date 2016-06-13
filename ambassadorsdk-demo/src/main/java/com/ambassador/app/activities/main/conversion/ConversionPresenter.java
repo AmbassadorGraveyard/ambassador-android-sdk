@@ -159,9 +159,8 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
         });
     }
 
-    public void onActionClicked(Bundle identifyTraits, Bundle conversionProperties) {
+    public void onActionClicked(String userId, Bundle identifyTraits, Bundle conversionProperties) {
         identifyTraits.putString("addToGroups", model.selectedGroups != null ? model.selectedGroups : "");
-
 
 //        if (!(new Identify(conversionParameters.getEmail()).isValidEmail())) {
 //            view().notifyInvalidCustomerEmail();
@@ -178,10 +177,15 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
 //            return;
 //        }
 
+        Bundle identifyOptions = new Bundle();
+        identifyOptions.putString("campaign", model.selectedCampaignId + "");
+
         Export<ConversionExportModel> export = new ConversionExport();
 
         ConversionExportModel conversionExportModel = new ConversionExportModel();
         conversionExportModel.identifyTraits = identifyTraits;
+        conversionExportModel.identifyOptions = identifyOptions;
+        conversionExportModel.userId = userId;
         conversionExportModel.conversionProperties = conversionProperties;
 
         export.setModel(conversionExportModel);

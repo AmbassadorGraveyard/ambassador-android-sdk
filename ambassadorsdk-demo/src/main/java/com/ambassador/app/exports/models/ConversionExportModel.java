@@ -10,4 +10,6 @@ public class ConversionExportModel {
     public Bundle identifyTraits;
     public Bundle identifyOptions;
 
+    public String userId;
+
 }
