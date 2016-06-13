@@ -33,9 +33,9 @@ public class MyApplication extends Application {
         properties.putInt("campaign", {{CAMPAIGN}});
         properties.putFloat("revenue", {{REVENUE}}f);
         properties.putInt("commissionApproved", {{COMMISSIONAPPROVED}});
-        properties.putString("eventData1", "{{EVENT1}}");
-        properties.putString("eventData2", "{{EVENT2}}");
-        properties.putString("eventData3", "{{EVENT3}}");
+        properties.putString("eventData1", "{{EVENTDATA1}}");
+        properties.putString("eventData2", "{{EVENTDATA2}}");
+        properties.putString("eventData3", "{{EVENTDATA3}}");
         properties.putString("orderId", "{{ORDERID}}");
         properties.putInt("emailNewAmbassadord", {{EMAILNEWAMBASSADOR}});
 

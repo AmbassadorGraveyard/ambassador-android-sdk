@@ -284,7 +284,7 @@ public final class ConversionFragment extends Fragment implements ConversionView
 
     @Override
     public void onActionClicked() {
-        conversionPresenter.onActionClicked(getConversionParametersBuilderFromInputs());
+        conversionPresenter.onActionClicked(getIdentifyTraitsFromInputs(), getConversionPropertiesFromInputs());
     }
 
     @DrawableRes
@@ -332,9 +332,9 @@ public final class ConversionFragment extends Fragment implements ConversionView
         out.putString("email", etCustomerEmail.getText().toString());
         out.putString("firstName", etFirstName.getText().toString());
         out.putString("lastName", etLastName.getText().toString());
-        out.putString("customLabel1", etCustom1.getText().toString());
-        out.putString("customLabel2", etCustom2.getText().toString());
-        out.putString("customLabel3", etCustom3.getText().toString());
+        out.putString("custom1", etCustom1.getText().toString());
+        out.putString("custom2", etCustom2.getText().toString());
+        out.putString("custom3", etCustom3.getText().toString());
 
         return out;
     }

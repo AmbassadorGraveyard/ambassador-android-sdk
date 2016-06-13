@@ -34,9 +34,9 @@
                                  @"commissionApproved" : @YES
                                  @"emailNewAmbassador" : @YES,
                                  @"orderId" : @"{{ORDERID}}",
-                                 @"eventData1" : @"{{EVENT1}}",
-                                 @"eventData2" : @"{{EVENT2}}",
-                                 @"eventData3" : @"{{EVENT3}}"
+                                 @"eventData1" : @"{{EVENTDATA1}}",
+                                 @"eventData2" : @"{{EVENTDATA2}}",
+                                 @"eventData3" : @"{{EVENTDATA3}}"
                                  };
 
     // Create options dictionary for conversion
