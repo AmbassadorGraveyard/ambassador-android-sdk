@@ -342,7 +342,7 @@ public final class ConversionFragment extends Fragment implements ConversionView
     protected Bundle getConversionPropertiesFromInputs() {
         Bundle out = new Bundle();
 
-        out.putFloat("revenue", Float.parseFloat(etRevenue.getText().toString()));
+        out.putFloat("revenue", Float.parseFloat("".equals(etRevenue.getText().toString()) ? "0" : etRevenue.getText().toString()));
         out.putInt("commissionApproved", swApproved.isChecked() ? 1 : 0);
         out.putString("eventData1", etEventData1.getText().toString());
         out.putString("eventData2", etEventData2.getText().toString());
