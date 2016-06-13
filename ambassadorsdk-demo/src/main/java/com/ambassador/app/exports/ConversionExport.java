@@ -14,7 +14,7 @@ public class ConversionExport extends BaseExport<ConversionExportModel> {
 
     @Override
     public String getReadme() {
-        return new AssetFile("exports/conversion/readme.txt").getAsString();
+        return new AssetFile("exports/conversion/readme.txt").getAsString().replaceAll("\n", "<br/>");
     }
 
     @Override
