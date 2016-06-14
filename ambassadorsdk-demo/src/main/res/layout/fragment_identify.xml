@@ -49,6 +49,21 @@
             android:textColor="#9097a1"
             android:textSize="13sp" />
 
+        <TextView
+            android:id="@+id/tvSubMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="9dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center"
+            android:text="* denotes a required field."
+            android:textAlignment="center"
+            android:textColor="#9097a1"
+            android:textSize="9sp" />
+
         <EditText
             android:id="@+id/etIdentify"
             android:layout_width="match_parent"
@@ -59,7 +74,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/et_only"
             android:fontFamily="sans-serif"
-            android:hint="Email Address"
+            android:hint="Email Address *"
             android:inputType="textEmailAddress"
             android:paddingBottom="12dp"
             android:paddingLeft="10dp"
