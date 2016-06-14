@@ -162,21 +162,6 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
     public void onActionClicked(String userId, Bundle identifyTraits, Bundle conversionProperties) {
         identifyTraits.putString("addToGroups", model.selectedGroups != null ? model.selectedGroups : "");
 
-//        if (!(new Identify(conversionParameters.getEmail()).isValidEmail())) {
-//            view().notifyInvalidCustomerEmail();
-//            return;
-//        }
-//
-//        if (conversionParameters.getCampaign() == 0) {
-//            view().notifyNoCampaign();
-//            return;
-//        }
-//
-//        if (conversionParameters.getRevenue() < 0) {
-//            view().notifyNoRevenue();
-//            return;
-//        }
-
         Bundle identifyOptions = new Bundle();
         identifyOptions.putString("campaign", model.selectedCampaignId + "");
 
