@@ -31,8 +31,8 @@
     NSDictionary *propertiesDictionary = @{@"email" : @"{{EMAIL}}",
                                  @"campaign" : @"{{CAMPAIGN}}",
                                  @"revenue" : @{{REVENUE}},
-                                 @"commissionApproved" : @YES
-                                 @"emailNewAmbassador" : @YES,
+                                 @"commissionApproved" : @{{COMMISSIONAPPROVED}},
+                                 @"emailNewAmbassador" : @{{EMAILNEWAMBASSADOR}},
                                  @"orderId" : @"{{ORDERID}}",
                                  @"eventData1" : @"{{EVENTDATA1}}",
                                  @"eventData2" : @"{{EVENTDATA2}}",
