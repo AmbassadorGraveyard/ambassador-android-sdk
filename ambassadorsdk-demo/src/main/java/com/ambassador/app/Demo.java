@@ -3,10 +3,9 @@ package com.ambassador.app;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 
-import com.ambassador.ambassadorsdk.AmbassadorSDK;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 public final class Demo extends Application {
 
@@ -19,6 +18,7 @@ public final class Demo extends Application {
         super.onCreate();
         Demo.instance = this;
         prefs = getSharedPreferences("amb_demo", Context.MODE_PRIVATE);
+        AmbSingleton.init(this);
     }
 
     public void setEmail(String email) {

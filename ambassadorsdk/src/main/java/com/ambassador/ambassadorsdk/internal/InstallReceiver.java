@@ -24,12 +24,12 @@ public final class InstallReceiver extends BroadcastReceiver {
     @Inject protected Campaign campaign;
     @Inject protected RequestManager requestManager;
 
-    public InstallReceiver() {
-        AmbSingleton.inject(this);
-    }
+    public InstallReceiver() {}
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        AmbSingleton.inject(this);
+
         Bundle b = intent.getExtras();
         final String qstring = b.getString("referrer"); //"mbsy_cookie_code=jwnZ&device_id=test1234";
 

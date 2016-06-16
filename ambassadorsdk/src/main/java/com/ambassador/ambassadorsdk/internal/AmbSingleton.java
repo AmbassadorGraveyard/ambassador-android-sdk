@@ -76,6 +76,13 @@ public class AmbSingleton {
      * @param object the object to inject dependencies into.
      */
     public static void inject(Object object) {
+        if (graph == null) {
+            AmbSingleton.init(AmbSingleton.getContext());
+            if (graph == null) {
+                graph = ObjectGraph.create(AmbSingleton.module);
+            }
+        }
+
         graph.inject(object);
     }
 
