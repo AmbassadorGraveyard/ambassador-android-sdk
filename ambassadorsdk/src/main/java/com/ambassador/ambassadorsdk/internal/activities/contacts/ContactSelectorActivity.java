@@ -187,12 +187,10 @@ public final class ContactSelectorActivity extends AppCompatActivity {
             }, 1000);
         } else if (requestCode == SEND_SMS) {
             progressDialog.dismiss();
-        } else if (requestCode == 555) {
-            if (data != null) {
-                // Grabs boolean value from intent to check for successful save
-                boolean shouldSend = data.getBooleanExtra("success", false);
-                if (shouldSend) { send(); }
-            }
+        } else if (requestCode == 555 && data != null) {
+            // Grabs boolean value from intent to check for successful save
+            boolean shouldSend = data.getBooleanExtra("success", false);
+            if (shouldSend) send();
         }
     }
 
