@@ -10,6 +10,7 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 
 /**
@@ -21,7 +22,6 @@ public class User implements Data {
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
     protected String gcmToken;
-    protected JsonObject pusherInfo;
     protected JsonObject augurData;
     protected String webDeviceId;
     protected String facebookAccessToken;
@@ -76,12 +76,13 @@ public class User implements Data {
 
     @Nullable
     public JsonObject getPusherInfo() {
-        return pusherInfo;
+        return new JsonParser().parse(identifyData != null ? identifyData : "{}").getAsJsonObject();
     }
 
     public void setPusherInfo(JsonObject pusherInfo) {
-        this.pusherInfo = pusherInfo;
+        this.identifyData = pusherInfo.toString();
         save();
+
     }
 
     @Nullable
@@ -164,7 +165,6 @@ public class User implements Data {
         gcmToken = null;
         augurData = null;
         webDeviceId = null;
-        pusherInfo = null;
         facebookAccessToken = null;
         twitterAccessToken = null;
         linkedInAccessToken = null;
