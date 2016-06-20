@@ -187,6 +187,10 @@ public final class ContactSelectorActivity extends AppCompatActivity {
             }, 1000);
         } else if (requestCode == SEND_SMS) {
             progressDialog.dismiss();
+        } else if (requestCode == 555 && data != null) {
+            // Grabs boolean value from intent to check for successful save
+            boolean shouldSend = data.getBooleanExtra("success", false);
+            if (shouldSend) send();
         }
     }
 
@@ -589,22 +593,8 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     }
 
     private void askForName() {
-        askNameDialog = new AskNameDialog(this, progressDialog);
-        askNameDialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialog) {
-                askNameDialog.showKeyboard();
-            }
-        });
-        askNameDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialog) {
-                if (askNameDialog.dismissStatus == AskNameDialog.DismissStatus.CONTINUE) {
-                    send();
-                }
-            }
-        });
-        askNameDialog.show();
+        Intent nameIntent = new Intent(this, AskNameActivity.class);
+        startActivityForResult(nameIntent, 555);
     }
 
     private boolean pusherHasKey(String key) {
@@ -657,5 +647,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
 }
