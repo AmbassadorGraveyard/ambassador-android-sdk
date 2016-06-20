@@ -50,8 +50,10 @@ public class UserTest {
     public void saveWithNonNullContextDoesSaveSerialized() {
         // ARRANGE
         User user = new User();
-        user.userId = "jake@getambassador.com";
+
+        user.userId = "jake";
         user.ambassadorIdentification = new AmbassadorIdentification();
+        user.ambassadorIdentification.setEmail("jake@getambassador.com");
         user.gcmToken = "gcmToken";
         user.augurData = null;
         user.facebookAccessToken = "facebookAccessToken";
@@ -63,7 +65,7 @@ public class UserTest {
 
         // ASSERT
         Mockito.verify(context).getSharedPreferences(Mockito.eq("user"), Mockito.eq(Context.MODE_PRIVATE));
-        Mockito.verify(editor).putString(Mockito.eq("jake@getambassador.com"), Mockito.eq("{\"userId\":\"jake@getambassador.com\",\"ambassadorIdentification\":{},\"gcmToken\":\"gcmToken\",\"facebookAccessToken\":\"facebookAccessToken\",\"twitterAccessToken\":\"twitterAccessToken\",\"linkedInAccessToken\":\"linkedInAccessToken\"}"));
+        Mockito.verify(editor).putString(Mockito.eq("jake@getambassador.com"), Mockito.eq("{\"userId\":\"jake\",\"ambassadorIdentification\":{\"email\":\"jake@getambassador.com\"},\"gcmToken\":\"gcmToken\",\"facebookAccessToken\":\"facebookAccessToken\",\"twitterAccessToken\":\"twitterAccessToken\",\"linkedInAccessToken\":\"linkedInAccessToken\"}"));
         Mockito.verify(editor).apply();
     }
 
