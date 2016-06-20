@@ -8,6 +8,7 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
 import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
+import com.ambassador.ambassadorsdk.internal.activities.contacts.AskNameActivity;
 import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
@@ -52,6 +53,7 @@ import dagger.Provides;
         AmbGcmTokenTask.class,
         AmbAugurTask.class,
         AmbConversion.class,
+        AskNameActivity.class
 }, staticInjections = {
         AmbassadorSDK.class
 }, library = true)
