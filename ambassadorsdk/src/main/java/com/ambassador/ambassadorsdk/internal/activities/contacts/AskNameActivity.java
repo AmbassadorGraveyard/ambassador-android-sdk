@@ -1,6 +1,8 @@
 package com.ambassador.ambassadorsdk.internal.activities.contacts;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -117,19 +119,27 @@ public class AskNameActivity extends Activity {
         user.getAmbassadorIdentification().setFirstName(firstName);
         user.getAmbassadorIdentification().setLastName(lastName);
 
+        // Create loading screen while saving name
+        final ProgressDialog loadingDialog = new ProgressDialog(this);
+        loadingDialog.setMessage("Saving");
+        loadingDialog.show();
+
         PusherManager pusherManager = new PusherManager();
         pusherManager.addPusherListener(new PusherListenerAdapter() {
             @Override
             public void subscribed() {
                 super.subscribed();
-                requestManager.updateNameRequest(new PusherManager(), pusherData.get("email").getAsString(), firstName, lastName, null);
+                requestManager.updateNameRequest(new PusherManager(), user.getAmbassadorIdentification().getEmail(), firstName, lastName, null);
+                Intent data = new Intent();
+                data.putExtra("success", true);
+                setResult(RESULT_OK, data);
+                loadingDialog.dismiss();
                 finish();
             }
         });
 
         pusherManager.startNewChannel();
         pusherManager.subscribeChannelToAmbassador();
-        finish();
     }
 
     public void showKeyboard() {
