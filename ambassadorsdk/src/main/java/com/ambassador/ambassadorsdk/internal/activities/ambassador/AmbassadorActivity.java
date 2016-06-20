@@ -149,7 +149,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
                     showNetworkError();
                 }
             });
-        } else if (user.getUserId() != null) {
+        } else if (user.getEmail() != null) {
             identifyWithStoredInfo();
         } else {
             identifyWithDialog();
