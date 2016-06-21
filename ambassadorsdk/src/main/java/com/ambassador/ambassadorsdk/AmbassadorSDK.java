@@ -59,7 +59,7 @@ public final class AmbassadorSDK {
         objectGraph.injectStatics();
 
         auth.clear();
-        auth.setUniversalToken(sdkToken);
+        auth.setSdkToken(sdkToken);
         auth.setUniversalId(universalId);
 
         new InstallReceiver().registerWith(context);

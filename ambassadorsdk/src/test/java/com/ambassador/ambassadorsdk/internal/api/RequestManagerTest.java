@@ -110,7 +110,7 @@ public class RequestManagerTest {
         campaign = Mockito.mock(Campaign.class);
 
         Mockito.when(auth.getUniversalId()).thenReturn(universalId);
-        Mockito.when(auth.getUniversalToken()).thenReturn(universalToken);
+        Mockito.when(auth.getSdkToken()).thenReturn(universalToken);
         Mockito.when(ambId.getFirstName()).thenReturn(userFirstName);
         Mockito.when(ambId.getLastName()).thenReturn(userLastName);
         Mockito.when(user.getAugurData()).thenReturn(identifyObject);

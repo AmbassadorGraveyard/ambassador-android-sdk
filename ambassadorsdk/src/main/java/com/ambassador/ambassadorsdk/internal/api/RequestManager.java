@@ -80,7 +80,7 @@ public class RequestManager {
      */
     public void bulkShareSms(final List<Contact> contacts, final String messageToShare, final RequestCompletion completion) {
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
         List<String> numberList = bulkShareHelper.verifiedSMSList(contacts);
         String name = user.getAmbassadorIdentification().getFirstName() + " " + user.getAmbassadorIdentification().getLastName();
         String fromEmail = user.getAmbassadorIdentification().getEmail();
@@ -98,7 +98,7 @@ public class RequestManager {
      */
     public void bulkShareEmail(final List<Contact> contacts, final String messageToShare, final RequestCompletion completion) {
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
         List<String> emailList = bulkShareHelper.verifiedEmailList(contacts);
         String fromEmail = user.getAmbassadorIdentification().getEmail();
         BulkShareApi.BulkShareEmailBody body = bulkShareHelper.payloadObjectForEmail(emailList, campaign.getShortCode(), campaign.getEmailSubject(), messageToShare, fromEmail);
@@ -122,7 +122,7 @@ public class RequestManager {
      */
     public void bulkShareTrack(final List<Contact> contacts, final BulkShareHelper.SocialServiceTrackType shareType) {
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
         String fromEmail = user.getAmbassadorIdentification().getEmail();
         BulkShareApi.BulkShareTrackBody[] body;
         switch (shareType) {
@@ -147,7 +147,7 @@ public class RequestManager {
      */
     public void registerConversionRequest(final ConversionParameters conversionParameters, final RequestCompletion completion) {
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
         Gson gson = new Gson();
         JsonObject augur = gson.fromJson(user.getAugurData(), JsonElement.class).getAsJsonObject();
         JsonObject augurConsumer = augur.getAsJsonObject("consumer");
@@ -180,7 +180,7 @@ public class RequestManager {
         String sessionId = pusherManager.getSessionId();
         String requestId = String.valueOf(pusherManager.getRequestId());
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
 
         String campaignId = campaign.getId();
         String userId = user.getUserId();
@@ -215,7 +215,7 @@ public class RequestManager {
         String sessionId = pusherManager.getSessionId();
         String requestId = String.valueOf(pusherManager.getRequestId());
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
         IdentifyApi.UpdateNameRequestBody body = new IdentifyApi.UpdateNameRequestBody(email, firstName, lastName);
 
         identifyApi.updateNameRequest(sessionId, requestId, uid, authKey, body, completion);
@@ -238,7 +238,7 @@ public class RequestManager {
      */
     public void getUserFromShortCode(final String shortCode, final RequestCompletion requestCompletion) {
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
 
         identifyApi.getUserFromShortCode(shortCode, uid, authKey, requestCompletion);
     }
@@ -249,7 +249,7 @@ public class RequestManager {
      */
     public void getCompanyInfo(final RequestCompletion requestCompletion) {
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
         identifyApi.getCompanyInfo(uid, authKey, requestCompletion);
     }
 
@@ -260,7 +260,7 @@ public class RequestManager {
      */
     public void getEnvoyKeys(String companyUid, final RequestCompletion requestCompletion) {
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
         identifyApi.getEnvoyKeys(uid, authKey, companyUid, requestCompletion);
     }
 
@@ -311,7 +311,7 @@ public class RequestManager {
      */
     public void createPusherChannel(final RequestCompletion completion) {
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
 
         identifyApi.createPusherChannel(uid, authKey, completion);
     }
@@ -323,7 +323,7 @@ public class RequestManager {
      */
     public void externalPusherRequest(final String url, final RequestCompletion completion) {
         String uid = auth.getUniversalId();
-        String authKey = auth.getUniversalToken();
+        String authKey = auth.getSdkToken();
         identifyApi.externalPusherRequest(url, uid, authKey, completion);
     }
 

@@ -16,7 +16,7 @@ public class Auth implements Data {
 
     // region Fields
     protected String universalId;
-    protected String universalToken;
+    protected String sdkToken;
     protected String envoyId;
     protected String envoySecret;
     // endregion
@@ -33,12 +33,12 @@ public class Auth implements Data {
     }
 
     @Nullable
-    public String getUniversalToken() {
-        return universalToken;
+    public String getSdkToken() {
+        return sdkToken;
     }
 
-    public void setUniversalToken(@Nullable String universalToken) {
-        this.universalToken = universalToken;
+    public void setSdkToken(@Nullable String sdkToken) {
+        this.sdkToken = sdkToken;
         save();
     }
 
@@ -82,7 +82,7 @@ public class Auth implements Data {
     @Override
     public void clear() {
         universalId = null;
-        universalToken = null;
+        sdkToken = null;
         envoyId = null;
         envoySecret = null;
     }
@@ -100,7 +100,7 @@ public class Auth implements Data {
 
         Auth auth = new Gson().fromJson(json, Auth.class);
         setUniversalId(auth.getUniversalId());
-        setUniversalToken(auth.getUniversalToken());
+        setSdkToken(auth.getSdkToken());
         setEnvoyId(auth.getEnvoyId());
         setEnvoySecret(auth.getEnvoySecret());
     }
