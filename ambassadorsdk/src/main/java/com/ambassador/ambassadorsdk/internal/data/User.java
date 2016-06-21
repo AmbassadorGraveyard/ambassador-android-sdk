@@ -37,10 +37,19 @@ public class User implements Data {
     public void setUserId(String userId) {
         this.userId = userId;
         save();
+    }
+
+    @Nullable
+    public String getEmail() {
+        return getAmbassadorIdentification().getEmail();
+    }
+
+    public void setEmail(String email) {
+        getAmbassadorIdentification().setEmail(email);
         AmbSingleton.getContext()
                 .getSharedPreferences("user", Context.MODE_PRIVATE)
                 .edit()
-                .putString("email", userId)
+                .putString("email", email)
                 .apply();
     }
 
@@ -154,7 +163,7 @@ public class User implements Data {
         if (AmbSingleton.getContext() != null) {
             String data = new Gson().toJson(this);
             SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
-            sharedPreferences.edit().putString(userId, data).apply();
+            sharedPreferences.edit().putString(getAmbassadorIdentification().getEmail(), data).apply();
         }
     }
 
