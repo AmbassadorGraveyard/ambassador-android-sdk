@@ -49,17 +49,17 @@ public final class AmbassadorSDK {
     /**
      *
      * @param context
-     * @param universalToken
+     * @param sdkToken
      * @param universalId
      */
-    public static void runWithKeys(Context context, String universalToken, String universalId) {
+    public static void runWithKeys(Context context, String sdkToken, String universalId) {
         AmbSingleton.init(context);
 
         ObjectGraph objectGraph = AmbSingleton.getGraph();
         objectGraph.injectStatics();
 
         auth.clear();
-        auth.setUniversalToken(universalToken);
+        auth.setSdkToken(sdkToken);
         auth.setUniversalId(universalId);
 
         new InstallReceiver().registerWith(context);
