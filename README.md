@@ -27,7 +27,7 @@ $ chmod +x .git/hooks/pre-push
 
 ## Releasing the SDK
 
-In the ambassadorsdk module's build.gradle, inside of the ext block at the bottom, increment libraryVersion.
+In the ambassadorsdk module's build.gradle, inside of the ext block at the bottom, increment libraryVersion. Make sure that `IS_RELEASE_BUILD` is true.
 
 Inside the base folder of the project, execute the following command. The command will fail but that is expected.
 
@@ -58,5 +58,23 @@ com/ambassador/ambassadorsdk/{VERSION}
 ```
 
 Save, and make sure you click publish after.
+
+
+## Releasing the Demo App
+
+In the ambassadorsdk-demo module's build.gradle, increment versionCode.
+
+In the ambassadorsdk module's build.gradle, make sure that `IS_RELEASE_MODE` is true.
+
+Make sure you have the demo app keystore downloaded from Ambassador's google drive.
+
+Run `Build->Generate Signed APK...`
+
+Select the ambassadorsdk-demo module and click next.
+
+Navigate to and choose the downloaded keystore for the key store path. The rest of the credentials are in a .txt file next to the keystore file in google drive.
+
+Ensure build type is `Release` and then click build.
+
 
 
