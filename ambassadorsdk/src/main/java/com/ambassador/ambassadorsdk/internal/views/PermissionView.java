@@ -1,7 +1,66 @@
 package com.ambassador.ambassadorsdk.internal.views;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
+import android.util.AttributeSet;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.ambassador.ambassadorsdk.B;
+import com.ambassador.ambassadorsdk.R;
+import com.ambassador.ambassadorsdk.RAFOptions;
+
+import butterfork.Bind;
+import butterfork.ButterFork;
+
 /**
  * Created by JakeDunahee on 6/24/16.
  */
-public class PermissionView {
+public class PermissionView extends LinearLayout {
+
+    @Bind(B.id.ivPermissionType) protected ImageView ivPermissionType;
+    @Bind(B.id.tvPermissionMessage) protected TextView tvPermissionMessage;
+    @Bind(B.id.btnTurnOn) protected Button btnTurnOn;
+
+    protected OnButtonClickListener listener;
+
+    public PermissionView(Context context) {
+        super(context);
+        init();
+    }
+
+    public PermissionView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public PermissionView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    protected void init() {
+        inflate(getContext(), R.layout.view_permission_needed_layout, this);
+        ButterFork.bind(this);
+        ivPermissionType.setColorFilter(RAFOptions.get().getContactsToolbarColor(), PorterDuff.Mode.SRC_IN);
+        btnTurnOn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onClick();
+                }
+            }
+        });
+    }
+
+    public void setOnButtonClickListener(OnButtonClickListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnButtonClickListener {
+        void onClick();
+    }
 }
