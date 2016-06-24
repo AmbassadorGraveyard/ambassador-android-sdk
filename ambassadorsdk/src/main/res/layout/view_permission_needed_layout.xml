@@ -16,7 +16,7 @@
     <TextView
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:text="Allow Ambassador to access your contacts to send SMS and Email messages."
+        android:text="Allow access to your contacts in order to send SMS and Email messages."
         android:id="@+id/tvPermissionMessage"
         android:layout_gravity="center_horizontal"
         android:textAlignment="center"
