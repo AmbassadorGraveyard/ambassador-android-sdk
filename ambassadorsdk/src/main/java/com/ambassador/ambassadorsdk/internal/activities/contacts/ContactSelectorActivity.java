@@ -5,7 +5,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -57,6 +56,7 @@ import com.ambassador.ambassadorsdk.internal.utils.res.ColorResource;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView;
+import com.ambassador.ambassadorsdk.internal.views.PermissionView;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
@@ -95,6 +95,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     @Bind(B.id.tvSendContacts)  protected CrossfadedTextView    tvSendContacts;
     @Bind(B.id.tvSendCount)     protected TextView              tvSendCount;
     @Bind(B.id.tvNoContacts)    protected TextView              tvNoContacts;
+    @Bind(B.id.permissionView)  protected PermissionView        permissionView;
 
     @Inject protected BulkShareHelper   bulkShareHelper;
     @Inject protected RequestManager    requestManager;
@@ -151,14 +152,10 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         switch (requestCode) {
             case CHECK_CONTACT_PERMISSIONS:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    permissionView.setVisibility(View.GONE);
                     populateContacts();
                 } else {
-                    Utilities.presentNonCancelableMessageDialog(this, new StringResource(R.string.sorry).getValue(), new StringResource(R.string.contacts_permission_denied).getValue(), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    });
+                    permissionView.setVisibility(View.VISIBLE);
                 }
                 break;
 
@@ -279,6 +276,12 @@ public final class ContactSelectorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 btnDoneClicked();
+            }
+        });
+        permissionView.setOnButtonClickListener(new PermissionView.OnButtonClickListener() {
+            @Override
+            public void onClick() {
+                handleContactsPermission();
             }
         });
     }
