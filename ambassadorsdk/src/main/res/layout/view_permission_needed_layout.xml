@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@android:color/white">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivPermissionType"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_person_white_48dp"
+        android:tint="#321010" />
+
+    <TextView
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="Allow Ambassador to access your contacts to send SMS and Email messages."
+        android:id="@+id/tvPermissionMessage"
+        android:layout_gravity="center_horizontal"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Turn On"
+        android:id="@+id/btnTurnOn"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
