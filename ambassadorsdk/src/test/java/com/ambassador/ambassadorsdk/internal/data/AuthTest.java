@@ -48,7 +48,7 @@ public class AuthTest {
         // ARRANGE
         Auth auth = new Auth();
         auth.universalId = "universalId";
-        auth.universalToken = "universalToken";
+        auth.sdkToken = "sdkToken";
         auth.envoyId = "envoyId";
         auth.envoySecret = "envoySecret";
 
@@ -57,7 +57,7 @@ public class AuthTest {
 
         // ASSERT
         Mockito.verify(context).getSharedPreferences(Mockito.eq("auth"), Mockito.eq(Context.MODE_PRIVATE));
-        Mockito.verify(editor).putString(Mockito.eq("auth"), Mockito.eq("{\"universalId\":\"universalId\",\"universalToken\":\"universalToken\",\"envoyId\":\"envoyId\",\"envoySecret\":\"envoySecret\"}"));
+        Mockito.verify(editor).putString(Mockito.eq("auth"), Mockito.eq("{\"universalId\":\"universalId\",\"sdkToken\":\"sdkToken\",\"envoyId\":\"envoyId\",\"envoySecret\":\"envoySecret\"}"));
         Mockito.verify(editor).apply();
     }
 
@@ -68,7 +68,7 @@ public class AuthTest {
 
         Auth auth = new Auth();
         auth.universalId = "universalId";
-        auth.universalToken = "universalToken";
+        auth.sdkToken = "sdkToken";
         auth.envoyId = "envoyId";
         auth.envoySecret = "envoySecret";
 
@@ -87,7 +87,7 @@ public class AuthTest {
         // ARRANGE
         Auth auth = new Auth();
         auth.universalId = "universalId";
-        auth.universalToken = "universalToken";
+        auth.sdkToken = "sdkToken";
         auth.envoyId = "envoyId";
         auth.envoySecret = "envoySecret";
 
@@ -97,7 +97,7 @@ public class AuthTest {
 
         // ASSERT
         Assert.assertNull(auth.getUniversalId());
-        Assert.assertNull(auth.getUniversalToken());
+        Assert.assertNull(auth.getSdkToken());
         Assert.assertNull(auth.getEnvoyId());
         Assert.assertNull(auth.getEnvoySecret());
     }
@@ -110,7 +110,7 @@ public class AuthTest {
 
         // ACT
         auth.setUniversalId("universalId");
-        auth.setUniversalToken("universalToken");
+        auth.setSdkToken("sdkToken");
         auth.setEnvoyId("envoyId");
         auth.setEnvoySecret("envoySecret");
 

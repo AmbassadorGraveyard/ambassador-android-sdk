@@ -244,7 +244,7 @@ public final class IdentifyApi {
      * Handles the logic of externalPusherRequest, called within runnable
      * @param url the String url to hit
      * @param uid the universalId identifier
-     * @param auth the universalToken identifier
+     * @param auth the sdkToken identifier
      * @param completion callback for request completion
      */
     protected void handleExternalPusherRequest(String url, String uid, String auth, RequestManager.RequestCompletion completion) {
@@ -306,7 +306,7 @@ public final class IdentifyApi {
      * Passes through to the identifyClient and handles the Retrofit callback and
      * calling back to the RequestCompletion.
      * @param uid the universalId identifier.
-     * @param auth the universalToken identifier.
+     * @param auth the sdkToken identifier.
      * @param completion callback for request completion.
      */
     public void getCompanyInfo(String uid, String auth, final RequestManager.RequestCompletion completion) {
@@ -326,7 +326,7 @@ public final class IdentifyApi {
     /**
      * Gets the Envoy id and secret to do social OAuth stuff.
      * @param uid the universalId identifier.
-     * @param auth the universalToken identifier.
+     * @param auth the sdkToken identifier.
      * @param companyUid the id for the company on the backend.
      * @param completion callback for request completion.
      */

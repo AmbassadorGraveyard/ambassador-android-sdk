@@ -271,7 +271,7 @@ public class PusherManager {
             HttpAuthorizer authorizer = new HttpAuthorizer(pusherCallbackUrl);
 
             HashMap<String, String> headers = new HashMap<>();
-            headers.put("Authorization", auth.getUniversalToken());
+            headers.put("Authorization", auth.getSdkToken());
             authorizer.setHeaders(headers);
 
             HashMap<String, String> queryParams = new HashMap<>();
