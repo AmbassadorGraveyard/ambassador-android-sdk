@@ -138,11 +138,9 @@ public final class AmbassadorSDK {
     }
 
     /**
-     * @deprecated use {@link #identify(String, Bundle, Bundle)} instead.
      * @param emailAddress a valid String email address.
      * @return boolean determining validity of the email passed.
      */
-    @Deprecated
     public static boolean identify(String emailAddress) {
         if (!new Identify(emailAddress).isValidEmail()) {
             AmbIdentify.identifyType = "";
