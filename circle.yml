@@ -25,5 +25,5 @@ test:
     - ./rainforest.sh
     - bash devicefarm.sh
 
-  post:
-    - codacy-coverage-reporter -l Java -r $CIRCLE_TEST_REPORTS/jacocoReport.xml
+#  post:
+#    - codacy-coverage-reporter -l Java -r $CIRCLE_TEST_REPORTS/jacocoReport.xml
