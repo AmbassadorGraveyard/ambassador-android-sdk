@@ -195,7 +195,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ambassador_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        final Drawable searchIcon = ContextCompat.getDrawable(this, R.drawable.abc_ic_search_api_mtrl_alpha);
+        final Drawable searchIcon = ContextCompat.getDrawable(this, R.drawable.ic_search_white_24dp);
         searchIcon.setColorFilter(raf.getContactsSearchIconColor(), PorterDuff.Mode.SRC_ATOP);
         searchItem.setIcon(searchIcon);
         return true;
@@ -241,7 +241,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
             actionBar.setTitle(raf.getToolbarTitle());
         }
 
-        Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_white_24dp);
         arrow.setColorFilter(raf.getContactsToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
 
         if (toolbar == null) return;

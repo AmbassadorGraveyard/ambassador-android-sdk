@@ -238,7 +238,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
             actionBar.setTitle(authInterface.getToolbarText());
         }
 
-        Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        Drawable arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_white_24dp);
         arrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
 
         if (toolbar == null) return;

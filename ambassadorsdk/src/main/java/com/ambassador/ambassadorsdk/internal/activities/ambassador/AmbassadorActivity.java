@@ -251,7 +251,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         if (toolbar == null) return;
 
-        final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+        final Drawable arrow = ContextCompat.getDrawable(this, R.drawable.ic_arrow_back_white_24dp);
         arrow.setColorFilter(raf.getHomeToolbarArrowColor(), PorterDuff.Mode.SRC_ATOP);
 
         toolbar.setNavigationIcon(arrow);
