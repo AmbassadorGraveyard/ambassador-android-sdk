@@ -9,7 +9,6 @@ machine:
 
 dependencies:
  pre:
-#    - sudo curl -sL https://bndtools.ci.cloudbees.com/job/bnd.master/lastSuccessfulBuild/artifact/biz.aQute.jpm/generated/biz.aQute.jpm.run.jar >jpm4j.jar
     - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >jpm4j.jar
     - sudo java -jar jpm4j.jar -g init
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
