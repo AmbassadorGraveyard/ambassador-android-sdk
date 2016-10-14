@@ -452,7 +452,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
         }
 
         protected boolean isAllowedRedirectUrl(Uri uri) {
-            boolean hostCheck = uri.getHost().equals("www.facebook.com") || uri.getHost().equals("facebook.com");
+            boolean hostCheck = uri.getHost().contains("www.facebook.com") || uri.getHost().equals("facebook.com") || uri.getHost().equals("m.facebook.com");
             boolean pathCheck = uri.getPath().equals("/dialog/oauth") || uri.getPath().equals("/dialog/oauth/");
             return hostCheck || pathCheck;
         }
