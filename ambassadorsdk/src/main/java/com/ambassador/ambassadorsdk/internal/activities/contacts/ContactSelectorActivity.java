@@ -528,17 +528,17 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     }
 
     private boolean ableToSend() {
-        boolean lengthToShort = showPhoneNumbers && etShareMessage.getText().length() > MAX_SMS_LENGTH;
+        boolean lengthTooShort = showPhoneNumbers && etShareMessage.getText().length() > MAX_SMS_LENGTH;
         boolean noneSelected = contactListAdapter.getSelectedContacts().size() <= 0;
         boolean emptyMessage = etShareMessage.getText().toString().length() <= 0;
         boolean haveUrl = Utilities.containsURL(etShareMessage.getText().toString(), campaign.getUrl());
         boolean haveName = user.getAmbassadorIdentification().getFirstName() != null && !user.getAmbassadorIdentification().getFirstName().isEmpty() && user.getAmbassadorIdentification().getLastName() != null && !user.getAmbassadorIdentification().getLastName().isEmpty();
 
-        if (lengthToShort && noneSelected) {
+        if (lengthTooShort && noneSelected) {
             negativeTextViewFeedback(tvSendCount);
             negativeTextViewFeedback(tvSendContacts);
             return false;
-        } else if (lengthToShort) {
+        } else if (lengthTooShort) {
             negativeTextViewFeedback(tvSendCount);
             return false;
         } else if (noneSelected) {

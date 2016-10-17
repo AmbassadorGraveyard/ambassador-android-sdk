@@ -38,14 +38,13 @@ public class AskNameActivity extends Activity {
         CONTINUE, CANCEL
     }
 
-
     @Bind(B.id.etFirstName) protected ShakableEditText etFirstName;
     @Bind(B.id.etLastName)  protected ShakableEditText  etLastName;
     @Bind(B.id.btnCancel)   protected Button btnCancel;
     @Bind(B.id.btnContinue) protected Button btnContinue;
 
-    @Inject
-    protected RequestManager requestManager;
+    @Inject protected RequestManager requestManager;
+    @Inject protected PusherManager pusherManager;
     @Inject protected User user;
     @Inject protected Device device;
 
@@ -124,12 +123,11 @@ public class AskNameActivity extends Activity {
         loadingDialog.setMessage("Saving");
         loadingDialog.show();
 
-        PusherManager pusherManager = new PusherManager();
         pusherManager.addPusherListener(new PusherListenerAdapter() {
             @Override
             public void subscribed() {
                 super.subscribed();
-                requestManager.updateNameRequest(new PusherManager(), user.getAmbassadorIdentification().getEmail(), firstName, lastName, null);
+                requestManager.updateNameRequest(pusherManager, user.getAmbassadorIdentification().getEmail(), firstName, lastName, null);
                 Intent data = new Intent();
                 data.putExtra("success", true);
                 setResult(RESULT_OK, data);
