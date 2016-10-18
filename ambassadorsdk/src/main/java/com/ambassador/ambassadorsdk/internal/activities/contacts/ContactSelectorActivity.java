@@ -161,7 +161,8 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     handleSendSMS();
                 } else {
-                    //permissionView.setVisibility(View.VISIBLE);
+                    progressDialog.dismiss();
+                    finish();
                 }
                 break;
 
@@ -528,6 +529,9 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                     case SmsManager.RESULT_ERROR_RADIO_OFF:
                         Toast.makeText(getBaseContext(), "There was a problem sending the SMS, please try again later. (RESULT_ERROR_RADIO_OFF)", Toast.LENGTH_SHORT).show();
                         break;
+                    default:
+                        Toast.makeText(getBaseContext(), "There was a problem sending the SMS, please try again later. (UNKNOWN)", Toast.LENGTH_SHORT).show();
+                        break;
                 }
             }
         }, new IntentFilter(SENT));
@@ -544,6 +548,8 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                         break;
                     case Activity.RESULT_CANCELED:
                         Toast.makeText(ContactSelectorActivity.this, "SMS not delivered", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
                         break;
                 }
             }
