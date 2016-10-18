@@ -1,8 +1,11 @@
 package com.ambassador.ambassadorsdk.internal;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
@@ -27,6 +30,8 @@ public class BulkShareHelper {
 
     /** Used to read useful information from the device and OS. */
     @Inject protected Device device;
+
+    private static final int CHECK_SEND_SMS_PERMISSIONS = 1;
 
     /**
      * Enum to help with bulk share tracking. Defines the possible share sources and returns a String
@@ -107,6 +112,17 @@ public class BulkShareHelper {
                 }
             });
         }
+    }
+
+    private boolean handleSendSMSPermission() {
+        int permissionCheck = ContextCompat.checkSelfPermission(AmbSingleton.getContext(), Manifest.permission.SEND_SMS);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        else if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, CHECK_SEND_SMS_PERMISSIONS);
+        }
+        return false;
     }
 
     /**
