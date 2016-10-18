@@ -77,7 +77,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
     private static final int CHECK_SEND_SMS_PERMISSIONS = 2;
     private static final int MAX_SMS_LENGTH = 160;
-    private static final int LENGTH_GOOD_COLOR = RAFOptions.get().getContactsSendButtonTextColor(); // TODO: make this not suck
+    private static final int LENGTH_GOOD_COLOR = RAFOptions.get().getContactsSendButtonTextColor();
     private static final int LENGTH_BAD_COLOR = new ColorResource(android.R.color.holo_red_dark).getColor();
 
     @Nullable
@@ -168,6 +168,16 @@ public final class ContactSelectorActivity extends AppCompatActivity {
 
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 555 && data != null) {
+            // Grabs boolean value from intent to check for successful save
+            boolean shouldSend = data.getBooleanExtra("success", false);
+            if (shouldSend) send();
         }
     }
 

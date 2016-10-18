@@ -30,9 +30,6 @@ import javax.inject.Inject;
 import butterfork.Bind;
 import butterfork.ButterFork;
 
-/**
- * Created by JakeDunahee on 6/17/16.
- */
 public class AskNameActivity extends Activity {
     public enum DismissStatus {
         CONTINUE, CANCEL
