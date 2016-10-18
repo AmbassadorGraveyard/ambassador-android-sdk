@@ -71,8 +71,6 @@ import butterfork.ButterFork;
  * Activity that handles contact selection and sharing using email or SMS.
  */
 public final class ContactSelectorActivity extends AppCompatActivity {
-
-
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
     private static final int SEND_SMS = 1234;
     private static final int MAX_SMS_LENGTH = 160;
