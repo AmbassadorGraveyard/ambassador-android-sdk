@@ -67,11 +67,11 @@ public class BulkShareHelper {
      * @param completion callback for BulkShare completion.
      */
     public void bulkShare(final String messageToShare, final List<Contact> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
-        if (phoneNumbers && (contacts.size() > 1 || device.getSdkVersion() >= 23 || !AmbSingleton.getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY))) {
-            requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
+        if (!phoneNumbers) {
+            requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    requestManager.bulkShareTrack(contacts, SocialServiceTrackType.SMS);
+                    requestManager.bulkShareTrack(contacts, SocialServiceTrackType.EMAIL);
                     completion.bulkShareSuccess();
                 }
 
@@ -80,19 +80,24 @@ public class BulkShareHelper {
                     completion.bulkShareFailure();
                 }
             });
-        } else if (phoneNumbers && contacts.size() == 1) {
+
+            return;
+        }
+
+        //if only 1 contact and device is equipped to send, use native SMS for a better experience
+        if (contacts.size() == 1 && AmbSingleton.getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
             Contact contact = contacts.get(0);
             Intent intent = new Intent(Intent.ACTION_SENDTO);
             intent.setData(Uri.parse("smsto:" + contact.getPhoneNumber()));
             intent.putExtra("sms_body", messageToShare);
-            // intent.putExtra("exit_on_sent", true);
+            intent.putExtra("exit_on_sent", true);
             completion.launchSmsIntent(contact.getPhoneNumber(), intent);
-
-        } else {
-            requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
+        }
+        else {
+            requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    requestManager.bulkShareTrack(contacts, SocialServiceTrackType.EMAIL);
+                    requestManager.bulkShareTrack(contacts, SocialServiceTrackType.SMS);
                     completion.bulkShareSuccess();
                 }
 
