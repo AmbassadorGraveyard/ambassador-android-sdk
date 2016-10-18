@@ -16,9 +16,6 @@ import com.ambassador.ambassadorsdk.RAFOptions;
 import butterfork.Bind;
 import butterfork.ButterFork;
 
-/**
- * Created by JakeDunahee on 6/24/16.
- */
 public class PermissionView extends LinearLayout {
 
     @Bind(B.id.ivPermissionType) protected ImageView ivPermissionType;

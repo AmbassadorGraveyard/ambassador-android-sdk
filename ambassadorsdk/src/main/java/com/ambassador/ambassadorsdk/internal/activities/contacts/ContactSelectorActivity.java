@@ -4,8 +4,13 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -19,6 +24,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -41,7 +47,6 @@ import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.SmsSendObserver;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -57,9 +62,7 @@ import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 import com.ambassador.ambassadorsdk.internal.views.CrossfadedTextView;
 import com.ambassador.ambassadorsdk.internal.views.DividedRecyclerView;
 import com.ambassador.ambassadorsdk.internal.views.PermissionView;
-import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -72,7 +75,7 @@ import butterfork.ButterFork;
  */
 public final class ContactSelectorActivity extends AppCompatActivity {
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
-    private static final int SEND_SMS = 1234;
+    private static final int CHECK_SEND_SMS_PERMISSIONS = 2;
     private static final int MAX_SMS_LENGTH = 160;
     private static final int LENGTH_GOOD_COLOR = RAFOptions.get().getContactsSendButtonTextColor(); // TODO: make this not suck
     private static final int LENGTH_BAD_COLOR = new ColorResource(android.R.color.holo_red_dark).getColor();
@@ -104,12 +107,10 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     protected RAFOptions                raf = RAFOptions.get();
     protected List<Contact>             contactList;
     protected ContactListAdapter        contactListAdapter;
-    protected JsonObject                pusherData;
     protected boolean                   showPhoneNumbers;
     protected AskNameDialog             askNameDialog;
     protected ProgressDialog            progressDialog;
     protected float                     lastSendHeight;
-    protected boolean                   didSendSms;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,36 +157,16 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                     permissionView.setVisibility(View.VISIBLE);
                 }
                 break;
+            case CHECK_SEND_SMS_PERMISSIONS:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    handleSendSMS();
+                } else {
+                    //permissionView.setVisibility(View.VISIBLE);
+                }
+                break;
 
             default:
                 break;
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SEND_SMS && didSendSms) {
-            // The activity closes so fast it almost looks like something went wrong, so I wait a second
-            // to make it appear as if the SDK is doing work.
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            finish();
-                            Toast.makeText(ContactSelectorActivity.this, new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }, 1000);
-        } else if (requestCode == SEND_SMS) {
-            progressDialog.dismiss();
-        } else if (requestCode == 555 && data != null) {
-            // Grabs boolean value from intent to check for successful save
-            boolean shouldSend = data.getBooleanExtra("success", false);
-            if (shouldSend) send();
         }
     }
 
@@ -279,7 +260,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         permissionView.setOnButtonClickListener(new PermissionView.OnButtonClickListener() {
             @Override
             public void onClick() {
-                handleContactsPermission();
+                handlePermission(Manifest.permission.READ_CONTACTS, CHECK_CONTACT_PERMISSIONS);
             }
         });
     }
@@ -491,14 +472,13 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     }
 
     private void populateContacts() {
-        if (!handleContactsPermission()) {
+        if (!handlePermission(Manifest.permission.READ_CONTACTS, CHECK_CONTACT_PERMISSIONS)) {
             return;
         }
 
         if (showPhoneNumbers) contactList = new ContactList(ContactList.Type.PHONE).get(this);
         else contactList = new ContactList(ContactList.Type.EMAIL).get(this);
-        contactList = (contactList.isEmpty() && !BuildConfig.IS_RELEASE_BUILD)
-                ? new ContactList(ContactList.Type.DUMMY).get(this) : contactList;
+        contactList = (contactList.isEmpty() && !BuildConfig.IS_RELEASE_BUILD) ? new ContactList(ContactList.Type.DUMMY).get(this) : contactList;
 
         if (contactList.size() == 0) {
             tvNoContacts.setVisibility(View.VISIBLE);
@@ -515,13 +495,74 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         rvContacts.setAdapter(contactListAdapter);
     }
 
-    private boolean handleContactsPermission() {
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS);
+    private void handleSendSMS() {
+        if (!handlePermission(Manifest.permission.SEND_SMS, CHECK_SEND_SMS_PERMISSIONS)) {
+            return;
+        }
+
+        String SENT = "SMS_SENT";
+        String DELIVERED = "SMS_DELIVERED";
+        PendingIntent sentPI = PendingIntent.getBroadcast(ContactSelectorActivity.this, 0, new Intent(SENT), 0);
+        PendingIntent deliveredPI = PendingIntent.getBroadcast(ContactSelectorActivity.this, 0, new Intent(DELIVERED), 0);
+
+        //when the SMS has been sent
+        registerReceiver(new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                progressDialog.dismiss();
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        finish();
+                        Toast.makeText(ContactSelectorActivity.this, new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                        Toast.makeText(ContactSelectorActivity.this, "There was a problem sending the SMS, please try again later. (RESULT_ERROR_GENERIC_FAILURE)", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NO_SERVICE:
+                        Toast.makeText(ContactSelectorActivity.this, "There was a problem sending the SMS, please try again later. (RESULT_ERROR_NO_SERVICE)", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_NULL_PDU:
+                        Toast.makeText(ContactSelectorActivity.this, "There was a problem sending the SMS, please try again later. (RESULT_ERROR_NULL_PDU)", Toast.LENGTH_SHORT).show();
+                        break;
+                    case SmsManager.RESULT_ERROR_RADIO_OFF:
+                        Toast.makeText(getBaseContext(), "There was a problem sending the SMS, please try again later. (RESULT_ERROR_RADIO_OFF)", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(SENT));
+
+        //NOTE: keeping this code in comments, because we may want to use delivered instead of sent in the future
+        //when the SMS has been delivered
+        /*registerReceiver(new BroadcastReceiver(){
+            @Override
+            public void onReceive(Context arg0, Intent arg1) {
+                switch (getResultCode())
+                {
+                    case Activity.RESULT_OK:
+                        Toast.makeText(ContactSelectorActivity.this, "SMS delivered", Toast.LENGTH_SHORT).show();
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        Toast.makeText(ContactSelectorActivity.this, "SMS not delivered", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }, new IntentFilter(DELIVERED));*/
+
+        SmsManager sms = SmsManager.getDefault();
+        Contact contact = contactListAdapter.getSelectedContacts().get(0);
+        sms.sendTextMessage(contact.getPhoneNumber(), null, etShareMessage.getText().toString(), sentPI, deliveredPI);
+    }
+
+    private boolean handlePermission(String permission, int code) {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, permission);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             return true;
-        } else if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, CHECK_CONTACT_PERMISSIONS);
         }
+        if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+            ActivityCompat.requestPermissions(this, new String[]{permission}, code);
+        }
+
         return false;
     }
 
@@ -598,15 +639,6 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         startActivityForResult(nameIntent, 555);
     }
 
-    private boolean pusherHasKey(String key) {
-        try {
-            String value = pusherData.get(key).getAsString();
-            return value != null && !value.equals("null") && !value.isEmpty();
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     private void send() {
         if (!progressDialog.isShowing()) {
             runOnUiThread(new Runnable() {
@@ -616,6 +648,13 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                 }
             });
         }
+
+        //if only 1 contact and device is equipped to send, use native SMS for a better experience
+        if (showPhoneNumbers && contactListAdapter.getSelectedContacts().size() == 1 && AmbSingleton.getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+            handleSendSMS();
+            return;
+        }
+
         bulkShareHelper.bulkShare(etShareMessage.getText().toString(), contactListAdapter.getSelectedContacts(), showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
             @Override
             public void bulkShareSuccess() {
@@ -629,26 +668,6 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 Toast.makeText(getApplicationContext(), new StringResource(R.string.post_failure).getValue(), Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public void launchSmsIntent(final String phoneNumber, Intent intent) {
-                final SmsSendObserver observer = new SmsSendObserver(ContactSelectorActivity.this, phoneNumber);
-                observer.setSmsSendListener(new SmsSendObserver.SmsSendListener() {
-                    @Override
-                    public void onSmsSent() {
-                        didSendSms = true;
-                        observer.stop();
-                        List<Contact> contact = new ArrayList<>();
-                        contact.add(new Contact.Builder().setPhoneNumber(phoneNumber).build());
-                        requestManager.bulkShareTrack(contact, BulkShareHelper.SocialServiceTrackType.SMS);
-                    }
-                });
-                observer.start();
-                startActivityForResult(intent, SEND_SMS);
-            }
         });
     }
-
-
-
 }

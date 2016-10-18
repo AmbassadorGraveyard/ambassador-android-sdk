@@ -1,12 +1,5 @@
 package com.ambassador.ambassadorsdk.internal;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.models.Contact;
@@ -30,8 +23,6 @@ public class BulkShareHelper {
 
     /** Used to read useful information from the device and OS. */
     @Inject protected Device device;
-
-    private static final int CHECK_SEND_SMS_PERMISSIONS = 1;
 
     /**
      * Enum to help with bulk share tracking. Defines the possible share sources and returns a String
@@ -85,18 +76,6 @@ public class BulkShareHelper {
                     completion.bulkShareFailure();
                 }
             });
-
-            return;
-        }
-
-        //if only 1 contact and device is equipped to send, use native SMS for a better experience
-        if (contacts.size() == 1 && AmbSingleton.getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
-            Contact contact = contacts.get(0);
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("smsto:" + contact.getPhoneNumber()));
-            intent.putExtra("sms_body", messageToShare);
-            intent.putExtra("exit_on_sent", true);
-            completion.launchSmsIntent(contact.getPhoneNumber(), intent);
         }
         else {
             requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
@@ -112,17 +91,6 @@ public class BulkShareHelper {
                 }
             });
         }
-    }
-
-    private boolean handleSendSMSPermission() {
-        int permissionCheck = ContextCompat.checkSelfPermission(AmbSingleton.getContext(), Manifest.permission.SEND_SMS);
-        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        else if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, CHECK_SEND_SMS_PERMISSIONS);
-        }
-        return false;
     }
 
     /**
@@ -255,7 +223,6 @@ public class BulkShareHelper {
     public interface BulkShareCompletion {
         void bulkShareSuccess();
         void bulkShareFailure();
-        void launchSmsIntent(String phoneNumber, Intent intent);
     }
 
 }
