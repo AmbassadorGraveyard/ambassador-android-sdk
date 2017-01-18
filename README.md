@@ -61,6 +61,8 @@ Save, and make sure you click publish after.
 
 Create a release in Github.
 
+Update the readme.io docs with the new version (located in three places on the page)
+
 
 ## Releasing the Demo App
 
