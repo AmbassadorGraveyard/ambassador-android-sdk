@@ -82,7 +82,7 @@ public final class IdentifyApi {
 
             @Override
             public void failure(RetrofitError error) {
-                if (new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
+                if (error.getResponse() != null && new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     // successful
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.identifyRequest(...)");
                     if (requestCompletion != null) requestCompletion.onSuccess(null);
@@ -116,7 +116,7 @@ public final class IdentifyApi {
 
             @Override
             public void failure(RetrofitError error) {
-                if (new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
+                if (error.getResponse() != null && new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     if (completion != null) completion.onSuccess(requestId);
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateNameRequest(...)");
                 } else {
@@ -148,7 +148,7 @@ public final class IdentifyApi {
 
             @Override
             public void failure(RetrofitError error) {
-                if (new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
+                if (error.getResponse() != null && new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
                     completion.onSuccess(requestId);
                     Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateGcmToken(...)");
                 } else {

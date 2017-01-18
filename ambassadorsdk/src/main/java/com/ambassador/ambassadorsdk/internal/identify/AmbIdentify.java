@@ -85,7 +85,9 @@ public class AmbIdentify {
             @Override
             public void connectionFailed() {
                 super.connectionFailed();
-                completionListener.networkError();
+                if (completionListener != null) {
+                    completionListener.networkError();
+                }
             }
 
             @Override
