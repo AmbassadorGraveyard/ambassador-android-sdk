@@ -44,7 +44,7 @@ cd ~/.m2/repository/com/ambassador/ambassadorsdk
 Copy your new version somewhere useful like the desktop. Using version 1.1.5 as an example:
 
 ```sh
-cp -r 1.1.5 ~/Desktop/1.1.5
+cp -r 1.x.x ~/Desktop/1.x.x
 ```
 
 Login to bintray.com and select the Ambassador organization. Select the maven repo. Select the ambassadorsdk package.
@@ -58,6 +58,8 @@ com/ambassador/ambassadorsdk/{VERSION}
 ```
 
 Save, and make sure you click publish after.
+
+Create a release in Github.
 
 
 ## Releasing the Demo App
