@@ -41,7 +41,7 @@ Now change directory to your local maven repo.
 cd ~/.m2/repository/com/ambassador/ambassadorsdk
 ```
 
-Copy your new version somewhere useful like the desktop. Using version 1.1.5 as an example:
+Copy your new version somewhere useful like the desktop:
 
 ```sh
 cp -r 1.x.x ~/Desktop/1.x.x
@@ -49,7 +49,7 @@ cp -r 1.x.x ~/Desktop/1.x.x
 
 Login to bintray.com and select the Ambassador organization. Select the maven repo. Select the ambassadorsdk package.
 
-Click "New version". Enter your version number for the name, (ex: "1.1.5"). Click submit. Now click the new version. On the right click to upload files using the UI uploader.
+Click "New version". Enter your version number for the name. Click submit. Now click the new version. On the right click to upload files using the UI uploader.
 
 Select the 4 files from the folder you copied to your desktop. Set the path like this:
 
