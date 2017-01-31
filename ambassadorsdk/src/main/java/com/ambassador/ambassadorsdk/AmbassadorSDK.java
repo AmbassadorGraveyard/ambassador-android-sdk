@@ -272,4 +272,7 @@ public final class AmbassadorSDK {
         SurveyModel.setDefaultColors(backgroundColor, contentColor, buttonColor);
     }
 
+    public static String getReferredByShortCode() {
+        return campaign.getReferredByShortCode();
+    }
 }
