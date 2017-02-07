@@ -3,7 +3,6 @@ rootProject.ext.sdkCompile = [
         rootProject.ext.deps.appCompat,
         rootProject.ext.deps.recyclerView,
         rootProject.ext.deps.ga,
-        rootProject.ext.deps.gcm,
         rootProject.ext.deps.guava,
         rootProject.ext.deps.pusher,
         rootProject.ext.deps.slf4j,

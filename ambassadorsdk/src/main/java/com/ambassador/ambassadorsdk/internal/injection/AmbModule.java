@@ -21,11 +21,9 @@ import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
-import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
-import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbGcmTokenTask;
 import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
 import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
-import com.ambassador.ambassadorsdk.internal.notifications.InstanceIdListener;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import javax.inject.Singleton;
@@ -47,10 +45,8 @@ import dagger.Provides;
         PusherManager.class,
         PusherManager.Channel.class,
         InstallReceiver.class,
-        InstanceIdListener.class,
         AmbIdentify.class,
         AmbIdentifyTask.class,
-        AmbGcmTokenTask.class,
         AmbAugurTask.class,
         AmbConversion.class,
         AskNameActivity.class

@@ -7,7 +7,6 @@ import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
-import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbGcmTokenTask;
 import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
 
 import java.util.ArrayList;
@@ -36,9 +35,8 @@ public class AmbIdentify {
         AmbSingleton.inject(this);
         this.userId = userId;
         this.ambassadorIdentification = ambassadorIdentification;
-        this.identifyTasks = new AmbIdentifyTask[2];
-        this.identifyTasks[0] = new AmbGcmTokenTask();
-        this.identifyTasks[1] = new AmbAugurTask();
+        this.identifyTasks = new AmbIdentifyTask[1];
+        this.identifyTasks[0] = new AmbAugurTask();
         this.memberIdentifyType = identifyType;
         identifyType = "";
 
