@@ -85,14 +85,6 @@
         </receiver>
 
         <service
-            android:name=".internal.notifications.GcmListener"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-
-        <service
             android:name=".internal.notifications.InstanceIdListener"
             android:exported="false">
             <intent-filter>
