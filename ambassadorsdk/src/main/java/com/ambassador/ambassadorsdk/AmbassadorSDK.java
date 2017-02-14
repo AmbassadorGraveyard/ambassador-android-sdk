@@ -275,4 +275,8 @@ public final class AmbassadorSDK {
     public static String getReferredByShortCode() {
         return campaign.getReferredByShortCode();
     }
+
+    public static String getCampaignIdFromShortCode(String shortCode) {
+        return requestManager.getCampaignIdFromShortCode(shortCode);
+    }
 }

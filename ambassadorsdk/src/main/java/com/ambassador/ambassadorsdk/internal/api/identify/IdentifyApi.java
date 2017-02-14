@@ -1,5 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.api.identify;
 
+import android.util.Log;
+
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
@@ -25,6 +27,7 @@ import retrofit.client.Response;
  * Handles Ambassador API identify methods using Retrofit services and contains all relevant pojo classes.
  */
 public final class IdentifyApi {
+    private String referredByCampaignId;
 
     /** Client for making Identify requests to the Ambassador API */
     private IdentifyClient identifyClient;
@@ -179,6 +182,37 @@ public final class IdentifyApi {
                 completion.onFailure(null);
             }
         });
+    }
+
+    /**
+     * Passes through to the identifyClient and handles the Retrofit callback and
+     * calling back to the RequestCompletion.
+     * @param shortCode short code of the user to retrieve name + picture for.
+     * @param uid ambassador universal id.
+     * @param authKey ambassador universal token.
+     */
+    public String getCampaignIdFromShortCode(final String shortCode, final String uid, final String authKey) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    GetCampaignIdFromShortCodeResponse response =  identifyClient.getCampaignIdFromShortCode(uid, authKey, shortCode);
+                    referredByCampaignId = response.results.length > 0 ? response.results[0].campaign_id : null;
+                }
+                catch (Exception e) {
+                    Log.e("ambassador", e.toString());
+                }
+            }});
+
+        thread.start();
+        try {
+            thread.join();
+        }
+        catch(Exception e) {
+            Log.e("ambassador", e.toString());
+        }
+
+        return referredByCampaignId;
     }
 
     /**
@@ -470,21 +504,26 @@ public final class IdentifyApi {
 
     /** Pojo for get user from short code request body */
     public static class GetUserFromShortCodeRequest {
-
         private String short_code;
 
         public GetUserFromShortCodeRequest(String short_code) {
             this.short_code = short_code;
         }
-
     }
 
     /** Pojo for get user from short code request response */
     public static class GetUserFromShortCodeResponse {
-
         public String name;
         public String avatar_url;
+    }
 
+    /** Pojo for get campaignId from short code request response */
+    public static class GetCampaignIdFromShortCodeResponse {
+        public Result[] results;
+
+        public static class Result {
+            public String campaign_id;
+        }
     }
 
     /** Pojo for create pusher channel response */

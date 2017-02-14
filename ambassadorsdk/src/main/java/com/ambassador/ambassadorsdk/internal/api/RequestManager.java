@@ -244,6 +244,17 @@ public class RequestManager {
     }
 
     /**
+     * Requests campaign from short_code.
+     * @param shortCode the referred by short code to request data about.
+     */
+    public String getCampaignIdFromShortCode(final String shortCode) {
+        String uid = auth.getUniversalId();
+        String authKey = auth.getSdkToken();
+
+        return identifyApi.getCampaignIdFromShortCode(shortCode, uid, authKey);
+    }
+
+    /**
      * Requests data about a company. Returned data is based on authenticated headers.
      * @param requestCompletion callback for request completion.
      */

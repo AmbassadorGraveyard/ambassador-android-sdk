@@ -95,6 +95,13 @@ public interface IdentifyClient {
             Callback<IdentifyApi.GetUserFromShortCodeResponse> callback
     );
 
+    @GET("/urls/")
+    IdentifyApi.GetCampaignIdFromShortCodeResponse getCampaignIdFromShortCode(
+            @Header("MBSY_UNIVERSAL_ID") String universalId,
+            @Header("Authorization") String auth,
+            @Query("short_code") String shortCode
+    );
+
     /**
      * https://api.getambassador.com/auth/session/
      * https://dev-ambassador-api.herokuapp.com/auth/session/
