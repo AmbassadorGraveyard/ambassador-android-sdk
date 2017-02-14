@@ -206,7 +206,7 @@ public final class IdentifyApi {
 
         thread.start();
         try {
-            thread.join();
+            thread.join(2000);
         }
         catch(Exception e) {
             Log.e("ambassador", e.toString());
