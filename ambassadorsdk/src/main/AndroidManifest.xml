@@ -29,6 +29,11 @@
     <!-- code requests this feature, this line should disable the warning from Google Play for tablets that don't have telephony -->
     <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
+    <!-- these features are required for augur, however not everyone needs this,
+         so we can relax the requirements to avoid google play warnings -->
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+    <uses-feature android:name="android.hardware.wifi" android:required="false" />
+
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
