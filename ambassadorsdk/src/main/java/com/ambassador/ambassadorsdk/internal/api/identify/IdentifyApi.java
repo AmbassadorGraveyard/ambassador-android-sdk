@@ -187,7 +187,7 @@ public final class IdentifyApi {
     /**
      * Passes through to the identifyClient and handles the Retrofit callback and
      * calling back to the RequestCompletion.
-     * @param shortCode short code of the user to retrieve name + picture for.
+     * @param shortCode short code of the user to retrieve campaignId
      * @param uid ambassador universal id.
      * @param authKey ambassador universal token.
      */

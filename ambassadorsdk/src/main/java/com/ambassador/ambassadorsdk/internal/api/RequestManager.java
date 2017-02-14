@@ -245,7 +245,7 @@ public class RequestManager {
 
     /**
      * Requests campaign from short_code.
-     * @param shortCode the referred by short code to request data about.
+     * @param shortCode the referred by short code used to request data.
      */
     public String getCampaignIdFromShortCode(final String shortCode) {
         String uid = auth.getUniversalId();
