@@ -36,6 +36,8 @@ public final class InstallReceiver extends BroadcastReceiver {
         AmbSingleton.inject(this);
 
         Bundle b = intent.getExtras();
+        if (b == null) return;
+
         final String referrer = b.getString(INTENT_KEY_REFERRER); //"mbsy_cookie_code=jwnZ&device_id=test1234";
 
         if (referrer == null) return;
