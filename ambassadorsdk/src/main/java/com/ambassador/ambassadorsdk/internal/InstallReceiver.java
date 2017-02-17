@@ -23,6 +23,11 @@ public final class InstallReceiver extends BroadcastReceiver {
     @Inject protected User user;
     @Inject protected Campaign campaign;
     @Inject protected RequestManager requestManager;
+    private static final String INTENT_KEY_REFERRER = "referrer";
+    private static final String PARAM_REFERRAL_SHORT_CODE = "mbsy_cookie_code";
+    private static final String PARAM_WEB_DEVICE_ID = "device_id";
+    private static final String PARAM_SPLIT_REGEX = "&";
+    private static final String PARAM_SUB_SPLIT_REGEX = "=";
 
     public InstallReceiver() {}
 
@@ -31,25 +36,43 @@ public final class InstallReceiver extends BroadcastReceiver {
         AmbSingleton.inject(this);
 
         Bundle b = intent.getExtras();
-        final String qstring = b.getString("referrer"); //"mbsy_cookie_code=jwnZ&device_id=test1234";
+        final String referrer = b.getString(INTENT_KEY_REFERRER); //"mbsy_cookie_code=jwnZ&device_id=test1234";
 
-        if (qstring == null) return;
+        if (referrer == null) return;
 
-        String[] param1;
-        String[] param2;
-        String webDeviceId;
-        String referralShortCode;
-        try {
-            String[] qSplit = qstring.split("&");
-            param1 = qSplit[0].split("="); //mbsy_cookie_code=jwnZ
-            param2 = qSplit[1].split("="); //device_id=test1234
-            referralShortCode = param1[0].equals("mbsy_cookie_code") ? param1[1] : param2[1];
-            webDeviceId = param2[0].equals("device_id") ? param2[1] : param1[1];
+        String[] params = referrer.split(PARAM_SPLIT_REGEX);
+
+        String referralShortCode = null;
+        String webDeviceId = null;
+
+        for (String param : params) {
+            String[] paramSplit = param.split(PARAM_SUB_SPLIT_REGEX);
+
+            if (paramSplit.length <= 1) continue;
+
+            if (paramSplit[0].equalsIgnoreCase(PARAM_REFERRAL_SHORT_CODE)) {
+                referralShortCode = paramSplit[1];
+            }
+            else if (paramSplit[0].equalsIgnoreCase(PARAM_WEB_DEVICE_ID)) {
+                webDeviceId = paramSplit[1];
+            }
         }
-        catch (ArrayIndexOutOfBoundsException e) {
-            e.printStackTrace();
-            return;
-        }
+
+//        String[] param1;
+//        String[] param2;
+//        String webDeviceId;
+//        String referralShortCode;
+//        try {
+//            String[] qSplit = qstring.split("&");
+//            param1 = qSplit[0].split("="); //mbsy_cookie_code=jwnZ
+//            param2 = qSplit[1].split("="); //device_id=test1234
+//            referralShortCode = param1[0].equals("mbsy_cookie_code") ? param1[1] : param2[1];
+//            webDeviceId = param2[0].equals("device_id") ? param2[1] : param1[1];
+//        }
+//        catch (ArrayIndexOutOfBoundsException e) {
+//            e.printStackTrace();
+//            return;
+//        }
 
         user.setWebDeviceId(webDeviceId);
         campaign.setReferredByShortCode(referralShortCode);
