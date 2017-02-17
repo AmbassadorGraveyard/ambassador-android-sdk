@@ -41,7 +41,6 @@ public final class InstallReceiver extends BroadcastReceiver {
         if (referrer == null) return;
 
         String[] params = referrer.split(PARAM_SPLIT_REGEX);
-
         String referralShortCode = null;
         String webDeviceId = null;
 
@@ -57,22 +56,6 @@ public final class InstallReceiver extends BroadcastReceiver {
                 webDeviceId = paramSplit[1];
             }
         }
-
-//        String[] param1;
-//        String[] param2;
-//        String webDeviceId;
-//        String referralShortCode;
-//        try {
-//            String[] qSplit = qstring.split("&");
-//            param1 = qSplit[0].split("="); //mbsy_cookie_code=jwnZ
-//            param2 = qSplit[1].split("="); //device_id=test1234
-//            referralShortCode = param1[0].equals("mbsy_cookie_code") ? param1[1] : param2[1];
-//            webDeviceId = param2[0].equals("device_id") ? param2[1] : param1[1];
-//        }
-//        catch (ArrayIndexOutOfBoundsException e) {
-//            e.printStackTrace();
-//            return;
-//        }
 
         user.setWebDeviceId(webDeviceId);
         campaign.setReferredByShortCode(referralShortCode);
