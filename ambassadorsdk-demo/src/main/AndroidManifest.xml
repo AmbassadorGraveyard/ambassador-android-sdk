@@ -16,7 +16,6 @@
         <activity
             android:name="com.ambassador.app.activities.LaunchActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
