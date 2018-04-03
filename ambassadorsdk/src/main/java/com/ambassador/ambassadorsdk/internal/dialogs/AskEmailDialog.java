@@ -60,7 +60,8 @@ public final class AskEmailDialog extends Dialog {
         setCancelable(false);
         setContentView(R.layout.dialog_email);
         ButterFork.bind(this);
-        AmbSingleton.inject(this);
+        AmbSingleton AmbSingleton = new AmbSingleton();
+        AmbSingleton.getAmbComponent().inject(this);
 
         setupTheme();
         setupButtons();

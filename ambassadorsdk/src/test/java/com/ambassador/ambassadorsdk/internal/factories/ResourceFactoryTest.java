@@ -33,7 +33,7 @@ public class ResourceFactoryTest {
         );
 
         context = Mockito.mock(Context.class);
-        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getInstance().getContext()).thenReturn(context);
     }
 
     @Test

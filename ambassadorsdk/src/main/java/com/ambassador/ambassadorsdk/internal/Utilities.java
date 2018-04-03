@@ -19,32 +19,36 @@ import com.ambassador.ambassadorsdk.BuildConfig;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.internal.utils.res.StringResource;
 
+import javax.inject.Inject;
+
 public class Utilities {
+    @Inject
+    protected AmbSingleton AmbSingleton;
 
     public interface UrlAlertInterface {
         void sendAnywayTapped(DialogInterface dialogInterface);
         void insertUrlTapped(DialogInterface dialogInterface);
     }
 
-    public static int getPixelSizeForDimension(int dimension) {
-        Context cxt = AmbSingleton.getContext();
+    public int getPixelSizeForDimension(int dimension) {
+        Context cxt =AmbSingleton.getInstance().getContext();
         return cxt.getResources().getDimensionPixelSize(dimension);
     }
     
-    public static float getDpSizeForPixels(int pixels) {
-        Context cxt = AmbSingleton.getContext();
+    public float getDpSizeForPixels(int pixels) {
+        Context cxt =AmbSingleton.getInstance().getContext();
         Resources resources = cxt.getResources();
         DisplayMetrics metrics = resources.getDisplayMetrics();
         float dp = pixels / (metrics.densityDpi / 160f);
         return dp;
     }
 
-    public static boolean containsURL(String message, String url) {
+    public boolean containsURL(String message, String url) {
         if (message == null) return false;
         return message.contains(url);
     }
 
-    public static void presentNonCancelableMessageDialog(Context context, String title, String message, DialogInterface.OnClickListener okayOnClickListener) {
+    public void presentNonCancelableMessageDialog(Context context, String title, String message, DialogInterface.OnClickListener okayOnClickListener) {
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message)
@@ -56,13 +60,13 @@ public class Utilities {
         dialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(context.getResources().getColor(R.color.twitter_blue));
     }
 
-    public static void debugLog(String tagString, String logMessage) {
+    public void debugLog(String tagString, String logMessage) {
         if (!BuildConfig.IS_RELEASE_BUILD) {
             Log.d(tagString, logMessage);
         }
     }
 
-    public static void debugLog(String logMessage) {
+    public void debugLog(String logMessage) {
         if (!BuildConfig.IS_RELEASE_BUILD) {
             StackTraceElement stackTrace = new Exception().getStackTrace()[1];
             String tag = stackTrace.getClassName()
@@ -73,11 +77,11 @@ public class Utilities {
         }
     }
 
-    public static float getScreenDensity() {
-        return AmbSingleton.getContext().getResources().getDisplayMetrics().density;
+    public float getScreenDensity() {
+        return AmbSingleton.getInstance().getContext().getResources().getDisplayMetrics().density;
     }
 
-    public static boolean isConnected(Context context) {
+    public boolean isConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo[] networkInfos = cm.getAllNetworkInfo();
         for (NetworkInfo networkInfo : networkInfos) {
@@ -90,7 +94,7 @@ public class Utilities {
     }
 
     @SuppressWarnings("all")
-    public static void setStatusBar(Window window, int primaryColor) {
+    public void setStatusBar(Window window, int primaryColor) {
         if (getSdkInt() >= 21) {
             float[] hsv = new float[3];
             Color.colorToHSV(primaryColor, hsv);
@@ -100,11 +104,11 @@ public class Utilities {
         }
     }
 
-    public static int getSdkInt() {
+    public int getSdkInt() {
         return Build.VERSION.SDK_INT;
     }
 
-    public static float getTextWidthDp(String text, TextView tv) {
+    public float getTextWidthDp(String text, TextView tv) {
         Rect bounds = buildRect();
         Paint textPaint = tv.getPaint();
         textPaint.getTextBounds(text, 0, text.length(), bounds);
@@ -112,11 +116,11 @@ public class Utilities {
         return width;
     }
 
-    protected static Rect buildRect() {
+    protected Rect buildRect() {
         return new Rect();
     }
 
-    public static String cutTextToShow(String text, TextView tv, float maxWidth) {
+    public String cutTextToShow(String text, TextView tv, float maxWidth) {
         String cut;
         for (int i = 0; i < text.length() + 1; i++) {
             cut = text.substring(0, i);

@@ -24,6 +24,8 @@ import com.ambassador.ambassadorsdk.internal.models.Contact;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import butterfork.Bind;
 import butterfork.ButterFork;
 
@@ -31,6 +33,8 @@ import butterfork.ButterFork;
  * Dialog to show an enhanced view of a contact's info.
  */
 public final class ContactInfoDialog extends Dialog {
+    @Inject
+    protected RAFOptions RAFOptions;
 
     // region Views
     @Bind(B.id.ivPhoto)             protected ImageView     ivPhoto;

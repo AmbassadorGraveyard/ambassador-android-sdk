@@ -39,6 +39,9 @@ import butterfork.Bind;
 import butterfork.ButterFork;
 
 public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ContactViewHolder> {
+    @Inject protected Device device;
+    @Inject protected RAFOptions RAFOptions;
+    @Inject protected Utilities Utilities;
 
     private RAFOptions raf = RAFOptions.get();
     private Context context;
@@ -53,8 +56,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     private float checkmarkXPos;
     private float checkmarkSize;
 
-    @Inject protected Device device;
-
     private OnSelectedContactsChangedListener onSelectedContactsChangedListener;
 
     public ContactListAdapter(Context context, List<Contact> contacts, boolean shouldShowPhoneNumbers) {
@@ -67,7 +68,8 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         this.checkmarkXPos = Utilities.getPixelSizeForDimension(R.dimen.contact_select_checkmark_x);
         this.checkmarkSize = Utilities.getPixelSizeForDimension(R.dimen.checkmark_size);
 
-        AmbSingleton.inject(this);
+        AmbSingleton AmbSingleton = new AmbSingleton();
+        AmbSingleton.getAmbComponent().inject(this);
     }
 
     @Override
@@ -79,7 +81,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     public ContactViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_contacts, parent, false);
 
-        ContactViewHolder cvh = new ContactViewHolder(v, new ContactViewHolder.OnContactClickListener() {
+        ContactViewHolder cvh = new ContactViewHolder(v, new OnContactClickListener() {
             @Override
             public void onClick(View view, int position) {
                 updateArrays(view, position);
@@ -258,7 +260,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         this.onSelectedContactsChangedListener = onSelectedContactsChangedListener;
     }
 
-    public static final class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public final class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
         private RAFOptions raf = RAFOptions.get();
 
@@ -304,12 +306,10 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
             }
             return true;
         }
-
-        public interface OnContactClickListener {
-            void onClick(View view, int position);
-            void onLongClick(View view, int position);
-        }
-
     }
 
+    public interface OnContactClickListener {
+        void onClick(View view, int position);
+        void onLongClick(View view, int position);
+    }
 }

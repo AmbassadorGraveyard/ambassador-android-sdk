@@ -48,7 +48,7 @@ public class AmbConversionTest {
         );
 
         context = Mockito.mock(Context.class);
-        PowerMockito.when(AmbSingleton.getContext()).thenReturn(context);
+        PowerMockito.when(AmbSingleton.getInstance().getContext()).thenReturn(context);
         sharedPreferences = Mockito.mock(SharedPreferences.class);
         Mockito.when(context.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(sharedPreferences);
         editor = Mockito.mock(SharedPreferences.Editor.class);

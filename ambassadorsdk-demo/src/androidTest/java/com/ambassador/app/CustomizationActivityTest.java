@@ -66,7 +66,7 @@ public class CustomizationActivityTest {
 
         AmbSingleton.init(context, new TestModule());
         AmbassadorSDK.runWithKeys(context, "ut", "uid");
-        AmbSingleton.inject(this);
+        AmbSingleton.getAmbComponent().inject(this);
 
         Intent intent = new Intent();
         activityTestRule.launchActivity(intent);

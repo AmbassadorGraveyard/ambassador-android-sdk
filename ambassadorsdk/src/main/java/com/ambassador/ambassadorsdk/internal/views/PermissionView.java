@@ -13,6 +13,8 @@ import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
 
+import javax.inject.Inject;
+
 import butterfork.Bind;
 import butterfork.ButterFork;
 
@@ -21,6 +23,9 @@ public class PermissionView extends LinearLayout {
     @Bind(B.id.ivPermissionType) protected ImageView ivPermissionType;
     @Bind(B.id.tvPermissionMessage) protected TextView tvPermissionMessage;
     @Bind(B.id.btnTurnOn) protected Button btnTurnOn;
+
+    @Inject
+    protected RAFOptions RAFOptions;
 
     protected OnButtonClickListener listener;
 

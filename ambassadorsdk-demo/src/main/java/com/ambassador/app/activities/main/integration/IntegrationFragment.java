@@ -49,12 +49,14 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
     @Bind(R.id.fabAdd) protected FloatingActionButton fabAdd;
 
     protected IntegrationAdapter integrationAdapter;
-
+    protected AmbassadorSDK AmbassadorSDK;
     protected boolean editing = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AmbassadorSDK AmbassadorSDK = new AmbassadorSDK();
+
         if (savedInstanceState == null) {
             integrationPresenter = new IntegrationPresenter();
         } else {

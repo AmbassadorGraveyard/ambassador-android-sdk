@@ -164,7 +164,7 @@ public class AmbassadorActivityTest {
 
     private void _sendPusherIntent() {
         Intent intent = new Intent("pusherData");
-        LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(AmbSingleton.getInstance().getContext()).sendBroadcast(intent);
     }
 
     @After

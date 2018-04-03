@@ -5,6 +5,8 @@ import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 import com.ambassador.ambassadorsdk.internal.utils.ResponseCode;
 
+import javax.inject.Inject;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -13,6 +15,8 @@ import retrofit.client.Response;
  * Handles Ambassador API bulkshare methods using Retrofit services and contains all relevant pojo classes.
  */
 public final class BulkShareApi {
+    @Inject
+    protected Utilities Utilities;
 
     /** Client for making BulkShare requests to the Ambassador API */
     private BulkShareClient bulkShareClient;

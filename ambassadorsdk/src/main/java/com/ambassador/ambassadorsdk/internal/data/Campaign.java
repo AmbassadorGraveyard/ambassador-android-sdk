@@ -7,11 +7,16 @@ import android.support.annotation.Nullable;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.google.gson.Gson;
 
+import javax.inject.Inject;
+
 /**
  * Stores, serializes and unserializes data pertaining to an Ambassador campaign, and what
  * the SDK needs to present a RAF and provide proper functionality.
  */
 public class Campaign implements Data {
+
+    @Inject
+    protected AmbSingleton AmbSingleton;
 
     // region Fields
     protected String id;
@@ -33,7 +38,7 @@ public class Campaign implements Data {
     public void setId(String id) {
         this.id = id;
         save();
-        AmbSingleton.getContext()
+       AmbSingleton.getInstance().getContext()
                 .getSharedPreferences("campaign", Context.MODE_PRIVATE)
                 .edit()
                 .putString("campaignId", id)
@@ -114,9 +119,9 @@ public class Campaign implements Data {
      */
     @Override
     public void save() {
-        if (AmbSingleton.getContext() != null) {
+        if (AmbSingleton.getInstance().getContext() != null) {
             String data = new Gson().toJson(this);
-            SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("campaign", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("campaign", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString(id, data).apply();
         }
     }
@@ -142,11 +147,11 @@ public class Campaign implements Data {
     @Override
     public void refresh() {
         clear();
-        String campaignId = AmbSingleton.getContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("campaignId", null);
+        String campaignId =AmbSingleton.getInstance().getContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString("campaignId", null);
 
         if (campaignId == null) return;
 
-        String json = AmbSingleton.getContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString(campaignId, null);
+        String json =AmbSingleton.getInstance().getContext().getSharedPreferences("campaign", Context.MODE_PRIVATE).getString(campaignId, null);
 
         if (json == null) return;
 

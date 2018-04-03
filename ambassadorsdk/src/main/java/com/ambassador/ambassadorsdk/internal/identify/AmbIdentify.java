@@ -1,5 +1,8 @@
 package com.ambassador.ambassadorsdk.internal.identify;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -8,6 +11,10 @@ import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
 import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +28,7 @@ public class AmbIdentify {
 
     @Inject protected User user;
     @Inject protected RequestManager requestManager;
+    //protected AmbConversion ambConversion;
     protected PusherManager pusherManager;
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
@@ -28,11 +36,13 @@ public class AmbIdentify {
     protected CompletionListener completionListener;
     protected boolean subscribed;
     protected String memberIdentifyType;
+    protected AmbSingleton AmbSingleton = new AmbSingleton();
 
     public static String identifyType = "";
 
     protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification) {
-        AmbSingleton.inject(this);
+        AmbSingleton.getAmbComponent().inject(this);
+
         this.userId = userId;
         this.ambassadorIdentification = ambassadorIdentification;
         this.identifyTasks = new AmbIdentifyTask[1];
@@ -160,7 +170,16 @@ public class AmbIdentify {
         requestManager.identifyRequest(memberIdentifyType, pusherManager, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-                AmbConversion.attemptExecutePending();
+                //AmbConversion ambConversion = new AmbConversion();
+                //ambConversion.attemptExecutePending();
+                SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
+                String content = sharedPreferences.getString("conversions", "[]");
+                sharedPreferences.edit().putString("conversions", "[]").apply();
+                final JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
+                for (final JsonElement jsonElement : conversions) {
+                    AmbConversion ambConversion = new Gson().fromJson(jsonElement, AmbConversion.class);
+                    ambConversion.execute();
+                }
             }
 
             @Override

@@ -53,7 +53,8 @@ public class AskNameActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_contact_name);
         ButterFork.bind(this);
-        AmbSingleton.inject(this);
+        AmbSingleton AmbSingleton = new AmbSingleton();
+        AmbSingleton.getAmbComponent().inject(this);
 
         setupTheme();
         setupButtons();

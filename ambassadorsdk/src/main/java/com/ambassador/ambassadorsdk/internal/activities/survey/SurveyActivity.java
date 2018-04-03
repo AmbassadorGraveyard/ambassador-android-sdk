@@ -23,6 +23,8 @@ import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.PresenterManager;
 import com.ambassador.ambassadorsdk.internal.views.SurveySliderView;
 
+import javax.inject.Inject;
+
 import butterfork.Bind;
 import butterfork.ButterFork;
 
@@ -39,6 +41,9 @@ public class SurveyActivity extends Activity implements SurveyView {
     @Bind(B.id.surveySliderView) protected SurveySliderView surveySliderView;
     @Bind(B.id.btnSubmit) protected Button btnSubmit;
     @Bind(B.id.pbLoading) protected ProgressBar pbLoading;
+
+    @Inject
+    protected Utilities Utilities;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -52,11 +52,13 @@ public final class SocialShareDialog extends Dialog {
     @Inject protected RequestManager    requestManager;
     @Inject protected Campaign          campaign;
     @Inject protected RAFOptions        raf;
+    @Inject protected Utilities         Utilities;
     // endregion
 
     // region Local members
     protected ShareDialogEventListener  eventListener;
     protected SocialNetwork             socialNetwork;
+    //protected AmbSingleton              AmbSingleton;
     // endregion
 
     public enum SocialNetwork {
@@ -88,7 +90,9 @@ public final class SocialShareDialog extends Dialog {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_social_share);
-        AmbSingleton.inject(this);
+
+        AmbSingleton AmbSingleton = new AmbSingleton();
+        AmbSingleton.getAmbComponent().inject(this);
         ButterFork.bind(this);
 
         setupButtons();

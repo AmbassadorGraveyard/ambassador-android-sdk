@@ -14,10 +14,14 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
+import javax.inject.Inject;
+
 /**
  *
  */
 public class Device { // TODO: Make final after UI tests figured out
+    @Inject
+    protected AmbSingleton AmbSingleton;
 
     protected Configuration         configuration;
     protected ConnectivityManager   connectivityManager;
@@ -26,7 +30,7 @@ public class Device { // TODO: Make final after UI tests figured out
     protected WindowManager         windowManager;
 
     public Device() {
-        this(AmbSingleton.getContext());
+        //this(AmbSingleton.getInstance().getContext());
     }
 
     public Device(Context context) {

@@ -2,28 +2,15 @@ package com.ambassador.ambassadorsdk.internal.injection;
 
 import android.support.annotation.NonNull;
 
-import com.ambassador.ambassadorsdk.AmbassadorSDK;
 import com.ambassador.ambassadorsdk.RAFOptions;
-import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.BulkShareHelper;
-import com.ambassador.ambassadorsdk.internal.InstallReceiver;
-import com.ambassador.ambassadorsdk.internal.activities.ambassador.AmbassadorActivity;
-import com.ambassador.ambassadorsdk.internal.activities.contacts.AskNameActivity;
-import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;
+import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
-import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
-import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
-import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
-import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
-import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
-import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import javax.inject.Singleton;
@@ -31,60 +18,27 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(injects = {
-        AmbassadorActivity.class,
-        SocialShareDialog.class,
-        SocialOAuthActivity.class,
-        ContactSelectorActivity.class,
-        ContactListAdapter.class,
-        BulkShareHelper.class,
-        RequestManager.class,
-        AmbassadorSDK.class,
-        AskNameDialog.class,
-        AskEmailDialog.class,
-        PusherManager.class,
-        PusherManager.Channel.class,
-        InstallReceiver.class,
-        AmbIdentify.class,
-        AmbIdentifyTask.class,
-        AmbAugurTask.class,
-        AmbConversion.class,
-        AskNameActivity.class
-}, staticInjections = {
-        AmbassadorSDK.class
-}, library = true)
+@Module
 public final class AmbModule {
-
-    protected RequestManager requestManager;
-    protected PusherManager pusherManager;
-    protected BulkShareHelper bulkShareHelper;
-
-    public void init() {
-        requestManager = new RequestManager();
-        pusherManager = new PusherManager();
-        bulkShareHelper = new BulkShareHelper();
-
-        AmbSingleton.inject(requestManager);
-        AmbSingleton.inject(pusherManager);
-        AmbSingleton.inject(bulkShareHelper);
-    }
-
     @NonNull
     @Provides
+    @Singleton
     public RequestManager provideRequestManager() {
-        return requestManager;
+        return new RequestManager();
     }
 
     @NonNull
     @Provides
+    @Singleton
     public BulkShareHelper provideBulkShareHelper() {
-        return bulkShareHelper;
+        return new BulkShareHelper();
     }
 
     @NonNull
     @Provides
+    @Singleton
     public PusherManager providePusherManager() {
-        return pusherManager;
+        return new PusherManager();
     }
 
     @NonNull
@@ -119,7 +73,20 @@ public final class AmbModule {
     @Provides
     @Singleton
     public RAFOptions provideRAFOptions() {
-        return RAFOptions.get();
+        return new RAFOptions().get();
     }
 
+    @NonNull
+    @Provides
+    @Singleton
+    public SocialOAuthActivity provideSocialOAuthActivity() {
+        return new SocialOAuthActivity();
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public Utilities provideUtilities() {
+        return new Utilities();
+    }
 }

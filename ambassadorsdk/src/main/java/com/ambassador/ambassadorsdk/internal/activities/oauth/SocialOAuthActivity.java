@@ -67,8 +67,12 @@ public class SocialOAuthActivity extends AppCompatActivity {
     /** The global User object that stores social access tokens. */
     @Inject protected User user;
 
+    @Inject protected Utilities Utilities;
+
     /** The AuthInterface implementation to use when evaluating URLs */
     protected AuthInterface authInterface;
+
+    protected AmbSingleton AmbSingleton = new AmbSingleton();
 
     /**
      * Gets and sets an AuthInterface implementation based on data passed in the intent. Configures
@@ -78,8 +82,9 @@ public class SocialOAuthActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
+
         ButterFork.bind(this);
-        AmbSingleton.inject(this);
+        AmbSingleton.getAmbComponent().inject(this);
 
         String socialNetwork = getIntent().getStringExtra("socialNetwork");
         if (socialNetwork == null) {
@@ -739,12 +744,12 @@ public class SocialOAuthActivity extends AppCompatActivity {
 
     }
 
-    public static void clearCookies() {
+    public void clearCookies() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             CookieManager.getInstance().removeAllCookies(null);
             CookieManager.getInstance().flush();
-        } else if (AmbSingleton.getContext() != null) {
-            CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(AmbSingleton.getContext());
+        } else if (AmbSingleton.getInstance().getContext() != null) {
+            CookieSyncManager cookieSyncManager = CookieSyncManager.createInstance(AmbSingleton.getInstance().getContext());
             cookieSyncManager.startSync();
             CookieManager cookieManager = CookieManager.getInstance();
             cookieManager.removeAllCookie();
@@ -753,5 +758,4 @@ public class SocialOAuthActivity extends AppCompatActivity {
             cookieSyncManager.sync();
         }
     }
-
 }

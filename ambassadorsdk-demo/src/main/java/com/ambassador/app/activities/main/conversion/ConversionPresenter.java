@@ -29,6 +29,12 @@ import retrofit.client.Response;
 
 public class ConversionPresenter extends BasePresenter<ConversionModel, ConversionView> {
 
+    protected AmbassadorSDK AmbassadorSDK;
+
+    protected ConversionPresenter() {
+        AmbassadorSDK = new AmbassadorSDK();
+    }
+
     @Override
     protected void updateView() {
 

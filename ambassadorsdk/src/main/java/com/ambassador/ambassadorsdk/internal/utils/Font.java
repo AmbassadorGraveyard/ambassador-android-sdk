@@ -6,14 +6,18 @@ import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
+import javax.inject.Inject;
+
 /**
  *
  */
 public final class Font {
-
     public enum Defaults {
         FONT_DEFAULT, FONT_LIGHT
     }
+
+    @Inject
+    protected AmbSingleton AmbSingleton;
 
     private Typeface typeface;
 
@@ -31,7 +35,7 @@ public final class Font {
                 break;
 
             default:
-                AssetManager assets = AmbSingleton.getContext().getAssets();
+                AssetManager assets =AmbSingleton.getInstance().getContext().getAssets();
                 try {
                     this.typeface = Typeface.createFromAsset(assets, path);
                 } catch (Exception e) {

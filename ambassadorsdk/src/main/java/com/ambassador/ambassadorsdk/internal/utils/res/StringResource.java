@@ -10,7 +10,6 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
  *
  */
 public final class StringResource {
-
     private String value;
 
     @SuppressWarnings("unused")
@@ -18,7 +17,7 @@ public final class StringResource {
 
     public StringResource(@StringRes int resId) {
         try {
-            this.value = AmbSingleton.getContext().getString(resId);
+            this.value = AmbSingleton.getInstance().getContext().getString(resId);
         } catch (Resources.NotFoundException e) {
             this.value = null;
         }

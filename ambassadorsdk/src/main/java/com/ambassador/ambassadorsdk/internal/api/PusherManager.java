@@ -37,14 +37,12 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Handles everything to do with Pusher, our socket to the backend.
  * Keeps track of a single channel and does the connecting, subscribing, disposing of it all.
  * Handles incoming events and dispatches them on the otto event ambassaBus after processing.
  */
-@Singleton
 public class PusherManager {
 
     protected Channel channel;
@@ -53,12 +51,16 @@ public class PusherManager {
     @Inject protected Auth auth;
     @Inject protected User user;
     @Inject protected RequestManager requestManager;
+    @Inject protected Utilities Utilities;
+
+    protected AmbSingleton AmbSingleton;
 
     /**
      * Default constructor handling injection and dependencies.
      */
     public PusherManager() {
-        AmbSingleton.inject(this);
+        //AmbSingleton AmbSingleton = new AmbSingleton();
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
         pusherListeners = new ArrayList<>();
         addDefaultListeners();
     }
@@ -217,7 +219,7 @@ public class PusherManager {
         user.setIdentifyData(data.toString());
 
         Intent intent = new Intent("pusherData");
-        LocalBroadcastManager.getInstance(AmbSingleton.getContext()).sendBroadcast(intent);
+        LocalBroadcastManager.getInstance(AmbSingleton.getInstance().getContext()).sendBroadcast(intent);
 
         for (PusherListener pusherListener : pusherListeners) {
             pusherListener.onIdentifyComplete();
@@ -257,7 +259,7 @@ public class PusherManager {
          * Not accessible outside of PusherManager.
          */
         protected Channel() {
-            AmbSingleton.inject(this);
+            AmbSingleton.getAmbComponent().inject(this);
             pusherManager = PusherManager.this;
         }
 

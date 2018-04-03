@@ -19,6 +19,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.inject.Inject;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -28,6 +30,9 @@ import retrofit.client.Response;
  */
 public final class IdentifyApi {
     private String referredByCampaignId;
+
+    @Inject
+    protected Utilities Utilities;
 
     /** Client for making Identify requests to the Ambassador API */
     private IdentifyClient identifyClient;
@@ -405,6 +410,7 @@ public final class IdentifyApi {
 
         private String add_to_groups;
         public String identify_type;
+        @Inject protected Utilities Utilities;
 
         public IdentifyRequestBody(String campaign_id, String userId, String augur, AmbassadorIdentification ambassadorIdentification) {
             this.enroll = true;

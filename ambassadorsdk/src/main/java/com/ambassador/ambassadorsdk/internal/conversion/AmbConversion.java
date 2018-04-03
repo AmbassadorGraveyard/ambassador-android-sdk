@@ -11,11 +11,12 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class AmbConversion {
 
     @Inject protected transient Campaign campaign;
@@ -24,15 +25,16 @@ public class AmbConversion {
     protected ConversionParameters conversionParameters;
     protected boolean limitOnce;
     protected transient ConversionStatusListener conversionStatusListener;
+    protected AmbSingleton AmbSingleton = new AmbSingleton();
 
-    protected AmbConversion(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
+    public AmbConversion(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
         this.conversionParameters = conversionParameters;
         this.limitOnce = limitOnce;
         this.conversionStatusListener = conversionStatusListener;
     }
 
     public void execute() {
-        AmbSingleton.inject(this);
+        AmbSingleton.getAmbComponent().inject(this);
 
         // Make sure user instance data is up to date, may have been lost at any point.
         user.refresh();
@@ -76,15 +78,15 @@ public class AmbConversion {
     }
 
     protected void save() {
-        SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
         String content = sharedPreferences.getString("conversions", "[]");
         JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
         conversions.add(new JsonParser().parse(new Gson().toJson(this)).getAsJsonObject());
         sharedPreferences.edit().putString("conversions", conversions.toString()).apply();
     }
 
-    public static void attemptExecutePending() {
-        SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
+/*    public static void attemptExecutePending() {
+        SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
         String content = sharedPreferences.getString("conversions", "[]");
         sharedPreferences.edit().putString("conversions", "[]").apply();
         final JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
@@ -92,10 +94,9 @@ public class AmbConversion {
             AmbConversion ambConversion = new Gson().fromJson(jsonElement, AmbConversion.class);
             ambConversion.execute();
         }
-    }
+    }*/
 
     public static AmbConversion get(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
         return new AmbConversion(conversionParameters, limitOnce, conversionStatusListener);
     }
-
 }

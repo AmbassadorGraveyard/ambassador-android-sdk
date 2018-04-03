@@ -53,7 +53,7 @@ ext.deps = [
         okhttp:         'com.squareup.okhttp:okhttp:2.4.0',
         retrofit:       'com.squareup.retrofit:retrofit:1.9.0',
         gson:           'com.google.code.gson:gson:2.4',
-        dagger:         'com.squareup.dagger:dagger:1.2.2',
+        dagger:         'com.google.dagger:dagger:2.11',
         butterfork:     'com.oguzbabaoglu:butterfork-binder:1.0.0',
         butterknife:    'com.jakewharton:butterknife:7.0.1',
         annotations:    'com.android.support:support-annotations:23.0.1',
@@ -61,7 +61,7 @@ ext.deps = [
 
         // apt
         butterfork_compiler:    'com.oguzbabaoglu:butterfork-compiler:1.0.0',
-        dagger_compiler:        'com.squareup.dagger:dagger-compiler:1.2.2',
+        dagger_compiler:        'com.google.dagger:dagger-compiler:2.11',
 
         // provided
         glassfish_annotation: 'org.glassfish:javax.annotation:10.0-b28',

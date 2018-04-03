@@ -23,6 +23,7 @@ public final class InstallReceiver extends BroadcastReceiver {
     @Inject protected User user;
     @Inject protected Campaign campaign;
     @Inject protected RequestManager requestManager;
+    @Inject protected Utilities Utilities;
     private static final String INTENT_KEY_REFERRER = "referrer";
     private static final String PARAM_REFERRAL_SHORT_CODE = "mbsy_cookie_code";
     private static final String PARAM_WEB_DEVICE_ID = "device_id";
@@ -33,7 +34,8 @@ public final class InstallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        AmbSingleton.inject(this);
+        AmbSingleton AmbSingleton = new AmbSingleton();
+        AmbSingleton.getAmbComponent().inject(this);
 
         Bundle b = intent.getExtras();
         if (b == null) return;
@@ -140,5 +142,4 @@ public final class InstallReceiver extends BroadcastReceiver {
         intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
         context.registerReceiver(this, intentFilter);
     }
-
 }

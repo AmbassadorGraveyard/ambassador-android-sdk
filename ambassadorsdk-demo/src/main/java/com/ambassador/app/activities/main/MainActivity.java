@@ -55,6 +55,7 @@ public final class MainActivity extends AppCompatActivity implements MainView {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        AmbassadorSDK AmbassadorSDK = new AmbassadorSDK();
         AmbassadorSDK.runWithKeys(this, "SDKToken " + User.get().getSdkToken(), User.get().getUniversalId());
 
         adapter = new TabFragmentPagerAdapter(getSupportFragmentManager());

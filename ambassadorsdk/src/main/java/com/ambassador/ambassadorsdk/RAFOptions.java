@@ -10,11 +10,17 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.factories.ResourceFactory;
 import com.google.gson.Gson;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 /**
  * Stores design options set by the 3rd party developer. Used throughout codebase. Can be instantiated
  * directly using RAFOptions.Builder or indirectly with an XML file (see RAFOptionsFactory).
  */
+@Singleton
 public class RAFOptions {
+    @Inject
+    protected AmbSingleton AmbSingleton;
 
     /** The RAFOptions instantiation inflated with options from 3rd party and used throughout code. */
     private static RAFOptions instance;
@@ -77,8 +83,6 @@ public class RAFOptions {
     private String[] channels;
 
     private float socialOptionCornerRadius;
-
-    private RAFOptions() {}
 
     public String getDefaultShareMessage() {
         return defaultShareMessage;
@@ -577,11 +581,10 @@ public class RAFOptions {
      * keyed on the current campaign ID.
      * @param rafOptions the RAFOptions instantiation to store. Don't pass null.
      */
-    public static void set(@NonNull RAFOptions rafOptions) {
-        instance = rafOptions;
+    public void set(@NonNull RAFOptions rafOptions) {
         String campaignId = new Campaign().getId();
         String data = new Gson().toJson(rafOptions);
-        AmbSingleton.getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE).edit().putString(campaignId, data).apply();
+       AmbSingleton.getInstance().getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE).edit().putString(campaignId, data).apply();
     }
 
     /**
@@ -593,18 +596,12 @@ public class RAFOptions {
      * @return a NonNull RAFOptions object.
      */
     @NonNull
-    public static RAFOptions get() {
-        if (instance == null) {
-            String campaignId = new Campaign().getId();
-            SharedPreferences prefs = AmbSingleton.getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE);
-            String data = prefs.getString(campaignId, null);
-            if (data != null) {
-                instance = new Gson().fromJson(data, RAFOptions.class);
-            } else {
-                instance = RAFOptions.Builder.newInstance().build();
-            }
-        }
-        return instance;
-    }
+    public RAFOptions get() {
+        String campaignId = new Campaign().getId();
+        SharedPreferences prefs =AmbSingleton.getInstance().getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE);
+        String data = prefs.getString(campaignId, null);
+        RAFOptions rafOptions = (data!= null) ? new Gson().fromJson(data, RAFOptions.class) : RAFOptions.Builder.newInstance().build();
 
+        return rafOptions;
+    }
 }

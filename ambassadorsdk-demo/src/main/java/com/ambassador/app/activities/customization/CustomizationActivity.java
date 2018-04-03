@@ -54,6 +54,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -88,6 +90,9 @@ public class CustomizationActivity extends AppCompatActivity {
     @Bind(R.id.civTextField1) protected ColorInputView civTextField1;
     @Bind(R.id.civTextField2) protected ColorInputView civTextField2;
     @Bind(R.id.civButtons) protected ColorInputView civButtons;
+
+    @Inject
+    protected Utilities Utilities;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

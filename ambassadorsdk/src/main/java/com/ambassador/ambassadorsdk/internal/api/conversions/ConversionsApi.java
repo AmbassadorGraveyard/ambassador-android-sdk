@@ -6,6 +6,8 @@ import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
 import com.ambassador.ambassadorsdk.internal.utils.ResponseCode;
 
+import javax.inject.Inject;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -14,6 +16,8 @@ import retrofit.client.Response;
  * Handles Ambassador API conversion methods using Retrofit services and contains all relevant pojo classes.
  */
 public final class ConversionsApi {
+    @Inject
+    protected Utilities Utilities;
 
     /** Client for making Conversions requests to the Ambassador API */
     private ConversionsClient conversionsClient;

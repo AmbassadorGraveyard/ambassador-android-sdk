@@ -90,6 +90,8 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Inject protected Campaign              campaign;
     @Inject protected PusherManager         pusherManager;
     @Inject protected Device                device;
+    @Inject protected RAFOptions            RAFOptions;
+    @Inject protected Utilities             Utilities;
 
     protected RAFOptions            raf;
     protected ProgressDialog        progressDialog;
@@ -101,15 +103,18 @@ public final class AmbassadorActivity extends AppCompatActivity {
     protected EmailManager          emailManager;
     protected SmsManager            smsManager;
     protected boolean retried;
+    protected AmbassadorSDK         AmbassadorSDK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
 
+        AmbassadorSDK = new AmbassadorSDK();
+
         // Injection
-        AmbSingleton.init(this);
-        AmbSingleton.inject(this);
+        //AmbSingleton AmbSingleton = new AmbSingleton();
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
 
@@ -181,9 +186,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     protected void finishIfSingletonInvalid() {
-        if (!AmbSingleton.isValid()) {
+        //if (!AmbSingleton.isValid()) {
             finish();
-        }
+        //}
     }
 
     protected void setUpData() {
