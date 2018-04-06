@@ -10,7 +10,7 @@ import com.ambassador.ambassadorsdk.internal.injection.DaggerAmbComponent;
 public final class AmbSingleton {
     protected Context context;
     protected AmbComponent component;
-    private static AmbSingleton instance;// = new AmbSingleton();
+    private static AmbSingleton instance;
 
     public static AmbSingleton getInstance() {
         if (instance == null) {
@@ -20,21 +20,22 @@ public final class AmbSingleton {
         return instance;
     }
 
+    public void buildDaggerComponent() {
+        this.component = DaggerAmbComponent.builder()
+            .ambModule(new AmbModule())
+            .build();
+    }
+
     /**
-     * Initializes the singleton using a context.  After this call the Singleton should be valid.
-     * Context is stored as an application context.  Module and component are initialized and set.
+     * Context is stored as an application context.
      * @param context the context to store and utilize throughout the codebase.
      */
-    public void init(@NonNull Context context) {
+    public void setContext(@NonNull Context context) {
         this.context = context.getApplicationContext();
 
         if (this.context == null) {
             this.context = context;
         }
-
-        this.component = DaggerAmbComponent.builder()
-            .ambModule(new AmbModule())
-            .build();
     }
 
     /**
@@ -60,29 +61,11 @@ public final class AmbSingleton {
     }
 
     /**
-     * Injects dependencies onto a passed in object using the ObjectGraph created during
-     * initialization.
-     * @param object the object in which to inject dependencies
-     */
-//    public void inject(Object object) {
-////        if (graph == null) {
-////            AmbSingleton.init(AmbSingleton.getInstance().getContext());
-////            if (graph == null) {
-////                graph = ObjectGraph.create(AmbSingleton.module);
-////            }
-////        }
-////
-////        graph.inject(object);
-//
-//        getAmbComponent().inject(object);
-//    }
-
-    /**
      * Singleton is valid if all fields are not null.  If any given field is null and the singleton
      * is used, unexpected behaviour will occur.
      * @return a boolean telling whether or not all fields are not null.
      */
     public boolean isValid() {
-        return true;//this.context != null && this.module != null && this.component != null;
+        return this.context != null && this.component != null;
     }
 }

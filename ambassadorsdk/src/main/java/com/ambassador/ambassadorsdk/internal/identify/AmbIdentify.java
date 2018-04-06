@@ -28,6 +28,7 @@ public class AmbIdentify {
 
     @Inject protected User user;
     @Inject protected RequestManager requestManager;
+
     //protected AmbConversion ambConversion;
     protected PusherManager pusherManager;
     protected String userId;
@@ -36,12 +37,11 @@ public class AmbIdentify {
     protected CompletionListener completionListener;
     protected boolean subscribed;
     protected String memberIdentifyType;
-    protected AmbSingleton AmbSingleton = new AmbSingleton();
 
     public static String identifyType = "";
 
     protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification) {
-        AmbSingleton.getAmbComponent().inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
 
         this.userId = userId;
         this.ambassadorIdentification = ambassadorIdentification;

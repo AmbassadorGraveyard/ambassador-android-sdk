@@ -32,7 +32,7 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
     protected AmbassadorSDK AmbassadorSDK;
 
     protected ConversionPresenter() {
-        AmbassadorSDK = new AmbassadorSDK();
+        AmbassadorSDK = new AmbassadorSDK(null);
     }
 
     @Override

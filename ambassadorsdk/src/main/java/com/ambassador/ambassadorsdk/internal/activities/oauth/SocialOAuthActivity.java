@@ -72,8 +72,6 @@ public class SocialOAuthActivity extends AppCompatActivity {
     /** The AuthInterface implementation to use when evaluating URLs */
     protected AuthInterface authInterface;
 
-    protected AmbSingleton AmbSingleton = new AmbSingleton();
-
     /**
      * Gets and sets an AuthInterface implementation based on data passed in the intent. Configures
      * a WebView and loads the login url on the WebView. The AuthInterface will then handle everything.
@@ -84,7 +82,7 @@ public class SocialOAuthActivity extends AppCompatActivity {
         setContentView(R.layout.activity_webview);
 
         ButterFork.bind(this);
-        AmbSingleton.getAmbComponent().inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
 
         String socialNetwork = getIntent().getStringExtra("socialNetwork");
         if (socialNetwork == null) {

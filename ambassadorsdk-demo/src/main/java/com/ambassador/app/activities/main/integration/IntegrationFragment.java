@@ -55,7 +55,7 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AmbassadorSDK AmbassadorSDK = new AmbassadorSDK();
+        AmbassadorSDK = new AmbassadorSDK(getActivity());
 
         if (savedInstanceState == null) {
             integrationPresenter = new IntegrationPresenter();

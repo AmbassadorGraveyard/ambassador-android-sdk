@@ -14,9 +14,6 @@ public final class Demo extends Application {
         super.onCreate();
         Demo.instance = this;
         prefs = getSharedPreferences("amb_demo", Context.MODE_PRIVATE);
-
-        //AmbSingleton ambSingleton = new AmbSingleton();
-        //ambSingleton.init(this);
     }
 
     public void setEmail(String email) {

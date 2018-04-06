@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
@@ -37,9 +38,7 @@ import net.kencochrane.raven.DefaultRavenFactory;
 import java.io.InputStream;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
-@Singleton
 public final class AmbassadorSDK {
 
     @Inject protected Auth auth;
@@ -52,22 +51,26 @@ public final class AmbassadorSDK {
 
     protected AmbSingleton AmbSingleton;
 
+    public AmbassadorSDK(@Nullable Context context) {
+        if (context != null) {
+            AmbSingleton.getInstance().setContext(context);
+        }
+
+        AmbSingleton.getInstance().buildDaggerComponent();
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
+    }
+
     /**
      *
-     * @param context
      * @param sdkToken
      * @param universalId
      */
-    public void runWithKeys(Context context, String sdkToken, String universalId) {
-        //AmbSingleton AmbSingleton = new AmbSingleton();
-        AmbSingleton.getInstance().init(context);
-        AmbSingleton.getInstance().getAmbComponent().inject(this);
-
+    public void runWithKeys(String sdkToken, String universalId) {
         auth.clear();
         auth.setSdkToken(sdkToken);
         auth.setUniversalId(universalId);
 
-        new InstallReceiver().registerWith(context);
+        new InstallReceiver().registerWith(AmbSingleton.getInstance().getContext());
 
         final Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -93,7 +96,7 @@ public final class AmbassadorSDK {
 
 //        AmbConversion ambConversion = new AmbConversion();
 //        ambConversion.attemptExecutePending();
-        SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
         String content = sharedPreferences.getString("conversions", "[]");
         sharedPreferences.edit().putString("conversions", "[]").apply();
         final JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();

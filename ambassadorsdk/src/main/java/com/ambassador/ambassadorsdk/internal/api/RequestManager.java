@@ -56,7 +56,6 @@ public class RequestManager {
      * @param doInit whether or not to initialize Api objects.
      */
     public RequestManager(boolean doInit) {
-        //AmbSingleton AmbSingleton = new AmbSingleton();
         AmbSingleton.getInstance().getAmbComponent().inject(this);
         bulkShareApi = new BulkShareApi(false);
         conversionsApi = new ConversionsApi(false);

@@ -25,7 +25,6 @@ public class AmbConversion {
     protected ConversionParameters conversionParameters;
     protected boolean limitOnce;
     protected transient ConversionStatusListener conversionStatusListener;
-    protected AmbSingleton AmbSingleton = new AmbSingleton();
 
     public AmbConversion(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
         this.conversionParameters = conversionParameters;
@@ -34,7 +33,7 @@ public class AmbConversion {
     }
 
     public void execute() {
-        AmbSingleton.getAmbComponent().inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
 
         // Make sure user instance data is up to date, may have been lost at any point.
         user.refresh();

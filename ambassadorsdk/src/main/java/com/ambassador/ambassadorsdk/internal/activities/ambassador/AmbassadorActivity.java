@@ -110,15 +110,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
 
-        AmbassadorSDK = new AmbassadorSDK();
+        AmbassadorSDK = new AmbassadorSDK(this);
 
-        // Injection
-        //AmbSingleton AmbSingleton = new AmbSingleton();
         AmbSingleton.getInstance().getAmbComponent().inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
 
-        // Requirement checks
         finishIfSingletonInvalid();
         if (isFinishing()) return;
 
@@ -186,9 +183,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     protected void finishIfSingletonInvalid() {
-        //if (!AmbSingleton.isValid()) {
+        if (!AmbSingleton.getInstance().isValid()) {
             finish();
-        //}
+        }
     }
 
     protected void setUpData() {

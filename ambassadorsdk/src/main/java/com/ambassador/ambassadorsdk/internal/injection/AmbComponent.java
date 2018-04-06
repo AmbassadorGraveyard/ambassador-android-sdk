@@ -9,8 +9,10 @@ import com.ambassador.ambassadorsdk.internal.activities.contacts.AskNameActivity
 import com.ambassador.ambassadorsdk.internal.activities.contacts.ContactSelectorActivity;
 import com.ambassador.ambassadorsdk.internal.activities.oauth.SocialOAuthActivity;
 import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
+import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
@@ -45,4 +47,7 @@ public interface AmbComponent {
     void inject(AmbAugurTask ambAugurTask);
     void inject(AskNameActivity askNameActivity);
     void inject(AmbConversion ambConversion);
+    void inject(SocialGridAdapter socialGridAdapter);
+    void inject(IdentifyApi identifyApi);
+    void inject(IdentifyApi.IdentifyRequestBody identifyRequestBody);
 }

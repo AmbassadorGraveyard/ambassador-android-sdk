@@ -113,14 +113,13 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     protected AskNameDialog             askNameDialog;
     protected ProgressDialog            progressDialog;
     protected float                     lastSendHeight;
-    protected AmbSingleton AmbSingleton = new AmbSingleton();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
-        AmbSingleton.getAmbComponent().inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
         ButterFork.bind(this);
 
         // Requirement checks
@@ -206,9 +205,9 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     }
 
     private void finishIfSingletonInvalid() {
-        //if (!AmbSingleton.isValid()) {
+        if (!AmbSingleton.getInstance().isValid()) {
             finish();
-        //}
+        }
     }
 
     private void processIntent() {

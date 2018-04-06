@@ -34,8 +34,7 @@ public final class InstallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        AmbSingleton AmbSingleton = new AmbSingleton();
-        AmbSingleton.getAmbComponent().inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
 
         Bundle b = intent.getExtras();
         if (b == null) return;

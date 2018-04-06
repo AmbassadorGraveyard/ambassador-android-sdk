@@ -91,8 +91,7 @@ public final class SocialShareDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_social_share);
 
-        AmbSingleton AmbSingleton = new AmbSingleton();
-        AmbSingleton.getAmbComponent().inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
         ButterFork.bind(this);
 
         setupButtons();

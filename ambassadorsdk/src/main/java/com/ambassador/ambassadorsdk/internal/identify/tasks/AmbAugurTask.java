@@ -21,9 +21,6 @@ public class AmbAugurTask extends AmbIdentifyTask {
     @Inject
     protected Utilities Utilities;
 
-    protected AmbSingleton AmbSingleton = new AmbSingleton();
-
-
     @Override
     public void execute(final OnCompleteListener onCompleteListener) throws Exception {
         String fingerprint = getSavedFingerprint();
@@ -34,7 +31,7 @@ public class AmbAugurTask extends AmbIdentifyTask {
         }
 
         JSONObject augurConfig = new JSONObject();
-        augurConfig.put("context",AmbSingleton.getInstance().getContext());
+        augurConfig.put("context", AmbSingleton.getInstance().getContext());
         augurConfig.put("apiKey", Secrets.getAugurKey());
         augurConfig.put("maxRetries", 5);
 

@@ -19,7 +19,7 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
     protected AmbassadorSDK AmbassadorSDK;
 
     protected IdentifyPresenter() {
-        AmbassadorSDK = new AmbassadorSDK();
+        AmbassadorSDK = new AmbassadorSDK(null);
     }
 
     @Override

@@ -59,7 +59,6 @@ public class PusherManager {
      * Default constructor handling injection and dependencies.
      */
     public PusherManager() {
-        //AmbSingleton AmbSingleton = new AmbSingleton();
         AmbSingleton.getInstance().getAmbComponent().inject(this);
         pusherListeners = new ArrayList<>();
         addDefaultListeners();
@@ -259,7 +258,7 @@ public class PusherManager {
          * Not accessible outside of PusherManager.
          */
         protected Channel() {
-            AmbSingleton.getAmbComponent().inject(this);
+            AmbSingleton.getInstance().getAmbComponent().inject(this);
             pusherManager = PusherManager.this;
         }
 

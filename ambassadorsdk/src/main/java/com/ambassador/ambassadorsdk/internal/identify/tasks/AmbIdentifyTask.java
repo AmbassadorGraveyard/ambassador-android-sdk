@@ -11,8 +11,7 @@ public abstract class AmbIdentifyTask {
     @Inject protected Device device;
 
     public AmbIdentifyTask() {
-        AmbSingleton AmbSingleton = new AmbSingleton();
-        AmbSingleton.getAmbComponent().inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
     }
 
     public abstract void execute(OnCompleteListener onCompleteListener) throws Exception;

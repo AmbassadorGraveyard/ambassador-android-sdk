@@ -2,6 +2,7 @@ package com.ambassador.ambassadorsdk.internal.api.identify;
 
 import android.util.Log;
 
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
@@ -51,6 +52,8 @@ public final class IdentifyApi {
      * @param doInit whether or not to automatically initialize client.
      */
     public IdentifyApi(boolean doInit) {
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
+
         if (doInit) {
             init();
         }
@@ -413,6 +416,8 @@ public final class IdentifyApi {
         @Inject protected Utilities Utilities;
 
         public IdentifyRequestBody(String campaign_id, String userId, String augur, AmbassadorIdentification ambassadorIdentification) {
+            AmbSingleton.getInstance().getAmbComponent().inject(this);
+
             this.enroll = true;
             this.campaign_id = campaign_id;
             this.source = "android_sdk_pilot";
