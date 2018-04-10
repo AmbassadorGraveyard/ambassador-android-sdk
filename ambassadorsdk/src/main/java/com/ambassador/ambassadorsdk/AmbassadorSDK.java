@@ -41,7 +41,6 @@ import javax.inject.Inject;
 
 public final class AmbassadorSDK {
 
-    @Inject protected Auth auth;
     @Inject protected User user;
     @Inject protected Campaign campaign;
     @Inject protected PusherManager pusherManager;
@@ -50,6 +49,19 @@ public final class AmbassadorSDK {
     @Inject protected RAFOptions RAFOptions;
 
     protected AmbSingleton AmbSingleton;
+    private static AmbassadorSDK instance;
+
+    public static AmbassadorSDK getInstance() {
+        return getInstance(null);
+    }
+
+    public static AmbassadorSDK getInstance(@Nullable Context context) {
+        if (instance == null) {
+            instance = new AmbassadorSDK(context);
+        }
+
+        return instance;
+    }
 
     public AmbassadorSDK(@Nullable Context context) {
         if (context != null) {
@@ -66,6 +78,7 @@ public final class AmbassadorSDK {
      * @param universalId
      */
     public void runWithKeys(String sdkToken, String universalId) {
+        Auth auth = AmbSingleton.getInstance().getAmbComponent().provideAuth();
         auth.clear();
         auth.setSdkToken(sdkToken);
         auth.setUniversalId(universalId);

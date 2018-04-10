@@ -25,11 +25,11 @@ import javax.inject.Inject;
  */
 public class RequestManager {
 
-    @Inject protected Auth auth;
     @Inject protected User user;
     @Inject protected Campaign campaign;
     @Inject protected BulkShareHelper bulkShareHelper;
 
+    protected Auth auth;// = AmbSingleton.getInstance().getAmbComponent().provideAuth();
     protected BulkShareApi bulkShareApi;
     protected ConversionsApi conversionsApi;
     protected IdentifyApi identifyApi;
@@ -47,15 +47,17 @@ public class RequestManager {
      * Default constructor.
      * Instantiates the RequestManager and automatically initializes the APIs.
      */
-    public RequestManager() {
-        this(true);
+    public RequestManager(Auth auth) {
+        this(true, auth);
     }
 
     /**
      * Constructor with parameter for optionally initializing APIs.
      * @param doInit whether or not to initialize Api objects.
      */
-    public RequestManager(boolean doInit) {
+    @Inject
+    public RequestManager(boolean doInit, Auth auth) {
+        this.auth = auth;
         AmbSingleton.getInstance().getAmbComponent().inject(this);
         bulkShareApi = new BulkShareApi(false);
         conversionsApi = new ConversionsApi(false);

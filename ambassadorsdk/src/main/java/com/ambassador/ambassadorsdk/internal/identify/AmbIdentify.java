@@ -40,6 +40,7 @@ public class AmbIdentify {
 
     public static String identifyType = "";
 
+    @Inject
     protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification) {
         AmbSingleton.getInstance().getAmbComponent().inject(this);
 
@@ -49,8 +50,6 @@ public class AmbIdentify {
         this.identifyTasks[0] = new AmbAugurTask();
         this.memberIdentifyType = identifyType;
         identifyType = "";
-
-        this.pusherManager = new PusherManager();
     }
 
     public void execute() {

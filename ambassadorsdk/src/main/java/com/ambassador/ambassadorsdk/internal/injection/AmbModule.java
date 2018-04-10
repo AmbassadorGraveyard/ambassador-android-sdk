@@ -1,5 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.injection;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.ambassador.ambassadorsdk.RAFOptions;
@@ -11,6 +13,7 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.utils.Device;
 
 import javax.inject.Singleton;
@@ -23,8 +26,15 @@ public final class AmbModule {
     @NonNull
     @Provides
     @Singleton
-    public RequestManager provideRequestManager() {
-        return new RequestManager();
+    public RequestManager provideRequestManager(Auth auth) {
+        return new RequestManager(auth);
+    }
+
+    @NonNull
+    @Provides
+    @Singleton
+    public AskNameDialog provideAskNameDialog(Context context, ProgressDialog pd, RequestManager requestManager, PusherManager pusherManager) {
+        return new AskNameDialog(context, pd, requestManager, pusherManager);
     }
 
     @NonNull
@@ -37,8 +47,8 @@ public final class AmbModule {
     @NonNull
     @Provides
     @Singleton
-    public PusherManager providePusherManager() {
-        return new PusherManager();
+    public PusherManager providePusherManager(Auth auth) {
+        return new PusherManager(auth);
     }
 
     @NonNull

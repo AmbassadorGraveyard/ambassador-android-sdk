@@ -14,6 +14,7 @@ import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
+import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
@@ -50,4 +51,5 @@ public interface AmbComponent {
     void inject(SocialGridAdapter socialGridAdapter);
     void inject(IdentifyApi identifyApi);
     void inject(IdentifyApi.IdentifyRequestBody identifyRequestBody);
+    Auth provideAuth();
 }

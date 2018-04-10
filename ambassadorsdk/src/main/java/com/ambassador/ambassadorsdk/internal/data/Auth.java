@@ -7,17 +7,15 @@ import android.support.annotation.Nullable;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.google.gson.Gson;
 
-import javax.inject.Inject;
+import javax.inject.Singleton;
 
 
 /**
  * Stores, serializes and unserializes data pertaining to a Ambassador authentication
  * data, including social API tokens and Ambassador API tokens.
  */
+@Singleton
 public class Auth implements Data {
-    @Inject
-    protected AmbSingleton AmbSingleton;
-
     // region Fields
     protected String universalId;
     protected String sdkToken;
@@ -109,9 +107,4 @@ public class Auth implements Data {
         setEnvoySecret(auth.getEnvoySecret());
     }
     // endregion
-
-    // region Nullify methods
-
-    // endregion
-
 }

@@ -47,8 +47,8 @@ public class PusherManager {
 
     protected Channel channel;
     protected List<PusherListener> pusherListeners;
+    protected Auth auth;
 
-    @Inject protected Auth auth;
     @Inject protected User user;
     @Inject protected RequestManager requestManager;
     @Inject protected Utilities Utilities;
@@ -58,7 +58,9 @@ public class PusherManager {
     /**
      * Default constructor handling injection and dependencies.
      */
-    public PusherManager() {
+    @Inject
+    public PusherManager(Auth auth) {
+        this.auth = auth;
         AmbSingleton.getInstance().getAmbComponent().inject(this);
         pusherListeners = new ArrayList<>();
         addDefaultListeners();
@@ -258,7 +260,6 @@ public class PusherManager {
          * Not accessible outside of PusherManager.
          */
         protected Channel() {
-            AmbSingleton.getInstance().getAmbComponent().inject(this);
             pusherManager = PusherManager.this;
         }
 
