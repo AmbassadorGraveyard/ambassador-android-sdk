@@ -37,8 +37,6 @@ import butterfork.ButterFork;
  * Dialog to handle sharing to Twitter or LinkedIn.
  */
 public final class SocialShareDialog extends Dialog {
-
-    // region Views
     @Bind(B.id.tvHeaderText)    protected TextView          tvHeaderText;
     @Bind(B.id.ivHeaderImg)     protected ImageView         ivHeaderImg;
     @Bind(B.id.tvSend)          protected TextView          tvSend;
@@ -46,20 +44,14 @@ public final class SocialShareDialog extends Dialog {
     @Bind(B.id.btnSend)         protected Button            btnSend;
     @Bind(B.id.btnCancel)       protected Button            btnCancel;
     @Bind(B.id.pbLoading)       protected ProgressBar       pbLoading;
-    // endregion
 
-    // region Dependencies
     @Inject protected RequestManager    requestManager;
     @Inject protected Campaign          campaign;
     @Inject protected RAFOptions        raf;
     @Inject protected Utilities         Utilities;
-    // endregion
 
-    // region Local members
     protected ShareDialogEventListener  eventListener;
     protected SocialNetwork             socialNetwork;
-    //protected AmbSingleton              AmbSingleton;
-    // endregion
 
     public enum SocialNetwork {
         FACEBOOK("facebook"),

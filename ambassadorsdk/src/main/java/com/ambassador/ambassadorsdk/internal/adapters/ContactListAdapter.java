@@ -42,14 +42,12 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     @Inject protected Device device;
     @Inject protected RAFOptions RAFOptions;
     @Inject protected Utilities Utilities;
+    @Inject protected RAFOptions raf;
 
-    private RAFOptions raf = RAFOptions.get();
     private Context context;
-
     private List<Contact> contacts;
     private List<Contact> filteredContacts;
     private List<Contact> selectedContacts;
-
     private boolean shouldShowPhoneNumbers;
     private float maxNameWidth;
     private Bitmap noPicBmp;
@@ -59,6 +57,8 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     private OnSelectedContactsChangedListener onSelectedContactsChangedListener;
 
     public ContactListAdapter(Context context, List<Contact> contacts, boolean shouldShowPhoneNumbers) {
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
+
         this.context = context;
         this.contacts = contacts;
         this.selectedContacts = new ArrayList<>();
@@ -67,8 +67,6 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         this.noPicBmp = generateNoPicBitmap(context);
         this.checkmarkXPos = Utilities.getPixelSizeForDimension(R.dimen.contact_select_checkmark_x);
         this.checkmarkSize = Utilities.getPixelSizeForDimension(R.dimen.checkmark_size);
-
-        AmbSingleton.getInstance().getAmbComponent().inject(this);
     }
 
     @Override
@@ -200,7 +198,7 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
         Canvas canvas = new Canvas(tmp);
 
         Paint paint = new Paint();
-        paint.setColor(raf.getContactNoPhotoAvailableBackgroundColor());
+        paint.setColor(raf.get().getContactNoPhotoAvailableBackgroundColor());
         paint.setStyle(Paint.Style.FILL);
         canvas.drawPaint(paint);
 
@@ -260,20 +258,22 @@ public final class ContactListAdapter extends RecyclerView.Adapter<ContactListAd
     }
 
     public final class ContactViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-
-        private RAFOptions raf = RAFOptions.get();
-
         @Bind(B.id.tvName)              protected TextView      tvName;
         @Bind(B.id.tvDots)              protected TextView      tvDots;
         @Bind(B.id.tvNumberOrEmail)     protected TextView      tvNumberOrEmail;
         @Bind(B.id.ivCheckMark)         protected ImageView     ivCheckMark;
         @Bind(B.id.ivPic)               protected ImageView     ivPic;
 
+        @Inject protected RAFOptions raf;
+
         protected OnContactClickListener listener;
 
         private ContactViewHolder(View itemView, @Nullable OnContactClickListener listener) {
             super(itemView);
             ButterFork.bind(this, itemView);
+            AmbSingleton.getInstance().getAmbComponent().inject(this);
+
+            raf = raf.get();
 
             tvName.setTextSize(raf.getContactsListNameSize());
             tvName.setTypeface(raf.getContactsListNameFont());

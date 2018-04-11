@@ -23,13 +23,10 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class AmbIdentify {
-
-    protected static AmbIdentify runningInstance;
-
     @Inject protected User user;
     @Inject protected RequestManager requestManager;
 
-    //protected AmbConversion ambConversion;
+    protected static AmbIdentify runningInstance;
     protected PusherManager pusherManager;
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
@@ -37,7 +34,6 @@ public class AmbIdentify {
     protected CompletionListener completionListener;
     protected boolean subscribed;
     protected String memberIdentifyType;
-
     public static String identifyType = "";
 
     @Inject
@@ -169,8 +165,6 @@ public class AmbIdentify {
         requestManager.identifyRequest(memberIdentifyType, pusherManager, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-                //AmbConversion ambConversion = new AmbConversion();
-                //ambConversion.attemptExecutePending();
                 SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
                 String content = sharedPreferences.getString("conversions", "[]");
                 sharedPreferences.edit().putString("conversions", "[]").apply();

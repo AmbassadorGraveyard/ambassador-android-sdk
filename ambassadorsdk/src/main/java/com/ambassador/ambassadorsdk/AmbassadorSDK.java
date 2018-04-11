@@ -40,7 +40,6 @@ import java.io.InputStream;
 import javax.inject.Inject;
 
 public final class AmbassadorSDK {
-
     @Inject protected User user;
     @Inject protected Campaign campaign;
     @Inject protected PusherManager pusherManager;
@@ -107,8 +106,6 @@ public final class AmbassadorSDK {
             }
         });
 
-//        AmbConversion ambConversion = new AmbConversion();
-//        ambConversion.attemptExecutePending();
         SharedPreferences sharedPreferences = AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
         String content = sharedPreferences.getString("conversions", "[]");
         sharedPreferences.edit().putString("conversions", "[]").apply();

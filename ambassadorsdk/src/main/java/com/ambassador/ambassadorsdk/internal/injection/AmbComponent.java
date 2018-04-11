@@ -12,15 +12,18 @@ import com.ambassador.ambassadorsdk.internal.adapters.ContactListAdapter;
 import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
+import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
+import com.ambassador.ambassadorsdk.internal.dialogs.ContactInfoDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
 import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
+import com.ambassador.ambassadorsdk.internal.views.PermissionView;
 
 import javax.inject.Singleton;
 
@@ -34,6 +37,7 @@ public interface AmbComponent {
     void inject(SocialOAuthActivity socialOAuthActivity);
     void inject(ContactSelectorActivity contactSelectorActivity);
     void inject(ContactListAdapter contactListAdapter);
+    void inject(ContactListAdapter.ContactViewHolder contactViewHolder);
     void inject(BulkShareHelper bulkShareHelper);
     void inject(RequestManager requestManager);
     void inject(AmbassadorSDK ambassadorSDK);
@@ -51,5 +55,8 @@ public interface AmbComponent {
     void inject(SocialGridAdapter socialGridAdapter);
     void inject(IdentifyApi identifyApi);
     void inject(IdentifyApi.IdentifyRequestBody identifyRequestBody);
+    void inject(PermissionView permissionView);
+    void inject(ContactInfoDialog contactInfoDialog);
+    void inject(BulkShareApi bulkShareApi);
     Auth provideAuth();
 }

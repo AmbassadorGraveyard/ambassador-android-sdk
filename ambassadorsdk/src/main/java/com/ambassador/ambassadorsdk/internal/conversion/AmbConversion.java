@@ -11,6 +11,7 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import javax.inject.Inject;
@@ -18,10 +19,10 @@ import javax.inject.Singleton;
 
 @Singleton
 public class AmbConversion {
-
     @Inject protected transient Campaign campaign;
     @Inject protected transient User user;
     @Inject protected transient RequestManager requestManager;
+
     protected ConversionParameters conversionParameters;
     protected boolean limitOnce;
     protected transient ConversionStatusListener conversionStatusListener;
@@ -77,23 +78,16 @@ public class AmbConversion {
     }
 
     protected void save() {
-        SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
         String content = sharedPreferences.getString("conversions", "[]");
         JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
         conversions.add(new JsonParser().parse(new Gson().toJson(this)).getAsJsonObject());
         sharedPreferences.edit().putString("conversions", conversions.toString()).apply();
     }
 
-/*    public static void attemptExecutePending() {
-        SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
-        String content = sharedPreferences.getString("conversions", "[]");
-        sharedPreferences.edit().putString("conversions", "[]").apply();
-        final JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
-        for (final JsonElement jsonElement : conversions) {
-            AmbConversion ambConversion = new Gson().fromJson(jsonElement, AmbConversion.class);
-            ambConversion.execute();
-        }
-    }*/
+   public void attemptExecutePending() {
+
+    }
 
     public static AmbConversion get(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
         return new AmbConversion(conversionParameters, limitOnce, conversionStatusListener);

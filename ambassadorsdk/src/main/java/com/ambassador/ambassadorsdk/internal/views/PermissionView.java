@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.ambassador.ambassadorsdk.B;
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 import javax.inject.Inject;
 
@@ -24,8 +25,7 @@ public class PermissionView extends LinearLayout {
     @Bind(B.id.tvPermissionMessage) protected TextView tvPermissionMessage;
     @Bind(B.id.btnTurnOn) protected Button btnTurnOn;
 
-    @Inject
-    protected RAFOptions RAFOptions;
+    @Inject protected RAFOptions raf;
 
     protected OnButtonClickListener listener;
 
@@ -45,9 +45,10 @@ public class PermissionView extends LinearLayout {
     }
 
     protected void init() {
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
         inflate(getContext(), R.layout.view_permission_needed_layout, this);
         ButterFork.bind(this);
-        ivPermissionType.setColorFilter(RAFOptions.get().getContactsToolbarColor(), PorterDuff.Mode.SRC_IN);
+        ivPermissionType.setColorFilter(raf.get().getContactsToolbarColor(), PorterDuff.Mode.SRC_IN);
         btnTurnOn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

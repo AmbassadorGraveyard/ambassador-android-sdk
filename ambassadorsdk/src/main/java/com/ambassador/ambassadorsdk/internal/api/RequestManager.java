@@ -29,7 +29,7 @@ public class RequestManager {
     @Inject protected Campaign campaign;
     @Inject protected BulkShareHelper bulkShareHelper;
 
-    protected Auth auth;// = AmbSingleton.getInstance().getAmbComponent().provideAuth();
+    protected Auth auth;
     protected BulkShareApi bulkShareApi;
     protected ConversionsApi conversionsApi;
     protected IdentifyApi identifyApi;
