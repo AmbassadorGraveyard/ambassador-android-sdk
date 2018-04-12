@@ -11,7 +11,6 @@ import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import javax.inject.Inject;
@@ -83,10 +82,6 @@ public class AmbConversion {
         JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
         conversions.add(new JsonParser().parse(new Gson().toJson(this)).getAsJsonObject());
         sharedPreferences.edit().putString("conversions", conversions.toString()).apply();
-    }
-
-   public void attemptExecutePending() {
-
     }
 
     public static AmbConversion get(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
