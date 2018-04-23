@@ -25,9 +25,9 @@ import javax.inject.Inject;
 public class AmbIdentify {
     @Inject protected User user;
     @Inject protected RequestManager requestManager;
+    @Inject protected PusherManager pusherManager;
 
     protected static AmbIdentify runningInstance;
-    protected PusherManager pusherManager;
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
     protected AmbIdentifyTask[] identifyTasks;

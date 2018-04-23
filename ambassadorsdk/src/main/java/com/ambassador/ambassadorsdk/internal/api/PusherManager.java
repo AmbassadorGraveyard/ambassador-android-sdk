@@ -215,8 +215,8 @@ public class PusherManager {
         pusherSave.add("urls", pusherObject.get("urls").getAsJsonArray());
 
         user.setPusherInfo(pusherSave);
-        user.getAmbassadorIdentification().setFirstName(pusherObject.get("first_name").getAsString());
-        user.getAmbassadorIdentification().setLastName(pusherObject.get("last_name").getAsString());
+        user.getAmbassadorIdentification().setFirstName(pusherObject.get("first_name").toString());
+        user.getAmbassadorIdentification().setLastName(pusherObject.get("last_name").toString());
         user.setIdentifyData(data.toString());
 
         Intent intent = new Intent("pusherData");
