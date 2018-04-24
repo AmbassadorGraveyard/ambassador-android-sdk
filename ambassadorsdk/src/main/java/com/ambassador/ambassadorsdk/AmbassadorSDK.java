@@ -79,7 +79,7 @@ public final class AmbassadorSDK {
     public void runWithKeys(String sdkToken, String universalId) {
         Auth auth = AmbSingleton.getInstance().getAmbComponent().provideAuth();
         auth.clear();
-        auth.setSdkToken("SDKToken " + sdkToken);
+        auth.setSdkToken(sdkToken);
         auth.setUniversalId(universalId);
 
         new InstallReceiver().registerWith(AmbSingleton.getInstance().getContext());
