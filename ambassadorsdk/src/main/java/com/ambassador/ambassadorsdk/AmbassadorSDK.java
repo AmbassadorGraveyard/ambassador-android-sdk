@@ -195,7 +195,8 @@ public final class AmbassadorSDK {
      * @param conversionStatusListener callback interface that will return status of the conversion request.
      */
     public void registerConversion(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
-        new AmbConversion(conversionParameters, limitOnce, conversionStatusListener);
+        AmbConversion ambConversion = new AmbConversion(conversionParameters, limitOnce, conversionStatusListener);
+        ambConversion.execute();
     }
 
     /**

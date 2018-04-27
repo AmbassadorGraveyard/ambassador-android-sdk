@@ -1,6 +1,7 @@
 package com.ambassador.ambassadorsdk.internal.api.conversions;
 
 import com.ambassador.ambassadorsdk.ConversionParameters;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.Utilities;
 import com.ambassador.ambassadorsdk.internal.api.ServiceGenerator;
@@ -45,6 +46,7 @@ public final class ConversionsApi {
      * Instantiates and sets the Conversions client objects using the ServiceGenerator.
      */
     public void init() {
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
         setConversionsClient(ServiceGenerator.createService(ConversionsClient.class));
     }
 

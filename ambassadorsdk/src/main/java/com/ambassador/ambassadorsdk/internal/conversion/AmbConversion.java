@@ -30,12 +30,12 @@ public class AmbConversion {
         this.conversionParameters = conversionParameters;
         this.limitOnce = limitOnce;
         this.conversionStatusListener = conversionStatusListener;
+
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
     }
 
     public void execute() {
-        AmbSingleton.getInstance().getAmbComponent().inject(this);
-
-        // Make sure user instance data is up to date, may have been lost at any point.
+        // Make sure user instance data is up to date, may have been lost at any point
         user.refresh();
 
         boolean ready = checkAndSetRequiredData();

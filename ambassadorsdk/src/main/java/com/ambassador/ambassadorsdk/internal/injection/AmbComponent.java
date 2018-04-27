@@ -13,6 +13,7 @@ import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.bulkshare.BulkShareApi;
+import com.ambassador.ambassadorsdk.internal.api.conversions.ConversionsApi;
 import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.Auth;
@@ -58,5 +59,6 @@ public interface AmbComponent {
     void inject(PermissionView permissionView);
     void inject(ContactInfoDialog contactInfoDialog);
     void inject(BulkShareApi bulkShareApi);
+    void inject(ConversionsApi conversionsApi);
     Auth provideAuth();
 }
