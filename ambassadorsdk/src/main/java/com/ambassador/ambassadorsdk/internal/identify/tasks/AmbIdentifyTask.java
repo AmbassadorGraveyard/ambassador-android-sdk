@@ -7,12 +7,11 @@ import com.ambassador.ambassadorsdk.internal.utils.Device;
 import javax.inject.Inject;
 
 public abstract class AmbIdentifyTask {
-
     @Inject protected User user;
     @Inject protected Device device;
 
     public AmbIdentifyTask() {
-        AmbSingleton.inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
     }
 
     public abstract void execute(OnCompleteListener onCompleteListener) throws Exception;

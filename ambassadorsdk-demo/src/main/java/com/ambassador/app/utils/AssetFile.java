@@ -8,7 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import javax.inject.Inject;
+
 public class AssetFile {
+    @Inject
+    protected AmbSingleton AmbSingleton;
 
     protected String file;
 
@@ -18,9 +22,9 @@ public class AssetFile {
 
     @Nullable
     public String getAsString() {
-        if (AmbSingleton.getContext() == null) return null;
+        if (AmbSingleton.getInstance().getContext() == null) return null;
         try {
-            InputStream inputStream = AmbSingleton.getContext().getAssets().open(this.file);
+            InputStream inputStream =AmbSingleton.getInstance().getContext().getAssets().open(this.file);
             Scanner s = new Scanner(inputStream).useDelimiter("\\A");
             return s.hasNext() ? s.next() : null;
         } catch (IOException e) {

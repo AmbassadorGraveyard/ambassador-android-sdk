@@ -13,9 +13,13 @@ import com.google.gson.JsonParser;
 
 import org.json.JSONObject;
 
+import javax.inject.Inject;
+
 import io.augur.wintermute.Augur;
 
 public class AmbAugurTask extends AmbIdentifyTask {
+    @Inject
+    protected Utilities Utilities;
 
     @Override
     public void execute(final OnCompleteListener onCompleteListener) throws Exception {
@@ -27,7 +31,7 @@ public class AmbAugurTask extends AmbIdentifyTask {
         }
 
         JSONObject augurConfig = new JSONObject();
-        augurConfig.put("context", AmbSingleton.getContext());
+        augurConfig.put("context", AmbSingleton.getInstance().getContext());
         augurConfig.put("apiKey", Secrets.getAugurKey());
         augurConfig.put("maxRetries", 5);
 
@@ -75,12 +79,12 @@ public class AmbAugurTask extends AmbIdentifyTask {
     }
 
     protected String getSavedFingerprint() {
-        SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("fingerprint", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("fingerprint", Context.MODE_PRIVATE);
         return sharedPreferences.getString("augur", null);
     }
 
     protected void saveFingerprint(String fingerprint) {
-        SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("fingerprint", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("fingerprint", Context.MODE_PRIVATE);
         sharedPreferences.edit().putString("augur", fingerprint).apply();
     }
 

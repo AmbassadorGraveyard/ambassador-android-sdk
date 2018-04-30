@@ -18,20 +18,18 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 /**
  * Handles all requests at the highest level. This is what all other internal classes use.
  * Prepares parameters and calls the different Api classes.
  */
-@Singleton
 public class RequestManager {
 
-    @Inject protected Auth auth;
     @Inject protected User user;
     @Inject protected Campaign campaign;
     @Inject protected BulkShareHelper bulkShareHelper;
 
+    protected Auth auth;
     protected BulkShareApi bulkShareApi;
     protected ConversionsApi conversionsApi;
     protected IdentifyApi identifyApi;
@@ -49,16 +47,18 @@ public class RequestManager {
      * Default constructor.
      * Instantiates the RequestManager and automatically initializes the APIs.
      */
-    public RequestManager() {
-        this(true);
+    public RequestManager(Auth auth) {
+        this(true, auth);
     }
 
     /**
      * Constructor with parameter for optionally initializing APIs.
      * @param doInit whether or not to initialize Api objects.
      */
-    public RequestManager(boolean doInit) {
-        AmbSingleton.inject(this);
+    @Inject
+    public RequestManager(boolean doInit, Auth auth) {
+        this.auth = auth;
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
         bulkShareApi = new BulkShareApi(false);
         conversionsApi = new ConversionsApi(false);
         identifyApi = new IdentifyApi(false);

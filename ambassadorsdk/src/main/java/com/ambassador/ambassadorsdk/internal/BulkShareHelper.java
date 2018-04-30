@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
+
 /**
  * Middleman class to handle sharing and tracking SMS and email shares. Makes the share and track
  * requests and has helper methods to payload data.
@@ -19,7 +21,7 @@ import javax.inject.Inject;
 public class BulkShareHelper {
 
     /** Used to execute any actual HTTP requests. */
-    @Inject protected RequestManager requestManager;
+    @Inject protected Lazy<RequestManager> requestManager;
 
     /** Used to read useful information from the device and OS. */
     @Inject protected Device device;
@@ -52,7 +54,7 @@ public class BulkShareHelper {
      * Default constructor. Injects dependencies.
      */
     public BulkShareHelper() {
-        AmbSingleton.inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
     }
 
     /**
@@ -64,10 +66,10 @@ public class BulkShareHelper {
      */
     public void bulkShare(final String messageToShare, final List<Contact> contacts, Boolean phoneNumbers, final BulkShareCompletion completion) {
         if (!phoneNumbers) {
-            requestManager.bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
+            requestManager.get().bulkShareEmail(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    requestManager.bulkShareTrack(contacts, SocialServiceTrackType.EMAIL);
+                    requestManager.get().bulkShareTrack(contacts, SocialServiceTrackType.EMAIL);
                     completion.bulkShareSuccess();
                 }
 
@@ -78,10 +80,10 @@ public class BulkShareHelper {
             });
         }
         else {
-            requestManager.bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
+            requestManager.get().bulkShareSms(contacts, messageToShare, new RequestManager.RequestCompletion() {
                 @Override
                 public void onSuccess(Object successResponse) {
-                    requestManager.bulkShareTrack(contacts, SocialServiceTrackType.SMS);
+                    requestManager.get().bulkShareTrack(contacts, SocialServiceTrackType.SMS);
                     completion.bulkShareSuccess();
                 }
 

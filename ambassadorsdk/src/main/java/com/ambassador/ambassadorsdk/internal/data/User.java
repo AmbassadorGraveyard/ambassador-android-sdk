@@ -12,12 +12,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import javax.inject.Inject;
+
 
 /**
  * Stores, serializes and unserializes data pertaining to an Ambassador identified user,
  * and what the backend needs to register conversions and track shares.
  */
 public class User implements Data {
+
+    @Inject
+    protected AmbSingleton AmbSingleton;
 
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
@@ -46,7 +51,7 @@ public class User implements Data {
 
     public void setEmail(String email) {
         getAmbassadorIdentification().setEmail(email);
-        AmbSingleton.getContext()
+        AmbSingleton.getInstance().getContext()
                 .getSharedPreferences("user", Context.MODE_PRIVATE)
                 .edit()
                 .putString("email", email)
@@ -160,9 +165,9 @@ public class User implements Data {
      */
     @Override
     public void save() {
-        if (AmbSingleton.getContext() != null) {
+        if (AmbSingleton.getInstance().getContext() != null) {
             String data = new Gson().toJson(this);
-            SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("user", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString(getAmbassadorIdentification().getEmail(), data).apply();
         }
     }
@@ -187,11 +192,11 @@ public class User implements Data {
     @Override
     public void refresh() {
         clear();
-        String email = AmbSingleton.getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("email", null);
+        String email =AmbSingleton.getInstance().getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString("email", null);
 
         if (email == null) return;
 
-        String json = AmbSingleton.getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString(email, null);
+        String json =AmbSingleton.getInstance().getContext().getSharedPreferences("user", Context.MODE_PRIVATE).getString(email, null);
 
         if (json == null) return;
 

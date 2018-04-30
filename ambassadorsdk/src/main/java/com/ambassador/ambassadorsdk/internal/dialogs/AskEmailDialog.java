@@ -29,17 +29,12 @@ import butterfork.ButterFork;
  * Dialog to ask the user for his/her email if we haven't identified.
  */
 public final class AskEmailDialog extends Dialog {
-
-    // region Views
     @Bind(B.id.etEmail)     protected ShakableEditText  etEmail;
     @Bind(B.id.btnCancel)   protected Button            btnCancel;
     @Bind(B.id.btnContinue) protected Button            btnContinue;
-    // endregion
 
-    // region Dependencies
     @Inject protected User user;
     @Inject protected Device device;
-    // endregion
 
     protected OnEmailReceivedListener onEmailReceivedListener;
 
@@ -60,7 +55,7 @@ public final class AskEmailDialog extends Dialog {
         setCancelable(false);
         setContentView(R.layout.dialog_email);
         ButterFork.bind(this);
-        AmbSingleton.inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
 
         setupTheme();
         setupButtons();

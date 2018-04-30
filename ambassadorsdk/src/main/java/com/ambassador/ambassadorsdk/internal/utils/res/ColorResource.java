@@ -5,7 +5,11 @@ import android.support.v4.content.ContextCompat;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
+import javax.inject.Inject;
+
 public final class ColorResource {
+    @Inject
+    protected AmbSingleton AmbSingleton;
 
     private int color;
 
@@ -13,7 +17,7 @@ public final class ColorResource {
     private ColorResource() {}
 
     public ColorResource(@ColorRes int resId) {
-        this.color = ContextCompat.getColor(AmbSingleton.getContext(), resId);
+        this.color = ContextCompat.getColor(AmbSingleton.getInstance().getContext(), resId);
     }
 
     public int getColor() {

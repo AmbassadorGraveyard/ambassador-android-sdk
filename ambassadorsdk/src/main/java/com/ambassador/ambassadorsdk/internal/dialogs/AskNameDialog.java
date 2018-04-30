@@ -45,14 +45,19 @@ public final class AskNameDialog extends Dialog {
     @Bind(B.id.btnCancel)   protected Button            btnCancel;
     @Bind(B.id.btnContinue) protected Button            btnContinue;
 
-    @Inject protected RequestManager    requestManager;
     @Inject protected User              user;
     @Inject protected Device            device;
 
     public DismissStatus dismissStatus;
+    protected RequestManager requestManager;
+    protected PusherManager pusherManager;
 
-    public AskNameDialog(Context context, ProgressDialog pd) {
+    @Inject
+    public AskNameDialog(Context context, ProgressDialog pd, RequestManager requestManager, PusherManager pusherManager) {
         super(context);
+
+        this.requestManager = requestManager;
+        this.pusherManager = pusherManager;
         if (context instanceof Activity) {
             setOwnerActivity((Activity) context);
         }
@@ -64,7 +69,7 @@ public final class AskNameDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_contact_name);
         ButterFork.bind(this);
-        AmbSingleton.inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
 
         setCanceledOnTouchOutside(false);
 
@@ -124,16 +129,14 @@ public final class AskNameDialog extends Dialog {
         pusherData.addProperty("lastName", lastName);
 
         user.setPusherInfo(pusherData);
-
         user.getAmbassadorIdentification().setFirstName(firstName);
         user.getAmbassadorIdentification().setLastName(lastName);
 
-        PusherManager pusherManager = new PusherManager();
         pusherManager.addPusherListener(new PusherListenerAdapter() {
             @Override
             public void subscribed() {
                 super.subscribed();
-                requestManager.updateNameRequest(new PusherManager(), pusherData.get("email").getAsString(), firstName, lastName, null);
+                requestManager.updateNameRequest(pusherManager, pusherData.get("email").getAsString(), firstName, lastName, null);
                 dismiss();
             }
         });

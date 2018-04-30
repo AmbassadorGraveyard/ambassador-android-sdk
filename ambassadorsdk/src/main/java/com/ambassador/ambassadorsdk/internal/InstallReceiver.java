@@ -1,19 +1,14 @@
 package com.ambassador.ambassadorsdk.internal;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.ambassador.ambassadorsdk.WelcomeScreenDialog;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
-import com.ambassador.ambassadorsdk.internal.api.identify.IdentifyApi;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.models.WelcomeScreenData;
 import com.google.gson.JsonObject;
 
 import javax.inject.Inject;
@@ -23,6 +18,7 @@ public final class InstallReceiver extends BroadcastReceiver {
     @Inject protected User user;
     @Inject protected Campaign campaign;
     @Inject protected RequestManager requestManager;
+    @Inject protected Utilities Utilities;
     private static final String INTENT_KEY_REFERRER = "referrer";
     private static final String PARAM_REFERRAL_SHORT_CODE = "mbsy_cookie_code";
     private static final String PARAM_WEB_DEVICE_ID = "device_id";
@@ -33,7 +29,7 @@ public final class InstallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        AmbSingleton.inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
 
         Bundle b = intent.getExtras();
         if (b == null) return;
@@ -94,45 +90,6 @@ public final class InstallReceiver extends BroadcastReceiver {
             identity.add("device", device);
             user.setAugurData(identity);
         }
-
-        requestManager.getUserFromShortCode(referralShortCode, new RequestManager.RequestCompletion() {
-            @Override
-            public void onSuccess(Object successResponse) {
-                if (!(successResponse instanceof IdentifyApi.GetUserFromShortCodeResponse)) {
-                    onFailure(null);
-                    return;
-                }
-
-                try {
-                    IdentifyApi.GetUserFromShortCodeResponse response = (IdentifyApi.GetUserFromShortCodeResponse) successResponse;
-                    Activity activity = WelcomeScreenDialog.getActivity();
-                    WelcomeScreenDialog welcomeScreenDialog = new WelcomeScreenDialog(activity);
-                    WelcomeScreenDialog.BackendData backendData =
-                            new WelcomeScreenDialog.BackendData()
-                                    .setImageUrl(response.avatar_url)
-                                    .setName(response.name);
-
-                    welcomeScreenDialog.load(
-                            new WelcomeScreenData()
-                                    .withParameters(WelcomeScreenDialog.getParameters())
-                                    .withBackendData(backendData)
-                                    .parseName()
-                    );
-                    WelcomeScreenDialog.AvailabilityCallback callback = WelcomeScreenDialog.getAvailabilityCallback();
-
-                    if (callback != null) callback.available(welcomeScreenDialog);
-
-                } catch (NullPointerException npe) {
-                    Log.e("AmbassadorSDK", npe.toString());
-                    // That dev screwed up
-                }
-            }
-
-            @Override
-            public void onFailure(Object failureResponse) {
-
-            }
-        });
     }
 
     public void registerWith(Context context) {
@@ -140,5 +97,4 @@ public final class InstallReceiver extends BroadcastReceiver {
         intentFilter.addAction("com.android.vending.INSTALL_REFERRER");
         context.registerReceiver(this, intentFilter);
     }
-
 }

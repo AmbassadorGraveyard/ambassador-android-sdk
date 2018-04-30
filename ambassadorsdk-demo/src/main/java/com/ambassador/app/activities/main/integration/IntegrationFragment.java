@@ -49,12 +49,12 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
     @Bind(R.id.fabAdd) protected FloatingActionButton fabAdd;
 
     protected IntegrationAdapter integrationAdapter;
-
     protected boolean editing = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState == null) {
             integrationPresenter = new IntegrationPresenter();
         } else {
@@ -171,7 +171,7 @@ public final class IntegrationFragment extends Fragment implements IntegrationVi
 
     @Override
     public void present(Integration integration) {
-        AmbassadorSDK.presentRAF(getActivity(), String.valueOf(integration.getCampaignId()), integration.getRafOptions());
+        AmbassadorSDK.getInstance(getActivity()).presentRAF(getActivity(), String.valueOf(integration.getCampaignId()), integration.getRafOptions());
     }
 
     @Override

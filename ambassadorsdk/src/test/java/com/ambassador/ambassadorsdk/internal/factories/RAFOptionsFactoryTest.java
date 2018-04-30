@@ -94,7 +94,7 @@ public class RAFOptionsFactoryTest {
 
         PowerMockito.doReturn(-2).when(Color.class, "parseColor", Mockito.anyString());
 
-        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getInstance().getContext()).thenReturn(context);
         AssetManager assets = Mockito.mock(AssetManager.class);
         Mockito.when(context.getAssets()).thenReturn(assets);
         font = Mockito.mock(Typeface.class);

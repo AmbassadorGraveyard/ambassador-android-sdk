@@ -1,5 +1,8 @@
 package com.ambassador.ambassadorsdk.internal.identify;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
@@ -8,6 +11,10 @@ import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
 import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,31 +23,29 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class AmbIdentify {
-
-    protected static AmbIdentify runningInstance;
-
     @Inject protected User user;
     @Inject protected RequestManager requestManager;
-    protected PusherManager pusherManager;
+    @Inject protected PusherManager pusherManager;
+
+    protected static AmbIdentify runningInstance;
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
     protected AmbIdentifyTask[] identifyTasks;
     protected CompletionListener completionListener;
     protected boolean subscribed;
     protected String memberIdentifyType;
-
     public static String identifyType = "";
 
+    @Inject
     protected AmbIdentify(String userId, AmbassadorIdentification ambassadorIdentification) {
-        AmbSingleton.inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
+
         this.userId = userId;
         this.ambassadorIdentification = ambassadorIdentification;
         this.identifyTasks = new AmbIdentifyTask[1];
         this.identifyTasks[0] = new AmbAugurTask();
         this.memberIdentifyType = identifyType;
         identifyType = "";
-
-        this.pusherManager = new PusherManager();
     }
 
     public void execute() {
@@ -160,7 +165,14 @@ public class AmbIdentify {
         requestManager.identifyRequest(memberIdentifyType, pusherManager, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-                AmbConversion.attemptExecutePending();
+                SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
+                String content = sharedPreferences.getString("conversions", "[]");
+                sharedPreferences.edit().putString("conversions", "[]").apply();
+                final JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
+                for (final JsonElement jsonElement : conversions) {
+                    AmbConversion ambConversion = new Gson().fromJson(jsonElement, AmbConversion.class);
+                    ambConversion.execute();
+                }
             }
 
             @Override

@@ -3,9 +3,11 @@ package com.ambassador.ambassadorsdk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
@@ -26,6 +28,10 @@ import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import net.kencochrane.raven.DefaultRavenFactory;
 
@@ -33,36 +39,50 @@ import java.io.InputStream;
 
 import javax.inject.Inject;
 
-import dagger.ObjectGraph;
-
-/**
- *
- */
 public final class AmbassadorSDK {
+    @Inject protected User user;
+    @Inject protected Campaign campaign;
+    @Inject protected PusherManager pusherManager;
+    @Inject protected RequestManager requestManager;
+    @Inject protected SocialOAuthActivity socialOAuthActivity;
+    @Inject protected RAFOptions RAFOptions;
 
-    @Inject protected static Auth auth;
-    @Inject protected static User user;
-    @Inject protected static Campaign campaign;
-    @Inject protected static PusherManager pusherManager;
-    @Inject protected static RequestManager requestManager;
+    protected AmbSingleton AmbSingleton;
+    private static AmbassadorSDK instance;
+
+    public static AmbassadorSDK getInstance() {
+        return getInstance(null);
+    }
+
+    public static AmbassadorSDK getInstance(@Nullable Context context) {
+        if (instance == null) {
+            instance = new AmbassadorSDK(context);
+        }
+
+        return instance;
+    }
+
+    public AmbassadorSDK(@Nullable Context context) {
+        if (context != null) {
+            AmbSingleton.getInstance().setContext(context);
+        }
+
+        AmbSingleton.getInstance().buildDaggerComponent();
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
+    }
 
     /**
      *
-     * @param context
      * @param sdkToken
      * @param universalId
      */
-    public static void runWithKeys(Context context, String sdkToken, String universalId) {
-        AmbSingleton.init(context);
-
-        ObjectGraph objectGraph = AmbSingleton.getGraph();
-        objectGraph.injectStatics();
-
+    public void runWithKeys(String sdkToken, String universalId) {
+        Auth auth = AmbSingleton.getInstance().getAmbComponent().provideAuth();
         auth.clear();
         auth.setSdkToken(sdkToken);
         auth.setUniversalId(universalId);
 
-        new InstallReceiver().registerWith(context);
+        new InstallReceiver().registerWith(AmbSingleton.getInstance().getContext());
 
         final Thread.UncaughtExceptionHandler defaultHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
@@ -86,7 +106,14 @@ public final class AmbassadorSDK {
             }
         });
 
-        AmbConversion.attemptExecutePending();
+        SharedPreferences sharedPreferences = AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
+        String content = sharedPreferences.getString("conversions", "[]");
+        sharedPreferences.edit().putString("conversions", "[]").apply();
+        final JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
+        for (final JsonElement jsonElement : conversions) {
+            AmbConversion ambConversion = new Gson().fromJson(jsonElement, AmbConversion.class);
+            ambConversion.execute();
+        }
     }
 
     /**
@@ -95,7 +122,7 @@ public final class AmbassadorSDK {
      * @param traits Bundle for other relevant identification properties.
      * @param options Bundle for other information like "campaign".
      */
-    public static void identify(String userId, Bundle traits, Bundle options) {
+    public void identify(String userId, Bundle traits, Bundle options) {
         AmbassadorIdentification ambassadorIdentification = new AmbassadorIdentification();
 
         if (traits != null) {
@@ -141,7 +168,7 @@ public final class AmbassadorSDK {
      * @param emailAddress a valid String email address.
      * @return boolean determining validity of the email passed.
      */
-    public static boolean identify(String emailAddress) {
+    public boolean identify(String emailAddress) {
         if (!new Identify(emailAddress).isValidEmail()) {
             AmbIdentify.identifyType = "";
             return false;
@@ -155,10 +182,10 @@ public final class AmbassadorSDK {
      * Unidentifies a user to the Ambassador SDK. Equivalent to a logout.
      * Clears cookies so webview OAuth won't re-auth automatically.
      */
-    public static void unidentify() {
+    public void unidentify() {
         user.clear();
         user.setUserId(null);
-        SocialOAuthActivity.clearCookies();
+        socialOAuthActivity.clearCookies();
     }
 
     /**
@@ -167,8 +194,9 @@ public final class AmbassadorSDK {
      * @param limitOnce boolean determining if this conversion should ever be allowed to happen more than once.
      * @param conversionStatusListener callback interface that will return status of the conversion request.
      */
-    public static void registerConversion(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
-        AmbConversion.get(conversionParameters, limitOnce, conversionStatusListener).execute();
+    public void registerConversion(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
+        AmbConversion ambConversion = new AmbConversion(conversionParameters, limitOnce, conversionStatusListener);
+        ambConversion.execute();
     }
 
     /**
@@ -178,7 +206,7 @@ public final class AmbassadorSDK {
      * @deprecated use {@link #registerConversion(ConversionParameters, boolean, ConversionStatusListener)} instead.
      */
     @Deprecated
-    public static void registerConversion(ConversionParameters conversionParameters, Boolean limitOnce) {
+    public void registerConversion(ConversionParameters conversionParameters, Boolean limitOnce) {
         registerConversion(conversionParameters, limitOnce, null);
     }
 
@@ -189,7 +217,7 @@ public final class AmbassadorSDK {
      * @param properties information pertaining to the event such as campaign, revenue, etc.
      * @param options additional information that can be added to the event.
      */
-    public static void trackEvent(String eventName, Bundle properties, Bundle options) {
+    public void trackEvent(String eventName, Bundle properties, Bundle options) {
         trackEvent(eventName, properties, options, null);
     }
 
@@ -201,19 +229,19 @@ public final class AmbassadorSDK {
      * @param options additional information that can be added to the event.
      * @param listener a callback interface that will be used if this event is a conversion.
      */
-    public static void trackEvent(String eventName, Bundle properties, Bundle options, ConversionStatusListener listener) {
+    public void trackEvent(String eventName, Bundle properties, Bundle options, ConversionStatusListener listener) {
         if (options.getBoolean("conversion", false)) {
             ConversionParameters conversionParameters = ConversionParametersFactory.getFromProperties(properties);
             boolean limitOnce = options.getBoolean("restrictedToInstall", false);
-            AmbassadorSDK.registerConversion(conversionParameters, limitOnce, listener);
+            registerConversion(conversionParameters, limitOnce, listener);
         }
     }
 
-    public static void presentRAF(Context context, String campaignID) {
+    public void presentRAF(Context context, String campaignID) {
         presentRAF(context, campaignID, new RAFOptions.Builder().build());
     }
 
-    public static void presentRAF(Context context, String campaignID, InputStream inputStream) {
+    public void presentRAF(Context context, String campaignID, InputStream inputStream) {
         RAFOptions rafOptions;
         try {
             rafOptions = RAFOptionsFactory.decodeResources(inputStream, context);
@@ -224,7 +252,7 @@ public final class AmbassadorSDK {
         presentRAF(context, campaignID, rafOptions);
     }
 
-    public static void presentRAF(Context context, String campaignID, RAFOptions rafOptions) {
+    public void presentRAF(Context context, String campaignID, RAFOptions rafOptions) {
         RAFOptions.set(rafOptions);
         campaign.clear();
         campaign.setId(campaignID);
@@ -233,7 +261,7 @@ public final class AmbassadorSDK {
         context.startActivity(intent);
     }
  
-    public static void presentRAF(Context context, String campaignID, String pathInAssets) {
+    public void presentRAF(Context context, String campaignID, String pathInAssets) {
         try {
             presentRAF(context, campaignID, context.getAssets().open(pathInAssets));
         } catch (Exception e) {
@@ -248,7 +276,7 @@ public final class AmbassadorSDK {
      * @param activity the Activity to launch the dialog from.
      * @param availabilityCallback the callback interface to pass the dialog through, once available.
      */
-    public static void presentWelcomeScreen(
+    public void presentWelcomeScreen(
             @NonNull final Activity activity,
             @NonNull final WelcomeScreenDialog.AvailabilityCallback availabilityCallback,
             @NonNull final WelcomeScreenDialog.Parameters parameters) {
@@ -264,7 +292,7 @@ public final class AmbassadorSDK {
      * @param contentColor ColorInt to set on the content of the survey (text, lines, x, etc.).
      * @param buttonColor ColorInt to set as the submit button background color.
      */
-    public static void configureSurvey(
+    public void configureSurvey(
             @ColorInt int backgroundColor,
             @ColorInt int contentColor,
             @ColorInt int buttonColor) {
@@ -272,11 +300,11 @@ public final class AmbassadorSDK {
         SurveyModel.setDefaultColors(backgroundColor, contentColor, buttonColor);
     }
 
-    public static String getReferredByShortCode() {
+    public String getReferredByShortCode() {
         return campaign.getReferredByShortCode();
     }
 
-    public static String getCampaignIdFromShortCode(String shortCode) {
+    public String getCampaignIdFromShortCode(String shortCode) {
         return requestManager.getCampaignIdFromShortCode(shortCode);
     }
 }

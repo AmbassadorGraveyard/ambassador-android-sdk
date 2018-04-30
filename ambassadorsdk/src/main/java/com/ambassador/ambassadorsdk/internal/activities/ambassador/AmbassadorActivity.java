@@ -39,7 +39,6 @@ import com.ambassador.ambassadorsdk.internal.adapters.SocialGridAdapter;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
-import com.ambassador.ambassadorsdk.internal.data.Auth;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
 import com.ambassador.ambassadorsdk.internal.data.User;
 import com.ambassador.ambassadorsdk.internal.dialogs.AskEmailDialog;
@@ -85,11 +84,12 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Bind(B.id.gvSocialGrid)    protected StaticGridView        gvSocialGrid;
 
     @Inject protected RequestManager        requestManager;
-    @Inject protected Auth                  auth;
     @Inject protected User                  user;
     @Inject protected Campaign              campaign;
     @Inject protected PusherManager         pusherManager;
     @Inject protected Device                device;
+    @Inject protected RAFOptions            RAFOptions;
+    @Inject protected Utilities             Utilities;
 
     protected RAFOptions            raf;
     protected ProgressDialog        progressDialog;
@@ -101,19 +101,17 @@ public final class AmbassadorActivity extends AppCompatActivity {
     protected EmailManager          emailManager;
     protected SmsManager            smsManager;
     protected boolean retried;
+    protected AmbassadorSDK         AmbassadorSDK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ambassador);
 
-        // Injection
-        AmbSingleton.init(this);
-        AmbSingleton.inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
         ButterFork.bind(this);
         raf = RAFOptions.get();
 
-        // Requirement checks
         finishIfSingletonInvalid();
         if (isFinishing()) return;
 
@@ -181,7 +179,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
     }
 
     protected void finishIfSingletonInvalid() {
-        if (!AmbSingleton.isValid()) {
+        if (!AmbSingleton.getInstance().isValid()) {
             finish();
         }
     }
@@ -358,12 +356,11 @@ public final class AmbassadorActivity extends AppCompatActivity {
                 requestManager.identifyRequest(pusherManager, new RequestManager.RequestCompletion() {
                     @Override
                     public void onSuccess(Object successResponse) {
-                        // All is swell, do nothing.
                     }
 
                     @Override
                     public void onFailure(Object failureResponse) {
-                        AmbassadorSDK.identify(null);
+                        AmbassadorSDK.getInstance().identify(null);
                         showNetworkError();
                     }
                 });
@@ -461,7 +458,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
             boolean found = tryAndSetURL(urls, raf.getDefaultShareMessage());
             if (!found) {
-                if (!retried && AmbassadorSDK.identify(user.getUserId())) {
+                if (!retried && AmbassadorSDK.getInstance().identify(user.getUserId())) {
                     retried = true;
                     setUpLoader();
                     AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
@@ -527,7 +524,7 @@ public final class AmbassadorActivity extends AppCompatActivity {
             @Override
             public void onEmailReceived(String email) {
                 AmbIdentify.identifyType = "raf";
-                if (AmbassadorSDK.identify(email)) {
+                if (AmbassadorSDK.getInstance().identify(email)) {
                     askEmailDialog.dismiss();
                     setUpLoader();
                     AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {

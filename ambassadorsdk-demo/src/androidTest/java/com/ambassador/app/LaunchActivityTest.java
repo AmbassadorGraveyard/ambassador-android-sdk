@@ -40,7 +40,7 @@ public class LaunchActivityTest {
 
         AmbSingleton.init(context, new TestModule());
         AmbassadorSDK.runWithKeys(context, "ut", "uid");
-        AmbSingleton.inject(this);
+        AmbSingleton.getAmbComponent().inject(this);
     }
 
     @Test

@@ -31,7 +31,7 @@ public class CampaignTest {
         );
 
         context = Mockito.mock(Context.class);
-        Mockito.when(AmbSingleton.getContext()).thenReturn(context);
+        Mockito.when(AmbSingleton.getInstance().getContext()).thenReturn(context);
 
         sharedPreferences = Mockito.mock(SharedPreferences.class);
         Mockito.when(context.getSharedPreferences(Mockito.anyString(), Mockito.anyInt())).thenReturn(sharedPreferences);
@@ -64,7 +64,7 @@ public class CampaignTest {
     @Test
     public void saveWithNullContextDoesNotSave() {
         // ARRANGE
-        Mockito.when(AmbSingleton.getContext()).thenReturn(null);
+        Mockito.when(AmbSingleton.getInstance().getContext()).thenReturn(null);
 
         Campaign campaign = new Campaign();
         campaign.id = "260";

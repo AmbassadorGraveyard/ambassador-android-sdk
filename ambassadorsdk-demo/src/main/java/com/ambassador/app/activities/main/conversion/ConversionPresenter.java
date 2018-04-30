@@ -114,11 +114,11 @@ public class ConversionPresenter extends BasePresenter<ConversionModel, Conversi
                     data.putExtra("referrer", "mbsy_cookie_code=" + shortCode + "&device_id=test1234");
                     new InstallReceiver().onReceive(Demo.get(), data);
 
-                    AmbassadorSDK.identify(conversionParameters.getEmail());
+                    AmbassadorSDK.getInstance().identify(conversionParameters.getEmail());
                     AmbIdentify.getRunningInstance().setCompletionListener(new AmbIdentify.CompletionListener() {
                         @Override
                         public void complete() {
-                            AmbassadorSDK.registerConversion(conversionParameters, false, new ConversionStatusListener() {
+                            AmbassadorSDK.getInstance().registerConversion(conversionParameters, false, new ConversionStatusListener() {
                                 @Override
                                 public void success() {
                                     Log.v("AMBASSADOR CONVERSION", "success()");

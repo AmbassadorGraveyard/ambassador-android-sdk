@@ -12,14 +12,18 @@ import android.widget.TextView;
 
 import com.ambassador.ambassadorsdk.R;
 import com.ambassador.ambassadorsdk.RAFOptions;
+import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.models.ShareMethod;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public final class SocialGridAdapter extends BaseAdapter {
+    @Inject
+    protected RAFOptions RAFOptions;
 
-    private RAFOptions raf = RAFOptions.get();
-
+    private RAFOptions raf;
     private Context context;
     private List<ShareMethod> models;
     private LayoutInflater inflater;
@@ -29,6 +33,10 @@ public final class SocialGridAdapter extends BaseAdapter {
         this.context = context;
         this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.models = models;
+
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
+
+        raf = RAFOptions.get();
         this.cornerRadius = raf.getSocialOptionCornerRadius();
     }
 

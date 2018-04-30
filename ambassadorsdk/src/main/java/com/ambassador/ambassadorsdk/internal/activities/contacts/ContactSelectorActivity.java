@@ -77,7 +77,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
     private static final int CHECK_SEND_SMS_PERMISSIONS = 2;
     private static final int MAX_SMS_LENGTH = 160;
-    private static final int LENGTH_GOOD_COLOR = RAFOptions.get().getContactsSendButtonTextColor();
+    private static final int LENGTH_GOOD_COLOR = new RAFOptions().get().getContactsSendButtonTextColor();
     private static final int LENGTH_BAD_COLOR = new ColorResource(android.R.color.holo_red_dark).getColor();
 
     @Nullable
@@ -103,8 +103,10 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     @Inject protected User              user;
     @Inject protected Campaign          campaign;
     @Inject protected Device            device;
+    @Inject protected RAFOptions        RAFOptions;
+    @Inject protected Utilities         Utilities;
+    @Inject protected RAFOptions                raf;
 
-    protected RAFOptions                raf = RAFOptions.get();
     protected List<Contact>             contactList;
     protected ContactListAdapter        contactListAdapter;
     protected boolean                   showPhoneNumbers;
@@ -117,15 +119,13 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
-        // Injection
-        AmbSingleton.inject(this);
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
         ButterFork.bind(this);
 
-        // Requirement checks
+        raf = RAFOptions.get();
         finishIfSingletonInvalid();
         if (isFinishing()) return;
 
-        // Other setup
         processIntent();
         setTheme();
         setUpToolbar();
@@ -204,7 +204,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     }
 
     private void finishIfSingletonInvalid() {
-        if (!AmbSingleton.isValid()) {
+        if (!AmbSingleton.getInstance().isValid()) {
             finish();
         }
     }
@@ -666,7 +666,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         }
 
         //if only 1 contact and device is equipped to send, use native SMS for a better experience
-        if (showPhoneNumbers && contactListAdapter.getSelectedContacts().size() == 1 && AmbSingleton.getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
+        if (showPhoneNumbers && contactListAdapter.getSelectedContacts().size() == 1 &&AmbSingleton.getInstance().getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
             handleSendSMS();
             return;
         }

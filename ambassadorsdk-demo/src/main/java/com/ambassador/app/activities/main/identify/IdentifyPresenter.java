@@ -16,7 +16,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView> {
-
     @Override
     protected void updateView() {
 
@@ -51,7 +50,7 @@ public class IdentifyPresenter extends BasePresenter<IdentifyModel, IdentifyView
             return;
         }
 
-        AmbassadorSDK.identify(userId != null && !"".equals(userId) ? userId : null, traits, options);
+        AmbassadorSDK.getInstance().identify(userId != null && !"".equals(userId) ? userId : null, traits, options);
         view().notifyIdentifying();
     }
 

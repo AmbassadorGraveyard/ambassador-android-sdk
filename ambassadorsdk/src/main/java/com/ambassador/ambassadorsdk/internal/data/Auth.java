@@ -7,13 +7,15 @@ import android.support.annotation.Nullable;
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.google.gson.Gson;
 
+import javax.inject.Singleton;
+
 
 /**
  * Stores, serializes and unserializes data pertaining to a Ambassador authentication
  * data, including social API tokens and Ambassador API tokens.
  */
+@Singleton
 public class Auth implements Data {
-
     // region Fields
     protected String universalId;
     protected String sdkToken;
@@ -69,9 +71,9 @@ public class Auth implements Data {
      */
     @Override
     public void save() {
-        if (AmbSingleton.getContext() != null) {
+        if (AmbSingleton.getInstance().getContext() != null) {
             String data = new Gson().toJson(this);
-            SharedPreferences sharedPreferences = AmbSingleton.getContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
+            SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("auth", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString("auth", data).apply();
         }
     }
@@ -94,7 +96,7 @@ public class Auth implements Data {
     @Override
     public void refresh() {
         clear();
-        String json = AmbSingleton.getContext().getSharedPreferences("auth", Context.MODE_PRIVATE).getString("auth", null);
+        String json =AmbSingleton.getInstance().getContext().getSharedPreferences("auth", Context.MODE_PRIVATE).getString("auth", null);
 
         if (json == null) return;
 
@@ -105,9 +107,4 @@ public class Auth implements Data {
         setEnvoySecret(auth.getEnvoySecret());
     }
     // endregion
-
-    // region Nullify methods
-
-    // endregion
-
 }
