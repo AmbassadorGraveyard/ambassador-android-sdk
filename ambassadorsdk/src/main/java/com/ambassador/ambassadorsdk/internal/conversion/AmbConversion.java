@@ -30,11 +30,11 @@ public class AmbConversion {
         this.conversionParameters = conversionParameters;
         this.limitOnce = limitOnce;
         this.conversionStatusListener = conversionStatusListener;
-
-        AmbSingleton.getInstance().getAmbComponent().inject(this);
     }
 
     public void execute() {
+        AmbSingleton.getInstance().getAmbComponent().inject(this);
+
         // Make sure user instance data is up to date, may have been lost at any point
         user.refresh();
 
@@ -82,9 +82,5 @@ public class AmbConversion {
         JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
         conversions.add(new JsonParser().parse(new Gson().toJson(this)).getAsJsonObject());
         sharedPreferences.edit().putString("conversions", conversions.toString()).apply();
-    }
-
-    public static AmbConversion get(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
-        return new AmbConversion(conversionParameters, limitOnce, conversionStatusListener);
     }
 }

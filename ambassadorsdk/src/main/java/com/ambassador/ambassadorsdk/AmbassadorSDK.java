@@ -62,7 +62,7 @@ public final class AmbassadorSDK {
         return instance;
     }
 
-    public AmbassadorSDK(@Nullable Context context) {
+    private AmbassadorSDK(@Nullable Context context) {
         if (context != null) {
             AmbSingleton.getInstance().setContext(context);
         }

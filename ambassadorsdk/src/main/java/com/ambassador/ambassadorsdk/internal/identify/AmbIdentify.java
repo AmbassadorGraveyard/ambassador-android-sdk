@@ -165,7 +165,7 @@ public class AmbIdentify {
         requestManager.identifyRequest(memberIdentifyType, pusherManager, new RequestManager.RequestCompletion() {
             @Override
             public void onSuccess(Object successResponse) {
-                SharedPreferences sharedPreferences =AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
+                SharedPreferences sharedPreferences = AmbSingleton.getInstance().getContext().getSharedPreferences("conversions", Context.MODE_PRIVATE);
                 String content = sharedPreferences.getString("conversions", "[]");
                 sharedPreferences.edit().putString("conversions", "[]").apply();
                 final JsonArray conversions = new JsonParser().parse(content).getAsJsonArray();
@@ -177,7 +177,6 @@ public class AmbIdentify {
 
             @Override
             public void onFailure(Object failureResponse) {
-                // Not handled here.
             }
         });
     }
