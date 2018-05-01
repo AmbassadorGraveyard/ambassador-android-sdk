@@ -11,7 +11,8 @@ dependencies:
  pre:
     - curl -sL https://github.com/jpm4j/jpm4j.installers/raw/master/dist/biz.aQute.jpm.run.jar >jpm4j.jar
     - sudo java -jar jpm4j.jar -g init
-    - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
+    - sudo apt-get install jq
+    - wget -O ~/codacy-coverage-reporter-assembly-latest.jar $(curl https://api.github.com/repos/codacy/codacy-coverage-reporter/releases/latest | jq -r .assets[0].browser_download_url)
     - sudo pip install awscli
     - curl -O https://bin.equinox.io/c/htRtQZagtfg/rainforest-cli-stable-linux-amd64.tgz
     - sudo tar -xf rainforest-cli-stable-linux-amd64.tgz -C /usr/local/bin
@@ -26,4 +27,5 @@ test:
     - ./rainforest.sh
 
   post:
-    - codacy-coverage-reporter -l Java -r $CIRCLE_TEST_REPORTS/jacocoReport.xml
+    - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r $CIRCLE_TEST_REPORTS/jacocoReport.xml
+
