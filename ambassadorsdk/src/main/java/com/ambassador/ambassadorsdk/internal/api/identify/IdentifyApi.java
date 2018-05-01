@@ -418,13 +418,11 @@ public final class IdentifyApi {
         public IdentifyRequestBody(String campaign_id, String userId, String augur, AmbassadorIdentification ambassadorIdentification) {
             AmbSingleton.getInstance().getAmbComponent().inject(this);
 
-            this.enroll = true;
             this.campaign_id = campaign_id;
-            this.source = "android_sdk_pilot";
+            this.source = "android_sdk_1_2__snapshot";
             this.mbsy_source = "";
             this.mbsy_cookie_code = "";
             this.remote_user_id = userId;
-
             this.email = ambassadorIdentification.getEmail();
             this.first_name = ambassadorIdentification.getFirstName();
             this.last_name = ambassadorIdentification.getLastName();
@@ -435,7 +433,6 @@ public final class IdentifyApi {
             this.zip = ambassadorIdentification.getPostalCode();
             this.country = ambassadorIdentification.getCountry();
             this.add_to_groups = ambassadorIdentification.getAddToGroups();
-
             this.identify_type = "";
 
             try {

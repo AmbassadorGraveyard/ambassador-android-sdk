@@ -91,14 +91,15 @@ public final class ConversionsApi {
 
         private AugurObject fp;
         private FieldsObject fields;
+        private String source;
 
         public RegisterConversionRequestBody(AugurObject fp, FieldsObject fields) {
             this.fp = fp;
             this.fields = fields;
+            this.source = "android_sdk_1_2__snapshot";
         }
 
         public static class AugurObject {
-
             private ConsumerObject consumer;
             private DeviceObject device;
 
@@ -108,7 +109,6 @@ public final class ConversionsApi {
             }
 
             public static class ConsumerObject {
-
                 private String UID;
 
                 public ConsumerObject(String UID) {
@@ -132,7 +132,6 @@ public final class ConversionsApi {
         }
 
         public static class FieldsObject {
-
             private int mbsy_campaign;
             private String mbsy_email;
             private String mbsy_first_name;
@@ -181,11 +180,8 @@ public final class ConversionsApi {
 
     /** Pojo for register conversion post request response */
     public static class RegisterConversionRequestResponse {
-
         public String first_name;
         public String last_name;
         public int campaign_uid;
-
     }
-
 }
