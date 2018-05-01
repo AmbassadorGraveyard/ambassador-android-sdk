@@ -18,7 +18,7 @@ sha=`git rev-parse HEAD`;
 branch=`git rev-parse --abbrev-ref HEAD`;
 
 # If "RunUiTests" in commit msg or branch is master
-if [[ $msg == *"@RunUiTests"* ]] || [ $branch == "master" ]
+if [ $msg == *"@RunUiTests"* ] || [ $branch == "master" ]
 then
 
     # Create new name for app APK as current epoch time + '.apk'
