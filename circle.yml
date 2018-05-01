@@ -13,7 +13,8 @@ dependencies:
     - sudo java -jar jpm4j.jar -g init
     - sudo jpm install com.codacy:codacy-coverage-reporter:assembly
     - sudo pip install awscli
-    - gem install rainforest-cli
+    - curl -O https://bin.equinox.io/c/htRtQZagtfg/rainforest-cli-stable-linux-amd64.tgz
+    - sudo tar -xf rainforest-cli-stable-linux-amd64.tgz -C /usr/local/bin
     - bash secrets.sh
 
 test:
@@ -23,7 +24,6 @@ test:
     - cp -r ambassadorsdk/build/reports/tests/debug/* $CIRCLE_TEST_REPORTS
     - ./gradlew -p ambassadorsdk-demo assembleDebug --quiet;
     - ./rainforest.sh
-    - bash devicefarm.sh
 
   post:
     - codacy-coverage-reporter -l Java -r $CIRCLE_TEST_REPORTS/jacocoReport.xml
