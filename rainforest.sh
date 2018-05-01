@@ -26,7 +26,7 @@ cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug.apk $CIRCLE_A
 
 # Upload Debug APK file to S3
 echo "Requesting upload to device farm";
-aws aws s3 cp --acl public-read $CIRCLE_ARTIFACTS/$APK_NAME s3://ambassador-rainforest/android/debug/DemoApp.apk;
+aws s3 cp --acl public-read $CIRCLE_ARTIFACTS/$APK_NAME s3://ambassador-rainforest/android/debug/DemoApp.apk;
 
 # Trigger RainforestQA test run
 rainforest run --run-group 1793 --fail-fast --environment-id 5165 --token "$RAINFOREST_TOKEN" --description "Ambassador Android Demo App automated post deploy run" --bg
