@@ -61,35 +61,15 @@ public final class InstallReceiver extends BroadcastReceiver {
         Utilities.debugLog("Conversion", "webDeviceId: " + webDeviceId);
         Utilities.debugLog("Conversion", "referralShortCode: " + referralShortCode);
 
-        //if augur came back first, update our device id
-        JsonObject identity;
-        if (user.getAugurData() != null) {
-            identity = user.getAugurData();
-           // JsonObject device = identity.getJSONObject("device");
-            JsonObject device = identity.get("device").getAsJsonObject();
-
-            //if the webDeviceId has been received on the querystring and it's different than what augur returns, override augur deviceId
-            if (webDeviceId != null && !device.get("ID").getAsString().equals(webDeviceId)) {
-                device.remove("ID");
-                device.addProperty("ID",  user.getWebDeviceId());
-                identity.remove("device");
-                identity.add("device", device);
-                user.setAugurData(identity);
-            }
-        } else {
-            /*
-             * Can't rely on Augur definitively.  If no augur data, then use our own.  
-             */
-            identity = new JsonObject();
-            JsonObject consumer = new JsonObject();
-            JsonObject device = new JsonObject();
-            consumer.addProperty("UID", "");
-            device.addProperty("ID", webDeviceId);
-            device.addProperty("type", "Android");
-            identity.add("consumer", consumer);
-            identity.add("device", device);
-            user.setAugurData(identity);
-        }
+        JsonObject identity = new JsonObject();
+        JsonObject consumer = new JsonObject();
+        JsonObject device = new JsonObject();
+        consumer.addProperty("UID", "");
+        device.addProperty("ID", webDeviceId);
+        device.addProperty("type", "Android");
+        identity.add("consumer", consumer);
+        identity.add("device", device);
+        user.setAugurData(identity);
     }
 
     public void registerWith(Context context) {

@@ -9,7 +9,6 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
 import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -43,7 +42,7 @@ public class AmbIdentify {
         this.userId = userId;
         this.ambassadorIdentification = ambassadorIdentification;
         this.identifyTasks = new AmbIdentifyTask[1];
-        this.identifyTasks[0] = new AmbAugurTask();
+        //this.identifyTasks[0] = new AmbAugurTask();
         this.memberIdentifyType = identifyType;
         identifyType = "";
     }
