@@ -50,8 +50,6 @@ android {
 apply from: file('dependencies.gradle')
 
 dependencies {
-    compile files('./src/main/resources/augur.jar')
-
     rootProject.ext.sdkCompile.each {
         compile "${it}"
     }
