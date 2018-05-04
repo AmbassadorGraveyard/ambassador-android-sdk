@@ -141,38 +141,6 @@ public final class IdentifyApi {
     /**
      * Passes through to the identifyClient and handles the Retrofit callback and
      * calling back to the RequestCompletion.
-     * @param sessionId the Pusher session id
-     * @param requestId the Pusher request id
-     * @param uid the Ambassador universal id
-     * @param auth the Ambassador universal token
-     * @param request the request body as an UpdateGcmTokenBody object
-     * @param completion the callback for request completion
-     */
-    public void updateGcmToken(String sessionId, final String requestId, String uid, String auth, final UpdateGcmTokenBody request, final RequestManager.RequestCompletion completion) {
-        identifyClient.updateGcmToken(sessionId, requestId, uid, auth, uid, request, new Callback<UpdateGcmTokenResponse>() {
-            @Override
-            public void success(UpdateGcmTokenResponse updateGcmTokenResponse, Response response) {
-                // This should never happen, this request is not returning JSON so it hits the failure
-                completion.onSuccess(requestId);
-                Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateGcmToken(...)");
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                if (error.getResponse() != null && new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
-                    completion.onSuccess(requestId);
-                    Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateGcmToken(...)");
-                } else {
-                    completion.onFailure("failure");
-                    Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.updateGcmToken(...)");
-                }
-            }
-        });
-    }
-
-    /**
-     * Passes through to the identifyClient and handles the Retrofit callback and
-     * calling back to the RequestCompletion.
      * @param shortCode short code of the user to retrieve name + picture for.
      * @param uid ambassador universal id.
      * @param authKey ambassador universal token.
@@ -472,33 +440,6 @@ public final class IdentifyApi {
     /** */
     public static class UpdateNameRequestResponse {
         
-    }
-
-    /** Pojo for update name post request body */
-    public static class UpdateGcmTokenBody {
-        private String email;
-        private UpdateBody update_data;
-
-        public UpdateGcmTokenBody(String email, String gcmToken) {
-            this.email = email;
-            this.update_data = new UpdateBody(gcmToken);
-        }
-
-        public static class UpdateBody {
-
-            private String gcm_token;
-
-            public UpdateBody(String gcm_token) {
-                this.gcm_token = gcm_token;
-            }
-
-        }
-
-    }
-
-    /** */
-    public static class UpdateGcmTokenResponse {
-
     }
 
     /** Pojo for get user from short code request body */

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
@@ -26,7 +25,6 @@ public class User implements Data {
 
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
-    protected String gcmToken;
     protected JsonObject deviceData;
     protected String webDeviceId;
     protected String facebookAccessToken;
@@ -74,17 +72,6 @@ public class User implements Data {
                 save();
             }
         });
-        save();
-    }
-
-    @Nullable
-    public String getGcmToken() {
-        return gcmToken;
-    }
-
-    public void setGcmToken(String gcmToken) {
-        Log.v("Ambassador", gcmToken + "");
-        this.gcmToken = gcmToken;
         save();
     }
 
@@ -176,7 +163,6 @@ public class User implements Data {
     public void clear() {
         userId = null;
         ambassadorIdentification = null;
-        gcmToken = null;
         deviceData = null;
         webDeviceId = null;
         facebookAccessToken = null;
@@ -203,7 +189,6 @@ public class User implements Data {
         User user = new Gson().fromJson(json, User.class);
         setUserId(user.getUserId());
         setAmbassadorIdentification(user.getAmbassadorIdentification());
-        setGcmToken(user.getGcmToken());
         setDeviceData(user.getDeviceData());
         setWebDeviceId(user.getWebDeviceId());
         setFacebookAccessToken(user.getFacebookAccessToken());
@@ -211,6 +196,4 @@ public class User implements Data {
         setLinkedInAccessToken(user.getLinkedInAccessToken());
         setIdentifyData(user.getIdentifyData());
     }
-    // endregion
-
 }
