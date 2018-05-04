@@ -69,7 +69,7 @@ public final class InstallReceiver extends BroadcastReceiver {
         device.addProperty("type", "Android");
         identity.add("consumer", consumer);
         identity.add("device", device);
-        user.setAugurData(identity);
+        user.setDeviceData(identity);
     }
 
     public void registerWith(Context context) {

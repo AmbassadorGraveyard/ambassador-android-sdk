@@ -27,7 +27,7 @@ public class User implements Data {
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
     protected String gcmToken;
-    protected JsonObject augurData;
+    protected JsonObject deviceData;
     protected String webDeviceId;
     protected String facebookAccessToken;
     protected String twitterAccessToken;
@@ -100,12 +100,12 @@ public class User implements Data {
     }
 
     @Nullable
-    public JsonObject getAugurData() {
-        return augurData;
+    public JsonObject getDeviceData() {
+        return deviceData;
     }
 
-    public void setAugurData(JsonObject augurData) {
-        this.augurData = augurData;
+    public void setDeviceData(JsonObject deviceData) {
+        this.deviceData = deviceData;
         save();
     }
 
@@ -177,7 +177,7 @@ public class User implements Data {
         userId = null;
         ambassadorIdentification = null;
         gcmToken = null;
-        augurData = null;
+        deviceData = null;
         webDeviceId = null;
         facebookAccessToken = null;
         twitterAccessToken = null;
@@ -204,7 +204,7 @@ public class User implements Data {
         setUserId(user.getUserId());
         setAmbassadorIdentification(user.getAmbassadorIdentification());
         setGcmToken(user.getGcmToken());
-        setAugurData(user.getAugurData());
+        setDeviceData(user.getDeviceData());
         setWebDeviceId(user.getWebDeviceId());
         setFacebookAccessToken(user.getFacebookAccessToken());
         setTwitterAccessToken(user.getTwitterAccessToken());

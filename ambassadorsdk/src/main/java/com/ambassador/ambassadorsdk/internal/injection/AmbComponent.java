@@ -22,7 +22,6 @@ import com.ambassador.ambassadorsdk.internal.dialogs.AskNameDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.ContactInfoDialog;
 import com.ambassador.ambassadorsdk.internal.dialogs.SocialShareDialog;
 import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
-import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
 import com.ambassador.ambassadorsdk.internal.views.PermissionView;
 
 import javax.inject.Singleton;
@@ -48,7 +47,6 @@ public interface AmbComponent {
     void inject(PusherManager.Channel pusherManagerChannel);
     void inject(InstallReceiver installReceiver);
     void inject(AmbIdentify ambIdentify);
-    void inject(AmbIdentifyTask ambIdentifyTask);
     void inject(AskNameActivity askNameActivity);
     void inject(AmbConversion ambConversion);
     void inject(SocialGridAdapter socialGridAdapter);

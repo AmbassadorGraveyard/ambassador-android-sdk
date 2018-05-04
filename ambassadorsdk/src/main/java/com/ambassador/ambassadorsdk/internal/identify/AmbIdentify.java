@@ -9,15 +9,10 @@ import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.api.pusher.PusherListenerAdapter;
 import com.ambassador.ambassadorsdk.internal.conversion.AmbConversion;
 import com.ambassador.ambassadorsdk.internal.data.User;
-import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -29,7 +24,6 @@ public class AmbIdentify {
     protected static AmbIdentify runningInstance;
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
-    protected AmbIdentifyTask[] identifyTasks;
     protected CompletionListener completionListener;
     protected boolean subscribed;
     protected String memberIdentifyType;
@@ -41,8 +35,6 @@ public class AmbIdentify {
 
         this.userId = userId;
         this.ambassadorIdentification = ambassadorIdentification;
-        this.identifyTasks = new AmbIdentifyTask[1];
-        //this.identifyTasks[0] = new AmbAugurTask();
         this.memberIdentifyType = identifyType;
         identifyType = "";
     }
@@ -56,28 +48,49 @@ public class AmbIdentify {
         user.setUserId(userId);
         user.setEmail(ambassadorIdentification.getEmail());
         user.setAmbassadorIdentification(ambassadorIdentification);
-        final List<AmbIdentifyTask> identifyTasksList = new ArrayList<>();
-        Collections.addAll(identifyTasksList, identifyTasks);
 
-        for (final AmbIdentifyTask task : identifyTasks) {
-            try {
-                task.execute(new AmbIdentifyTask.OnCompleteListener() {
-                    @Override
-                    public void complete() {
-                        identifyTasksList.remove(task);
-                        if (identifyTasksList.isEmpty()) {
-                            onPreExecutionComplete();
-                        }
-                    }
-                });
-            } catch (Exception e) {
-                if (identifyTasksList.contains(task)) {
-                    identifyTasksList.remove(task);
-                    if (identifyTasksList.isEmpty()) {
-                        onPreExecutionComplete();
+        pusherManager.addPusherListener(new PusherListenerAdapter() {
+
+            @Override
+            public void onIdentifyComplete() {
+                super.onIdentifyComplete();
+                runningInstance = null;
+                if (completionListener != null) {
+                    completionListener.complete();
+                }
+                pusherManager.disconnect();
+            }
+
+            @Override
+            public void onIdentifyFailed() {
+                super.onIdentifyFailed();
+                runningInstance = null;
+                if (completionListener != null) {
+                    completionListener.networkError();
+                }
+                pusherManager.disconnect();
+            }
+        });
+
+        if (subscribed) {
+            performIdentifyRequest();
+        } else {
+            pusherManager.addPusherListener(new PusherListenerAdapter() {
+                @Override
+                public void subscribed() {
+                    super.subscribed();
+                    performIdentifyRequest();
+                }
+
+                @Override
+                public void subscriptionFailed() {
+                    super.subscriptionFailed();
+                    runningInstance = null;
+                    if (completionListener != null) {
+                        completionListener.noSDK();
                     }
                 }
-            }
+            });
         }
     }
 
@@ -111,53 +124,6 @@ public class AmbIdentify {
 
         pusherManager.startNewChannel();
         pusherManager.subscribeChannelToAmbassador();
-    }
-
-    protected void onPreExecutionComplete() {
-        pusherManager.addPusherListener(new PusherListenerAdapter() {
-
-            @Override
-            public void onIdentifyComplete() {
-                super.onIdentifyComplete();
-                runningInstance = null;
-                if (completionListener != null) {
-                    completionListener.complete();
-                }
-                pusherManager.disconnect();
-            }
-
-            @Override
-            public void onIdentifyFailed() {
-                super.onIdentifyFailed();
-                runningInstance = null;
-                if (completionListener != null) {
-                    completionListener.networkError();
-                }
-                pusherManager.disconnect();
-            }
-
-        });
-
-        if (subscribed) {
-            performIdentifyRequest();
-        } else {
-            pusherManager.addPusherListener(new PusherListenerAdapter() {
-                @Override
-                public void subscribed() {
-                    super.subscribed();
-                    performIdentifyRequest();
-                }
-
-                @Override
-                public void subscriptionFailed() {
-                    super.subscriptionFailed();
-                    runningInstance = null;
-                    if (completionListener != null) {
-                        completionListener.noSDK();
-                    }
-                }
-            });
-        }
     }
 
     protected void performIdentifyRequest() {

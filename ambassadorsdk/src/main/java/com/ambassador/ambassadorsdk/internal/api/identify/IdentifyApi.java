@@ -388,16 +388,13 @@ public final class IdentifyApi {
 
     /** Pojo for identify post request body */
     public static class IdentifyRequestBody {
-
         private boolean enroll;
         private String campaign_id;
         private String source;
         private String mbsy_source;
         private String mbsy_cookie_code;
         private JsonObject fp;
-
         private String remote_user_id;
-
         private String email;
         private String first_name;
         private String last_name;
@@ -415,11 +412,11 @@ public final class IdentifyApi {
         public String identify_type;
         @Inject protected Utilities Utilities;
 
-        public IdentifyRequestBody(String campaign_id, String userId, String augur, AmbassadorIdentification ambassadorIdentification) {
+        public IdentifyRequestBody(String campaign_id, String userId, String deviceData, AmbassadorIdentification ambassadorIdentification) {
             AmbSingleton.getInstance().getAmbComponent().inject(this);
 
             this.campaign_id = campaign_id;
-            this.source = "android_sdk_1_2__snapshot";
+            this.source = "android_sdk_1_3_0";
             this.mbsy_source = "";
             this.mbsy_cookie_code = "";
             this.remote_user_id = userId;
@@ -437,9 +434,9 @@ public final class IdentifyApi {
 
             try {
                 Gson gson = new Gson();
-                fp = gson.fromJson(augur, JsonElement.class).getAsJsonObject();
+                fp = gson.fromJson(deviceData, JsonElement.class).getAsJsonObject();
             } catch (Exception e) {
-                Utilities.debugLog("IdentifyRequest", "augurObject NULL");
+                Utilities.debugLog("IdentifyRequest", "deviceData NULL");
             }
         }
 
@@ -447,14 +444,10 @@ public final class IdentifyApi {
 
     /** Pojo for identify post request response */
     public static class IdentifyRequestResponse {
-
-
-
     }
 
     /** Pojo for update name post request body */
     public static class UpdateNameRequestBody {
-
         private String email;
         private UpdateBody update_data;
 
@@ -464,7 +457,6 @@ public final class IdentifyApi {
         }
 
         public static class UpdateBody {
-
             private String first_name;
             private String last_name;
 
@@ -484,7 +476,6 @@ public final class IdentifyApi {
 
     /** Pojo for update name post request body */
     public static class UpdateGcmTokenBody {
-
         private String email;
         private UpdateBody update_data;
 
@@ -545,11 +536,9 @@ public final class IdentifyApi {
 
     /** Pojo for get company info response */
     public static class GetCompanyInfoResponse {
-
         public Result[] results;
 
         public static class Result {
-
             public String uid;
             public String url;
 
@@ -559,10 +548,7 @@ public final class IdentifyApi {
 
     /** Pojo for get envoy keys response */
     public static class GetEnvoyKeysResponse {
-
         public String envoy_client_id;
         public String envoy_client_secret;
-
     }
-
 }
