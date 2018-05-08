@@ -4,13 +4,18 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.api.PusherManager;
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.User;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbAugurTask;
+import com.ambassador.ambassadorsdk.internal.identify.tasks.AmbIdentifyTask;
 
 import junit.framework.Assert;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -43,6 +48,48 @@ public class AmbIdentifyTest {
     @Test
     public void testsGetDoesCreateInstanceWithEmail() throws Exception {
         Assert.assertEquals("jake@getambassador.com", ambIdentify.userId);
+    }
+
+    @Ignore
+    @Test
+    public void testsExecuteDoesWaitForLongRunningTasks() throws Exception {
+        ambIdentify.identifyTasks = new AmbIdentifyTask[]{ Mockito.mock(AmbAugurTask.class) };
+        Mockito.doNothing().when(ambIdentify).onPreExecutionComplete();
+        Mockito.doNothing().when(ambIdentify).setupPusher();
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                AmbIdentifyTask.OnCompleteListener onCompleteListener = (AmbIdentifyTask.OnCompleteListener) invocation.getArguments()[0];
+                onCompleteListener.complete();
+                Mockito.verify(ambIdentify, Mockito.never()).onPreExecutionComplete();
+                return null;
+            }
+        }).when(ambIdentify.identifyTasks[0]).execute(Mockito.any(AmbIdentifyTask.OnCompleteListener.class));
+
+        ambIdentify.execute();
+    }
+
+    @Ignore
+    @Test
+    public void testsExecuteDoesContinueWhenTasksThrowExceptions() throws Exception {
+        ambIdentify.identifyTasks = new AmbIdentifyTask[]{ Mockito.mock(AmbAugurTask.class) };
+        Mockito.doThrow(new RuntimeException()).when(ambIdentify.identifyTasks[0]).execute(Mockito.any(AmbIdentifyTask.OnCompleteListener.class));
+
+        Mockito.doNothing().when(ambIdentify).onPreExecutionComplete();
+        Mockito.doNothing().when(ambIdentify).setupPusher();
+
+        Mockito.doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                AmbIdentifyTask.OnCompleteListener onCompleteListener = (AmbIdentifyTask.OnCompleteListener) invocation.getArguments()[0];
+                onCompleteListener.complete();
+                Mockito.verify(ambIdentify, Mockito.never()).onPreExecutionComplete();
+                return null;
+            }
+        }).when(ambIdentify.identifyTasks[0]).execute(Mockito.any(AmbIdentifyTask.OnCompleteListener.class));
+
+        ambIdentify.execute();
     }
 
     @Test
