@@ -1,17 +1,35 @@
 #!/bin/sh
+# Builds a debug APK and tests APK for the demo app and uploads them
+# to AWS S3. Runs tests and reports status to GitHub.
 
-# fail if err occurs on any step
-set -o errexit
+# Call abort on exit
+trap 'abort' 0;
 
-if [ "$CIRCLE_BRANCH" != "master" ]
-  then
-    APK_NAME="rainforest.apk";
-    cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug.apk $CIRCLE_ARTIFACTS/$APK_NAME;
-    curl -H "Authorization: Bearer $DROPBOX_TOKEN" https://api-content.dropbox.com/1/files_put/auto/ -T $CIRCLE_ARTIFACTS/$APK_NAME
+# Fail on any command error
+set -e;
 
-    rainforest validate --token $RAINFOREST_TOKEN
-    rainforest upload --token $RAINFOREST_TOKEN
+# Get the commit msg
+msg=`git log -1 --pretty=%B`;
 
-    GITHUB_PULL_NUMBER=$(echo $CI_PULL_REQUEST | awk -F/ '{print $7}')
-    rainforest run all --fg --fail-fast --git-trigger --token "$RAINFOREST_TOKEN" --site-id "$RAINFOREST_SITE" --description "CI run for $CIRCLE_BRANCH" --browsers android_phone_portrait
-fi
+# Get commit sha for GitHub reporting
+sha=`git rev-parse HEAD`;
+
+# Get the branch name
+branch=`git rev-parse --abbrev-ref HEAD`;
+
+# Create new name for app APK as current epoch time + '.apk'
+APK_NAME="ambassadorsdk-demo-debug.apk";
+
+# Copy APK to artifacts directory with new name
+echo "Copying debug apk to $CIRCLE_ARTIFACTS/$APK_NAME";
+cp ./ambassadorsdk-demo/build/outputs/apk/ambassadorsdk-demo-debug.apk $CIRCLE_ARTIFACTS/$APK_NAME;
+
+# Upload Debug APK file to S3
+echo "Requesting upload to device farm";
+aws s3 cp --acl public-read $CIRCLE_ARTIFACTS/$APK_NAME s3://ambassador-rainforest/android/debug/DemoApp.apk;
+
+# Trigger RainforestQA test run
+rainforest run --run-group 1793 --fail-fast --environment-id 5165 --token "$RAINFOREST_TOKEN" --description "Ambassador Android Demo App automated post deploy run" --bg
+
+# End abort on exit block
+trap : 0
