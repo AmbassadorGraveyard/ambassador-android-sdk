@@ -44,7 +44,7 @@ public class AmbIdentify {
 
         setupPusher();
 
-        user.clear();
+        //user.clear();
         user.setUserId(userId);
         user.setEmail(ambassadorIdentification.getEmail());
         user.setAmbassadorIdentification(ambassadorIdentification);

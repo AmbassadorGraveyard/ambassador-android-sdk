@@ -66,7 +66,7 @@ public final class InstallReceiver extends BroadcastReceiver {
         JsonObject device = new JsonObject();
         consumer.addProperty("UID", "");
         device.addProperty("ID", webDeviceId);
-        device.addProperty("type", "Android");
+        device.addProperty("type", "SmartPhone");
         identity.add("consumer", consumer);
         identity.add("device", device);
         user.setDeviceData(identity);
