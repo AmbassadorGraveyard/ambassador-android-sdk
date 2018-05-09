@@ -20,6 +20,7 @@ dependencies:
     - curl -O https://bin.equinox.io/c/htRtQZagtfg/rainforest-cli-stable-linux-amd64.tgz
     - sudo tar -xf rainforest-cli-stable-linux-amd64.tgz -C /usr/local/bin
     - bash secrets.sh
+    - echo y | android update sdk --no-ui --all --filter "build-tools-27.0.3,android-27"
 
 test:
   override:

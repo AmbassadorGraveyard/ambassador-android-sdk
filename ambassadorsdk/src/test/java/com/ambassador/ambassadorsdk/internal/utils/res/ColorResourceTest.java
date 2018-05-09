@@ -8,6 +8,7 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import junit.framework.Assert;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -35,6 +36,7 @@ public class ColorResourceTest {
         Mockito.when(context.getResources()).thenReturn(resources);
     }
 
+    @Ignore
     @Test
     public void constructorTest() {
         // ARRANGE
