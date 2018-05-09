@@ -7,6 +7,7 @@ import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -18,6 +19,7 @@ import retrofit.RestAdapter;
 import retrofit.android.AndroidLog;
 import retrofit.client.Client;
 
+@Ignore
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({
         AmbSingleton.class,
