@@ -83,4 +83,8 @@ public class AmbConversion {
         conversions.add(new JsonParser().parse(new Gson().toJson(this)).getAsJsonObject());
         sharedPreferences.edit().putString("conversions", conversions.toString()).apply();
     }
+
+    public static AmbConversion get(ConversionParameters conversionParameters, boolean limitOnce, ConversionStatusListener conversionStatusListener) {
+        return new AmbConversion(conversionParameters, limitOnce, conversionStatusListener);
+    }
 }

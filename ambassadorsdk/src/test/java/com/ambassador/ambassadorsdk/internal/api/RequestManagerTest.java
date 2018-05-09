@@ -116,7 +116,6 @@ public class RequestManagerTest {
         Mockito.when(auth.getSdkToken()).thenReturn(universalToken);
         Mockito.when(ambId.getFirstName()).thenReturn(userFirstName);
         Mockito.when(ambId.getLastName()).thenReturn(userLastName);
-        Mockito.when(user.getAugurData()).thenReturn(identifyObject);
         Mockito.when(user.getAmbassadorIdentification()).thenReturn(Mockito.mock(AmbassadorIdentification.class));
         Mockito.when(campaign.getId()).thenReturn(campaignId);
         Mockito.when(user.getUserId()).thenReturn(userEmail);
