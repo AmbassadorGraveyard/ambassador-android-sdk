@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
@@ -26,8 +25,7 @@ public class User implements Data {
 
     protected String userId;
     protected AmbassadorIdentification ambassadorIdentification;
-    protected String gcmToken;
-    protected JsonObject augurData;
+    protected JsonObject deviceData;
     protected String webDeviceId;
     protected String facebookAccessToken;
     protected String twitterAccessToken;
@@ -78,17 +76,6 @@ public class User implements Data {
     }
 
     @Nullable
-    public String getGcmToken() {
-        return gcmToken;
-    }
-
-    public void setGcmToken(String gcmToken) {
-        Log.v("Ambassador", gcmToken + "");
-        this.gcmToken = gcmToken;
-        save();
-    }
-
-    @Nullable
     public JsonObject getPusherInfo() {
         return new JsonParser().parse(identifyData != null ? identifyData : "{}").getAsJsonObject();
     }
@@ -100,12 +87,12 @@ public class User implements Data {
     }
 
     @Nullable
-    public JsonObject getAugurData() {
-        return augurData;
+    public JsonObject getDeviceData() {
+        return deviceData;
     }
 
-    public void setAugurData(JsonObject augurData) {
-        this.augurData = augurData;
+    public void setDeviceData(JsonObject deviceData) {
+        this.deviceData = deviceData;
         save();
     }
 
@@ -176,8 +163,7 @@ public class User implements Data {
     public void clear() {
         userId = null;
         ambassadorIdentification = null;
-        gcmToken = null;
-        augurData = null;
+        deviceData = null;
         webDeviceId = null;
         facebookAccessToken = null;
         twitterAccessToken = null;
@@ -203,14 +189,11 @@ public class User implements Data {
         User user = new Gson().fromJson(json, User.class);
         setUserId(user.getUserId());
         setAmbassadorIdentification(user.getAmbassadorIdentification());
-        setGcmToken(user.getGcmToken());
-        setAugurData(user.getAugurData());
+        setDeviceData(user.getDeviceData());
         setWebDeviceId(user.getWebDeviceId());
         setFacebookAccessToken(user.getFacebookAccessToken());
         setTwitterAccessToken(user.getTwitterAccessToken());
         setLinkedInAccessToken(user.getLinkedInAccessToken());
         setIdentifyData(user.getIdentifyData());
     }
-    // endregion
-
 }
