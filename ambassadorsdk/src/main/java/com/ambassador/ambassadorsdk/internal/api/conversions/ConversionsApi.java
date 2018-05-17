@@ -88,37 +88,34 @@ public final class ConversionsApi {
 
     /** Pojo for register conversion post request body */
     public static class RegisterConversionRequestBody {
-
-        private AugurObject fp;
+        private FingerprintObject fp;
         private FieldsObject fields;
+        private String source;
 
-        public RegisterConversionRequestBody(AugurObject fp, FieldsObject fields) {
+        public RegisterConversionRequestBody(FingerprintObject fp, FieldsObject fields) {
             this.fp = fp;
             this.fields = fields;
+            this.source = "android_sdk_1_3_0";
         }
 
-        public static class AugurObject {
-
+        public static class FingerprintObject {
             private ConsumerObject consumer;
             private DeviceObject device;
 
-            public AugurObject(String UID, String type, String ID) {
+            public FingerprintObject(String UID, String type, String ID) {
                 this.consumer = new ConsumerObject(UID);
                 this.device = new DeviceObject(type, ID);
             }
 
             public static class ConsumerObject {
-
                 private String UID;
 
                 public ConsumerObject(String UID) {
                     this.UID = UID;
                 }
-
             }
 
             public static class DeviceObject {
-
                 private String type;
                 private String ID;
 
@@ -126,13 +123,10 @@ public final class ConversionsApi {
                     this.type = type;
                     this.ID = ID;
                 }
-
             }
-
         }
 
         public static class FieldsObject {
-
             private int mbsy_campaign;
             private String mbsy_email;
             private String mbsy_first_name;
@@ -181,11 +175,8 @@ public final class ConversionsApi {
 
     /** Pojo for register conversion post request response */
     public static class RegisterConversionRequestResponse {
-
         public String first_name;
         public String last_name;
         public int campaign_uid;
-
     }
-
 }

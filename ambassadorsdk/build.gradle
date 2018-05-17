@@ -50,8 +50,6 @@ android {
 apply from: file('dependencies.gradle')
 
 dependencies {
-    compile files('./src/main/resources/augur.jar')
-
     rootProject.ext.sdkCompile.each {
         compile "${it}"
     }
@@ -94,7 +92,7 @@ ext {
     siteUrl = 'http://getambassador.com'
     gitUrl = 'https://github.com/GetAmbassador/ambassador-android-sdk.git'
 
-    libraryVersion = '1.2.9'
+    libraryVersion = '1.2.23-snapshot'
 
     developerId = 'ambassador'
     developerName = 'Ambassador Software'

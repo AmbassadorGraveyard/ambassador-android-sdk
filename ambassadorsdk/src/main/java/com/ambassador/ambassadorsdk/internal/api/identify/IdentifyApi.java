@@ -141,38 +141,6 @@ public final class IdentifyApi {
     /**
      * Passes through to the identifyClient and handles the Retrofit callback and
      * calling back to the RequestCompletion.
-     * @param sessionId the Pusher session id
-     * @param requestId the Pusher request id
-     * @param uid the Ambassador universal id
-     * @param auth the Ambassador universal token
-     * @param request the request body as an UpdateGcmTokenBody object
-     * @param completion the callback for request completion
-     */
-    public void updateGcmToken(String sessionId, final String requestId, String uid, String auth, final UpdateGcmTokenBody request, final RequestManager.RequestCompletion completion) {
-        identifyClient.updateGcmToken(sessionId, requestId, uid, auth, uid, request, new Callback<UpdateGcmTokenResponse>() {
-            @Override
-            public void success(UpdateGcmTokenResponse updateGcmTokenResponse, Response response) {
-                // This should never happen, this request is not returning JSON so it hits the failure
-                completion.onSuccess(requestId);
-                Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateGcmToken(...)");
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                if (error.getResponse() != null && new ResponseCode(error.getResponse().getStatus()).isSuccessful()) {
-                    completion.onSuccess(requestId);
-                    Utilities.debugLog("amb-request", "SUCCESS: IdentifyApi.updateGcmToken(...)");
-                } else {
-                    completion.onFailure("failure");
-                    Utilities.debugLog("amb-request", "FAILURE: IdentifyApi.updateGcmToken(...)");
-                }
-            }
-        });
-    }
-
-    /**
-     * Passes through to the identifyClient and handles the Retrofit callback and
-     * calling back to the RequestCompletion.
      * @param shortCode short code of the user to retrieve name + picture for.
      * @param uid ambassador universal id.
      * @param authKey ambassador universal token.
@@ -388,16 +356,13 @@ public final class IdentifyApi {
 
     /** Pojo for identify post request body */
     public static class IdentifyRequestBody {
-
         private boolean enroll;
         private String campaign_id;
         private String source;
         private String mbsy_source;
         private String mbsy_cookie_code;
         private JsonObject fp;
-
         private String remote_user_id;
-
         private String email;
         private String first_name;
         private String last_name;
@@ -415,16 +380,14 @@ public final class IdentifyApi {
         public String identify_type;
         @Inject protected Utilities Utilities;
 
-        public IdentifyRequestBody(String campaign_id, String userId, String augur, AmbassadorIdentification ambassadorIdentification) {
+        public IdentifyRequestBody(String campaign_id, String userId, String deviceData, AmbassadorIdentification ambassadorIdentification) {
             AmbSingleton.getInstance().getAmbComponent().inject(this);
 
-            this.enroll = true;
             this.campaign_id = campaign_id;
-            this.source = "android_sdk_pilot";
+            this.source = "android_sdk_1_3_0";
             this.mbsy_source = "";
             this.mbsy_cookie_code = "";
             this.remote_user_id = userId;
-
             this.email = ambassadorIdentification.getEmail();
             this.first_name = ambassadorIdentification.getFirstName();
             this.last_name = ambassadorIdentification.getLastName();
@@ -435,14 +398,13 @@ public final class IdentifyApi {
             this.zip = ambassadorIdentification.getPostalCode();
             this.country = ambassadorIdentification.getCountry();
             this.add_to_groups = ambassadorIdentification.getAddToGroups();
-
             this.identify_type = "";
 
             try {
                 Gson gson = new Gson();
-                fp = gson.fromJson(augur, JsonElement.class).getAsJsonObject();
+                fp = gson.fromJson(deviceData, JsonElement.class).getAsJsonObject();
             } catch (Exception e) {
-                Utilities.debugLog("IdentifyRequest", "augurObject NULL");
+                Utilities.debugLog("IdentifyRequest", "deviceData NULL");
             }
         }
 
@@ -450,14 +412,10 @@ public final class IdentifyApi {
 
     /** Pojo for identify post request response */
     public static class IdentifyRequestResponse {
-
-
-
     }
 
     /** Pojo for update name post request body */
     public static class UpdateNameRequestBody {
-
         private String email;
         private UpdateBody update_data;
 
@@ -467,7 +425,6 @@ public final class IdentifyApi {
         }
 
         public static class UpdateBody {
-
             private String first_name;
             private String last_name;
 
@@ -483,34 +440,6 @@ public final class IdentifyApi {
     /** */
     public static class UpdateNameRequestResponse {
         
-    }
-
-    /** Pojo for update name post request body */
-    public static class UpdateGcmTokenBody {
-
-        private String email;
-        private UpdateBody update_data;
-
-        public UpdateGcmTokenBody(String email, String gcmToken) {
-            this.email = email;
-            this.update_data = new UpdateBody(gcmToken);
-        }
-
-        public static class UpdateBody {
-
-            private String gcm_token;
-
-            public UpdateBody(String gcm_token) {
-                this.gcm_token = gcm_token;
-            }
-
-        }
-
-    }
-
-    /** */
-    public static class UpdateGcmTokenResponse {
-
     }
 
     /** Pojo for get user from short code request body */
@@ -548,11 +477,9 @@ public final class IdentifyApi {
 
     /** Pojo for get company info response */
     public static class GetCompanyInfoResponse {
-
         public Result[] results;
 
         public static class Result {
-
             public String uid;
             public String url;
 
@@ -562,10 +489,7 @@ public final class IdentifyApi {
 
     /** Pojo for get envoy keys response */
     public static class GetEnvoyKeysResponse {
-
         public String envoy_client_id;
         public String envoy_client_secret;
-
     }
-
 }

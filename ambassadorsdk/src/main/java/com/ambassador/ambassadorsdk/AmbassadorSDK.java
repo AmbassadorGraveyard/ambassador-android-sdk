@@ -62,7 +62,7 @@ public final class AmbassadorSDK {
         return instance;
     }
 
-    public AmbassadorSDK(@Nullable Context context) {
+    private AmbassadorSDK(@Nullable Context context) {
         if (context != null) {
             AmbSingleton.getInstance().setContext(context);
         }
@@ -276,6 +276,7 @@ public final class AmbassadorSDK {
      * @param activity the Activity to launch the dialog from.
      * @param availabilityCallback the callback interface to pass the dialog through, once available.
      */
+    @Deprecated
     public void presentWelcomeScreen(
             @NonNull final Activity activity,
             @NonNull final WelcomeScreenDialog.AvailabilityCallback availabilityCallback,

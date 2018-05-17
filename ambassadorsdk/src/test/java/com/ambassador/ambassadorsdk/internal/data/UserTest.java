@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
-import com.google.gson.JsonObject;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -56,8 +55,6 @@ public class UserTest {
         user.userId = "jake";
         user.ambassadorIdentification = new AmbassadorIdentification();
         user.ambassadorIdentification.setEmail("jake@getambassador.com");
-        user.gcmToken = "gcmToken";
-        user.augurData = null;
         user.facebookAccessToken = "facebookAccessToken";
         user.twitterAccessToken = "twitterAccessToken";
         user.linkedInAccessToken = "linkedInAccessToken";
@@ -79,8 +76,6 @@ public class UserTest {
         User user = new User();
         user.userId = "jake@getambassador.com";
         user.ambassadorIdentification = new AmbassadorIdentification();
-        user.gcmToken = "gcmToken";
-        user.augurData = null;
 
         // ACT
         user.save();
@@ -98,16 +93,12 @@ public class UserTest {
         User user = new User();
         user.userId = "jake@getambassador.com";
         user.ambassadorIdentification = new AmbassadorIdentification();
-        user.gcmToken = "gcmToken";
-        user.augurData = new JsonObject();
 
         // ACT
         user.clear();
 
         // ASSERT
         Assert.assertNull(user.getUserId());
-        Assert.assertNull(user.getGcmToken());
-        Assert.assertNull(user.getAugurData());
     }
 
     @Test
@@ -119,8 +110,6 @@ public class UserTest {
         // ACT
         user.setUserId("jake@getambassador.com");
         user.setAmbassadorIdentification(new AmbassadorIdentification());
-        user.setGcmToken("gcmToken");
-        user.setAugurData(new JsonObject());
         user.setWebDeviceId("web");
         user.setFacebookAccessToken("facebook");
         user.setTwitterAccessToken("twitter");
