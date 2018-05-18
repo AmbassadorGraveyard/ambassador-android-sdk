@@ -29,8 +29,7 @@ $ chmod +x .git/hooks/pre-push
 
 In the ambassadorsdk module's build.gradle, inside of the ext block at the bottom, increment libraryVersion. Make sure that `IS_RELEASE_BUILD` is true.
 
-Open both IdentifyApi.java and ConversionsApi.java and find the line ```this.source = "android_sdk_x_x_x";```. Change the version number here as well (the plan
-is to make this dynamic in the near future).
+Open both IdentifyApi.java and ConversionsApi.java and find the line ```this.source = "android_sdk_x_x_x";```. Change the version number here as well (the plan is to make this dynamic in the near future).
 
 Inside the base folder of the project, execute the following command. The command will fail but that is expected :facepalm:.
 
