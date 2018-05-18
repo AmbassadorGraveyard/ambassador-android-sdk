@@ -29,7 +29,10 @@ $ chmod +x .git/hooks/pre-push
 
 In the ambassadorsdk module's build.gradle, inside of the ext block at the bottom, increment libraryVersion. Make sure that `IS_RELEASE_BUILD` is true.
 
-Inside the base folder of the project, execute the following command. The command will fail but that is expected.
+Open both IdentifyApi.java and ConversionsApi.java and find the line ```this.source = "android_sdk_x_x_x";```. Change the version number here as well (the plan
+is to make this dynamic in the near future).
+
+Inside the base folder of the project, execute the following command. The command will fail but that is expected :facepalm:.
 
 ```sh
 ./gradlew bintrayUpload
@@ -47,17 +50,9 @@ Copy your new version somewhere useful like the desktop:
 cp -r 1.x.x ~/Desktop/1.x.x
 ```
 
-Login to bintray.com and select the Ambassador organization. Select the maven repo. Select the ambassadorsdk package.
+Log in to myget.com and go to https://www.myget.org/feed/Packages/ambassador. Click Add package -> Maven package.
 
-Click "New version". Enter your version number for the name. Click submit. Now click the new version. On the right click to upload files using the UI uploader.
-
-Select the 4 files from the folder you copied to your desktop. Set the path like this:
-
-```
-com/ambassador/ambassadorsdk/{VERSION}
-```
-
-Save, and make sure you click publish after.
+Choose the "Upload one package" radio button. Upload both your .pom and .aar from the Desktop directory above (.jar files are not uploaded). Click Add.
 
 Create a release in Github.
 
@@ -79,6 +74,3 @@ Select the ambassadorsdk-demo module and click next.
 Navigate to and choose the downloaded keystore for the key store path. The rest of the credentials are in a .txt file next to the keystore file in google drive.
 
 Ensure build type is `Release` and then click build.
-
-
-
