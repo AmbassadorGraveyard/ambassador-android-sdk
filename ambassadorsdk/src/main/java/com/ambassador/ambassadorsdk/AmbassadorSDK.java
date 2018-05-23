@@ -132,8 +132,8 @@ public final class AmbassadorSDK {
             ambassadorIdentification.setCompany(traits.getString("company", null));
             ambassadorIdentification.setPhone(traits.getString("phone", null));
             ambassadorIdentification.setCustomLabel1(traits.getString("customLabel1", null));
-            ambassadorIdentification.setCustomLabel2(traits.getString("customLabel1", null));
-            ambassadorIdentification.setCustomLabel3(traits.getString("customLabel1", null));
+            ambassadorIdentification.setCustomLabel2(traits.getString("customLabel2", null));
+            ambassadorIdentification.setCustomLabel3(traits.getString("customLabel3", null));
             ambassadorIdentification.setAddToGroups(traits.getString("addToGroups", null));
 
             Bundle address = traits.getBundle("address");
