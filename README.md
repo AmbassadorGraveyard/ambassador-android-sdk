@@ -6,6 +6,8 @@ _**Support Level**_: API 16+ (4.1+)
 
 ## Getting Started
 
+Clone the repo
+
 Install Git hooks:
 
 ```sh
@@ -24,6 +26,16 @@ Make sure the `pre-push` hook is executable:
 ```sh
 $ chmod +x .git/hooks/pre-push
 ```
+
+Ask another developer for the secrets.txt file, and copy it into the project's root.
+
+In Android Studio, click the "Sync Project with Gradle Files" button on the toolbar.
+
+Go to Tools -> Android -> SDK Manager and make sure the latest SDKs are installed.
+
+Next, download an emulator. Go to Tools -> Android -> AVD Manager -> Create Virtual Device, and choose a relatively recent device.
+
+Now click the Debug button on the toolbar and choose the emulator you downloaded. The demo app (which implements the SDK) will install and run on the emulator.
 
 ## Releasing the SDK
 
