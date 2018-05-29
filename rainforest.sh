@@ -29,7 +29,7 @@ echo "Requesting upload to device farm";
 aws s3 cp --acl public-read $CIRCLE_ARTIFACTS/$APK_NAME s3://ambassador-rainforest/android/debug/DemoApp.apk;
 
 # Trigger RainforestQA test run
-rainforest run --run-group 1793 --fail-fast --environment-id 5165 --token "$RAINFOREST_TOKEN" --description "Ambassador Android Demo App automated post deploy run" --bg
+rainforest run --run-group 1793 --fail-fast --token "$RAINFOREST_TOKEN" --description "Ambassador Android Demo App automated post deploy run" --bg
 
 # End abort on exit block
 trap : 0
