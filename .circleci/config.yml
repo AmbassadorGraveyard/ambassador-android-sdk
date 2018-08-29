@@ -91,6 +91,7 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run: ./gradlew -p ambassadorsdk
     - run: ./gradlew -p ambassadorsdk-demo assembleDebug --quiet;
+    - run: echo 'export RAINFOREST_TOKEN="$RAINFOREST_TOKEN"' >> $BASH_ENV
     - run: ./rainforest.sh
     # Teardown
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
