@@ -122,7 +122,6 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         AmbSingleton.getInstance().getAmbComponent().inject(this);
         ButterFork.bind(this);
 
-        //raf = RAFOptions.get();
         finishIfSingletonInvalid();
         if (isFinishing()) return;
 
