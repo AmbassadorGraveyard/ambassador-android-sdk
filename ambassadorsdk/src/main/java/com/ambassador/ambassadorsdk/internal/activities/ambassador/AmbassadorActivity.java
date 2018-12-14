@@ -88,10 +88,9 @@ public final class AmbassadorActivity extends AppCompatActivity {
     @Inject protected Campaign              campaign;
     @Inject protected PusherManager         pusherManager;
     @Inject protected Device                device;
-    @Inject protected RAFOptions            RAFOptions;
+    @Inject protected RAFOptions            raf;
     @Inject protected Utilities             Utilities;
 
-    protected RAFOptions            raf;
     protected ProgressDialog        progressDialog;
     protected Timer                 networkTimer;
     protected ShareManager          currentManager;
@@ -110,7 +109,6 @@ public final class AmbassadorActivity extends AppCompatActivity {
 
         AmbSingleton.getInstance().getAmbComponent().inject(this);
         ButterFork.bind(this);
-        raf = RAFOptions.get();
 
         finishIfSingletonInvalid();
         if (isFinishing()) return;

@@ -105,7 +105,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
     @Inject protected Device            device;
     @Inject protected RAFOptions        RAFOptions;
     @Inject protected Utilities         Utilities;
-    @Inject protected RAFOptions                raf;
+    @Inject protected RAFOptions        raf;
 
     protected List<Contact>             contactList;
     protected ContactListAdapter        contactListAdapter;
@@ -122,7 +122,7 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         AmbSingleton.getInstance().getAmbComponent().inject(this);
         ButterFork.bind(this);
 
-        raf = RAFOptions.get();
+        //raf = RAFOptions.get();
         finishIfSingletonInvalid();
         if (isFinishing()) return;
 
