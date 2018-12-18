@@ -362,7 +362,7 @@ public final class IdentifyApi {
         private String mbsy_source;
         private String mbsy_cookie_code;
         private JsonObject fp;
-        private String remote_user_id;
+        private String remote_customer_id;
         private String email;
         private String first_name;
         private String last_name;
@@ -387,7 +387,7 @@ public final class IdentifyApi {
             this.source = "android_sdk_1_3_0";
             this.mbsy_source = "";
             this.mbsy_cookie_code = "";
-            this.remote_user_id = userId;
+            this.remote_customer_id = userId;
             this.email = ambassadorIdentification.getEmail();
             this.first_name = ambassadorIdentification.getFirstName();
             this.last_name = ambassadorIdentification.getLastName();
