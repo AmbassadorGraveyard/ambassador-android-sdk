@@ -375,15 +375,23 @@ public final class IdentifyApi {
         private String state;
         private String zip;
         private String country;
-
         private String add_to_groups;
         public String identify_type;
+
         @Inject protected Utilities Utilities;
 
         public IdentifyRequestBody(String campaign_id, String userId, String deviceData, AmbassadorIdentification ambassadorIdentification) {
             AmbSingleton.getInstance().getAmbComponent().inject(this);
 
             this.campaign_id = campaign_id;
+
+            // If a campaign was passed, this user will be switched to an ambassador and enrolled into that campaign's group
+            // as long as the campaign has only one group, and that group only belongs to that campaign
+            // If the above conditions are not met, the user will still be switched to an ambassador
+            if (campaign_id != null) {
+                this.enroll = true; // switches status to ambassador
+            }
+
             this.source = "android_sdk_1_3_0";
             this.mbsy_source = "";
             this.mbsy_cookie_code = "";
