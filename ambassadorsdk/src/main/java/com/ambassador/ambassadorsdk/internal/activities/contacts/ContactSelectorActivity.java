@@ -4,13 +4,8 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -24,7 +19,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.telephony.SmsManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -75,7 +69,6 @@ import butterfork.ButterFork;
  */
 public final class ContactSelectorActivity extends AppCompatActivity {
     private static final int CHECK_CONTACT_PERMISSIONS = 1;
-    private static final int CHECK_SEND_SMS_PERMISSIONS = 2;
     private static final int MAX_SMS_LENGTH = 160;
     private static final int LENGTH_GOOD_COLOR = new RAFOptions().get().getContactsSendButtonTextColor();
     private static final int LENGTH_BAD_COLOR = new ColorResource(android.R.color.holo_red_dark).getColor();
@@ -154,14 +147,6 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                     populateContacts();
                 } else {
                     permissionView.setVisibility(View.VISIBLE);
-                }
-                break;
-            case CHECK_SEND_SMS_PERMISSIONS:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    handleSendSMS();
-                } else {
-                    progressDialog.dismiss();
-                    finish();
                 }
                 break;
 
@@ -505,70 +490,6 @@ public final class ContactSelectorActivity extends AppCompatActivity {
         rvContacts.setAdapter(contactListAdapter);
     }
 
-    private void handleSendSMS() {
-        if (!handlePermission(Manifest.permission.SEND_SMS, CHECK_SEND_SMS_PERMISSIONS)) {
-            return;
-        }
-
-        String SENT = "SMS_SENT";
-        String DELIVERED = "SMS_DELIVERED";
-        PendingIntent sentPI = PendingIntent.getBroadcast(ContactSelectorActivity.this, 0, new Intent(SENT), 0);
-        PendingIntent deliveredPI = PendingIntent.getBroadcast(ContactSelectorActivity.this, 0, new Intent(DELIVERED), 0);
-
-        //when the SMS has been sent
-        registerReceiver(new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                progressDialog.dismiss();
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:
-                        finish();
-                        Toast.makeText(ContactSelectorActivity.this, new StringResource(R.string.post_success).getValue(), Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        Toast.makeText(ContactSelectorActivity.this, "There was a problem sending the SMS, please try again later. (RESULT_ERROR_GENERIC_FAILURE)", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NO_SERVICE:
-                        Toast.makeText(ContactSelectorActivity.this, "There was a problem sending the SMS, please try again later. (RESULT_ERROR_NO_SERVICE)", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_NULL_PDU:
-                        Toast.makeText(ContactSelectorActivity.this, "There was a problem sending the SMS, please try again later. (RESULT_ERROR_NULL_PDU)", Toast.LENGTH_SHORT).show();
-                        break;
-                    case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        Toast.makeText(getBaseContext(), "There was a problem sending the SMS, please try again later. (RESULT_ERROR_RADIO_OFF)", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        Toast.makeText(getBaseContext(), "There was a problem sending the SMS, please try again later. (UNKNOWN)", Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        }, new IntentFilter(SENT));
-
-        //NOTE: keeping this code in comments, because we may want to use delivered instead of sent in the future
-        //when the SMS has been delivered
-        /*registerReceiver(new BroadcastReceiver(){
-            @Override
-            public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:
-                        Toast.makeText(ContactSelectorActivity.this, "SMS delivered", Toast.LENGTH_SHORT).show();
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        Toast.makeText(ContactSelectorActivity.this, "SMS not delivered", Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }, new IntentFilter(DELIVERED));*/
-
-        SmsManager sms = SmsManager.getDefault();
-        Contact contact = contactListAdapter.getSelectedContacts().get(0);
-        sms.sendTextMessage(contact.getPhoneNumber(), null, etShareMessage.getText().toString(), sentPI, deliveredPI);
-    }
-
     private boolean handlePermission(String permission, int code) {
         int permissionCheck = ContextCompat.checkSelfPermission(this, permission);
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
@@ -662,12 +583,6 @@ public final class ContactSelectorActivity extends AppCompatActivity {
                     progressDialog.show();
                 }
             });
-        }
-
-        //if only 1 contact and device is equipped to send, use native SMS for a better experience
-        if (showPhoneNumbers && contactListAdapter.getSelectedContacts().size() == 1 &&AmbSingleton.getInstance().getContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
-            handleSendSMS();
-            return;
         }
 
         bulkShareHelper.bulkShare(etShareMessage.getText().toString(), contactListAdapter.getSelectedContacts(), showPhoneNumbers, new BulkShareHelper.BulkShareCompletion() {
