@@ -90,9 +90,6 @@ jobs:
     # This is based on your 1.0 configuration file or project settings
     - run: ./gradlew -p ambassadorsdk
     - run: ./gradlew -p ambassadorsdk-demo assembleDebug --quiet;
-    - run: |
-        echo 'export RAINFOREST_TOKEN="$RAINFOREST_TOKEN"' >> $BASH_ENV
-        ./rainforest.sh
     # Teardown
     #   If you break your build into multiple jobs with workflows, you will probably want to do the parts of this that are relevant in each
     # Save test results
@@ -103,3 +100,29 @@ jobs:
         path: /tmp/circleci-artifacts
     - store_artifacts:
         path: /tmp/circleci-test-results
+
+  test:
+    machine:
+        enabled: true
+    working_directory: ~/GetAmbassador/ambassador-android-sdk
+    steps:
+        - run: 
+            name: Setup Environment Variables
+            command: |
+              echo 'export RAINFOREST_TOKEN="$RAINFOREST_TOKEN"' >> $BASH_ENV
+        - run:
+            name: Run Rainforest
+            command: |
+              ./rainforest.sh
+
+workflows:
+  version: 2
+  build-test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
