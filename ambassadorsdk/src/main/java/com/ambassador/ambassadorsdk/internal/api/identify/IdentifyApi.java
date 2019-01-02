@@ -357,6 +357,7 @@ public final class IdentifyApi {
     /** Pojo for identify post request body */
     public static class IdentifyRequestBody {
         private boolean enroll;
+        private boolean sandbox;
         private String campaign_id;
         private String source;
         private String mbsy_source;
@@ -407,6 +408,7 @@ public final class IdentifyApi {
             this.country = ambassadorIdentification.getCountry();
             this.add_to_groups = ambassadorIdentification.getAddToGroups();
             this.identify_type = "";
+            this.sandbox = ambassadorIdentification.getSandbox();
 
             try {
                 Gson gson = new Gson();

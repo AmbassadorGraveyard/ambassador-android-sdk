@@ -18,6 +18,7 @@ public class AmbassadorIdentification {
     protected String customLabel2;
     protected String customLabel3;
     protected String addToGroups;
+    protected boolean sandbox;
 
     public String getEmail() {
         return email;
@@ -155,6 +156,16 @@ public class AmbassadorIdentification {
 
     public AmbassadorIdentification setAddToGroups(String addToGroups) {
         this.addToGroups = addToGroups;
+        notifyChange();
+        return this;
+    }
+
+    public boolean getSandbox() {
+        return sandbox;
+    }
+
+    public AmbassadorIdentification setSandbox(boolean sandbox) {
+        this.sandbox = sandbox;
         notifyChange();
         return this;
     }

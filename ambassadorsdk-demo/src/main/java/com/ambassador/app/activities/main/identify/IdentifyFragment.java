@@ -45,6 +45,7 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
     @Bind(R.id.etPostalCode) protected EditText etPostalCode;
     @Bind(R.id.etCountry) protected EditText etCountry;
     @Bind(R.id.swAutoEnroll) protected SwitchCompat swAutoEnroll;
+    @Bind(R.id.swTestMode) protected SwitchCompat swTestMode;
     @Bind(R.id.rlCampaignChooser) protected RelativeLayout rlCampaignChooser;
     @Bind(R.id.tvSelectedCampaign) protected TextView tvSelectedCampaign;
     @Bind(R.id.btnIdentify) protected Button btnIdentify;
@@ -66,6 +67,7 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
         ButterKnife.bind(this, view);
 
         swAutoEnroll.setChecked(false);
+        swTestMode.setChecked(false);
         rlCampaignChooser.setAlpha(0.4f);
 
         swAutoEnroll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -99,6 +101,10 @@ public final class IdentifyFragment extends Fragment implements IdentifyView, Ma
                 traits.putString("lastName", etLastName.getText().toString());
                 traits.putString("company", etCompany.getText().toString());
                 traits.putString("phone", etPhone.getText().toString());
+
+                if (swTestMode.isChecked()) {
+                    traits.putBoolean("sandbox", true);
+                }
 
                 Bundle address = new Bundle();
                 address.putString("street", etStreet.getText().toString());
