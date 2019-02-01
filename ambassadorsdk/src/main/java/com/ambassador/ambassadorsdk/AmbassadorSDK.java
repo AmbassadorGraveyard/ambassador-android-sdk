@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.internal.AmbSingleton;
 import com.ambassador.ambassadorsdk.internal.InstallReceiver;
@@ -28,12 +30,16 @@ import com.ambassador.ambassadorsdk.internal.factories.RAFOptionsFactory;
 import com.ambassador.ambassadorsdk.internal.identify.AmbIdentify;
 import com.ambassador.ambassadorsdk.internal.identify.AmbassadorIdentification;
 import com.ambassador.ambassadorsdk.internal.utils.Identify;
+import com.android.installreferrer.api.ReferrerDetails;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import net.kencochrane.raven.DefaultRavenFactory;
+
+import com.android.installreferrer.api.InstallReferrerClient;
+import com.android.installreferrer.api.InstallReferrerStateListener;
 
 import java.io.InputStream;
 
@@ -114,6 +120,46 @@ public final class AmbassadorSDK {
             AmbConversion ambConversion = new Gson().fromJson(jsonElement, AmbConversion.class);
             ambConversion.execute();
         }
+
+        final InstallReferrerClient mReferrerClient;
+        mReferrerClient = InstallReferrerClient.newBuilder(AmbSingleton.getInstance().getContext()).build();
+        mReferrerClient.startConnection(new InstallReferrerStateListener() {
+            @Override
+            public void onInstallReferrerSetupFinished(int responseCode) {
+                switch (responseCode) {
+                    case InstallReferrerClient.InstallReferrerResponse.OK:
+                        try {
+                            ReferrerDetails installReferrerDetails = mReferrerClient.getInstallReferrer();
+                            if (installReferrerDetails == null) {
+                                Toast.makeText(AmbSingleton.getInstance().getContext(), "SDK SNAPSHOT: referrer is null", Toast.LENGTH_LONG).show();
+                            }
+
+                            if (installReferrerDetails != null) {
+                                Toast.makeText(AmbSingleton.getInstance().getContext(), "SDK SNAPSHOT: referrer is " + installReferrerDetails.getInstallReferrer(), Toast.LENGTH_LONG).show();
+                            }
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        break;
+                    case InstallReferrerClient.InstallReferrerResponse.FEATURE_NOT_SUPPORTED:
+                        // API not available on the current Play Store app
+                        Toast.makeText(AmbSingleton.getInstance().getContext(), "SDK SNAPSHOT: API not available on the current Play Store app", Toast.LENGTH_LONG).show();
+                        break;
+                    case InstallReferrerClient.InstallReferrerResponse.SERVICE_UNAVAILABLE:
+                        // Connection could not be established
+                        Toast.makeText(AmbSingleton.getInstance().getContext(), "SDK SNAPSHOT: Connection could not be established", Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+
+            @Override
+            public void onInstallReferrerServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // Google Play by calling the startConnection() method.
+            }
+        });
     }
 
     /**

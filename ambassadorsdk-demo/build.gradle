@@ -41,6 +41,12 @@ configurations {
     androidTestCompile.exclude group: 'org.hamcrest', module: 'hamcrest-core'
 }
 
+configurations.all {
+    resolutionStrategy {
+        force 'com.android.support:support-annotations:23.0.1'
+    }
+}
+
 dependencies {
     compile project(':ambassadorsdk')
 

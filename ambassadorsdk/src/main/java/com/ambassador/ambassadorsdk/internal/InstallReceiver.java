@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.ambassador.ambassadorsdk.internal.api.RequestManager;
 import com.ambassador.ambassadorsdk.internal.data.Campaign;
@@ -35,6 +36,7 @@ public final class InstallReceiver extends BroadcastReceiver {
         if (b == null) return;
 
         final String referrer = b.getString(INTENT_KEY_REFERRER); //"mbsy_cookie_code=jwnZ&device_id=test1234";
+//        Toast.makeText(context, "SDK INTERNAL: referrer is " + referrer, Toast.LENGTH_SHORT).show();
 
         if (referrer == null) return;
 
@@ -57,6 +59,9 @@ public final class InstallReceiver extends BroadcastReceiver {
 
         user.setWebDeviceId(webDeviceId);
         campaign.setReferredByShortCode(referralShortCode);
+
+//        Toast.makeText(context, "SDK INTERNAL: shortCode is " + referralShortCode, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "SDK INTERNAL: webDeviceId is " + webDeviceId, Toast.LENGTH_SHORT).show();
 
         Utilities.debugLog("Conversion", "webDeviceId: " + webDeviceId);
         Utilities.debugLog("Conversion", "referralShortCode: " + referralShortCode);
