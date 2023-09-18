@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.inject.Inject;
@@ -272,7 +273,7 @@ public class PusherManager {
             String pusherCallbackUrl = new StringResource(pusherCallbackId).getValue();
             HttpAuthorizer authorizer = new HttpAuthorizer(pusherCallbackUrl);
 
-            HashMap<String, String> headers = new HashMap<>();
+            Map<String, String> headers = new HashMap<>();
             headers.put("Authorization", auth.getSdkToken());
             authorizer.setHeaders(headers);
 

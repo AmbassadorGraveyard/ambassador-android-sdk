@@ -48,7 +48,7 @@ ext.deps = [
         design:         'com.android.support:design:23.0.1',
         ga:             'com.google.android.gms:play-services-analytics:8.3.0',
         guava:          'com.google.guava:guava:19.0-rc1',
-        pusher:         'com.pusher:pusher-java-client:0.3.0',
+        pusher:         'com.pusher:pusher-java-client:1.6.0',
         slf4j:          'org.slf4j:slf4j-android:1.7.12',
         okhttp:         'com.squareup.okhttp:okhttp:2.4.0',
         retrofit:       'com.squareup.retrofit:retrofit:1.9.0',

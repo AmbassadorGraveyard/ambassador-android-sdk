@@ -22,9 +22,6 @@ public class RAFOptions {
     @Inject
     protected AmbSingleton AmbSingleton;
 
-    /** The RAFOptions instantiation inflated with options from 3rd party and used throughout code. */
-    private static RAFOptions instance;
-    
     private String defaultShareMessage;
     private String titleText;
     private String descriptionText;
@@ -584,7 +581,7 @@ public class RAFOptions {
     public void set(@NonNull RAFOptions rafOptions) {
         String campaignId = new Campaign().getId();
         String data = new Gson().toJson(rafOptions);
-       AmbSingleton.getInstance().getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE).edit().putString(campaignId, data).apply();
+        AmbSingleton.getInstance().getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE).edit().putString(campaignId, data).apply();
     }
 
     /**
@@ -598,10 +595,9 @@ public class RAFOptions {
     @NonNull
     public RAFOptions get() {
         String campaignId = new Campaign().getId();
-        SharedPreferences prefs =AmbSingleton.getInstance().getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE);
+        SharedPreferences prefs = AmbSingleton.getInstance().getContext().getSharedPreferences("rafOptions", Context.MODE_PRIVATE);
         String data = prefs.getString(campaignId, null);
-        RAFOptions rafOptions = (data!= null) ? new Gson().fromJson(data, RAFOptions.class) : RAFOptions.Builder.newInstance().build();
 
-        return rafOptions;
+        return data!= null ? new Gson().fromJson(data, RAFOptions.class) : RAFOptions.Builder.newInstance().build();
     }
 }

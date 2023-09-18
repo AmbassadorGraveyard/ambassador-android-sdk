@@ -43,8 +43,6 @@ public class AmbIdentify {
         runningInstance = this;
 
         setupPusher();
-
-        //user.clear();
         user.setUserId(userId);
         user.setEmail(ambassadorIdentification.getEmail());
         user.setAmbassadorIdentification(ambassadorIdentification);

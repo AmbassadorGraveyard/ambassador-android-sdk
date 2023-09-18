@@ -135,6 +135,7 @@ public final class AmbassadorSDK {
             ambassadorIdentification.setCustomLabel2(traits.getString("customLabel2", null));
             ambassadorIdentification.setCustomLabel3(traits.getString("customLabel3", null));
             ambassadorIdentification.setAddToGroups(traits.getString("addToGroups", null));
+            ambassadorIdentification.setSandbox(traits.getBoolean("sandbox", false));
 
             Bundle address = traits.getBundle("address");
             if (address != null) {
